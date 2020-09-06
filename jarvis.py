@@ -1,7 +1,7 @@
-import pyttsx3 as audio
-import speech_recognition as sr
 import logging
 
+import pyttsx3 as audio
+import speech_recognition as sr
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(' Jarvis')
