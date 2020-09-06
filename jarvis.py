@@ -1,4 +1,5 @@
 import logging
+import webbrowser
 
 import pyttsx3 as audio
 import speech_recognition as sr
@@ -39,3 +40,8 @@ with sr.Microphone() as source:
         logger.error(u)
     except sr.RequestError as e:
         logger.error(e)
+
+url = f"https://{recognized_text}.com"
+
+chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
+webbrowser.get(chrome_path).open(url)
