@@ -1,10 +1,15 @@
 import pyttsx3 as audio
 import speech_recognition as sr
+import logging
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(' Jarvis')
 
 speaker = audio.init()
 
 volume = speaker.getProperty("volume")
-print(f'Current volume is: {volume}')
+logger.info(f' Current volume is: {volume}')
 
 voices = speaker.getProperty("voices")
 speaker.setProperty("voice", voices[7].id)
@@ -16,23 +21,21 @@ recognizer = sr.Recognizer()
 
 with sr.Microphone() as source:
     try:
-        print('Speak Now')
+        logger.info(" I'm listening...")
         listener = recognizer.listen(source)
         recognized_text = recognizer.recognize_google(listener)
-        print(recognized_text)
     except sr.UnknownValueError as u:
-        print(u)
+        logger.error(u)
     except sr.RequestError as e:
-        print(e)
+        logger.error(e)
 
     speaker.say(f"I heard {recognized_text}, How can I be of service to you?")
     speaker.runAndWait()
     try:
-        print('Speak Now')
+        logger.info(" I'm listening...")
         listener = recognizer.listen(source)
         recognized_text = recognizer.recognize_google(listener)
-        print(recognized_text)
     except sr.UnknownValueError as u:
-        print(u)
+        logger.error(u)
     except sr.RequestError as e:
-        print(e)
+        logger.error(e)
