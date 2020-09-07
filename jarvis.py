@@ -24,14 +24,11 @@ def renew():
     with sr.Microphone() as sourcew:
         speaker.say("Is there anything else I can do for you?")
         speaker.runAndWait()
-        try:
-            logger.info(" I'm listening...")
-            listener2 = recognizer.listen(sourcew)
-            recognized_text2 = recognizer.recognize_google(listener2)
-        except sr.UnknownValueError as u2:
-            logger.error(u2)
-        except sr.RequestError as e2:
-            logger.error(e2)
+
+        logger.info(" I'm listening...")
+        listener2 = recognizer.listen(sourcew)
+        recognized_text2 = recognizer.recognize_google(listener2)
+
         if 'no' in recognized_text2:
             speaker.say(exit_msg)
             speaker.runAndWait()
@@ -39,16 +36,12 @@ def renew():
         elif 'yes' in recognized_text2:
             speaker.say("Go ahead, I'm listening")
             speaker.runAndWait()
-            try:
-                logger.info(" I'm listening...")
-                listener3 = recognizer.listen(sourcew)
-                recognized_text3 = recognizer.recognize_google(listener3)
-                speaker.say(f"I heard {recognized_text3}, but I'm not configured to respond to it yet.")
-                speaker.runAndWait()
-            except sr.UnknownValueError as u3:
-                logger.error(u3)
-            except sr.RequestError as e3:
-                logger.error(e3)
+
+            logger.info(" I'm listening...")
+            listener3 = recognizer.listen(sourcew)
+            recognized_text3 = recognizer.recognize_google(listener3)
+            speaker.say(f"I heard {recognized_text3}, but I'm not configured to respond to it yet.")
+            speaker.runAndWait()
 
 
 def date():
@@ -75,14 +68,10 @@ def webpage():
     with sr.Microphone() as sourcew:
         speaker.say("Which website shall I open? Just say the name of the webpage.")
         speaker.runAndWait()
-        try:
-            logger.info(" I'm listening...")
-            listener1 = recognizer.listen(sourcew)
-            recognized_text1 = recognizer.recognize_google(listener1)
-        except sr.UnknownValueError as u1:
-            logger.error(u1)
-        except sr.RequestError as e1:
-            logger.error(e1)
+
+        logger.info(" I'm listening...")
+        listener1 = recognizer.listen(sourcew)
+        recognized_text1 = recognizer.recognize_google(listener1)
 
         url = f"https://{recognized_text1}.com"
 
@@ -151,14 +140,9 @@ def wikipedia():
     speaker.say("Please tell the keyword.")
     speaker.runAndWait()
     with sr.Microphone() as sourcew:
-        try:
-            logger.info(" I'm listening...")
-            listener1 = recognizer.listen(sourcew)
-            keyword = recognizer.recognize_google(listener1)
-        except sr.UnknownValueError as u1:
-            logger.error(u1)
-        except sr.RequestError as e1:
-            logger.error(e1)
+        logger.info(" I'm listening...")
+        listener1 = recognizer.listen(sourcew)
+        keyword = recognizer.recognize_google(listener1)
 
         logger.info(' Getting your info from Wikipedia API')
 
@@ -167,14 +151,10 @@ def wikipedia():
         speaker.runAndWait()
         speaker.say("Do you want me to continue reading?")
         speaker.runAndWait()
-        try:
-            logger.info(" I'm listening...")
-            listener2 = recognizer.listen(sourcew)
-            response = recognizer.recognize_google(listener2)
-        except sr.UnknownValueError as u1:
-            logger.error(u1)
-        except sr.RequestError as e1:
-            logger.error(e1)
+        logger.info(" I'm listening...")
+        listener2 = recognizer.listen(sourcew)
+        response = recognizer.recognize_google(listener2)
+
         if 'yes' in response or 'continue' in response or 'proceed' in response or 'please' in response or 'yeah' in \
                 response:
             speaker.say(''.join(data.split('.')[3:-1]))
