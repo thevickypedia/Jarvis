@@ -123,6 +123,28 @@ def weather():
     renew()
 
 
+def system_info():
+    import shutil
+    from psutil import virtual_memory
+    import platform
+
+    total, used, free = shutil.disk_usage("/")
+    total = f"{(total // (2 ** 30))} GB"
+    used = f"{(used // (2 ** 30))} GB"
+    free = f"{(free // (2 ** 30))} GB"
+
+    mem = virtual_memory()
+    ram = f"{mem.total // (2 ** 30)} GB"
+
+    cpu = str(os.cpu_count())
+    release = str(platform.release())
+    speaker.say(f"You're running {(platform.platform()).split('.')[0]}, with {cpu} cores. "
+                f"The release version is {release}. Your physical drive capacity is {total}. "
+                f"You have used up {used} of space. Your free space is {free}. Your RAM capacity is {ram}")
+    speaker.runAndWait()
+    renew()
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(' Jarvis')
@@ -149,6 +171,9 @@ if __name__ == '__main__':
 
     elif 'weather' in recognized_text or 'temperature' in recognized_text:
         weather()
+
+    elif 'system' in recognized_text or 'configuration' in recognized_text:
+        system_info()
 
     list_rt = recognized_text.split(' ')
     for a in list_rt:
