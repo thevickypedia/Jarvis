@@ -4,43 +4,71 @@ import webbrowser
 import pyttsx3 as audio
 import speech_recognition as sr
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(' Jarvis')
 
-speaker = audio.init()
-
-volume = speaker.getProperty("volume")
-logger.info(f' Current volume is: {volume}')
-
-voices = speaker.getProperty("voices")
-speaker.setProperty("voice", voices[7].id)
-
-speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. Currently I can only open websites for you.")
-speaker.runAndWait()
-
-recognizer = sr.Recognizer()
-
-
-def main():
-    with sr.Microphone() as source:
-        speaker.say("Which website shall I open?")
+def webpage():
+    with sr.Microphone() as sourcew:
+        speaker.say("Which website shall I open? Just say the name of the webpage.")
         speaker.runAndWait()
         try:
             logger.info(" I'm listening...")
-            listener = recognizer.listen(source)
-            recognized_text = recognizer.recognize_google(listener)
-        except sr.UnknownValueError as u:
-            logger.error(u)
-        except sr.RequestError as e:
-            logger.error(e)
+            listener1 = recognizer.listen(sourcew)
+            recognized_text1 = recognizer.recognize_google(listener1)
+        except sr.UnknownValueError as u1:
+            logger.error(u1)
+        except sr.RequestError as e1:
+            logger.error(e1)
 
-        url = f"https://{recognized_text}.com"
+        url = f"https://{recognized_text1}.com"
 
         chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
         webbrowser.get(chrome_path).open(url)
 
-        speaker.say(f"I have opened {recognized_text}.com, Is there anything else I can do for you?")
+        speaker.say(f"I have opened {recognized_text1}, Is there anything else I can do for you?")
         speaker.runAndWait()
+        try:
+            logger.info(" I'm listening...")
+            listener2 = recognizer.listen(sourcew)
+            recognized_text2 = recognizer.recognize_google(listener2)
+        except sr.UnknownValueError as u2:
+            logger.error(u2)
+        except sr.RequestError as e2:
+            logger.error(e2)
+        if 'no' in recognized_text2:
+            speaker.say("Thank you for using Vicky's virtual assistant. Good bye.")
+            speaker.runAndWait()
+            exit()
+        elif 'yes' in recognized_text2:
+            speaker.say("Go ahead, I'm listening")
+            speaker.runAndWait()
+            try:
+                logger.info(" I'm listening...")
+                listener3 = recognizer.listen(sourcew)
+                recognized_text3 = recognizer.recognize_google(listener3)
+                speaker.say(f"I heard {recognized_text3} but I'm not configured to do it yet.")
+                speaker.runAndWait()
+            except sr.UnknownValueError as u3:
+                logger.error(u3)
+            except sr.RequestError as e3:
+                logger.error(e3)
+
+
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(' Jarvis')
+
+    speaker = audio.init()
+    recognizer = sr.Recognizer()
+
+    volume = speaker.getProperty("volume")
+    logger.info(f' Current volume is: {volume}')
+
+    voices = speaker.getProperty("voices")
+    speaker.setProperty("voice", voices[7].id)
+
+    speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. What can I do for you?")
+    speaker.runAndWait()
+
+    with sr.Microphone() as source:
         try:
             logger.info(" I'm listening...")
             listener = recognizer.listen(source)
@@ -49,15 +77,8 @@ def main():
             logger.error(u)
         except sr.RequestError as e:
             logger.error(e)
-        if 'no' in recognized_text:
-            speaker.say("Thank you for using Vicky's virtual assistant. Good bye.")
-            speaker.runAndWait()
-            exit()
-        elif 'yes' in recognized_text:
-            speaker.setProperty("voice", voices[10].id)
-            speaker.say("Go ahead, I'm listening")
-            speaker.runAndWait()
 
+        web_page_kw = ['website', '.com', '.in', 'webpage', 'web page', '.co.uk']
 
-if __name__ == '__main__':
-    main()
+        if any(recognized_text) == any(web_page_kw):
+            webpage()
