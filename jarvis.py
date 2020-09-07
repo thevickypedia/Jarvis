@@ -28,7 +28,7 @@ def renew():
             logger.info(" I'm listening...")
             listener3 = recognizer.listen(sourcew)
             recognized_text3 = recognizer.recognize_google(listener3)
-            speaker.say(f"I heard {recognized_text3} but I'm not configured to respond to it yet.")
+            speaker.say(f"I heard {recognized_text3}, but I'm not configured to respond to it yet.")
             speaker.runAndWait()
         except sr.UnknownValueError as u3:
             logger.error(u3)
@@ -55,7 +55,7 @@ def date():
         except sr.RequestError as e2:
             logger.error(e2)
         if 'no' in recognized_text2:
-            speaker.say("Thank you for using Vicky's virtual assistant. Good bye.")
+            speaker.say(exit_msg)
             speaker.runAndWait()
             exit()
         elif 'yes' in recognized_text2:
@@ -80,7 +80,7 @@ def time():
         except sr.RequestError as e2:
             logger.error(e2)
         if 'no' in recognized_text2:
-            speaker.say("Thank you for using Vicky's virtual assistant. Good bye.")
+            speaker.say(exit_msg)
             speaker.runAndWait()
             exit()
         elif 'yes' in recognized_text2:
@@ -116,7 +116,7 @@ def webpage():
         except sr.RequestError as e2:
             logger.error(e2)
         if 'no' in recognized_text2:
-            speaker.say("Thank you for using Vicky's virtual assistant. Good bye.")
+            speaker.say(exit_msg)
             speaker.runAndWait()
             exit()
         elif 'yes' in recognized_text2:
@@ -148,6 +148,8 @@ if __name__ == '__main__':
     speaker.setProperty("voice", voices[7].id)
 
     recognized_text = initialize()
+    exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
+
     web_page_kw = ['website', '.com', '.in', 'webpage', 'web page', '.co.uk']
 
     if 'date' in recognized_text:
