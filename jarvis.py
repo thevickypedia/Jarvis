@@ -23,18 +23,33 @@ def initialize():
 
 def renew():
     with sr.Microphone() as sourcew:
-        speaker.say("Go ahead, I'm listening")
+        speaker.say("Is there anything else I can do for you?")
         speaker.runAndWait()
         try:
             logger.info(" I'm listening...")
-            listener3 = recognizer.listen(sourcew)
-            recognized_text3 = recognizer.recognize_google(listener3)
-            speaker.say(f"I heard {recognized_text3}, but I'm not configured to respond to it yet.")
+            listener2 = recognizer.listen(sourcew)
+            recognized_text2 = recognizer.recognize_google(listener2)
+        except sr.UnknownValueError as u2:
+            logger.error(u2)
+        except sr.RequestError as e2:
+            logger.error(e2)
+        if 'no' in recognized_text2:
+            speaker.say(exit_msg)
             speaker.runAndWait()
-        except sr.UnknownValueError as u3:
-            logger.error(u3)
-        except sr.RequestError as e3:
-            logger.error(e3)
+            exit()
+        elif 'yes' in recognized_text2:
+            speaker.say("Go ahead, I'm listening")
+            speaker.runAndWait()
+            try:
+                logger.info(" I'm listening...")
+                listener3 = recognizer.listen(sourcew)
+                recognized_text3 = recognizer.recognize_google(listener3)
+                speaker.say(f"I heard {recognized_text3}, but I'm not configured to respond to it yet.")
+                speaker.runAndWait()
+            except sr.UnknownValueError as u3:
+                logger.error(u3)
+            except sr.RequestError as e3:
+                logger.error(e3)
 
 
 def date():
@@ -42,24 +57,9 @@ def date():
     now = datetime.now()
     dt_string = now.strftime("%B %d, %Y")
 
-    with sr.Microphone() as sourcew:
-        speaker.say(f'Today is :{dt_string}, Is there anything else I can do for you?')
-        speaker.runAndWait()
-
-        try:
-            logger.info(" I'm listening...")
-            listener2 = recognizer.listen(sourcew)
-            recognized_text2 = recognizer.recognize_google(listener2)
-        except sr.UnknownValueError as u2:
-            logger.error(u2)
-        except sr.RequestError as e2:
-            logger.error(e2)
-        if 'no' in recognized_text2:
-            speaker.say(exit_msg)
-            speaker.runAndWait()
-            exit()
-        elif 'yes' in recognized_text2:
-            renew()
+    speaker.say(f'Today is :{dt_string}')
+    speaker.runAndWait()
+    renew()
 
 
 def time():
@@ -67,24 +67,8 @@ def time():
     now = datetime.now()
     dt_string = now.strftime("%I:%M %p")
 
-    with sr.Microphone() as sourcew:
-        speaker.say(f'The current time is: {dt_string}, Is there anything else I can do for you?"')
-        speaker.runAndWait()
-
-        try:
-            logger.info(" I'm listening...")
-            listener2 = recognizer.listen(sourcew)
-            recognized_text2 = recognizer.recognize_google(listener2)
-        except sr.UnknownValueError as u2:
-            logger.error(u2)
-        except sr.RequestError as e2:
-            logger.error(e2)
-        if 'no' in recognized_text2:
-            speaker.say(exit_msg)
-            speaker.runAndWait()
-            exit()
-        elif 'yes' in recognized_text2:
-            renew()
+    speaker.say(f'The current time is: {dt_string}')
+    renew()
 
 
 def webpage():
@@ -105,22 +89,8 @@ def webpage():
         chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
         webbrowser.get(chrome_path).open(url)
 
-        speaker.say(f"I have opened {recognized_text1}, Is there anything else I can do for you?")
-        speaker.runAndWait()
-        try:
-            logger.info(" I'm listening...")
-            listener2 = recognizer.listen(sourcew)
-            recognized_text2 = recognizer.recognize_google(listener2)
-        except sr.UnknownValueError as u2:
-            logger.error(u2)
-        except sr.RequestError as e2:
-            logger.error(e2)
-        if 'no' in recognized_text2:
-            speaker.say(exit_msg)
-            speaker.runAndWait()
-            exit()
-        elif 'yes' in recognized_text2:
-            renew()
+        speaker.say(f"I have opened {recognized_text1}")
+    renew()
 
 
 def weather():
@@ -150,25 +120,7 @@ def weather():
              f'condition is {condition} '
     speaker.say(output)
     speaker.runAndWait()
-
-    with sr.Microphone() as sourcew:
-        speaker.say('Is there anything else I can do for you?')
-        speaker.runAndWait()
-
-        try:
-            logger.info(" I'm listening...")
-            listener2 = recognizer.listen(sourcew)
-            recognized_text2 = recognizer.recognize_google(listener2)
-        except sr.UnknownValueError as u2:
-            logger.error(u2)
-        except sr.RequestError as e2:
-            logger.error(e2)
-        if 'no' in recognized_text2:
-            speaker.say(exit_msg)
-            speaker.runAndWait()
-            exit()
-        elif 'yes' in recognized_text2:
-            renew()
+    renew()
 
 
 if __name__ == '__main__':
@@ -188,17 +140,17 @@ if __name__ == '__main__':
     exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
 
     web_page_kw = ['website', '.com', '.in', 'webpage', 'web page', '.co.uk']
-    list_rt = recognized_text.split(' ')
 
-    if 'date' in list_rt:
+    if 'date' in recognized_text:
         date()
 
-    elif 'time' in list_rt:
+    elif 'time' in recognized_text:
         time()
 
-    elif 'weather' in list_rt or 'temperature' in list_rt:
+    elif 'weather' in recognized_text or 'temperature' in recognized_text:
         weather()
 
+    list_rt = recognized_text.split(' ')
     for a in list_rt:
         for b in web_page_kw:
             if a == b:
