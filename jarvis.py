@@ -1,6 +1,5 @@
 import logging
 import os
-import webbrowser
 
 import pyttsx3 as audio
 import speech_recognition as sr
@@ -72,6 +71,7 @@ def time():
 
 
 def webpage():
+    import webbrowser
     with sr.Microphone() as sourcew:
         speaker.say("Which website shall I open? Just say the name of the webpage.")
         speaker.runAndWait()
@@ -131,7 +131,7 @@ if __name__ == '__main__':
     recognizer = sr.Recognizer()
 
     volume = speaker.getProperty("volume")
-    logger.info(f' Current volume is: {volume}')
+    logger.info(f' Current volume is: {volume}. Friday: 17. Jarvis: 7')
 
     voices = speaker.getProperty("voices")
     speaker.setProperty("voice", voices[7].id)
