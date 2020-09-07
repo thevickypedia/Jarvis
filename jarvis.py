@@ -161,8 +161,6 @@ if __name__ == '__main__':
     recognized_text = initialize()
     exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
 
-    web_page_kw = ['website', '.com', '.in', 'webpage', 'web page', '.co.uk']
-
     if 'date' in recognized_text:
         date()
 
@@ -175,8 +173,6 @@ if __name__ == '__main__':
     elif 'system' in recognized_text or 'configuration' in recognized_text:
         system_info()
 
-    list_rt = recognized_text.split(' ')
-    for a in list_rt:
-        for b in web_page_kw:
-            if a == b:
-                webpage()
+    elif 'website' in recognized_text or '.com' in recognized_text or '.in' in recognized_text or 'webpage' in \
+            recognized_text or 'web page' in recognized_text or '.co.uk' in recognized_text:
+        webpage()
