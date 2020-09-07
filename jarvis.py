@@ -35,7 +35,6 @@ def renew():
             logger.error(u3)
         except sr.RequestError as e3:
             logger.error(e3)
-    return None
 
 
 def date():
@@ -121,21 +120,10 @@ def webpage():
             speaker.runAndWait()
             exit()
         elif 'yes' in recognized_text2:
-            speaker.say("Go ahead, I'm listening")
-            speaker.runAndWait()
-            try:
-                logger.info(" I'm listening...")
-                listener3 = recognizer.listen(sourcew)
-                recognized_text3 = recognizer.recognize_google(listener3)
-                speaker.say(f"I heard {recognized_text3} but I'm not configured to do it yet.")
-                speaker.runAndWait()
-            except sr.UnknownValueError as u3:
-                logger.error(u3)
-            except sr.RequestError as e3:
-                logger.error(e3)
+            renew()
 
 
-def get_location():
+def weather():
     from urllib.request import urlopen
     import pytemperature
     import json
@@ -154,14 +142,33 @@ def get_location():
 
     weather_location = f'{city} {state}'
     temperature = response['current']['temp']
-    weather = response['current']['weather'][0]['description']
+    condition = response['current']['weather'][0]['description']
     feels_like = response['current']['feels_like']
     temp_f = float(round(pytemperature.k2f(temperature), 2))
     temp_feel_f = float(round(pytemperature.k2f(feels_like), 2))
     output = f'Current weather at {weather_location} is {temp_f}°F. Feels Like {temp_feel_f}°F, and the current ' \
-             f'condition is {weather} '
+             f'condition is {condition} '
     speaker.say(output)
     speaker.runAndWait()
+
+    with sr.Microphone() as sourcew:
+        speaker.say('Is there anything else I can do for you?')
+        speaker.runAndWait()
+
+        try:
+            logger.info(" I'm listening...")
+            listener2 = recognizer.listen(sourcew)
+            recognized_text2 = recognizer.recognize_google(listener2)
+        except sr.UnknownValueError as u2:
+            logger.error(u2)
+        except sr.RequestError as e2:
+            logger.error(e2)
+        if 'no' in recognized_text2:
+            speaker.say(exit_msg)
+            speaker.runAndWait()
+            exit()
+        elif 'yes' in recognized_text2:
+            renew()
 
 
 if __name__ == '__main__':
@@ -181,15 +188,18 @@ if __name__ == '__main__':
     exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
 
     web_page_kw = ['website', '.com', '.in', 'webpage', 'web page', '.co.uk']
+    list_rt = recognized_text.split(' ')
 
-    if 'date' in recognized_text:
+    if 'date' in list_rt:
         date()
 
-    elif 'time' in recognized_text:
+    elif 'time' in list_rt:
         time()
 
-    elif any(recognized_text) == any(web_page_kw):
-        webpage()
+    elif 'weather' in list_rt or 'temperature' in list_rt:
+        weather()
 
-    elif 'weather' in recognized_text or 'temperature' in recognized_text:
-        get_location()
+    for a in list_rt:
+        for b in web_page_kw:
+            if a == b:
+                webpage()
