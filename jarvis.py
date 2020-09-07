@@ -5,6 +5,22 @@ import pyttsx3 as audio
 import speech_recognition as sr
 
 
+def date():
+    from datetime import datetime
+    now = datetime.now()
+    dt_string = now.strftime("%B %d, %Y")
+    speaker.say(f'Today is :{dt_string}')
+    speaker.runAndWait()
+
+
+def time():
+    from datetime import datetime
+    now = datetime.now()
+    dt_string = now.strftime("%I:%M %p")
+    speaker.say(f'The current time is: {dt_string}')
+    speaker.runAndWait()
+
+
 def webpage():
     with sr.Microphone() as sourcew:
         speaker.say("Which website shall I open? Just say the name of the webpage.")
@@ -80,5 +96,11 @@ if __name__ == '__main__':
 
         web_page_kw = ['website', '.com', '.in', 'webpage', 'web page', '.co.uk']
 
-        if any(recognized_text) == any(web_page_kw):
+        if 'date' in recognized_text:
+            date()
+
+        elif 'time' in recognized_text:
+            time()
+
+        elif any(recognized_text) == any(web_page_kw):
             webpage()
