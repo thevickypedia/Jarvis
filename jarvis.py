@@ -160,10 +160,27 @@ def wikipedia():
         except sr.RequestError as e1:
             logger.error(e1)
 
-        data = wikipedia.summary(keyword)
-        speaker.say(data)
+        logger.info(' Getting your info from Wikipedia API')
 
-    renew()
+        data = wikipedia.summary(keyword)
+        speaker.say(''.join(data.split('.')[0:2]))
+        speaker.runAndWait()
+        speaker.say("Do you want me to continue reading?")
+        speaker.runAndWait()
+        try:
+            logger.info(" I'm listening...")
+            listener2 = recognizer.listen(sourcew)
+            response = recognizer.recognize_google(listener2)
+        except sr.UnknownValueError as u1:
+            logger.error(u1)
+        except sr.RequestError as e1:
+            logger.error(e1)
+        if 'yes' in response or 'continue' in response or 'proceed' in response or 'please' in response or 'yeah' in \
+                response:
+            speaker.say(''.join(data.split('.')[3:-1]))
+            speaker.runAndWait()
+        else:
+            renew()
 
 
 if __name__ == '__main__':
