@@ -9,16 +9,72 @@ def date():
     from datetime import datetime
     now = datetime.now()
     dt_string = now.strftime("%B %d, %Y")
-    speaker.say(f'Today is :{dt_string}')
-    speaker.runAndWait()
+
+    with sr.Microphone() as sourcew:
+        speaker.say(f'Today is :{dt_string}, Is there anything else I can do for you?')
+        speaker.runAndWait()
+
+        try:
+            logger.info(" I'm listening...")
+            listener2 = recognizer.listen(sourcew)
+            recognized_text2 = recognizer.recognize_google(listener2)
+        except sr.UnknownValueError as u2:
+            logger.error(u2)
+        except sr.RequestError as e2:
+            logger.error(e2)
+        if 'no' in recognized_text2:
+            speaker.say("Thank you for using Vicky's virtual assistant. Good bye.")
+            speaker.runAndWait()
+            exit()
+        elif 'yes' in recognized_text2:
+            speaker.say("Go ahead, I'm listening")
+            speaker.runAndWait()
+            try:
+                logger.info(" I'm listening...")
+                listener3 = recognizer.listen(sourcew)
+                recognized_text3 = recognizer.recognize_google(listener3)
+                speaker.say(f"I heard {recognized_text3} but I'm not configured to do it yet.")
+                speaker.runAndWait()
+            except sr.UnknownValueError as u3:
+                logger.error(u3)
+            except sr.RequestError as e3:
+                logger.error(e3)
 
 
 def time():
     from datetime import datetime
     now = datetime.now()
     dt_string = now.strftime("%I:%M %p")
-    speaker.say(f'The current time is: {dt_string}')
-    speaker.runAndWait()
+
+    with sr.Microphone() as sourcew:
+        speaker.say(f'The current time is: {dt_string}, Is there anything else I can do for you?"')
+        speaker.runAndWait()
+
+        try:
+            logger.info(" I'm listening...")
+            listener2 = recognizer.listen(sourcew)
+            recognized_text2 = recognizer.recognize_google(listener2)
+        except sr.UnknownValueError as u2:
+            logger.error(u2)
+        except sr.RequestError as e2:
+            logger.error(e2)
+        if 'no' in recognized_text2:
+            speaker.say("Thank you for using Vicky's virtual assistant. Good bye.")
+            speaker.runAndWait()
+            exit()
+        elif 'yes' in recognized_text2:
+            speaker.say("Go ahead, I'm listening")
+            speaker.runAndWait()
+            try:
+                logger.info(" I'm listening...")
+                listener3 = recognizer.listen(sourcew)
+                recognized_text3 = recognizer.recognize_google(listener3)
+                speaker.say(f"I heard {recognized_text3} but I'm not configured to do it yet.")
+                speaker.runAndWait()
+            except sr.UnknownValueError as u3:
+                logger.error(u3)
+            except sr.RequestError as e3:
+                logger.error(e3)
 
 
 def webpage():
