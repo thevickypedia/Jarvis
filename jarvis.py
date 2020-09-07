@@ -145,6 +145,27 @@ def system_info():
     renew()
 
 
+def wikipedia():
+    import wikipedia
+
+    speaker.say("Please tell the keyword.")
+    speaker.runAndWait()
+    with sr.Microphone() as sourcew:
+        try:
+            logger.info(" I'm listening...")
+            listener1 = recognizer.listen(sourcew)
+            keyword = recognizer.recognize_google(listener1)
+        except sr.UnknownValueError as u1:
+            logger.error(u1)
+        except sr.RequestError as e1:
+            logger.error(e1)
+
+        data = wikipedia.summary(keyword)
+        speaker.say(data)
+
+    renew()
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(' Jarvis')
@@ -176,3 +197,7 @@ if __name__ == '__main__':
     elif 'website' in recognized_text or '.com' in recognized_text or '.in' in recognized_text or 'webpage' in \
             recognized_text or 'web page' in recognized_text or '.co.uk' in recognized_text:
         webpage()
+
+    elif 'get info' in recognized_text or 'get' in recognized_text or 'info' in recognized_text or 'information' in \
+            recognized_text or 'wikipedia' in recognized_text or 'search' in recognized_text:
+        wikipedia()
