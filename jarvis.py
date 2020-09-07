@@ -5,6 +5,38 @@ import pyttsx3 as audio
 import speech_recognition as sr
 
 
+def initialize():
+    speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. What can I do for you?")
+    speaker.runAndWait()
+
+    with sr.Microphone() as source:
+        try:
+            logger.info(" I'm listening...")
+            listener = recognizer.listen(source)
+            return recognizer.recognize_google(listener)
+        except sr.UnknownValueError as u:
+            logger.error(u)
+        except sr.RequestError as e:
+            logger.error(e)
+
+
+def renew():
+    with sr.Microphone() as sourcew:
+        speaker.say("Go ahead, I'm listening")
+        speaker.runAndWait()
+        try:
+            logger.info(" I'm listening...")
+            listener3 = recognizer.listen(sourcew)
+            recognized_text3 = recognizer.recognize_google(listener3)
+            speaker.say(f"I heard {recognized_text3} but I'm not configured to respond to it yet.")
+            speaker.runAndWait()
+        except sr.UnknownValueError as u3:
+            logger.error(u3)
+        except sr.RequestError as e3:
+            logger.error(e3)
+    return None
+
+
 def date():
     from datetime import datetime
     now = datetime.now()
@@ -27,18 +59,7 @@ def date():
             speaker.runAndWait()
             exit()
         elif 'yes' in recognized_text2:
-            speaker.say("Go ahead, I'm listening")
-            speaker.runAndWait()
-            try:
-                logger.info(" I'm listening...")
-                listener3 = recognizer.listen(sourcew)
-                recognized_text3 = recognizer.recognize_google(listener3)
-                speaker.say(f"I heard {recognized_text3} but I'm not configured to do it yet.")
-                speaker.runAndWait()
-            except sr.UnknownValueError as u3:
-                logger.error(u3)
-            except sr.RequestError as e3:
-                logger.error(e3)
+            renew()
 
 
 def time():
@@ -63,18 +84,7 @@ def time():
             speaker.runAndWait()
             exit()
         elif 'yes' in recognized_text2:
-            speaker.say("Go ahead, I'm listening")
-            speaker.runAndWait()
-            try:
-                logger.info(" I'm listening...")
-                listener3 = recognizer.listen(sourcew)
-                recognized_text3 = recognizer.recognize_google(listener3)
-                speaker.say(f"I heard {recognized_text3} but I'm not configured to do it yet.")
-                speaker.runAndWait()
-            except sr.UnknownValueError as u3:
-                logger.error(u3)
-            except sr.RequestError as e3:
-                logger.error(e3)
+            renew()
 
 
 def webpage():
@@ -137,26 +147,14 @@ if __name__ == '__main__':
     voices = speaker.getProperty("voices")
     speaker.setProperty("voice", voices[7].id)
 
-    speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. What can I do for you?")
-    speaker.runAndWait()
+    recognized_text = initialize()
+    web_page_kw = ['website', '.com', '.in', 'webpage', 'web page', '.co.uk']
 
-    with sr.Microphone() as source:
-        try:
-            logger.info(" I'm listening...")
-            listener = recognizer.listen(source)
-            recognized_text = recognizer.recognize_google(listener)
-        except sr.UnknownValueError as u:
-            logger.error(u)
-        except sr.RequestError as e:
-            logger.error(e)
+    if 'date' in recognized_text:
+        date()
 
-        web_page_kw = ['website', '.com', '.in', 'webpage', 'web page', '.co.uk']
+    elif 'time' in recognized_text:
+        time()
 
-        if 'date' in recognized_text:
-            date()
-
-        elif 'time' in recognized_text:
-            time()
-
-        elif any(recognized_text) == any(web_page_kw):
-            webpage()
+    elif any(recognized_text) == any(web_page_kw):
+        webpage()
