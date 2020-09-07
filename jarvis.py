@@ -1,4 +1,5 @@
 import logging
+import os
 import webbrowser
 
 import pyttsx3 as audio
@@ -134,6 +135,35 @@ def webpage():
                 logger.error(e3)
 
 
+def get_location():
+    from urllib.request import urlopen
+    import pytemperature
+    import json
+    api_key = os.getenv('api_key')
+
+    url = 'http://ipinfo.io/json'
+    resp = urlopen(url)
+    data = json.load(resp)
+    city, state, country, coordinates = data['city'], data['region'], data['country'], data['loc']
+    lat = coordinates.split(',')[0]
+    lon = coordinates.split(',')[1]
+    api_endpoint = "http://api.openweathermap.org/data/2.5/"
+    url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=daily,minutely&appid={api_key}'
+    r = urlopen(url)  # sends request to the url created
+    response = json.loads(r.read())  # loads the response in a json
+
+    weather_location = f'{city} {state}'
+    temperature = response['current']['temp']
+    weather = response['current']['weather'][0]['description']
+    feels_like = response['current']['feels_like']
+    temp_f = float(round(pytemperature.k2f(temperature), 2))
+    temp_feel_f = float(round(pytemperature.k2f(feels_like), 2))
+    output = f'Current weather at {weather_location} is {temp_f}°F. Feels Like {temp_feel_f}°F, and the current ' \
+             f'condition is {weather} '
+    speaker.say(output)
+    speaker.runAndWait()
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(' Jarvis')
@@ -160,3 +190,6 @@ if __name__ == '__main__':
 
     elif any(recognized_text) == any(web_page_kw):
         webpage()
+
+    elif 'weather' in recognized_text or 'temperature' in recognized_text:
+        get_location()
