@@ -54,6 +54,32 @@ def renew():
             speaker.runAndWait()
 
 
+def conditions():
+    if 'date' in recognized_text:
+        date()
+
+    elif 'time' in recognized_text:
+        time()
+
+    elif 'weather' in recognized_text or 'temperature' in recognized_text:
+        weather()
+
+    elif 'system' in recognized_text or 'configuration' in recognized_text:
+        system_info()
+
+    elif 'website' in recognized_text or '.com' in recognized_text or '.in' in recognized_text or 'webpage' in \
+            recognized_text or 'web page' in recognized_text or '.co.uk' in recognized_text:
+        webpage()
+
+    elif 'get info' in recognized_text or 'get' in recognized_text or 'info' in recognized_text or 'information' in \
+            recognized_text or 'wikipedia' in recognized_text or 'search' in recognized_text:
+        wikipedia()
+
+    else:
+        speaker.say(f"I heard {recognized_text}, but I'm not configured to respond to it yet.")
+        speaker.runAndWait()
+
+
 def date():
     from datetime import datetime
     now = datetime.now()
@@ -198,27 +224,4 @@ if __name__ == '__main__':
     recognized_text = initialize()
     exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
 
-    if 'date' in recognized_text:
-        date()
-
-    elif 'time' in recognized_text:
-        time()
-
-    elif 'weather' in recognized_text or 'temperature' in recognized_text:
-        weather()
-
-    elif 'system' in recognized_text or 'configuration' in recognized_text:
-        system_info()
-
-    elif 'website' in recognized_text or '.com' in recognized_text or '.in' in recognized_text or 'webpage' in \
-            recognized_text or 'web page' in recognized_text or '.co.uk' in recognized_text:
-        webpage()
-
-    elif 'get info' in recognized_text or 'get' in recognized_text or 'info' in recognized_text or 'information' in \
-            recognized_text or 'wikipedia' in recognized_text or 'search' in recognized_text:
-        wikipedia()
-
-    else:
-        speaker.say(f"I heard {recognized_text}, but I'm not configured to respond to it yet.")
-        speaker.runAndWait()
-        renew()
+    conditions()
