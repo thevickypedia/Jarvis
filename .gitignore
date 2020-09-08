@@ -1,2 +1,4 @@
 .idea
 venv
+speech2text.py
+text2audio.py
