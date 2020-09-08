@@ -4,11 +4,13 @@ import os
 import pyttsx3 as audio
 import speech_recognition as sr
 
+n = 0
+
 
 def initialize():
     speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. Whom am I speaking with?")
     speaker.runAndWait()
-    logger.info(" I'm listening...")
+    logger.info(" Initialized: I'm listening...")
     with sr.Microphone() as source:
         listener = recognizer.listen(source)
         name = recognizer.recognize_google(listener)
@@ -20,7 +22,7 @@ def initialize():
             speaker.runAndWait()
     with sr.Microphone() as source_new:
         try:
-            logger.info(" I'm listening...")
+            logger.info(" Name addressed: I'm listening...")
             listener_new = recognizer.listen(source_new)
             return recognizer.recognize_google(listener_new)
         except sr.UnknownValueError as u:
@@ -34,7 +36,7 @@ def renew():
         speaker.say("Is there anything else I can do for you?")
         speaker.runAndWait()
 
-        logger.info(" I'm listening...")
+        logger.info(" Redo: I'm listening...")
         listener2 = recognizer.listen(sourcew)
         recognized_text2 = recognizer.recognize_google(listener2)
 
@@ -47,7 +49,7 @@ def renew():
             speaker.say("Go ahead, I'm listening")
             speaker.runAndWait()
 
-            logger.info(" I'm listening...")
+            logger.info(" Continue: I'm listening...")
             listener3 = recognizer.listen(sourcew)
             recognized_text3 = recognizer.recognize_google(listener3)
             if 'date' in recognized_text3:
@@ -121,7 +123,7 @@ def webpage():
         speaker.say("Which website shall I open? Just say the name of the webpage.")
         speaker.runAndWait()
 
-        logger.info(" I'm listening...")
+        logger.info(" Webpage: I'm listening...")
         listener1 = recognizer.listen(sourcew)
         recognized_text1 = recognizer.recognize_google(listener1)
 
@@ -192,7 +194,7 @@ def wikipedia():
     speaker.say("Please tell the keyword.")
     speaker.runAndWait()
     with sr.Microphone() as sourcew:
-        logger.info(" I'm listening...")
+        logger.info(" Wikipedia: I'm listening...")
         listener1 = recognizer.listen(sourcew)
         keyword = recognizer.recognize_google(listener1)
 
@@ -203,7 +205,7 @@ def wikipedia():
             print(e)
             speaker.say('Your search has multiple results. Pick one displayed on your screen.')
             speaker.runAndWait()
-            logger.info(" I'm listening...")
+            logger.info(" Multiple Search: I'm listening...")
             listener1 = recognizer.listen(sourcew)
             keyword1 = recognizer.recognize_google(listener1)
             data = wikipedia.summary(keyword1)
@@ -212,7 +214,7 @@ def wikipedia():
         speaker.runAndWait()
         speaker.say("Do you want me to continue?")
         speaker.runAndWait()
-        logger.info(" I'm listening...")
+        logger.info(" Continue Reading: I'm listening...")
         listener2 = recognizer.listen(sourcew)
         response = recognizer.recognize_google(listener2)
 
