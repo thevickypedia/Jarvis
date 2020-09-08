@@ -6,6 +6,10 @@ import speech_recognition as sr
 
 
 def initialize():
+    from datetime import datetime
+    now = datetime.now()
+    current = now.strftime("%p")
+    clock = now.strftime("%I")
     speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. Whom am I speaking with?")
     speaker.runAndWait()
     logger.info(" Initialized: I'm listening...")
@@ -13,11 +17,37 @@ def initialize():
         listener = recognizer.listen(source)
         name = recognizer.recognize_google(listener)
         if str(name) == str(os.getenv('key')):
-            speaker.say("Welcome back sire. What can I do for you?")
-            speaker.runAndWait()
+            if current == 'AM' and int(clock) <= 10:
+                speaker.say("Welcome back sire. Good Morning. What can I do for you?")
+                speaker.runAndWait()
+            elif current == 'AM' and int(clock) > 10:
+                speaker.say("Welcome back sire. Hope you're having a nice morning. What can I do for you?")
+                speaker.runAndWait()
+            elif current == 'PM' and int(clock) < 4:
+                speaker.say("Welcome back sire. Good Afternoon. What can I do for you?")
+                speaker.runAndWait()
+            elif current == 'PM' and int(clock) < 7:
+                speaker.say("Welcome back sire. Good Evening. What can I do for you?")
+                speaker.runAndWait()
+            else:
+                speaker.say("Welcome back sire. Hope you're having a nice night. What can I do for you?")
+                speaker.runAndWait()
         else:
-            speaker.say(f"Hi {name}, what can I do for you?")
-            speaker.runAndWait()
+            if current == 'AM' and int(clock) <= 10:
+                speaker.say(f"Hi {name}. Good Morning. What can I do for you?")
+                speaker.runAndWait()
+            elif current == 'AM' and int(clock) > 10:
+                speaker.say(f"Hi {name}. Hope you're having a nice morning. What can I do for you?")
+                speaker.runAndWait()
+            elif current == 'PM' and int(clock) < 4:
+                speaker.say(f"Hi {name}. Good Afternoon. What can I do for you?")
+                speaker.runAndWait()
+            elif current == 'PM' and int(clock) < 7:
+                speaker.say(f"Hi {name}. Good Evening. What can I do for you?")
+                speaker.runAndWait()
+            else:
+                speaker.say(f"Hi {name}. Hope you're having a nice night. What can I do for you?")
+                speaker.runAndWait()
     with sr.Microphone() as source_new:
         try:
             logger.info(" Name addressed: I'm listening...")
