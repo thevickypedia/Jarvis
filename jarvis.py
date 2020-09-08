@@ -63,7 +63,7 @@ def renew():
                     'webpage' in recognized_redo_ or 'web page' in recognized_redo_ or '.co.uk' in recognized_redo_:
                 webpage()
             elif 'get info' in recognized_redo_ or 'fact' in recognized_redo_ or 'info' in recognized_redo_ or \
-                    'information' in recognized_redo_ or 'wikipedia' in recognized_redo_ or 'facts' in\
+                    'information' in recognized_redo_ or 'wikipedia' in recognized_redo_ or 'facts' in \
                     recognized_redo_ or 'Wikipedia' in recognized_redo_:
                 wikipedia()
             else:
@@ -88,8 +88,9 @@ def conditions():
             recognized_text or 'web page' in recognized_text or '.co.uk' in recognized_text:
         webpage()
 
-    elif 'get info' in recognized_text or 'get' in recognized_text or 'info' in recognized_text or 'information' in \
-            recognized_text or 'wikipedia' in recognized_text or 'search' in recognized_text:
+    elif 'get info' in recognized_text or 'fact' in recognized_text or 'info' in recognized_text or 'information' in \
+            recognized_text or 'wikipedia' in recognized_text or 'facts' in recognized_text or 'Wikipedia' in \
+            recognized_text:
         wikipedia()
 
     else:
