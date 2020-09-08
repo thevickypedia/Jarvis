@@ -62,8 +62,8 @@ def renew():
             elif 'website' in recognized_redo_ or '.com' in recognized_redo_ or '.in' in recognized_redo_ or \
                     'webpage' in recognized_redo_ or 'web page' in recognized_redo_ or '.co.uk' in recognized_redo_:
                 webpage()
-            elif 'get info' in recognized_redo_ or 'get' in recognized_redo_ or 'info' in recognized_redo_ or \
-                    'information' in recognized_redo_ or 'wikipedia' in recognized_redo_ or 'search' in\
+            elif 'get info' in recognized_redo_ or 'fact' in recognized_redo_ or 'info' in recognized_redo_ or \
+                    'information' in recognized_redo_ or 'wikipedia' in recognized_redo_ or 'facts' in\
                     recognized_redo_ or 'Wikipedia' in recognized_redo_:
                 wikipedia()
             else:
