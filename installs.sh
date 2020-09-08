@@ -1,4 +1,5 @@
 brew install portaudio
+pip install --upgrade pip
 python3 -m pip install SpeechRecognition
 python3 -m pip install pyaudio
 python3 -m pip install numpy
