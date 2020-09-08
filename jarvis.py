@@ -4,8 +4,6 @@ import os
 import pyttsx3 as audio
 import speech_recognition as sr
 
-n = 0
-
 
 def initialize():
     speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. Whom am I speaking with?")
@@ -45,7 +43,8 @@ def renew():
             speaker.say(exit_msg)
             speaker.runAndWait()
             exit()
-        elif 'yes' in recognized_text2:
+        elif 'yes' in recognized_text2 or 's' in recognized_text2 or 'Yes' in recognized_text2 or 'yes' \
+                in recognized_text2:
             speaker.say("Go ahead, I'm listening")
             speaker.runAndWait()
 
@@ -65,7 +64,7 @@ def renew():
                 webpage()
             elif 'get info' in recognized_text3 or 'get' in recognized_text3 or 'info' in recognized_text3 or \
                     'information' in recognized_text3 or 'wikipedia' in recognized_text3 or 'search' in\
-                    recognized_text3:
+                    recognized_text3 or 'Wikipedia' in recognized_text3:
                 wikipedia()
             else:
                 speaker.say(f"I heard {recognized_text}, but I'm not configured to respond to it yet.")
@@ -198,7 +197,7 @@ def wikipedia():
         listener1 = recognizer.listen(sourcew)
         keyword = recognizer.recognize_google(listener1)
 
-        logger.info(' Getting your info from Wikipedia API')
+        logger.info(f' Getting your info from Wikipedia API for {keyword}')
         try:
             data = wikipedia.summary(keyword)
         except wikipedia.exceptions.DisambiguationError as e:
@@ -222,6 +221,7 @@ def wikipedia():
                 response:
             speaker.say(''.join(data.split('.')[3:-1]))
             speaker.runAndWait()
+            renew()
         else:
             renew()
 
