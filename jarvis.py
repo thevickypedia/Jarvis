@@ -23,7 +23,7 @@ def initialize():
             elif current == 'AM' and int(clock) > 10:
                 speaker.say("Welcome back sire. Hope you're having a nice morning. What can I do for you?")
                 speaker.runAndWait()
-            elif current == 'PM' and int(clock) < 4:
+            elif current == 'PM' and (int(clock) == 12 or int(clock) < 4):
                 speaker.say("Welcome back sire. Good Afternoon. What can I do for you?")
                 speaker.runAndWait()
             elif current == 'PM' and int(clock) < 7:
@@ -39,7 +39,7 @@ def initialize():
             elif current == 'AM' and int(clock) > 10:
                 speaker.say(f"Hi {name}. Hope you're having a nice morning. What can I do for you?")
                 speaker.runAndWait()
-            elif current == 'PM' and int(clock) < 4:
+            elif current == 'PM' and (int(clock) == 12 or int(clock) < 4):
                 speaker.say(f"Hi {name}. Good Afternoon. What can I do for you?")
                 speaker.runAndWait()
             elif current == 'PM' and int(clock) < 7:
