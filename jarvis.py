@@ -50,8 +50,24 @@ def renew():
             logger.info(" I'm listening...")
             listener3 = recognizer.listen(sourcew)
             recognized_text3 = recognizer.recognize_google(listener3)
-            speaker.say(f"I heard {recognized_text3}, but I'm not configured to respond to it yet.")
-            speaker.runAndWait()
+            if 'date' in recognized_text3:
+                date()
+            elif 'time' in recognized_text3:
+                time()
+            elif 'weather' in recognized_text3 or 'temperature' in recognized_text3:
+                weather()
+            elif 'system' in recognized_text3 or 'configuration' in recognized_text3:
+                system_info()
+            elif 'website' in recognized_text3 or '.com' in recognized_text3 or '.in' in recognized_text3 or \
+                    'webpage' in recognized_text3 or 'web page' in recognized_text3 or '.co.uk' in recognized_text3:
+                webpage()
+            elif 'get info' in recognized_text3 or 'get' in recognized_text3 or 'info' in recognized_text3 or \
+                    'information' in recognized_text3 or 'wikipedia' in recognized_text3 or 'search' in\
+                    recognized_text3:
+                wikipedia()
+            else:
+                speaker.say(f"I heard {recognized_text}, but I'm not configured to respond to it yet.")
+                speaker.runAndWait()
 
 
 def conditions():
