@@ -1,3 +1,4 @@
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 brew install portaudio
 pip install --upgrade pip
 python3 -m pip install SpeechRecognition
