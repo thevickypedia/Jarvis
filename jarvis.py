@@ -145,11 +145,20 @@ def wikipedia():
         keyword = recognizer.recognize_google(listener1)
 
         logger.info(' Getting your info from Wikipedia API')
+        try:
+            data = wikipedia.summary(keyword)
+        except wikipedia.exceptions.DisambiguationError as e:
+            print(e)
+            speaker.say('Your search has multiple results. Pick one displayed on your screen.')
+            speaker.runAndWait()
+            logger.info(" I'm listening...")
+            listener1 = recognizer.listen(sourcew)
+            keyword1 = recognizer.recognize_google(listener1)
+            data = wikipedia.summary(keyword1)
 
-        data = wikipedia.summary(keyword)
         speaker.say(''.join(data.split('.')[0:2]))
         speaker.runAndWait()
-        speaker.say("Do you want me to continue reading?")
+        speaker.say("Do you want me to continue?")
         speaker.runAndWait()
         logger.info(" I'm listening...")
         listener2 = recognizer.listen(sourcew)
