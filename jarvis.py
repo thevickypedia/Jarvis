@@ -6,14 +6,23 @@ import speech_recognition as sr
 
 
 def initialize():
-    speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. What can I do for you?")
+    speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. Whom am I speaking with?")
     speaker.runAndWait()
-
+    logger.info(" I'm listening...")
     with sr.Microphone() as source:
+        listener = recognizer.listen(source)
+        name = recognizer.recognize_google(listener)
+        if str(name) == str(os.getenv('key')):
+            speaker.say("Welcome back sire. What can I do for you?")
+            speaker.runAndWait()
+        else:
+            speaker.say(f"Hi {name}, what can I do for you?")
+            speaker.runAndWait()
+    with sr.Microphone() as source_new:
         try:
             logger.info(" I'm listening...")
-            listener = recognizer.listen(source)
-            return recognizer.recognize_google(listener)
+            listener_new = recognizer.listen(source_new)
+            return recognizer.recognize_google(listener_new)
         except sr.UnknownValueError as u:
             logger.error(u)
         except sr.RequestError as e:
@@ -29,7 +38,8 @@ def renew():
         listener2 = recognizer.listen(sourcew)
         recognized_text2 = recognizer.recognize_google(listener2)
 
-        if 'no' in recognized_text2:
+        if 'no' in recognized_text2 or "that's all" in recognized_text2 or 'that is all' in recognized_text2 or \
+                "that's it" in recognized_text2 or 'that is it' in recognized_text2:
             speaker.say(exit_msg)
             speaker.runAndWait()
             exit()
@@ -207,3 +217,8 @@ if __name__ == '__main__':
     elif 'get info' in recognized_text or 'get' in recognized_text or 'info' in recognized_text or 'information' in \
             recognized_text or 'wikipedia' in recognized_text or 'search' in recognized_text:
         wikipedia()
+
+    else:
+        speaker.say(f"I heard {recognized_text}, but I'm not configured to respond to it yet.")
+        speaker.runAndWait()
+        renew()
