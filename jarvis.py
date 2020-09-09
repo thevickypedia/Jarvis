@@ -96,6 +96,8 @@ def renew():
                     'information' in recognized_redo_ or 'wikipedia' in recognized_redo_ or 'facts' in \
                     recognized_redo_ or 'Wikipedia' in recognized_redo_:
                 wikipedia()
+            elif 'news' in recognized_redo_ or 'latest' in recognized_redo_:
+                news()
             else:
                 speaker.say(f"I heard {recognized_redo_}, but I'm not configured to respond to it yet.")
                 speaker.runAndWait()
@@ -122,6 +124,9 @@ def conditions():
             recognized_text or 'wikipedia' in recognized_text or 'facts' in recognized_text or 'Wikipedia' in \
             recognized_text:
         wikipedia()
+
+    elif 'news' in recognized_text or 'latest' in recognized_text:
+        news()
 
     else:
         speaker.say(f"I heard {recognized_text}, but I'm not configured to respond to it yet.")
@@ -262,6 +267,19 @@ def wikipedia():
             renew()
         else:
             renew()
+
+
+def news():
+    logger.info(' Getting news from fox news.')
+    from newsapi import NewsApiClient
+    newsapi = NewsApiClient(api_key=os.getenv('news_api'))
+    all_articles = newsapi.get_top_headlines(sources='fox-news')
+
+    for article in all_articles['articles']:
+        speaker.say(article['title'])
+        speaker.runAndWait()
+
+    renew()
 
 
 if __name__ == '__main__':
