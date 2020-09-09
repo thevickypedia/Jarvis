@@ -1,12 +1,12 @@
 import logging
 import os
+from datetime import datetime
 
 import pyttsx3 as audio
 import speech_recognition as sr
 
 
 def initialize():
-    from datetime import datetime
     now = datetime.now()
     current = now.strftime("%p")
     clock = now.strftime("%I")
@@ -16,7 +16,7 @@ def initialize():
     with sr.Microphone() as source:
         listener = recognizer.listen(source)
         name = recognizer.recognize_google(listener)
-        if str(name) == str(os.getenv('key')):
+        if str(os.getenv('key')) in str(name):
             if current == 'AM' and int(clock) <= 10:
                 speaker.say("Welcome back sire. Good Morning. What can I do for you?")
                 speaker.runAndWait()
@@ -167,6 +167,7 @@ def webpage():
 
 
 def weather():
+    logger.info(' Getting your weather info')
     from urllib.request import urlopen
     import pytemperature
     import json
@@ -179,7 +180,7 @@ def weather():
     lat = coordinates.split(',')[0]
     lon = coordinates.split(',')[1]
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
-    url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=daily,minutely&appid={api_key}'
+    url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={api_key}'
     r = urlopen(url)  # sends request to the url created
     response = json.loads(r.read())  # loads the response in a json
 
@@ -187,10 +188,17 @@ def weather():
     temperature = response['current']['temp']
     condition = response['current']['weather'][0]['description']
     feels_like = response['current']['feels_like']
+    maxi = (response['daily'][0]['temp']['max'])
+    high = float(round(pytemperature.k2f(maxi), 2))
+    mini = (response['daily'][0]['temp']['min'])
+    low = float(round(pytemperature.k2f(mini), 2))
     temp_f = float(round(pytemperature.k2f(temperature), 2))
     temp_feel_f = float(round(pytemperature.k2f(feels_like), 2))
-    output = f'Current weather at {weather_location} is {temp_f}°F. Feels Like {temp_feel_f}°F, and the current ' \
-             f'condition is {condition} '
+    sunrise = (datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p"))
+    sunset = (datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p"))
+    output = f'Current weather at {weather_location} is {temp_f}°F, with a high of {high}°F, and a low of {low}°F. ' \
+             f'It currenly feels Like {temp_feel_f}°F, and the current ' \
+             f'condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}'
     speaker.say(output)
     speaker.runAndWait()
     renew()
