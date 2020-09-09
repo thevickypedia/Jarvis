@@ -92,7 +92,7 @@ def renew():
             elif 'website' in recognized_redo_ or '.com' in recognized_redo_ or '.in' in recognized_redo_ or \
                     'webpage' in recognized_redo_ or 'web page' in recognized_redo_ or '.co.uk' in recognized_redo_:
                 webpage()
-            elif 'get info' in recognized_redo_ or 'fact' in recognized_redo_ or 'info' in recognized_redo_ or \
+            elif 'fact' in recognized_redo_ or 'info' in recognized_redo_ or \
                     'information' in recognized_redo_ or 'wikipedia' in recognized_redo_ or 'facts' in \
                     recognized_redo_ or 'Wikipedia' in recognized_redo_:
                 wikipedia()
@@ -118,7 +118,7 @@ def conditions():
             recognized_text or 'web page' in recognized_text or '.co.uk' in recognized_text:
         webpage()
 
-    elif 'get info' in recognized_text or 'fact' in recognized_text or 'info' in recognized_text or 'information' in \
+    elif 'fact' in recognized_text or 'info' in recognized_text or 'information' in \
             recognized_text or 'wikipedia' in recognized_text or 'facts' in recognized_text or 'Wikipedia' in \
             recognized_text:
         wikipedia()
@@ -129,9 +129,8 @@ def conditions():
 
 
 def date():
-    from datetime import datetime
     now = datetime.now()
-    dt_string = now.strftime("%B %d, %Y")
+    dt_string = now.strftime("%A, %B %d, %Y")
 
     speaker.say(f'Today is :{dt_string}')
     speaker.runAndWait()
