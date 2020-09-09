@@ -98,6 +98,8 @@ def renew():
                 wikipedia()
             elif 'news' in recognized_redo_ or 'latest' in recognized_redo_:
                 news()
+            elif 'report' in recognized_redo_:
+                report()
             else:
                 speaker.say(f"I heard {recognized_redo_}, but I'm not configured to respond to it yet.")
                 speaker.runAndWait()
@@ -128,9 +130,23 @@ def conditions():
     elif 'news' in recognized_text or 'latest' in recognized_text:
         news()
 
+    elif 'report' in recognized_text or 'good morning' in recognized_text or 'good' in recognized_text or 'morning' in \
+            recognized_text:
+        report()
+
     else:
         speaker.say(f"I heard {recognized_text}, but I'm not configured to respond to it yet.")
         speaker.runAndWait()
+
+
+def report():
+    logger.info(" Starting today's report")
+    report.has_been_called = True
+    date()
+    time()
+    weather()
+    news()
+    renew()
 
 
 def date():
@@ -139,7 +155,10 @@ def date():
 
     speaker.say(f'Today is :{dt_string}')
     speaker.runAndWait()
-    renew()
+    if report.has_been_called:
+        pass
+    else:
+        renew()
 
 
 def time():
@@ -148,7 +167,10 @@ def time():
     dt_string = now.strftime("%I:%M %p")
 
     speaker.say(f'The current time is: {dt_string}')
-    renew()
+    if report.has_been_called:
+        pass
+    else:
+        renew()
 
 
 def webpage():
@@ -167,7 +189,10 @@ def webpage():
         webbrowser.get(chrome_path).open(url)
 
         speaker.say(f"I have opened {recognized_text1}")
-    renew()
+    if report.has_been_called:
+        pass
+    else:
+        renew()
 
 
 def weather():
@@ -205,7 +230,10 @@ def weather():
              f'condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}'
     speaker.say(output)
     speaker.runAndWait()
-    renew()
+    if report.has_been_called:
+        pass
+    else:
+        renew()
 
 
 def system_info():
@@ -279,7 +307,10 @@ def news():
         speaker.say(article['title'])
         speaker.runAndWait()
 
-    renew()
+    if report.has_been_called:
+        pass
+    else:
+        renew()
 
 
 if __name__ == '__main__':
@@ -288,7 +319,7 @@ if __name__ == '__main__':
 
     speaker = audio.init()
     recognizer = sr.Recognizer()
-
+    report.has_been_called = False
     volume = speaker.getProperty("volume")
     logger.info(f' Current volume is: {volume}. Friday: 17. Jarvis: 7')
 
