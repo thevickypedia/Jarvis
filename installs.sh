@@ -9,3 +9,4 @@ python3 -m pip install pytemperature
 python3 -m pip install psutil
 python3 -m pip install wikipedia
 python3 -m pip install newsapi-python
+python3 -m pip install pyrh
