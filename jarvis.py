@@ -225,8 +225,8 @@ def weather():
     temp_feel_f = float(round(pytemperature.k2f(feels_like), 2))
     sunrise = (datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p"))
     sunset = (datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p"))
-    output = f'Current weather at {weather_location} is {temp_f}°F, with a high of {high}°F, and a low of {low}°F. ' \
-             f'It currenly feels Like {temp_feel_f}°F, and the current ' \
+    output = f'You are currently at {weather_location}. The weather at your location is {temp_f}°F, with a high of ' \
+             f'{high}°F, and a low of {low}°F. It currenly feels Like {temp_feel_f}°F, and the current ' \
              f'condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}'
     speaker.say(output)
     speaker.runAndWait()
