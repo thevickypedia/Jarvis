@@ -100,6 +100,9 @@ def renew():
                 news()
             elif 'report' in recognized_redo_:
                 report()
+            elif 'investment' in recognized_redo_ or 'stock' in recognized_redo_ or 'share' in recognized_redo_ or \
+                    'shares' in recognized_redo_:
+                robinhood()
             else:
                 speaker.say(f"I heard {recognized_redo_}, but I'm not configured to respond to it yet.")
                 speaker.runAndWait()
@@ -133,6 +136,10 @@ def conditions():
     elif 'report' in recognized_text or 'good morning' in recognized_text or 'good' in recognized_text or 'morning' in \
             recognized_text:
         report()
+
+    elif 'investment' in recognized_text or 'stock' in recognized_text or 'share' in recognized_text or 'shares' in \
+            recognized_text:
+        robinhood()
 
     else:
         speaker.say(f"I heard {recognized_text}, but I'm not configured to respond to it yet.")
@@ -311,6 +318,15 @@ def news():
         pass
     else:
         renew()
+
+
+def robinhood():
+    logger.info(' Getting your investment details.')
+    from robinhood import watcher
+    result = watcher()
+    speaker.say(result)
+    speaker.runAndWait()
+    renew()
 
 
 if __name__ == '__main__':
