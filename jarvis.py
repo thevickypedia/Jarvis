@@ -322,9 +322,17 @@ def news():
 
 def robinhood():
     logger.info(' Getting your investment details.')
+    from pyrh import Robinhood
+    u = os.getenv('user')
+    p = os.getenv('pass')
+    q = os.getenv('qr')
+    rh = Robinhood()
+    rh.login(username=u, password=p, qr_code=q)
+    raw_result = rh.positions()
+    result = raw_result['results']
     from robinhood import watcher
-    result = watcher()
-    speaker.say(result)
+    stock_value = watcher(rh, result)
+    speaker.say(stock_value)
     speaker.runAndWait()
     renew()
 

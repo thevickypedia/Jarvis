@@ -1,17 +1,7 @@
 import math
-from pyrh import Robinhood
-import os
-
-u = os.getenv('user')
-p = os.getenv('pass')
-q = os.getenv('qr')
-rh = Robinhood()
-rh.login(username=u, password=p, qr_code=q)
-raw_result = rh.positions()
-result = raw_result['results']
 
 
-def watcher():
+def watcher(rh, result):
     shares_total = []
     loss_total = []
     profit_total = []
