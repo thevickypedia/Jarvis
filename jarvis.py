@@ -101,11 +101,12 @@ def renew():
             elif 'report' in recognized_redo_:
                 report()
             elif 'investment' in recognized_redo_ or 'stock' in recognized_redo_ or 'share' in recognized_redo_ or \
-                    'shares' in recognized_redo_:
+                    'shares' in recognized_redo_ or 'portfolio' in recognized_redo_:
                 robinhood()
             else:
                 speaker.say(f"I heard {recognized_redo_}, but I'm not configured to respond to it yet.")
                 speaker.runAndWait()
+                renew()
 
 
 def conditions():
@@ -138,12 +139,13 @@ def conditions():
         report()
 
     elif 'investment' in recognized_text or 'stock' in recognized_text or 'share' in recognized_text or 'shares' in \
-            recognized_text:
+            recognized_text or 'portfolio' in recognized_text:
         robinhood()
 
     else:
         speaker.say(f"I heard {recognized_text}, but I'm not configured to respond to it yet.")
         speaker.runAndWait()
+        renew()
 
 
 def report():
