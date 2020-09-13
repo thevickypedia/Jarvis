@@ -103,6 +103,8 @@ def renew():
             elif 'investment' in recognized_redo_ or 'stock' in recognized_redo_ or 'share' in recognized_redo_ or \
                     'shares' in recognized_redo_ or 'portfolio' in recognized_redo_:
                 robinhood()
+            elif 'repeat' in recognized_redo_:
+                repeater()
             else:
                 speaker.say(f"I heard {recognized_redo_}, but I'm not configured to respond to it yet.")
                 speaker.runAndWait()
@@ -141,6 +143,9 @@ def conditions():
     elif 'investment' in recognized_text or 'stock' in recognized_text or 'share' in recognized_text or 'shares' in \
             recognized_text or 'portfolio' in recognized_text:
         robinhood()
+
+    elif 'repeat' in recognized_text:
+        repeater()
 
     else:
         speaker.say(f"I heard {recognized_text}, but I'm not configured to respond to it yet.")
@@ -336,6 +341,18 @@ def robinhood():
     stock_value = watcher(rh, result)
     speaker.say(stock_value)
     speaker.runAndWait()
+    renew()
+
+
+def repeater():
+    speaker.say("Please tell me what to repeat.")
+    speaker.runAndWait()
+    with sr.Microphone() as source:
+        logger.info(" Repeater: I'm listening...")
+        listener = recognizer.listen(source)
+        keyword = recognizer.recognize_google(listener)
+        speaker.say(f"I heard {keyword}")
+        speaker.runAndWait()
     renew()
 
 
