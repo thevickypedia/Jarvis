@@ -167,7 +167,7 @@ def date():
     now = datetime.now()
     dt_string = now.strftime("%A, %B %d, %Y")
 
-    speaker.say(f'Today is :{dt_string}')
+    speaker.say(f'Today is {dt_string}')
     speaker.runAndWait()
     if report.has_been_called:
         pass
