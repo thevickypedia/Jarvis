@@ -236,16 +236,16 @@ def weather():
     temperature = response['current']['temp']
     condition = response['current']['weather'][0]['description']
     feels_like = response['current']['feels_like']
-    maxi = (response['daily'][0]['temp']['max'])
-    high = float(round(pytemperature.k2f(maxi), 2))
-    mini = (response['daily'][0]['temp']['min'])
-    low = float(round(pytemperature.k2f(mini), 2))
-    temp_f = float(round(pytemperature.k2f(temperature), 2))
-    temp_feel_f = float(round(pytemperature.k2f(feels_like), 2))
+    maxi = response['daily'][0]['temp']['max']
+    high = int(round(pytemperature.k2f(maxi), 2))
+    mini = response['daily'][0]['temp']['min']
+    low = int(round(pytemperature.k2f(mini), 2))
+    temp_f = int(round(pytemperature.k2f(temperature), 2))
+    temp_feel_f = int(round(pytemperature.k2f(feels_like), 2))
     sunrise = (datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p"))
     sunset = (datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p"))
     output = f'You are currently at {weather_location}. The weather at your location is {temp_f}°F, with a high of ' \
-             f'{high}°F, and a low of {low}°F. It currenly feels Like {temp_feel_f}°F, and the current ' \
+             f'{high}, and a low of {low}. It currenly feels Like {temp_feel_f}°F, and the current ' \
              f'condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}'
     speaker.say(output)
     speaker.runAndWait()
