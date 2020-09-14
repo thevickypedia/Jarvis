@@ -312,10 +312,11 @@ def wikipedia():
 
 
 def news():
-    logger.info(' Getting news from fox news.')
+    source = 'fox'
+    logger.info(f' Getting news from {source} news.')
     from newsapi import NewsApiClient
     newsapi = NewsApiClient(api_key=os.getenv('news_api'))
-    all_articles = newsapi.get_top_headlines(sources='fox-news')
+    all_articles = newsapi.get_top_headlines(sources=f'{source}-news')
 
     for article in all_articles['articles']:
         speaker.say(article['title'])
