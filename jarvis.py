@@ -380,10 +380,12 @@ if __name__ == '__main__':
     speaker = audio.init()
     recognizer = sr.Recognizer()
     report.has_been_called = False
-    volume = speaker.getProperty("volume")
-    logger.info(f' Current volume is: {volume}. Friday: 17. Jarvis: 7')
+    # noinspection PyTypeChecker
+    volume = int(speaker.getProperty("volume")) * 100
+    logger.info(f' Current volume is: {volume}% Voice ID::Friday: 17 Jarvis: 7')
 
     voices = speaker.getProperty("voices")
+    # noinspection PyTypeChecker
     speaker.setProperty("voice", voices[7].id)
 
     recognized_text = initialize()
