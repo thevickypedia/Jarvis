@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 from datetime import datetime
 
 import pyttsx3 as audio
@@ -13,7 +14,7 @@ def initialize():
     speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. Whom am I speaking with?")
     speaker.runAndWait()
     with sr.Microphone() as source:
-        logger.info(" Initialized: I'm listening...")
+        sys.stdout.write("Initialized: I'm listening...")
         listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
         name = recognizer.recognize_google(listener)
         if str(os.getenv('key')) in str(name):
@@ -50,7 +51,7 @@ def initialize():
                 speaker.runAndWait()
     with sr.Microphone() as source_new:
         try:
-            logger.info(" Name addressed: I'm listening...")
+            sys.stdout.write("\rName addressed: I'm listening...")
             listener_new = recognizer.listen(source_new, timeout=3, phrase_time_limit=5)
             return recognizer.recognize_google(listener_new)
         except sr.UnknownValueError as u:
@@ -63,7 +64,7 @@ def renew():
     speaker.say("Is there anything else I can do for you?")
     speaker.runAndWait()
     with sr.Microphone() as sourcew:
-        logger.info(" Redo: I'm listening...")
+        sys.stdout.write("\rRedo: I'm listening...")
         listener2 = recognizer.listen(sourcew, timeout=5, phrase_time_limit=5)
         recognized_text2 = recognizer.recognize_google(listener2)
 
@@ -76,7 +77,7 @@ def renew():
             speaker.say("Go ahead, I'm listening")
             speaker.runAndWait()
 
-            logger.info(" Continue: I'm listening...")
+            sys.stdout.write("\rContinue: I'm listening...")
             listener_redo_ = recognizer.listen(sourcew, timeout=3, phrase_time_limit=5)
             recognized_redo_ = recognizer.recognize_google(listener_redo_)
             if 'date' in recognized_redo_:
@@ -157,7 +158,7 @@ def conditions():
 
 
 def report():
-    logger.info(" Starting today's report")
+    sys.stdout.write("\rStarting today's report")
     report.has_been_called = True
     date()
     time()
@@ -196,7 +197,7 @@ def webpage():
     speaker.say("Which website shall I open? Just say the name of the webpage.")
     speaker.runAndWait()
     with sr.Microphone() as sourcew:
-        logger.info(" Webpage: I'm listening...")
+        sys.stdout.write("\rWebpage: I'm listening...")
         listener1 = recognizer.listen(sourcew, timeout=3, phrase_time_limit=5)
         recognized_text1 = recognizer.recognize_google(listener1)
 
@@ -213,7 +214,7 @@ def webpage():
 
 
 def weather():
-    logger.info(' Getting your weather info')
+    sys.stdout.write('\rGetting your weather info')
     from urllib.request import urlopen
     import pytemperature
     import json
@@ -281,18 +282,18 @@ def wikipedia():
     speaker.say("Please tell the keyword.")
     speaker.runAndWait()
     with sr.Microphone() as sourcew:
-        logger.info(" Wikipedia: I'm listening...")
+        sys.stdout.write("\rWikipedia: I'm listening...")
         listener1 = recognizer.listen(sourcew, timeout=3, phrase_time_limit=5)
         keyword = recognizer.recognize_google(listener1)
 
-        logger.info(f' Getting your info from Wikipedia API for {keyword}')
+        sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
         try:
             data = wikipedia.summary(keyword)
         except wikipedia.exceptions.DisambiguationError as e:
             print(e)
             speaker.say('Your search has multiple results. Pick one displayed on your screen.')
             speaker.runAndWait()
-            logger.info(" Multiple Search: I'm listening...")
+            sys.stdout.write("\rMultiple Search: I'm listening...")
             listener1 = recognizer.listen(sourcew, timeout=3, phrase_time_limit=5)
             keyword1 = recognizer.recognize_google(listener1)
             data = wikipedia.summary(keyword1)
@@ -301,7 +302,7 @@ def wikipedia():
         speaker.runAndWait()
         speaker.say("Do you want me to continue?")
         speaker.runAndWait()
-        logger.info(" Continue Reading: I'm listening...")
+        sys.stdout.write("\rContinue Reading: I'm listening...")
         listener2 = recognizer.listen(sourcew, timeout=3, phrase_time_limit=5)
         response = recognizer.recognize_google(listener2)
 
@@ -316,7 +317,7 @@ def wikipedia():
 
 def news():
     source = 'fox'
-    logger.info(f' Getting news from {source} news.')
+    sys.stdout.write(f'\rGetting news from {source} news.')
     from newsapi import NewsApiClient
     newsapi = NewsApiClient(api_key=os.getenv('news_api'))
     all_articles = newsapi.get_top_headlines(sources=f'{source}-news')
@@ -332,11 +333,10 @@ def news():
 
 
 def apps():
-    logger.info(" Starting apps...")
     speaker.say("Which app shall I open? Please say the app name alone.")
     speaker.runAndWait()
     with sr.Microphone() as source:
-        logger.info(" Apps: I'm listening...")
+        sys.stdout.write("\rApps: I'm listening...")
         listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
         keyword = recognizer.recognize_google(listener)
         os.system(f"open /Applications/{keyword}.app")
@@ -345,7 +345,7 @@ def apps():
 
 
 def robinhood():
-    logger.info(' Getting your investment details.')
+    sys.stdout.write('\rGetting your investment details.')
     from pyrh import Robinhood
     u = os.getenv('user')
     p = os.getenv('pass')
@@ -365,7 +365,7 @@ def repeater():
     speaker.say("Please tell me what to repeat.")
     speaker.runAndWait()
     with sr.Microphone() as source:
-        logger.info(" Repeater: I'm listening...")
+        sys.stdout.write("\rRepeater: I'm listening...")
         listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
         keyword = recognizer.recognize_google(listener)
         speaker.say(f"I heard {keyword}")
