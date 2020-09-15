@@ -105,6 +105,7 @@ def renew():
             elif 'repeat' in recognized_redo_:
                 repeater()
             elif 'open' in recognized_redo_ or 'apps' in recognized_redo_ or 'app' in recognized_redo_:
+                apps.has_been_called = False
                 apps()
             else:
                 speaker.say(f"I heard {recognized_redo_}, but I'm not configured to respond to it yet.")
@@ -146,6 +147,7 @@ def conditions():
         robinhood()
 
     elif 'open' in recognized_text or 'apps' in recognized_text or 'app' in recognized_text:
+        apps.has_been_called = False
         apps()
 
     elif 'repeat' in recognized_text:
@@ -333,19 +335,23 @@ def news():
 
 
 def apps():
-    speaker.say("Which app shall I open? Please say the app name alone.")
-    speaker.runAndWait()
+    if apps.has_been_called:
+        speaker.say("Please repeat the app name alone.")
+    else:
+        speaker.say("Which app shall I open? Please say the app name alone.")
     with sr.Microphone() as source:
+        speaker.runAndWait()
         sys.stdout.write("\rApps: I'm listening...")
         listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
         keyword = recognizer.recognize_google(listener)
         app_status = os.system(f"open /Applications/{keyword}.app")
+        apps.has_been_called = True
     if app_status == 256:
         speaker.say(f"I did not find the app {keyword}.")
         apps()
     else:
         speaker.say(f"I have opened {keyword}")
-    renew()
+        renew()
 
 
 def robinhood():
