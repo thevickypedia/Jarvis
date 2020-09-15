@@ -12,9 +12,9 @@ def initialize():
     clock = now.strftime("%I")
     speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. Whom am I speaking with?")
     speaker.runAndWait()
-    logger.info(" Initialized: I'm listening...")
     with sr.Microphone() as source:
-        listener = recognizer.listen(source)
+        logger.info(" Initialized: I'm listening...")
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
         name = recognizer.recognize_google(listener)
         if str(os.getenv('key')) in str(name):
             if current == 'AM' and int(clock) <= 10:
@@ -51,7 +51,7 @@ def initialize():
     with sr.Microphone() as source_new:
         try:
             logger.info(" Name addressed: I'm listening...")
-            listener_new = recognizer.listen(source_new)
+            listener_new = recognizer.listen(source_new, timeout=3, phrase_time_limit=5)
             return recognizer.recognize_google(listener_new)
         except sr.UnknownValueError as u:
             logger.error(u)
@@ -60,12 +60,11 @@ def initialize():
 
 
 def renew():
+    speaker.say("Is there anything else I can do for you?")
+    speaker.runAndWait()
     with sr.Microphone() as sourcew:
-        speaker.say("Is there anything else I can do for you?")
-        speaker.runAndWait()
-
         logger.info(" Redo: I'm listening...")
-        listener2 = recognizer.listen(sourcew)
+        listener2 = recognizer.listen(sourcew, timeout=5, phrase_time_limit=5)
         recognized_text2 = recognizer.recognize_google(listener2)
 
         if 'no' in recognized_text2 or "that's all" in recognized_text2 or 'that is all' in recognized_text2 or \
@@ -73,13 +72,12 @@ def renew():
             speaker.say(exit_msg)
             speaker.runAndWait()
             exit()
-        elif 'yes' in recognized_text2 or 's' in recognized_text2 or 'Yes' in recognized_text2 or 'yes' \
-                in recognized_text2:
+        else:
             speaker.say("Go ahead, I'm listening")
             speaker.runAndWait()
 
             logger.info(" Continue: I'm listening...")
-            listener_redo_ = recognizer.listen(sourcew)
+            listener_redo_ = recognizer.listen(sourcew, timeout=3, phrase_time_limit=5)
             recognized_redo_ = recognizer.recognize_google(listener_redo_)
             if 'date' in recognized_redo_:
                 date()
@@ -194,12 +192,12 @@ def time():
 
 def webpage():
     import webbrowser
-    with sr.Microphone() as sourcew:
-        speaker.say("Which website shall I open? Just say the name of the webpage.")
-        speaker.runAndWait()
 
+    speaker.say("Which website shall I open? Just say the name of the webpage.")
+    speaker.runAndWait()
+    with sr.Microphone() as sourcew:
         logger.info(" Webpage: I'm listening...")
-        listener1 = recognizer.listen(sourcew)
+        listener1 = recognizer.listen(sourcew, timeout=3, phrase_time_limit=5)
         recognized_text1 = recognizer.recognize_google(listener1)
 
         url = f"https://{recognized_text1}.com"
@@ -284,7 +282,7 @@ def wikipedia():
     speaker.runAndWait()
     with sr.Microphone() as sourcew:
         logger.info(" Wikipedia: I'm listening...")
-        listener1 = recognizer.listen(sourcew)
+        listener1 = recognizer.listen(sourcew, timeout=3, phrase_time_limit=5)
         keyword = recognizer.recognize_google(listener1)
 
         logger.info(f' Getting your info from Wikipedia API for {keyword}')
@@ -295,7 +293,7 @@ def wikipedia():
             speaker.say('Your search has multiple results. Pick one displayed on your screen.')
             speaker.runAndWait()
             logger.info(" Multiple Search: I'm listening...")
-            listener1 = recognizer.listen(sourcew)
+            listener1 = recognizer.listen(sourcew, timeout=3, phrase_time_limit=5)
             keyword1 = recognizer.recognize_google(listener1)
             data = wikipedia.summary(keyword1)
 
@@ -304,7 +302,7 @@ def wikipedia():
         speaker.say("Do you want me to continue?")
         speaker.runAndWait()
         logger.info(" Continue Reading: I'm listening...")
-        listener2 = recognizer.listen(sourcew)
+        listener2 = recognizer.listen(sourcew, timeout=3, phrase_time_limit=5)
         response = recognizer.recognize_google(listener2)
 
         if 'yes' in response or 'continue' in response or 'proceed' in response or 'please' in response or 'yeah' in \
@@ -339,7 +337,7 @@ def apps():
     speaker.runAndWait()
     with sr.Microphone() as source:
         logger.info(" Apps: I'm listening...")
-        listener = recognizer.listen(source)
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
         keyword = recognizer.recognize_google(listener)
         os.system(f"open /Applications/{keyword}.app")
     speaker.say(f"I have opened {keyword}")
@@ -368,7 +366,7 @@ def repeater():
     speaker.runAndWait()
     with sr.Microphone() as source:
         logger.info(" Repeater: I'm listening...")
-        listener = recognizer.listen(source)
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
         keyword = recognizer.recognize_google(listener)
         speaker.say(f"I heard {keyword}")
         speaker.runAndWait()
