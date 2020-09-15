@@ -339,8 +339,12 @@ def apps():
         sys.stdout.write("\rApps: I'm listening...")
         listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
         keyword = recognizer.recognize_google(listener)
-        os.system(f"open /Applications/{keyword}.app")
-    speaker.say(f"I have opened {keyword}")
+        app_status = os.system(f"open /Applications/{keyword}.app")
+    if app_status == 256:
+        speaker.say(f"I did not find the app {keyword}.")
+        apps()
+    else:
+        speaker.say(f"I have opened {keyword}")
     renew()
 
 
