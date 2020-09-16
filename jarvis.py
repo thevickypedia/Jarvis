@@ -1,5 +1,6 @@
 import logging
 import os
+import platform
 import sys
 from datetime import datetime
 
@@ -11,8 +12,6 @@ def initialize():
     now = datetime.now()
     current = now.strftime("%p")
     clock = now.strftime("%I")
-    speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. Whom am I speaking with?")
-    speaker.runAndWait()
     with sr.Microphone() as source:
         sys.stdout.write("Initialized: I'm listening...")
         listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
@@ -203,16 +202,19 @@ def webpage():
         listener1 = recognizer.listen(sourcew, timeout=3, phrase_time_limit=5)
         recognized_text1 = recognizer.recognize_google(listener1)
 
-        url = f"https://{recognized_text1}.com"
+    url = f"https://{recognized_text1}.com"
 
+    if operating_system == 'Darwin':
         chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
         webbrowser.get(chrome_path).open(url)
 
-        speaker.say(f"I have opened {recognized_text1}")
-    if report.has_been_called:
-        pass
-    else:
-        renew()
+    elif operating_system == 'Windows':
+        chrome_path = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+        webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
+        webbrowser.get('chrome').open(url)
+
+    speaker.say(f"I have opened {recognized_text1}")
+    renew()
 
 
 def weather():
@@ -335,6 +337,8 @@ def news():
 
 
 def apps():
+    global operating_system
+
     if apps.has_been_called:
         speaker.say("Please repeat the app name alone.")
     else:
@@ -344,8 +348,7 @@ def apps():
         sys.stdout.write("\rApps: I'm listening...")
         listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
         keyword = recognizer.recognize_google(listener)
-    import platform
-    operating_system = platform.system()
+
     if operating_system == 'Darwin':
         app_status = os.system(f"open /Applications/{keyword}.app")
         apps.has_been_called = True
@@ -399,13 +402,23 @@ if __name__ == '__main__':
     report.has_been_called = False
     # noinspection PyTypeChecker
     volume = int(speaker.getProperty("volume")) * 100
-    logger.info(f' Current volume is: {volume}% Voice ID::Friday: 17 Jarvis: 7')
+    logger.info(f' Current volume is: {volume}% Voice ID::Friday: 1/17 Jarvis: 7')
+
+    operating_system = platform.system()
 
     voices = speaker.getProperty("voices")
-    # noinspection PyTypeChecker
-    speaker.setProperty("voice", voices[1].id)
-    webpage()
-    # recognized_text = initialize()
-    # exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
-    #
-    # conditions()
+
+    if operating_system == 'Darwin':
+        # noinspection PyTypeChecker
+        speaker.setProperty("voice", voices[7].id)
+        speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. Whom am I speaking with?")
+        speaker.runAndWait()
+    elif operating_system == 'Windows':
+        # noinspection PyTypeChecker
+        speaker.setProperty("voice", voices[1].id)
+        speaker.say("Hi, I'm Friday. Vicky's virtual assistant. Whom am I speaking with?")
+        speaker.runAndWait()
+    recognized_text = initialize()
+    exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
+
+    conditions()
