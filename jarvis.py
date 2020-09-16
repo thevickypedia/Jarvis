@@ -113,6 +113,8 @@ def renew():
 
 
 def conditions():
+    recognized_text = initialize()
+
     if 'date' in recognized_text:
         date()
 
@@ -418,5 +420,6 @@ if __name__ == '__main__':
         speaker.setProperty("voice", voices[1].id)
         speaker.say("Hi, I'm Friday. Vicky's virtual assistant. Whom am I speaking with?")
         speaker.runAndWait()
-    recognized_text = initialize()
+
     exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
+    conditions()
