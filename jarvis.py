@@ -386,7 +386,7 @@ def repeater():
     speaker.runAndWait()
     with sr.Microphone() as source:
         sys.stdout.write("\rRepeater: I'm listening...")
-        listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=15)
         keyword = recognizer.recognize_google(listener)
         speaker.say(f"I heard {keyword}")
         speaker.runAndWait()
@@ -420,5 +420,3 @@ if __name__ == '__main__':
         speaker.runAndWait()
     recognized_text = initialize()
     exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
-
-    conditions()
