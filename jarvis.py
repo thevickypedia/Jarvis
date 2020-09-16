@@ -88,8 +88,8 @@ def renew():
                 weather()
             elif 'system' in recognized_redo_ or 'configuration' in recognized_redo_:
                 system_info()
-            elif 'website' in recognized_redo_ or '.com' in recognized_redo_ or '.in' in recognized_redo_ or \
-                    'webpage' in recognized_redo_ or 'web page' in recognized_redo_ or '.co.uk' in recognized_redo_:
+            elif 'website' in recognized_redo_ or '.com' in recognized_redo_ or 'webpage' in recognized_redo_ or \
+                    'web page' in recognized_redo_:
                 webpage()
             elif 'fact' in recognized_redo_ or 'info' in recognized_redo_ or \
                     'information' in recognized_redo_ or 'wikipedia' in recognized_redo_ or 'facts' in \
@@ -126,8 +126,8 @@ def conditions():
     elif 'system' in recognized_text or 'configuration' in recognized_text:
         system_info()
 
-    elif 'website' in recognized_text or '.com' in recognized_text or '.in' in recognized_text or 'webpage' in \
-            recognized_text or 'web page' in recognized_text or '.co.uk' in recognized_text:
+    elif 'website' in recognized_text or '.com' in recognized_text or 'webpage' in \
+            recognized_text or 'web page' in recognized_text:
         webpage()
 
     elif 'fact' in recognized_text or 'info' in recognized_text or 'information' in \
