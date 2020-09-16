@@ -344,13 +344,20 @@ def apps():
         sys.stdout.write("\rApps: I'm listening...")
         listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
         keyword = recognizer.recognize_google(listener)
+    import platform
+    operating_system = platform.system()
+    if operating_system == 'Darwin':
         app_status = os.system(f"open /Applications/{keyword}.app")
         apps.has_been_called = True
-    if app_status == 256:
-        speaker.say(f"I did not find the app {keyword}.")
-        apps()
+        if app_status == 256:
+            speaker.say(f"I did not find the app {keyword}.")
+            apps()
+        else:
+            speaker.say(f"I have opened {keyword}")
+            renew()
     else:
-        speaker.say(f"I have opened {keyword}")
+        speaker.say(f"You're running a {operating_system} operating system. Opening apps on a {operating_system} "
+                    f"machine is too complicated for me.")
         renew()
 
 
@@ -396,9 +403,9 @@ if __name__ == '__main__':
 
     voices = speaker.getProperty("voices")
     # noinspection PyTypeChecker
-    speaker.setProperty("voice", voices[7].id)
-
-    recognized_text = initialize()
-    exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
-
-    conditions()
+    speaker.setProperty("voice", voices[1].id)
+    webpage()
+    # recognized_text = initialize()
+    # exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
+    #
+    # conditions()
