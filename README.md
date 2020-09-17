@@ -9,3 +9,9 @@ IronMan's Jarvis with python
 
 ### Feature(s) Implementation:
 Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, current and upcoming features.
+
+## License & copyright
+
+&copy; Vignesh Sivanandha Rao
+
+Licensed under the [MIT License](LICENSE)
