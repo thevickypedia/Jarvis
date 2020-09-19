@@ -123,7 +123,8 @@ def renew():
                 chatBot()
 
             else:
-                speaker.say(f"I heard {recognized_redo_}, but that's out of my areas of expertise.")
+                speaker.say(f"That's out of my areas of expertise. However, I think I "
+                            f"can still help you look that up.")
                 speaker.runAndWait()
 
                 search = str(recognized_redo_).replace(' ', '+')
@@ -188,7 +189,8 @@ def conditions():
         chatBot()
 
     else:
-        speaker.say(f"I heard {recognized_text}, but that's out of my areas of expertise.")
+        speaker.say(f"That's out of my areas of expertise. However, I think I can "
+                    f"still help you look that up.")
         speaker.runAndWait()
 
         search = str(recognized_text).replace(' ', '+')
