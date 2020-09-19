@@ -422,6 +422,8 @@ def chatBot():
         keyword = recognizer.recognize_google(listener)
         if 'exit' in keyword:
             speaker.say('Let me remove the training modules.')
+            os.system('rm db*')
+            os.system(f'rm -rf {file2}')
             speaker.runAndWait()
             renew()
         else:
