@@ -6,6 +6,7 @@ from datetime import datetime
 
 import pyttsx3 as audio
 import speech_recognition as sr
+import webbrowser
 
 
 def initialize():
@@ -79,35 +80,48 @@ def renew():
             sys.stdout.write("\rContinue: I'm listening...")
             listener_redo_ = recognizer.listen(sourcew, timeout=3, phrase_time_limit=5)
             recognized_redo_ = recognizer.recognize_google(listener_redo_)
+
             if 'date' in recognized_redo_:
                 date()
+
             elif 'time' in recognized_redo_:
                 time()
+
             elif 'weather' in recognized_redo_ or 'temperature' in recognized_redo_:
                 weather()
+
             elif 'system' in recognized_redo_ or 'configuration' in recognized_redo_:
                 system_info()
+
             elif 'website' in recognized_redo_ or '.com' in recognized_redo_ or 'webpage' in recognized_redo_ or \
                     'web page' in recognized_redo_:
                 webpage()
+
             elif 'fact' in recognized_redo_ or 'info' in recognized_redo_ or \
                     'information' in recognized_redo_ or 'wikipedia' in recognized_redo_ or 'facts' in \
                     recognized_redo_ or 'Wikipedia' in recognized_redo_:
                 wikipedia()
+
             elif 'news' in recognized_redo_ or 'latest' in recognized_redo_:
                 news()
-            elif 'report' in recognized_redo_:
+
+            elif 'report' in recognized_redo_ or 'good morning' in recognized_redo_:
                 report()
+
             elif 'investment' in recognized_redo_ or 'stock' in recognized_redo_ or 'share' in recognized_redo_ or \
                     'shares' in recognized_redo_ or 'portfolio' in recognized_redo_:
                 robinhood()
+
             elif 'repeat' in recognized_redo_:
                 repeater()
+
             elif 'open' in recognized_redo_ or 'apps' in recognized_redo_ or 'app' in recognized_redo_:
                 apps.has_been_called = False
                 apps()
+
             elif 'chat' in recognized_redo_ or 'bot' in recognized_redo_:
                 chatBot()
+
             else:
                 speaker.say(f"I heard {recognized_redo_}, but I'm not configured to respond to it yet.")
                 speaker.runAndWait()
@@ -141,8 +155,7 @@ def conditions():
     elif 'news' in recognized_text or 'latest' in recognized_text:
         news()
 
-    elif 'report' in recognized_text or 'good morning' in recognized_text or 'good' in recognized_text or 'morning' in \
-            recognized_text:
+    elif 'report' in recognized_text or 'good morning' in recognized_text:
         report()
 
     elif 'investment' in recognized_text or 'stock' in recognized_text or 'share' in recognized_text or 'shares' in \
@@ -200,8 +213,6 @@ def time():
 
 
 def webpage():
-    import webbrowser
-
     speaker.say("Which website shall I open? Just say the name of the webpage.")
     speaker.runAndWait()
     with sr.Microphone() as sourcew:
