@@ -2,11 +2,11 @@ import logging
 import os
 import platform
 import sys
+import webbrowser
 from datetime import datetime
 
 import pyttsx3 as audio
 import speech_recognition as sr
-import webbrowser
 
 
 def initialize():
@@ -123,8 +123,23 @@ def renew():
                 chatBot()
 
             else:
-                speaker.say(f"I heard {recognized_redo_}, but I'm not configured to respond to it yet.")
+                speaker.say(f"I heard {recognized_redo_}, but that's out of my areas of expertise.")
                 speaker.runAndWait()
+
+                search = str(recognized_redo_).replace(' ', '+')
+
+                url = f"https://www.google.com/search?q={search}"
+
+                if operating_system == 'Darwin':
+                    chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
+                    webbrowser.get(chrome_path).open(url)
+
+                elif operating_system == 'Windows':
+                    chrome_path = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+                    webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
+                    webbrowser.get('chrome').open(url)
+
+                speaker.say(f"I have opened a google search for, {recognized_redo_}")
                 renew()
 
 
@@ -173,8 +188,23 @@ def conditions():
         chatBot()
 
     else:
-        speaker.say(f"I heard {recognized_text}, but I'm not configured to respond to it yet.")
+        speaker.say(f"I heard {recognized_text}, but that's out of my areas of expertise.")
         speaker.runAndWait()
+
+        search = str(recognized_text).replace(' ', '+')
+
+        url = f"https://www.google.com/search?q={search}"
+
+        if operating_system == 'Darwin':
+            chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
+            webbrowser.get(chrome_path).open(url)
+
+        elif operating_system == 'Windows':
+            chrome_path = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+            webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
+            webbrowser.get('chrome').open(url)
+
+        speaker.say(f"I have opened a google search for, {recognized_text}")
         renew()
 
 
