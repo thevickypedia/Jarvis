@@ -420,14 +420,19 @@ def chatBot():
         sys.stdout.write("\rChatBot: I'm listening...")
         listener = recognizer.listen(source, timeout=5, phrase_time_limit=5)
         keyword = recognizer.recognize_google(listener)
-        response = bot.get_response(keyword)
-        if response == 'What is AI?':
-            speaker.say(f'The chat bot is unable to get a response for the phrase, {keyword}. Try something else.')
+        if 'exit' in keyword:
+            speaker.say('Let me remove the training modules.')
             speaker.runAndWait()
+            renew()
         else:
-            speaker.say(f'{response}')
-            speaker.runAndWait()
-        chatBot()
+            response = bot.get_response(keyword)
+            if response == 'What is AI?':
+                speaker.say(f'The chat bot is unable to get a response for the phrase, {keyword}. Try something else.')
+                speaker.runAndWait()
+            else:
+                speaker.say(f'{response}')
+                speaker.runAndWait()
+            chatBot()
 
 
 if __name__ == '__main__':
