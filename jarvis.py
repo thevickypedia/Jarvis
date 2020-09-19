@@ -413,8 +413,12 @@ def chatBot():
         listener = recognizer.listen(source, timeout=5, phrase_time_limit=5)
         keyword = recognizer.recognize_google(listener)
         response = bot.get_response(keyword)
-        speaker.say(f'{response}')
-        speaker.runAndWait()
+        if response == 'What is AI?':
+            speaker.say(f'The chat bot is unable to get a response for the phrase, {keyword}. Try something else.')
+            speaker.runAndWait()
+        else:
+            speaker.say(f'{response}')
+            speaker.runAndWait()
         chatBot()
 
 
