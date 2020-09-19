@@ -106,6 +106,8 @@ def renew():
             elif 'open' in recognized_redo_ or 'apps' in recognized_redo_ or 'app' in recognized_redo_:
                 apps.has_been_called = False
                 apps()
+            elif 'chat' in recognized_redo_ or 'bot' in recognized_redo_:
+                chatBot()
             else:
                 speaker.say(f"I heard {recognized_redo_}, but I'm not configured to respond to it yet.")
                 speaker.runAndWait()
@@ -153,6 +155,9 @@ def conditions():
 
     elif 'repeat' in recognized_text:
         repeater()
+
+    elif 'chat' in recognized_text or 'bot' in recognized_text:
+        chatBot()
 
     else:
         speaker.say(f"I heard {recognized_text}, but I'm not configured to respond to it yet.")
@@ -393,6 +398,22 @@ def repeater():
         speaker.say(f"I heard {keyword}")
         speaker.runAndWait()
     renew()
+
+
+def chatBot():
+    from chatterbot import ChatBot
+    from chatterbot.trainers import ChatterBotCorpusTrainer
+    bot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
+    trainer = ChatterBotCorpusTrainer(bot)
+    trainer.train("chatterbot.corpus.english")
+    with sr.Microphone() as source:
+        sys.stdout.write("\rChatBot: I'm listening...")
+        listener = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+        keyword = recognizer.recognize_google(listener)
+        response = bot.get_response(keyword)
+        speaker.say(f'{response}')
+        speaker.runAndWait()
+        chatBot()
 
 
 if __name__ == '__main__':
