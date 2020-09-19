@@ -401,13 +401,21 @@ def repeater():
 
 
 def chatBot():
-    from chatterbot import ChatBot
-    from chatterbot.trainers import ChatterBotCorpusTrainer
-    bot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
-    trainer = ChatterBotCorpusTrainer(bot)
-    trainer.train("chatterbot.corpus.english")
-    speaker.say('The chatbot is ready. You may start a conversation now.')
-    speaker.runAndWait()
+    file1, file2 = 'db.sqlite3', f"/Users/{os.environ.get('USER')}/nltk_data"
+    if os.path.isfile(file1) and os.path.isdir(file2):
+        from chatterbot import ChatBot
+        from chatterbot.trainers import ChatterBotCorpusTrainer
+        bot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
+    else:
+        speaker.say('Give me a moment while I train the module.')
+        speaker.runAndWait()
+        from chatterbot import ChatBot
+        from chatterbot.trainers import ChatterBotCorpusTrainer
+        bot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
+        trainer = ChatterBotCorpusTrainer(bot)
+        trainer.train("chatterbot.corpus.english")
+        speaker.say('The chatbot is ready. You may start a conversation now.')
+        speaker.runAndWait()
     with sr.Microphone() as source:
         sys.stdout.write("\rChatBot: I'm listening...")
         listener = recognizer.listen(source, timeout=5, phrase_time_limit=5)
