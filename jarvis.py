@@ -406,6 +406,8 @@ def chatBot():
     bot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
     trainer = ChatterBotCorpusTrainer(bot)
     trainer.train("chatterbot.corpus.english")
+    speaker.say('The chatbot is ready. You may start a conversation now.')
+    speaker.runAndWait()
     with sr.Microphone() as source:
         sys.stdout.write("\rChatBot: I'm listening...")
         listener = recognizer.listen(source, timeout=5, phrase_time_limit=5)
