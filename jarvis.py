@@ -80,72 +80,10 @@ def renew():
             sys.stdout.write("\rContinue: I'm listening...")
             listener_redo_ = recognizer.listen(sourcew, timeout=3, phrase_time_limit=5)
             recognized_redo_ = recognizer.recognize_google(listener_redo_)
-
-            if 'date' in recognized_redo_:
-                date()
-
-            elif 'time' in recognized_redo_:
-                time()
-
-            elif 'weather' in recognized_redo_ or 'temperature' in recognized_redo_:
-                weather()
-
-            elif 'system' in recognized_redo_ or 'configuration' in recognized_redo_:
-                system_info()
-
-            elif 'website' in recognized_redo_ or '.com' in recognized_redo_ or 'webpage' in recognized_redo_ or \
-                    'web page' in recognized_redo_:
-                webpage()
-
-            elif 'fact' in recognized_redo_ or 'info' in recognized_redo_ or \
-                    'information' in recognized_redo_ or 'wikipedia' in recognized_redo_ or 'facts' in \
-                    recognized_redo_ or 'Wikipedia' in recognized_redo_:
-                wikipedia()
-
-            elif 'news' in recognized_redo_ or 'latest' in recognized_redo_:
-                news()
-
-            elif 'report' in recognized_redo_ or 'good morning' in recognized_redo_:
-                report()
-
-            elif 'investment' in recognized_redo_ or 'stock' in recognized_redo_ or 'share' in recognized_redo_ or \
-                    'shares' in recognized_redo_ or 'portfolio' in recognized_redo_:
-                robinhood()
-
-            elif 'repeat' in recognized_redo_:
-                repeater()
-
-            elif 'open' in recognized_redo_ or 'apps' in recognized_redo_ or 'app' in recognized_redo_:
-                apps.has_been_called = False
-                apps()
-
-            elif 'chat' in recognized_redo_ or 'bot' in recognized_redo_:
-                chatBot()
-
-            else:
-                speaker.say(f"I heard {recognized_redo_}, which is not within my area of expertise. However, I think I "
-                            f"can still help you look that up.")
-                speaker.runAndWait()
-
-                search = str(recognized_redo_).replace(' ', '+')
-
-                url = f"https://www.google.com/search?q={search}"
-
-                if operating_system == 'Darwin':
-                    chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
-                    webbrowser.get(chrome_path).open(url)
-
-                elif operating_system == 'Windows':
-                    chrome_path = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-                    webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
-                    webbrowser.get('chrome').open(url)
-
-                speaker.say("I have opened a google search for your request.")
-                renew()
+            conditions(recognized_redo_)
 
 
-def conditions():
-    recognized_text = initialize()
+def conditions(recognized_text):
 
     if 'date' in recognized_text:
         date()
@@ -515,4 +453,6 @@ if __name__ == '__main__':
         speaker.runAndWait()
 
     exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
-    conditions()
+
+    kick_off = initialize()
+    conditions(kick_off)
