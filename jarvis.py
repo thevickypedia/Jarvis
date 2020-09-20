@@ -140,7 +140,7 @@ def renew():
                     webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
                     webbrowser.get('chrome').open(url)
 
-                speaker.say(f"I have opened a google search for, {recognized_redo_}")
+                speaker.say("I have opened a google search for your request.")
                 renew()
 
 
@@ -206,7 +206,7 @@ def conditions():
             webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
             webbrowser.get('chrome').open(url)
 
-        speaker.say(f"I have opened a google search for, {recognized_text}")
+        speaker.say("I have opened a google search for your request.")
         renew()
 
 
