@@ -123,7 +123,7 @@ def renew():
                 chatBot()
 
             else:
-                speaker.say(f"That's out of my areas of expertise. However, I think I "
+                speaker.say(f"I heard {recognized_redo_}, which is not within my area of expertise. However, I think I "
                             f"can still help you look that up.")
                 speaker.runAndWait()
 
@@ -189,7 +189,7 @@ def conditions():
         chatBot()
 
     else:
-        speaker.say(f"That's out of my areas of expertise. However, I think I can "
+        speaker.say(f"I heard {recognized_text}, which is not within my area of expertise. However, I think I can "
                     f"still help you look that up.")
         speaker.runAndWait()
 
@@ -398,6 +398,9 @@ def apps():
         sys.stdout.write("\rApps: I'm listening...")
         listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
         keyword = recognizer.recognize_google(listener)
+
+    if 'exit' in keyword:
+        renew()
 
     if operating_system == 'Darwin':
         app_status = os.system(f"open /Applications/{keyword}.app")
