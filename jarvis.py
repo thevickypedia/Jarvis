@@ -389,6 +389,11 @@ def news():
 def apps():
     global operating_system
 
+    if operating_system == 'Windows':
+        speaker.say("You're running a Windows operating system. Opening apps on a Windows "
+                    "machine is too complicated for me.")
+        renew()
+
     if apps.has_been_called:
         speaker.say("Please repeat the app name alone.")
     else:
@@ -402,18 +407,13 @@ def apps():
     if 'exit' in keyword:
         renew()
 
-    if operating_system == 'Darwin':
-        app_status = os.system(f"open /Applications/{keyword}.app")
-        apps.has_been_called = True
-        if app_status == 256:
-            speaker.say(f"I did not find the app {keyword}.")
-            apps()
-        else:
-            speaker.say(f"I have opened {keyword}")
-            renew()
+    app_status = os.system(f"open /Applications/{keyword}.app")
+    apps.has_been_called = True
+    if app_status == 256:
+        speaker.say(f"I did not find the app {keyword}.")
+        apps()
     else:
-        speaker.say(f"You're running a {operating_system} operating system. Opening apps on a {operating_system} "
-                    f"machine is too complicated for me.")
+        speaker.say(f"I have opened {keyword}")
         renew()
 
 
@@ -447,6 +447,11 @@ def repeater():
 
 
 def chatBot():
+    if operating_system == 'Windows':
+        speaker.say('Seems like you are running a Windows operating system. Requirements have version conflicting '
+                    'installations. So, currently chat bot is available only for mac OS.')
+        renew()
+
     file1, file2 = 'db.sqlite3', f"/Users/{os.environ.get('USER')}/nltk_data"
     if os.path.isfile(file1) and os.path.isdir(file2):
         from chatterbot import ChatBot
