@@ -66,17 +66,24 @@ def initialize():
             sys.stdout.write("\rName addressed: I'm listening...")
             listener_new = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             return recognizer.recognize_google(listener_new)
-        except (sr.UnknownValueError, sr.RequestError) as u:
+        except (sr.UnknownValueError, sr.RequestError):
             speaker.say("I didn't quite get that. Try again.")
-            renew()
-        except sr.WaitTimeoutError as t:
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee.")
-            renew()
+            dummy.has_been_called = True
+        except sr.WaitTimeoutError:
+            dummy.has_been_called = 7
+            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee!")
+        renew()
 
 
 def renew():
-    speaker.say("Is there anything else I can do for you?")
+    if dummy.has_been_called == 7:
+        speaker.say('Or ask me what to do?')
+    elif dummy.has_been_called:
+        speaker.say('What can I do for you?')
+    else:
+        speaker.say("Is there anything else I can do for you?")
     speaker.runAndWait()
+    dummy.has_been_called = False
     with sr.Microphone() as source:
         try:
             sys.stdout.write("\rRedo: I'm listening...")
@@ -509,13 +516,17 @@ def chatBot():
             chatBot()
 
 
+def dummy():
+    return None
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(' Jarvis')
 
     speaker = audio.init()
     recognizer = sr.Recognizer()
-    report.has_been_called = False
+    report.has_been_called, dummy.has_been_called = False, False
     # noinspection PyTypeChecker
     volume = int(speaker.getProperty("volume")) * 100
     logger.info(f' Current volume is: {volume}% Voice ID::Friday: 1/17 Jarvis: 7')
