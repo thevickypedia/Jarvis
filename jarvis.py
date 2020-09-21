@@ -127,7 +127,7 @@ def conditions(recognized_text):
         chatBot()
 
     else:
-        speaker.say(f"I heard {recognized_text}, which is not within my area of expertise. However, I think I can "
+        speaker.say(f"I heard {recognized_text}, which is not within my area of expertise. However, I can "
                     f"still help you look that up.")
         speaker.runAndWait()
 
@@ -135,17 +135,33 @@ def conditions(recognized_text):
 
         url = f"https://www.google.com/search?q={search}"
 
-        if operating_system == 'Darwin':
-            chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
-            webbrowser.get(chrome_path).open(url)
+        from selenium import webdriver, common
+        from chromedriver_py import binary_path
 
-        elif operating_system == 'Windows':
-            chrome_path = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-            webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
-            webbrowser.get('chrome').open(url)
+        browser = webdriver.Chrome(executable_path=binary_path)
+        try:
+            browser.get(url)
+            get_element = browser.find_elements_by_css_selector("div[class='PZPZlf hb8SAc']")
+            browser.close()
+            text = get_element[0].text
+            speaker.say(text.replace('Description\n', '').replace('Wikipedia', ''))
+            renew()
+        except:
+            try:
+                browser.close()
+            except common.exceptions.InvalidSessionIdException:
+                pass
+            if operating_system == 'Darwin':
+                chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
+                webbrowser.get(chrome_path).open(url)
 
-        speaker.say("I have opened a google search for your request.")
-        renew()
+            elif operating_system == 'Windows':
+                chrome_path = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+                webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
+                webbrowser.get('chrome').open(url)
+
+            speaker.say("I have opened a google search for your request.")
+            renew()
 
 
 def report():
