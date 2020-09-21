@@ -87,7 +87,7 @@ def renew():
     with sr.Microphone() as source:
         try:
             sys.stdout.write("\rRedo: I'm listening...")
-            listener2 = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+            listener2 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             recognized_text2 = recognizer.recognize_google(listener2)
         except (sr.UnknownValueError, sr.RequestError):
             speaker.say("I didn't quite get that. Try again.")
@@ -118,10 +118,10 @@ def renew():
 
 def conditions(recognized_text):
 
-    if 'date' in recognized_text:
+    if "today's date" in recognized_text:
         date()
 
-    elif 'time' in recognized_text:
+    elif 'current time' in recognized_text:
         time()
 
     elif 'weather' in recognized_text or 'temperature' in recognized_text:
@@ -149,7 +149,7 @@ def conditions(recognized_text):
             recognized_text or 'portfolio' in recognized_text:
         robinhood()
 
-    elif 'open' in recognized_text or 'apps' in recognized_text or 'app' in recognized_text:
+    elif 'launch' in recognized_text:
         apps.has_been_called = False
         apps()
 
@@ -160,8 +160,7 @@ def conditions(recognized_text):
         chatBot()
 
     else:
-        speaker.say(f"I heard {recognized_text}, which is not within my area of expertise. However, I can "
-                    f"still help you look that up.")
+        speaker.say(f"I heard {recognized_text}. Let me look that up.")
         speaker.runAndWait()
 
         search = str(recognized_text).replace(' ', '+')
@@ -394,6 +393,8 @@ def news():
 
 
 def apps():
+    import subprocess
+    import re
     global operating_system
 
     if operating_system == 'Windows':
@@ -421,7 +422,14 @@ def apps():
     if 'exit' in keyword:
         renew()
 
-    app_status = os.system(f"open /Applications/{keyword}.app")
+    v = (subprocess.check_output("ls /Applications/", shell=True))
+    apps_ = (v.decode('utf-8').split('\n'))
+
+    for app in apps_:
+        if re.search(keyword, app, flags=re.IGNORECASE) is not None:
+            keyword = app
+
+    app_status = os.system(f"open /Applications/'{keyword}'")
     apps.has_been_called = True
     if app_status == 256:
         speaker.say(f"I did not find the app {keyword}.")
