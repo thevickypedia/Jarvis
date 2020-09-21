@@ -70,8 +70,8 @@ def initialize():
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
         except sr.WaitTimeoutError:
+            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee.")
             dummy.has_been_called = 7
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee!")
         renew()
 
 
@@ -91,9 +91,11 @@ def renew():
             recognized_text2 = recognizer.recognize_google(listener2)
         except (sr.UnknownValueError, sr.RequestError):
             speaker.say("I didn't quite get that. Try again.")
+            dummy.has_been_called = True
             renew()
         except sr.WaitTimeoutError:
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee.")
+            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee!")
+            dummy.has_been_called = 7
             renew()
         if 'no' in recognized_text2 or "that's all" in recognized_text2 or 'that is all' in recognized_text2 or \
                 "that's it" in recognized_text2 or 'that is it' in recognized_text2:
@@ -110,9 +112,11 @@ def renew():
                 conditions(recognized_redo_)
             except (sr.UnknownValueError, sr.RequestError):
                 speaker.say("I didn't quite get that. Try again.")
+                dummy.has_been_called = True
                 renew()
             except sr.WaitTimeoutError:
-                speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee.")
+                speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee!")
+                dummy.has_been_called = 7
                 renew()
 
 
@@ -362,9 +366,11 @@ def wiki_pedia():
             response = recognizer.recognize_google(listener2)
         except (sr.UnknownValueError, sr.RequestError):
             speaker.say("I didn't quite get that. Try again.")
+            dummy.has_been_called = True
             renew()
         except sr.WaitTimeoutError:
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee.")
+            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee!")
+            dummy.has_been_called = 7
             renew()
         if 'yes' in response or 'continue' in response or 'proceed' in response or 'please' in response or 'yeah' in \
                 response:
