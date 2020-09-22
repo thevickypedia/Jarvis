@@ -118,7 +118,6 @@ def renew():
 
 
 def conditions(recognized_text):
-
     if "today's date" in recognized_text:
         date()
 
@@ -371,45 +370,72 @@ def apps():
     global operating_system
 
     if operating_system == 'Windows':
-        speaker.say("You're running a Windows operating system. Opening apps on a Windows "
-                    "machine is too complicated for me.")
-        renew()
+        if not apps.has_been_called:
+            speaker.say("Opening third party apps on a Windows machine is complicated. Please tell me a system app "
+                        "that I could try opening.")
+            speaker.runAndWait()
+        apps.has_been_called = True
+        with sr.Microphone() as source:
+            try:
+                sys.stdout.write("\rApps: I'm listening...")
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                keyword = recognizer.recognize_google(listener)
+                if 'exit' in keyword or 'quit' in keyword:
+                    renew()
+                status = os.system(f'start {keyword}')
+                if status == 0:
+                    speaker.say(f'I have opened {keyword} application')
+                    renew()
+                else:
+                    speaker.say(f"I wasn't able to find the app {keyword}. Try again. Please tell me an app name.")
+                    speaker.runAndWait()
+                    apps()
+            except (sr.UnknownValueError, sr.RequestError):
+                speaker.say("I didn't quite get that. Try again. Please tell me an app name.")
+                speaker.runAndWait()
+                apps()
+            except sr.WaitTimeoutError:
+                speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. "
+                            "Or, please tell me an app name")
+                speaker.runAndWait()
+                apps()
 
-    if apps.has_been_called:
-        speaker.say("Please repeat the app name alone.")
-    else:
-        speaker.say("Which app shall I open? Please say the app name alone.")
-    speaker.runAndWait()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rApps: I'm listening...")
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            keyword = recognizer.recognize_google(listener)
-        except (sr.UnknownValueError, sr.RequestError):
-            speaker.say("I didn't quite get that. Try again.")
+    elif operating_system == 'Darwin':
+        if apps.has_been_called:
+            speaker.say("Please repeat the app name alone.")
+        else:
+            speaker.say("Which app shall I open? Please say the app name alone.")
+        speaker.runAndWait()
+        with sr.Microphone() as source:
+            try:
+                sys.stdout.write("\rApps: I'm listening...")
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                keyword = recognizer.recognize_google(listener)
+            except (sr.UnknownValueError, sr.RequestError):
+                speaker.say("I didn't quite get that. Try again.")
+                apps()
+            except sr.WaitTimeoutError:
+                speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
+                apps()
+
+        if 'exit' in keyword:
+            renew()
+
+        v = (subprocess.check_output("ls /Applications/", shell=True))
+        apps_ = (v.decode('utf-8').split('\n'))
+
+        for app in apps_:
+            if re.search(keyword, app, flags=re.IGNORECASE) is not None:
+                keyword = app
+
+        app_status = os.system(f"open /Applications/'{keyword}'")
+        apps.has_been_called = True
+        if app_status == 256:
+            speaker.say(f"I did not find the app {keyword}.")
             apps()
-        except sr.WaitTimeoutError:
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
-            apps()
-
-    if 'exit' in keyword:
-        renew()
-
-    v = (subprocess.check_output("ls /Applications/", shell=True))
-    apps_ = (v.decode('utf-8').split('\n'))
-
-    for app in apps_:
-        if re.search(keyword, app, flags=re.IGNORECASE) is not None:
-            keyword = app
-
-    app_status = os.system(f"open /Applications/'{keyword}'")
-    apps.has_been_called = True
-    if app_status == 256:
-        speaker.say(f"I did not find the app {keyword}.")
-        apps()
-    else:
-        speaker.say(f"I have opened {keyword}")
-        renew()
+        else:
+            speaker.say(f"I have opened {keyword}")
+            renew()
 
 
 def robinhood():
