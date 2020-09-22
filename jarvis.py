@@ -168,14 +168,7 @@ def conditions(recognized_text):
 
         url = f"https://www.google.com/search?q={search}"
 
-        if operating_system == 'Darwin':
-            chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
-            webbrowser.get(chrome_path).open(url)
-
-        elif operating_system == 'Windows':
-            chrome_path = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-            webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
-            webbrowser.get('chrome').open(url)
+        webbrowser.open(url)
 
         speaker.say("I have opened a google search for your request.")
         renew()
@@ -232,14 +225,7 @@ def webpage():
 
     url = f"https://{recognized_text1}.com"
 
-    if operating_system == 'Darwin':
-        chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
-        webbrowser.get(chrome_path).open(url)
-
-    elif operating_system == 'Windows':
-        chrome_path = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-        webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
-        webbrowser.get('chrome').open(url)
+    webbrowser.open(url)
 
     speaker.say(f"I have opened {recognized_text1}")
     renew()
