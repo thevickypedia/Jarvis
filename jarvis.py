@@ -1,4 +1,3 @@
-import logging
 import os
 import platform
 import sys
@@ -517,15 +516,12 @@ def dummy():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(' Jarvis')
-
     speaker = audio.init()
     recognizer = sr.Recognizer()
     report.has_been_called, dummy.has_been_called = False, False
     # noinspection PyTypeChecker
     volume = int(speaker.getProperty("volume")) * 100
-    logger.info(f' Current volume is: {volume}% Voice ID::Friday: 1/17 Jarvis: 7')
+    print(f'Current volume is: {volume}% Voice ID::Friday: 1/17 Jarvis: 7')
 
     operating_system = platform.system()
 
