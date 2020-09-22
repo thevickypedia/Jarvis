@@ -169,33 +169,17 @@ def conditions(recognized_text):
 
         url = f"https://www.google.com/search?q={search}"
 
-        from selenium import webdriver, common
-        from chromedriver_py import binary_path
+        if operating_system == 'Darwin':
+            chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
+            webbrowser.get(chrome_path).open(url)
 
-        browser = webdriver.Chrome(executable_path=binary_path)
-        try:
-            browser.get(url)
-            get_element = browser.find_elements_by_css_selector("div[class='PZPZlf hb8SAc']")
-            browser.close()
-            text = get_element[0].text
-            speaker.say(text.replace('Description\n', '').replace('Wikipedia', ''))
-            renew()
-        except:
-            try:
-                browser.close()
-            except common.exceptions.InvalidSessionIdException:
-                pass
-            if operating_system == 'Darwin':
-                chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
-                webbrowser.get(chrome_path).open(url)
+        elif operating_system == 'Windows':
+            chrome_path = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+            webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
+            webbrowser.get('chrome').open(url)
 
-            elif operating_system == 'Windows':
-                chrome_path = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-                webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
-                webbrowser.get('chrome').open(url)
-
-            speaker.say("I have opened a google search for your request.")
-            renew()
+        speaker.say("I have opened a google search for your request.")
+        renew()
 
 
 def report():
@@ -551,14 +535,12 @@ if __name__ == '__main__':
         # noinspection PyTypeChecker
         speaker.setProperty("voice", voices[7].id)
         speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. Whom am I speaking with?")
-        speaker.runAndWait()
     elif operating_system == 'Windows':
         # noinspection PyTypeChecker
         speaker.setProperty("voice", voices[1].id)
         speaker.say("Hi, I'm Friday. Vicky's virtual assistant. Whom am I speaking with?")
-        speaker.runAndWait()
+    speaker.runAndWait()
 
     exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
 
-    kick_off = initialize()
-    conditions(kick_off)
+    conditions(initialize())
