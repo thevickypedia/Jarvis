@@ -70,16 +70,14 @@ def initialize():
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
         except sr.WaitTimeoutError:
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee.")
-            dummy.has_been_called = 7
+            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
+            dummy.has_been_called = True
         renew()
 
 
 def renew():
-    if dummy.has_been_called == 7:
-        speaker.say('Or ask me what to do?')
-    elif dummy.has_been_called:
-        speaker.say('What can I do for you?')
+    if dummy.has_been_called:
+        speaker.say("Is there anything I can do for you?. You may simply answer yes or no")
     else:
         speaker.say("Is there anything else I can do for you?")
     speaker.runAndWait()
@@ -94,8 +92,8 @@ def renew():
             dummy.has_been_called = True
             renew()
         except sr.WaitTimeoutError:
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee!")
-            dummy.has_been_called = 7
+            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
+            dummy.has_been_called = True
             renew()
         if 'no' in recognized_text2 or "that's all" in recognized_text2 or 'that is all' in recognized_text2 or \
                 "that's it" in recognized_text2 or 'that is it' in recognized_text2:
@@ -115,8 +113,8 @@ def renew():
                 dummy.has_been_called = True
                 renew()
             except sr.WaitTimeoutError:
-                speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee!")
-                dummy.has_been_called = 7
+                speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
+                dummy.has_been_called = True
                 renew()
 
 
@@ -246,7 +244,7 @@ def webpage():
             speaker.say("I didn't quite get that. Try again.")
             webpage()
         except sr.WaitTimeoutError:
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee.")
+            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             webpage()
 
     url = f"https://{recognized_text1}.com"
@@ -341,7 +339,7 @@ def wiki_pedia():
             speaker.say("I didn't quite get that. Try again.")
             wiki_pedia()
         except sr.WaitTimeoutError:
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee.")
+            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             wiki_pedia()
 
         sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
@@ -369,8 +367,8 @@ def wiki_pedia():
             dummy.has_been_called = True
             renew()
         except sr.WaitTimeoutError:
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee!")
-            dummy.has_been_called = 7
+            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
+            dummy.has_been_called = True
             renew()
         if 'yes' in response or 'continue' in response or 'proceed' in response or 'please' in response or 'yeah' in \
                 response:
@@ -422,7 +420,7 @@ def apps():
             speaker.say("I didn't quite get that. Try again.")
             apps()
         except sr.WaitTimeoutError:
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee.")
+            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             apps()
 
     if 'exit' in keyword:
@@ -474,7 +472,7 @@ def repeater():
             speaker.say("I didn't quite get that. Try again.")
             repeater()
         except sr.WaitTimeoutError:
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee.")
+            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             repeater()
         speaker.say(f"I heard {keyword}")
         speaker.runAndWait()
@@ -511,7 +509,7 @@ def chatBot():
             speaker.say("I didn't quite get that. Try again.")
             chatBot()
         except sr.WaitTimeoutError:
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee.")
+            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             chatBot()
         if 'exit' in keyword:
             speaker.say('Let me remove the training modules.')
