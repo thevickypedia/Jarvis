@@ -17,11 +17,17 @@ def initialize():
             sys.stdout.write("Initialized: I'm listening...")
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
             name = recognizer.recognize_google(listener)
+
+            if 'exit' in name or 'quit' in name:
+                speaker.say(exit_msg)
+                speaker.runAndWait()
+                exit()
+
             if str(os.getenv('key')) in str(name):
-                if current == 'AM' and int(clock) <= 10:
+                if current == 'AM' and int(clock) < 10:
                     speaker.say("Welcome back sire. Good Morning. What can I do for you?")
                     speaker.runAndWait()
-                elif current == 'AM' and int(clock) > 10:
+                elif current == 'AM' and int(clock) >= 10:
                     speaker.say("Welcome back sire. Hope you're having a nice morning. What can I do for you?")
                     speaker.runAndWait()
                 elif current == 'PM' and (int(clock) == 12 or int(clock) < 4):
@@ -159,6 +165,11 @@ def conditions(recognized_text):
     elif 'chat' in recognized_text or 'bot' in recognized_text:
         chatBot()
 
+    elif 'exit' in recognized_text or 'quit' in recognized_text:
+        speaker.say(exit_msg)
+        speaker.runAndWait()
+        exit()
+
     else:
         speaker.say(f"I heard {recognized_text}. Let me look that up.")
         speaker.runAndWait()
@@ -221,6 +232,9 @@ def webpage():
         except sr.WaitTimeoutError:
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             webpage()
+
+    if 'exit' in recognized_text1 or 'quit' in recognized_text1:
+        renew()
 
     url = f"https://{recognized_text1}.com"
 
@@ -310,6 +324,9 @@ def wiki_pedia():
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             wiki_pedia()
 
+        if 'exit' in keyword or 'quit' in keyword:
+            renew()
+
         sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
         try:
             data = wikipedia.summary(keyword)
@@ -338,8 +355,7 @@ def wiki_pedia():
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             dummy.has_been_called = True
             renew()
-        if 'yes' in response or 'continue' in response or 'proceed' in response or 'please' in response or 'yeah' in \
-                response:
+        if 'yes' in response or 'continue' in response or 'proceed' in response or 'yeah' in response:
             speaker.say(''.join(data.split('.')[3:-1]))
             speaker.runAndWait()
             renew()
@@ -469,6 +485,8 @@ def repeater():
         except sr.WaitTimeoutError:
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             repeater()
+        if 'exit' in keyword or 'quit' in keyword:
+            renew()
         speaker.say(f"I heard {keyword}")
         speaker.runAndWait()
     renew()
@@ -506,7 +524,7 @@ def chatBot():
         except sr.WaitTimeoutError:
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             chatBot()
-        if 'exit' in keyword:
+        if 'exit' in keyword or 'quit' in keyword:
             speaker.say('Let me remove the training modules.')
             os.system('rm db*')
             os.system(f'rm -rf {file2}')
