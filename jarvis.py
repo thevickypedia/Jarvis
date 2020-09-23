@@ -565,6 +565,7 @@ if __name__ == '__main__':
     elif operating_system == 'Windows':
         # noinspection PyTypeChecker
         speaker.setProperty("voice", voices[1].id)
+        speaker.setProperty('rate', 190)
         speaker.say("Hi, I'm Friday. Vicky's virtual assistant. Whom am I speaking with?")
     speaker.runAndWait()
 
