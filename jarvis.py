@@ -14,7 +14,7 @@ def initialize():
     clock = now.strftime("%I")
     with sr.Microphone() as source:
         try:
-            sys.stdout.write("Initialized: I'm listening...")
+            sys.stdout.write("\rInitialized: I'm listening...")
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
             name = recognizer.recognize_google(listener)
 
@@ -171,6 +171,7 @@ def conditions(recognized_text):
         exit()
 
     else:
+        sys.stdout.write(f"\r{recognized_text}")
         speaker.say(f"I heard {recognized_text}. Let me look that up.")
         speaker.runAndWait()
 
@@ -551,7 +552,7 @@ if __name__ == '__main__':
     report.has_been_called, dummy.has_been_called = False, False
     # noinspection PyTypeChecker
     volume = int(speaker.getProperty("volume")) * 100
-    print(f'Current volume is: {volume}% Voice ID::Friday: 1/17 Jarvis: 7')
+    sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Friday: 1/17 Jarvis: 7')
 
     operating_system = platform.system()
 
