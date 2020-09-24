@@ -123,6 +123,7 @@ def renew():
                 sys.stdout.write("\rContinue: I'm listening...")
                 listener_redo_ = recognizer.listen(source, timeout=3, phrase_time_limit=5)
                 recognized_redo_ = recognizer.recognize_google(listener_redo_)
+                sys.stdout.write("\r")
                 conditions(recognized_redo_)
             except (sr.UnknownValueError, sr.RequestError):
                 sys.stdout.write("\r")
