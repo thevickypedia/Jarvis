@@ -7,11 +7,13 @@ from datetime import datetime
 import pyttsx3 as audio
 import speech_recognition as sr
 
+now = datetime.now()
+current = now.strftime("%p")
+clock = now.strftime("%I")
+today = now.strftime("%A")
+
 
 def initialize():
-    now = datetime.now()
-    current = now.strftime("%p")
-    clock = now.strftime("%I")
     with sr.Microphone() as source:
         try:
             sys.stdout.write("\rInitialized: I'm listening...")
@@ -26,35 +28,26 @@ def initialize():
             if str(os.getenv('key')) in str(name):
                 if current == 'AM' and int(clock) < 10:
                     speaker.say("Welcome back sire. Good Morning. What can I do for you?")
-                    speaker.runAndWait()
                 elif current == 'AM' and int(clock) >= 10:
                     speaker.say("Welcome back sire. Hope you're having a nice morning. What can I do for you?")
-                    speaker.runAndWait()
                 elif current == 'PM' and (int(clock) == 12 or int(clock) < 4):
                     speaker.say("Welcome back sire. Good Afternoon. What can I do for you?")
-                    speaker.runAndWait()
                 elif current == 'PM' and int(clock) < 7:
                     speaker.say("Welcome back sire. Good Evening. What can I do for you?")
-                    speaker.runAndWait()
                 else:
                     speaker.say("Welcome back sire. Hope you're having a nice night. What can I do for you?")
-                    speaker.runAndWait()
             else:
                 if current == 'AM' and int(clock) <= 10:
                     speaker.say(f"Hi {name}. Good Morning. What can I do for you?")
-                    speaker.runAndWait()
                 elif current == 'AM' and int(clock) > 10:
                     speaker.say(f"Hi {name}. Hope you're having a nice morning. What can I do for you?")
-                    speaker.runAndWait()
                 elif current == 'PM' and (int(clock) == 12 or int(clock) < 4):
                     speaker.say(f"Hi {name}. Good Afternoon. What can I do for you?")
-                    speaker.runAndWait()
                 elif current == 'PM' and int(clock) < 7:
                     speaker.say(f"Hi {name}. Good Evening. What can I do for you?")
-                    speaker.runAndWait()
                 else:
                     speaker.say(f"Hi {name}. Hope you're having a nice night. What can I do for you?")
-                    speaker.runAndWait()
+            speaker.runAndWait()
         except (sr.UnknownValueError, sr.RequestError):
             speaker.say("I didn't quite get that. Try again.")
             speaker.say("Whom am I speaking with?.")
@@ -101,7 +94,8 @@ def renew():
             dummy.has_been_called = True
             renew()
         if 'no' in recognized_text2 or "that's all" in recognized_text2 or 'that is all' in recognized_text2 or \
-                "that's it" in recognized_text2 or 'that is it' in recognized_text2:
+                "that's it" in recognized_text2 or 'that is it' in recognized_text2 or 'quit' in recognized_text2 \
+                or 'exit' in recognized_text2:
             speaker.say(exit_msg)
             speaker.runAndWait()
             exit()
@@ -124,7 +118,7 @@ def renew():
 
 
 def conditions(recognized_text):
-    if "today's date" in recognized_text:
+    if "today's date" in recognized_text or 'current date' in recognized_text:
         date()
 
     elif 'current time' in recognized_text:
@@ -196,8 +190,8 @@ def report():
 
 
 def date():
-    now = datetime.now()
-    dt_string = now.strftime("%A, %B %d, %Y")
+    today_date = datetime.now()
+    dt_string = today_date.strftime("%A, %B %d, %Y")
 
     speaker.say(f'Today is {dt_string}')
     speaker.runAndWait()
@@ -209,8 +203,8 @@ def date():
 
 def time():
     from datetime import datetime
-    now = datetime.now()
-    dt_string = now.strftime("%I:%M %p")
+    current_time = datetime.now()
+    dt_string = current_time.strftime("%I:%M %p")
 
     speaker.say(f'The current time is: {dt_string}')
     if report.has_been_called:
@@ -569,6 +563,21 @@ if __name__ == '__main__':
         speaker.say("Hi, I'm Friday. Vicky's virtual assistant. Whom am I speaking with?")
     speaker.runAndWait()
 
-    exit_msg = "Thank you for using Vicky's virtual assistant. Good bye."
+    weekend = ['Friday', 'Saturday']
+    if current == 'AM' and int(clock) < 10:
+        exit_msg = f"Thank you for using Vicky's virtual assistant. Have a nice day. Happy {today}. Good bye."
+    elif current == 'AM' and int(clock) >= 10:
+        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice rest of your day. Good bye."
+    elif current == 'PM' and (int(clock) == 12 or int(clock) < 4):
+        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice afternoon. Good bye."
+    elif current == 'PM' and int(clock) < 7 and today in weekend:
+        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice evening and enjoy your weekend. " \
+                   "Good bye."
+    elif current == 'PM' and int(clock) < 7:
+        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice evening. Good bye."
+    elif today in weekend:
+        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice night and enjoy your weekend. Good bye."
+    else:
+        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice night. Good bye."
 
     conditions(initialize())
