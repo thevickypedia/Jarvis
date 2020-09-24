@@ -25,11 +25,13 @@ def initialize():
             name = recognizer.recognize_google(listener)
 
             if 'exit' in name or 'quit' in name:
+                sys.stdout.write("\r")
                 speaker.say(exit_msg)
                 speaker.runAndWait()
                 exit()
 
             if str(os.getenv('key')) in str(name):
+                sys.stdout.write("\r")
                 if current == 'AM' and int(clock) < 10:
                     speaker.say("Welcome back sire. Good Morning. What can I do for you?")
                 elif current == 'AM' and int(clock) >= 10:
@@ -41,6 +43,7 @@ def initialize():
                 else:
                     speaker.say("Welcome back sire. Hope you're having a nice night. What can I do for you?")
             else:
+                sys.stdout.write("\r")
                 if current == 'AM' and int(clock) <= 10:
                     speaker.say(f"Hi {name}. Good Morning. What can I do for you?")
                 elif current == 'AM' and int(clock) > 10:
@@ -53,11 +56,13 @@ def initialize():
                     speaker.say(f"Hi {name}. Hope you're having a nice night. What can I do for you?")
             speaker.runAndWait()
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             speaker.say("Whom am I speaking with?.")
             speaker.runAndWait()
             initialize()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee.")
             speaker.say("Whom am I speaking with?.")
             speaker.runAndWait()
@@ -69,9 +74,11 @@ def initialize():
             listener_new = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             return recognizer.recognize_google(listener_new)
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             dummy.has_been_called = True
         renew()
@@ -79,8 +86,10 @@ def initialize():
 
 def renew():
     if dummy.has_been_called:
+        sys.stdout.write("\r")
         speaker.say("Is there anything I can do for you?. You may simply answer yes or no")
     else:
+        sys.stdout.write("\r")
         speaker.say("Is there anything else I can do for you?")
     speaker.runAndWait()
     dummy.has_been_called = False
@@ -90,20 +99,24 @@ def renew():
             listener2 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             recognized_text2 = recognizer.recognize_google(listener2)
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
             renew()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             dummy.has_been_called = True
             renew()
         if 'no' in recognized_text2 or "that's all" in recognized_text2 or 'that is all' in recognized_text2 or \
                 "that's it" in recognized_text2 or 'that is it' in recognized_text2 or 'quit' in recognized_text2 \
                 or 'exit' in recognized_text2:
+            sys.stdout.write("\r")
             speaker.say(exit_msg)
             speaker.runAndWait()
             exit()
         else:
+            sys.stdout.write("\r")
             speaker.say("Go ahead, I'm listening")
             speaker.runAndWait()
             try:
@@ -112,10 +125,12 @@ def renew():
                 recognized_redo_ = recognizer.recognize_google(listener_redo_)
                 conditions(recognized_redo_)
             except (sr.UnknownValueError, sr.RequestError):
+                sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 dummy.has_been_called = True
                 renew()
             except sr.WaitTimeoutError:
+                sys.stdout.write("\r")
                 speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
                 dummy.has_been_called = True
                 renew()
@@ -196,7 +211,7 @@ def report():
 def date():
     today_date = datetime.now()
     dt_string = today_date.strftime("%A, %B %d, %Y")
-
+    sys.stdout.write("\r")
     speaker.say(f'Today is {dt_string}')
     speaker.runAndWait()
     if report.has_been_called:
@@ -209,7 +224,7 @@ def time():
     from datetime import datetime
     current_time = datetime.now()
     dt_string = current_time.strftime("%I:%M %p")
-
+    sys.stdout.write("\r")
     speaker.say(f'The current time is: {dt_string}')
     if report.has_been_called:
         pass
@@ -218,6 +233,7 @@ def time():
 
 
 def webpage():
+    sys.stdout.write("\r")
     speaker.say("Which website shall I open? Just say the name of the webpage.")
     speaker.runAndWait()
     with sr.Microphone() as source:
@@ -226,9 +242,11 @@ def webpage():
             listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             recognized_text1 = recognizer.recognize_google(listener1)
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             webpage()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             webpage()
 
@@ -238,7 +256,7 @@ def webpage():
     url = f"https://{recognized_text1}.com"
 
     webbrowser.open(url)
-
+    sys.stdout.write("\r")
     speaker.say(f"I have opened {recognized_text1}")
     renew()
 
@@ -276,6 +294,7 @@ def weather():
     output = f'You are currently at {weather_location}. The weather at your location is {temp_f}°F, with a high of ' \
              f'{high}, and a low of {low}. It currenly feels Like {temp_feel_f}°F, and the current ' \
              f'condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}'
+    sys.stdout.write("\r")
     speaker.say(output)
     speaker.runAndWait()
     if report.has_been_called:
@@ -299,6 +318,7 @@ def system_info():
 
     cpu = str(os.cpu_count())
     release = str(platform.release())
+    sys.stdout.write("\r")
     speaker.say(f"You're running {(platform.platform()).split('.')[0]}, with {cpu} cores. "
                 f"The release version is {release}. Your physical drive capacity is {total}. "
                 f"You have used up {used} of space. Your free space is {free}. Your RAM capacity is {ram}")
@@ -308,7 +328,7 @@ def system_info():
 
 def wiki_pedia():
     import wikipedia
-
+    sys.stdout.write("\r")
     speaker.say("Please tell the keyword.")
     speaker.runAndWait()
     with sr.Microphone() as source:
@@ -317,9 +337,11 @@ def wiki_pedia():
             listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             keyword = recognizer.recognize_google(listener1)
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             wiki_pedia()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             wiki_pedia()
 
@@ -330,14 +352,14 @@ def wiki_pedia():
         try:
             data = wikipedia.summary(keyword)
         except wikipedia.exceptions.DisambiguationError as e:
-            print(e)
+            sys.stdout.write(e)
             speaker.say('Your search has multiple results. Pick one displayed on your screen.')
             speaker.runAndWait()
             sys.stdout.write("\rMultiple Search: I'm listening...")
             listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             keyword1 = recognizer.recognize_google(listener1)
             data = wikipedia.summary(keyword1)
-
+        sys.stdout.write("\r")
         speaker.say(''.join(data.split('.')[0:2]))
         speaker.runAndWait()
         speaker.say("Do you want me to continue?")
@@ -347,14 +369,17 @@ def wiki_pedia():
             listener2 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             response = recognizer.recognize_google(listener2)
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
             renew()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             dummy.has_been_called = True
             renew()
         if 'yes' in response or 'continue' in response or 'proceed' in response or 'yeah' in response:
+            sys.stdout.write("\r")
             speaker.say(''.join(data.split('.')[3:-1]))
             speaker.runAndWait()
             renew()
@@ -370,6 +395,7 @@ def news():
     all_articles = newsapi.get_top_headlines(sources=f'{source}-news')
 
     for article in all_articles['articles']:
+        sys.stdout.write("\r")
         speaker.say(article['title'])
         speaker.runAndWait()
 
@@ -386,6 +412,7 @@ def apps():
 
     if operating_system == 'Windows':
         if not apps.has_been_called:
+            sys.stdout.write("\r")
             speaker.say("Opening third party apps on a Windows machine is complicated. Please tell me a system app "
                         "that I could try opening.")
             speaker.runAndWait()
@@ -395,6 +422,7 @@ def apps():
                 sys.stdout.write("\rApps: I'm listening...")
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
                 keyword = recognizer.recognize_google(listener)
+                sys.stdout.write("\r")
                 if 'exit' in keyword or 'quit' in keyword:
                     renew()
                 status = os.system(f'start {keyword}')
@@ -406,10 +434,12 @@ def apps():
                     speaker.runAndWait()
                     apps()
             except (sr.UnknownValueError, sr.RequestError):
+                sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again. Please tell me an app name.")
                 speaker.runAndWait()
                 apps()
             except sr.WaitTimeoutError:
+                sys.stdout.write("\r")
                 speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. "
                             "Or, please tell me an app name")
                 speaker.runAndWait()
@@ -426,10 +456,13 @@ def apps():
                 sys.stdout.write("\rApps: I'm listening...")
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
                 keyword = recognizer.recognize_google(listener)
+                sys.stdout.write("\r")
             except (sr.UnknownValueError, sr.RequestError):
+                sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 apps()
             except sr.WaitTimeoutError:
+                sys.stdout.write("\r")
                 speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
                 apps()
 
@@ -465,6 +498,7 @@ def robinhood():
     result = raw_result['results']
     from robinhood import watcher
     stock_value = watcher(rh, result)
+    sys.stdout.write("\r")
     speaker.say(stock_value)
     speaker.runAndWait()
     renew()
@@ -478,10 +512,13 @@ def repeater():
             sys.stdout.write("\rRepeater: I'm listening...")
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=15)
             keyword = recognizer.recognize_google(listener)
+            sys.stdout.write("\r")
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             repeater()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             repeater()
         if 'exit' in keyword or 'quit' in keyword:
@@ -503,6 +540,7 @@ def chatBot():
         from chatterbot.trainers import ChatterBotCorpusTrainer
         bot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
     else:
+        sys.stdout.write("\r")
         speaker.say('Give me a moment while I train the module.')
         speaker.runAndWait()
         from chatterbot import ChatBot
@@ -517,10 +555,13 @@ def chatBot():
             sys.stdout.write("\rChatBot: I'm listening...")
             listener = recognizer.listen(source, timeout=5, phrase_time_limit=5)
             keyword = recognizer.recognize_google(listener)
+            sys.stdout.write("\r")
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             chatBot()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             chatBot()
         if 'exit' in keyword or 'quit' in keyword:
