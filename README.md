@@ -8,7 +8,7 @@ IronMan's Jarvis with python
         - ```python3 jarvis.py``` - BOOM, you're all set, go ahead and interact with Jarvis
 
 ### Feature(s) Implementation:
-Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, current and upcoming features.
+Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, features' overview and demo videos.
 
 ## License & copyright
 
