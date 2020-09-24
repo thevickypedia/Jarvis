@@ -12,6 +12,10 @@ current = now.strftime("%p")
 clock = now.strftime("%I")
 today = now.strftime("%A")
 
+# TODO: include phone location
+# TODO: include face recognition
+# TODO: include gmail reader
+
 
 def initialize():
     with sr.Microphone() as source:
