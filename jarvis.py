@@ -4,6 +4,7 @@ import sys
 import time
 import webbrowser
 from datetime import datetime
+import re
 
 import pyttsx3 as audio
 import speech_recognition as sr
@@ -153,8 +154,11 @@ def conditions(recognized_text):
     elif 'chat' in recognized_text or 'bot' in recognized_text:
         chatBot()
 
-    elif 'location' in recognized_text:
+    elif 'location' in recognized_text or re.search('where am i', recognized_text, flags=re.IGNORECASE) is not None:
         location()
+
+    elif 'locate' in recognized_text or re.search('where is my phone', recognized_text, flags=re.IGNORECASE) is not None:
+        locate()
 
     elif 'exit' in recognized_text or 'quit' in recognized_text:
         speaker.say(exit_msg)
@@ -429,7 +433,7 @@ def apps():
                 speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
                 apps()
 
-        if 'exit' in keyword:
+        if 'exit' in keyword or 'quit' in keyword:
             renew()
 
         v = (subprocess.check_output("ls /Applications/", shell=True))
@@ -548,6 +552,66 @@ def location():
     speaker.say(f"You're at {city} {state}, in {country}")
     speaker.runAndWait()
     renew()
+
+
+def locate():
+    import ssl
+    import certifi
+    from geopy.geocoders import Nominatim, options
+    from pyicloud import PyiCloudService
+
+    options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
+
+    u = os.getenv('user')
+    p = os.getenv('icloud_pass')
+    api = PyiCloudService(u, p)
+
+    if dummy.has_been_called:
+        speaker.say("Would you like to ring it?")
+    else:
+        raw_location = (api.iphone.location())
+        raw_lat = raw_location['latitude']
+        raw_long = raw_location['longitude']
+        geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
+        locator = geo_locator.reverse(f'{raw_lat}, {raw_long}')
+        current_location = locator.address
+        speaker.say(f"Your iPhone is at {current_location}.")
+        speaker.say("Would you like to ring it?")
+    speaker.runAndWait()
+    with sr.Microphone() as source:
+        try:
+            sys.stdout.write("\rListener activated..")
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r")
+            phrase = recognizer.recognize_google(listener)
+        except (sr.UnknownValueError, sr.RequestError):
+            speaker.say("I didn't quite get that. Try again.")
+            dummy.has_been_called = True
+            locate()
+        except sr.WaitTimeoutError:
+            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
+            dummy.has_been_called = True
+            locate()
+        if 'yes' in phrase or 'please' in phrase:
+            speaker.say("Ringing your iPhone now.")
+            speaker.runAndWait()
+            api.iphone.play_sound()
+            speaker.say("I can also enable lost mode. Would you like to do it?")
+            speaker.runAndWait()
+            sys.stdout.write("\rListener activated..")
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r")
+            phrase = recognizer.recognize_google(listener)
+            if 'yes' in phrase or 'please' in phrase:
+                recovery = os.getenv('recovery')
+                message = 'Return my phone immediately.'
+                api.iphone.lost_device(recovery, message)
+                speaker.say("I've enabled lost mode on your phone.")
+                speaker.runAndWait()
+            else:
+                renew()
+        else:
+            renew()
 
 
 def dummy():
