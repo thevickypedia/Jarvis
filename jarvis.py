@@ -20,7 +20,10 @@ today = now.strftime("%A")
 
 
 def initialize():
-    if current == 'AM' and int(clock) < 10:
+    if dummy.has_been_called:
+        speaker.say("What can I do for you?")
+        dummy.has_been_called = False
+    elif current == 'AM' and int(clock) < 10:
         speaker.say("Welcome back sir. Good Morning. What can I do for you?")
     elif current == 'AM' and int(clock) >= 10:
         speaker.say("Welcome back sir. Hope you're having a nice morning. What can I do for you?")
@@ -44,7 +47,7 @@ def initialize():
         except sr.WaitTimeoutError:
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             dummy.has_been_called = True
-        renew()
+        return initialize()
 
 
 def renew():
@@ -558,20 +561,20 @@ if __name__ == '__main__':
 
     weekend = ['Friday', 'Saturday']
     if current == 'AM' and int(clock) < 10:
-        exit_msg = f"Thank you for using Vicky's virtual assistant. Have a nice day, and happy {today}. Good bye."
+        exit_msg = f"Thank you for using Vicky's virtual assistant. Have a nice day, and happy {today}."
     elif current == 'AM' and int(clock) >= 10:
-        exit_msg = f"Thank you for using Vicky's virtual assistant. Enjoy your {today}. Good bye."
+        exit_msg = f"Thank you for using Vicky's virtual assistant. Enjoy your {today}."
     elif current == 'PM' and (int(clock) == 12 or int(clock) < 4) and today in weekend:
-        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice afternoon, and enjoy your weekend. Good bye."
+        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice afternoon, and enjoy your weekend."
     elif current == 'PM' and (int(clock) == 12 or int(clock) < 4):
         exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice afternoon. Good bye."
     elif current == 'PM' and int(clock) < 7 and today in weekend:
-        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice evening, and enjoy your weekend. Good bye."
+        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice evening, and enjoy your weekend."
     elif current == 'PM' and int(clock) < 7:
-        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice evening. Good bye."
+        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice evening."
     elif today in weekend:
-        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice night, and enjoy your weekend. Good bye."
+        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice night, and enjoy your weekend."
     else:
-        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice night. Good bye."
+        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice night."
 
     conditions(initialize())
