@@ -153,6 +153,9 @@ def conditions(recognized_text):
     elif 'chat' in recognized_text or 'bot' in recognized_text:
         chatBot()
 
+    elif 'location' in recognized_text:
+        location()
+
     elif 'exit' in recognized_text or 'quit' in recognized_text:
         speaker.say(exit_msg)
         speaker.runAndWait()
@@ -533,6 +536,18 @@ def chatBot():
                 speaker.say(f'{response}')
                 speaker.runAndWait()
             chatBot()
+
+
+def location():
+    from urllib.request import urlopen
+    import json
+    url = 'http://ipinfo.io/json'
+    resp = urlopen(url)
+    data = json.load(resp)
+    city, state, country = data['city'], data['region'], data['country']
+    speaker.say(f"You're at {city} {state}, in {country}")
+    speaker.runAndWait()
+    renew()
 
 
 def dummy():
