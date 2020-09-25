@@ -18,55 +18,18 @@ today = now.strftime("%A")
 
 
 def initialize():
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rInitialized: I'm listening...")
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
-            name = recognizer.recognize_google(listener)
-
-            if 'exit' in name or 'quit' in name:
-                sys.stdout.write("\r")
-                speaker.say(exit_msg)
-                speaker.runAndWait()
-                exit()
-
-            if str(os.getenv('key')) in str(name):
-                sys.stdout.write("\r")
-                if current == 'AM' and int(clock) < 10:
-                    speaker.say("Welcome back sire. Good Morning. What can I do for you?")
-                elif current == 'AM' and int(clock) >= 10:
-                    speaker.say("Welcome back sire. Hope you're having a nice morning. What can I do for you?")
-                elif current == 'PM' and (int(clock) == 12 or int(clock) < 4):
-                    speaker.say("Welcome back sire. Good Afternoon. What can I do for you?")
-                elif current == 'PM' and int(clock) < 7:
-                    speaker.say("Welcome back sire. Good Evening. What can I do for you?")
-                else:
-                    speaker.say("Welcome back sire. Hope you're having a nice night. What can I do for you?")
-            else:
-                sys.stdout.write("\r")
-                if current == 'AM' and int(clock) <= 10:
-                    speaker.say(f"Hi {name}. Good Morning. What can I do for you?")
-                elif current == 'AM' and int(clock) > 10:
-                    speaker.say(f"Hi {name}. Hope you're having a nice morning. What can I do for you?")
-                elif current == 'PM' and (int(clock) == 12 or int(clock) < 4):
-                    speaker.say(f"Hi {name}. Good Afternoon. What can I do for you?")
-                elif current == 'PM' and int(clock) < 7:
-                    speaker.say(f"Hi {name}. Good Evening. What can I do for you?")
-                else:
-                    speaker.say(f"Hi {name}. Hope you're having a nice night. What can I do for you?")
-            speaker.runAndWait()
-        except (sr.UnknownValueError, sr.RequestError):
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            speaker.say("Whom am I speaking with?.")
-            speaker.runAndWait()
-            initialize()
-        except sr.WaitTimeoutError:
-            sys.stdout.write("\r")
-            speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee.")
-            speaker.say("Whom am I speaking with?.")
-            speaker.runAndWait()
-            initialize()
+    sys.stdout.write("\r")
+    if current == 'AM' and int(clock) < 10:
+        speaker.say("Welcome back sir. Good Morning. What can I do for you?")
+    elif current == 'AM' and int(clock) >= 10:
+        speaker.say("Welcome back sir. Hope you're having a nice morning. What can I do for you?")
+    elif current == 'PM' and (int(clock) == 12 or int(clock) < 4):
+        speaker.say("Welcome back sir. Good Afternoon. What can I do for you?")
+    elif current == 'PM' and int(clock) < 7:
+        speaker.say("Welcome back sir. Good Evening. What can I do for you?")
+    else:
+        speaker.say("Welcome back sir. Hope you're having a nice night. What can I do for you?")
+    speaker.runAndWait()
 
     with sr.Microphone() as source:
         try:
@@ -206,6 +169,7 @@ def report():
     time()
     weather()
     news()
+    report.has_been_called = False
     renew()
 
 
@@ -592,7 +556,7 @@ if __name__ == '__main__':
     report.has_been_called, dummy.has_been_called = False, False
     # noinspection PyTypeChecker
     volume = int(speaker.getProperty("volume")) * 100
-    sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Friday: 1/17 Jarvis: 7')
+    sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Female: 1/17 Male: 7')
 
     operating_system = platform.system()
 
@@ -601,13 +565,10 @@ if __name__ == '__main__':
     if operating_system == 'Darwin':
         # noinspection PyTypeChecker
         speaker.setProperty("voice", voices[7].id)
-        speaker.say("Hi, I'm Jarvis. Vicky's virtual assistant. Whom am I speaking with?")
     elif operating_system == 'Windows':
         # noinspection PyTypeChecker
         speaker.setProperty("voice", voices[1].id)
         speaker.setProperty('rate', 190)
-        speaker.say("Hi, I'm Friday. Vicky's virtual assistant. Whom am I speaking with?")
-    speaker.runAndWait()
 
     weekend = ['Friday', 'Saturday']
     if current == 'AM' and int(clock) < 10:
