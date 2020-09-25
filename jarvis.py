@@ -1,10 +1,10 @@
 import os
 import platform
+import re
 import sys
 import time
 import webbrowser
 from datetime import datetime
-import re
 
 import pyttsx3 as audio
 import speech_recognition as sr
@@ -157,7 +157,8 @@ def conditions(recognized_text):
     elif 'location' in recognized_text or re.search('where am i', recognized_text, flags=re.IGNORECASE) is not None:
         location()
 
-    elif 'locate' in recognized_text or re.search('where is my phone', recognized_text, flags=re.IGNORECASE) is not None:
+    elif 'locate' in recognized_text or re.search('where is my phone' or 'where is my iPhone', recognized_text,
+                                                  flags=re.IGNORECASE) is not None:
         locate()
 
     elif 'exit' in recognized_text or 'quit' in recognized_text:
@@ -562,7 +563,7 @@ def locate():
 
     options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
 
-    u = os.getenv('user')
+    u = os.getenv('icloud_user')
     p = os.getenv('icloud_pass')
     api = PyiCloudService(u, p)
 
