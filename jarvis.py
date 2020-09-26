@@ -9,10 +9,13 @@ from datetime import datetime
 import pyttsx3 as audio
 import speech_recognition as sr
 
+from keywords import Keywords
+
 now = datetime.now()
 current = now.strftime("%p")
 clock = now.strftime("%I")
 today = now.strftime("%A")
+
 
 # TODO: include face recognition
 # TODO: include gmail reader
@@ -63,7 +66,7 @@ def renew():
             sys.stdout.write("\rListener activated..")
             listener2 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r")
-            recognized_text2 = recognizer.recognize_google(listener2)
+            converted2 = recognizer.recognize_google(listener2)
         except (sr.UnknownValueError, sr.RequestError):
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
@@ -74,9 +77,7 @@ def renew():
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             dummy.has_been_called = True
             renew()
-        if 'no' in recognized_text2 or "that's all" in recognized_text2 or 'that is all' in recognized_text2 or \
-                "that's it" in recognized_text2 or 'that is it' in recognized_text2 or 'quit' in recognized_text2 \
-                or 'exit' in recognized_text2:
+        if any(re.search(line, converted2, flags=re.IGNORECASE) for line in keywords.exit()):
             speaker.say(exit_msg)
             speaker.runAndWait()
             sys.stdout.write(f"Total runtime: {time_converter(time.perf_counter())}")
@@ -110,73 +111,70 @@ def time_converter(seconds):
     seconds %= 60
     if hour:
         return f'{hour} hours {minutes} minutes {seconds} seconds'
+    elif minutes == 1:
+        return f'{minutes} minute {seconds} seconds'
     elif minutes:
         return f'{minutes} minutes {seconds} seconds'
     elif seconds:
         return f'{seconds} seconds'
 
 
-def conditions(recognized_text):
-    if "today's date" in recognized_text or 'current date' in recognized_text:
+def conditions(converted):
+    if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.date()):
         date()
 
-    elif 'current time' in recognized_text:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.time()):
         current_time()
 
-    elif 'weather' in recognized_text or 'temperature' in recognized_text:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.weather()):
         weather()
 
-    elif 'system' in recognized_text or 'configuration' in recognized_text:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.system_info()):
         system_info()
 
-    elif 'website' in recognized_text or '.com' in recognized_text or 'webpage' in \
-            recognized_text or 'web page' in recognized_text:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.webpage()):
         webpage()
 
-    elif 'fact' in recognized_text or 'info' in recognized_text or 'information' in \
-            recognized_text or 'wikipedia' in recognized_text or 'facts' in recognized_text or 'Wikipedia' in \
-            recognized_text:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.wikipedia()):
         wiki_pedia()
 
-    elif 'news' in recognized_text or 'latest' in recognized_text:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.news()):
         news()
 
-    elif 'report' in recognized_text or 'good morning' in recognized_text:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.report()):
         report()
 
-    elif 'investment' in recognized_text or 'stock' in recognized_text or 'share' in recognized_text or 'shares' in \
-            recognized_text or 'portfolio' in recognized_text:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.robinhood()):
         robinhood()
 
-    elif 'launch' in recognized_text:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.apps()):
         apps.has_been_called = False
         apps()
 
-    elif 'repeat' in recognized_text:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.repeat()):
         repeater()
 
-    elif 'chat' in recognized_text or 'bot' in recognized_text:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.chatbot()):
         chatBot()
 
-    elif 'location' in recognized_text or re.search('where am i', recognized_text, flags=re.IGNORECASE) is not None:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.location()):
         location()
 
-    elif 'locate' in recognized_text or re.search('where is my phone' or 'where is my iPhone', recognized_text,
-                                                  flags=re.IGNORECASE) is not None:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.locate()):
         locate()
 
-    elif 'exit' in recognized_text or 'quit' in recognized_text:
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
         speaker.say(exit_msg)
         speaker.runAndWait()
         sys.stdout.write(f"Total runtime: {time_converter(time.perf_counter())}")
         exit()
 
     else:
-        sys.stdout.write(f"\r{recognized_text}")
-        speaker.say(f"I heard {recognized_text}. Let me look that up.")
+        sys.stdout.write(f"\r{converted}")
+        speaker.say(f"I heard {converted}. Let me look that up.")
         speaker.runAndWait()
 
-        search = str(recognized_text).replace(' ', '+')
+        search = str(converted).replace(' ', '+')
 
         url = f"https://www.google.com/search?q={search}"
 
@@ -227,7 +225,7 @@ def webpage():
             sys.stdout.write("\rListener activated..")
             listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r")
-            recognized_text1 = recognizer.recognize_google(listener1)
+            converted1 = recognizer.recognize_google(listener1)
         except (sr.UnknownValueError, sr.RequestError):
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
@@ -237,13 +235,13 @@ def webpage():
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             webpage()
 
-    if 'exit' in recognized_text1 or 'quit' in recognized_text1:
+    if 'exit' in converted1 or 'quit' in converted1:
         renew()
 
-    url = f"https://{recognized_text1}.com"
+    url = f"https://{converted1}.com"
 
     webbrowser.open(url)
-    speaker.say(f"I have opened {recognized_text1}")
+    speaker.say(f"I have opened {converted1}")
     renew()
 
 
@@ -642,12 +640,14 @@ def dummy():
 if __name__ == '__main__':
     speaker = audio.init()
     recognizer = sr.Recognizer()
+    keywords = Keywords()
+    operating_system = platform.system()
+
     report.has_been_called, dummy.has_been_called = False, False
+
     # noinspection PyTypeChecker
     volume = int(speaker.getProperty("volume")) * 100
     sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Female: 1/17 Male: 7')
-
-    operating_system = platform.system()
 
     voices = speaker.getProperty("voices")
 
