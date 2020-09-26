@@ -59,6 +59,10 @@ class Keywords:
         key = ['music', 'songs', 'play']
         return key
 
+    def gmail(self):
+        key = ['email', 'mail', 'emails', 'mails']
+        return key
+
     def exit(self):
         key = ['exit', 'quit', 'go to sleep']
         return key
