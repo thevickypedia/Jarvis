@@ -14,8 +14,6 @@ current = now.strftime("%p")
 clock = now.strftime("%I")
 today = now.strftime("%A")
 
-
-# TODO: include phone location
 # TODO: include face recognition
 # TODO: include gmail reader
 
@@ -39,13 +37,15 @@ def initialize():
     with sr.Microphone() as source:
         try:
             sys.stdout.write("\rListener activated..")
-            listener_new = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            listener_new = recognizer.listen(source, timeout=3, phrase_time_limit=7)
             sys.stdout.write("\r")
             return recognizer.recognize_google(listener_new)
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             dummy.has_been_called = True
         return initialize()
@@ -65,10 +65,12 @@ def renew():
             sys.stdout.write("\r")
             recognized_text2 = recognizer.recognize_google(listener2)
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
             renew()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             dummy.has_been_called = True
             renew()
@@ -89,10 +91,12 @@ def renew():
                 recognized_redo_ = recognizer.recognize_google(listener_redo_)
                 conditions(recognized_redo_)
             except (sr.UnknownValueError, sr.RequestError):
+                sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 dummy.has_been_called = True
                 renew()
             except sr.WaitTimeoutError:
+                sys.stdout.write("\r")
                 speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
                 dummy.has_been_called = True
                 renew()
@@ -225,9 +229,11 @@ def webpage():
             sys.stdout.write("\r")
             recognized_text1 = recognizer.recognize_google(listener1)
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             webpage()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             webpage()
 
@@ -315,9 +321,11 @@ def wiki_pedia():
             sys.stdout.write("\r")
             keyword = recognizer.recognize_google(listener1)
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             wiki_pedia()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             wiki_pedia()
 
@@ -346,10 +354,12 @@ def wiki_pedia():
             sys.stdout.write("\r")
             response = recognizer.recognize_google(listener2)
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
             renew()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             dummy.has_been_called = True
             renew()
@@ -406,10 +416,12 @@ def apps():
                     speaker.runAndWait()
                     apps()
             except (sr.UnknownValueError, sr.RequestError):
+                sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again. Please tell me an app name.")
                 speaker.runAndWait()
                 apps()
             except sr.WaitTimeoutError:
+                sys.stdout.write("\r")
                 speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. "
                             "Or, please tell me an app name")
                 speaker.runAndWait()
@@ -428,9 +440,11 @@ def apps():
                 sys.stdout.write("\r")
                 keyword = recognizer.recognize_google(listener)
             except (sr.UnknownValueError, sr.RequestError):
+                sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 apps()
             except sr.WaitTimeoutError:
+                sys.stdout.write("\r")
                 speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
                 apps()
 
@@ -481,9 +495,11 @@ def repeater():
             sys.stdout.write("\r")
             keyword = recognizer.recognize_google(listener)
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             repeater()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             repeater()
         if 'exit' in keyword or 'quit' in keyword:
@@ -521,9 +537,11 @@ def chatBot():
             sys.stdout.write("\r")
             keyword = recognizer.recognize_google(listener)
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             chatBot()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             chatBot()
         if 'exit' in keyword or 'quit' in keyword:
@@ -586,10 +604,12 @@ def locate():
             sys.stdout.write("\r")
             phrase = recognizer.recognize_google(listener)
         except (sr.UnknownValueError, sr.RequestError):
+            sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
             locate()
         except sr.WaitTimeoutError:
+            sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             dummy.has_been_called = True
             locate()
