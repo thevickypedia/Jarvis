@@ -638,23 +638,27 @@ def locate():
 
 
 def music():
-    global get_all_files
+    global path
     sys.stdout.write("\rScanning music files...")
 
     if operating_system == 'Darwin':
-        get_all_files = (os.path.join(root, f) for root, _, files in os.walk("/Users") for f in files)
+        path = os.walk("/Users")
     elif operating_system == 'Windows':
-        # TODO: implement music feature for windows
-        pass
+        user_profile = os.path.expanduser('~')
+        path = os.walk(f"{user_profile}\\Music")
 
-    file = []
+    get_all_files = (os.path.join(root, f) for root, _, files in path for f in files)
     get_music_files = (f for f in get_all_files if os.path.splitext(f)[1] == '.mp3')
+    file = []
     for music_file in get_music_files:
         file.append(music_file)
-
     chosen = random.choice(file)
-    opener = "open" if sys.platform == "darwin" else "xdg-open"
-    subprocess.call([opener, chosen])
+
+    if operating_system == 'Darwin':
+        subprocess.call(["open", chosen])
+    elif operating_system == 'Windows':
+        os.system(f'start wmplayer "{chosen}"')
+
     sys.stdout.write('\r')
     speaker.say("Enjoy your music sir!")
     speaker.runAndWait()
