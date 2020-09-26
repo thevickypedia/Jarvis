@@ -397,9 +397,8 @@ def apps():
 
     if operating_system == 'Windows':
         if not apps.has_been_called:
-            speaker.say("Opening third party apps on a Windows machine is complicated. Please tell me a system app "
-                        "that I could try opening.")
-            speaker.runAndWait()
+            speaker.say("Which app shall I open? Please say the app name alone.")
+        speaker.runAndWait()
         apps.has_been_called = True
         with sr.Microphone() as source:
             try:
@@ -411,30 +410,26 @@ def apps():
                     renew()
                 status = os.system(f'start {keyword}')
                 if status == 0:
-                    speaker.say(f'I have opened {keyword} application')
+                    speaker.say(f'I have opened {keyword}')
                     renew()
                 else:
                     speaker.say(f"I wasn't able to find the app {keyword}. Try again. Please tell me an app name.")
-                    speaker.runAndWait()
                     apps()
             except (sr.UnknownValueError, sr.RequestError):
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again. Please tell me an app name.")
-                speaker.runAndWait()
                 apps()
             except sr.WaitTimeoutError:
                 sys.stdout.write("\r")
                 speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. "
                             "Or, please tell me an app name")
-                speaker.runAndWait()
                 apps()
 
     elif operating_system == 'Darwin':
-        if apps.has_been_called:
-            speaker.say("Please repeat the app name alone.")
-        else:
+        if not apps.has_been_called:
             speaker.say("Which app shall I open? Please say the app name alone.")
         speaker.runAndWait()
+        apps.has_been_called = True
         with sr.Microphone() as source:
             try:
                 sys.stdout.write("\rListener activated..")
@@ -443,11 +438,12 @@ def apps():
                 keyword = recognizer.recognize_google(listener)
             except (sr.UnknownValueError, sr.RequestError):
                 sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
+                speaker.say("I didn't quite get that. Try again. Please tell me an app name.")
                 apps()
             except sr.WaitTimeoutError:
                 sys.stdout.write("\r")
-                speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
+                speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. "
+                            "Or, Please tell me an app name.")
                 apps()
 
         if 'exit' in keyword or 'quit' in keyword:
