@@ -55,6 +55,10 @@ class Keywords:
         key = ['locate', 'where is my phone']
         return key
 
+    def music(self):
+        key = ['music', 'songs', 'play']
+        return key
+
     def exit(self):
         key = ['exit', 'quit', 'go to sleep']
         return key

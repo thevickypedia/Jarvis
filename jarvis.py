@@ -1,6 +1,8 @@
 import os
 import platform
+import random
 import re
+import subprocess
 import sys
 import time
 import webbrowser
@@ -162,6 +164,9 @@ def conditions(converted):
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.locate()):
         locate()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.music()):
+        music()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
         speaker.say(exit_msg)
@@ -387,7 +392,6 @@ def news():
 
 
 def apps():
-    import subprocess
     import re
     global operating_system
 
@@ -631,6 +635,31 @@ def locate():
                 renew()
         else:
             renew()
+
+
+def music():
+    global get_all_files
+    sys.stdout.write("\rScanning music files...")
+
+    if operating_system == 'Darwin':
+        get_all_files = (os.path.join(root, f) for root, _, files in os.walk("/Users") for f in files)
+    elif operating_system == 'Windows':
+        # TODO: implement music feature for windows
+        pass
+
+    file = []
+    get_music_files = (f for f in get_all_files if os.path.splitext(f)[1] == '.mp3')
+    for music_file in get_music_files:
+        file.append(music_file)
+
+    chosen = random.choice(file)
+    opener = "open" if sys.platform == "darwin" else "xdg-open"
+    subprocess.call([opener, chosen])
+    sys.stdout.write('\r')
+    speaker.say("Enjoy your music sir!")
+    speaker.runAndWait()
+    sys.stdout.write(f"Total runtime: {time_converter(time.perf_counter())}")
+    exit(0)
 
 
 def dummy():
