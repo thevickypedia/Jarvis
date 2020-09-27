@@ -150,7 +150,7 @@ def conditions(converted):
         gmail()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.meaning()):
-        meaning()
+        meaning(converted.split()[-1])
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
         speaker.say(exit_msg)
@@ -691,29 +691,39 @@ def gmail():
     renew()
 
 
-def meaning():
+def meaning(keyword):
     from PyDictionary import PyDictionary
     dictionary = PyDictionary()
-    speaker.say("Please tell a key word.")
-    speaker.runAndWait()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..")
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
-            response = recognizer.recognize_google(listener)
-            sys.stdout.write("\r")
-            definition = dictionary.meaning(response)
-            if definition:
-                speaker.say("".join(definition['Noun']))
+    if keyword == 'word':
+        keyword = None
+    if not keyword:
+        speaker.say("Please tell a keyword.")
+        speaker.runAndWait()
+        with sr.Microphone() as source:
+            try:
+                sys.stdout.write("\rListener activated..")
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+                response = recognizer.recognize_google(listener)
+                sys.stdout.write("\r")
+                if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.exit()):
+                    renew()
+                definition = dictionary.meaning(response)
+                if definition:
+                    for key in definition.keys():
+                        speaker.say(f'{response}: {key, "".join(definition[key])}')
+                else:
+                    speaker.say("Keyword should be a single word. Try again")
+                    meaning('')
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+                sys.stdout.write("\r")
+                speaker.say("I didn't quite get that. Try again.")
                 speaker.runAndWait()
-            else:
-                speaker.say("Keyword should be a single worded noun. Try again.")
-                meaning()
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            speaker.runAndWait()
-            meaning()
+                meaning('')
+    else:
+        definition = dictionary.meaning(keyword)
+        if definition:
+            for key in definition.keys():
+                speaker.say(f'{keyword}: {key, "".join(definition[key])}')
     renew()
 
 
