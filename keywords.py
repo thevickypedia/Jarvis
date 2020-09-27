@@ -63,6 +63,10 @@ class Keywords:
         key = ['email', 'mail', 'emails', 'mails']
         return key
 
+    def ok(self):
+        key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on']
+        return key
+
     def exit(self):
-        key = ['exit', 'quit', 'go to sleep']
+        key = ['exit', 'quit', 'go to sleep', 'no', 'nope', 'thanks', 'thank you']
         return key

@@ -1,3 +1,4 @@
+import json
 import os
 import platform
 import random
@@ -6,7 +7,8 @@ import subprocess
 import sys
 import time
 import webbrowser
-from datetime import datetime
+from datetime import datetime, timedelta
+from urllib.request import urlopen
 
 import pyttsx3 as audio
 import speech_recognition as sr
@@ -57,52 +59,29 @@ def initialize():
 
 
 def renew():
-    if dummy.has_been_called:
-        speaker.say("Is there anything I can do for you?. You may simply answer yes or no")
-    else:
-        speaker.say("Is there anything else I can do for you?")
+    speaker.say("Is there anything else I can do for you?")
     speaker.runAndWait()
-    dummy.has_been_called = False
     with sr.Microphone() as source:
         try:
             sys.stdout.write("\rListener activated..")
-            listener2 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r")
-            converted2 = recognizer.recognize_google(listener2)
+            converted = recognizer.recognize_google(listener)
         except (sr.UnknownValueError, sr.RequestError):
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
-            dummy.has_been_called = True
             renew()
         except sr.WaitTimeoutError:
             sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
-            dummy.has_been_called = True
             renew()
-        if any(re.search(line, converted2, flags=re.IGNORECASE) for line in keywords.exit()):
+        if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
             speaker.say(exit_msg)
             speaker.runAndWait()
             sys.stdout.write(f"Total runtime: {time_converter(time.perf_counter())}")
             exit()
         else:
-            speaker.say("Go ahead, I'm listening")
-            speaker.runAndWait()
-            try:
-                sys.stdout.write("\rListener activated..")
-                listener_redo_ = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r")
-                recognized_redo_ = recognizer.recognize_google(listener_redo_)
-                conditions(recognized_redo_)
-            except (sr.UnknownValueError, sr.RequestError):
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                dummy.has_been_called = True
-                renew()
-            except sr.WaitTimeoutError:
-                sys.stdout.write("\r")
-                speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
-                dummy.has_been_called = True
-                renew()
+            conditions(converted)
 
 
 def time_converter(seconds):
@@ -112,11 +91,11 @@ def time_converter(seconds):
     minutes = round(seconds // 60)
     seconds %= 60
     if hour:
-        return f'{hour} hours {minutes} minutes {seconds} seconds'
+        return f'{hour} hours, {minutes} minutes, {seconds} seconds'
     elif minutes == 1:
-        return f'{minutes} minute {seconds} seconds'
+        return f'{minutes} minute, {seconds} seconds'
     elif minutes:
-        return f'{minutes} minutes {seconds} seconds'
+        return f'{minutes} minutes, {seconds} seconds'
     elif seconds:
         return f'{seconds} seconds'
 
@@ -215,7 +194,6 @@ def date():
 
 
 def current_time():
-    from datetime import datetime
     c_time = datetime.now()
     dt_string = c_time.strftime("%I:%M %p")
     speaker.say(f'The current time is: {dt_string}')
@@ -255,9 +233,7 @@ def webpage():
 
 def weather():
     sys.stdout.write('\rGetting your weather info')
-    from urllib.request import urlopen
     import pytemperature
-    import json
     api_key = os.getenv('api_key')
 
     url = 'http://ipinfo.io/json'
@@ -297,7 +273,6 @@ def weather():
 def system_info():
     import shutil
     from psutil import virtual_memory
-    import platform
 
     total, used, free = shutil.disk_usage("/")
     total = f"{(total // (2 ** 30))} GB"
@@ -369,7 +344,7 @@ def wiki_pedia():
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             dummy.has_been_called = True
             renew()
-        if 'yes' in response or 'continue' in response or 'proceed' in response or 'yeah' in response:
+        if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
             speaker.say(''.join(data.split('.')[3:-1]))
             speaker.runAndWait()
             renew()
@@ -395,7 +370,6 @@ def news():
 
 
 def apps():
-    import re
     global operating_system
 
     if operating_system == 'Windows':
@@ -563,8 +537,6 @@ def chatBot():
 
 
 def location():
-    from urllib.request import urlopen
-    import json
     url = 'http://ipinfo.io/json'
     resp = urlopen(url)
     data = json.load(resp)
@@ -614,7 +586,7 @@ def locate():
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             dummy.has_been_called = True
             locate()
-        if 'yes' in phrase or 'please' in phrase:
+        if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
             speaker.say("Ringing your iPhone now.")
             speaker.runAndWait()
             api.iphone.play_sound()
@@ -624,7 +596,7 @@ def locate():
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r")
             phrase = recognizer.recognize_google(listener)
-            if 'yes' in phrase or 'please' in phrase:
+            if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
                 recovery = os.getenv('recovery')
                 message = 'Return my phone immediately.'
                 api.iphone.lost_device(recovery, message)
@@ -668,8 +640,6 @@ def music():
 def gmail():
     import email
     import imaplib
-    import os
-    from datetime import datetime, timedelta
 
     u = os.getenv('gmail_user')
     p = os.getenv('gmail_pass')
@@ -696,11 +666,9 @@ def gmail():
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=7)
                 response = recognizer.recognize_google(listener)
                 sys.stdout.write("\r")
-                if 'yes' in response or 'proceed' in response:
-                    i = 0
+                if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
                     if return_code == 'OK':
                         for nm in messages[0].split():
-                            i = i + 1
                             ignore, data = mail.fetch(nm, '(RFC822)')
                             for response_part in data:
                                 if isinstance(response_part, tuple):
@@ -709,23 +677,13 @@ def gmail():
                                     datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
                                                    + timedelta(hours=2)
                                     receive = (datetime_obj.strftime("on %A, %B %d, at %I:%M %p"))
-                                    raw_email = data[0][1]
-                                    raw_email_string = raw_email.decode('utf-8')
-                                    email_message = email.message_from_string(raw_email_string)
-                                    for part in email_message.walk():
-                                        if part.get_content_type() == "text/plain":
-                                            sender = (original_email['From'] + '\n').strip()
-                                            sub = (original_email['Subject'] + '\n').strip()
-                                            speaker.say(f"You have an email from {sender} with subject {sub} {receive}")
-                                            speaker.runAndWait()
-            except (sr.UnknownValueError, sr.RequestError):
+                                    sender = (original_email['From'] + '\n').strip()
+                                    sub = (original_email['Subject'] + '\n').strip()
+                                    speaker.say(f"You have an email from, {sender}, with subject, {sub}, {receive}")
+                                    speaker.runAndWait()
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
-                speaker.runAndWait()
-                gmail()
-            except sr.WaitTimeoutError:
-                sys.stdout.write("\r")
-                speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
                 speaker.runAndWait()
                 gmail()
     renew()
