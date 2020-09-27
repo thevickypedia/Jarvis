@@ -22,7 +22,6 @@ today = now.strftime("%A")
 
 
 # TODO: include face recognition
-# TODO: include gmail reader
 
 
 def initialize():
@@ -149,6 +148,9 @@ def conditions(converted):
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.gmail()):
         gmail()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.meaning()):
+        meaning()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
         speaker.say(exit_msg)
@@ -686,6 +688,32 @@ def gmail():
                 speaker.say("I didn't quite get that. Try again.")
                 speaker.runAndWait()
                 gmail()
+    renew()
+
+
+def meaning():
+    from PyDictionary import PyDictionary
+    dictionary = PyDictionary()
+    speaker.say("Please tell a key word.")
+    speaker.runAndWait()
+    with sr.Microphone() as source:
+        try:
+            sys.stdout.write("\rListener activated..")
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+            response = recognizer.recognize_google(listener)
+            sys.stdout.write("\r")
+            definition = dictionary.meaning(response)
+            if definition:
+                speaker.say("".join(definition['Noun']))
+                speaker.runAndWait()
+            else:
+                speaker.say("Keyword should be a single worded noun. Try again.")
+                meaning()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            speaker.runAndWait()
+            meaning()
     renew()
 
 

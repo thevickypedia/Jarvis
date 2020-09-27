@@ -63,6 +63,10 @@ class Keywords:
         key = ['email', 'mail', 'emails', 'mails']
         return key
 
+    def meaning(self):
+        key = ['meaning', 'meanings', 'dictionary', 'definition']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on']
         return key
