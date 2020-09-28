@@ -16,7 +16,7 @@ class Keywords:
         return key
 
     def webpage(self):
-        key = ['website', 'webpage', '.com']
+        key = ['website', 'webpage', 'web page', '.com']
         return key
 
     def wikipedia(self):
@@ -52,7 +52,7 @@ class Keywords:
         return key
 
     def locate(self):
-        key = ['locate', 'where is my phone']
+        key = ['locate', 'where is my phone', "where's my phone"]
         return key
 
     def music(self):
