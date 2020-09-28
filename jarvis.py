@@ -128,8 +128,8 @@ def conditions(converted):
         robinhood()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.apps()):
-        apps.has_been_called = False
-        apps()
+        # apps.has_been_called = False
+        apps(converted.split()[-1])
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.repeat()):
         repeater()
@@ -223,7 +223,7 @@ def webpage():
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             webpage()
 
-    if 'exit' in converted1 or 'quit' in converted1:
+    if any(re.search(line, converted1, flags=re.IGNORECASE) for line in keywords.exit()):
         renew()
 
     url = f"https://{converted1}.com"
@@ -312,7 +312,7 @@ def wiki_pedia():
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             wiki_pedia()
 
-        if 'exit' in keyword or 'quit' in keyword:
+        if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
             renew()
 
         sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
@@ -371,10 +371,10 @@ def news():
         renew()
 
 
-def apps():
+def apps(keyword):
     global operating_system
-
-    if operating_system == 'Windows':
+    ignore = ['app', 'application']
+    if (keyword in ignore or keyword is None) and operating_system == 'Windows':
         if not apps.has_been_called:
             speaker.say("Which app shall I open? Please say the app name alone.")
         speaker.runAndWait()
@@ -385,7 +385,7 @@ def apps():
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
                 sys.stdout.write("\r")
                 keyword = recognizer.recognize_google(listener)
-                if 'exit' in keyword or 'quit' in keyword:
+                if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
                     renew()
                 status = os.system(f'start {keyword}')
                 if status == 0:
@@ -393,22 +393,29 @@ def apps():
                     renew()
                 else:
                     speaker.say(f"I wasn't able to find the app {keyword}. Try again. Please tell me an app name.")
-                    apps()
+                    apps(None)
             except (sr.UnknownValueError, sr.RequestError):
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again. Please tell me an app name.")
-                apps()
+                apps(None)
             except sr.WaitTimeoutError:
                 sys.stdout.write("\r")
                 speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. "
                             "Or, please tell me an app name")
-                apps()
-
-    elif operating_system == 'Darwin':
-        if not apps.has_been_called:
-            speaker.say("Which app shall I open? Please say the app name alone.")
+                apps(None)
+    elif operating_system == 'Windows':
+        status = os.system(f'start {keyword}')
+        if status == 0:
+            speaker.say(f'I have opened {keyword}')
+            renew()
+        else:
+            speaker.say(f"I wasn't able to find the app {keyword}. Try again. Please tell me an app name.")
+            apps(None)
+    elif (keyword in ignore or keyword is None) and operating_system == 'Darwin':
+        # if not apps.has_been_called:
+        speaker.say("Which app shall I open? Please say the app name alone.")
         speaker.runAndWait()
-        apps.has_been_called = True
+        # apps.has_been_called = True
         with sr.Microphone() as source:
             try:
                 sys.stdout.write("\rListener activated..")
@@ -418,14 +425,14 @@ def apps():
             except (sr.UnknownValueError, sr.RequestError):
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again. Please tell me an app name.")
-                apps()
+                apps(None)
             except sr.WaitTimeoutError:
                 sys.stdout.write("\r")
                 speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. "
                             "Or, Please tell me an app name.")
-                apps()
+                apps(None)
 
-        if 'exit' in keyword or 'quit' in keyword:
+        if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
             renew()
 
         v = (subprocess.check_output("ls /Applications/", shell=True))
@@ -436,13 +443,30 @@ def apps():
                 keyword = app
 
         app_status = os.system(f"open /Applications/'{keyword}'")
-        apps.has_been_called = True
+        # apps.has_been_called = True
         if app_status == 256:
             speaker.say(f"I did not find the app {keyword}.")
-            apps()
+            apps(None)
         else:
             speaker.say(f"I have opened {keyword}")
             renew()
+    elif operating_system == 'Darwin':
+        v = (subprocess.check_output("ls /Applications/", shell=True))
+        apps_ = (v.decode('utf-8').split('\n'))
+
+        for app in apps_:
+            if re.search(keyword, app, flags=re.IGNORECASE) is not None:
+                keyword = app
+
+        app_status = os.system(f"open /Applications/'{keyword}'")
+        # apps.has_been_called = True
+        if app_status == 256:
+            speaker.say(f"I did not find the app {keyword}.")
+            apps(None)
+        else:
+            keyword = keyword.replace('.app', '')
+            speaker.say(f"I have opened {keyword}")
+        renew()
 
 
 def robinhood():
@@ -479,7 +503,7 @@ def repeater():
             sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             repeater()
-        if 'exit' in keyword or 'quit' in keyword:
+        if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
             renew()
         speaker.say(f"I heard {keyword}")
         speaker.runAndWait()
@@ -521,7 +545,7 @@ def chatBot():
             sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             chatBot()
-        if 'exit' in keyword or 'quit' in keyword:
+        if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
             speaker.say('Let me remove the training modules.')
             os.system('rm db*')
             os.system(f'rm -rf {file2}')
@@ -696,7 +720,7 @@ def meaning(keyword):
     dictionary = PyDictionary()
     if keyword == 'word':
         keyword = None
-    if not keyword:
+    if keyword is None:
         speaker.say("Please tell a keyword.")
         speaker.runAndWait()
         with sr.Microphone() as source:
@@ -713,12 +737,12 @@ def meaning(keyword):
                         speaker.say(f'{response}: {key, "".join(definition[key])}')
                 else:
                     speaker.say("Keyword should be a single word. Try again")
-                    meaning('')
+                    meaning(None)
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 speaker.runAndWait()
-                meaning('')
+                meaning(None)
     else:
         definition = dictionary.meaning(keyword)
         if definition:
