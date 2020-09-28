@@ -660,6 +660,7 @@ def music():
 def gmail():
     import email
     import imaplib
+    from email.header import decode_header, make_header
 
     u = os.getenv('gmail_user')
     p = os.getenv('gmail_pass')
@@ -683,7 +684,7 @@ def gmail():
         with sr.Microphone() as source:
             try:
                 sys.stdout.write("\rListener activated..")
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=7)
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
                 response = recognizer.recognize_google(listener)
                 sys.stdout.write("\r")
                 if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
@@ -697,8 +698,8 @@ def gmail():
                                     datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
                                                    + timedelta(hours=2)
                                     receive = (datetime_obj.strftime("on %A, %B %d, at %I:%M %p"))
-                                    sender = (original_email['From'] + '\n').strip()
-                                    sub = (original_email['Subject'] + '\n').strip()
+                                    sender = (original_email['From']).split(' <')[0]
+                                    sub = make_header(decode_header(original_email['Subject']))
                                     speaker.say(f"You have an email from, {sender}, with subject, {sub}, {receive}")
                                     speaker.runAndWait()
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
