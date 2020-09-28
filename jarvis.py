@@ -179,6 +179,7 @@ def report():
     date()
     current_time()
     weather()
+    gmail()
     news()
     report.has_been_called = False
     renew()
@@ -705,7 +706,10 @@ def gmail():
                 speaker.say("I didn't quite get that. Try again.")
                 speaker.runAndWait()
                 gmail()
-    renew()
+    if report.has_been_called:
+        pass
+    else:
+        renew()
 
 
 def meaning(keyword):
