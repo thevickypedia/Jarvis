@@ -79,7 +79,7 @@ def renew():
             speaker.say(exit_msg)
             speaker.runAndWait()
             sys.stdout.write(f"Total runtime: {time_converter(time.perf_counter())}")
-            exit()
+            exit(0)
         else:
             conditions(converted)
 
@@ -156,7 +156,7 @@ def conditions(converted):
         speaker.say(exit_msg)
         speaker.runAndWait()
         sys.stdout.write(f"Total runtime: {time_converter(time.perf_counter())}")
-        exit()
+        exit(0)
 
     else:
         sys.stdout.write(f"\r{converted}")
@@ -374,7 +374,6 @@ def news():
 
 
 def apps(keyword):
-    global operating_system
     ignore = ['app', 'application']
     if (keyword in ignore or keyword is None) and operating_system == 'Windows':
         speaker.say("Please say the app name.")
@@ -629,14 +628,15 @@ def locate():
 
 
 def music():
-    global path
     sys.stdout.write("\rScanning music files...")
+    user_profile = os.path.expanduser('~')
 
     if operating_system == 'Darwin':
-        path = os.walk("/Users")
+        path = os.walk(f"{user_profile}/Music")
     elif operating_system == 'Windows':
-        user_profile = os.path.expanduser('~')
         path = os.walk(f"{user_profile}\\Music")
+    else:
+        path = None
 
     get_all_files = (os.path.join(root, f) for root, _, files in path for f in files)
     get_music_files = (f for f in get_all_files if os.path.splitext(f)[1] == '.mp3')
@@ -774,6 +774,9 @@ if __name__ == '__main__':
         # noinspection PyTypeChecker
         speaker.setProperty("voice", voices[1].id)
         speaker.setProperty('rate', 190)
+    else:
+        operating_system = None
+        exit(0)
 
     weekend = ['Friday', 'Saturday']
     if current == 'AM' and int(clock) < 10:
