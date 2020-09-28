@@ -74,8 +74,8 @@ def renew():
             sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             renew()
-        if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()) and 'notepad' not in \
-                converted.lower():
+        if 'no' in converted.lower().split() or 'nope' in converted.lower().split() or 'thank you' in \
+                converted.lower().split() or "that's it" in converted.lower().split():
             speaker.say(exit_msg)
             speaker.runAndWait()
             sys.stdout.write(f"Total runtime: {time_converter(time.perf_counter())}")
@@ -223,7 +223,7 @@ def webpage():
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             webpage()
 
-    if any(re.search(line, converted1, flags=re.IGNORECASE) for line in keywords.exit()):
+    if 'exit' in converted1 or 'quit' in converted1 or 'Xzibit' in converted1:
         renew()
 
     url = f"https://{converted1}.com"
@@ -312,7 +312,8 @@ def wiki_pedia():
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             wiki_pedia()
 
-        if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
+        if 'no' in keyword.lower().split() or 'nope' in keyword.lower().split() or 'thank you' in \
+                keyword.lower().split() or "that's it" in keyword.lower().split():
             renew()
 
         sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
@@ -383,8 +384,7 @@ def apps(keyword):
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
                 sys.stdout.write("\r")
                 keyword = recognizer.recognize_google(listener)
-                if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()) and 'notepad' not in \
-                        keyword.lower():
+                if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
                     renew()
                 status = os.system(f'start {keyword}')
                 if status == 0:
@@ -427,7 +427,7 @@ def apps(keyword):
                 speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
                 apps(None)
 
-        if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
+        if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
             renew()
 
         v = (subprocess.check_output("ls /Applications/", shell=True))
@@ -496,7 +496,7 @@ def repeater():
             sys.stdout.write("\r")
             speaker.say("You're quite slower than I thought. Make quick responses, or go have a coffee. Or,")
             repeater()
-        if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
+        if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
             renew()
         speaker.say(f"I heard {keyword}")
         speaker.runAndWait()
@@ -722,7 +722,8 @@ def meaning(keyword):
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
                 response = recognizer.recognize_google(listener)
                 sys.stdout.write("\r")
-                if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.exit()):
+                if 'no' in response.lower().split() or 'nope' in response.lower().split() or 'thank you' in \
+                        response.lower().split() or "that's it" in response.lower().split():
                     renew()
                 definition = dictionary.meaning(response)
                 if definition:
