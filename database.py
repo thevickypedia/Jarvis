@@ -1,14 +1,16 @@
+import os
 import sqlite3
 
-connection = sqlite3.connect('todo.db')
-connection.execute("CREATE TABLE todo (category, item)")
-connection.execute("INSERT INTO todo (category, item) VALUES ('Shopping','onions')")
-connection.execute("INSERT INTO todo (category, item) VALUES ('Shopping','milk')")
-connection.execute("INSERT INTO todo (category, item) VALUES ('Shopping','bread')")
-connection.commit()
+file_name = 'todo.db'
+table_name = file_name.replace('.db', '')
 
-connector = connection.cursor()
-connector.execute("SELECT category, item from todo")
-result = connector.fetchall()
-connector.close()
-print(result)
+
+class Database:
+    def create_db(self):
+        if os.path.isfile(file_name):
+            return f"Database {file_name} already exists."
+        else:
+            connection = sqlite3.connect(file_name)
+            connection.execute(f"CREATE TABLE {table_name} (category, item)")
+            connection.commit()
+            return f"Database {file_name} has been created."
