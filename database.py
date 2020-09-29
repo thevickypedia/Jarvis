@@ -29,6 +29,12 @@ class Database:
         connector.close()
         return response
 
+    def deleter(self, category, item):
+        connection = sqlite3.connect(file_name)
+        connection.execute(f"DELETE FROM {table_name} WHERE category='{category}' AND item='{item}'")
+        connection.commit()
+        return f"Category: {category} and Item: {item} has been removed from {table_name}."
+
 
 if __name__ == '__main__':
     data = Database().downloader()
