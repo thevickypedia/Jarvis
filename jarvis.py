@@ -16,7 +16,7 @@ import speech_recognition as sr
 from keywords import Keywords
 from database import Database, file_name
 
-data = Database()
+database = Database()
 now = datetime.now()
 current = now.strftime("%p")
 clock = now.strftime("%I")
@@ -154,6 +154,18 @@ def conditions(converted):
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.meaning()):
         meaning(converted.split()[-1])
 
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.delete_todo()):
+        delete_todo()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.list_todo()):
+        todo()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.add_todo()):
+        add_todo()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.delete_db()):
+        delete_db()
+
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.create_db()):
         create_db()
 
@@ -246,8 +258,8 @@ def weather():
 
     url = 'http://ipinfo.io/json'
     resp = urlopen(url)
-    data = json.load(resp)
-    city, state, country, coordinates = data['city'], data['region'], data['country'], data['loc']
+    ip_info = json.load(resp)
+    city, state, country, coordinates = ip_info['city'], ip_info['region'], ip_info['country'], ip_info['loc']
     lat = coordinates.split(',')[0]
     lon = coordinates.split(',')[1]
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
@@ -324,7 +336,7 @@ def wiki_pedia():
 
         sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
         try:
-            data = wikipedia.summary(keyword)
+            summary = wikipedia.summary(keyword)
         except wikipedia.exceptions.DisambiguationError as e:
             sys.stdout.write(e)
             speaker.say('Your search has multiple results. Pick one displayed on your screen.')
@@ -333,8 +345,8 @@ def wiki_pedia():
             listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r")
             keyword1 = recognizer.recognize_google(listener1)
-            data = wikipedia.summary(keyword1)
-        speaker.say(''.join(data.split('.')[0:2]))
+            summary = wikipedia.summary(keyword1)
+        speaker.say(''.join(summary.split('.')[0:2]))
         speaker.runAndWait()
         speaker.say("Do you want me to continue?")
         speaker.runAndWait()
@@ -354,7 +366,7 @@ def wiki_pedia():
             dummy.has_been_called = True
             renew()
         if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
-            speaker.say(''.join(data.split('.')[3:-1]))
+            speaker.say(''.join(summary.split('.')[3:-1]))
             speaker.runAndWait()
             renew()
         else:
@@ -564,8 +576,8 @@ def chatBot():
 def location():
     url = 'http://ipinfo.io/json'
     resp = urlopen(url)
-    data = json.load(resp)
-    city, state, country = data['city'], data['region'], data['country']
+    ip_info = json.load(resp)
+    city, state, country = ip_info['city'], ip_info['region'], ip_info['country']
     speaker.say(f"You're at {city} {state}, in {country}")
     speaker.runAndWait()
     renew()
@@ -681,6 +693,9 @@ def gmail():
     if return_code == 'OK':
         for num in messages[0].split():
             n = n + 1
+    else:
+        speaker.say("I'm unable access your email sir.")
+        renew()
     if n == 0:
         speaker.say("You don't have any unread email sir")
         speaker.runAndWait()
@@ -694,20 +709,19 @@ def gmail():
                 response = recognizer.recognize_google(listener)
                 sys.stdout.write("\r")
                 if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
-                    if return_code == 'OK':
-                        for nm in messages[0].split():
-                            ignore, data = mail.fetch(nm, '(RFC822)')
-                            for response_part in data:
-                                if isinstance(response_part, tuple):
-                                    original_email = email.message_from_bytes(response_part[1])
-                                    raw_receive = (original_email['Received'].split(';')[-1]).strip()
-                                    datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
-                                                   + timedelta(hours=2)
-                                    receive = (datetime_obj.strftime("on %A, %B %d, at %I:%M %p"))
-                                    sender = (original_email['From']).split(' <')[0]
-                                    sub = make_header(decode_header(original_email['Subject']))
-                                    speaker.say(f"You have an email from, {sender}, with subject, {sub}, {receive}")
-                                    speaker.runAndWait()
+                    for nm in messages[0].split():
+                        ignore, mail_data = mail.fetch(nm, '(RFC822)')
+                        for response_part in mail_data:
+                            if isinstance(response_part, tuple):
+                                original_email = email.message_from_bytes(response_part[1])
+                                raw_receive = (original_email['Received'].split(';')[-1]).strip()
+                                datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
+                                               + timedelta(hours=2)
+                                receive = (datetime_obj.strftime("on %A, %B %d, at %I:%M %p"))
+                                sender = (original_email['From']).split(' <')[0]
+                                sub = make_header(decode_header(original_email['Subject']))
+                                speaker.say(f"You have an email from, {sender}, with subject, {sub}, {receive}")
+                                speaker.runAndWait()
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
@@ -757,8 +771,127 @@ def meaning(keyword):
 
 
 def create_db():
-    speaker.say(data.create_db())
+    speaker.say(database.create_db())
     renew()
+
+
+def todo():
+    sys.stdout.write("Querying DB.")
+    result = {}
+    for category, item in database.downloader():
+        if category not in result:
+            result.update({category: item})
+        else:
+            result[category] = result[category] + ', ' + item
+    sys.stdout.write("\r")
+    if result:
+        for category, item in result.items():
+            response = f"You have {item}, in {category} category."
+            speaker.say(response)
+            sys.stdout.write(response)
+    else:
+        speaker.say("Your data base is now empty sir.")
+        renew()
+    if delete_todo.has_been_called:
+        speaker.runAndWait()
+    else:
+        renew()
+
+
+def add_todo():
+    speaker.say("What's your plan sir?")
+    speaker.runAndWait()
+    with sr.Microphone() as source:
+        try:
+            sys.stdout.write("\rListener activated..")
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+            sys.stdout.write("\r")
+            item = recognizer.recognize_google(listener)
+            if 'exit' in item or 'quit' in item or 'Xzibit' in item:
+                renew()
+            speaker.say(f"I heard {item}. Which category you want me to add it to?")
+            speaker.runAndWait()
+            sys.stdout.write("\rListener activated..")
+            listener_ = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+            sys.stdout.write("\r")
+            category = recognizer.recognize_google(listener_)
+            if 'exit' in category or 'quit' in category or 'Xzibit' in category:
+                renew()
+            response = database.uploader(category, item)
+            speaker.say(response)
+            speaker.say("Do you want to add anything else to your to-do list?")
+            speaker.runAndWait()
+            sys.stdout.write("\rListener activated..")
+            listener_continue = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+            sys.stdout.write("\r")
+            category_continue = recognizer.recognize_google(listener_continue)
+            if any(re.search(line, category_continue, flags=re.IGNORECASE) for line in keywords.exit()):
+                renew()
+            else:
+                add_todo()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            speaker.runAndWait()
+            add_todo()
+    renew()
+
+
+def delete_todo():
+    if not dummy.has_been_called:
+        delete_todo.has_been_called = True
+        todo()
+    dummy.has_been_called = False
+    speaker.say("Which one should I remove sir?")
+    speaker.runAndWait()
+    with sr.Microphone() as source:
+        dummy.has_been_called = True
+        try:
+            sys.stdout.write("\rListener activated..")
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+            sys.stdout.write("\r")
+            item = recognizer.recognize_google(listener)
+            if any(re.search(line, item, flags=re.IGNORECASE) for line in keywords.exit()):
+                renew()
+            response = database.deleter(item)
+            if response.startswith('Looks'):
+                speaker.say(response)
+                delete_todo()
+            else:
+                speaker.say(response)
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            speaker.runAndWait()
+            delete_todo()
+    delete_todo.has_been_called = False
+    todo()
+
+
+def delete_db():
+    if os.path.isfile(file_name):
+        speaker.say('Are you sure you want to delete your database?')
+        speaker.runAndWait()
+    else:
+        speaker.say(f'I did not find any database named, {file_name} sir.')
+        renew()
+    with sr.Microphone() as source:
+        try:
+            sys.stdout.write("\rListener activated..")
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+            sys.stdout.write("\r")
+            response = recognizer.recognize_google(listener)
+            if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
+                os.remove(file_name)
+                speaker.say("I've removed your database sir.")
+            else:
+                speaker.say("Your database has been left intact sir.")
+            renew()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            speaker.runAndWait()
+            delete_db()
 
 
 def dummy():
@@ -771,7 +904,7 @@ if __name__ == '__main__':
     keywords = Keywords()
     operating_system = platform.system()
 
-    report.has_been_called, dummy.has_been_called = False, False
+    report.has_been_called, dummy.has_been_called, delete_todo.has_been_called = False, False, False
 
     # noinspection PyTypeChecker
     volume = int(speaker.getProperty("volume")) * 100
