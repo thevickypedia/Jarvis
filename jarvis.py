@@ -14,7 +14,9 @@ import pyttsx3 as audio
 import speech_recognition as sr
 
 from keywords import Keywords
+from database import Database, file_name
 
+data = Database()
 now = datetime.now()
 current = now.strftime("%p")
 clock = now.strftime("%I")
@@ -151,6 +153,9 @@ def conditions(converted):
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.meaning()):
         meaning(converted.split()[-1])
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.create_db()):
+        create_db()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
         speaker.say(exit_msg)
@@ -488,6 +493,7 @@ def repeater():
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=15)
             sys.stdout.write("\r")
             keyword = recognizer.recognize_google(listener)
+            sys.stdout.write(keyword)
         except (sr.UnknownValueError, sr.RequestError):
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
@@ -747,6 +753,11 @@ def meaning(keyword):
         if definition:
             for key in definition.keys():
                 speaker.say(f'{keyword}: {key, "".join(definition[key])}')
+    renew()
+
+
+def create_db():
+    speaker.say(data.create_db())
     renew()
 
 
