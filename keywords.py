@@ -67,6 +67,26 @@ class Keywords:
         key = ['meaning', 'meanings', 'dictionary', 'definition']
         return key
 
+    def create_db(self):
+        key = ['create a new database', 'create a new data base', 'create a database', 'create a data base']
+        return key
+
+    def add_todo(self):
+        key = ['update my to do list', 'add to do']
+        return key
+
+    def delete_todo(self):
+        key = ['remove items', 'delete items']
+        return key
+
+    def delete_db(self):
+        key = ['delete database', 'delete data base', 'delete my database', 'delete my data base']
+        return key
+
+    def list_todo(self):
+        key = ["what's my plan", "what is my plan", 'planner', 'plan']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on']
         return key
