@@ -25,7 +25,7 @@ class Database:
                 return f"Looks like the table: {table_name}, already has the item: {item} in, {category} category"
         connection.execute(f"INSERT INTO {table_name} (category, item) VALUES ('{category}','{item}')")
         connection.commit()
-        return f"I've updated the table: {table_name} with category: {category} and item: {item}."
+        return f"I've updated the table: {table_name}, with category: {category}, and item: {item}."
 
     def downloader(self):
         connection = sqlite3.connect(file_name)

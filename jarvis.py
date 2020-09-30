@@ -196,6 +196,7 @@ def report():
     date()
     current_time()
     weather()
+    todo()
     gmail()
     news()
     report.has_been_called = False
@@ -376,6 +377,7 @@ def wiki_pedia():
 def news():
     source = 'fox'
     sys.stdout.write(f'\rGetting news from {source} news.')
+    speaker.say("News around you!")
     from newsapi import NewsApiClient
     newsapi = NewsApiClient(api_key=os.getenv('news_api'))
     all_articles = newsapi.get_top_headlines(sources=f'{source}-news')
@@ -676,6 +678,7 @@ def music():
 
 
 def gmail():
+    sys.stdout.write("\rFetching new emails..")
     import email
     import imaplib
     from email.header import decode_header, make_header
@@ -717,7 +720,15 @@ def gmail():
                                 raw_receive = (original_email['Received'].split(';')[-1]).strip()
                                 datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
                                                + timedelta(hours=2)
-                                receive = (datetime_obj.strftime("on %A, %B %d, at %I:%M %p"))
+                                received_date = datetime_obj.strftime("%Y-%m-%d")
+                                current_date = datetime.today().date()
+                                yesterday = current_date - timedelta(days=1)
+                                if received_date == str(current_date):
+                                    receive = (datetime_obj.strftime("today, at %I:%M %p"))
+                                elif received_date == str(yesterday):
+                                    receive = (datetime_obj.strftime("yesterday, at %I:%M %p"))
+                                else:
+                                    receive = (datetime_obj.strftime("on %A, %B %d, at %I:%M %p"))
                                 sender = (original_email['From']).split(' <')[0]
                                 sub = make_header(decode_header(original_email['Subject']))
                                 speaker.say(f"You have an email from, {sender}, with subject, {sub}, {receive}")
@@ -776,23 +787,28 @@ def create_db():
 
 
 def todo():
-    sys.stdout.write("Querying DB.")
-    result = {}
-    for category, item in database.downloader():
-        if category not in result:
-            result.update({category: item})
-        else:
-            result[category] = result[category] + ', ' + item
-    sys.stdout.write("\r")
-    if result:
-        for category, item in result.items():
-            response = f"You have {item}, in {category} category."
-            speaker.say(response)
-            sys.stdout.write(response)
+    sys.stdout.write("\rLooking for to do database..")
+    if not os.path.isfile(file_name):
+        speaker.say("You don't have a database created for your to do list sir.")
     else:
-        speaker.say("Your data base is now empty sir.")
-        renew()
-    if delete_todo.has_been_called:
+        sys.stdout.write("\rQuerying DB for todo list..")
+        result = {}
+        for category, item in database.downloader():
+            if category not in result:
+                result.update({category: item})
+            else:
+                result[category] = result[category] + ', ' + item
+        sys.stdout.write("\r")
+        if result:
+            for category, item in result.items():
+                response = f"Your todo items are, {item}, in {category} category."
+                speaker.say(response)
+                sys.stdout.write(f"\r{response}")
+        else:
+            speaker.say("You don't have any tasks in your todo list sir.")
+            renew()
+
+    if delete_todo.has_been_called or report.has_been_called:
         speaker.runAndWait()
     else:
         renew()
@@ -804,7 +820,7 @@ def add_todo():
     with sr.Microphone() as source:
         try:
             sys.stdout.write("\rListener activated..")
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r")
             item = recognizer.recognize_google(listener)
             if 'exit' in item or 'quit' in item or 'Xzibit' in item:

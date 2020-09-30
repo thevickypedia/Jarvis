@@ -72,7 +72,7 @@ class Keywords:
         return key
 
     def add_todo(self):
-        key = ['update my to do list', 'add to do']
+        key = ['update my to do list', 'add to do', 'add new task', 'add a new task']
         return key
 
     def delete_todo(self):
