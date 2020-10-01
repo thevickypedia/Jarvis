@@ -8,6 +8,9 @@ conda install PyAudio
 echo "Starting pip3 installations"
 pip3 install numpy
 pip3 install pyttsx3
+pip3 install pipwin
+pipwin install pyaudio
+pip3 install -U pyttsx3==2.71
 pip3 install SpeechRecognition
 pip3 install pytemperature
 pip3 install psutil
