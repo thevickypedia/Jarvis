@@ -307,9 +307,13 @@ def system_info():
     ram = f"{mem.total // (2 ** 30)} GB"
 
     cpu = str(os.cpu_count())
-    release = str(platform.release())
-    speaker.say(f"You're running {(platform.platform()).split('.')[0]}, with {cpu} cores. "
-                f"The release version is {release}. Your physical drive capacity is {total}. "
+    if operating_system == 'Windows':
+        o_system = platform.uname()[0] + platform.uname()[2]
+    elif operating_system == 'Darwin':
+        o_system = (platform.platform()).split('.')[0]
+    else:
+        o_system = None
+    speaker.say(f"You're running {o_system}, with {cpu} cores. Your physical drive capacity is {total}. "
                 f"You have used up {used} of space. Your free space is {free}. Your RAM capacity is {ram}")
     speaker.runAndWait()
     renew()
@@ -835,6 +839,7 @@ def add_todo():
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r")
             item = recognizer.recognize_google(listener)
+            sys.stdout.write(f"Item: {item}")
             if 'exit' in item or 'quit' in item or 'Xzibit' in item:
                 renew()
             speaker.say(f"I heard {item}. Which category you want me to add it to?")
@@ -843,6 +848,7 @@ def add_todo():
             listener_ = recognizer.listen(source, timeout=3, phrase_time_limit=3)
             sys.stdout.write("\r")
             category = recognizer.recognize_google(listener_)
+            sys.stdout.write(f"Category: {category}")
             if 'exit' in category or 'quit' in category or 'Xzibit' in category:
                 renew()
             response = database.uploader(category, item)
