@@ -13,8 +13,8 @@ from urllib.request import urlopen
 import pyttsx3 as audio
 import speech_recognition as sr
 
-from keywords import Keywords
-from database import Database, file_name
+from helper_functions.database import Database, file_name
+from helper_functions.keywords import Keywords
 
 database = Database()
 now = datetime.now()
@@ -501,7 +501,7 @@ def robinhood():
     rh.login(username=u, password=p, qr_code=q)
     raw_result = rh.positions()
     result = raw_result['results']
-    from robinhood import watcher
+    from helper_functions.robinhood import watcher
     stock_value = watcher(rh, result)
     speaker.say(stock_value)
     speaker.runAndWait()
