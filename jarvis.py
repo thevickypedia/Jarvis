@@ -15,6 +15,7 @@ import speech_recognition as sr
 
 from helper_functions.database import Database, file_name
 from helper_functions.keywords import Keywords
+from helper_functions.conversation import Conversation
 
 database = Database()
 now = datetime.now()
@@ -46,9 +47,9 @@ def initialize():
         recognizer.adjust_for_ambient_noise(source, duration=1)
         try:
             sys.stdout.write("\rListener activated..")
-            listener_new = recognizer.listen(source, timeout=3, phrase_time_limit=7)
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r")
-            return recognizer.recognize_google(listener_new)
+            return conditions(recognizer.recognize_google(listener))
         except (sr.UnknownValueError, sr.RequestError):
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
@@ -170,6 +171,41 @@ def conditions(converted):
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.create_db()):
         create_db()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
+        speaker.say('I am spectacular. I hope you are doing fine too.')
+        dummy.has_been_called = True
+        initialize()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.capabilities()):
+        speaker.say('There is a lot I can do, for example: I can get you the weather at your location, news around you,'
+                    ' meanings of words, launch any application, play music, create a to-do list, check your emails, '
+                    'get your system configuration, locate your phone, and much more. Time to ask,.')
+        dummy.has_been_called = True
+        initialize()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.languages()):
+        speaker.say("Tricky question!. I'm configured in python, and a little bit of bash. I can speak English.")
+        dummy.has_been_called = True
+        initialize()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.form()):
+        speaker.say("I am a program, I'm without form.")
+        dummy.has_been_called = True
+        initialize()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.whats_up()):
+        speaker.say("My listeners are up. There is nothing I cannot process. So, tell me..")
+        dummy.has_been_called = True
+        initialize()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.about_me()):
+        speaker.say("I am a program, I'm without form.")
+        speaker.say('There is a lot I can do, for example: I can get you the weather at your location, news around you,'
+                    ' meanings of words, launch any application, play music, create a to-do list, check your emails, '
+                    'get your system configuration, locate your phone, and much more. Time to ask,.')
+        dummy.has_been_called = True
+        initialize()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
         speaker.say(exit_msg)
@@ -938,6 +974,7 @@ if __name__ == '__main__':
     speaker = audio.init()
     recognizer = sr.Recognizer()
     keywords = Keywords()
+    conversation = Conversation()
     operating_system = platform.system()
 
     report.has_been_called, dummy.has_been_called, delete_todo.has_been_called = False, False, False
@@ -977,4 +1014,4 @@ if __name__ == '__main__':
     else:
         exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice night."
 
-    conditions(initialize())
+    initialize()
