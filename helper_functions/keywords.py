@@ -92,5 +92,6 @@ class Keywords:
         return key
 
     def exit(self):
-        key = ['exit', 'quit', 'go to sleep', 'no', 'nope', 'thanks', 'thank you', 'Xzibit']
+        key = ['exit', 'quit', 'go to sleep', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
+               'see you later', 'talk to you later']
         return key
