@@ -35,9 +35,9 @@ def initialize():
         speaker.say("Welcome back sir. Good Morning. What can I do for you?")
     elif current == 'AM' and int(clock) >= 10:
         speaker.say("Welcome back sir. Hope you're having a nice morning. What can I do for you?")
-    elif current == 'PM' and (int(clock) == 12 or int(clock) < 4):
+    elif current == 'PM' and (int(clock) == 12 or int(clock) < 3):
         speaker.say("Welcome back sir. Good Afternoon. What can I do for you?")
-    elif current == 'PM' and int(clock) < 7:
+    elif current == 'PM' and int(clock) < 6:
         speaker.say("Welcome back sir. Good Evening. What can I do for you?")
     else:
         speaker.say("Welcome back sir. Hope you're having a nice night. What can I do for you?")
@@ -1003,13 +1003,13 @@ if __name__ == '__main__':
         exit_msg = f"Thank you for using Vicky's virtual assistant. Have a nice day, and happy {today}."
     elif current == 'AM' and int(clock) >= 10:
         exit_msg = f"Thank you for using Vicky's virtual assistant. Enjoy your {today}."
-    elif current == 'PM' and (int(clock) == 12 or int(clock) < 4) and today in weekend:
+    elif current == 'PM' and (int(clock) == 12 or int(clock) < 3) and today in weekend:
         exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice afternoon, and enjoy your weekend."
-    elif current == 'PM' and (int(clock) == 12 or int(clock) < 4):
+    elif current == 'PM' and (int(clock) == 12 or int(clock) < 3):
         exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice afternoon. Good bye."
-    elif current == 'PM' and int(clock) < 7 and today in weekend:
+    elif current == 'PM' and int(clock) < 6 and today in weekend:
         exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice evening, and enjoy your weekend."
-    elif current == 'PM' and int(clock) < 7:
+    elif current == 'PM' and int(clock) < 6:
         exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice evening."
     elif today in weekend:
         exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice night, and enjoy your weekend."
