@@ -648,6 +648,10 @@ def locate():
     if dummy.has_been_called:
         speaker.say("Would you like to ring it?")
     else:
+        stat = api.iphone.status()
+        bat_percent = round(stat['batteryLevel'] * 100)
+        device_model = stat['deviceDisplayName']
+        phone_name = stat['name']
         raw_location = (api.iphone.location())
         raw_lat = raw_location['latitude']
         raw_long = raw_location['longitude']
@@ -655,6 +659,7 @@ def locate():
         locator = geo_locator.reverse(f'{raw_lat}, {raw_long}')
         current_location = locator.address
         speaker.say(f"Your iPhone is at {current_location}.")
+        speaker.say(f"Some more details. Battery: {bat_percent}%, Name: {phone_name}, Model: {device_model}")
         speaker.say("Would you like to ring it?")
     speaker.runAndWait()
     with sr.Microphone() as source:
