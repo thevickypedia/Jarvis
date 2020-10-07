@@ -838,11 +838,11 @@ def create_db():
 
 
 def todo():
-    sys.stdout.write("\rLooking for to do database..")
+    sys.stdout.write("\rLooking for to-do database..")
     if not os.path.isfile(file_name):
-        speaker.say("You don't have a database created for your to do list sir.")
+        speaker.say("You don't have a database created for your to-do list sir.")
     else:
-        sys.stdout.write("\rQuerying DB for todo list..")
+        sys.stdout.write("\rQuerying DB for to-do list..")
         result = {}
         for category, item in database.downloader():
             if category not in result:
@@ -852,11 +852,11 @@ def todo():
         sys.stdout.write("\r")
         if result:
             for category, item in result.items():
-                response = f"Your todo items are, {item}, in {category} category."
+                response = f"Your to-do items are, {item}, in {category} category."
                 speaker.say(response)
                 sys.stdout.write(f"\r{response}")
         else:
-            speaker.say("You don't have any tasks in your todo list sir.")
+            speaker.say("You don't have any tasks in your to-do list sir.")
             renew()
 
     if delete_todo.has_been_called or report.has_been_called:
