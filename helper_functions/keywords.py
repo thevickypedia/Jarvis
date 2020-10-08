@@ -72,11 +72,11 @@ class Keywords:
         return key
 
     def add_todo(self):
-        key = ['update my to do list', 'add to do', 'add new task', 'add a new task']
+        key = ['update my to do list', 'add to do', 'add items to my to do list', 'new task']
         return key
 
     def delete_todo(self):
-        key = ['remove items', 'delete items']
+        key = ['remove items', 'delete items', 'remove some items']
         return key
 
     def delete_db(self):
@@ -88,14 +88,15 @@ class Keywords:
         return key
 
     def ok(self):
-        key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on']
+        key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key
 
     def exit(self):
         key = ['exit', 'quit', 'go to sleep', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
-               'see you later', 'talk to you later', 'activate sentry mode', 'sentry']
+               'see you later', 'talk to you later', 'activate sentry mode', 'sentry', 'go back to sleep']
         return key
 
     def kill(self):
-        key = ['kill', 'terminate', 'kill yourself', 'terminate yourself', 'stop running', 'stop']
+        key = ['kill', 'terminate', 'kill yourself', 'terminate yourself', 'stop running', 'stop', 'shut down',
+               'shutdown']
         return key
