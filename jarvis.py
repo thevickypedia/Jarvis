@@ -1,8 +1,10 @@
 import json
+import math
 import os
 import platform
 import random
 import re
+import resource
 import subprocess
 import sys
 import time
@@ -13,9 +15,9 @@ from urllib.request import urlopen
 import pyttsx3 as audio
 import speech_recognition as sr
 
+from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.keywords import Keywords
-from helper_functions.conversation import Conversation
 
 database = Database()
 now = datetime.now()
@@ -32,15 +34,15 @@ def initialize():
         speaker.say("What can I do for you?")
         dummy.has_been_called = False
     elif current == 'AM' and int(clock) < 10:
-        speaker.say("Welcome back sir. Good Morning. What can I do for you?")
+        speaker.say("Good Morning. What can I do for you?")
     elif current == 'AM' and int(clock) >= 10:
-        speaker.say("Welcome back sir. Hope you're having a nice morning. What can I do for you?")
+        speaker.say("Hope you're having a nice morning. What can I do for you?")
     elif current == 'PM' and (int(clock) == 12 or int(clock) < 3):
-        speaker.say("Welcome back sir. Good Afternoon. What can I do for you?")
+        speaker.say("Good Afternoon. What can I do for you?")
     elif current == 'PM' and int(clock) < 6:
-        speaker.say("Welcome back sir. Good Evening. What can I do for you?")
+        speaker.say("Good Evening. What can I do for you?")
     else:
-        speaker.say("Welcome back sir. Hope you're having a nice night. What can I do for you?")
+        speaker.say("Hope you're having a nice night. What can I do for you?")
     speaker.runAndWait()
 
     with sr.Microphone() as source:
@@ -81,10 +83,10 @@ def renew():
             renew()
         if 'no' in converted.lower().split() or 'nope' in converted.lower().split() or 'thank you' in \
                 converted.lower().split() or "that's it" in converted.lower().split():
+            speaker.say(f"Activating sentry mode sir.")
             speaker.say(exit_msg)
             speaker.runAndWait()
-            sys.stdout.write(f"Total runtime: {time_converter(time.perf_counter())}")
-            exit(0)
+            listen()
         else:
             conditions(converted)
 
@@ -208,10 +210,20 @@ def conditions(converted):
         initialize()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
+        speaker.say(f"Activating sentry mode sir.")
+        speaker.say(exit_msg)
+        speaker.runAndWait()
+        listen()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.kill()):
+        speaker.say(f"I've consumed {size_converter()} so far sir. Shutting down now.")
         speaker.say(exit_msg)
         speaker.runAndWait()
         sys.stdout.write(f"Total runtime: {time_converter(time.perf_counter())}")
         exit(0)
+
+    elif 'increase volume' in converted or 'increase your volume' in converted or 'max up your volume' in converted:
+        speaker.setProperty("volume", 1.0)
 
     else:
         sys.stdout.write(f"\r{converted}")
@@ -728,7 +740,7 @@ def music():
     speaker.say("Enjoy your music sir!")
     speaker.runAndWait()
     sys.stdout.write(f"Total runtime: {time_converter(time.perf_counter())}")
-    exit(0)
+    listen()
 
 
 def gmail():
@@ -973,6 +985,48 @@ def delete_db():
             delete_db()
 
 
+def listen():
+    with sr.Microphone() as source:
+        recognizer.adjust_for_ambient_noise(source)
+        try:
+            sys.stdout.write("\rSentry Mode")
+            listener = recognizer.listen(source, timeout=None, phrase_time_limit=30)
+            sys.stdout.write("\r")
+            key = recognizer.recognize_google(listener)
+            if 'hey' in key or 'hello' in key:
+                speaker.say('Welcome back sir.')
+                initialize()
+            elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key:
+                speaker.say('Up and running sir.')
+                initialize()
+            elif 'Jarvis' in key or 'jarvis' in key or 'Friday' in key or 'friday' in key or 'you there' in key or \
+                    'buddy' in key:
+                speaker.say('At your service sir.')
+                initialize()
+            else:
+                sys.stdout.write("\rSec::Reactivating Sentry Mode..")
+                listen()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            sys.stdout.write("\rSec::Reactivating Sentry Mode..")
+            listen()
+        except KeyboardInterrupt:
+            speaker.say(f"I've consumed {size_converter()} so far sir. Shutting down now.")
+            speaker.say(exit_msg)
+            speaker.runAndWait()
+            sys.stdout.write(f"Total runtime: {time_converter(time.perf_counter())}")
+            exit(0)
+
+
+def size_converter():
+    byte_size = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+    integer = int(math.floor(math.log(byte_size, 1024)))
+    power = math.pow(1024, integer)
+    size = round(byte_size / power, 2)
+    response = str(size) + ' ' + size_name[integer]
+    return response
+
+
 def dummy():
     return None
 
@@ -1005,20 +1059,20 @@ if __name__ == '__main__':
 
     weekend = ['Friday', 'Saturday']
     if current == 'AM' and int(clock) < 10:
-        exit_msg = f"Thank you for using Vicky's virtual assistant. Have a nice day, and happy {today}."
+        exit_msg = f"Have a nice day, and happy {today}."
     elif current == 'AM' and int(clock) >= 10:
-        exit_msg = f"Thank you for using Vicky's virtual assistant. Enjoy your {today}."
+        exit_msg = f"Enjoy your {today}."
     elif current == 'PM' and (int(clock) == 12 or int(clock) < 3) and today in weekend:
-        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice afternoon, and enjoy your weekend."
+        exit_msg = "Have a nice afternoon, and enjoy your weekend."
     elif current == 'PM' and (int(clock) == 12 or int(clock) < 3):
-        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice afternoon. Good bye."
+        exit_msg = "Have a nice afternoon. Good bye."
     elif current == 'PM' and int(clock) < 6 and today in weekend:
-        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice evening, and enjoy your weekend."
+        exit_msg = "Have a nice evening, and enjoy your weekend."
     elif current == 'PM' and int(clock) < 6:
-        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice evening."
+        exit_msg = "Have a nice evening."
     elif today in weekend:
-        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice night, and enjoy your weekend."
+        exit_msg = "Have a nice night, and enjoy your weekend."
     else:
-        exit_msg = "Thank you for using Vicky's virtual assistant. Have a nice night."
+        exit_msg = "Have a nice night."
 
-    initialize()
+    listen()

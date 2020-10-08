@@ -93,5 +93,9 @@ class Keywords:
 
     def exit(self):
         key = ['exit', 'quit', 'go to sleep', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
-               'see you later', 'talk to you later']
+               'see you later', 'talk to you later', 'activate sentry mode', 'sentry']
+        return key
+
+    def kill(self):
+        key = ['kill', 'terminate', 'kill yourself', 'terminate yourself', 'stop running', 'stop']
         return key
