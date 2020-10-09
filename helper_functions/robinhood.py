@@ -27,13 +27,13 @@ def watcher(rh, result):
         else:
             profit_total.append(difference)
 
-    net_worth = round(float(rh.equity()), 2)
+    net_worth = round(rh.equity())
     output = f'You have purchased {n} stocks,\n'
     output += f'and currently own {n_} shares.\n'
     output += f'Current value of your total investment is ${net_worth}.\n'
-    total_buy = round(math.fsum(shares_total), 2)
+    total_buy = round(math.fsum(shares_total))
     output += f'Value of your total investment while purchase was ${total_buy}.\n'
-    total_diff = round(float(net_worth - total_buy), 2)
+    total_diff = round(net_worth - total_buy)
     if total_diff < 0:
         output += f'Currently your overall loss is ${total_diff}\n'
     else:
