@@ -4,7 +4,6 @@ import os
 import platform
 import random
 import re
-import resource
 import subprocess
 import sys
 import time
@@ -14,6 +13,7 @@ from urllib.request import urlopen
 
 import pyttsx3 as audio
 import speech_recognition as sr
+from psutil import Process, virtual_memory
 
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
@@ -61,7 +61,7 @@ def initialize():
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
             place_holder = 0
-
+        place_holder = None
         return initialize()
 
 
@@ -84,7 +84,7 @@ def renew():
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
             renew()
-
+        place_holder = None
         if 'no' in converted.lower().split() or 'nope' in converted.lower().split() or 'thank you' in \
                 converted.lower().split() or "that's it" in converted.lower().split():
             speaker.say(f"Activating sentry mode sir.")
@@ -220,10 +220,11 @@ def conditions(converted):
         listen()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.kill()):
-        speaker.say(f"I've consumed {size_converter()} so far sir. Shutting down now.")
+        memory_consumed = size_converter()
+        speaker.say(f"I've consumed {memory_consumed} so far sir. Shutting down now.")
         speaker.say(exit_msg)
         speaker.runAndWait()
-        sys.stdout.write(f"\rTotal runtime: {time_converter(time.perf_counter())}")
+        sys.stdout.write(f"\rTotal consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
         exit(0)
 
     elif 'increase volume' in converted or 'increase your volume' in converted or 'max up your volume' in converted:
@@ -297,6 +298,7 @@ def webpage():
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
             webpage()
+        place_holder = None
 
     if 'exit' in converted1 or 'quit' in converted1 or 'Xzibit' in converted1:
         renew()
@@ -349,7 +351,6 @@ def weather():
 
 def system_info():
     import shutil
-    from psutil import virtual_memory
 
     total, used, free = shutil.disk_usage("/")
     total = f"{(total // (2 ** 30))} GB"
@@ -393,6 +394,7 @@ def wiki_pedia():
             place_holder = 0
             wiki_pedia()
 
+        place_holder = None
         if 'no' in keyword.lower().split() or 'nope' in keyword.lower().split() or 'thank you' in \
                 keyword.lower().split() or "that's it" in keyword.lower().split():
             renew()
@@ -419,21 +421,15 @@ def wiki_pedia():
             sys.stdout.write("\r")
             response = recognizer.recognize_google(listener2)
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                listen()
             sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            dummy.has_been_called = True
-            place_holder = 0
+            speaker.say("I'm sorry sir, I didn't get your response.")
             renew()
-
+        place_holder = None
         if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
             speaker.say(''.join(summary.split('.')[3:-1]))
-            speaker.runAndWait()
-            renew()
         else:
-            renew()
+            pass
+        renew()
 
 
 def news():
@@ -484,6 +480,7 @@ def apps(keyword):
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
                 apps(None)
+            place_holder = None
 
     elif operating_system == 'Windows':
         status = os.system(f'start {keyword}')
@@ -512,6 +509,7 @@ def apps(keyword):
                 place_holder = 0
                 apps(None)
 
+            place_holder = None
         if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
             renew()
 
@@ -584,7 +582,7 @@ def repeater():
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
             repeater()
-
+        place_holder = None
         if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
             renew()
         speaker.say(f"I heard {keyword}")
@@ -630,6 +628,7 @@ def chatBot():
             place_holder = 0
             chatBot()
 
+        place_holder = None
         if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
             speaker.say('Let me remove the training modules.')
             os.system('rm db*')
@@ -704,6 +703,7 @@ def locate():
             place_holder = 0
             locate()
 
+        place_holder = None
         if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
             speaker.say("Ringing your iPhone now.")
             speaker.runAndWait()
@@ -822,6 +822,8 @@ def gmail():
                 speaker.runAndWait()
                 place_holder = 0
                 gmail()
+
+            place_holder = None
     if report.has_been_called:
         pass
     else:
@@ -863,6 +865,7 @@ def meaning(keyword):
                 speaker.runAndWait()
                 place_holder = 0
                 meaning(None)
+            place_holder = None
     else:
         definition = dictionary.meaning(keyword)
         if definition:
@@ -911,6 +914,7 @@ def todo():
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
                 todo()
+            place_holder = None
     else:
         sys.stdout.write("\rQuerying DB for to-do list..")
         result = {}
@@ -962,6 +966,7 @@ def add_todo():
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
                 add_todo()
+            place_holder = None
     speaker.say("What's your plan sir?")
     speaker.runAndWait()
     with sr.Microphone() as source:
@@ -1006,6 +1011,7 @@ def add_todo():
             speaker.runAndWait()
             place_holder = 0
             add_todo()
+        place_holder = None
     renew()
 
 
@@ -1041,6 +1047,7 @@ def delete_todo():
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
             delete_todo()
+        place_holder = None
     renew()
 
 
@@ -1074,6 +1081,7 @@ def delete_db():
             speaker.runAndWait()
             place_holder = 0
             delete_db()
+        place_holder = None
 
 
 def listen():
@@ -1094,15 +1102,22 @@ def listen():
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
         listen()
     except KeyboardInterrupt:
-        speaker.say(f"I've consumed {size_converter()} so far sir. Shutting down now.")
+        memory_consumed = size_converter()
+        speaker.say(f"I've consumed {memory_consumed} so far sir. Shutting down now.")
         speaker.say(exit_msg)
         speaker.runAndWait()
-        sys.stdout.write(f"\rTotal runtime: {time_converter(time.perf_counter())}")
+        sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
         exit(0)
 
 
 def size_converter():
-    byte_size = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    if operating_system == 'Darwin':
+        import resource
+        byte_size = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    elif operating_system == 'Windows':
+        byte_size = Process(os.getpid()).memory_info().peak_wset
+    else:
+        byte_size = None
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
     integer = int(math.floor(math.log(byte_size, 1024)))
     power = math.pow(1024, integer)
