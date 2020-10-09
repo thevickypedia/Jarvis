@@ -224,7 +224,7 @@ def conditions(converted):
         speaker.say(f"I've consumed {memory_consumed} so far sir. Shutting down now.")
         speaker.say(exit_msg)
         speaker.runAndWait()
-        sys.stdout.write(f"\rTotal consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
+        sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
         exit(0)
 
     elif 'increase volume' in converted or 'increase your volume' in converted or 'max up your volume' in converted:
@@ -967,6 +967,7 @@ def add_todo():
                 place_holder = 0
                 add_todo()
             place_holder = None
+    place_holder = None
     speaker.say("What's your plan sir?")
     speaker.runAndWait()
     with sr.Microphone() as source:
@@ -1003,14 +1004,9 @@ def add_todo():
             else:
                 add_todo()
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                listen()
             sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            speaker.runAndWait()
-            place_holder = 0
-            add_todo()
+            speaker.say("I didn't quite get that.")
+            renew()
         place_holder = None
     renew()
 
@@ -1035,7 +1031,9 @@ def delete_todo():
                 renew()
             response = database.deleter(item)
             if response.startswith('Looks'):
+                sys.stdout.write(f'\r{response}')
                 speaker.say(response)
+                speaker.runAndWait()
                 delete_todo()
             else:
                 speaker.say(response)
@@ -1057,7 +1055,7 @@ def delete_db():
         speaker.say('Are you sure you want to delete your database?')
         speaker.runAndWait()
     else:
-        speaker.say(f'I did not find any database named, {file_name} sir.')
+        speaker.say(f'I did not find any database sir.')
         renew()
     with sr.Microphone() as source:
         recognizer.adjust_for_ambient_noise(source, duration=1)
@@ -1177,6 +1175,7 @@ if __name__ == '__main__':
     else:
         exit_msg = "Have a nice night."
 
-    with sr.Microphone() as source_for_sentry_mode:
-        recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
-        listen()
+    # with sr.Microphone() as source_for_sentry_mode:
+    #     recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
+    #     listen()
+    delete_todo()

@@ -52,7 +52,7 @@ class Keywords:
         return key
 
     def locate(self):
-        key = ['locate', 'where is my phone', "where's my phone"]
+        key = ['locate', 'look at', 'where is my phone', "where's my phone"]
         return key
 
     def music(self):

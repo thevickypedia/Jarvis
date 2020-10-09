@@ -20,7 +20,7 @@ class Conversation:
         return key
 
     def whats_up(self):
-        key = ["What's up", 'what is up', 'what are you upto', 'what are you up to', "what's going on", 'sup']
+        key = ["What's up", 'what is up', "what's going on", 'sup']
         return key
 
     def about_me(self):
