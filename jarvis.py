@@ -30,7 +30,8 @@ today = now.strftime("%A")
 
 
 def initialize():
-    global place_holder
+    global place_holder, greet_check
+    greet_check = 'initialized'
     if dummy.has_been_called:
         speaker.say("What can I do for you?")
         dummy.has_been_called = False
@@ -52,7 +53,9 @@ def initialize():
             sys.stdout.write("\rListener activated..")
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r")
-            return conditions(recognizer.recognize_google(listener))
+            received = recognizer.recognize_google(listener)
+            place_holder = None
+            return conditions(received)
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
                 place_holder = None
@@ -61,7 +64,6 @@ def initialize():
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
             place_holder = 0
-        place_holder = None
         return initialize()
 
 
@@ -1083,6 +1085,8 @@ def delete_db():
 
 
 def listen():
+    if greet_check == 'initialized':
+        dummy.has_been_called = True
     try:
         sys.stdout.write("\rSentry Mode")
         listener = recognizer.listen(source_for_sentry_mode, timeout=None, phrase_time_limit=5)
@@ -1134,7 +1138,7 @@ if __name__ == '__main__':
     keywords = Keywords()
     conversation = Conversation()
     operating_system = platform.system()
-    place_holder = None
+    place_holder, greet_check = None, None
 
     report.has_been_called = False
     for functions in [dummy, delete_todo, todo, add_todo]:
@@ -1175,7 +1179,6 @@ if __name__ == '__main__':
     else:
         exit_msg = "Have a nice night."
 
-    # with sr.Microphone() as source_for_sentry_mode:
-    #     recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
-    #     listen()
-    delete_todo()
+    with sr.Microphone() as source_for_sentry_mode:
+        recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
+        listen()
