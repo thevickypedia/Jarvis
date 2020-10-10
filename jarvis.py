@@ -223,7 +223,7 @@ def conditions(converted):
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.kill()):
         memory_consumed = size_converter()
-        speaker.say(f"I've consumed {memory_consumed} so far sir. Shutting down now.")
+        speaker.say(f"Shutting down sir!")
         speaker.say(exit_msg)
         speaker.runAndWait()
         sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
@@ -559,8 +559,10 @@ def robinhood():
     result = raw_result['results']
     from helper_functions.robinhood import watcher
     stock_value = watcher(rh, result)
+    sys.stdout.write(f'\r{stock_value}')
     speaker.say(stock_value)
     speaker.runAndWait()
+    sys.stdout.write('\r')
     renew()
 
 
@@ -1093,11 +1095,13 @@ def listen():
         sys.stdout.write("\r")
         key = recognizer.recognize_google(listener)
         if 'look alive' in key in key or 'wake up' in key or 'wakeup' in key:
-            speaker.say('Up and running sir.')
+            speaker.say(f'{random.choice(wake_up1)}')
             initialize()
-        elif 'Jarvis' in key or 'jarvis' in key or 'Friday' in key or 'friday' in key or 'you there' in key or \
-                'buddy' in key or 'are you there' in key:
-            speaker.say('At your service sir.')
+        elif 'you there' in key or 'buddy' in key or 'are you there' in key or 'time to work' in key:
+            speaker.say(f'{random.choice(wake_up2)}')
+            initialize()
+        elif 'Jarvis' in key or 'jarvis' in key:
+            speaker.say(f'{random.choice(wake_up3)}')
             initialize()
         else:
             listen()
@@ -1105,7 +1109,7 @@ def listen():
         listen()
     except KeyboardInterrupt:
         memory_consumed = size_converter()
-        speaker.say(f"I've consumed {memory_consumed} so far sir. Shutting down now.")
+        speaker.say(f"Shutting down sir!")
         speaker.say(exit_msg)
         speaker.runAndWait()
         sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
@@ -1140,13 +1144,17 @@ if __name__ == '__main__':
     operating_system = platform.system()
     place_holder, greet_check = None, None
 
+    wake_up1 = ['Up and running sir.']
+    wake_up2 = ['For you sir!, Always.', 'At your service sir.']
+    wake_up3 = ["I'm here sir!."]
+
     report.has_been_called = False
     for functions in [dummy, delete_todo, todo, add_todo]:
         functions.has_been_called = False
 
     # noinspection PyTypeChecker
     volume = int(speaker.getProperty("volume")) * 100
-    sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Female: 1/17 Male: 7')
+    sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Female: 1/17 Male: 0/7')
 
     voices = speaker.getProperty("voices")
 
@@ -1155,7 +1163,7 @@ if __name__ == '__main__':
         speaker.setProperty("voice", voices[7].id)
     elif operating_system == 'Windows':
         # noinspection PyTypeChecker
-        speaker.setProperty("voice", voices[1].id)
+        speaker.setProperty("voice", voices[0].id)
         speaker.setProperty('rate', 190)
     else:
         operating_system = None
