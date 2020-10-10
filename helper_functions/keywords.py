@@ -87,6 +87,10 @@ class Keywords:
         key = ["what's my plan", "what is my plan", 'planner', 'plan']
         return key
 
+    def distance(self):
+        key = ['far', 'distance', 'miles']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key

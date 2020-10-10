@@ -4,6 +4,7 @@ import os
 import platform
 import random
 import re
+import ssl
 import subprocess
 import sys
 import time
@@ -11,8 +12,10 @@ import webbrowser
 from datetime import datetime, timedelta
 from urllib.request import urlopen
 
+import certifi
 import pyttsx3 as audio
 import speech_recognition as sr
+from geopy.geocoders import Nominatim, options
 from psutil import Process, virtual_memory
 
 from helper_functions.conversation import Conversation
@@ -179,6 +182,9 @@ def conditions(converted):
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.create_db()):
         create_db()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.distance()):
+        distance()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -662,9 +668,6 @@ def location():
 
 def locate():
     global place_holder
-    import ssl
-    import certifi
-    from geopy.geocoders import Nominatim, options
     from pyicloud import PyiCloudService
 
     options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
@@ -1084,6 +1087,46 @@ def delete_db():
             place_holder = 0
             delete_db()
         place_holder = None
+
+
+def distance():
+    global place_holder
+    speaker.say("Please tell me the destination sir.")
+    speaker.runAndWait()
+    with sr.Microphone() as source:
+        recognizer.adjust_for_ambient_noise(source, duration=1)
+        try:
+            sys.stdout.write("\rListener activated..")
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r")
+            destination = recognizer.recognize_google(listener)
+            if 'exit' in destination or 'quit' in destination or 'Xzibit' in destination:
+                renew()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                listen()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            distance()
+        place_holder = None
+    from haversine import haversine, Unit
+
+    url = 'http://ipinfo.io/json'
+    resp = urlopen(url)
+    data = json.load(resp)
+    start = tuple(map(float, data['loc'].split(',')))
+
+    ctx = ssl.create_default_context(cafile=certifi.where())
+    options.default_ssl_context = ctx
+    geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
+    desired_location = geo_locator.geocode(destination)
+    sys.stdout.write(f"\rTo location: {desired_location.address}")
+    end = desired_location.latitude, desired_location.longitude
+    miles = round(haversine(start, end, unit=Unit.MILES))
+    speaker.say(f"Sir, You're {miles} miles away from {destination}.")
+    renew()
 
 
 def listen():

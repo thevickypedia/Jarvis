@@ -24,3 +24,4 @@ python3 -m pip install geopy
 python3 -m pip install PyDictionary
 python3 -m pip install ChatterBot==1.0.0
 python3 -m pip install chatterbot-corpus==1.2.0
+python3 -m pip install haversine
