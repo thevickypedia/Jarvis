@@ -184,26 +184,29 @@ def conditions(converted):
         create_db()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.distance()):
-        start = None
-        if 'from' in converted and 'here' not in converted:
-            words = converted.lower().split()
-            if 'from' in words[1:]:
-                start = words[words.index('from') - 1]
-                if start[0].upper():
-                    start = words[words.index('from') - 2] + words[words.index('from') - 1]
-
-        if 'and' in converted:
-            words = converted.lower().split()
-            if 'and' in words[1:]:
-                start = words[words.index('and') - 1]
-                destination = words[words.index('and') + 1]
-                distance(starting_point=start, destination=destination)
-
-        destination = converted.split()[-1]
-        if destination == 'here':
-            distance(start, converted.split()[-3])
+        check = converted.split()
+        places = []
+        for word in check:
+            if word[0].isupper():
+                try:
+                    next_word = check[check.index(word) + 1]
+                    if next_word[0].isupper():
+                        places.append(f"{word + ' ' + check[check.index(word) + 1]}")
+                    else:
+                        if word not in ' '.join(places):
+                            places.append(word)
+                except IndexError:
+                    if word not in ' '.join(places):
+                        places.append(word)
+        if len(places) >= 2:
+            start = places[0]
+            end = places[1]
+        elif len(places) == 1:
+            start = None
+            end = places[0]
         else:
-            distance(start, destination=destination)
+            start, end = None, None
+        distance(start, end)
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -211,9 +214,10 @@ def conditions(converted):
         initialize()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.capabilities()):
-        speaker.say('There is a lot I can do, for example: I can get you the weather at your location, news around you,'
-                    ' meanings of words, launch any application, play music, create a to-do list, check your emails, '
-                    'get your system configuration, locate your phone, and much more. Time to ask,.')
+        speaker.say('There is a lot I can do sir. For example: I can get you the weather at your location, news around '
+                    'you, meanings of words, launch applications, play music, create a to-do list, check your emails, '
+                    'get your system configuration, locate your phone, find distance between places, and much more. '
+                    'Time to ask,.')
         dummy.has_been_called = True
         initialize()
 
@@ -234,9 +238,10 @@ def conditions(converted):
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.about_me()):
         speaker.say("I am a program, I'm without form.")
-        speaker.say('There is a lot I can do, for example: I can get you the weather at your location, news around you,'
-                    ' meanings of words, launch any application, play music, create a to-do list, check your emails, '
-                    'get your system configuration, locate your phone, and much more. Time to ask,.')
+        speaker.say('There is a lot I can do. For example: I can get you the weather at your location, news around '
+                    'you, meanings of words, launch applications, play music, create a to-do list, check your emails, '
+                    'get your system configuration, locate your phone, find distance between places, and much more. '
+                    'Time to ask,.')
         dummy.has_been_called = True
         initialize()
 
@@ -1110,9 +1115,8 @@ def delete_db():
 
 def distance(starting_point, destination):
     global place_holder
-    ignore = ['distance', 'far', 'place']
-    if destination in ignore or destination is None:
-        speaker.say("Please tell me the destination sir.")
+    if not destination:
+        speaker.say("Destination please?")
         speaker.runAndWait()
         with sr.Microphone() as source:
             recognizer.adjust_for_ambient_noise(source, duration=1)
@@ -1121,6 +1125,9 @@ def distance(starting_point, destination):
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
                 sys.stdout.write("\r")
                 destination = recognizer.recognize_google(listener)
+                if len(destination.split()) > 2:
+                    speaker.say("I asked for a destination sir, not a sentence. Try again.")
+                    distance(starting_point=None, destination=None)
                 if 'exit' in destination or 'quit' in destination or 'Xzibit' in destination:
                     renew()
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
@@ -1139,7 +1146,7 @@ def distance(starting_point, destination):
         options.default_ssl_context = ctx
         geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
         desired_start = geo_locator.geocode(starting_point)
-        sys.stdout.write(f"\rFrom location: {desired_start.address}")
+        sys.stdout.write(f"{desired_start.address} **")
         start = desired_start.latitude, desired_start.longitude
         start_check = None
     else:
@@ -1148,18 +1155,18 @@ def distance(starting_point, destination):
         data = json.load(resp)
         start = tuple(map(float, data['loc'].split(',')))
         start_check = 'My Location'
-
+    sys.stdout.write("::TO::")
     ctx = ssl.create_default_context(cafile=certifi.where())
     options.default_ssl_context = ctx
     geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
     desired_location = geo_locator.geocode(destination)
-    sys.stdout.write(f"\rTo location: {desired_location.address}")
+    sys.stdout.write(f"** {desired_location.address}")
     end = desired_location.latitude, desired_location.longitude
     miles = round(haversine(start, end, unit=Unit.MILES))
     if start_check:
         speaker.say(f"Sir! You're {miles} miles away from {destination}.")
     else:
-        speaker.say(f"{starting_point} is {miles} miles away from {destination}")
+        speaker.say(f"{starting_point} is {miles} miles away from {destination}.")
     renew()
 
 
