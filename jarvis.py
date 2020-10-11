@@ -209,10 +209,15 @@ def conditions(converted):
         distance(start, end)
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.geopy()):
-        keyword = 'is'
-        before_keyword, keyword, after_keyword = converted.partition(keyword)
-        place = after_keyword.replace(' in', '').strip()
-        locate_places(place)
+        place = ''
+        for word in converted.split():
+            if word[0].isupper():
+                place += word + ' '
+        if not place:
+            keyword = 'is'
+            before_keyword, keyword, after_keyword = converted.partition(keyword)
+            place = after_keyword.replace(' in', '').strip()
+        locate_places(place.strip())
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -1181,9 +1186,13 @@ def locate_places(place):
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
                 sys.stdout.write("\r")
                 converted = recognizer.recognize_google(listener)
-                keyword = 'is'
-                before_keyword, keyword, after_keyword = converted.partition(keyword)
-                place = after_keyword.replace(' in', '').strip()
+                for word in converted.split():
+                    if word[0].isupper():
+                        place += word + ' '
+                if not place:
+                    keyword = 'is'
+                    before_keyword, keyword, after_keyword = converted.partition(keyword)
+                    place = after_keyword.replace(' in', '').strip()
                 if 'exit' in place or 'quit' in place or 'Xzibit' in place:
                     place_holder = None
                     renew()
