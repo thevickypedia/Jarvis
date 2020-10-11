@@ -91,6 +91,10 @@ class Keywords:
         key = ['far', 'distance', 'miles']
         return key
 
+    def geopy(self):
+        key = ['where is', 'which city', 'which state', 'which country', 'which county']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key

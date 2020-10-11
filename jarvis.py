@@ -208,6 +208,12 @@ def conditions(converted):
             start, end = None, None
         distance(start, end)
 
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.geopy()):
+        keyword = 'is'
+        before_keyword, keyword, after_keyword = converted.partition(keyword)
+        place = after_keyword.replace(' in', '').strip()
+        locate_places(place)
+
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         dummy.has_been_called = True
@@ -694,8 +700,6 @@ def locate():
     global place_holder
     from pyicloud import PyiCloudService
 
-    options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
-
     u = os.getenv('icloud_user')
     p = os.getenv('icloud_pass')
     api = PyiCloudService(u, p)
@@ -710,7 +714,6 @@ def locate():
         raw_location = (api.iphone.location())
         raw_lat = raw_location['latitude']
         raw_long = raw_location['longitude']
-        geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
         locator = geo_locator.reverse(f'{raw_lat}, {raw_long}')
         current_location = locator.address
         speaker.say(f"Your iPhone is at {current_location}.")
@@ -1142,9 +1145,6 @@ def distance(starting_point, destination):
     from haversine import haversine, Unit
 
     if starting_point:
-        ctx = ssl.create_default_context(cafile=certifi.where())
-        options.default_ssl_context = ctx
-        geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
         desired_start = geo_locator.geocode(starting_point)
         sys.stdout.write(f"{desired_start.address} **")
         start = desired_start.latitude, desired_start.longitude
@@ -1156,18 +1156,70 @@ def distance(starting_point, destination):
         start = tuple(map(float, data['loc'].split(',')))
         start_check = 'My Location'
     sys.stdout.write("::TO::")
-    ctx = ssl.create_default_context(cafile=certifi.where())
-    options.default_ssl_context = ctx
-    geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
     desired_location = geo_locator.geocode(destination)
     sys.stdout.write(f"** {desired_location.address}")
     end = desired_location.latitude, desired_location.longitude
     miles = round(haversine(start, end, unit=Unit.MILES))
     if start_check:
         speaker.say(f"Sir! You're {miles} miles away from {destination}.")
+        if not locate_places.has_been_called:
+            speaker.say(f"You may also ask where is {destination}")
     else:
         speaker.say(f"{starting_point} is {miles} miles away from {destination}.")
     renew()
+
+
+def locate_places(place):
+    global place_holder
+    if not place:
+        speaker.say("Tell me the name of a place!")
+        speaker.runAndWait()
+        with sr.Microphone() as source:
+            recognizer.adjust_for_ambient_noise(source, duration=1)
+            try:
+                sys.stdout.write("\rListener activated..")
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                sys.stdout.write("\r")
+                converted = recognizer.recognize_google(listener)
+                keyword = 'is'
+                before_keyword, keyword, after_keyword = converted.partition(keyword)
+                place = after_keyword.replace(' in', '').strip()
+                if 'exit' in place or 'quit' in place or 'Xzibit' in place:
+                    place_holder = None
+                    renew()
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+                if place_holder == 0:
+                    place_holder = None
+                    listen()
+                sys.stdout.write("\r")
+                speaker.say("I didn't quite get that. Try again.")
+                place_holder = 0
+                locate_places(place=None)
+            place_holder = None
+    try:
+        desired_start = geo_locator.geocode(place)
+        coordinates = desired_start.latitude, desired_start.longitude
+        located = geo_locator.reverse(coordinates, language='en')
+        data = located.raw
+        address = data['address']
+        county = address['county'] if 'county' in address else None
+        city = address['city'] if 'city' in address.keys() else None
+        state = address['state'] if 'state' in address.keys() else None
+        country = address['country'] if 'country' in address else None
+        if place in country:
+            speaker.say(f"{place} is a country")
+        elif place in (city or county):
+            speaker.say(f"{place} is in {state} in {country}")
+        elif place in state:
+            speaker.say(f"{place} is a state in {country}")
+        elif (city or county) and state and country:
+            speaker.say(f"{place} is in {city or county}, {state}" if country == 'United States of America'
+                        else f"{place} is in {city or county}, {state}, in {country}")
+        locate_places.has_been_called = True
+    except:
+        speaker.say(f"{place} is not a real place on Earth sir! Try again.")
+        locate_places(place=None)
+    distance(starting_point=None, destination=place)
 
 
 def listen():
@@ -1178,7 +1230,7 @@ def listen():
         listener = recognizer.listen(source_for_sentry_mode, timeout=None, phrase_time_limit=5)
         sys.stdout.write("\r")
         key = recognizer.recognize_google(listener)
-        if 'look alive' in key in key or 'wake up' in key or 'wakeup' in key:
+        if 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'Showtime' in key:
             speaker.say(f'{random.choice(wake_up1)}')
             initialize()
         elif 'you there' in key or 'buddy' in key or 'are you there' in key or 'time to work' in key:
@@ -1228,11 +1280,14 @@ if __name__ == '__main__':
     operating_system = platform.system()
     place_holder, greet_check = None, None
 
+    options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
+    geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
+
     wake_up1 = ['Up and running sir.']
-    wake_up2 = ['For you sir!, Always.', 'At your service sir.']
+    wake_up2 = ['For you sir!, Always!', 'At your service sir.']
     wake_up3 = ["I'm here sir!."]
 
-    report.has_been_called = False
+    report.has_been_called, locate_places.has_been_called = False, False
     for functions in [dummy, delete_todo, todo, add_todo]:
         functions.has_been_called = False
 
