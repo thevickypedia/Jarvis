@@ -95,6 +95,10 @@ class Keywords:
         key = ['where is', 'which city', 'which state', 'which country', 'which county']
         return key
 
+    def directions(self):
+        key = ['take me', 'get directions', 'go to']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key

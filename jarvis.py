@@ -219,6 +219,13 @@ def conditions(converted):
             place = after_keyword.replace(' in', '').strip()
         locate_places(place.strip())
 
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.directions()):
+        place = ''
+        for word in converted.split():
+            if word[0].isupper():
+                place += word + ' '
+        directions(place.replace('I ', '').strip())
+
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         dummy.has_been_called = True
@@ -358,10 +365,7 @@ def weather():
     import pytemperature
     api_key = os.getenv('api_key')
 
-    url = 'http://ipinfo.io/json'
-    resp = urlopen(url)
-    ip_info = json.load(resp)
-    city, state, country, coordinates = ip_info['city'], ip_info['region'], ip_info['country'], ip_info['loc']
+    city, state, coordinates = location_info['city'], location_info['region'], location_info['loc']
     lat = coordinates.split(',')[0]
     lon = coordinates.split(',')[1]
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
@@ -692,10 +696,7 @@ def chatBot():
 
 
 def location():
-    url = 'http://ipinfo.io/json'
-    resp = urlopen(url)
-    ip_info = json.load(resp)
-    city, state, country = ip_info['city'], ip_info['region'], ip_info['country']
+    city, state, country = location_info['city'], location_info['region'], location_info['country']
     speaker.say(f"You're at {city} {state}, in {country}")
     speaker.runAndWait()
     renew()
@@ -1155,17 +1156,21 @@ def distance(starting_point, destination):
         start = desired_start.latitude, desired_start.longitude
         start_check = None
     else:
-        url = 'http://ipinfo.io/json'
-        resp = urlopen(url)
-        data = json.load(resp)
-        start = tuple(map(float, data['loc'].split(',')))
+        start = tuple(map(float, location_info['loc'].split(',')))
         start_check = 'My Location'
     sys.stdout.write("::TO::")
     desired_location = geo_locator.geocode(destination)
     sys.stdout.write(f"** {desired_location.address}")
     end = desired_location.latitude, desired_location.longitude
     miles = round(haversine(start, end, unit=Unit.MILES))
-    if start_check:
+    if directions.has_been_called:
+        avg_speed = 60
+        drive_time = math.ceil(miles / avg_speed)
+        if drive_time == 1:
+            speaker.say(f"It might take you about {drive_time} hour to reach there sir!")
+        else:
+            speaker.say(f"It might take you about {drive_time} hours to reach there sir!")
+    elif start_check:
         speaker.say(f"Sir! You're {miles} miles away from {destination}.")
         if not locate_places.has_been_called:
             speaker.say(f"You may also ask where is {destination}")
@@ -1231,6 +1236,60 @@ def locate_places(place):
     distance(starting_point=None, destination=place)
 
 
+def directions(place):
+    global place_holder
+    if not place:
+        speaker.say("You might want to give a location.")
+        speaker.runAndWait()
+        with sr.Microphone() as source:
+            recognizer.adjust_for_ambient_noise(source, duration=1)
+            try:
+                sys.stdout.write("\rListener activated..")
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                sys.stdout.write("\r")
+                converted = recognizer.recognize_google(listener)
+                place = ''
+                for word in converted.split():
+                    if word[0].isupper():
+                        place += word + ' '
+                if place:
+                    place = place.replace('I ', '').strip()
+                else:
+                    speaker.say("I can't take you to anywhere without a location sir!")
+                    directions(place=None)
+                if 'exit' in place or 'quit' in place or 'Xzibit' in place:
+                    place_holder = None
+                    renew()
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+                if place_holder == 0:
+                    place_holder = None
+                    listen()
+                sys.stdout.write("\r")
+                speaker.say("I didn't quite get that. Try again.")
+                place_holder = 0
+                directions(place=None)
+            place_holder = None
+    desired_start = geo_locator.geocode(place)
+    coordinates = desired_start.latitude, desired_start.longitude
+    located = geo_locator.reverse(coordinates, language='en')
+    data = located.raw
+    address = data['address']
+    start_country = address['country_code'] if 'country_code' in address else None
+    end = f"{located.latitude},{located.longitude}"
+    end_country = location_info['country']
+    start = location_info['loc']
+    maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
+    webbrowser.open(maps_url)
+    if re.match(start_country, end_country, flags=re.IGNORECASE):
+        speaker.say("Directions on your screen sir!")
+        directions.has_been_called = True
+        distance(starting_point=None, destination=place)
+    else:
+        speaker.say("You might need a flight there sir!")
+        speaker.say("Directions on your screen now!")
+    renew()
+
+
 def listen():
     if greet_check == 'initialized':
         dummy.has_been_called = True
@@ -1291,12 +1350,15 @@ if __name__ == '__main__':
 
     options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
     geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
+    url = 'http://ipinfo.io/json'
+    resp = urlopen(url)
+    location_info = json.load(resp)
 
     wake_up1 = ['Up and running sir.']
     wake_up2 = ['For you sir!, Always!', 'At your service sir.']
     wake_up3 = ["I'm here sir!."]
 
-    report.has_been_called, locate_places.has_been_called = False, False
+    report.has_been_called, locate_places.has_been_called, directions.has_been_called = False, False, False
     for functions in [dummy, delete_todo, todo, add_todo]:
         functions.has_been_called = False
 
