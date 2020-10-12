@@ -71,8 +71,7 @@ def initialize():
 
 
 def renew():
-    global place_holder
-    speaker.say("Is there anything else I can do for you?")
+    global waiter
     speaker.runAndWait()
     with sr.Microphone() as source:
         recognizer.adjust_for_ambient_noise(source, duration=1)
@@ -82,16 +81,11 @@ def renew():
             sys.stdout.write("\r")
             converted = recognizer.recognize_google(listener)
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
+            if waiter == 12:  # waits for a minute and goes to sleep
                 listen()
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
+            waiter += 1
             renew()
-        place_holder = None
-        if 'no' in converted.lower().split() or 'nope' in converted.lower().split() or 'thank you' in \
-                converted.lower().split() or "that's it" in converted.lower().split():
+        if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
             speaker.say(f"Activating sentry mode sir.")
             speaker.say(exit_msg)
             speaker.runAndWait()
@@ -277,9 +271,6 @@ def conditions(converted):
         sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
         exit(0)
 
-    elif 'increase volume' in converted or 'increase your volume' in converted or 'max up your volume' in converted:
-        speaker.setProperty("volume", 1.0)
-
     else:
         sys.stdout.write(f"\r{converted}")
         speaker.say(f"I heard {converted}. Let me look that up.")
@@ -287,9 +278,9 @@ def conditions(converted):
 
         search = str(converted).replace(' ', '+')
 
-        url = f"https://www.google.com/search?q={search}"
+        unknown_url = f"https://www.google.com/search?q={search}"
 
-        webbrowser.open(url)
+        webbrowser.open(unknown_url)
 
         speaker.say("I have opened a google search for your request.")
         renew()
@@ -353,9 +344,8 @@ def webpage():
     if 'exit' in converted1 or 'quit' in converted1 or 'Xzibit' in converted1:
         renew()
 
-    url = f"https://{converted1}.com"
-
-    webbrowser.open(url)
+    web_url = f"https://{converted1}.com"
+    webbrowser.open(web_url)
     speaker.say(f"I have opened {converted1}")
     renew()
 
@@ -369,8 +359,8 @@ def weather():
     lat = coordinates.split(',')[0]
     lon = coordinates.split(',')[1]
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
-    url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={api_key}'
-    r = urlopen(url)  # sends request to the url created
+    weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={api_key}'
+    r = urlopen(weather_url)  # sends request to the url created
     response = json.loads(r.read())  # loads the response in a json
 
     weather_location = f'{city} {state}'
@@ -1291,6 +1281,8 @@ def directions(place):
 
 
 def listen():
+    global waiter
+    waiter = 0
     if greet_check == 'initialized':
         dummy.has_been_called = True
     try:
@@ -1347,6 +1339,7 @@ if __name__ == '__main__':
     conversation = Conversation()
     operating_system = platform.system()
     place_holder, greet_check = None, None
+    waiter = 0
 
     options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
     geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
