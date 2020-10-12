@@ -51,7 +51,6 @@ def initialize():
     speaker.runAndWait()
 
     with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source, duration=1)
         try:
             sys.stdout.write("\rListener activated..")
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
@@ -74,7 +73,6 @@ def renew():
     global waiter
     speaker.runAndWait()
     with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source, duration=1)
         try:
             sys.stdout.write("\rListener activated..")
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
@@ -325,7 +323,6 @@ def webpage():
     speaker.say("Which website shall I open? Just say the name of the webpage.")
     speaker.runAndWait()
     with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source, duration=1)
         try:
             sys.stdout.write("\rListener activated..")
             listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
@@ -416,7 +413,6 @@ def wiki_pedia():
     speaker.say("Please tell the keyword.")
     speaker.runAndWait()
     with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source, duration=1)
         try:
             sys.stdout.write("\rListener activated..")
             listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
@@ -494,7 +490,6 @@ def apps(keyword):
         speaker.say("Please say the app name.")
         speaker.runAndWait()
         with sr.Microphone() as source:
-            recognizer.adjust_for_ambient_noise(source, duration=1)
             try:
                 sys.stdout.write("\rListener activated..")
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
@@ -531,7 +526,6 @@ def apps(keyword):
         speaker.say("Please say the app name alone.")
         speaker.runAndWait()
         with sr.Microphone() as source:
-            recognizer.adjust_for_ambient_noise(source, duration=1)
             try:
                 sys.stdout.write("\rListener activated..")
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
@@ -606,10 +600,9 @@ def repeater():
     speaker.say("Please tell me what to repeat.")
     speaker.runAndWait()
     with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source, duration=1)
         try:
             sys.stdout.write("\rListener activated..")
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=15)
+            listener = recognizer.listen(source, timeout=3)
             sys.stdout.write("\r")
             keyword = recognizer.recognize_google(listener)
             sys.stdout.write(keyword)
@@ -652,7 +645,6 @@ def chatBot():
         speaker.say('The chatbot is ready. You may start a conversation now.')
         speaker.runAndWait()
     with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source, duration=1)
         try:
             sys.stdout.write("\rListener activated..")
             listener = recognizer.listen(source, timeout=5, phrase_time_limit=5)
@@ -717,7 +709,6 @@ def locate():
         speaker.say("Would you like to ring it?")
     speaker.runAndWait()
     with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source, duration=1)
         try:
             sys.stdout.write("\rListener activated..")
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
@@ -815,7 +806,6 @@ def gmail():
         speaker.say(f'You have {n} unread emails sir. Do you want me to check it?')
         speaker.runAndWait()
         with sr.Microphone() as source:
-            recognizer.adjust_for_ambient_noise(source, duration=1)
             try:
                 sys.stdout.write("\rListener activated..")
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
@@ -870,7 +860,6 @@ def meaning(keyword):
         speaker.say("Please tell a keyword.")
         speaker.runAndWait()
         with sr.Microphone() as source:
-            recognizer.adjust_for_ambient_noise(source, duration=1)
             try:
                 sys.stdout.write("\rListener activated..")
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
@@ -1001,7 +990,6 @@ def add_todo():
     speaker.say("What's your plan sir?")
     speaker.runAndWait()
     with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source, duration=1)
         try:
             sys.stdout.write("\rListener activated..")
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
@@ -1050,7 +1038,6 @@ def delete_todo():
     speaker.say("Which one should I remove sir?")
     speaker.runAndWait()
     with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source, duration=1)
         dummy.has_been_called = True
         try:
             sys.stdout.write("\rListener activated..")
@@ -1088,7 +1075,6 @@ def delete_db():
         speaker.say(f'I did not find any database sir.')
         renew()
     with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source, duration=1)
         try:
             sys.stdout.write("\rListener activated..")
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
@@ -1118,7 +1104,6 @@ def distance(starting_point, destination):
         speaker.say("Destination please?")
         speaker.runAndWait()
         with sr.Microphone() as source:
-            recognizer.adjust_for_ambient_noise(source, duration=1)
             try:
                 sys.stdout.write("\rListener activated..")
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
@@ -1175,7 +1160,6 @@ def locate_places(place):
         speaker.say("Tell me the name of a place!")
         speaker.runAndWait()
         with sr.Microphone() as source:
-            recognizer.adjust_for_ambient_noise(source, duration=1)
             try:
                 sys.stdout.write("\rListener activated..")
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
@@ -1232,7 +1216,6 @@ def directions(place):
         speaker.say("You might want to give a location.")
         speaker.runAndWait()
         with sr.Microphone() as source:
-            recognizer.adjust_for_ambient_noise(source, duration=1)
             try:
                 sys.stdout.write("\rListener activated..")
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
