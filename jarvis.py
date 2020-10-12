@@ -61,7 +61,7 @@ def initialize():
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
                 place_holder = None
-                listen()
+                renew()
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
@@ -179,7 +179,7 @@ def conditions(converted):
         check = converted.split()
         places = []
         for word in check:
-            if word[0].isupper():
+            if word[0].isupper() or '.' in word:
                 try:
                     next_word = check[check.index(word) + 1]
                     if next_word[0].isupper():
@@ -205,6 +205,8 @@ def conditions(converted):
         for word in converted.split():
             if word[0].isupper():
                 place += word + ' '
+            elif '.' in word:
+                place += word + ' '
         if not place:
             keyword = 'is'
             before_keyword, keyword, after_keyword = converted.partition(keyword)
@@ -216,7 +218,14 @@ def conditions(converted):
         for word in converted.split():
             if word[0].isupper():
                 place += word + ' '
-        directions(place.replace('I ', '').strip())
+            elif '.' in word:
+                place += word + ' '
+        place = place.replace('I ', '').strip()
+        if place:
+            directions(place)
+        else:
+            speaker.say("I can't take you to anywhere without a location sir!")
+            directions(place=None)
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -331,7 +340,7 @@ def webpage():
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
                 place_holder = None
-                listen()
+                renew()
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
@@ -421,7 +430,7 @@ def wiki_pedia():
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
                 place_holder = None
-                listen()
+                renew()
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
@@ -507,7 +516,7 @@ def apps(keyword):
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 if place_holder == 0:
                     place_holder = None
-                    listen()
+                    renew()
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -534,7 +543,7 @@ def apps(keyword):
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 if place_holder == 0:
                     place_holder = None
-                    listen()
+                    renew()
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -602,14 +611,14 @@ def repeater():
     with sr.Microphone() as source:
         try:
             sys.stdout.write("\rListener activated..")
-            listener = recognizer.listen(source, timeout=3)
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=10)
             sys.stdout.write("\r")
             keyword = recognizer.recognize_google(listener)
             sys.stdout.write(keyword)
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
                 place_holder = None
-                listen()
+                renew()
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
@@ -653,7 +662,7 @@ def chatBot():
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
                 place_holder = None
-                listen()
+                renew()
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
@@ -717,7 +726,7 @@ def locate():
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
                 place_holder = None
-                listen()
+                renew()
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
@@ -836,7 +845,7 @@ def gmail():
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 if place_holder == 0:
                     place_holder = None
-                    listen()
+                    renew()
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 speaker.runAndWait()
@@ -878,7 +887,7 @@ def meaning(keyword):
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 if place_holder == 0:
                     place_holder = None
-                    listen()
+                    renew()
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 speaker.runAndWait()
@@ -928,7 +937,7 @@ def todo():
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 if place_holder == 0:
                     place_holder = None
-                    listen()
+                    renew()
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -980,7 +989,7 @@ def add_todo():
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 if place_holder == 0:
                     place_holder = None
-                    listen()
+                    renew()
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -1057,7 +1066,7 @@ def delete_todo():
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
                 place_holder = None
-                listen()
+                renew()
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
@@ -1089,7 +1098,7 @@ def delete_db():
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
                 place_holder = None
-                listen()
+                renew()
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             speaker.runAndWait()
@@ -1117,7 +1126,7 @@ def distance(starting_point, destination):
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 if place_holder == 0:
                     place_holder = None
-                    listen()
+                    renew()
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -1140,11 +1149,16 @@ def distance(starting_point, destination):
     miles = round(haversine(start, end, unit=Unit.MILES))
     if directions.has_been_called:
         avg_speed = 60
-        drive_time = math.ceil(miles / avg_speed)
-        if drive_time == 1:
-            speaker.say(f"It might take you about {drive_time} hour to reach there sir!")
+        t_taken = miles / avg_speed
+        if miles < avg_speed:
+            drive_time = int(t_taken * 60)
+            speaker.say(f"It might take you about {drive_time} minutes to get there sir!")
         else:
-            speaker.say(f"It might take you about {drive_time} hours to reach there sir!")
+            drive_time = math.ceil(t_taken)
+            if drive_time == 1:
+                speaker.say(f"It might take you about {drive_time} hour to get there sir!")
+            else:
+                speaker.say(f"It might take you about {drive_time} hours to get there sir!")
     elif start_check:
         speaker.say(f"Sir! You're {miles} miles away from {destination}.")
         if not locate_places.has_been_called:
@@ -1168,6 +1182,8 @@ def locate_places(place):
                 for word in converted.split():
                     if word[0].isupper():
                         place += word + ' '
+                    elif '.' in word:
+                        place += word + ' '
                 if not place:
                     keyword = 'is'
                     before_keyword, keyword, after_keyword = converted.partition(keyword)
@@ -1178,7 +1194,7 @@ def locate_places(place):
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 if place_holder == 0:
                     place_holder = None
-                    listen()
+                    renew()
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -1225,9 +1241,10 @@ def directions(place):
                 for word in converted.split():
                     if word[0].isupper():
                         place += word + ' '
-                if place:
-                    place = place.replace('I ', '').strip()
-                else:
+                    elif '.' in word:
+                        place += word + ' '
+                place = place.replace('I ', '').strip()
+                if not place:
                     speaker.say("I can't take you to anywhere without a location sir!")
                     directions(place=None)
                 if 'exit' in place or 'quit' in place or 'Xzibit' in place:
@@ -1236,7 +1253,7 @@ def directions(place):
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 if place_holder == 0:
                     place_holder = None
-                    listen()
+                    renew()
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -1253,13 +1270,12 @@ def directions(place):
     start = location_info['loc']
     maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
     webbrowser.open(maps_url)
+    speaker.say("Directions on your screen sir!")
     if re.match(start_country, end_country, flags=re.IGNORECASE):
-        speaker.say("Directions on your screen sir!")
         directions.has_been_called = True
         distance(starting_point=None, destination=place)
     else:
-        speaker.say("You might need a flight there sir!")
-        speaker.say("Directions on your screen now!")
+        speaker.say("You might need a flight to get there!")
     renew()
 
 
