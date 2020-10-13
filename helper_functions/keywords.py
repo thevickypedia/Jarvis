@@ -99,16 +99,23 @@ class Keywords:
         key = ['take me', 'get directions', 'go to']
         return key
 
+    def alarm(self):
+        key = ['alarm', 'wake me']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key
 
     def exit(self):
         key = ['exit', 'quit', 'go to sleep', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
-               'see you later', 'talk to you later', 'activate sentry mode', 'sentry', 'go back to sleep']
+               'see you later', 'talk to you later', 'activate sentry mode', 'go back to sleep']
         return key
 
     def kill(self):
-        key = ['kill', 'terminate', 'kill yourself', 'terminate yourself', 'stop running', 'stop', 'shut down',
-               'shutdown']
+        key = ['kill', 'terminate', 'kill yourself', 'terminate yourself', 'stop running', 'stop']
+        return key
+
+    def shutdown(self):
+        key = ['shutdown', 'shut down']
         return key
