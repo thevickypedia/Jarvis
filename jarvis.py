@@ -229,18 +229,21 @@ def conditions(converted):
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.alarm()):
         try:
-            extracted_time = re.findall(r'\s(\d{2}\:\d{2}\s?(?:a.m.|p.m.:?))', converted) or \
-                                         re.findall(r'\s(\d{1}\:\d{2}\s?(?:a.m.|p.m.:?))', converted) or \
-                                         re.findall(r'\s(\d{2}\:\d{1}\s?(?:a.m.|p.m.:?))', converted) or \
-                                         re.findall(r'\s(\d{1}\:\d{1}\s?(?:a.m.|p.m.:?))', converted)
+            extracted_time = re.findall(r'\s([0-9]+\:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
+                             r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
             extracted_time = extracted_time[0]
-            alarm_time = extracted_time.split()[0]
             am_pm = extracted_time.split()[-1]
-            hour = int(alarm_time.split(":")[0])
-            minute = int(alarm_time.split(":")[-1])
+            if ":" in extracted_time:
+                alarm_time = extracted_time.split()[0]
+                hour = int(alarm_time.split(":")[0])
+                minute = int(alarm_time.split(":")[-1])
+            else:
+                alarm_time = extracted_time.split()[0]
+                hour = int(alarm_time.split()[0])
+                minute = "00"
             alarm(hour, minute, am_pm)
         except IndexError:
-            alarm(None, None, None)
+            alarm(hour=None, minute=None, am_pm=None)
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -1411,10 +1414,10 @@ if __name__ == '__main__':
     voices = speaker.getProperty("voices")
 
     if operating_system == 'Darwin':
-        # noinspection PyTypeChecker
+        # noinspection PyTypeChecker,PyUnresolvedReferences
         speaker.setProperty("voice", voices[7].id)
     elif operating_system == 'Windows':
-        # noinspection PyTypeChecker
+        # noinspection PyTypeChecker,PyUnresolvedReferences
         speaker.setProperty("voice", voices[0].id)
         speaker.setProperty('rate', 190)
     else:
