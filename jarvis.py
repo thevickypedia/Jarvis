@@ -228,7 +228,19 @@ def conditions(converted):
             directions(place=None)
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.alarm()):
-        alarm()
+        try:
+            extracted_time = re.findall(r'\s(\d{2}\:\d{2}\s?(?:a.m.|p.m.:?))', converted) or \
+                                         re.findall(r'\s(\d{1}\:\d{2}\s?(?:a.m.|p.m.:?))', converted) or \
+                                         re.findall(r'\s(\d{2}\:\d{1}\s?(?:a.m.|p.m.:?))', converted) or \
+                                         re.findall(r'\s(\d{1}\:\d{1}\s?(?:a.m.|p.m.:?))', converted)
+            extracted_time = extracted_time[0]
+            alarm_time = extracted_time.split()[0]
+            am_pm = extracted_time.split()[-1]
+            hour = int(alarm_time.split(":")[0])
+            minute = int(alarm_time.split(":")[-1])
+            alarm(hour, minute, am_pm)
+        except IndexError:
+            alarm(None, None, None)
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -1282,35 +1294,38 @@ def directions(place):
     renew()
 
 
-def alarm():
+def alarm(hour, minute, am_pm):
     from alarm import Alarm
-    global place_holder
-    speaker.say('Please tell me a time sir!')
-    speaker.runAndWait()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..")
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r")
-            converted = recognizer.recognize_google(listener)
-            alarm_time = converted.split()[0]
-            hour = int(alarm_time.split(":")[0])
-            minute = int(alarm_time.split(":")[-1])
-            am_pm = converted.split()[-1]
-            Alarm(hour, minute).start()
-            if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-                place_holder = None
-                renew()
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                renew()
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            alarm()
-        place_holder = None
-    speaker.say(f"I will wake you up at {hour}:{minute} {am_pm}")
+    if hour and minute and am_pm:
+        Alarm(hour + 12, minute).start() if am_pm == 'p.m.' else Alarm(hour, minute).start()
+    else:
+        global place_holder
+        speaker.say('Please tell me a time sir!')
+        speaker.runAndWait()
+        with sr.Microphone() as source:
+            try:
+                sys.stdout.write("\rListener activated..")
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                sys.stdout.write("\r")
+                converted = recognizer.recognize_google(listener)
+                alarm_time = converted.split()[0]
+                hour = int(alarm_time.split(":")[0])
+                minute = int(alarm_time.split(":")[-1])
+                am_pm = converted.split()[-1]
+                Alarm(hour + 12, minute).start() if am_pm == 'p.m.' else Alarm(hour, minute).start()
+                if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+                    place_holder = None
+                    renew()
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+                if place_holder == 0:
+                    place_holder = None
+                    renew()
+                sys.stdout.write("\r")
+                speaker.say("I didn't quite get that. Try again.")
+                place_holder = 0
+                alarm(hour=None, minute=None, am_pm=None)
+            place_holder = None
+    speaker.say(f"Alarm has been set for {hour}:{minute} {am_pm} sir!")
     renew()
 
 
@@ -1321,7 +1336,7 @@ def listen():
         dummy.has_been_called = True
     try:
         sys.stdout.write("\rSentry Mode")
-        listener = recognizer.listen(source_for_sentry_mode, timeout=None, phrase_time_limit=5)
+        listener = recognizer.listen(source_for_sentry_mode, timeout=5, phrase_time_limit=5)
         sys.stdout.write("\r")
         key = recognizer.recognize_google(listener)
         if 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'Showtime' in key:
