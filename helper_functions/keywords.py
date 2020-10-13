@@ -103,6 +103,10 @@ class Keywords:
         key = ['alarm', 'wake me']
         return key
 
+    def kill_alarm(self):
+        key = ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key

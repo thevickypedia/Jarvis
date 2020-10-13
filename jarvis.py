@@ -18,6 +18,7 @@ import speech_recognition as sr
 from geopy.geocoders import Nominatim, options
 from psutil import Process, virtual_memory
 
+from alarm import Alarm
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.keywords import Keywords
@@ -227,10 +228,13 @@ def conditions(converted):
             speaker.say("I can't take you to anywhere without a location sir!")
             directions(place=None)
 
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.kill_alarm()):
+        kill_alarm()
+
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.alarm()):
         try:
             extracted_time = re.findall(r'\s([0-9]+\:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
-                             r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
+                r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
             extracted_time = extracted_time[0]
             am_pm = extracted_time.split()[-1]
             if ":" in extracted_time:
@@ -1298,11 +1302,13 @@ def directions(place):
 
 
 def alarm(hour, minute, am_pm):
-    from alarm import Alarm
+    global place_holder, alarm_state
     if hour and minute and am_pm:
+        alarm_state.append(hour)
+        alarm_state.append(minute)
+        alarm_state.append(am_pm)
         Alarm(hour + 12, minute).start() if am_pm == 'p.m.' else Alarm(hour, minute).start()
     else:
-        global place_holder
         speaker.say('Please tell me a time sir!')
         speaker.runAndWait()
         with sr.Microphone() as source:
@@ -1311,14 +1317,15 @@ def alarm(hour, minute, am_pm):
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
                 sys.stdout.write("\r")
                 converted = recognizer.recognize_google(listener)
-                alarm_time = converted.split()[0]
-                hour = int(alarm_time.split(":")[0])
-                minute = int(alarm_time.split(":")[-1])
-                am_pm = converted.split()[-1]
-                Alarm(hour + 12, minute).start() if am_pm == 'p.m.' else Alarm(hour, minute).start()
                 if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                     place_holder = None
                     renew()
+                else:
+                    alarm_time = converted.split()[0]
+                    hour = int(alarm_time.split(":")[0])
+                    minute = int(alarm_time.split(":")[-1])
+                    am_pm = converted.split()[-1]
+                    alarm(hour=hour, minute=minute, am_pm=am_pm)
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 if place_holder == 0:
                     place_holder = None
@@ -1329,6 +1336,18 @@ def alarm(hour, minute, am_pm):
                 alarm(hour=None, minute=None, am_pm=None)
             place_holder = None
     speaker.say(f"Alarm has been set for {hour}:{minute} {am_pm} sir!")
+    renew()
+
+
+def kill_alarm():
+    global alarm_state
+    if not alarm_state:
+        speaker.say("You have no alarms set sir!")
+    else:
+        hour, minute, am_pm = alarm_state[0], alarm_state[1], alarm_state[-1]
+        Alarm(hours=hour, minutes=minute).kill_alarm()
+        speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
+    speaker.runAndWait()
     renew()
 
 
@@ -1390,7 +1409,7 @@ if __name__ == '__main__':
     keywords = Keywords()
     conversation = Conversation()
     operating_system = platform.system()
-    place_holder, greet_check = None, None
+    place_holder, greet_check, alarm_state = None, None, []
     waiter = 0
 
     options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
