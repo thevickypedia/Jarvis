@@ -227,6 +227,9 @@ def conditions(converted):
             speaker.say("I can't take you to anywhere without a location sir!")
             directions(place=None)
 
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.alarm()):
+        alarm()
+
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         dummy.has_been_called = True
@@ -1276,6 +1279,38 @@ def directions(place):
         distance(starting_point=None, destination=place)
     else:
         speaker.say("You might need a flight to get there!")
+    renew()
+
+
+def alarm():
+    from alarm import Alarm
+    global place_holder
+    speaker.say('Please tell me a time sir!')
+    speaker.runAndWait()
+    with sr.Microphone() as source:
+        try:
+            sys.stdout.write("\rListener activated..")
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r")
+            converted = recognizer.recognize_google(listener)
+            alarm_time = converted.split()[0]
+            hour = int(alarm_time.split(":")[0])
+            minute = int(alarm_time.split(":")[-1])
+            am_pm = converted.split()[-1]
+            Alarm(hour, minute).start()
+            if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+                place_holder = None
+                renew()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            alarm()
+        place_holder = None
+    speaker.say(f"I will wake you up at {hour}:{minute} {am_pm}")
     renew()
 
 
