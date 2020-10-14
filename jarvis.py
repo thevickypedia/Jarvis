@@ -17,9 +17,8 @@ import pyttsx3 as audio
 import speech_recognition as sr
 from geopy.geocoders import Nominatim, options
 from psutil import Process, virtual_memory
-from alarm import Alarm, get_ident
 
-from alarm import Alarm
+from alarm import Alarm, get_ident
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.keywords import Keywords
@@ -1305,9 +1304,8 @@ def directions(place):
 def alarm(hour, minute, am_pm):
     global place_holder, alarm_state
     if hour and minute and am_pm:
-        alarm_state.append(hour)
-        alarm_state.append(minute)
-        alarm_state.append(am_pm)
+        appender = [hour, minute, am_pm]
+        alarm_state.append(appender)
         Alarm(hour + 12, minute).start() if am_pm == 'p.m.' else Alarm(hour, minute).start()
     else:
         speaker.say('Please tell me a time sir!')
@@ -1327,7 +1325,7 @@ def alarm(hour, minute, am_pm):
                     minute = int(alarm_time.split(":")[-1])
                     am_pm = converted.split()[-1]
                     alarm(hour=hour, minute=minute, am_pm=am_pm)
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError):
                 if place_holder == 0:
                     place_holder = None
                     renew()
@@ -1345,8 +1343,12 @@ def kill_alarm():
     if not alarm_state:
         speaker.say("You have no alarms set sir!")
     else:
-        hour, minute, am_pm = alarm_state[0], alarm_state[1], alarm_state[-1]
-        Alarm(hours=hour, minutes=minute).kill_alarm()
+        import ctypes
+        thread_id = get_ident()
+        hour, minute, am_pm = alarm_state[0][0], alarm_state[0][1], alarm_state[0][-1]
+        reserved = ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, ctypes.py_object(SystemExit))
+        if reserved > 1:
+            ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, 0)
         speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
     speaker.runAndWait()
     renew()
