@@ -301,6 +301,9 @@ def conditions(converted):
         sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
         exit(0)
 
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.shutdown()):
+        shutdown()
+
     else:
         sys.stdout.write(f"\r{converted}")
         speaker.say(f"I heard {converted}. Let me look that up.")
@@ -1395,6 +1398,7 @@ def kill_alarm():
                     renew()
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
+                kill_alarm()
                 place_holder = 0
             except FileNotFoundError as file_error:
                 sys.stdout.write(f"{file_error}")
@@ -1449,6 +1453,41 @@ def size_converter():
     size = round(byte_size / power, 2)
     response = str(size) + ' ' + size_name[integer]
     return response
+
+
+def shutdown():
+    global place_holder
+    speaker.say("Are you sure you want to turn off the machine sir?")
+    speaker.runAndWait()
+    with sr.Microphone() as source:
+        try:
+            sys.stdout.write("Listener activated..")
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r")
+            converted = recognizer.recognize_google(listener)
+            place_holder = None
+            if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.ok()):
+                memory_consumed = size_converter()
+                speaker.say(f"Shutting down sir!")
+                speaker.say(exit_msg)
+                speaker.runAndWait()
+                sys.stdout.write(
+                    f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
+                if operating_system == 'Darwin':
+                    subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
+                elif operating_system == 'Windows':
+                    os.system("shutdown /s /t 1")
+            else:
+                speaker.say("Machine state is left intact sir!")
+                renew()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            shutdown()
 
 
 def dummy():

@@ -117,9 +117,9 @@ class Keywords:
         return key
 
     def kill(self):
-        key = ['kill', 'terminate', 'kill yourself', 'terminate yourself', 'stop running', 'stop']
+        key = ['kill', 'kill yourself', 'terminate yourself', 'stop running', 'stop']
         return key
 
     def shutdown(self):
-        key = ['shutdown', 'shut down']
+        key = ['shutdown', 'shut down', 'terminate']
         return key
