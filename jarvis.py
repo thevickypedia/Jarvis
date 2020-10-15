@@ -18,7 +18,7 @@ import speech_recognition as sr
 from geopy.geocoders import Nominatim, options
 from psutil import Process, virtual_memory
 
-from alarm import Alarm, get_ident
+from alarm import Alarm
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.keywords import Keywords
@@ -237,14 +237,15 @@ def conditions(converted):
                 r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
             extracted_time = extracted_time[0]
             am_pm = extracted_time.split()[-1]
+            am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
+            alarm_time = extracted_time.split()[0]
             if ":" in extracted_time:
-                alarm_time = extracted_time.split()[0]
                 hour = int(alarm_time.split(":")[0])
                 minute = int(alarm_time.split(":")[-1])
             else:
-                alarm_time = extracted_time.split()[0]
                 hour = int(alarm_time.split()[0])
-                minute = "00"
+                minute = 0
+            hour, minute = f"{hour:02}", f"{minute:02}"
             alarm(hour, minute, am_pm)
         except IndexError:
             alarm(hour=None, minute=None, am_pm=None)
@@ -1306,7 +1307,9 @@ def alarm(hour, minute, am_pm):
     if hour and minute and am_pm:
         appender = [hour, minute, am_pm]
         alarm_state.append(appender)
-        Alarm(hour + 12, minute).start() if am_pm == 'p.m.' else Alarm(hour, minute).start()
+        f_name = f"{hour}_{minute}_{am_pm}"
+        open(f'lock_files/{f_name}.lock', 'a')
+        Alarm(hour, minute, am_pm).start() if am_pm == 'PM' else Alarm(hour, minute, am_pm).start()
     else:
         speaker.say('Please tell me a time sir!')
         speaker.runAndWait()
@@ -1321,9 +1324,15 @@ def alarm(hour, minute, am_pm):
                     renew()
                 else:
                     alarm_time = converted.split()[0]
-                    hour = int(alarm_time.split(":")[0])
-                    minute = int(alarm_time.split(":")[-1])
                     am_pm = converted.split()[-1]
+                    if ":" in converted:
+                        hour = int(alarm_time.split(":")[0])
+                        minute = int(alarm_time.split(":")[-1])
+                    else:
+                        hour = int(alarm_time.split()[0])
+                        minute = 0
+                    hour, minute = f"{hour:02}", f"{minute:02}"
+                    am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
                     alarm(hour=hour, minute=minute, am_pm=am_pm)
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError):
                 if place_holder == 0:
@@ -1335,22 +1344,62 @@ def alarm(hour, minute, am_pm):
                 alarm(hour=None, minute=None, am_pm=None)
             place_holder = None
     speaker.say(f"Alarm has been set for {hour}:{minute} {am_pm} sir!")
+    sys.stdout.write(f"Alarm has been set for {hour}:{minute} {am_pm} sir!")
     renew()
 
 
 def kill_alarm():
-    global alarm_state
+    global alarm_state, place_holder
     if not alarm_state:
         speaker.say("You have no alarms set sir!")
-    else:
-        import ctypes
-        thread_id = get_ident()
+    elif len(alarm_state) == 1:
         hour, minute, am_pm = alarm_state[0][0], alarm_state[0][1], alarm_state[0][-1]
-        reserved = ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, ctypes.py_object(SystemExit))
-        if reserved > 1:
-            ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, 0)
+        try:
+            os.remove(f"lock_files/{hour}_{minute}_{am_pm}.lock")
+        except FileNotFoundError:
+            pass
         speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
-    speaker.runAndWait()
+    else:
+        files = os.listdir('lock_files')
+        if operating_system == 'Darwin':
+            files.remove('.DS_Store')
+        sys.stdout.write(f"{', '.join(files).replace('.lock', '')}")
+        speaker.say("Please let me know which alarm you want to remove. Current alarms on your screen sir!")
+        speaker.runAndWait()
+        with sr.Microphone() as source:
+            try:
+                sys.stdout.write("    Listener activated..")
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                sys.stdout.write("\r")
+                converted = recognizer.recognize_google(listener)
+                place_holder = None
+                alarm_time = converted.split()[0]
+                am_pm = converted.split()[-1]
+                if ":" in converted:
+                    hour = int(alarm_time.split(":")[0])
+                    minute = int(alarm_time.split(":")[-1])
+                else:
+                    hour = int(alarm_time.split()[0])
+                    minute = 0
+                hour, minute = f"{hour:02}", f"{minute:02}"
+                am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
+                try:
+                    os.remove(f"lock_files/{hour}_{minute}_{am_pm}.lock")
+                except FileNotFoundError:
+                    speaker.say(f"I wasn't able to find an alarm at {hour}:{minute} {am_pm}. Try again.")
+                    kill_alarm()
+                speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+                if place_holder == 0:
+                    place_holder = None
+                    renew()
+                sys.stdout.write("\r")
+                speaker.say("I didn't quite get that. Try again.")
+                place_holder = 0
+            except FileNotFoundError as file_error:
+                sys.stdout.write(f"{file_error}")
+                speaker.say(f"Unable to find a lock file for {hour} {minute} {am_pm} sir! Try again!")
+                kill_alarm()
     renew()
 
 
