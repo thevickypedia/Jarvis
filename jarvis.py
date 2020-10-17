@@ -15,6 +15,7 @@ from urllib.request import urlopen
 import certifi
 import pyttsx3 as audio
 import speech_recognition as sr
+import yaml
 from geopy.geocoders import Nominatim, options
 from psutil import Process, virtual_memory
 
@@ -81,14 +82,13 @@ def renew():
             converted = recognizer.recognize_google(listener)
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if waiter == 12:  # waits for a minute and goes to sleep
-                listen()
+                sentry_mode()
             waiter += 1
             renew()
         if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
-            speaker.say(f"Activating sentry mode sir.")
-            speaker.say(exit_msg)
+            speaker.say(f"Activating sentry mode, enjoy yourself sir!")
             speaker.runAndWait()
-            listen()
+            sentry_mode()
         else:
             conditions(converted)
 
@@ -259,45 +259,55 @@ def conditions(converted):
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         dummy.has_been_called = True
-        initialize()
+        renew()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.capabilities()):
-        speaker.say('There is a lot I can do sir. For example: I can get you the weather at your location, news around '
+        speaker.say('There is a lot I can do. For example: I can get you the weather at your location, news around '
                     'you, meanings of words, launch applications, play music, create a to-do list, check your emails, '
-                    'get your system configuration, locate your phone, find distance between places, and much more. '
+                    'get your system configuration, locate your phone, find distance between places, set an alarm, '
+                    'scan smart devices in your IP range, make you happy by telling a joke, and much more. '
                     'Time to ask,.')
         dummy.has_been_called = True
-        initialize()
+        renew()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.languages()):
         speaker.say("Tricky question!. I'm configured in python, and a little bit of bash. I can speak English.")
         dummy.has_been_called = True
-        initialize()
+        renew()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.form()):
         speaker.say("I am a program, I'm without form.")
         dummy.has_been_called = True
-        initialize()
+        renew()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.whats_up()):
-        speaker.say("My listeners are up. There is nothing I cannot process. So, tell me..")
+        speaker.say("My listeners are up. There is nothing I cannot process. So ask me anything..")
         dummy.has_been_called = True
-        initialize()
+        renew()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.what()):
+        speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI")
+        renew()
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.who()):
+        speaker.say("I am Jarvis. A virtual assistant designed by Mr.Rao.")
+        renew()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.about_me()):
+        speaker.say("I am Jarvis. A virtual assistant designed by Mr.Rao.")
         speaker.say("I am a program, I'm without form.")
         speaker.say('There is a lot I can do. For example: I can get you the weather at your location, news around '
                     'you, meanings of words, launch applications, play music, create a to-do list, check your emails, '
-                    'get your system configuration, locate your phone, find distance between places, and much more. '
+                    'get your system configuration, locate your phone, find distance between places, set an alarm, '
+                    'scan smart devices in your IP range, make you happy by telling a joke, and much more. '
                     'Time to ask,.')
         dummy.has_been_called = True
-        initialize()
+        renew()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
-        speaker.say(f"Activating sentry mode sir.")
-        speaker.say(exit_msg)
+        speaker.say(f"Activating sentry mode, enjoy yourself sir.")
         speaker.runAndWait()
-        listen()
+        sentry_mode()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.kill()):
         memory_consumed = size_converter()
@@ -814,7 +824,7 @@ def music():
     sys.stdout.write('\r')
     speaker.say("Enjoy your music sir!")
     speaker.runAndWait()
-    listen()
+    sentry_mode()
 
 
 def gmail():
@@ -1467,7 +1477,7 @@ def jokes():
             renew()
 
 
-def listen():
+def sentry_mode():
     global waiter
     waiter = 0
     if greet_check == 'initialized':
@@ -1487,9 +1497,9 @@ def listen():
             speaker.say(f'{random.choice(wake_up3)}')
             initialize()
         else:
-            listen()
+            sentry_mode()
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-        listen()
+        sentry_mode()
     except KeyboardInterrupt:
         memory_consumed = size_converter()
         speaker.say(f"Shutting down sir!")
@@ -1614,4 +1624,4 @@ if __name__ == '__main__':
 
     with sr.Microphone() as source_for_sentry_mode:
         recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
-        listen()
+        sentry_mode()

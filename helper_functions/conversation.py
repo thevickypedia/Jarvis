@@ -10,13 +10,20 @@ class Conversation:
 
     def languages(self):
         key = ['what languages do you speak', 'what are all the languages you can speak', 'what languages do you know',
-               'can you speak in a different language', 'how many languages can you speak',
+               'can you speak in a different language', 'how many languages can you speak', 'what are you made of',
                'what languages can you speak', 'what languages do you speak', 'what are the languages you can speak']
         return key
 
+    def what(self):
+        key = ['what are you']
+        return key
+
+    def who(self):
+        key = ['who are you', 'what do I call you', "what's your name", 'what is your name']
+        return key
+
     def form(self):
-        key = ['what are you', 'where is your body', "where's your body", 'what do I call you', 'what are you made of',
-               'who are you']
+        key = ['where is your body', "where's your body"]
         return key
 
     def whats_up(self):
