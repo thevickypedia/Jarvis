@@ -250,6 +250,9 @@ def conditions(converted):
         except IndexError:
             alarm(hour=None, minute=None, am_pm=None)
 
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.google_home()):
+        google_home()
+
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         dummy.has_been_called = True
@@ -1429,8 +1432,14 @@ def google_home():
             devices.update({device_name: ip})
         except ChromecastConnectionError:
             pass
+    sys.stdout.write('\r')
+    number = 0
     for device, ip in devices.items():
-        print(device)
+        number += 1
+        sys.stdout.write(f"{device},  ")
+    speaker.say(f"You have {number} devices in your IP range. Devices list on your screen sir!")
+    speaker.runAndWait()
+    renew()
 
 
 def listen():
@@ -1545,7 +1554,7 @@ if __name__ == '__main__':
 
     # noinspection PyTypeChecker
     volume = int(speaker.getProperty("volume")) * 100
-    # sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Female: 1/17 Male: 0/7')
+    sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Female: 1/17 Male: 0/7')
 
     voices = speaker.getProperty("voices")
 
@@ -1578,7 +1587,6 @@ if __name__ == '__main__':
     else:
         exit_msg = "Have a nice night."
 
-    # with sr.Microphone() as source_for_sentry_mode:
-    #     recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
-    #     listen()
-    google_home()
+    with sr.Microphone() as source_for_sentry_mode:
+        recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
+        listen()

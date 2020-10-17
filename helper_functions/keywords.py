@@ -107,6 +107,10 @@ class Keywords:
         key = ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off']
         return key
 
+    def google_home(self):
+        key = ['google home', 'googlehome']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key
