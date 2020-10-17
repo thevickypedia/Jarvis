@@ -16,6 +16,8 @@ pip3 install pyicloud
 pip3 install geopy
 pip3 install PyDictionary
 pip3 install haversine
+pip3 install googlehomepush
+pip3 install axju-jokes
 #pip3 install ChatterBot==1.0.0 --ignore-installed PyYAML
 #pip3 install chatterbot-corpus==1.2.0 --ignore-installed PyYAML
 #pip3 install sqlalchemy==1.2
