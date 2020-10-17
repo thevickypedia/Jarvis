@@ -1217,7 +1217,7 @@ def locate_places(place):
                 if 'exit' in place or 'quit' in place or 'Xzibit' in place:
                     place_holder = None
                     renew()
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, TypeError):
                 if place_holder == 0:
                     place_holder = None
                     renew()
@@ -1407,6 +1407,16 @@ def kill_alarm():
     renew()
 
 
+def google_home():
+    from socket import socket, AF_INET, SOCK_DGRAM
+    your_ip = ''
+    connector = socket(AF_INET, SOCK_DGRAM)
+    connector.connect(("8.8.8.8", 80))
+    your_ip += connector.getsockname()[0]
+    connector.close()
+    print(your_ip)
+
+
 def listen():
     global waiter
     waiter = 0
@@ -1519,7 +1529,7 @@ if __name__ == '__main__':
 
     # noinspection PyTypeChecker
     volume = int(speaker.getProperty("volume")) * 100
-    sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Female: 1/17 Male: 0/7')
+    # sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Female: 1/17 Male: 0/7')
 
     voices = speaker.getProperty("voices")
 
@@ -1552,6 +1562,7 @@ if __name__ == '__main__':
     else:
         exit_msg = "Have a nice night."
 
-    with sr.Microphone() as source_for_sentry_mode:
-        recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
-        listen()
+    # with sr.Microphone() as source_for_sentry_mode:
+    #     recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
+    #     listen()
+    google_home()
