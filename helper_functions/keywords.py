@@ -111,6 +111,10 @@ class Keywords:
         key = ['google home', 'googlehome']
         return key
 
+    def jokes(self):
+        key = ['joke', 'jokes', 'make me laugh']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key

@@ -253,6 +253,9 @@ def conditions(converted):
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.google_home()):
         google_home()
 
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.jokes()):
+        jokes()
+
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         dummy.has_been_called = True
@@ -1440,6 +1443,28 @@ def google_home():
     speaker.say(f"You have {number} devices in your IP range. Devices list on your screen sir!")
     speaker.runAndWait()
     renew()
+
+
+def jokes():
+    global place_holder
+    from joke.jokes import geek, icanhazdad, chucknorris, icndb
+    speaker.say(random.choice([geek, icanhazdad, chucknorris, icndb])())
+    speaker.runAndWait()
+    speaker.say("Do you want to hear another one sir?")
+    speaker.runAndWait()
+    with sr.Microphone() as source:
+        try:
+            sys.stdout.write("\rListener activated..")
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r")
+            converted = recognizer.recognize_google(listener)
+            place_holder = None
+            if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.ok()):
+                jokes()
+            else:
+                renew()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            renew()
 
 
 def listen():
