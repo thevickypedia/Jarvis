@@ -1409,12 +1409,28 @@ def kill_alarm():
 
 def google_home():
     from socket import socket, AF_INET, SOCK_DGRAM
+    from googlehomepush import GoogleHome
+    from pychromecast.error import ChromecastConnectionError
     your_ip = ''
-    connector = socket(AF_INET, SOCK_DGRAM)
-    connector.connect(("8.8.8.8", 80))
-    your_ip += connector.getsockname()[0]
-    connector.close()
-    print(your_ip)
+    s = socket(AF_INET, SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    your_ip += s.getsockname()[0]
+    s.close()
+    look_up = ('.'.join(your_ip.split('.')[0:3]))
+    ip_range = [3, 7, 15]
+    devices = {}
+    for n in ip_range:
+        try:
+            device_info = GoogleHome(host=f"{look_up}.{n}").cc
+            device_info = str(device_info)
+            device_name = device_info.split("'")[3]
+            ip = device_info.split("'")[1]
+            # port = sample.split("'")[2].split()[1].replace(',', '')
+            devices.update({device_name: ip})
+        except ChromecastConnectionError:
+            pass
+    for device, ip in devices.items():
+        print(device)
 
 
 def listen():
