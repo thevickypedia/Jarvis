@@ -321,6 +321,21 @@ def conditions(converted):
         shutdown()
 
     else:
+        train_file = {'Uncategorized': converted}
+        if os.path.isfile('training_data.yaml'):
+            with open(r'training_data.yaml', 'r') as reader:
+                content = reader.read()
+                for key, value in train_file.items():
+                    if str(value) not in content:
+                        dict_file = [{key: [value]}]
+                        with open(r'training_data.yaml', 'a') as writer:
+                            yaml.dump(dict_file, writer)
+        else:
+            for key, value in train_file.items():
+                train_file = [{key: [value]}]
+            with open(r'training_data.yaml', 'a') as writer:
+                yaml.dump(train_file, writer)
+
         sys.stdout.write(f"\r{converted}")
         speaker.say(f"I heard {converted}. Let me look that up.")
         speaker.runAndWait()
