@@ -2,15 +2,16 @@ import math
 
 
 def watcher(rh, result):
+    """Fetches all necessary information about your investment portfolio"""
     shares_total = []
     loss_total = []
     profit_total = []
     n = 0
     n_ = 0
     for data in result:
-        share_id = str(data['instrument'].split('/')[-2])
-        buy = round(float(data['average_buy_price']), 2)
-        shares_count = int(data['quantity'].split('.')[0])
+        share_id = str(data['instrument'].split('/')[-2])  # gets share_id eg: TSLA for Tesla
+        buy = round(float(data['average_buy_price']), 2)  # price the stocks were purchased
+        shares_count = int(data['quantity'].split('.')[0])  # number of shares owned in each stock
         if shares_count != 0:
             n = n + 1
             n_ = n_ + shares_count
@@ -21,7 +22,7 @@ def watcher(rh, result):
         shares_total.append(total)
         current = (round(float(raw_details['last_trade_price']), 2))
         current_total = round(shares_count * current, 2)
-        difference = round(float(current_total - total), 2)
+        difference = round(float(current_total - total), 2)  # calculates difference between current and purchased total
         if difference < 0:
             loss_total.append(-difference)
         else:

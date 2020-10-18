@@ -1,4 +1,5 @@
 class Keywords:
+    """list of keywords for each function which is condition matched in jarvis.py"""
     def date(self):
         key = ["today's date", 'current date']
         return key
@@ -96,7 +97,7 @@ class Keywords:
         return key
 
     def directions(self):
-        key = ['take me', 'get directions', 'go to']
+        key = ['take me', 'get directions', 'to go to']
         return key
 
     def alarm(self):

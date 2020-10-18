@@ -20,8 +20,8 @@ class Database:
         connector = connection.cursor()
         connector.execute(f"SELECT category, item from {table_name}")
         response = connector.fetchall()
-        for c, i in response:
-            if i == item and c == category:
+        for c, i in response:  # browses through all categories and items
+            if i == item and c == category:  # checks if already present and updates items in case of repeated category
                 return f"Looks like the table: {table_name}, already has the item: {item} in, {category} category"
         connection.execute(f"INSERT INTO {table_name} (category, item) VALUES ('{category}','{item}')")
         connection.commit()
@@ -41,9 +41,10 @@ class Database:
         connector.execute(f"SELECT category, item from {table_name}")
         response = connector.fetchall()
         check = 0
-        for c, i in response:
-            if i == item or c == item:
+        for c, i in response:  # browses through all categories and items
+            if i == item or c == item:  # matches the item that needs to be deleted
                 check += 1
+        # if check remains 0 returns the message that the item or category wasn't found
         if check == 0:
             return f"Looks like there is no item or category with the name: {item}"
         connection.execute(f"DELETE FROM {table_name} WHERE item='{item}' OR category='{item}'")

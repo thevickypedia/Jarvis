@@ -26,15 +26,18 @@ from helper_functions.keywords import Keywords
 
 database = Database()
 now = datetime.now()
-current = now.strftime("%p")
-clock = now.strftime("%I")
-today = now.strftime("%A")
+current = now.strftime("%p")  # current part of day (AM/PM)
+clock = now.strftime("%I")  # current hour
+today = now.strftime("%A")  # current day
 
 
 # TODO: include face recognition
 
 
 def initialize():
+    """Function to initialize when woke up from sleep mode. greet_check and dummy are to ensure greeting is given only
+    for the first time, the script is run place_holder is set for all the functions so that the function runs only ONCE
+    again in case of an exception"""
     global place_holder, greet_check
     greet_check = 'initialized'
     if dummy.has_been_called:
@@ -72,6 +75,8 @@ def initialize():
 
 
 def renew():
+    """renew() function will keep listening and send the response to conditions() This function runs only for a minute
+    and goes to sentry_mode() if nothing is heard"""
     global waiter
     speaker.runAndWait()
     with sr.Microphone() as source:
@@ -94,6 +99,7 @@ def renew():
 
 
 def time_converter(seconds):
+    """Run time calculator"""
     seconds = round(seconds % (24 * 3600))
     hour = round(seconds // 3600)
     seconds %= 3600
@@ -110,6 +116,8 @@ def time_converter(seconds):
 
 
 def conditions(converted):
+    """Conditions function is used to check the message processed, and use the keywords to do a regex match and trigger
+    the appropriate function which has dedicated task"""
     if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.date()):
         date()
 
@@ -177,20 +185,24 @@ def conditions(converted):
         create_db()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.distance()):
-        check = converted.split()
+        """the loop below differentiates between two places and one place with two words 
+        eg: New York will be considered as one word and New York and Las Vegas will be considered as two words"""
+        check = converted.split()  # str to list
         places = []
         for word in check:
-            if word[0].isupper() or '.' in word:
+            if word[0].isupper() or '.' in word:  # looks for words that start with uppercase
                 try:
-                    next_word = check[check.index(word) + 1]
+                    next_word = check[check.index(word) + 1]  # looks if words after an uppercase word is also one
                     if next_word[0].isupper():
                         places.append(f"{word + ' ' + check[check.index(word) + 1]}")
                     else:
                         if word not in ' '.join(places):
                             places.append(word)
-                except IndexError:
+                except IndexError:  # catches exception on lowercase word after an upper case word
                     if word not in ' '.join(places):
                         places.append(word)
+        """the condition below assumes two different words as two places but not including two words starting upper case 
+        right next to each other"""
         if len(places) >= 2:
             start = places[0]
             end = places[1]
@@ -202,12 +214,14 @@ def conditions(converted):
         distance(start, end)
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.geopy()):
+        # tries to look for words starting with an upper case letter
         place = ''
         for word in converted.split():
             if word[0].isupper():
                 place += word + ' '
             elif '.' in word:
                 place += word + ' '
+        # if no words found starting with an upper case letter, fetches word after the keyword 'is' eg: where is chicago
         if not place:
             keyword = 'is'
             before_keyword, keyword, after_keyword = converted.partition(keyword)
@@ -232,6 +246,7 @@ def conditions(converted):
         kill_alarm()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.alarm()):
+        """uses regex to find numbers in your statement and processes AM and PM information"""
         try:
             extracted_time = re.findall(r'\s([0-9]+\:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
                 r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
@@ -245,6 +260,7 @@ def conditions(converted):
             else:
                 hour = int(alarm_time.split()[0])
                 minute = 0
+            # makes sure hour and minutes are two digits
             hour, minute = f"{hour:02}", f"{minute:02}"
             alarm(hour, minute, am_pm)
         except IndexError:
@@ -321,12 +337,13 @@ def conditions(converted):
         shutdown()
 
     else:
+        # if none of the conditions above are met, it writes your statement to an yaml file for future training
         train_file = {'Uncategorized': converted}
         if os.path.isfile('training_data.yaml'):
             with open(r'training_data.yaml', 'r') as reader:
                 content = reader.read()
                 for key, value in train_file.items():
-                    if str(value) not in content:
+                    if str(value) not in content:  # avoids duplication in yaml file
                         dict_file = [{key: [value]}]
                         with open(r'training_data.yaml', 'a') as writer:
                             yaml.dump(dict_file, writer)
@@ -336,6 +353,7 @@ def conditions(converted):
             with open(r'training_data.yaml', 'a') as writer:
                 yaml.dump(train_file, writer)
 
+        # if none of the conditions above are met, opens a google search on default browser
         sys.stdout.write(f"\r{converted}")
         speaker.say(f"I heard {converted}. Let me look that up.")
         speaker.runAndWait()
@@ -351,6 +369,7 @@ def conditions(converted):
 
 
 def report():
+    """Initiates a list of function that I tend to check first thing in the morning"""
     sys.stdout.write("\rStarting today's report")
     report.has_been_called = True
     date()
@@ -364,6 +383,7 @@ def report():
 
 
 def date():
+    """Says today's date and skips going to renew() if the function is called by report()"""
     today_date = datetime.now()
     dt_string = today_date.strftime("%A, %B %d, %Y")
     speaker.say(f'Today is {dt_string}')
@@ -375,6 +395,7 @@ def date():
 
 
 def current_time():
+    """Says current time and skips going to renew() if the function is called by report()"""
     c_time = datetime.now()
     dt_string = c_time.strftime("%I:%M %p")
     speaker.say(f'The current time is: {dt_string}')
@@ -385,6 +406,7 @@ def current_time():
 
 
 def webpage():
+    """opens up a webpage using your default browser"""
     global place_holder
     speaker.say("Which website shall I open? Just say the name of the webpage.")
     speaker.runAndWait()
@@ -414,6 +436,7 @@ def webpage():
 
 
 def weather():
+    """Says weather at your current location and skips going to renew() if the function is called by report()"""
     sys.stdout.write('\rGetting your weather info')
     import pytemperature
     api_key = os.getenv('api_key')
@@ -450,6 +473,7 @@ def weather():
 
 
 def system_info():
+    """gets your system configuration for both mac and windows"""
     import shutil
 
     total, used, free = shutil.disk_usage("/")
@@ -474,6 +498,7 @@ def system_info():
 
 
 def wiki_pedia():
+    """gets any information from wikipedia using it's API"""
     global place_holder
     import wikipedia
     speaker.say("Please tell the keyword.")
@@ -501,7 +526,7 @@ def wiki_pedia():
         sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
         try:
             summary = wikipedia.summary(keyword)
-        except wikipedia.exceptions.DisambiguationError as e:
+        except wikipedia.exceptions.DisambiguationError as e:  # checks for the right keyword in case of 1+ matches
             sys.stdout.write(f'\r{e}')
             speaker.say('Your keyword has multiple results sir. Please pick any one displayed on your screen.')
             speaker.runAndWait()
@@ -510,9 +535,9 @@ def wiki_pedia():
             sys.stdout.write("\r")
             keyword1 = recognizer.recognize_google(listener1)
             summary = wikipedia.summary(keyword1)
-        speaker.say(''.join(summary.split('.')[0:2]))
+        speaker.say(''.join(summary.split('.')[0:2]))  # stops with two sentences before reading whole passage
         speaker.runAndWait()
-        speaker.say("Do you want me to continue?")
+        speaker.say("Do you want me to continue?")  # gets confirmation to read the whole passage
         speaker.runAndWait()
         try:
             sys.stdout.write("\rListener activated..")
@@ -532,6 +557,7 @@ def wiki_pedia():
 
 
 def news():
+    """Says news around you and skips going to renew() if the function is called by report()"""
     source = 'fox'
     sys.stdout.write(f'\rGetting news from {source} news.')
     speaker.say("News around you!")
@@ -550,6 +576,7 @@ def news():
 
 
 def apps(keyword):
+    """Launches an application skimmed from your statement and unable to skim asks for the app name"""
     global place_holder
     ignore = ['app', 'application']
     if (keyword in ignore or keyword is None) and operating_system == 'Windows':
@@ -643,6 +670,7 @@ def apps(keyword):
 
 
 def robinhood():
+    """Gets investment from robinhood api"""
     sys.stdout.write('\rGetting your investment details.')
     from pyrh import Robinhood
     u = os.getenv('user')
@@ -662,6 +690,7 @@ def robinhood():
 
 
 def repeater():
+    """Repeats what ever you say"""
     global place_holder
     speaker.say("Please tell me what to repeat.")
     speaker.runAndWait()
@@ -689,6 +718,7 @@ def repeater():
 
 
 def chatBot():
+    """Initiates chat bot, currently not supported for Windows"""
     global place_holder
     if operating_system == 'Windows':
         speaker.say('Seems like you are running a Windows operating system. Requirements have version conflicting '
@@ -744,6 +774,7 @@ def chatBot():
 
 
 def location():
+    """Gets your current location"""
     city, state, country = location_info['city'], location_info['region'], location_info['country']
     speaker.say(f"You're at {city} {state}, in {country}")
     speaker.runAndWait()
@@ -751,6 +782,7 @@ def location():
 
 
 def locate():
+    """Locates your iPhone using icloud api for python"""
     global place_holder
     from pyicloud import PyiCloudService
 
@@ -814,6 +846,7 @@ def locate():
 
 
 def music():
+    """Scans music directory in your profile for .mp3 files and plays using default player"""
     sys.stdout.write("\rScanning music files...")
     user_profile = os.path.expanduser('~')
 
@@ -843,6 +876,7 @@ def music():
 
 
 def gmail():
+    """Reads unread emails from your gmail account and skips going to renew() if the function is called by report()"""
     global place_holder
     sys.stdout.write("\rFetching new emails..")
     import email
@@ -852,13 +886,13 @@ def gmail():
     u = os.getenv('gmail_user')
     p = os.getenv('gmail_pass')
 
-    mail = imaplib.IMAP4_SSL('imap.gmail.com')
+    mail = imaplib.IMAP4_SSL('imap.gmail.com')  # connects to imaplib
     mail.login(u, p)
     mail.list()
-    mail.select('inbox')
+    mail.select('inbox')  # choose inbox
 
     n = 0
-    return_code, messages = mail.search(None, 'UNSEEN')
+    return_code, messages = mail.search(None, 'UNSEEN')  # looks for unread emails
     if return_code == 'OK':
         for num in messages[0].split():
             n = n + 1
@@ -869,7 +903,7 @@ def gmail():
         speaker.say("You don't have any unread email sir")
         speaker.runAndWait()
     else:
-        speaker.say(f'You have {n} unread emails sir. Do you want me to check it?')
+        speaker.say(f'You have {n} unread emails sir. Do you want me to check it?')  # user check before reading subject
         speaker.runAndWait()
         with sr.Microphone() as source:
             try:
@@ -881,7 +915,7 @@ def gmail():
                     for nm in messages[0].split():
                         ignore, mail_data = mail.fetch(nm, '(RFC822)')
                         for response_part in mail_data:
-                            if isinstance(response_part, tuple):
+                            if isinstance(response_part, tuple):  # checks for type(response_part)
                                 original_email = email.message_from_bytes(response_part[1])
                                 raw_receive = (original_email['Received'].split(';')[-1]).strip()
                                 datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
@@ -889,6 +923,7 @@ def gmail():
                                 received_date = datetime_obj.strftime("%Y-%m-%d")
                                 current_date = datetime.today().date()
                                 yesterday = current_date - timedelta(days=1)
+                                # replaces current date with today or yesterday
                                 if received_date == str(current_date):
                                     receive = (datetime_obj.strftime("today, at %I:%M %p"))
                                 elif received_date == str(yesterday):
@@ -917,6 +952,7 @@ def gmail():
 
 
 def meaning(keyword):
+    """Gets meaning for a word skimmed from your statement using PyDictionary"""
     global place_holder
     from PyDictionary import PyDictionary
     dictionary = PyDictionary()
@@ -931,8 +967,7 @@ def meaning(keyword):
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
                 response = recognizer.recognize_google(listener)
                 sys.stdout.write("\r")
-                if 'no' in response.lower().split() or 'nope' in response.lower().split() or 'thank you' in \
-                        response.lower().split() or "that's it" in response.lower().split():
+                if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.exit()):
                     renew()
                 definition = dictionary.meaning(response)
                 if definition:
@@ -960,6 +995,7 @@ def meaning(keyword):
 
 
 def create_db():
+    """Creates a database for to-do list by calling the create_db() function in helper_functions/database.py"""
     speaker.say(database.create_db())
     if todo.has_been_called:
         todo.has_been_called = False
@@ -971,8 +1007,10 @@ def create_db():
 
 
 def todo():
+    """Says your to-do list and skips going to renew() if the function is called by report()"""
     global place_holder
     sys.stdout.write("\rLooking for to-do database..")
+    # if this function has been called by report() says database status and passes else it will ask for db creation
     if not os.path.isfile(file_name) and report.has_been_called:
         speaker.say("You don't have a database created for your to-do list sir.")
     elif not os.path.isfile(file_name):
@@ -1004,13 +1042,14 @@ def todo():
         sys.stdout.write("\rQuerying DB for to-do list..")
         result = {}
         for category, item in database.downloader():
+            # condition below makes sure one category can have multiple items without repeating category for each item
             if category not in result:
-                result.update({category: item})
+                result.update({category: item})  # creates dict for category and item if category is not found in result
             else:
-                result[category] = result[category] + ', ' + item
+                result[category] = result[category] + ', ' + item  # updates category if already found in result
         sys.stdout.write("\r")
         if result:
-            for category, item in result.items():
+            for category, item in result.items():  # browses dictionary and stores result in response and says it
                 response = f"Your to-do items are, {item}, in {category} category."
                 speaker.say(response)
                 sys.stdout.write(f"\r{response}")
@@ -1024,8 +1063,10 @@ def todo():
 
 
 def add_todo():
+    """Adds new items to your to-do list"""
     global place_holder
     sys.stdout.write("\rLooking for to-do database..")
+    # if database file is not found calls create_db()
     if not os.path.isfile(file_name):
         sys.stdout.write("\r")
         speaker.say("You don't have a database created for your to-do list sir.")
@@ -1075,6 +1116,7 @@ def add_todo():
                 speaker.say('Your to-do list has been left intact sir.')
                 renew()
             sys.stdout.write(f"Category: {category}")
+            # passes the category and item to uploader() in helper_functions/database.py which updates the database
             response = database.uploader(category, item)
             speaker.say(response)
             speaker.say("Do you want to add anything else to your to-do list?")
@@ -1096,6 +1138,7 @@ def add_todo():
 
 
 def delete_todo():
+    """Deletes items from an existing to-do list"""
     global place_holder
     sys.stdout.write("\rLooking for to-do database..")
     if not os.path.isfile(file_name):
@@ -1113,6 +1156,7 @@ def delete_todo():
             if any(re.search(line, item, flags=re.IGNORECASE) for line in keywords.exit()):
                 renew()
             response = database.deleter(item)
+            # if the return message from database starts with 'Looks' it means that the item wasn't matched for deletion
             if response.startswith('Looks'):
                 sys.stdout.write(f'\r{response}')
                 speaker.say(response)
@@ -1133,6 +1177,7 @@ def delete_todo():
 
 
 def delete_db():
+    """Deletes your database file after getting confirmation"""
     global place_holder
     if os.path.isfile(file_name):
         speaker.say('Are you sure you want to delete your database?')
@@ -1165,6 +1210,9 @@ def delete_db():
 
 
 def distance(starting_point, destination):
+    """Calibrates distance between starting point and destination. This function doesn't care about the starting point
+    If starting point is None, it gets the distance from your current location to destination. If destination is None,
+    it asks for a destination from user"""
     global place_holder
     if not destination:
         speaker.say("Destination please?")
@@ -1192,19 +1240,23 @@ def distance(starting_point, destination):
     from haversine import haversine, Unit
 
     if starting_point:
+        # if starting_point is received gets latitude and longitude of that location
         desired_start = geo_locator.geocode(starting_point)
         sys.stdout.write(f"{desired_start.address} **")
         start = desired_start.latitude, desired_start.longitude
         start_check = None
     else:
+        # else gets latitude and longitude information of current location
         start = tuple(map(float, location_info['loc'].split(',')))
         start_check = 'My Location'
     sys.stdout.write("::TO::")
     desired_location = geo_locator.geocode(destination)
     sys.stdout.write(f"** {desired_location.address}")
     end = desired_location.latitude, desired_location.longitude
-    miles = round(haversine(start, end, unit=Unit.MILES))
+    miles = round(haversine(start, end, unit=Unit.MILES))  # calculates miles from starting point to destination
     if directions.has_been_called:
+        # calculates drive time using d = s/t and distance calculation is only if location is same country
+        directions.has_been_called = False
         avg_speed = 60
         t_taken = miles / avg_speed
         if miles < avg_speed:
@@ -1218,7 +1270,7 @@ def distance(starting_point, destination):
                 speaker.say(f"It might take you about {drive_time} hours to get there sir!")
     elif start_check:
         speaker.say(f"Sir! You're {miles} miles away from {destination}.")
-        if not locate_places.has_been_called:
+        if not locate_places.has_been_called:  # promotes using locate_places() function
             speaker.say(f"You may also ask where is {destination}")
     else:
         speaker.say(f"{starting_point} is {miles} miles away from {destination}.")
@@ -1226,6 +1278,7 @@ def distance(starting_point, destination):
 
 
 def locate_places(place):
+    """Gets location details of a place"""
     global place_holder
     if not place:
         speaker.say("Tell me the name of a place!")
@@ -1284,6 +1337,8 @@ def locate_places(place):
 
 
 def directions(place):
+    """Opens google maps for a route between starting and destination.
+    Uses reverse geocoding to calculate latitude and longitude for both start and destination."""
     global place_holder
     if not place:
         speaker.say("You might want to give a location.")
@@ -1337,13 +1392,14 @@ def directions(place):
 
 
 def alarm(hour, minute, am_pm):
+    """Passes hour, minute and am/pm to Alarm class which initiates a thread for alarm clock in the background"""
     global place_holder, alarm_state
     if hour and minute and am_pm:
         appender = [hour, minute, am_pm]
         alarm_state.append(appender)
         f_name = f"{hour}_{minute}_{am_pm}"
         open(f'lock_files/{f_name}.lock', 'a')
-        Alarm(hour, minute, am_pm).start() if am_pm == 'PM' else Alarm(hour, minute, am_pm).start()
+        Alarm(hour, minute, am_pm).start()
     else:
         speaker.say('Please tell me a time sir!')
         speaker.runAndWait()
@@ -1383,6 +1439,9 @@ def alarm(hour, minute, am_pm):
 
 
 def kill_alarm():
+    """Removes lock file to stop the alarm which rings only when the certain lock file is present
+    alarm_state keeps a track of alarms that have been set"""
+    # TODO: look for existing alarms by lock files and get rid of alarm_state
     global alarm_state, place_holder
     if not alarm_state:
         speaker.say("You have no alarms set sir!")
@@ -1395,6 +1454,7 @@ def kill_alarm():
         speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
     else:
         files = os.listdir('lock_files')
+        files.remove('dummy.lock')  # removes dummy file from the list
         if operating_system == 'Darwin':
             files.remove('.DS_Store')
         sys.stdout.write(f"{', '.join(files).replace('.lock', '')}")
@@ -1429,8 +1489,8 @@ def kill_alarm():
                     renew()
                 sys.stdout.write("\r")
                 speaker.say("I didn't quite get that. Try again.")
-                kill_alarm()
                 place_holder = 0
+                kill_alarm()
             except FileNotFoundError as file_error:
                 sys.stdout.write(f"{file_error}")
                 speaker.say(f"Unable to find a lock file for {hour} {minute} {am_pm} sir! Try again!")
@@ -1439,6 +1499,7 @@ def kill_alarm():
 
 
 def google_home():
+    """Uses socket lib to extract ip address and scans ip range for google home devices"""
     from socket import socket, AF_INET, SOCK_DGRAM
     from googlehomepush import GoogleHome
     from pychromecast.error import ChromecastConnectionError
@@ -1471,6 +1532,7 @@ def google_home():
 
 
 def jokes():
+    """Uses jokes lib to say chucknorris jokes"""
     global place_holder
     from joke.jokes import geek, icanhazdad, chucknorris, icndb
     speaker.say(random.choice([geek, icanhazdad, chucknorris, icndb])())
@@ -1493,6 +1555,7 @@ def jokes():
 
 
 def sentry_mode():
+    """Sentry mode, all it does is to wait for the right keyword to wake up and get into action"""
     global waiter
     waiter = 0
     if greet_check == 'initialized':
@@ -1502,10 +1565,11 @@ def sentry_mode():
         listener = recognizer.listen(source_for_sentry_mode, timeout=5, phrase_time_limit=5)
         sys.stdout.write("\r")
         key = recognizer.recognize_google(listener)
-        if 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'Showtime' in key:
+        if 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'Showtime' in key\
+                or 'time to work' in key or 'spin up' in key:
             speaker.say(f'{random.choice(wake_up1)}')
             initialize()
-        elif 'you there' in key or 'buddy' in key or 'are you there' in key or 'time to work' in key:
+        elif 'you there' in key or 'buddy' in key or 'are you there' in key:
             speaker.say(f'{random.choice(wake_up2)}')
             initialize()
         elif 'Jarvis' in key or 'jarvis' in key:
@@ -1525,6 +1589,7 @@ def sentry_mode():
 
 
 def size_converter():
+    """Gets the current memory consumed and converts it to human friendly format"""
     if operating_system == 'Darwin':
         import resource
         byte_size = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
@@ -1541,6 +1606,7 @@ def size_converter():
 
 
 def shutdown():
+    """Gets confirmation and turns off the machine"""
     global place_holder
     speaker.say("Are you sure you want to turn off the machine sir?")
     speaker.runAndWait()
@@ -1576,28 +1642,37 @@ def shutdown():
 
 
 def dummy():
+    """dummy function to play around with conditional statements within other functions"""
     return None
 
 
 if __name__ == '__main__':
-    speaker = audio.init()
-    recognizer = sr.Recognizer()
-    keywords = Keywords()
-    conversation = Conversation()
-    operating_system = platform.system()
+    speaker = audio.init()  # initiates speaker
+    recognizer = sr.Recognizer()  # initiates recognizer that uses google's translation
+    keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
+    conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
+    operating_system = platform.system()  # detects current operating system
+
+    # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
+    # greet_check is used in initialize() to greet only for the first run
+    # waiter is used in renew() so that when waiter hits 12 count, active listener automatically goes to sentry mode
     place_holder, greet_check, alarm_state = None, None, []
     waiter = 0
 
+    # stores current location info as json loaded values so it could be used in couple of other functions
     options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
     geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
     url = 'http://ipinfo.io/json'
     resp = urlopen(url)
     location_info = json.load(resp)
 
-    wake_up1 = ['Up and running sir.']
+    # different responses for different conditions in senty mode
+    wake_up1 = ['Up and running sir.', 'Online and ready sir.', "I've indeed been uploaded sir!", 'Listeners have been '
+                                                                                                  'activated sir!']
     wake_up2 = ['For you sir!, Always!', 'At your service sir.']
     wake_up3 = ["I'm here sir!."]
 
+    # {function_name}.has_been_called is use to denote which function has triggered the other
     report.has_been_called, locate_places.has_been_called, directions.has_been_called = False, False, False
     for functions in [dummy, delete_todo, todo, add_todo]:
         functions.has_been_called = False
@@ -1606,19 +1681,20 @@ if __name__ == '__main__':
     volume = int(speaker.getProperty("volume")) * 100
     sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Female: 1/17 Male: 0/7')
 
-    voices = speaker.getProperty("voices")
+    voices = speaker.getProperty("voices")  # gets the list of voices available
 
     if operating_system == 'Darwin':
         # noinspection PyTypeChecker,PyUnresolvedReferences
-        speaker.setProperty("voice", voices[7].id)
+        speaker.setProperty("voice", voices[7].id)  # voice module #7 for MacOS
     elif operating_system == 'Windows':
         # noinspection PyTypeChecker,PyUnresolvedReferences
-        speaker.setProperty("voice", voices[0].id)
-        speaker.setProperty('rate', 190)
+        speaker.setProperty("voice", voices[0].id)  # voice module #0 for Windows
+        speaker.setProperty('rate', 190)  # speech rate is slowed down in Windows for optimal experience
     else:
         operating_system = None
         exit(0)
 
+    # variety of exit messages based on day of week and time of day
     weekend = ['Friday', 'Saturday']
     if current == 'AM' and int(clock) < 10:
         exit_msg = f"Have a nice day, and happy {today}."
@@ -1637,6 +1713,7 @@ if __name__ == '__main__':
     else:
         exit_msg = "Have a nice night."
 
+    # starts sentry mode
     with sr.Microphone() as source_for_sentry_mode:
         recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
         sentry_mode()

@@ -1,4 +1,5 @@
 class Conversation:
+    """list of conversational keywords for each function which is condition matched in jarvis.py"""
     def greeting(self):
         key = ['how are you', 'how are you doing', 'how have you been', 'how do you do']
         return key
