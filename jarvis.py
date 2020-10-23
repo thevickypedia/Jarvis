@@ -1394,10 +1394,8 @@ def directions(place):
 
 def alarm(hour, minute, am_pm):
     """Passes hour, minute and am/pm to Alarm class which initiates a thread for alarm clock in the background"""
-    global place_holder, alarm_state
+    global place_holder
     if hour and minute and am_pm:
-        appender = [hour, minute, am_pm]
-        alarm_state.append(appender)
         f_name = f"{hour}_{minute}_{am_pm}"
         open(f'lock_files/{f_name}.lock', 'a')
         Alarm(hour, minute, am_pm).start()
@@ -1441,24 +1439,22 @@ def alarm(hour, minute, am_pm):
 
 def kill_alarm():
     """Removes lock file to stop the alarm which rings only when the certain lock file is present
-    alarm_state keeps a track of alarms that have been set"""
-    # TODO: look for existing alarms by lock files and get rid of alarm_state
-    global alarm_state, place_holder
+    alarm_state is the list of lock files currently present"""
+    global place_holder
+    alarm_state = []
+    [alarm_state.append(file) if file != 'dummy.lock' else None for file in os.listdir('lock_files')]
+    alarm_state.remove('.DS_Store') if '.DS_Store' in alarm_state else None
     if not alarm_state:
         speaker.say("You have no alarms set sir!")
     elif len(alarm_state) == 1:
-        hour, minute, am_pm = alarm_state[0][0], alarm_state[0][1], alarm_state[0][-1]
+        hour, minute, am_pm = alarm_state[0][0:2], alarm_state[0][3:5], alarm_state[0][6:8]
         try:
-            os.remove(f"lock_files/{hour}_{minute}_{am_pm}.lock")
+            os.remove(f"lock_files/{alarm_state[0]}")
         except FileNotFoundError:
             pass
         speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
     else:
-        files = os.listdir('lock_files')
-        files.remove('dummy.lock')  # removes dummy file from the list
-        if operating_system == 'Darwin':
-            files.remove('.DS_Store')
-        sys.stdout.write(f"{', '.join(files).replace('.lock', '')}")
+        sys.stdout.write(f"{', '.join(alarm_state).replace('.lock', '')}")
         speaker.say("Please let me know which alarm you want to remove. Current alarms on your screen sir!")
         speaker.runAndWait()
         with sr.Microphone() as source:
@@ -1659,7 +1655,7 @@ if __name__ == '__main__':
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run
     # waiter is used in renew() so that when waiter hits 12 count, active listener automatically goes to sentry mode
-    place_holder, greet_check, alarm_state = None, None, []
+    place_holder, greet_check = None, None
     waiter = 0
 
     # stores current location info as json loaded values so it could be used in couple of other functions
