@@ -331,6 +331,7 @@ def conditions(converted):
         speaker.say(exit_msg)
         speaker.runAndWait()
         sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
+        Alarm(None, None, None)
         exit(0)
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.shutdown()):
@@ -1180,7 +1181,7 @@ def delete_db():
     """Deletes your database file after getting confirmation"""
     global place_holder
     if os.path.isfile(file_name):
-        speaker.say('Are you sure you want to delete your database?')
+        speaker.say(f'{random.choice(confirmation)} delete your database?')
         speaker.runAndWait()
     else:
         speaker.say(f'I did not find any database sir.')
@@ -1585,6 +1586,7 @@ def sentry_mode():
         speaker.say(exit_msg)
         speaker.runAndWait()
         sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
+        Alarm(None, None, None)
         exit(0)
 
 
@@ -1608,7 +1610,7 @@ def size_converter():
 def shutdown():
     """Gets confirmation and turns off the machine"""
     global place_holder
-    speaker.say("Are you sure you want to turn off the machine sir?")
+    speaker.say(f"{random.choice(confirmation)} turn off the machine?")
     speaker.runAndWait()
     with sr.Microphone() as source:
         try:
@@ -1624,6 +1626,7 @@ def shutdown():
                 speaker.runAndWait()
                 sys.stdout.write(
                     f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
+                [os.remove(f"lock_files/{file}") if file != 'dummy.lock' else None for file in os.listdir('lock_files')]
                 if operating_system == 'Darwin':
                     subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
                 elif operating_system == 'Windows':
@@ -1671,6 +1674,8 @@ if __name__ == '__main__':
                                                                                                   'activated sir!']
     wake_up2 = ['For you sir!, Always!', 'At your service sir.']
     wake_up3 = ["I'm here sir!."]
+
+    confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']
 
     # {function_name}.has_been_called is use to denote which function has triggered the other
     report.has_been_called, locate_places.has_been_called, directions.has_been_called = False, False, False

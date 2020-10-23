@@ -14,6 +14,12 @@ class Alarm(Thread):
             self.minutes = minutes
             self.am_pm = am_pm
             self.alarm_state = True
+        else:
+            remove = os.listdir('lock_files')
+            for file in remove:
+                (os.remove(f"lock_files/{file}") if file != 'dummy.lock' else None)
+            self.alarm_state = False
+            exit(0)
 
     def run(self):
         try:
@@ -37,9 +43,6 @@ class Alarm(Thread):
                     return
         except FileNotFoundError:
             return
-
-    def kill_alarm(self):
-        self.alarm_state = False
 
 
 if __name__ == '__main__':
