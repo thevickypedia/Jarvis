@@ -5,6 +5,8 @@ import subprocess
 from datetime import datetime
 from threading import Thread
 
+lock_dir = 'alarm'
+
 
 class Alarm(Thread):
     def __init__(self, hours, minutes, am_pm):
@@ -15,9 +17,9 @@ class Alarm(Thread):
             self.am_pm = am_pm
             self.alarm_state = True
         else:
-            remove = os.listdir('lock_files')
+            remove = os.listdir(lock_dir)
             for file in remove:
-                (os.remove(f"lock_files/{file}") if file != 'dummy.lock' else None)
+                (os.remove(f"{lock_dir}/{file}") if file != 'dummy.lock' else None)
             self.alarm_state = False
             exit(0)
 
@@ -31,7 +33,7 @@ class Alarm(Thread):
                 am_pm = now.strftime("%p")
                 minute = now.strftime("%M")
                 hour = now.strftime("%I")
-                files = os.listdir('lock_files')
+                files = os.listdir(lock_dir)
                 file_name = f"{hour}_{minute}_{am_pm}.lock"
                 if hour == self.hours and minute == self.minutes and am_pm == self.am_pm and file_name in files:
                     if operating_system == 'Darwin':
@@ -39,7 +41,7 @@ class Alarm(Thread):
                     elif operating_system == 'Windows':
                         location = os.path.abspath(os.getcwd())
                         os.system(f'start wmplayer "{location}\\{directory}\\{tone}"')
-                    os.remove(f"lock_files/{file_name}")
+                    os.remove(f"{lock_dir}/{file_name}")
                     return
         except FileNotFoundError:
             return

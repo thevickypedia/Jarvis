@@ -108,6 +108,10 @@ class Keywords:
         key = ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off']
         return key
 
+    def reminder(self):
+        key = ['remind', 'reminder']
+        return key
+
     def google_home(self):
         key = ['google home', 'googlehome']
         return key

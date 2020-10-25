@@ -20,6 +20,7 @@ from geopy.geocoders import Nominatim, options
 from psutil import Process, virtual_memory
 
 from alarm import Alarm
+from reminder import Reminder
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.keywords import Keywords
@@ -272,6 +273,28 @@ def conditions(converted):
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.jokes()):
         jokes()
 
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.reminder()):
+        message = re.search('to(.*)at', converted).group(1).strip()
+        """uses regex to find numbers in your statement and processes AM and PM information"""
+        try:
+            extracted_time = re.findall(r'\s([0-9]+\:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
+                r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
+            extracted_time = extracted_time[0]
+            am_pm = extracted_time.split()[-1]
+            am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
+            alarm_time = extracted_time.split()[0]
+            if ":" in extracted_time:
+                hour = int(alarm_time.split(":")[0])
+                minute = int(alarm_time.split(":")[-1])
+            else:
+                hour = int(alarm_time.split()[0])
+                minute = 0
+            # makes sure hour and minutes are two digits
+            hour, minute = f"{hour:02}", f"{minute:02}"
+            reminder(hour, minute, am_pm, message)
+        except IndexError:
+            reminder(hour=None, minute=None, am_pm=None, message=None)
+
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         dummy.has_been_called = True
@@ -332,6 +355,7 @@ def conditions(converted):
         speaker.runAndWait()
         sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
         Alarm(None, None, None)
+        Reminder(None, None, None, None)
         exit(0)
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.shutdown()):
@@ -1397,7 +1421,7 @@ def alarm(hour, minute, am_pm):
     global place_holder
     if hour and minute and am_pm:
         f_name = f"{hour}_{minute}_{am_pm}"
-        open(f'lock_files/{f_name}.lock', 'a')
+        open(f'alarm/{f_name}.lock', 'a')
         Alarm(hour, minute, am_pm).start()
     else:
         speaker.say('Please tell me a time sir!')
@@ -1442,14 +1466,14 @@ def kill_alarm():
     alarm_state is the list of lock files currently present"""
     global place_holder
     alarm_state = []
-    [alarm_state.append(file) if file != 'dummy.lock' else None for file in os.listdir('lock_files')]
+    [alarm_state.append(file) if file != 'dummy.lock' else None for file in os.listdir('alarm')]
     alarm_state.remove('.DS_Store') if '.DS_Store' in alarm_state else None
     if not alarm_state:
         speaker.say("You have no alarms set sir!")
     elif len(alarm_state) == 1:
         hour, minute, am_pm = alarm_state[0][0:2], alarm_state[0][3:5], alarm_state[0][6:8]
         try:
-            os.remove(f"lock_files/{alarm_state[0]}")
+            os.remove(f"alarm/{alarm_state[0]}")
         except FileNotFoundError:
             pass
         speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
@@ -1475,7 +1499,7 @@ def kill_alarm():
                 hour, minute = f"{hour:02}", f"{minute:02}"
                 am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
                 try:
-                    os.remove(f"lock_files/{hour}_{minute}_{am_pm}.lock")
+                    os.remove(f"alarm/{hour}_{minute}_{am_pm}.lock")
                 except FileNotFoundError:
                     speaker.say(f"I wasn't able to find an alarm at {hour}:{minute} {am_pm}. Try again.")
                     kill_alarm()
@@ -1551,6 +1575,56 @@ def jokes():
             renew()
 
 
+def reminder(hour, minute, am_pm, message):
+    global place_holder
+    if hour and minute and am_pm and message:
+        f_name = f"{hour}_{minute}_{am_pm}"
+        open(f'reminder/{f_name}.lock', 'a')
+        Reminder(hour, minute, am_pm, message).start()
+    else:
+        speaker.say('Please give me the reminder details sir!')
+        speaker.runAndWait()
+        with sr.Microphone() as source:
+            try:
+                sys.stdout.write("\rListener activated..")
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                sys.stdout.write("\r")
+                converted = recognizer.recognize_google(listener)
+                if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+                    place_holder = None
+                    renew()
+                else:
+                    message = re.search('to(.*)at', converted).group(1).strip()
+                    """uses regex to find numbers in your statement and processes AM and PM information"""
+                    extracted_time = re.findall(r'\s([0-9]+\:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
+                        r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
+                    extracted_time = extracted_time[0]
+                    am_pm = extracted_time.split()[-1]
+                    am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
+                    alarm_time = extracted_time.split()[0]
+                    if ":" in extracted_time:
+                        hour = int(alarm_time.split(":")[0])
+                        minute = int(alarm_time.split(":")[-1])
+                    else:
+                        hour = int(alarm_time.split()[0])
+                        minute = 0
+                    # makes sure hour and minutes are two digits
+                    hour, minute = f"{hour:02}", f"{minute:02}"
+                    reminder(hour, minute, am_pm, message)
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError, IndexError):
+                if place_holder == 0:
+                    place_holder = None
+                    renew()
+                sys.stdout.write("\r")
+                speaker.say("I didn't quite get that. Try again.")
+                place_holder = 0
+                reminder(hour=None, minute=None, am_pm=None, message=None)
+            place_holder = None
+    speaker.say(f"I will remind you to {message} at {hour}:{minute} {am_pm} sir!")
+    sys.stdout.write(f"I will remind you to {message} at {hour}:{minute} {am_pm} sir!")
+    renew()
+
+
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action"""
     global waiter
@@ -1583,6 +1657,7 @@ def sentry_mode():
         speaker.runAndWait()
         sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
         Alarm(None, None, None)
+        Reminder(None, None, None, None)
         exit(0)
 
 
@@ -1622,7 +1697,8 @@ def shutdown():
                 speaker.runAndWait()
                 sys.stdout.write(
                     f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
-                [os.remove(f"lock_files/{file}") if file != 'dummy.lock' else None for file in os.listdir('lock_files')]
+                [os.remove(f"alarm/{file}") if file != 'dummy.lock' else None for file in os.listdir('alarm')]
+                [os.remove(f"reminder/{file}") if file != 'dummy.lock' else None for file in os.listdir('reminder')]
                 if operating_system == 'Darwin':
                     subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
                 elif operating_system == 'Windows':
