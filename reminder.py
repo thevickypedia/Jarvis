@@ -15,11 +15,9 @@ class Reminder(Thread):
             self.message = message
             self.reminder_state = True
         else:
-            remove = os.listdir(directory)
-            for file in remove:
-                (os.remove(f"{directory}/{file}") if file != 'dummy.lock' else None)
+            [os.remove(f"{directory}/{file}") if file != 'dummy.lock' else None for file in os.listdir(directory)]
             self.reminder_state = False
-            exit(0)
+            os._exit(0)
 
     def run(self):
         try:

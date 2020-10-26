@@ -5,7 +5,7 @@ import subprocess
 from datetime import datetime
 from threading import Thread
 
-lock_dir = 'alarm'
+directory = 'alarm'
 
 
 class Alarm(Thread):
@@ -17,31 +17,29 @@ class Alarm(Thread):
             self.am_pm = am_pm
             self.alarm_state = True
         else:
-            remove = os.listdir(lock_dir)
-            for file in remove:
-                (os.remove(f"{lock_dir}/{file}") if file != 'dummy.lock' else None)
+            [os.remove(f"{directory}/{file}") if file != 'dummy.lock' else None for file in os.listdir(directory)]
             self.alarm_state = False
-            exit(0)
+            os._exit(0)
 
     def run(self):
         try:
             operating_system = platform.system()
-            directory = "mp3"
-            tone = random.choice(os.listdir(directory))
+            music_dir = "mp3"
+            tone = random.choice(os.listdir(music_dir))
             while self.alarm_state:
                 now = datetime.now()
                 am_pm = now.strftime("%p")
                 minute = now.strftime("%M")
                 hour = now.strftime("%I")
-                files = os.listdir(lock_dir)
+                files = os.listdir(directory)
                 file_name = f"{hour}_{minute}_{am_pm}.lock"
                 if hour == self.hours and minute == self.minutes and am_pm == self.am_pm and file_name in files:
                     if operating_system == 'Darwin':
-                        subprocess.call(["open", f"{directory}/{tone}"])
+                        subprocess.call(["open", f"{music_dir}/{tone}"])
                     elif operating_system == 'Windows':
                         location = os.path.abspath(os.getcwd())
-                        os.system(f'start wmplayer "{location}\\{directory}\\{tone}"')
-                    os.remove(f"{lock_dir}/{file_name}")
+                        os.system(f'start wmplayer "{location}\\{music_dir}\\{tone}"')
+                    os.remove(f"{directory}/{file_name}")
                     return
         except FileNotFoundError:
             return
