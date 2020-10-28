@@ -45,15 +45,15 @@ def initialize():
         speaker.say("What can I do for you?")
         dummy.has_been_called = False
     elif current == 'AM' and int(clock) < 10:
-        speaker.say("Good Morning. What can I do for you?")
+        speaker.say("Good Morning.")
     elif current == 'AM' and int(clock) >= 10:
-        speaker.say("Hope you're having a nice morning. What can I do for you?")
+        speaker.say("Hope you're having a nice morning.")
     elif current == 'PM' and (int(clock) == 12 or int(clock) < 3):
-        speaker.say("Good Afternoon. What can I do for you?")
+        speaker.say("Good Afternoon.")
     elif current == 'PM' and int(clock) < 6:
-        speaker.say("Good Evening. What can I do for you?")
+        speaker.say("Good Evening.")
     else:
-        speaker.say("Hope you're having a nice night. What can I do for you?")
+        speaker.say("Hope you're having a nice night.")
     speaker.runAndWait()
 
     with sr.Microphone() as source:
@@ -65,14 +65,7 @@ def initialize():
             place_holder = None
             return conditions(received)
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                renew()
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            dummy.has_been_called = True
-            place_holder = 0
-        return initialize()
+            renew()
 
 
 def renew():
@@ -362,35 +355,36 @@ def conditions(converted):
         shutdown()
 
     else:
-        # if none of the conditions above are met, it writes your statement to an yaml file for future training
-        train_file = {'Uncategorized': converted}
-        if os.path.isfile('training_data.yaml'):
-            with open(r'training_data.yaml', 'r') as reader:
-                content = reader.read()
+        if maps_api(converted):
+            # if none of the conditions above are met, it writes your statement to an yaml file for future training
+            train_file = {'Uncategorized': converted}
+            if os.path.isfile('training_data.yaml'):
+                with open(r'training_data.yaml', 'r') as reader:
+                    content = reader.read()
+                    for key, value in train_file.items():
+                        if str(value) not in content:  # avoids duplication in yaml file
+                            dict_file = [{key: [value]}]
+                            with open(r'training_data.yaml', 'a') as writer:
+                                yaml.dump(dict_file, writer)
+            else:
                 for key, value in train_file.items():
-                    if str(value) not in content:  # avoids duplication in yaml file
-                        dict_file = [{key: [value]}]
-                        with open(r'training_data.yaml', 'a') as writer:
-                            yaml.dump(dict_file, writer)
-        else:
-            for key, value in train_file.items():
-                train_file = [{key: [value]}]
-            with open(r'training_data.yaml', 'a') as writer:
-                yaml.dump(train_file, writer)
+                    train_file = [{key: [value]}]
+                with open(r'training_data.yaml', 'a') as writer:
+                    yaml.dump(train_file, writer)
 
-        # if none of the conditions above are met, opens a google search on default browser
-        sys.stdout.write(f"\r{converted}")
-        speaker.say(f"I heard {converted}. Let me look that up.")
-        speaker.runAndWait()
+            # if none of the conditions above are met, opens a google search on default browser
+            sys.stdout.write(f"\r{converted}")
+            speaker.say(f"I heard {converted}. Let me look that up.")
+            speaker.runAndWait()
 
-        search = str(converted).replace(' ', '+')
+            search = str(converted).replace(' ', '+')
 
-        unknown_url = f"https://www.google.com/search?q={search}"
+            unknown_url = f"https://www.google.com/search?q={search}"
 
-        webbrowser.open(unknown_url)
+            webbrowser.open(unknown_url)
 
-        speaker.say("I have opened a google search for your request.")
-        renew()
+            speaker.say("I have opened a google search for your request.")
+            renew()
 
 
 def report():
@@ -1277,7 +1271,12 @@ def distance(starting_point, destination):
     sys.stdout.write("::TO::")
     desired_location = geo_locator.geocode(destination)
     sys.stdout.write(f"** {desired_location.address}")
-    end = desired_location.latitude, desired_location.longitude
+    if desired_location:
+        end = desired_location.latitude, desired_location.longitude
+    else:
+        end = destination[0], destination[1]
+    # distance_start = geo_locator.reverse(start).address
+    # distance_end = geo_locator.reverse(end).address
     miles = round(haversine(start, end, unit=Unit.MILES))  # calculates miles from starting point to destination
     if directions.has_been_called:
         # calculates drive time using d = s/t and distance calculation is only if location is same country
@@ -1623,6 +1622,87 @@ def reminder(hour, minute, am_pm, message):
     speaker.say(f"I will remind you to {message} at {hour}:{minute} {am_pm} sir!")
     sys.stdout.write(f"I will remind you to {message} at {hour}:{minute} {am_pm} sir!")
     renew()
+
+
+def maps_api(query):
+    global place_holder
+    import requests
+    import inflect
+    api_key = os.getenv('maps_api')
+    maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
+    response = requests.get(maps_url + 'query=' + query + '&key=' + api_key)
+    collection = response.json()['results']
+    required = []
+    for element in range(len(collection)):
+        try:
+            name = collection[element]['name']
+            rating = collection[element]['rating']
+            full_address = collection[element]['formatted_address']
+            geometry = collection[element]['geometry']['location']
+            address = re.search('(.*)Rd|(.*)Ave|(.*)St |(.*)St,|(.*)Blvd|(.*)Ct', full_address)
+            address = address.group().replace(',', '')
+            new_dict = {"Name": name, "Rating": rating, "Address": address, "Location": geometry, "place": full_address}
+            required.append(new_dict)
+        except AttributeError:
+            pass
+    if required:
+        required = sorted(required, key=lambda sort: sort['Rating'], reverse=True)
+    else:
+        return True
+    results = len(required)
+    speaker.say(f"I found {results} results sir!")
+    n = 0
+    for item in required:
+        item['Address'] = item['Address'].replace(' N ', ' North ').replace(' S ', ' South ').replace(' E ', ' East ') \
+            .replace(' W ', ' West ').replace(' Rd', ' Road').replace(' St', ' Street').replace(' Ave', ' Avenue') \
+            .replace(' Blvd', ' Boulevard').replace(' Ct', ' Court')
+        n += 1
+        if results == 1:
+            option = 'only option I found is'
+            next_val = "Do you want to head there sir?"
+        elif n <= 2:
+            option = f'{inflect.engine().ordinal(n)} option is'
+            next_val = "Do you want to head there sir?"
+        elif n <= 5:
+            option = 'next option would be'
+            next_val = "Would you like to try that?"
+        else:
+            option = 'other'
+            next_val = 'How about that?'
+        speaker.say(f"The {option}, {item['Name']}, with {item['Rating']} "
+                    f"rating, on{''.join([j for j in item['Address'] if not j.isdigit()])}.")
+        speaker.say(f"{next_val}")
+        sys.stdout.write(f"\r{item['Name']} -- {item['Rating']} -- "
+                         f"{''.join([j for j in item['Address'] if not j.isdigit()])}")
+        speaker.runAndWait()
+        with sr.Microphone() as source:
+            try:
+                sys.stdout.write("\rListener activated..")
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                sys.stdout.write("\r")
+                converted = recognizer.recognize_google(listener)
+                if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+                    renew()
+                if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.ok()):
+                    place_holder = None
+                    start = location_info['loc']
+                    # noinspection PyTypeChecker,PyUnresolvedReferences
+                    latitude, longitude = item['Location']['lat'], item['Location']['lng']
+                    end = f"{latitude},{longitude}"
+                    maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
+                    webbrowser.open(maps_url)
+                    speaker.say("Directions on your screen sir!")
+                    directions.has_been_called = True
+                    distance(starting_point=None, destination=[latitude, longitude])
+                elif results == 1:
+                    renew()
+                elif n == results:
+                    speaker.say("I've run out of options sir!")
+                    renew()
+                else:
+                    continue
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError, IndexError):
+                return True
 
 
 def sentry_mode():
