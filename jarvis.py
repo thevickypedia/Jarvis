@@ -16,14 +16,15 @@ import certifi
 import pyttsx3 as audio
 import speech_recognition as sr
 import yaml
+from geopy.distance import geodesic
 from geopy.geocoders import Nominatim, options
 from psutil import Process, virtual_memory
 
 from alarm import Alarm
-from reminder import Reminder
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.keywords import Keywords
+from reminder import Reminder
 
 database = Database()
 now = datetime.now()
@@ -374,8 +375,11 @@ def conditions(converted):
 
             # if none of the conditions above are met, opens a google search on default browser
             sys.stdout.write(f"\r{converted}")
-            speaker.say(f"I heard {converted}. Let me look that up.")
-            speaker.runAndWait()
+            if maps_api.has_been_called:
+                maps_api.has_been_called = False
+            else:
+                speaker.say(f"I heard {converted}. Let me look that up.")
+                speaker.runAndWait()
 
             search = str(converted).replace(' ', '+')
 
@@ -1256,7 +1260,6 @@ def distance(starting_point, destination):
                 place_holder = 0
                 distance(starting_point=None, destination=None)
             place_holder = None
-    from haversine import haversine, Unit
 
     if starting_point:
         # if starting_point is received gets latitude and longitude of that location
@@ -1275,9 +1278,7 @@ def distance(starting_point, destination):
         end = desired_location.latitude, desired_location.longitude
     else:
         end = destination[0], destination[1]
-    # distance_start = geo_locator.reverse(start).address
-    # distance_end = geo_locator.reverse(end).address
-    miles = round(haversine(start, end, unit=Unit.MILES))  # calculates miles from starting point to destination
+    miles = round(geodesic(start, end).miles)  # calculates miles from starting point to destination
     if directions.has_been_called:
         # calculates drive time using d = s/t and distance calculation is only if location is same country
         directions.has_been_called = False
@@ -1650,12 +1651,18 @@ def maps_api(query):
     else:
         return True
     results = len(required)
-    speaker.say(f"I found {results} results sir!")
+    speaker.say(f"I found {results} results sir!") if results != 1 else None
+    start = location_info['loc']
     n = 0
     for item in required:
         item['Address'] = item['Address'].replace(' N ', ' North ').replace(' S ', ' South ').replace(' E ', ' East ') \
             .replace(' W ', ' West ').replace(' Rd', ' Road').replace(' St', ' Street').replace(' Ave', ' Avenue') \
             .replace(' Blvd', ' Boulevard').replace(' Ct', ' Court')
+        # noinspection PyTypeChecker,PyUnresolvedReferences
+        latitude, longitude = item['Location']['lat'], item['Location']['lng']
+        end = f"{latitude},{longitude}"
+        far = round(geodesic(start, end).miles)
+        miles = f'{far} miles' if far > 1 else f'{far} mile'
         n += 1
         if results == 1:
             option = 'only option I found is'
@@ -1669,8 +1676,9 @@ def maps_api(query):
         else:
             option = 'other'
             next_val = 'How about that?'
-        speaker.say(f"The {option}, {item['Name']}, with {item['Rating']} "
-                    f"rating, on{''.join([j for j in item['Address'] if not j.isdigit()])}.")
+        speaker.say(f"The {option}, {item['Name']}, with {item['Rating']} rating, "
+                    f"on{''.join([j for j in item['Address'] if not j.isdigit()])}, which is approximately "
+                    f"{miles} away.")
         speaker.say(f"{next_val}")
         sys.stdout.write(f"\r{item['Name']} -- {item['Rating']} -- "
                          f"{''.join([j for j in item['Address'] if not j.isdigit()])}")
@@ -1685,15 +1693,9 @@ def maps_api(query):
                     renew()
                 if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.ok()):
                     place_holder = None
-                    start = location_info['loc']
-                    # noinspection PyTypeChecker,PyUnresolvedReferences
-                    latitude, longitude = item['Location']['lat'], item['Location']['lng']
-                    end = f"{latitude},{longitude}"
                     maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                     webbrowser.open(maps_url)
                     speaker.say("Directions on your screen sir!")
-                    directions.has_been_called = True
-                    distance(starting_point=None, destination=[latitude, longitude])
                 elif results == 1:
                     renew()
                 elif n == results:
@@ -1702,6 +1704,7 @@ def maps_api(query):
                 else:
                     continue
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError, IndexError):
+                maps_api.has_been_called = True
                 return True
 
 
@@ -1716,7 +1719,7 @@ def sentry_mode():
         listener = recognizer.listen(source_for_sentry_mode, timeout=5, phrase_time_limit=5)
         sys.stdout.write("\r")
         key = recognizer.recognize_google(listener)
-        if 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'Showtime' in key\
+        if 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'Showtime' in key \
                 or 'time to work' in key or 'spin up' in key:
             speaker.say(f'{random.choice(wake_up1)}')
             initialize()
@@ -1830,7 +1833,8 @@ if __name__ == '__main__':
     confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']
 
     # {function_name}.has_been_called is use to denote which function has triggered the other
-    report.has_been_called, locate_places.has_been_called, directions.has_been_called = False, False, False
+    report.has_been_called, locate_places.has_been_called, directions.has_been_called, maps_api.has_been_called \
+        = False, False, False, False
     for functions in [dummy, delete_todo, todo, add_todo]:
         functions.has_been_called = False
 
