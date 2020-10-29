@@ -70,7 +70,14 @@ def initialize():
 
 
 def renew():
-    """renew() function will keep listening and send the response to conditions() This function runs only for a minute
+    """renew() function resets the waiter count which indeed sends the alive() function to sentry mode after a minute"""
+    global waiter
+    waiter = 0
+    alive()
+
+
+def alive():
+    """alive() function will keep listening and send the response to conditions() This function runs only for a minute
     and goes to sentry_mode() if nothing is heard"""
     global waiter
     speaker.runAndWait()
@@ -84,7 +91,7 @@ def renew():
             if waiter == 12:  # waits for a minute and goes to sleep
                 sentry_mode()
             waiter += 1
-            renew()
+            alive()
         if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
             speaker.say(f"Activating sentry mode, enjoy yourself sir!")
             speaker.runAndWait()
@@ -1644,7 +1651,7 @@ def maps_api(query):
             address = address.group().replace(',', '')
             new_dict = {"Name": name, "Rating": rating, "Address": address, "Location": geometry, "place": full_address}
             required.append(new_dict)
-        except AttributeError:
+        except (AttributeError, KeyError):
             pass
     if required:
         required = sorted(required, key=lambda sort: sort['Rating'], reverse=True)
