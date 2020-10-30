@@ -93,7 +93,7 @@ class Keywords:
         return key
 
     def geopy(self):
-        key = ['where is', 'which city', 'which state', 'which country', 'which county']
+        key = ['where is', "where's", 'which city', 'which state', 'which country', 'which county']
         return key
 
     def directions(self):
