@@ -27,3 +27,4 @@ python3 -m pip install chatterbot-corpus==1.2.0
 python3 -m pip install haversine
 python3 -m pip install googlehomepush
 python3 -m pip install axju-jokes
+python3 -m pip install timezonefinder
