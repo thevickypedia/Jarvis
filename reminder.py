@@ -1,8 +1,11 @@
 import os
+import platform
+import smtplib
 from datetime import datetime
 from threading import Thread
 
 directory = 'reminder'
+operating_system = platform.system()
 
 
 class Reminder(Thread):
@@ -29,7 +32,6 @@ class Reminder(Thread):
                 files = os.listdir(directory)
                 file_name = f"{hour}_{minute}_{am_pm}.lock"
                 if hour == self.hours and minute == self.minutes and am_pm == self.am_pm and file_name in files:
-                    import smtplib
                     # Establish a secure session with gmail's outgoing SMTP server using your gmail account
                     server = smtplib.SMTP("smtp.gmail.com", 587)
                     server.starttls()
@@ -42,6 +44,11 @@ class Reminder(Thread):
                     message = (f"From: {from_}\r\n" + f"To: {to}\r\n" + f"Subject: {subject}\r\n" + "\r\r\n\n" + body)
                     server.sendmail(from_, to, message)
                     server.close()
+                    if operating_system == 'Darwin':
+                        os.system(f"""osascript -e 'display notification "{body}" with title "{subject}"'""")
+                    elif operating_system == 'Windows':
+                        from win10toast import ToastNotifier
+                        ToastNotifier().show_toast(subject, body)
                     os.remove(f"{directory}/{file_name}")
                     return
         except FileNotFoundError:
