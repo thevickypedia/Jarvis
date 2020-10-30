@@ -27,10 +27,9 @@ from helper_functions.keywords import Keywords
 from reminder import Reminder
 
 database = Database()
-now = datetime.now()
-current = now.strftime("%p")  # current part of day (AM/PM)
-clock = now.strftime("%I")  # current hour
-today = now.strftime("%A")  # current day
+current = datetime.now().strftime("%p")  # current part of day (AM/PM)
+clock = datetime.now().strftime("%I")  # current hour
+today = datetime.now().strftime("%A")  # current day
 
 
 # TODO: include face recognition
@@ -124,7 +123,17 @@ def conditions(converted):
         date()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.time()):
-        current_time()
+        place = ''
+        for word in converted.split():
+            if word[0].isupper():
+                place += word + ' '
+            elif '.' in word:
+                place += word + ' '
+        place = place.replace('I ', '').strip()
+        if place:
+            current_time(place)
+        else:
+            current_time(None)
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.weather()):
         weather()
@@ -403,7 +412,7 @@ def report():
     sys.stdout.write("\rStarting today's report")
     report.has_been_called = True
     date()
-    current_time()
+    current_time(None)
     weather()
     todo()
     gmail()
@@ -414,21 +423,34 @@ def report():
 
 def date():
     """Says today's date and skips going to renew() if the function is called by report()"""
-    today_date = datetime.now()
-    dt_string = today_date.strftime("%A, %B %d, %Y")
+    dt_string = datetime.now().strftime("%A, %B %d, %Y")
     speaker.say(f'Today is {dt_string}')
-    speaker.runAndWait()
     if report.has_been_called:
         pass
     else:
         renew()
 
 
-def current_time():
+def current_time(place):
     """Says current time and skips going to renew() if the function is called by report()"""
-    c_time = datetime.now()
-    dt_string = c_time.strftime("%I:%M %p")
-    speaker.say(f'The current time is: {dt_string}')
+    if place:
+        from timezonefinder import TimezoneFinder
+        import pytz
+        tf = TimezoneFinder()
+        place_tz = geo_locator.geocode(place)
+        zone = tf.timezone_at(lat=place_tz.latitude, lng=place_tz.longitude)
+        datetime_zone = datetime.now(pytz.timezone(zone))
+        date_tz = datetime_zone.strftime("%A, %B %d, %Y")
+        time_tz = datetime_zone.strftime("%I:%M %p")
+        dt_string = datetime.now().strftime("%A, %B %d, %Y")
+        if date_tz != dt_string:
+            date_tz = datetime_zone.strftime("%A, %B %d")
+            speaker.say(f'The current time in {place} is {time_tz}, on {date_tz}.')
+        else:
+            speaker.say(f'The current time in {place} is {time_tz}.')
+    else:
+        c_time = datetime.now().strftime("%I:%M %p")
+        speaker.say(f'The current time is: {c_time}.')
     if report.has_been_called:
         pass
     else:
