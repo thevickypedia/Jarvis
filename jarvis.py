@@ -91,7 +91,7 @@ def alive():
                 sentry_mode()
             waiter += 1
             alive()
-        if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
+        if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.sleep()):
             speaker.say(f"Activating sentry mode, enjoy yourself sir!")
             speaker.runAndWait()
             sentry_mode()
@@ -312,6 +312,9 @@ def conditions(converted):
             reminder(hour, minute, am_pm, message)
         except IndexError:
             reminder(hour=None, minute=None, am_pm=None, message=None)
+
+    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.notes()):
+        notes()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -1635,6 +1638,7 @@ def jokes():
 
 
 def reminder(hour, minute, am_pm, message):
+    """Passes hour, minute, am/pm and reminder message to Reminder class which initiates a thread for reminder"""
     global place_holder
     if hour and minute and am_pm and message:
         f_name = f"{hour}_{minute}_{am_pm}"
@@ -1685,6 +1689,8 @@ def reminder(hour, minute, am_pm, message):
 
 
 def maps_api(query):
+    """Uses google's places api to get places near by or any particular destination.
+    This function is triggered when the words in user's statement doesn't match with any predefined functions."""
     global place_holder
     import requests
     import inflect
@@ -1765,6 +1771,29 @@ def maps_api(query):
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError, IndexError):
                 maps_api.has_been_called = True
                 return True
+
+
+def notes():
+    """Listens to the user and saves everything to a notes.txt file"""
+    global place_holder
+    with sr.Microphone() as source:
+        try:
+            sys.stdout.write("\rNotes::Listener activated..")
+            listener = recognizer.listen(source, timeout=5, phrase_time_limit=None)
+            sys.stdout.write("\r")
+            converted = recognizer.recognize_google(listener)
+            if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+                renew()
+            else:
+                with open(r'notes.txt', 'a') as writer:
+                    writer.write(f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"
+                                 f"{converted}\n")
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            place_holder = 0
+            notes()
 
 
 def sentry_mode():

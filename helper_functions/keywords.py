@@ -120,13 +120,23 @@ class Keywords:
         key = ['joke', 'jokes', 'make me laugh']
         return key
 
+    def notes(self):
+        key = ['notes', 'note']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key
 
     def exit(self):
         key = ['exit', 'quit', 'go to sleep', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
-               'see you later', 'talk to you later', 'activate sentry mode', 'go back to sleep']
+               'see you later', 'talk to you later', 'activate sentry mode', 'go back to sleep', "that's it",
+               'that is it']
+        return key
+
+    def sleep(self):
+        key = ['exit', 'quit', 'go to sleep', 'Xzibit', 'see you later', 'talk to you later', 'activate sentry mode',
+               'go back to sleep']
         return key
 
     def kill(self):
