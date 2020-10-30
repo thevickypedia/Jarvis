@@ -129,14 +129,22 @@ def conditions(converted):
                 place += word + ' '
             elif '.' in word:
                 place += word + ' '
-        place = place.replace('I ', '').strip()
         if place:
             current_time(place)
         else:
             current_time(None)
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.weather()):
-        weather()
+        place = ''
+        for word in converted.split():
+            if word[0].isupper():
+                place += word + ' '
+            elif '.' in word:
+                place += word + ' '
+        if place:
+            weather(place)
+        else:
+            weather(None)
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.system_info()):
         system_info()
@@ -413,7 +421,7 @@ def report():
     report.has_been_called = True
     date()
     current_time(None)
-    weather()
+    weather(None)
     todo()
     gmail()
     news()
@@ -487,21 +495,31 @@ def webpage():
     renew()
 
 
-def weather():
+def weather(place):
     """Says weather at your current location and skips going to renew() if the function is called by report()"""
     sys.stdout.write('\rGetting your weather info')
     import pytemperature
     api_key = os.getenv('api_key')
-
-    city, state, coordinates = location_info['city'], location_info['region'], location_info['loc']
-    lat = coordinates.split(',')[0]
-    lon = coordinates.split(',')[1]
+    if place:
+        desired_start = geo_locator.geocode(place)
+        coordinates = desired_start.latitude, desired_start.longitude
+        located = geo_locator.reverse(coordinates, language='en')
+        data = located.raw
+        address = data['address']
+        city = address['city'] if 'city' in address.keys() else None
+        state = address['state'] if 'state' in address.keys() else None
+        lat = located.latitude
+        lon = located.longitude
+    else:
+        city, state, coordinates = location_info['city'], location_info['region'], location_info['loc']
+        lat = coordinates.split(',')[0]
+        lon = coordinates.split(',')[1]
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
     weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={api_key}'
     r = urlopen(weather_url)  # sends request to the url created
     response = json.loads(r.read())  # loads the response in a json
 
-    weather_location = f'{city} {state}'
+    weather_location = f'{city} {state}'.replace('None', '')
     temperature = response['current']['temp']
     condition = response['current']['weather'][0]['description']
     feels_like = response['current']['feels_like']
@@ -513,9 +531,14 @@ def weather():
     temp_feel_f = int(round(pytemperature.k2f(feels_like), 2))
     sunrise = (datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p"))
     sunset = (datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p"))
-    output = f'You are currently at {weather_location}. The weather at your location is {temp_f}°F, with a high of ' \
-             f'{high}, and a low of {low}. It currenly feels Like {temp_feel_f}°F, and the current ' \
-             f'condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}'
+    if place:
+        output = f'The weather at {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. It currently ' \
+                 f'feels like {temp_feel_f}°F, and the current condition is {condition}.'
+    else:
+        output = f'You are currently at {weather_location}. The weather at your location is {temp_f}°F, with a high ' \
+                 f'of {high}, and a low of {low}. It currently feels Like {temp_feel_f}°F, and the current ' \
+                 f'condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}'
+    sys.stdout.write(f"\r{output}")
     speaker.say(output)
     speaker.runAndWait()
     if report.has_been_called:
@@ -1302,12 +1325,12 @@ def distance(starting_point, destination):
         start_check = 'My Location'
     sys.stdout.write("::TO::")
     desired_location = geo_locator.geocode(destination)
-    sys.stdout.write(f"** {desired_location.address}")
     if desired_location:
         end = desired_location.latitude, desired_location.longitude
     else:
         end = destination[0], destination[1]
     miles = round(geodesic(start, end).miles)  # calculates miles from starting point to destination
+    sys.stdout.write(f"** {desired_location.address} - {miles}")
     if directions.has_been_called:
         # calculates drive time using d = s/t and distance calculation is only if location is same country
         directions.has_been_called = False
