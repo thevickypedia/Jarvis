@@ -20,6 +20,7 @@ import yaml
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim, options
 from psutil import Process, virtual_memory
+from punctuator import Punctuator
 from wordninja import split as splitter
 
 from alarm import Alarm
@@ -28,6 +29,7 @@ from helper_functions.database import Database, file_name
 from helper_functions.keywords import Keywords
 from reminder import Reminder
 
+punctuation = Punctuator(model_file='model.pcl')
 database = Database()
 current = datetime.now().strftime("%p")  # current part of day (AM/PM)
 clock = datetime.now().strftime("%I")  # current hour
@@ -623,7 +625,9 @@ def wiki_pedia():
             sys.stdout.write("\r")
             keyword1 = recognizer.recognize_google(listener1)
             summary = wikipedia.summary(keyword1)
-        speaker.say(splitter(''.join(summary.split('.')[0:2])))  # stops with two sentences before reading whole passage
+        # stops with two sentences before reading whole passage
+        formatted = punctuation.punctuate(' '.join(splitter(' '.join(summary.split('.')[0:2]))))
+        speaker.say(formatted)
         speaker.runAndWait()
         speaker.say("Do you want me to continue?")  # gets confirmation to read the whole passage
         speaker.runAndWait()
@@ -654,7 +658,7 @@ def news():
     all_articles = newsapi.get_top_headlines(sources=f'{source}-news')
 
     for article in all_articles['articles']:
-        speaker.say(splitter(article['title']))
+        speaker.say(article['title'])
         speaker.runAndWait()
 
     if report.has_been_called:
@@ -1019,7 +1023,7 @@ def gmail():
                                 else:
                                     receive = (datetime_obj.strftime("on %A, %B %d, at %I:%M %p"))
                                 sender = (original_email['From']).split(' <')[0]
-                                sub = splitter(make_header(decode_header(original_email['Subject'])))
+                                sub = make_header(decode_header(original_email['Subject']))
                                 speaker.say(f"You have an email from, {sender}, with subject, {sub}, {receive}")
                                 speaker.runAndWait()
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
@@ -1059,10 +1063,14 @@ def meaning(keyword):
                     renew()
                 definition = dictionary.meaning(response)
                 if definition:
+                    n = 0
                     vowel = ['A', 'E', 'I', 'O', 'U']
                     for key in definition.keys():
                         insert = 'an' if key[0] in vowel else 'a'
-                        speaker.say(f'{response} is {insert} {key}, which means {splitter("".join(definition[key]))}')
+                        repeat = 'also' if n != 0 else ''
+                        n += 1
+                        mean = punctuation.punctuate(' '.join(definition[key]))
+                        speaker.say(f'{response} is {repeat} {insert} {key}, which means {mean}')
                 else:
                     speaker.say("Keyword should be a single word. Try again")
                     meaning(None)
@@ -1079,8 +1087,14 @@ def meaning(keyword):
     else:
         definition = dictionary.meaning(keyword)
         if definition:
+            n = 0
+            vowel = ['A', 'E', 'I', 'O', 'U']
             for key in definition.keys():
-                speaker.say(f'{keyword}: {key, "".join(definition[key])}')
+                insert = 'an' if key[0] in vowel else 'a'
+                repeat = 'also' if n != 0 else ''
+                n += 1
+                mean = punctuation.punctuate(' '.join(definition[key]))
+                speaker.say(f'{keyword} is {repeat} {insert} {key}, which means {mean}')
     renew()
 
 
@@ -1827,7 +1841,7 @@ def google(query):
             return True
     if results:
         text = ' '.join(splitter(results[0]))
-        speaker.say(text)
+        speaker.say(punctuation.punctuate(text))
         renew()
     else:
         return True
