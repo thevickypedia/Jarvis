@@ -22,18 +22,13 @@ from geopy.geocoders import Nominatim, options
 from psutil import Process, virtual_memory
 from punctuator import Punctuator
 from wordninja import split as splitter
+from inflect import engine
 
 from alarm import Alarm
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.keywords import Keywords
 from reminder import Reminder
-
-punctuation = Punctuator(model_file='model.pcl')
-database = Database()
-current = datetime.now().strftime("%p")  # current part of day (AM/PM)
-clock = datetime.now().strftime("%I")  # current hour
-today = datetime.now().strftime("%A")  # current day
 
 
 # TODO: include face recognition
@@ -95,7 +90,7 @@ def alive():
                 sentry_mode()
             waiter += 1
             alive()
-        if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.sleep()):
+        if any(word in converted.lower() for word in keywords.sleep()):
             speaker.say(f"Activating sentry mode, enjoy yourself sir!")
             speaker.runAndWait()
             sentry_mode()
@@ -123,10 +118,10 @@ def time_converter(seconds):
 def conditions(converted):
     """Conditions function is used to check the message processed, and use the keywords to do a regex match and trigger
     the appropriate function which has dedicated task"""
-    if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.date()):
+    if any(word in converted.lower() for word in keywords.date()):
         date()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.time()):
+    elif any(word in converted.lower() for word in keywords.time()):
         place = ''
         for word in converted.split():
             if word[0].isupper():
@@ -138,7 +133,7 @@ def conditions(converted):
         else:
             current_time(None)
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.weather()):
+    elif any(word in converted.lower() for word in keywords.weather()):
         place = ''
         for word in converted.split():
             if word[0].isupper():
@@ -150,64 +145,65 @@ def conditions(converted):
         else:
             weather(None)
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.system_info()):
+    elif any(word in converted.lower() for word in keywords.system_info()):
         system_info()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.webpage()):
+    elif any(word in converted.lower() for word in keywords.webpage()):
         webpage()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.wikipedia()):
+    elif any(word in converted.lower() for word in keywords.wikipedia()):
         wiki_pedia()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.news()):
+    elif any(word in converted.lower() for word in keywords.news()):
         news()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.report()):
+    elif any(word in converted.lower() for word in keywords.report()):
         report()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.robinhood()):
+    elif any(word in converted.lower() for word in keywords.robinhood()):
         robinhood()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.apps()):
+    elif any(word in converted.lower() for word in keywords.apps()):
         apps(converted.split()[-1])
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.repeat()):
+    elif any(word in converted.lower() for word in keywords.repeat()):
         repeater()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.chatbot()):
+    elif any(word in converted.lower() for word in keywords.chatbot()):
         chatBot()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.location()):
+    elif any(word in converted.lower() for word in keywords.location()):
         location()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.locate()):
+    elif any(word in converted.lower() for word in keywords.locate()):
         locate()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.music()):
+    elif any(word in converted.lower() for word in keywords.music()):
         music()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.gmail()):
+    elif any(word in converted.lower() for word in keywords.gmail()):
         gmail()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.meaning()):
+    elif any(word in converted.lower() for word in keywords.meaning()):
         meaning(converted.split()[-1])
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.delete_todo()):
+    elif any(word in converted.lower() for word in keywords.delete_todo()):
         delete_todo()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.list_todo()):
+    elif any(word in converted.lower() for word in keywords.list_todo()):
         todo()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.add_todo()):
+    elif any(word in converted.lower() for word in keywords.add_todo()):
         add_todo()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.delete_db()):
+    elif any(word in converted.lower() for word in keywords.delete_db()):
         delete_db()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.create_db()):
+    elif any(word in converted.lower() for word in keywords.create_db()):
         create_db()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.distance()):
+    elif any(word in converted.lower() for word in keywords.distance()) and \
+            not any(word in converted.lower() for word in keywords.avoid()):
         """the loop below differentiates between two places and one place with two words 
         eg: New York will be considered as one word and New York and Las Vegas will be considered as two words"""
         check = converted.split()  # str to list
@@ -236,7 +232,7 @@ def conditions(converted):
             start, end = None, None
         distance(start, end)
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.geopy()):
+    elif any(word in converted.lower() for word in keywords.geopy()):
         # tries to look for words starting with an upper case letter
         place = ''
         for word in converted.split():
@@ -251,7 +247,7 @@ def conditions(converted):
             place = after_keyword.replace(' in', '').strip()
         locate_places(place.strip())
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.directions()):
+    elif any(word in converted.lower() for word in keywords.directions()):
         place = ''
         for word in converted.split():
             if word[0].isupper():
@@ -265,10 +261,10 @@ def conditions(converted):
             speaker.say("I can't take you to anywhere without a location sir!")
             directions(place=None)
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.kill_alarm()):
+    elif any(word in converted.lower() for word in keywords.kill_alarm()):
         kill_alarm()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.alarm()):
+    elif any(word in converted.lower() for word in keywords.alarm()):
         """uses regex to find numbers in your statement and processes AM and PM information"""
         try:
             extracted_time = re.findall(r'\s([0-9]+\:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
@@ -289,13 +285,13 @@ def conditions(converted):
         except IndexError:
             alarm(hour=None, minute=None, am_pm=None)
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.google_home()):
+    elif any(word in converted.lower() for word in keywords.google_home()):
         google_home()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.jokes()):
+    elif any(word in converted.lower() for word in keywords.jokes()):
         jokes()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.reminder()):
+    elif any(word in converted.lower() for word in keywords.reminder()):
         message = re.search('to(.*)at', converted).group(1).strip()
         """uses regex to find numbers in your statement and processes AM and PM information"""
         try:
@@ -317,15 +313,15 @@ def conditions(converted):
         except IndexError:
             reminder(hour=None, minute=None, am_pm=None, message=None)
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.notes()):
+    elif any(word in converted.lower() for word in keywords.notes()):
         notes()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.greeting()):
+    elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         dummy.has_been_called = True
         renew()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.capabilities()):
+    elif any(word in converted.lower() for word in conversation.capabilities()):
         speaker.say('There is a lot I can do. For example: I can get you the weather at your location, news around '
                     'you, meanings of words, launch applications, play music, create a to-do list, check your emails, '
                     'get your system configuration, locate your phone, find distance between places, set an alarm, '
@@ -334,30 +330,30 @@ def conditions(converted):
         dummy.has_been_called = True
         renew()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.languages()):
+    elif any(word in converted.lower() for word in conversation.languages()):
         speaker.say("Tricky question!. I'm configured in python, and I can speak English.")
         dummy.has_been_called = True
         renew()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.form()):
+    elif any(word in converted.lower() for word in conversation.form()):
         speaker.say("I am a program, I'm without form.")
         dummy.has_been_called = True
         renew()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.whats_up()):
+    elif any(word in converted.lower() for word in conversation.whats_up()):
         speaker.say("My listeners are up. There is nothing I cannot process. So ask me anything..")
         dummy.has_been_called = True
         renew()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.what()):
+    elif any(word in converted.lower() for word in conversation.what()):
         speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI")
         renew()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.who()):
+    elif any(word in converted.lower() for word in conversation.who()):
         speaker.say("I am Jarvis. A virtual assistant designed by Mr.Rao.")
         renew()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.about_me()):
+    elif any(word in converted.lower() for word in conversation.about_me()):
         speaker.say("I am Jarvis. A virtual assistant designed by Mr.Rao.")
         speaker.say("I am a program, I'm without form.")
         speaker.say('There is a lot I can do. For example: I can get you the weather at your location, news around '
@@ -368,12 +364,12 @@ def conditions(converted):
         dummy.has_been_called = True
         renew()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.exit()):
+    elif any(word in converted.lower() for word in keywords.exit()):
         speaker.say(f"Activating sentry mode, enjoy yourself sir.")
         speaker.runAndWait()
         sentry_mode()
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.kill()):
+    elif any(word in converted.lower() for word in keywords.kill()):
         memory_consumed = size_converter()
         speaker.say(f"Shutting down sir!")
         speaker.say(exit_msg)
@@ -383,7 +379,7 @@ def conditions(converted):
         Reminder(None, None, None, None)
         exit(0)
 
-    elif any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.shutdown()):
+    elif any(word in converted.lower() for word in keywords.shutdown()):
         shutdown()
 
     else:
@@ -439,7 +435,10 @@ def report():
 
 def date():
     """Says today's date and skips going to renew() if the function is called by report()"""
-    dt_string = datetime.now().strftime("%A, %B %d, %Y")
+    dt_string = datetime.now().strftime("%A, %B")
+    date_ = engine().ordinal(datetime.now().strftime("%d"))
+    year = datetime.now().strftime("%Y")
+    dt_string = dt_string + date_ + ', ' + year
     speaker.say(f'Today is {dt_string}')
     if report.has_been_called:
         pass
@@ -625,6 +624,9 @@ def wiki_pedia():
             sys.stdout.write("\r")
             keyword1 = recognizer.recognize_google(listener1)
             summary = wikipedia.summary(keyword1)
+        except wikipedia.exceptions.PageError:
+            speaker.say(f"I'm sorry sir! I didn't get a response from wikipedia for the phrase: {keyword}. Try again!")
+            wiki_pedia()
         # stops with two sentences before reading whole passage
         formatted = punctuation.punctuate(' '.join(splitter(' '.join(summary.split('.')[0:2]))))
         speaker.say(formatted)
@@ -1648,7 +1650,7 @@ def jokes():
             sys.stdout.write("\r")
             converted = recognizer.recognize_google(listener)
             place_holder = None
-            if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.ok()):
+            if any(word in converted.lower() for word in keywords.ok()):
                 jokes()
             else:
                 renew()
@@ -1711,7 +1713,6 @@ def maps_api(query):
     """Uses google's places api to get places near by or any particular destination.
     This function is triggered when the words in user's statement doesn't match with any predefined functions."""
     global place_holder
-    import inflect
     api_key = os.getenv('maps_api')
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
     response = requests.get(maps_url + 'query=' + query + '&key=' + api_key)
@@ -1751,7 +1752,7 @@ def maps_api(query):
             option = 'only option I found is'
             next_val = "Do you want to head there sir?"
         elif n <= 2:
-            option = f'{inflect.engine().ordinal(n)} option is'
+            option = f'{engine().ordinal(n)} option is'
             next_val = "Do you want to head there sir?"
         elif n <= 5:
             option = 'next option would be'
@@ -1774,7 +1775,7 @@ def maps_api(query):
                 converted = recognizer.recognize_google(listener)
                 if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                     renew()
-                if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.ok()):
+                if any(word in converted.lower() for word in keywords.ok()):
                     place_holder = None
                     maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                     webbrowser.open(maps_url)
@@ -1798,7 +1799,7 @@ def notes():
     with sr.Microphone() as source:
         try:
             sys.stdout.write("\rNotes::Listener activated..")
-            listener = recognizer.listen(source, timeout=5, phrase_time_limit=None)
+            listener = recognizer.listen(source, timeout=5, phrase_time_limit=10)
             sys.stdout.write("\r")
             converted = recognizer.recognize_google(listener)
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
@@ -1912,7 +1913,7 @@ def shutdown():
             sys.stdout.write("\r")
             converted = recognizer.recognize_google(listener)
             place_holder = None
-            if any(re.search(line, converted, flags=re.IGNORECASE) for line in keywords.ok()):
+            if any(word in converted.lower() for word in keywords.ok()):
                 memory_consumed = size_converter()
                 speaker.say(f"Shutting down sir!")
                 speaker.say(exit_msg)
@@ -1970,6 +1971,13 @@ if __name__ == '__main__':
     wake_up3 = ["I'm here sir!."]
 
     confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']
+
+    sys.stdout.write("PLEASE WAIT::Training model for punctuations")
+    punctuation = Punctuator(model_file='model.pcl')
+    database = Database()
+    current = datetime.now().strftime("%p")  # current part of day (AM/PM)
+    clock = datetime.now().strftime("%I")  # current hour
+    today = datetime.now().strftime("%A")  # current day
 
     # {function_name}.has_been_called is use to denote which function has triggered the other
     report.has_been_called, locate_places.has_been_called, directions.has_been_called, maps_api.has_been_called \

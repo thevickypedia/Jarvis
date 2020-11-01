@@ -1,11 +1,11 @@
 class Keywords:
     """list of keywords for each function which is condition matched in jarvis.py"""
     def date(self):
-        key = ["today's date", 'current date']
+        key = ['date']
         return key
 
     def time(self):
-        key = ["current time"]
+        key = ['time']
         return key
 
     def weather(self):
@@ -25,7 +25,7 @@ class Keywords:
         return key
 
     def news(self):
-        key = ['news', 'latest']
+        key = ['news']
         return key
 
     def report(self):
@@ -85,11 +85,15 @@ class Keywords:
         return key
 
     def list_todo(self):
-        key = ["what's my plan", "what is my plan", 'planner', 'plan']
+        key = ['plan']
         return key
 
     def distance(self):
         key = ['far', 'distance', 'miles']
+        return key
+
+    def avoid(self):
+        key = ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto']
         return key
 
     def geopy(self):
