@@ -14,6 +14,7 @@ from urllib.request import urlopen
 
 import certifi
 import pyttsx3 as audio
+import requests
 import speech_recognition as sr
 import yaml
 from geopy.distance import geodesic
@@ -331,7 +332,7 @@ def conditions(converted):
         renew()
 
     elif any(re.search(line, converted, flags=re.IGNORECASE) for line in conversation.languages()):
-        speaker.say("Tricky question!. I'm configured in python, and a little bit of bash. I can speak English.")
+        speaker.say("Tricky question!. I'm configured in python, and I can speak English.")
         dummy.has_been_called = True
         renew()
 
@@ -384,38 +385,39 @@ def conditions(converted):
 
     else:
         if maps_api(converted):
-            # if none of the conditions above are met, it writes your statement to an yaml file for future training
-            train_file = {'Uncategorized': converted}
-            if os.path.isfile('training_data.yaml'):
-                with open(r'training_data.yaml', 'r') as reader:
-                    content = reader.read()
+            if google(converted):
+                # if none of the conditions above are met, it writes your statement to an yaml file for future training
+                train_file = {'Uncategorized': converted}
+                if os.path.isfile('training_data.yaml'):
+                    with open(r'training_data.yaml', 'r') as reader:
+                        content = reader.read()
+                        for key, value in train_file.items():
+                            if str(value) not in content:  # avoids duplication in yaml file
+                                dict_file = [{key: [value]}]
+                                with open(r'training_data.yaml', 'a') as writer:
+                                    yaml.dump(dict_file, writer)
+                else:
                     for key, value in train_file.items():
-                        if str(value) not in content:  # avoids duplication in yaml file
-                            dict_file = [{key: [value]}]
-                            with open(r'training_data.yaml', 'a') as writer:
-                                yaml.dump(dict_file, writer)
-            else:
-                for key, value in train_file.items():
-                    train_file = [{key: [value]}]
-                with open(r'training_data.yaml', 'a') as writer:
-                    yaml.dump(train_file, writer)
+                        train_file = [{key: [value]}]
+                    with open(r'training_data.yaml', 'a') as writer:
+                        yaml.dump(train_file, writer)
 
-            # if none of the conditions above are met, opens a google search on default browser
-            sys.stdout.write(f"\r{converted}")
-            if maps_api.has_been_called:
-                maps_api.has_been_called = False
-            else:
-                speaker.say(f"I heard {converted}. Let me look that up.")
-                speaker.runAndWait()
+                # if none of the conditions above are met, opens a google search on default browser
+                sys.stdout.write(f"\r{converted}")
+                if maps_api.has_been_called:
+                    maps_api.has_been_called = False
+                else:
+                    speaker.say(f"I heard {converted}. Let me look that up.")
+                    speaker.runAndWait()
 
-            search = str(converted).replace(' ', '+')
+                search = str(converted).replace(' ', '+')
 
-            unknown_url = f"https://www.google.com/search?q={search}"
+                unknown_url = f"https://www.google.com/search?q={search}"
 
-            webbrowser.open(unknown_url)
+                webbrowser.open(unknown_url)
 
-            speaker.say("I have opened a google search for your request.")
-            renew()
+                speaker.say("I have opened a google search for your request.")
+                renew()
 
 
 def report():
@@ -1692,7 +1694,6 @@ def maps_api(query):
     """Uses google's places api to get places near by or any particular destination.
     This function is triggered when the words in user's statement doesn't match with any predefined functions."""
     global place_holder
-    import requests
     import inflect
     api_key = os.getenv('maps_api')
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
@@ -1761,6 +1762,7 @@ def maps_api(query):
                     maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                     webbrowser.open(maps_url)
                     speaker.say("Directions on your screen sir!")
+                    renew()
                 elif results == 1:
                     renew()
                 elif n == results:
@@ -1794,6 +1796,38 @@ def notes():
                 renew()
             place_holder = 0
             notes()
+
+
+def google(query):
+    from search_engine_parser.core.engines.google import Search as GoogleSearch
+    from search_engine_parser.core.exceptions import NoResultsOrTrafficError
+    google_search = GoogleSearch()
+    results = []
+    try:
+        google_results = google_search.search(query, cache=False)
+        a = {"Google": google_results}
+        for k, v in a.items():
+            for result in v:
+                response = result['titles']
+                results.append(response)
+    except NoResultsOrTrafficError:
+        suggest_url = "http://suggestqueries.google.com/complete/search"
+        params = {
+            "client": "firefox",
+            "q": query,
+        }
+        r = requests.get(suggest_url, params)
+        try:
+            suggestion = r.json()[1][1]
+            google(suggestion)
+        except IndexError:
+            return True
+    if results:
+        text = ' '.join(results[0])
+        speaker.say(text)
+        renew()
+    else:
+        return True
 
 
 def sentry_mode():
