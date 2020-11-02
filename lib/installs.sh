@@ -28,3 +28,6 @@ python3 -m pip install haversine
 python3 -m pip install googlehomepush
 python3 -m pip install axju-jokes
 python3 -m pip install timezonefinder
+python3 -m pip install pip3 install inflect
+python3 -m pip install wordninja
+python3 -m pip install punctuator

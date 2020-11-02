@@ -1973,7 +1973,12 @@ if __name__ == '__main__':
 
     confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']
 
-    sys.stdout.write("PLEASE WAIT::Training model for punctuations")
+    model_file = os.listdir()
+    if 'model.pcl' not in model_file:
+        sys.stdout.write("\rPLEASE WAIT::Downloading model file for punctuations\n")
+        os.system("""curl https://thevickypedia.com/punctuator/model.pcl --output model.pcl""")
+
+    sys.stdout.write("\rPLEASE WAIT::Training model for punctuations")
     punctuation = Punctuator(model_file='model.pcl')
     database = Database()
     current = datetime.now().strftime("%p")  # current part of day (AM/PM)
