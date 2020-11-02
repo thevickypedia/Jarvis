@@ -510,7 +510,8 @@ def webpage():
 
 
 def weather(place):
-    """Says weather at your current location and skips going to renew() if the function is called by report()"""
+    """Says weather at any location and skips going to renew() if the function is called by report()
+    Says weather at current location by getting IP using reverse geocoding if no place is received"""
     sys.stdout.write('\rGetting your weather info')
     import pytemperature
     api_key = os.getenv('api_key')
@@ -533,7 +534,7 @@ def weather(place):
     r = urlopen(weather_url)  # sends request to the url created
     response = json.loads(r.read())  # loads the response in a json
 
-    weather_location = f'{city} {state}'.replace('None', '')
+    weather_location = f'{city} {state}'.replace('None', '') if city != state else f'{city}' or f'{state}'
     temperature = response['current']['temp']
     condition = response['current']['weather'][0]['description']
     feels_like = response['current']['feels_like']
@@ -545,9 +546,9 @@ def weather(place):
     temp_feel_f = int(round(pytemperature.k2f(feels_like), 2))
     sunrise = (datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p"))
     sunset = (datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p"))
-    if place:
-        output = f'The weather at {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. It currently ' \
-                 f'feels like {temp_feel_f}°F, and the current condition is {condition}.'
+    if place or not report.has_been_called:
+        output = f'The weather at {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \
+                 f'It currently feels like {temp_feel_f}°F, and the current condition is {condition}.'
     else:
         output = f'You are currently at {weather_location}. The weather at your location is {temp_f}°F, with a high ' \
                  f'of {high}, and a low of {low}. It currently feels Like {temp_feel_f}°F, and the current ' \
