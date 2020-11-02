@@ -1975,8 +1975,8 @@ if __name__ == '__main__':
 
     model_file = os.listdir()
     if 'model.pcl' not in model_file:
-        sys.stdout.write("\rPLEASE WAIT::Downloading model file for punctuations\n")
-        os.system("""curl https://thevickypedia.com/punctuator/model.pcl --output model.pcl""")
+        sys.stdout.write("\rPLEASE WAIT::Downloading model file for punctuations")
+        os.system("""curl https://thevickypedia.com/punctuator/model.pcl --output model.pcl --silent""")
 
     sys.stdout.write("\rPLEASE WAIT::Training model for punctuations")
     punctuation = Punctuator(model_file='model.pcl')
