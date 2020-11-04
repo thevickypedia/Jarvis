@@ -19,10 +19,10 @@ import speech_recognition as sr
 import yaml
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim, options
+from inflect import engine
 from psutil import Process, virtual_memory
 from punctuator import Punctuator
 from wordninja import split as splitter
-from inflect import engine
 
 from alarm import Alarm
 from helper_functions.conversation import Conversation
@@ -405,17 +405,14 @@ def conditions(converted):
                 sys.stdout.write(f"\r{converted}")
                 if maps_api.has_been_called:
                     maps_api.has_been_called = False
+                    speaker.say("I have also opened a google search for your request.")
                 else:
                     speaker.say(f"I heard {converted}. Let me look that up.")
                     speaker.runAndWait()
-
+                    speaker.say("I have opened a google search for your request.")
                 search = str(converted).replace(' ', '+')
-
                 unknown_url = f"https://www.google.com/search?q={search}"
-
                 webbrowser.open(unknown_url)
-
-                speaker.say("I have opened a google search for your request.")
                 renew()
 
 
@@ -1818,6 +1815,7 @@ def notes():
 
 
 def google(query):
+    global suggestion_count
     from search_engine_parser.core.engines.google import Search as GoogleSearch
     from search_engine_parser.core.exceptions import NoResultsOrTrafficError
     google_search = GoogleSearch()
@@ -1838,12 +1836,36 @@ def google(query):
         r = requests.get(suggest_url, params)
         try:
             suggestion = r.json()[1][1]
-            google(suggestion)
+            suggestion_count += 1
+            if suggestion_count >= 3:
+                suggestion_count = 0
+                speaker.say(r.json()[1][0].replace('=', ''))
+                speaker.runAndWait()
+                maps_api.has_been_called = True
+                return True
+            else:
+                google(suggestion)
         except IndexError:
             return True
     if results:
-        text = ' '.join(splitter(results[0]))
-        speaker.say(punctuation.punctuate(text))
+        output = results[0]
+        if '\n' in output:
+            required = output.split('\n')
+            modify = required[0].strip()
+            splitted = ' '.join(splitter(modify.replace('.', 'rEpLaCInG')))
+            sentence = splitted.replace(' rEpLaCInG ', '.')
+            repeats = []
+            [repeats.append(word) for word in sentence.split() if word not in repeats]
+            refined = ' '.join(repeats)
+            output = refined + required[1] + '.' + required[2]
+        # TODO: modify all regex searches in a single line
+        match = re.search(r'\w{3} \d{1}, \d{4}', output) or re.search(r'\w{3} \d{2}, \d{4}', output) or \
+                re.search(r'\w{3}, \d{1}, \d{4}', output) or re.search(r'\w{3}, \d{2}, \d{4}', output) or \
+                re.search(r'\w{3} \d{1} \d{4}', output) or re.search(r'\w{3} \d{2} \d{4}', output)
+        if match:
+            output = output.replace(match.group(), '')
+        sys.stdout.write(f'\r{output}')
+        speaker.say(output)
         renew()
     else:
         return True
@@ -1957,6 +1979,7 @@ if __name__ == '__main__':
     # waiter is used in renew() so that when waiter hits 12 count, active listener automatically goes to sentry mode
     place_holder, greet_check = None, None
     waiter = 0
+    suggestion_count = 0
 
     # stores current location info as json loaded values so it could be used in couple of other functions
     options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())

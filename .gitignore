@@ -4,3 +4,6 @@ speech2text.py
 text2audio.py
 lib/docker_requirements.txt
 Dockerfile
+model.pcl
+training_data.yaml
+notes.txt
