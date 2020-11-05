@@ -22,6 +22,7 @@ pip3 install timezonefinder
 pip3 install inflect
 pip3 install wordninja
 pip3 install punctuator
+pip3 install search_engine_parser
 #pip3 install ChatterBot==1.0.0 --ignore-installed PyYAML
 #pip3 install chatterbot-corpus==1.2.0 --ignore-installed PyYAML
 #pip3 install sqlalchemy==1.2
