@@ -25,6 +25,7 @@ from punctuator import Punctuator
 from wordninja import split as splitter
 
 from alarm import Alarm
+from helper_functions.aws_clients import AWSClients
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.keywords import Keywords
@@ -511,7 +512,7 @@ def weather(place):
     Says weather at current location by getting IP using reverse geocoding if no place is received"""
     sys.stdout.write('\rGetting your weather info')
     import pytemperature
-    api_key = os.getenv('api_key')
+    api_key = os.getenv('weather_api') or aws.weather_api()
     if place:
         desired_start = geo_locator.geocode(place)
         coordinates = desired_start.latitude, desired_start.longitude
@@ -654,7 +655,7 @@ def news():
     sys.stdout.write(f'\rGetting news from {source} news.')
     speaker.say("News around you!")
     from newsapi import NewsApiClient
-    newsapi = NewsApiClient(api_key=os.getenv('news_api'))
+    newsapi = NewsApiClient(api_key=os.getenv('news_api') or aws.news_api())
     all_articles = newsapi.get_top_headlines(sources=f'{source}-news')
 
     for article in all_articles['articles']:
@@ -765,9 +766,9 @@ def robinhood():
     """Gets investment from robinhood api"""
     sys.stdout.write('\rGetting your investment details.')
     from pyrh import Robinhood
-    u = os.getenv('user')
-    p = os.getenv('pass')
-    q = os.getenv('qr')
+    u = os.getenv('robinhood_user') or aws.robinhood_user()
+    p = os.getenv('robinhood_pass') or aws.robinhood_pass()
+    q = os.getenv('robinhood_qr') or aws.robinhood_qr()
     rh = Robinhood()
     rh.login(username=u, password=p, qr_code=q)
     raw_result = rh.positions()
@@ -878,8 +879,8 @@ def locate():
     global place_holder
     from pyicloud import PyiCloudService
 
-    u = os.getenv('icloud_user')
-    p = os.getenv('icloud_pass')
+    u = os.getenv('icloud_user') or aws.icloud_user()
+    p = os.getenv('icloud_pass') or aws.icloud_pass()
     api = PyiCloudService(u, p)
 
     if dummy.has_been_called:
@@ -926,7 +927,7 @@ def locate():
             sys.stdout.write("\r")
             phrase = recognizer.recognize_google(listener)
             if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
-                recovery = os.getenv('recovery')
+                recovery = os.getenv('icloud_recovery') or aws.icloud_recovery()
                 message = 'Return my phone immediately.'
                 api.iphone.lost_device(recovery, message)
                 speaker.say("I've enabled lost mode on your phone.")
@@ -975,8 +976,8 @@ def gmail():
     import imaplib
     from email.header import decode_header, make_header
 
-    u = os.getenv('gmail_user')
-    p = os.getenv('gmail_pass')
+    u = os.getenv('gmail_user') or aws.gmail_user()
+    p = os.getenv('gmail_pass') or aws.gmail_pass()
 
     mail = imaplib.IMAP4_SSL('imap.gmail.com')  # connects to imaplib
     mail.login(u, p)
@@ -1010,8 +1011,12 @@ def gmail():
                             if isinstance(response_part, tuple):  # checks for type(response_part)
                                 original_email = email.message_from_bytes(response_part[1])
                                 raw_receive = (original_email['Received'].split(';')[-1]).strip()
-                                datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
-                                               + timedelta(hours=2)
+                                try:
+                                    datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
+                                                   + timedelta(hours=2)
+                                except ValueError:
+                                    datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0800 (PST)") \
+                                                   + timedelta(hours=2)
                                 received_date = datetime_obj.strftime("%Y-%m-%d")
                                 current_date = datetime.today().date()
                                 yesterday = current_date - timedelta(days=1)
@@ -1537,7 +1542,7 @@ def alarm(hour, minute, am_pm):
                 place_holder = 0
                 alarm(hour=None, minute=None, am_pm=None)
             place_holder = None
-    speaker.say(f"Alarm has been set for {hour}:{minute} {am_pm} sir!")
+    speaker.say(f"Sure sir! Alarm has been set for {hour}:{minute} {am_pm}.")
     sys.stdout.write(f"Alarm has been set for {hour}:{minute} {am_pm} sir!")
     renew()
 
@@ -1702,7 +1707,7 @@ def reminder(hour, minute, am_pm, message):
                 place_holder = 0
                 reminder(hour=None, minute=None, am_pm=None, message=None)
             place_holder = None
-    speaker.say(f"I will remind you to {message} at {hour}:{minute} {am_pm} sir!")
+    speaker.say(f"Sure sir! I will remind you to {message} at {hour}:{minute} {am_pm}.")
     sys.stdout.write(f"I will remind you to {message} at {hour}:{minute} {am_pm} sir!")
     renew()
 
@@ -1711,7 +1716,7 @@ def maps_api(query):
     """Uses google's places api to get places near by or any particular destination.
     This function is triggered when the words in user's statement doesn't match with any predefined functions."""
     global place_holder
-    api_key = os.getenv('maps_api')
+    api_key = os.getenv('maps_api') or aws.maps_api()
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
     response = requests.get(maps_url + 'query=' + query + '&key=' + api_key)
     collection = response.json()['results']
@@ -1973,6 +1978,7 @@ if __name__ == '__main__':
     keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
     conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
     operating_system = platform.system()  # detects current operating system
+    aws = AWSClients()
 
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run

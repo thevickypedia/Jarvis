@@ -32,3 +32,4 @@ python3 -m pip install inflect
 python3 -m pip install wordninja
 python3 -m pip install punctuator
 python3 -m pip install search_engine_parser
+python3 -m pip install boto3

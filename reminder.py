@@ -4,6 +4,9 @@ import smtplib
 from datetime import datetime
 from threading import Thread
 
+from helper_functions.aws_clients import AWSClients
+
+aws = AWSClients()
 directory = 'reminder'
 operating_system = platform.system()
 
@@ -35,9 +38,12 @@ class Reminder(Thread):
                     # Establish a secure session with gmail's outgoing SMTP server using your gmail account
                     server = smtplib.SMTP("smtp.gmail.com", 587)
                     server.starttls()
-                    server.login(user=os.getenv('gmail_user'), password=os.getenv('gmail_pass'))
-                    from_ = os.getenv('gmail_user')
-                    to = f"{os.getenv('remind')}@tmomail.net"
+                    gmail_user = os.getenv('gmail_user') or aws.gmail_user()
+                    gmail_pass = os.getenv('gmail_pass') or aws.gmail_pass()
+                    remind = os.getenv('remind') or aws.remind()
+                    server.login(user=gmail_user, password=gmail_pass)
+                    from_ = gmail_user
+                    to = f"{remind}@tmomail.net"
                     body = self.message
                     subject = "REMINDER from Jarvis"
                     # Send text message through SMS gateway of destination number
@@ -56,4 +62,9 @@ class Reminder(Thread):
 
 
 if __name__ == '__main__':
-    Reminder('01', '21', 'PM', 'Finish pending tasks').start()
+    hour = '02'
+    minute = '02'
+    am_pm = 'PM'
+    f_name = f"{hour}_{minute}_{am_pm}"
+    open(f'reminder/{f_name}.lock', 'a')
+    Reminder(hour, minute, am_pm, 'Finish pending tasks').start()
