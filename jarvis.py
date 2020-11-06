@@ -22,6 +22,7 @@ from geopy.geocoders import Nominatim, options
 from inflect import engine
 from psutil import Process, virtual_memory
 from punctuator import Punctuator
+from requests.auth import HTTPBasicAuth
 from wordninja import split as splitter
 
 from alarm import Alarm
@@ -119,6 +120,7 @@ def time_converter(seconds):
 def conditions(converted):
     """Conditions function is used to check the message processed, and use the keywords to do a regex match and trigger
     the appropriate function which has dedicated task"""
+    sys.stdout.write(f'\r{converted}')
     if any(word in converted.lower() for word in keywords.date()):
         date()
 
@@ -316,6 +318,27 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.notes()):
         notes()
+
+    elif any(word in converted.lower() for word in keywords.github()):
+        git_user = os.getenv('git_user') or aws.git_user()
+        git_pass = os.getenv('git_pass') or aws.git_pass()
+        auth = HTTPBasicAuth(git_user, git_pass)
+        request = requests.get(f'https://api.github.com/users/thevickypedia/repos?type=all&per_page=100', auth=auth)
+        response = request.json()
+        result, repos, n = [], [], 0
+        for i in range(len(response)):
+            n += 1
+            repos.append({response[i]['name'].replace('_', ' ').replace('-', ' '): response[i]['clone_url']})
+        if 'how many' in converted:
+            speaker.say(f'You have {n} repositories sir!')
+            renew()
+        [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo) else None for word in
+         converted.lower().split() for item in repos for repo, clone_url in item.items()]
+        if result:
+            github(target=result)
+        else:
+            speaker.say("Sorry sir! I did not find that repo.")
+            renew()
 
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -1817,6 +1840,53 @@ def notes():
                 renew()
             place_holder = 0
             notes()
+
+
+def github(target):
+    global place_holder
+    home = os.path.expanduser('~')
+    if len(target) == 1:
+        os.system(f"""cd {home} && git clone -q {target[0]}""")
+        cloned = target[0].split('/')[-1].replace('.git', '')
+        speaker.say(f"I've cloned {cloned} on your home directory sir!")
+        renew()
+    elif len(target) <= 3:
+        newest = []
+        [newest.append(new.split('/')[-1]) for new in target]
+        sys.stdout.write(f"\r{', '.join(newest)}")
+        speaker.say(f"I found {len(target)} results. On your screen sir! Which one shall I clone?")
+        speaker.runAndWait()
+        with sr.Microphone() as source:
+            try:
+                sys.stdout.write("\rListener activated..")
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                sys.stdout.write("\r")
+                converted = recognizer.recognize_google(listener)
+                place_holder = None
+                if 'first' in converted.lower():
+                    item = 1
+                elif 'second' in converted.lower():
+                    item = 2
+                elif 'third' in converted.lower():
+                    item = 3
+                else:
+                    item = None
+                    speaker.say("I didn't quite get that sir!")
+                os.system(f"""cd {home} && git clone {target[item]}""")
+                cloned = target[item].split('/')[-1].replace('.git', '')
+                speaker.say(f"I've cloned {cloned} on your home directory sir!")
+                renew()
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+                if place_holder == 0:
+                    place_holder = None
+                    renew()
+                sys.stdout.write("\r")
+                speaker.say("I didn't quite get that. Try again.")
+                place_holder = 0
+                github(target)
+    else:
+        speaker.say(f"I found {len(target)} repositories sir! You may want to be more specific.")
+        renew()
 
 
 def google(query):

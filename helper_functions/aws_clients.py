@@ -75,3 +75,15 @@ class AWSClients:
         param = response['Parameter']
         val = param['Value']
         return val
+
+    def git_user(self):
+        response = AWSClients.client.get_parameter(Name='/Jarvis/git_user', WithDecryption=True)
+        param = response['Parameter']
+        val = param['Value']
+        return val
+
+    def git_pass(self):
+        response = AWSClients.client.get_parameter(Name='/Jarvis/git_pass', WithDecryption=True)
+        param = response['Parameter']
+        val = param['Value']
+        return val

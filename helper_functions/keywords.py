@@ -128,6 +128,10 @@ class Keywords:
         key = ['notes', 'note']
         return key
 
+    def github(self):
+        key = ['git', 'github', 'clone', 'GitHub']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key
