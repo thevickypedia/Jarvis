@@ -1899,7 +1899,7 @@ def sentry_mode():
             initialize()
         else:
             sentry_mode()
-    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
         sentry_mode()
     except KeyboardInterrupt:
         memory_consumed = size_converter()
@@ -1979,6 +1979,8 @@ if __name__ == '__main__':
     conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
     operating_system = platform.system()  # detects current operating system
     aws = AWSClients()
+    limit = sys.getrecursionlimit()
+    sys.setrecursionlimit(limit * 10)
 
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run
