@@ -23,6 +23,7 @@ from inflect import engine
 from playsound import playsound
 from psutil import Process, virtual_memory
 from punctuator import Punctuator
+from pyicloud import PyiCloudService
 from requests.auth import HTTPBasicAuth
 from wordninja import split as splitter
 
@@ -543,8 +544,8 @@ def weather(place):
     import pytemperature
     api_key = os.getenv('weather_api') or aws.weather_api()
     if place:
-        desired_start = geo_locator.geocode(place)
-        coordinates = desired_start.latitude, desired_start.longitude
+        desired_location = geo_locator.geocode(place)
+        coordinates = desired_location.latitude, desired_location.longitude
         located = geo_locator.reverse(coordinates, language='en')
         data = located.raw
         address = data['address']
@@ -553,9 +554,9 @@ def weather(place):
         lat = located.latitude
         lon = located.longitude
     else:
-        city, state, coordinates = location_info['city'], location_info['region'], location_info['loc']
-        lat = coordinates.split(',')[0]
-        lon = coordinates.split(',')[1]
+        city, state, = location_info['city'], location_info['state']
+        lat = current_lat
+        lon = current_lon
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
     weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={api_key}'
     r = urlopen(weather_url)  # sends request to the url created
@@ -571,8 +572,8 @@ def weather(place):
     low = int(round(pytemperature.k2f(mini), 2))
     temp_f = int(round(pytemperature.k2f(temperature), 2))
     temp_feel_f = int(round(pytemperature.k2f(feels_like), 2))
-    sunrise = (datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p"))
-    sunset = (datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p"))
+    sunrise = datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p")
+    sunset = datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p")
     if place or not report.has_been_called:
         output = f'The weather at {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \
                  f'It currently feels like {temp_feel_f}°F, and the current condition is {condition}.'
@@ -897,7 +898,7 @@ def chatBot():
 
 def location():
     """Gets your current location"""
-    city, state, country = location_info['city'], location_info['region'], location_info['country']
+    city, state, country = location_info['city'], location_info['state'], location_info['country']
     speaker.say(f"You're at {city} {state}, in {country}")
     speaker.runAndWait()
     renew()
@@ -906,25 +907,14 @@ def location():
 def locate():
     """Locates your iPhone using icloud api for python"""
     global place_holder
-    from pyicloud import PyiCloudService
-
-    u = os.getenv('icloud_user') or aws.icloud_user()
-    p = os.getenv('icloud_pass') or aws.icloud_pass()
-    api = PyiCloudService(u, p)
-
     if dummy.has_been_called:
         speaker.say("Would you like to ring it?")
     else:
-        stat = api.iphone.status()
+        stat = icloud_api.iphone.status()
         bat_percent = round(stat['batteryLevel'] * 100)
         device_model = stat['deviceDisplayName']
         phone_name = stat['name']
-        raw_location = (api.iphone.location())
-        raw_lat = raw_location['latitude']
-        raw_long = raw_location['longitude']
-        locator = geo_locator.reverse(f'{raw_lat}, {raw_long}')
-        current_location = locator.address
-        speaker.say(f"Your iPhone is at {current_location}.")
+        speaker.say(f"Your iPhone is at {location_info['city']}, {location_info['state']}.")
         speaker.say(f"Some more details. Battery: {bat_percent}%, Name: {phone_name}, Model: {device_model}")
         speaker.say("Would you like to ring it?")
     speaker.runAndWait()
@@ -948,7 +938,7 @@ def locate():
         if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
             speaker.say("Ringing your iPhone now.")
             speaker.runAndWait()
-            api.iphone.play_sound()
+            icloud_api.iphone.play_sound()
             speaker.say("I can also enable lost mode. Would you like to do it?")
             speaker.runAndWait()
             sys.stdout.write("\rListener activated..") and playsound('listener.mp3')
@@ -958,7 +948,7 @@ def locate():
             if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
                 recovery = os.getenv('icloud_recovery') or aws.icloud_recovery()
                 message = 'Return my phone immediately.'
-                api.iphone.lost_device(recovery, message)
+                icloud_api.iphone.lost_device(recovery, message)
                 speaker.say("I've enabled lost mode on your phone.")
                 speaker.runAndWait()
             else:
@@ -1051,11 +1041,11 @@ def gmail():
                                 yesterday = current_date - timedelta(days=1)
                                 # replaces current date with today or yesterday
                                 if received_date == str(current_date):
-                                    receive = (datetime_obj.strftime("today, at %I:%M %p"))
+                                    receive = datetime_obj.strftime("today, at %I:%M %p")
                                 elif received_date == str(yesterday):
-                                    receive = (datetime_obj.strftime("yesterday, at %I:%M %p"))
+                                    receive = datetime_obj.strftime("yesterday, at %I:%M %p")
                                 else:
-                                    receive = (datetime_obj.strftime("on %A, %B %d, at %I:%M %p"))
+                                    receive = datetime_obj.strftime("on %A, %B %d, at %I:%M %p")
                                 sender = (original_email['From']).split(' <')[0]
                                 sub = make_header(decode_header(original_email['Subject']))
                                 speaker.say(f"You have an email from, {sender}, with subject, {sub}, {receive}")
@@ -1379,14 +1369,14 @@ def distance(starting_point, destination):
     if starting_point:
         # if starting_point is received gets latitude and longitude of that location
         desired_start = geo_locator.geocode(starting_point)
-        sys.stdout.write(f"{desired_start.address} **")
+        sys.stdout.write(f"\r{desired_start.address} **")
         start = desired_start.latitude, desired_start.longitude
         start_check = None
     else:
         # else gets latitude and longitude information of current location
-        start = tuple(map(float, location_info['loc'].split(',')))
+        start = (current_lat, current_lon)
         start_check = 'My Location'
-    sys.stdout.write("::TO::")
+    sys.stdout.write("::TO::") if starting_point else sys.stdout.write("\r::TO::")
     desired_location = geo_locator.geocode(destination)
     if desired_location:
         end = desired_location.latitude, desired_location.longitude
@@ -1451,8 +1441,8 @@ def locate_places(place):
                 locate_places(place=None)
             place_holder = None
     try:
-        desired_start = geo_locator.geocode(place)
-        coordinates = desired_start.latitude, desired_start.longitude
+        destination_location = geo_locator.geocode(place)
+        coordinates = destination_location.latitude, destination_location.longitude
         located = geo_locator.reverse(coordinates, language='en')
         data = located.raw
         address = data['address']
@@ -1463,11 +1453,12 @@ def locate_places(place):
         if place in country:
             speaker.say(f"{place} is a country")
         elif place in (city or county):
-            speaker.say(f"{place} is in {state} in {country}")
+            speaker.say(f"{place} is in {state}" if country == location_info['country'] else f"{place} is in "
+                                                                                             f"{state} in {country}")
         elif place in state:
             speaker.say(f"{place} is a state in {country}")
         elif (city or county) and state and country:
-            speaker.say(f"{place} is in {city or county}, {state}" if country == 'United States of America'
+            speaker.say(f"{place} is in {city or county}, {state}" if country == location_info['country']
                         else f"{place} is in {city or county}, {state}, in {country}")
         locate_places.has_been_called = True
     except:
@@ -1511,15 +1502,16 @@ def directions(place):
                 place_holder = 0
                 directions(place=None)
             place_holder = None
-    desired_start = geo_locator.geocode(place)
-    coordinates = desired_start.latitude, desired_start.longitude
+    destination_location = geo_locator.geocode(place)
+    coordinates = destination_location.latitude, destination_location.longitude
     located = geo_locator.reverse(coordinates, language='en')
     data = located.raw
     address = data['address']
-    start_country = address['country_code'] if 'country_code' in address else None
+    end_country = address['country'] if 'country' in address else None
     end = f"{located.latitude},{located.longitude}"
-    end_country = location_info['country']
-    start = location_info['loc']
+
+    start_country = location_info['country']
+    start = current_lat, current_lon
     maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
     webbrowser.open(maps_url)
     speaker.say("Directions on your screen sir!")
@@ -1768,7 +1760,7 @@ def maps_api(query):
         return True
     results = len(required)
     speaker.say(f"I found {results} results sir!") if results != 1 else None
-    start = location_info['loc']
+    start = current_lat, current_lon
     n = 0
     for item in required:
         item['Address'] = item['Address'].replace(' N ', ' North ').replace(' S ', ' South ').replace(' E ', ' East ') \
@@ -2067,12 +2059,17 @@ if __name__ == '__main__':
     waiter = 0
     suggestion_count = 0
 
-    # stores current location info as json loaded values so it could be used in couple of other functions
+    # initiates geo_locator and stores current location info as json so it could be used in couple of other functions
     options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
     geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
-    url = 'http://ipinfo.io/json'
-    resp = urlopen(url)
-    location_info = json.load(resp)
+    icloud_user = os.getenv('icloud_user') or aws.icloud_user()
+    icloud_pass = os.getenv('icloud_pass') or aws.icloud_pass()
+    icloud_api = PyiCloudService(icloud_user, icloud_pass)
+    raw_location = icloud_api.iphone.location()
+    current_lat = raw_location['latitude']
+    current_lon = raw_location['longitude']
+    locator = geo_locator.reverse(f'{current_lat}, {current_lon}')
+    location_info = locator.raw['address']
 
     # different responses for different conditions in senty mode
     wake_up1 = ['Up and running sir.', 'Online and ready sir.', "I've indeed been uploaded sir!", 'Listeners have been '
@@ -2136,8 +2133,9 @@ if __name__ == '__main__':
     else:
         exit_msg = "Have a nice night."
 
-    # starts sentry mode
-    playsound('listener.mp3')
-    with sr.Microphone() as source_for_sentry_mode:
-        recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
-        sentry_mode()
+    # # starts sentry mode
+    # playsound('listener.mp3')
+    # with sr.Microphone() as source_for_sentry_mode:
+    #     recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
+    #     sentry_mode()
+    gmail()
