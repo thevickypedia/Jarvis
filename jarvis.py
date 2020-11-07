@@ -323,14 +323,18 @@ def conditions(converted):
         git_user = os.getenv('git_user') or aws.git_user()
         git_pass = os.getenv('git_pass') or aws.git_pass()
         auth = HTTPBasicAuth(git_user, git_pass)
-        request = requests.get(f'https://api.github.com/users/thevickypedia/repos?type=all&per_page=100', auth=auth)
+        request = requests.get(f'https://api.github.com/user/repos?type=all&per_page=100', auth=auth)
         response = request.json()
-        result, repos, n = [], [], 0
+        result, repos, total, private, archived, licensed = [], [], 0, 0, 0, 0
         for i in range(len(response)):
-            n += 1
+            total += 1
+            private += 1 if response[i]['private'] else 0
+            archived += 1 if response[i]['archived'] else 0
+            licensed += 1 if response[i]['license'] else 0
             repos.append({response[i]['name'].replace('_', ' ').replace('-', ' '): response[i]['clone_url']})
         if 'how many' in converted:
-            speaker.say(f'You have {n} repositories sir!')
+            speaker.say(f'You have {total} repositories sir, out of which {private} are private, {licensed} '
+                        f'are licensed, and {archived} archived.')
             renew()
         [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
          for word in converted.lower().split() for item in repos for repo, clone_url in item.items()]
