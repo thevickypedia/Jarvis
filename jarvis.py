@@ -332,8 +332,8 @@ def conditions(converted):
         if 'how many' in converted:
             speaker.say(f'You have {n} repositories sir!')
             renew()
-        [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo) else None for word in
-         converted.lower().split() for item in repos for repo, clone_url in item.items()]
+        [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
+         for word in converted.lower().split() for item in repos for repo, clone_url in item.items()]
         if result:
             github(target=result)
         else:
@@ -1843,6 +1843,8 @@ def notes():
 
 
 def github(target):
+    """Clones the github repository matched with existing repository in conditions()
+    Asks confirmation if the results are more than 1 but less than 3 else asks to be more specific"""
     global place_holder
     home = os.path.expanduser('~')
     if len(target) == 1:
