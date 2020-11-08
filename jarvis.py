@@ -185,7 +185,10 @@ def conditions(converted):
         locate()
 
     elif any(word in converted.lower() for word in keywords.music()):
-        music()
+        if 'speaker' in converted.lower() or 'tv' in converted.lower():
+            music(converted)
+        else:
+            music(None)
 
     elif any(word in converted.lower() for word in keywords.gmail()):
         gmail()
@@ -292,7 +295,7 @@ def conditions(converted):
             alarm(hour=None, minute=None, am_pm=None)
 
     elif any(word in converted.lower() for word in keywords.google_home()):
-        google_home()
+        google_home(device=None, file=None)
 
     elif any(word in converted.lower() for word in keywords.jokes()):
         jokes()
@@ -961,7 +964,7 @@ def locate():
             renew()
 
 
-def music():
+def music(device):
     """Scans music directory in your profile for .mp3 files and plays using default player"""
     sys.stdout.write("\rScanning music files...")
     user_profile = os.path.expanduser('~')
@@ -980,15 +983,17 @@ def music():
         file.append(music_file)
     chosen = random.choice(file)
 
-    if operating_system == 'Darwin':
-        subprocess.call(["open", chosen])
-    elif operating_system == 'Windows':
-        os.system(f'start wmplayer "{chosen}"')
-
-    sys.stdout.write('\r')
-    speaker.say("Enjoy your music sir!")
-    speaker.runAndWait()
-    sentry_mode()
+    if device:
+        google_home(device, chosen)
+    else:
+        if operating_system == 'Darwin':
+            subprocess.call(["open", chosen])
+        elif operating_system == 'Windows':
+            os.system(f'start wmplayer "{chosen}"')
+        sys.stdout.write('\r')
+        speaker.say("Enjoy your music sir!")
+        speaker.runAndWait()
+        sentry_mode()
 
 
 def gmail():
@@ -1630,8 +1635,24 @@ def kill_alarm():
     renew()
 
 
-def google_home():
-    """Uses socket lib to extract ip address and scans ip range for google home devices"""
+def google_home(device, file):
+    """Uses socket lib to extract ip address and scans ip range for google home devices and play songs in your local.
+    Can also play music on multiple devices at once.
+    Changes made to google-home-push module:
+        * Modified the way local IP is received: https://github.com/deblockt/google-home-push/pull/7
+        * Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
+        I have used "sys.stdout = open(os.devnull, 'w')" to suppress any print statements. To enable this again at a
+        later time use "sys.stdout = sys.__stdout__"
+    Note: When music is played and immediately stopped/tasked the google home device, it is most likely to except
+    Broken Pipe error which usually happens when you write to a socket fully closed on the other Broken Pipe occurs
+    when one end of the connection tries sending data while the other end has already closed the connection.
+    This can simply be ignored or handled using the below in socket module (NOT PREFERRED).
+    ''' except IOError as error:
+            import errno
+            if error.errno != errno.EPIPE:
+                sys.stdout.write(e)
+                pass'''
+    """
     from socket import socket, AF_INET, SOCK_DGRAM
     from googlehomepush import GoogleHome
     from pychromecast.error import ChromecastConnectionError
@@ -1653,14 +1674,31 @@ def google_home():
             devices.update({device_name: ip})
         except ChromecastConnectionError:
             pass
-    sys.stdout.write('\r')
-    number = 0
-    for device, ip in devices.items():
-        number += 1
-        sys.stdout.write(f"{device},  ")
-    speaker.say(f"You have {number} devices in your IP range. Devices list on your screen sir!")
-    speaker.runAndWait()
-    renew()
+    if not device or not file:
+        sys.stdout.write('\r')
+        for device, ip in devices.items():
+            sys.stdout.write(f"{device},  ")
+        speaker.say(f"You have {len(devices)} devices in your IP range. Devices list on your screen sir! You can "
+                    f"choose one and ask me to play some music on any of these.")
+        renew()
+    else:
+        from googlehomepush.http_server import serve_file
+        chosen = []
+        [chosen.append(value) if key.lower() in device.lower() else None for key, value in devices.items()]
+        if not chosen:
+            speaker.say("I don't see any matching devices sir!. Let me help you.")
+            google_home(None, None)
+        for target in chosen:
+            file_url = serve_file(file, "audio/mp3")
+            sys.stdout.write('\r')
+            sys.stdout = open(os.devnull, 'w')  # suppresses print statement from "googlehomepush/__init.py__"
+            GoogleHome(host=target).play(file_url, "audio/mp3")
+            sys.stdout = sys.__stdout__  # removes print statement's suppression above
+        speaker.say("Enjoy your music sir!") if len(chosen) == 1 else \
+            speaker.say(f"That's interesting, you've asked me to play on {len(chosen)} devices at a time. "
+                        f"I hope you'll enjoy this sir.")
+        speaker.runAndWait()
+        sentry_mode()
 
 
 def jokes():
