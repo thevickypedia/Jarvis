@@ -351,6 +351,10 @@ def conditions(converted):
         number = '-'.join([str(s) for s in re.findall(r'\b\d+\b', converted)])
         send_sms(target=number)
 
+    elif any(word in converted.lower() for word in keywords.google_search()):
+        phrase = converted.split('for')[-1] if 'for' in converted else None
+        google_search(phrase)
+
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         dummy.has_been_called = True
@@ -2020,10 +2024,10 @@ def google(query):
     global suggestion_count
     from search_engine_parser.core.engines.google import Search as GoogleSearch
     from search_engine_parser.core.exceptions import NoResultsOrTrafficError
-    google_search = GoogleSearch()
+    search_engine = GoogleSearch()
     results = []
     try:
-        google_results = google_search.search(query, cache=False)
+        google_results = search_engine.search(query, cache=False)
         a = {"Google": google_results}
         for k, v in a.items():
             for result in v:
@@ -2071,6 +2075,35 @@ def google(query):
         renew()
     else:
         return True
+
+
+def google_search(phrase):
+    global place_holder
+    if not phrase:
+        speaker.say("Please tell me the search phrase.")
+        speaker.runAndWait()
+        with sr.Microphone() as source:
+            try:
+                sys.stdout.write("\rListener activated..") and playsound('listener.mp3')
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                sys.stdout.write("\r")
+                phrase = recognizer.recognize_google(listener)
+                converted = phrase.lower()
+                if 'exit' in converted or 'quit' in converted or 'xzibit' in converted or 'cancel' in converted:
+                    renew()
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+                if place_holder == 0:
+                    place_holder = None
+                    renew()
+                sys.stdout.write("\r")
+                speaker.say("I didn't quite get that. Try again.")
+                place_holder = 0
+                google_search(None)
+    search = str(phrase).replace(' ', '+')
+    unknown_url = f"https://www.google.com/search?q={search}"
+    webbrowser.open(unknown_url)
+    speaker.say(f"I've opened up a google search for: {phrase}.")
+    renew()
 
 
 def sentry_mode():

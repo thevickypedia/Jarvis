@@ -136,6 +136,10 @@ class Keywords:
         key = ['message', 'text', 'messages']
         return key
 
+    def google_search(self):
+        key = ['google search']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key
