@@ -132,6 +132,10 @@ class Keywords:
         key = ['git', 'github', 'clone', 'GitHub']
         return key
 
+    def txt_message(self):
+        key = ['message', 'text', 'messages']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key

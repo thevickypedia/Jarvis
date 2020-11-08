@@ -347,6 +347,10 @@ def conditions(converted):
             speaker.say("Sorry sir! I did not find that repo.")
             renew()
 
+    elif any(word in converted.lower() for word in keywords.txt_message()):
+        number = ''.join([str(s) for s in re.findall(r'\b\d+\b', converted)])
+        send_sms(target=number)
+
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         dummy.has_been_called = True
@@ -1889,6 +1893,66 @@ def github(target):
         renew()
 
 
+def send_sms(target):
+    """Sends a message to the number received. If no number was received, it will ask for a number, looks if it is
+    10 digits and then sends a message."""
+    global place_holder
+    import smtplib
+    if not target:
+        speaker.say("Please tell me a number sir!")
+        speaker.runAndWait()
+        with sr.Microphone() as source:
+            try:
+                sys.stdout.write("\rListener activated..") and playsound('listener.mp3')
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                sys.stdout.write("\r")
+                number = recognizer.recognize_google(listener)
+                place_holder = None
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+                if place_holder == 0:
+                    place_holder = None
+                    renew()
+                sys.stdout.write("\r")
+                speaker.say("I didn't quite get that. Try again.")
+                place_holder = 0
+                send_sms(target=None)
+    else:
+        number = target
+    if len(number.replace('-', '')) != 10:
+        sys.stdout.write(f'\r{number}')
+        speaker.say("I don't think that's a right number sir! Phone numbers are 10 digits. Try again!")
+        send_sms(target=None)
+    speaker.say("What would you like to send sir?")
+    speaker.runAndWait()
+    with sr.Microphone() as source:
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('listener.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r")
+            body = recognizer.recognize_google(listener)
+            place_holder = None
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            send_sms(target=number)
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()
+    gmail_user = os.getenv('gmail_user') or aws.gmail_user()
+    gmail_pass = os.getenv('gmail_pass') or aws.gmail_pass()
+    server.login(user=gmail_user, password=gmail_pass)
+    to = f"+1{number}@tmomail.net"
+    subject = "Jarvis::Message from Vignesh"
+    sender = (f"From: {gmail_user}\r\n" + f"To: {to}\r\n" + f"Subject: {subject}\r\n" + "\r\r\n\n" + body)
+    server.sendmail(gmail_user, to, sender)
+    server.close()
+    speaker.say("Message has been sent sir!")
+    renew()
+
+
 def google(query):
     global suggestion_count
     from search_engine_parser.core.engines.google import Search as GoogleSearch
@@ -2133,9 +2197,8 @@ if __name__ == '__main__':
     else:
         exit_msg = "Have a nice night."
 
-    # # starts sentry mode
-    # playsound('listener.mp3')
-    # with sr.Microphone() as source_for_sentry_mode:
-    #     recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
-    #     sentry_mode()
-    gmail()
+    # starts sentry mode
+    playsound('listener.mp3')
+    with sr.Microphone() as source_for_sentry_mode:
+        recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
+        sentry_mode()
