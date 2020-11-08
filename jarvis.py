@@ -175,9 +175,6 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.repeat()):
         repeater()
 
-    elif any(word in converted.lower() for word in keywords.chatbot()):
-        chatBot()
-
     elif any(word in converted.lower() for word in keywords.location()):
         location()
 
@@ -419,6 +416,9 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.shutdown()):
         shutdown()
+
+    elif any(word in converted.lower() for word in keywords.chatbot()):
+        chatBot()
 
     else:
         if maps_api(converted):

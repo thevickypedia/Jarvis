@@ -45,7 +45,7 @@ class Keywords:
         return key
 
     def chatbot(self):
-        key = ['chat', 'bot']
+        key = ['chat', 'chatbot', 'chatter']
         return key
 
     def location(self):
@@ -141,18 +141,16 @@ class Keywords:
         return key
 
     def exit(self):
-        key = ['exit', 'quit', 'go to sleep', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
-               'see you later', 'talk to you later', 'activate sentry mode', 'go back to sleep', "that's it",
-               'that is it']
+        key = ['exit', 'quit', 'sleep', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
+               'see you later', 'talk to you later', 'activate sentry mode', "that's it", 'that is it']
         return key
 
     def sleep(self):
-        key = ['exit', 'quit', 'go to sleep', 'Xzibit', 'see you later', 'talk to you later', 'activate sentry mode',
-               'go back to sleep']
+        key = ['exit', 'quit', 'sleep', 'Xzibit', 'see you later', 'talk to you later', 'activate sentry mode']
         return key
 
     def kill(self):
-        key = ['kill', 'kill yourself', 'terminate yourself', 'stop running', 'stop']
+        key = ['kill', 'terminate yourself', 'stop running', 'stop']
         return key
 
     def shutdown(self):
