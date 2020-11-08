@@ -348,7 +348,7 @@ def conditions(converted):
             renew()
 
     elif any(word in converted.lower() for word in keywords.txt_message()):
-        number = ''.join([str(s) for s in re.findall(r'\b\d+\b', converted)])
+        number = '-'.join([str(s) for s in re.findall(r'\b\d+\b', converted)])
         send_sms(target=number)
 
     elif any(word in converted.lower() for word in conversation.greeting()):
@@ -1866,6 +1866,9 @@ def github(target):
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
                 sys.stdout.write("\r")
                 converted = recognizer.recognize_google(listener)
+                if any(word in converted.lower() for word in keywords.exit()):
+                    place_holder = None
+                    renew()
                 place_holder = None
                 if 'first' in converted.lower():
                     item = 1
@@ -1875,7 +1878,8 @@ def github(target):
                     item = 3
                 else:
                     item = None
-                    speaker.say("I didn't quite get that sir!")
+                    speaker.say("Only first second or third can be accepted sir! Try again!")
+                    github(target)
                 os.system(f"""cd {home} && git clone {target[item]}""")
                 cloned = target[item].split('/')[-1].replace('.git', '')
                 speaker.say(f"I've cloned {cloned} on your home directory sir!")
@@ -1907,6 +1911,7 @@ def send_sms(target):
                 listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
                 sys.stdout.write("\r")
                 number = recognizer.recognize_google(listener)
+                sys.stdout.write(f'\rNumber: {number}')
                 place_holder = None
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 if place_holder == 0:
@@ -1918,7 +1923,7 @@ def send_sms(target):
                 send_sms(target=None)
     else:
         number = target
-    if len(number.replace('-', '')) != 10:
+    if len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) != 10:
         sys.stdout.write(f'\r{number}')
         speaker.say("I don't think that's a right number sir! Phone numbers are 10 digits. Try again!")
         send_sms(target=None)
@@ -1931,6 +1936,26 @@ def send_sms(target):
             sys.stdout.write("\r")
             body = recognizer.recognize_google(listener)
             place_holder = None
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            send_sms(target=number)
+    sys.stdout.write(f'\r{body}::to::{number}')
+    speaker.say(f'{body} to {number}. Do you want me to proceed?')
+    speaker.runAndWait()
+    with sr.Microphone() as source:
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('listener.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r")
+            converted = recognizer.recognize_google(listener)
+            if not any(word in converted.lower() for word in keywords.ok()):
+                speaker.say("Message will not be sent sir!")
+                renew()
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
                 place_holder = None
