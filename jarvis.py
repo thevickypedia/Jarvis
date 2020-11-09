@@ -155,7 +155,9 @@ def conditions(converted):
         system_info()
 
     elif any(word in converted.lower() for word in keywords.webpage()):
-        webpage()
+        converted = converted.replace(' In', 'in').replace(' Co. Uk', 'co.uk')
+        host = (word for word in converted.split() if '.' in word)
+        webpage(host)
 
     elif any(word in converted.lower() for word in keywords.wikipedia()):
         wiki_pedia()
@@ -518,34 +520,49 @@ def current_time(place):
         renew()
 
 
-def webpage():
-    """opens up a webpage using your default browser"""
-    global place_holder
-    speaker.say("Which website shall I open? Just say the name of the webpage.")
-    speaker.runAndWait()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('listener.mp3')
-            listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r")
-            converted1 = recognizer.recognize_google(listener1)
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                renew()
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            webpage()
-        place_holder = None
-
-    if 'exit' in converted1 or 'quit' in converted1 or 'Xzibit' in converted1:
+def webpage(target):
+    """opens up a webpage using your default browser to the target host. If no target received, will ask for
+    user confirmation. If no '.' in the phrase heard, phrase will default to .com"""
+    host = []
+    try:
+        [host.append(i) for i in target]
+    except TypeError:
+        host = None
+    if not host:
+        global place_holder
+        speaker.say("Which website shall I open sir?")
+        speaker.runAndWait()
+        with sr.Microphone() as source:
+            try:
+                sys.stdout.write("\rListener activated..") and playsound('listener.mp3')
+                listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                sys.stdout.write("\r")
+                converted = recognizer.recognize_google(listener1)
+                if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+                    renew()
+                elif '.' in converted and len(list(converted)) == 1:
+                    _target = (word for word in converted.split() if '.' in word)
+                    webpage(_target)
+                else:
+                    converted = converted.lower().replace(' ', '')
+                    target_ = [f"{converted}" if '.' in converted else f"{converted}.com"]
+                    webpage(target_)
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+                if place_holder == 0:
+                    place_holder = None
+                    renew()
+                sys.stdout.write("\r")
+                speaker.say("I didn't quite get that. Try again.")
+                place_holder = 0
+                webpage(None)
+            place_holder = None
+    else:
+        for web in host:
+            web_url = f"https://{web}"
+            webbrowser.open(web_url)
+        speaker.say(f"I have opened {host}")
+        speaker.runAndWait()
         renew()
-
-    web_url = f"https://{converted1}.com"
-    webbrowser.open(web_url)
-    speaker.say(f"I have opened {converted1}")
-    renew()
 
 
 def weather(place):

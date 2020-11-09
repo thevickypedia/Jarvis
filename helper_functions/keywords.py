@@ -17,7 +17,7 @@ class Keywords:
         return key
 
     def webpage(self):
-        key = ['website', 'webpage', 'web page', '.com']
+        key = ['website', 'webpage', 'web page', '.']
         return key
 
     def wikipedia(self):
