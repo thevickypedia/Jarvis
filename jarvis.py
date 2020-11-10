@@ -1,4 +1,5 @@
 import json
+import logging
 import math
 import os
 import platform
@@ -10,6 +11,7 @@ import sys
 import time
 import webbrowser
 from datetime import datetime, timedelta
+from logging.config import dictConfig
 from urllib.request import urlopen
 
 import certifi
@@ -34,6 +36,13 @@ from helper_functions.database import Database, file_name
 from helper_functions.keywords import Keywords
 from reminder import Reminder
 
+# the following will allow only critical alerts from Jarvis and suppress the rest (mostly from imported packages)
+logger = logging.getLogger('J.A.R.V.I.S')
+logger.setLevel(level=logging.CRITICAL)
+dictConfig({
+    'version': 1,
+    'disable_existing_loggers': True,
+})
 
 # TODO: include face recognition
 
@@ -154,7 +163,8 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.system_info()):
         system_info()
 
-    elif any(word in converted.lower() for word in keywords.webpage()):
+    elif any(word in converted.lower() for word in keywords.webpage()) and \
+            not any(word in converted.lower() for word in keywords.avoid()):
         converted = converted.replace(' In', 'in').replace(' Co. Uk', 'co.uk')
         host = (word for word in converted.split() if '.' in word)
         webpage(host)
@@ -363,11 +373,11 @@ def conditions(converted):
         renew()
 
     elif any(word in converted.lower() for word in conversation.capabilities()):
-        speaker.say('There is a lot I can do. For example: I can get you the weather at your location, news around '
-                    'you, meanings of words, launch applications, play music, create a to-do list, check your emails, '
-                    'get your system configuration, locate your phone, find distance between places, set an alarm, '
-                    'scan smart devices in your IP range, make you happy by telling a joke, and much more. '
-                    'Time to ask,.')
+        speaker.say('There is a lot I can do. For example: I can get you the weather at any location, news around '
+                    'you, meanings of words, launch applications, create a to-do list, check your emails, get your '
+                    'system configuration, tell your investment details, locate your phone, find distance between '
+                    'places, set an alarm, scan smart devices in your IP range, and play music, tell a joke, send '
+                    'a message, remind you to do something, clone a GitHub repository, and much more. Time to ask,.')
         dummy.has_been_called = True
         renew()
 
@@ -397,11 +407,11 @@ def conditions(converted):
     elif any(word in converted.lower() for word in conversation.about_me()):
         speaker.say("I am Jarvis. A virtual assistant designed by Mr.Rao.")
         speaker.say("I am a program, I'm without form.")
-        speaker.say('There is a lot I can do. For example: I can get you the weather at your location, news around '
-                    'you, meanings of words, launch applications, play music, create a to-do list, check your emails, '
-                    'get your system configuration, locate your phone, find distance between places, set an alarm, '
-                    'scan smart devices in your IP range, make you happy by telling a joke, and much more. '
-                    'Time to ask,.')
+        speaker.say('There is a lot I can do. For example: I can get you the weather at any location, news around '
+                    'you, meanings of words, launch applications, create a to-do list, check your emails, get your '
+                    'system configuration, tell your investment details, locate your phone, find distance between '
+                    'places, set an alarm, scan smart devices in your IP range, and play music, tell a joke, send '
+                    'a message, remind you to do something, clone a GitHub repository, and much more. Time to ask,.')
         dummy.has_been_called = True
         renew()
 
@@ -1710,7 +1720,7 @@ def google_home(device, file):
             speaker.say("I don't see any matching devices sir!. Let me help you.")
             google_home(None, None)
         for target in chosen:
-            file_url = serve_file(file, "audio/mp3")
+            file_url = serve_file(file, "audio/mp3")  # serves the file on local host and generates the play url
             sys.stdout.write('\r')
             sys.stdout = open(os.devnull, 'w')  # suppresses print statement from "googlehomepush/__init.py__"
             GoogleHome(host=target).play(file_url, "audio/mp3")
