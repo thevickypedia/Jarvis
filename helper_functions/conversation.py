@@ -28,10 +28,10 @@ class Conversation:
         return key
 
     def whats_up(self):
-        key = ["What's up", 'what is up', "what's going on", 'sup']
+        key = ["what's up", 'what is up', "what's going on", 'sup']
         return key
 
     def about_me(self):
-        key = ['tell me about you', 'tell me something about you', 'I would like to get you know you',
+        key = ['tell me about you', 'tell me something about you', 'i would like to get you know you',
                'tell me about yourself']
         return key

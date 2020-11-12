@@ -25,6 +25,8 @@ pip3 install punctuator
 pip3 install search_engine_parser
 pip3 install boto3
 pip3 install playsound
+pip3 install pywebostv
+pip3 install wakeonlan
 #pip3 install ChatterBot==1.0.0 --ignore-installed PyYAML
 #pip3 install chatterbot-corpus==1.2.0 --ignore-installed PyYAML
 #pip3 install sqlalchemy==1.2

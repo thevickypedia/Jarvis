@@ -34,3 +34,5 @@ python3 -m pip install punctuator
 python3 -m pip install search_engine_parser
 python3 -m pip install boto3
 python3 -m pip install playsound
+python3 -m pip install pywebostv
+python3 -m pip install wakeonlan

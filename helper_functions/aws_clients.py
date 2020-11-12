@@ -87,3 +87,21 @@ class AWSClients:
         param = response['Parameter']
         val = param['Value']
         return val
+
+    def tv_mac(self):
+        response = AWSClients.client.get_parameter(Name='/Jarvis/tv_mac', WithDecryption=True)
+        param = response['Parameter']
+        val = param['Value']
+        return val
+
+    def tv_ip(self):
+        response = AWSClients.client.get_parameter(Name='/Jarvis/tv_ip', WithDecryption=True)
+        param = response['Parameter']
+        val = param['Value']
+        return val
+
+    def tv_client_key(self):
+        response = AWSClients.client.get_parameter(Name='/Jarvis/tv_client_key', WithDecryption=True)
+        param = response['Parameter']
+        val = param['Value']
+        return val

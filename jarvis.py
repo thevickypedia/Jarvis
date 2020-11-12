@@ -11,7 +11,6 @@ import sys
 import time
 import webbrowser
 from datetime import datetime, timedelta
-from logging.config import dictConfig
 from urllib.request import urlopen
 
 import certifi
@@ -35,14 +34,11 @@ from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.keywords import Keywords
 from reminder import Reminder
+from tv_controls import TV
 
-# the following will allow only critical alerts from Jarvis and suppress the rest (mostly from imported packages)
-logger = logging.getLogger('J.A.R.V.I.S')
-logger.setLevel(level=logging.CRITICAL)
-dictConfig({
-    'version': 1,
-    'disable_existing_loggers': True,
-})
+# suppress all logging
+logging.disable()
+
 
 # TODO: include face recognition
 
@@ -99,6 +95,10 @@ def alive():
             listener = recognizer.listen(source, timeout=None, phrase_time_limit=5)
             sys.stdout.write("\r") and playsound('end.mp3') if waiter == 0 else sys.stdout.write("\r")
             converted = recognizer.recognize_google(listener)
+            if 'are you there' in converted.lower() or converted.strip() == 'Jarvis' or 'you there' in \
+                    converted.lower():
+                speaker.say("I'm here sir!")
+                renew()
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if waiter == 12:  # waits for a minute and goes to sleep
                 sentry_mode()
@@ -181,9 +181,6 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.robinhood()):
         robinhood()
 
-    elif any(word in converted.lower() for word in keywords.apps()):
-        apps(converted.split()[-1])
-
     elif any(word in converted.lower() for word in keywords.repeat()):
         repeater()
 
@@ -192,12 +189,6 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.locate()):
         locate()
-
-    elif any(word in converted.lower() for word in keywords.music()):
-        if 'speaker' in converted.lower() or 'tv' in converted.lower():
-            music(converted)
-        else:
-            music(None)
 
     elif any(word in converted.lower() for word in keywords.gmail()):
         gmail()
@@ -367,6 +358,18 @@ def conditions(converted):
         phrase = converted.split('for')[-1] if 'for' in converted else None
         google_search(phrase)
 
+    elif any(word in converted.lower() for word in keywords.tv()):
+        television(converted)
+
+    elif any(word in converted.lower() for word in keywords.apps()):
+        apps(converted.split()[-1])
+
+    elif any(word in converted.lower() for word in keywords.music()):
+        if 'speaker' in converted.lower() or 'tv' in converted.lower():
+            music(converted)
+        else:
+            music(None)
+
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         dummy.has_been_called = True
@@ -376,8 +379,8 @@ def conditions(converted):
         speaker.say('There is a lot I can do. For example: I can get you the weather at any location, news around '
                     'you, meanings of words, launch applications, create a to-do list, check your emails, get your '
                     'system configuration, tell your investment details, locate your phone, find distance between '
-                    'places, set an alarm, scan smart devices in your IP range, and play music, tell a joke, send '
-                    'a message, remind you to do something, clone a GitHub repository, and much more. Time to ask,.')
+                    'places, set an alarm, play music on smart devices around you, control your TV, tell a joke, send'
+                    ' a message, set reminders, scan and clone your GitHub repositories, and much more. Time to ask,.')
         dummy.has_been_called = True
         renew()
 
@@ -397,7 +400,7 @@ def conditions(converted):
         renew()
 
     elif any(word in converted.lower() for word in conversation.what()):
-        speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI")
+        speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
         renew()
 
     elif any(word in converted.lower() for word in conversation.who()):
@@ -406,12 +409,8 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in conversation.about_me()):
         speaker.say("I am Jarvis. A virtual assistant designed by Mr.Raauv.")
-        speaker.say("I am a program, I'm without form.")
-        speaker.say('There is a lot I can do. For example: I can get you the weather at any location, news around '
-                    'you, meanings of words, launch applications, create a to-do list, check your emails, get your '
-                    'system configuration, tell your investment details, locate your phone, find distance between '
-                    'places, set an alarm, scan smart devices in your IP range, and play music, tell a joke, send '
-                    'a message, remind you to do something, clone a GitHub repository, and much more. Time to ask,.')
+        speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
+        speaker.say("I can seamlessly take care of your daily tasks, and also help with most of your work!")
         dummy.has_been_called = True
         renew()
 
@@ -1660,7 +1659,7 @@ def kill_alarm():
                 place_holder = 0
                 kill_alarm()
             except FileNotFoundError as file_error:
-                sys.stdout.write(f"{file_error}")
+                sys.stdout.write(f"\r{file_error}")
                 speaker.say(f"Unable to find a lock file for {hour} {minute} {am_pm} sir! Try again!")
                 kill_alarm()
     renew()
@@ -2047,7 +2046,107 @@ def send_sms(target):
     renew()
 
 
+def television(converted):
+    """television() controls all actions on a TV. In the main() method tv is set to None if the
+    TV class from tv_controls.py fails to connect to the tv, so the television function responds only
+    if the request is to turn on the TV, else it exits with a bummer. Once the tv is turned on, the TV
+    class is also initiated which is set global for other statements to use it."""
+    global tv
+    phrase = converted.replace('TV', '')
+    if 'wake' in phrase or 'turn on' in phrase:
+        from wakeonlan import send_magic_packet as wake
+        try:
+            mac_address = os.getenv('tv_mac') or aws.tv_mac()
+            wake(mac_address)
+            speaker.say(f"I've turned on the TV sir!")
+            tv = TV()
+        except OSError:
+            speaker.say("I wasn't able to turn on the TV! Please check if you are connected to a VPN, or on the "
+                        "same network as your TV.")
+        renew()
+    if tv:
+        if 'increase' in phrase:
+            tv.increase_volume()
+            speaker.say('Done sir!')
+        elif 'decrease' in phrase or 'reduce' in phrase:
+            tv.decrease_volume()
+            speaker.say('Done sir!')
+        elif 'mute' in phrase:
+            tv.mute()
+            speaker.say('Done sir!')
+        elif 'pause' in phrase or 'hold' in phrase:
+            tv.pause()
+            speaker.say('Done sir!')
+        elif 'resume' in phrase or 'play' in phrase:
+            tv.play()
+            speaker.say('Done sir!')
+        elif 'rewind' in phrase:
+            tv.rewind()
+            speaker.say('Done sir!')
+        elif 'forward' in phrase:
+            tv.forward()
+            speaker.say('Done sir!')
+        elif 'stop' in phrase:
+            tv.stop()
+            speaker.say('Done sir!')
+        elif 'set' in phrase:
+            vol = int(''.join([str(s) for s in re.findall(r'\b\d+\b', phrase)]))
+            sys.stdout.write(f'\rRequested volume: {vol}')
+            if vol:
+                tv.set_volume(vol)
+                speaker.say(f"I've set the volume to {vol}% sir.")
+            else:
+                speaker.say(f"{vol} doesn't match the right format sir!")
+        elif 'volume' in phrase:
+            speaker.say(f"The current volume on your TV is, {tv.get_volume()}%")
+        elif 'what are the apps' in phrase or 'what are the applications' in phrase:
+            sys.stdout.write(f'\r{tv.list_apps()}')
+            speaker.say('App list on your screen sir!')
+            speaker.runAndWait()
+            time.sleep(5)
+        elif 'open' in phrase or 'launch' in phrase:
+            app_name = ''
+            for word in phrase.split():
+                if word[0].isupper():
+                    app_name += word + ' '
+            if not app_name:
+                speaker.say("I didn't quite get that.")
+            try:
+                tv.launch_app(app_name.strip())
+                speaker.say(f"I've launched {app_name} on your TV sir!")
+            except ValueError:
+                speaker.say(f"I didn't find the app {app_name} on your TV sir!")
+        elif "what's" in phrase or 'currently' in phrase:
+            speaker.say(f'{tv.current_app()} is running on your TV.')
+        elif 'change' in phrase or 'source' in phrase:
+            source = ''
+            for word in phrase.split():
+                if word[0].isupper():
+                    source += word + ' '
+            if not source:
+                speaker.say("I didn't quite get that.")
+            try:
+                tv.set_source(source.strip())
+                speaker.say(f"I've changed the source to {source}.")
+            except ValueError:
+                speaker.say(f"I didn't find the source {source} on your TV sir!")
+        elif 'shutdown' in phrase or 'shut down' in phrase or 'turn off' in phrase:
+            speaker.say('Shutting down the TV now.')
+            speaker.runAndWait()
+            tv.shutdown()
+            tv = None
+        else:
+            speaker.say("I didn't quite get that.")
+    else:
+        speaker.say("The TV state is unknown sir! You can ask me to turn on the TV.")
+    renew()
+
+
 def google(query):
+    """Uses Google's search engine parser and gets the first result that shows up on a google search.
+    If it is unable to get the result, Jarvis sends a request to suggestqueries.google.com to rephrase
+    the query and then looks up using the search engine parser once again. global suggestion_count is used
+    to make sure the suggestions and parsing don't run on an infinite loop."""
     global suggestion_count
     from search_engine_parser.core.engines.google import Search as GoogleSearch
     from search_engine_parser.core.exceptions import NoResultsOrTrafficError
@@ -2105,6 +2204,7 @@ def google(query):
 
 
 def google_search(phrase):
+    """Opens up a google search for the phrase received. If nothing was received, gets phrase from user."""
     global place_holder
     if not phrase:
         speaker.say("Please tell me the search phrase.")
@@ -2319,6 +2419,14 @@ if __name__ == '__main__':
         exit_msg = "Have a nice night, and enjoy your weekend."
     else:
         exit_msg = "Have a nice night."
+
+    # tries to turn on the TV, receives BrokenPipeError in case the TV is turned off, sets tv to None which is invoked
+    # later when user requests to turn the TV on
+    try:
+        sys.stdout.write('\rPLEASE WAIT::Attempting to connect to your TV')
+        tv = TV()
+    except BrokenPipeError:
+        tv = None
 
     # starts sentry mode
     playsound('initialize.mp3')

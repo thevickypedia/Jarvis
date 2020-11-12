@@ -37,7 +37,7 @@ class Keywords:
         return key
 
     def apps(self):
-        key = ['launch', 'app', 'apps', 'application']
+        key = ['launch']
         return key
 
     def repeat(self):
@@ -139,6 +139,10 @@ class Keywords:
 
     def google_search(self):
         key = ['google search']
+        return key
+
+    def tv(self):
+        key = ['tv', 'television']
         return key
 
     def ok(self):
