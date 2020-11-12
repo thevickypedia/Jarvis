@@ -241,6 +241,11 @@ def conditions(converted):
             start, end = None, None
         distance(start, end)
 
+    elif any(word in converted.lower() for word in conversation.form()):
+        speaker.say("I am a program, I'm without form.")
+        dummy.has_been_called = True
+        renew()
+
     elif any(word in converted.lower() for word in keywords.geopy()):
         # tries to look for words starting with an upper case letter
         place = ''
@@ -386,11 +391,6 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in conversation.languages()):
         speaker.say("Tricky question!. I'm configured in python, and I can speak English.")
-        dummy.has_been_called = True
-        renew()
-
-    elif any(word in converted.lower() for word in conversation.form()):
-        speaker.say("I am a program, I'm without form.")
         dummy.has_been_called = True
         renew()
 
@@ -2061,8 +2061,8 @@ def television(converted):
             speaker.say(f"I've turned on the TV sir!")
             tv = TV()
         except OSError:
-            speaker.say("I wasn't able to turn on the TV! Please check if you are connected to a VPN, or on the "
-                        "same network as your TV.")
+            speaker.say("I wasn't able to turn on your TV sir! I think you have your VPN turned ON. If so? disconnect"
+                        " it. And make sure you are on the same network as your TV.")
         renew()
     if tv:
         if 'increase' in phrase:
@@ -2138,7 +2138,9 @@ def television(converted):
         else:
             speaker.say("I didn't quite get that.")
     else:
-        speaker.say("The TV state is unknown sir! You can ask me to turn on the TV.")
+        converted = converted.replace('my', 'your')
+        speaker.say(f"I'm sorry sir! I wasn't able to {converted}, as the TV state is unknown! You can ask me to "
+                    f"turn on the TV to start using the TV features.")
     renew()
 
 
@@ -2342,7 +2344,7 @@ if __name__ == '__main__':
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run
     # waiter is used in renew() so that when waiter hits 12 count, active listener automatically goes to sentry mode
-    place_holder, greet_check = None, None
+    place_holder, greet_check, tv = None, None, None
     waiter = 0
     suggestion_count = 0
 
@@ -2419,14 +2421,6 @@ if __name__ == '__main__':
         exit_msg = "Have a nice night, and enjoy your weekend."
     else:
         exit_msg = "Have a nice night."
-
-    # tries to turn on the TV, receives BrokenPipeError in case the TV is turned off, sets tv to None which is invoked
-    # later when user requests to turn the TV on
-    try:
-        sys.stdout.write('\rPLEASE WAIT::Attempting to connect to your TV')
-        tv = TV()
-    except BrokenPipeError:
-        tv = None
 
     # starts sentry mode
     playsound('initialize.mp3')
