@@ -63,17 +63,15 @@ def initialize():
     else:
         speaker.say("Hope you're having a nice night.")
     speaker.runAndWait()
-
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            received = recognizer.recognize_google(listener)
-            place_holder = None
-            return conditions(received)
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            renew()
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        received = recognizer.recognize_google(listener)
+        place_holder = None
+        return conditions(received)
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        renew()
 
 
 def renew():
@@ -88,28 +86,28 @@ def alive():
     and goes to sentry_mode() if nothing is heard"""
     global waiter
     speaker.runAndWait()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3') if waiter == 0 else \
-                sys.stdout.write("\rListener activated..")
-            listener = recognizer.listen(source, timeout=None, phrase_time_limit=5)
-            sys.stdout.write("\r") and playsound('end.mp3') if waiter == 0 else sys.stdout.write("\r")
-            converted = recognizer.recognize_google(listener)
-            if 'are you there' in converted.lower() or converted.strip() == 'Jarvis' or 'you there' in \
-                    converted.lower():
-                speaker.say("I'm here sir!")
-                renew()
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if waiter == 12:  # waits for a minute and goes to sleep
-                sentry_mode()
-            waiter += 1
-            alive()
-        if any(word in converted.lower() for word in keywords.sleep()):
-            speaker.say(f"Activating sentry mode, enjoy yourself sir!")
-            speaker.runAndWait()
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3') if waiter == 0 else \
+            sys.stdout.write("\rListener activated..")
+        listener = recognizer.listen(source, timeout=None, phrase_time_limit=5)
+        sys.stdout.write("\r") and playsound('end.mp3') if waiter == 0 else sys.stdout.write("\r")
+        converted = recognizer.recognize_google(listener)
+        if 'are you there' in converted.lower() or converted.strip() == 'Jarvis' or 'you there' in \
+                converted.lower():
+            speaker.say("I'm here sir!")
+            renew()
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        if waiter == 12:  # waits for a minute and goes to sleep
             sentry_mode()
-        else:
-            conditions(converted)
+        waiter += 1
+        converted = None
+        alive()
+    if any(word in converted.lower() for word in keywords.sleep()):
+        speaker.say(f"Activating sentry mode, enjoy yourself sir!")
+        speaker.runAndWait()
+        sentry_mode()
+    else:
+        conditions(converted)
 
 
 def time_converter(seconds):
@@ -162,12 +160,6 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.system_info()):
         system_info()
-
-    elif any(word in converted.lower() for word in keywords.webpage()) and \
-            not any(word in converted.lower() for word in keywords.avoid()):
-        converted = converted.replace(' In', 'in').replace(' Co. Uk', 'co.uk')
-        host = (word for word in converted.split() if '.' in word)
-        webpage(host)
 
     elif any(word in converted.lower() for word in keywords.wikipedia()):
         wiki_pedia()
@@ -254,7 +246,7 @@ def conditions(converted):
                 place += word + ' '
             elif '.' in word:
                 place += word + ' '
-        # if no words found starting with an upper case letter, fetches word after the keyword 'is' eg: where is chicago
+        # if no words found starting with an upper case letter, fetches word after the keyword 'is' eg: where is Chicago
         if not place:
             keyword = 'is'
             before_keyword, keyword, after_keyword = converted.partition(keyword)
@@ -275,13 +267,19 @@ def conditions(converted):
             speaker.say("I can't take you to anywhere without a location sir!")
             directions(place=None)
 
+    elif any(word in converted.lower() for word in keywords.webpage()) and \
+            not any(word in converted.lower() for word in keywords.avoid()):
+        converted = converted.replace(' In', 'in').replace(' Co. Uk', 'co.uk')
+        host = (word for word in converted.split() if '.' in word)
+        webpage(host)
+
     elif any(word in converted.lower() for word in keywords.kill_alarm()):
         kill_alarm()
 
     elif any(word in converted.lower() for word in keywords.alarm()):
         """uses regex to find numbers in your statement and processes AM and PM information"""
         try:
-            extracted_time = re.findall(r'\s([0-9]+\:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
+            extracted_time = re.findall(r'\s([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
                 r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
             extracted_time = extracted_time[0]
             am_pm = extracted_time.split()[-1]
@@ -295,9 +293,9 @@ def conditions(converted):
                 minute = 0
             # makes sure hour and minutes are two digits
             hour, minute = f"{hour:02}", f"{minute:02}"
-            alarm(hour, minute, am_pm)
+            alarm(hour, minute, am_pm, converted)
         except IndexError:
-            alarm(hour=None, minute=None, am_pm=None)
+            alarm(hour=None, minute=None, am_pm=None, msg=converted)
 
     elif any(word in converted.lower() for word in keywords.google_home()):
         google_home(device=None, file=None)
@@ -309,7 +307,7 @@ def conditions(converted):
         message = re.search('to(.*)at', converted).group(1).strip()
         """uses regex to find numbers in your statement and processes AM and PM information"""
         try:
-            extracted_time = re.findall(r'\s([0-9]+\:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
+            extracted_time = re.findall(r'\s([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
                 r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
             extracted_time = extracted_time[0]
             am_pm = extracted_time.split()[-1]
@@ -433,7 +431,7 @@ def conditions(converted):
         shutdown()
 
     elif any(word in converted.lower() for word in keywords.chatbot()):
-        chatBot()
+        chatter_bot()
 
     else:
         if maps_api(converted):
@@ -541,30 +539,29 @@ def webpage(target):
         global place_holder
         speaker.say("Which website shall I open sir?")
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                converted = recognizer.recognize_google(listener1)
-                if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-                    renew()
-                elif '.' in converted and len(list(converted)) == 1:
-                    _target = (word for word in converted.split() if '.' in word)
-                    webpage(_target)
-                else:
-                    converted = converted.lower().replace(' ', '')
-                    target_ = [f"{converted}" if '.' in converted else f"{converted}.com"]
-                    webpage(target_)
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                webpage(None)
-            place_holder = None
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            converted = recognizer.recognize_google(listener1)
+            if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+                renew()
+            elif '.' in converted and len(list(converted)) == 1:
+                _target = (word for word in converted.split() if '.' in word)
+                webpage(_target)
+            else:
+                converted = converted.lower().replace(' ', '')
+                target_ = [f"{converted}" if '.' in converted else f"{converted}.com"]
+                webpage(target_)
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            webpage(None)
+        place_holder = None
     else:
         for web in host:
             web_url = f"https://{web}"
@@ -658,76 +655,79 @@ def wiki_pedia():
     import wikipedia
     speaker.say("Please tell the keyword.")
     speaker.runAndWait()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            keyword = recognizer.recognize_google(listener1)
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                renew()
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            wiki_pedia()
-
-        place_holder = None
-        if 'no' in keyword.lower().split() or 'nope' in keyword.lower().split() or 'thank you' in \
-                keyword.lower().split() or "that's it" in keyword.lower().split():
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        keyword = recognizer.recognize_google(listener1)
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        if place_holder == 0:
+            place_holder = None
             renew()
+        sys.stdout.write("\r")
+        speaker.say("I didn't quite get that. Try again.")
+        place_holder = 0
+        keyword = None
+        wiki_pedia()
 
-        sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
-        try:
-            summary = wikipedia.summary(keyword)
-        except wikipedia.exceptions.DisambiguationError as e:  # checks for the right keyword in case of 1+ matches
-            sys.stdout.write(f'\r{e}')
-            speaker.say('Your keyword has multiple results sir. Please pick any one displayed on your screen.')
-            speaker.runAndWait()
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            keyword1 = recognizer.recognize_google(listener1)
-            summary = wikipedia.summary(keyword1)
-        except wikipedia.exceptions.PageError:
-            speaker.say(f"I'm sorry sir! I didn't get a response from wikipedia for the phrase: {keyword}. Try again!")
-            wiki_pedia()
-        # stops with two sentences before reading whole passage
-        formatted = punctuation.punctuate(' '.join(splitter(' '.join(summary.split('.')[0:2]))))
-        speaker.say(formatted)
-        speaker.runAndWait()
-        speaker.say("Do you want me to continue?")  # gets confirmation to read the whole passage
-        speaker.runAndWait()
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener2 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            response = recognizer.recognize_google(listener2)
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            sys.stdout.write("\r")
-            speaker.say("I'm sorry sir, I didn't get your response.")
-            renew()
-        place_holder = None
-        if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
-            speaker.say(''.join(summary.split('.')[3:-1]))
-        else:
-            pass
+    place_holder = None
+    if 'no' in keyword.lower().split() or 'nope' in keyword.lower().split() or 'thank you' in \
+            keyword.lower().split() or "that's it" in keyword.lower().split():
         renew()
+
+    sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
+    try:
+        summary = wikipedia.summary(keyword)
+    except wikipedia.exceptions.DisambiguationError as e:  # checks for the right keyword in case of 1+ matches
+        sys.stdout.write(f'\r{e}')
+        speaker.say('Your keyword has multiple results sir. Please pick any one displayed on your screen.')
+        speaker.runAndWait()
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        keyword1 = recognizer.recognize_google(listener1)
+        summary = wikipedia.summary(keyword1)
+    except wikipedia.exceptions.PageError:
+        speaker.say(f"I'm sorry sir! I didn't get a response from wikipedia for the phrase: {keyword}. Try again!")
+        summary = None
+        wiki_pedia()
+    # stops with two sentences before reading whole passage
+    formatted = punctuation.punctuate(' '.join(splitter(' '.join(summary.split('.')[0:2]))))
+    speaker.say(formatted)
+    speaker.runAndWait()
+    speaker.say("Do you want me to continue?")  # gets confirmation to read the whole passage
+    speaker.runAndWait()
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener2 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        response = recognizer.recognize_google(listener2)
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        sys.stdout.write("\r")
+        speaker.say("I'm sorry sir, I didn't get your response.")
+        response = None
+        renew()
+    place_holder = None
+    if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
+        speaker.say(''.join(summary.split('.')[3:-1]))
+    else:
+        pass
+    renew()
 
 
 def news():
     """Says news around you and skips going to renew() if the function is called by report()"""
-    source = 'fox'
-    sys.stdout.write(f'\rGetting news from {source} news.')
+    news_source = 'fox'
+    sys.stdout.write(f'\rGetting news from {news_source} news.')
     speaker.say("News around you!")
     from newsapi import NewsApiClient
     newsapi = NewsApiClient(api_key=os.getenv('news_api') or aws.news_api())
-    all_articles = newsapi.get_top_headlines(sources=f'{source}-news')
+    all_articles = newsapi.get_top_headlines(sources=f'{news_source}-news')
 
     for article in all_articles['articles']:
         speaker.say(article['title'])
-        speaker.runAndWait()
+    speaker.say("That's the end of news around you.")
+    speaker.runAndWait()
 
     if report.has_been_called:
         pass
@@ -742,30 +742,29 @@ def apps(keyword):
     if (keyword in ignore or keyword is None) and operating_system == 'Windows':
         speaker.say("Please say the app name.")
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                keyword = recognizer.recognize_google(listener)
-                if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
-                    renew()
-                status = os.system(f'start {keyword}')
-                if status == 0:
-                    speaker.say(f'I have opened {keyword}')
-                    renew()
-                else:
-                    speaker.say(f"I wasn't able to find the app {keyword}. Try again.")
-                    apps(None)
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            keyword = recognizer.recognize_google(listener)
+            if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
+                renew()
+            status = os.system(f'start {keyword}')
+            if status == 0:
+                speaker.say(f'I have opened {keyword}')
+                renew()
+            else:
+                speaker.say(f"I wasn't able to find the app {keyword}. Try again.")
                 apps(None)
-            place_holder = None
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            apps(None)
+        place_holder = None
 
     elif operating_system == 'Windows':
         status = os.system(f'start {keyword}')
@@ -778,22 +777,21 @@ def apps(keyword):
     elif (keyword in ignore or keyword is None) and operating_system == 'Darwin':
         speaker.say("Please say the app name alone.")
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                keyword = recognizer.recognize_google(listener)
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                apps(None)
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            keyword = recognizer.recognize_google(listener)
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            apps(None)
 
-            place_holder = None
+        place_holder = None
         if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
             renew()
 
@@ -854,30 +852,29 @@ def repeater():
     global place_holder
     speaker.say("Please tell me what to repeat.")
     speaker.runAndWait()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=10)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            keyword = recognizer.recognize_google(listener)
-            sys.stdout.write(keyword)
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                renew()
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            repeater()
-        place_holder = None
-        if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=10)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        keyword = recognizer.recognize_google(listener)
+        sys.stdout.write(keyword)
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        if place_holder == 0:
+            place_holder = None
             renew()
-        speaker.say(f"I heard {keyword}")
-        speaker.runAndWait()
+        sys.stdout.write("\r")
+        speaker.say("I didn't quite get that. Try again.")
+        place_holder = 0
+        keyword = None
+        repeater()
+    place_holder = None
+    if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
+        renew()
+    speaker.say(f"I heard {keyword}")
     renew()
 
 
-def chatBot():
+def chatter_bot():
     """Initiates chat bot, currently not supported for Windows"""
     global place_holder
     if operating_system == 'Windows':
@@ -900,37 +897,37 @@ def chatBot():
         trainer.train("chatterbot.corpus.english")
         speaker.say('The chatbot is ready. You may start a conversation now.')
         speaker.runAndWait()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener = recognizer.listen(source, timeout=5, phrase_time_limit=5)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            keyword = recognizer.recognize_google(listener)
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                renew()
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            chatBot()
-
-        place_holder = None
-        if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
-            speaker.say('Let me remove the training modules.')
-            os.system('rm db*')
-            os.system(f'rm -rf {file2}')
-            speaker.runAndWait()
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        keyword = recognizer.recognize_google(listener)
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        if place_holder == 0:
+            place_holder = None
             renew()
+        sys.stdout.write("\r")
+        speaker.say("I didn't quite get that. Try again.")
+        place_holder = 0
+        keyword = None
+        chatter_bot()
+
+    place_holder = None
+    if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
+        speaker.say('Let me remove the training modules.')
+        os.system('rm db*')
+        os.system(f'rm -rf {file2}')
+        speaker.runAndWait()
+        renew()
+    else:
+        response = bot.get_response(keyword)
+        if response == 'What is AI?':
+            speaker.say(f'The chat bot is unable to get a response for the phrase, {keyword}. Try something else.')
+            speaker.runAndWait()
         else:
-            response = bot.get_response(keyword)
-            if response == 'What is AI?':
-                speaker.say(f'The chat bot is unable to get a response for the phrase, {keyword}. Try something else.')
-                speaker.runAndWait()
-            else:
-                speaker.say(f'{response}')
-                speaker.runAndWait()
-            chatBot()
+            speaker.say(f'{response}')
+            speaker.runAndWait()
+        chatter_bot()
 
 
 def location():
@@ -955,43 +952,43 @@ def locate():
         speaker.say(f"Some more details. Battery: {bat_percent}%, Name: {phone_name}, Model: {device_model}")
         speaker.say("Would you like to ring it?")
     speaker.runAndWait()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            phrase = recognizer.recognize_google(listener)
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                renew()
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            dummy.has_been_called = True
-            place_holder = 0
-            locate()
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        phrase = recognizer.recognize_google(listener)
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        if place_holder == 0:
+            place_holder = None
+            renew()
+        sys.stdout.write("\r")
+        speaker.say("I didn't quite get that. Try again.")
+        dummy.has_been_called = True
+        place_holder = 0
+        phrase = None
+        locate()
 
-        place_holder = None
+    place_holder = None
+    if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
+        speaker.say("Ringing your iPhone now.")
+        speaker.runAndWait()
+        icloud_api.iphone.play_sound()
+        speaker.say("I can also enable lost mode. Would you like to do it?")
+        speaker.runAndWait()
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        phrase = recognizer.recognize_google(listener)
         if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
-            speaker.say("Ringing your iPhone now.")
+            recovery = os.getenv('icloud_recovery') or aws.icloud_recovery()
+            message = 'Return my phone immediately.'
+            icloud_api.iphone.lost_device(recovery, message)
+            speaker.say("I've enabled lost mode on your phone.")
             speaker.runAndWait()
-            icloud_api.iphone.play_sound()
-            speaker.say("I can also enable lost mode. Would you like to do it?")
-            speaker.runAndWait()
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            phrase = recognizer.recognize_google(listener)
-            if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
-                recovery = os.getenv('icloud_recovery') or aws.icloud_recovery()
-                message = 'Return my phone immediately.'
-                icloud_api.iphone.lost_device(recovery, message)
-                speaker.say("I've enabled lost mode on your phone.")
-                speaker.runAndWait()
-            else:
-                renew()
         else:
             renew()
+    else:
+        renew()
 
 
 def music(device):
@@ -1045,7 +1042,7 @@ def gmail():
     n = 0
     return_code, messages = mail.search(None, 'UNSEEN')  # looks for unread emails
     if return_code == 'OK':
-        for num in messages[0].split():
+        for _ in messages[0].split():
             n = n + 1
     else:
         speaker.say("I'm unable access your email sir.")
@@ -1056,50 +1053,49 @@ def gmail():
     else:
         speaker.say(f'You have {n} unread emails sir. Do you want me to check it?')  # user check before reading subject
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
-                response = recognizer.recognize_google(listener)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
-                    for nm in messages[0].split():
-                        ignore, mail_data = mail.fetch(nm, '(RFC822)')
-                        for response_part in mail_data:
-                            if isinstance(response_part, tuple):  # checks for type(response_part)
-                                original_email = email.message_from_bytes(response_part[1])
-                                raw_receive = (original_email['Received'].split(';')[-1]).strip()
-                                try:
-                                    datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
-                                                   + timedelta(hours=2)
-                                except ValueError:
-                                    datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0800 (PST)") \
-                                                   + timedelta(hours=2)
-                                received_date = datetime_obj.strftime("%Y-%m-%d")
-                                current_date = datetime.today().date()
-                                yesterday = current_date - timedelta(days=1)
-                                # replaces current date with today or yesterday
-                                if received_date == str(current_date):
-                                    receive = datetime_obj.strftime("today, at %I:%M %p")
-                                elif received_date == str(yesterday):
-                                    receive = datetime_obj.strftime("yesterday, at %I:%M %p")
-                                else:
-                                    receive = datetime_obj.strftime("on %A, %B %d, at %I:%M %p")
-                                sender = (original_email['From']).split(' <')[0]
-                                sub = make_header(decode_header(original_email['Subject']))
-                                speaker.say(f"You have an email from, {sender}, with subject, {sub}, {receive}")
-                                speaker.runAndWait()
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                speaker.runAndWait()
-                place_holder = 0
-                gmail()
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+            response = recognizer.recognize_google(listener)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
+                for nm in messages[0].split():
+                    ignore, mail_data = mail.fetch(nm, '(RFC822)')
+                    for response_part in mail_data:
+                        if isinstance(response_part, tuple):  # checks for type(response_part)
+                            original_email = email.message_from_bytes(response_part[1])
+                            raw_receive = (original_email['Received'].split(';')[-1]).strip()
+                            try:
+                                datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
+                                               + timedelta(hours=2)
+                            except ValueError:
+                                datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0800 (PST)") \
+                                               + timedelta(hours=2)
+                            received_date = datetime_obj.strftime("%Y-%m-%d")
+                            current_date = datetime.today().date()
+                            yesterday = current_date - timedelta(days=1)
+                            # replaces current date with today or yesterday
+                            if received_date == str(current_date):
+                                receive = datetime_obj.strftime("today, at %I:%M %p")
+                            elif received_date == str(yesterday):
+                                receive = datetime_obj.strftime("yesterday, at %I:%M %p")
+                            else:
+                                receive = datetime_obj.strftime("on %A, %B %d, at %I:%M %p")
+                            sender = (original_email['From']).split(' <')[0]
+                            sub = make_header(decode_header(original_email['Subject']))
+                            speaker.say(f"You have an email from, {sender}, with subject, {sub}, {receive}")
+                            speaker.runAndWait()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            speaker.runAndWait()
+            place_holder = 0
+            gmail()
 
-            place_holder = None
+        place_holder = None
     if report.has_been_called:
         pass
     else:
@@ -1116,37 +1112,36 @@ def meaning(keyword):
     if keyword is None:
         speaker.say("Please tell a keyword.")
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
-                response = recognizer.recognize_google(listener)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.exit()):
-                    renew()
-                definition = dictionary.meaning(response)
-                if definition:
-                    n = 0
-                    vowel = ['A', 'E', 'I', 'O', 'U']
-                    for key, value in definition.items():
-                        insert = 'an' if key[0] in vowel else 'a'
-                        repeat = 'also' if n != 0 else ''
-                        n += 1
-                        mean = ', '.join(value[0:2])
-                        speaker.say(f'{keyword} is {repeat} {insert} {key}, which means {mean}.')
-                else:
-                    speaker.say("Keyword should be a single word. Try again")
-                    meaning(None)
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                speaker.runAndWait()
-                place_holder = 0
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+            response = recognizer.recognize_google(listener)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.exit()):
+                renew()
+            definition = dictionary.meaning(response)
+            if definition:
+                n = 0
+                vowel = ['A', 'E', 'I', 'O', 'U']
+                for key, value in definition.items():
+                    insert = 'an' if key[0] in vowel else 'a'
+                    repeat = 'also' if n != 0 else ''
+                    n += 1
+                    mean = ', '.join(value[0:2])
+                    speaker.say(f'{keyword} is {repeat} {insert} {key}, which means {mean}.')
+            else:
+                speaker.say("Keyword should be a single word. Try again")
                 meaning(None)
-            place_holder = None
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            speaker.runAndWait()
+            place_holder = 0
+            meaning(None)
+        place_holder = None
     else:
         definition = dictionary.meaning(keyword)
         if definition:
@@ -1184,27 +1179,26 @@ def todo():
         speaker.say("You don't have a database created for your to-do list sir.")
         speaker.say("Would you like to spin up one now?")
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                key = recognizer.recognize_google(listener)
-                if any(re.search(line, key, flags=re.IGNORECASE) for line in keywords.ok()):
-                    todo.has_been_called = True
-                    sys.stdout.write("\r")
-                    create_db()
-                else:
-                    renew()
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            key = recognizer.recognize_google(listener)
+            if any(re.search(line, key, flags=re.IGNORECASE) for line in keywords.ok()):
+                todo.has_been_called = True
                 sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                todo()
-            place_holder = None
+                create_db()
+            else:
+                renew()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            todo()
+        place_holder = None
     else:
         sys.stdout.write("\rQuerying DB for to-do list..")
         result = {}
@@ -1239,68 +1233,66 @@ def add_todo():
         speaker.say("You don't have a database created for your to-do list sir.")
         speaker.say("Would you like to spin up one now?")
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=5, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                key = recognizer.recognize_google(listener)
-                if any(re.search(line, key, flags=re.IGNORECASE) for line in keywords.ok()):
-                    add_todo.has_been_called = True
-                    sys.stdout.write("\r")
-                    create_db()
-                else:
-                    renew()
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            key = recognizer.recognize_google(listener)
+            if any(re.search(line, key, flags=re.IGNORECASE) for line in keywords.ok()):
+                add_todo.has_been_called = True
                 sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                add_todo()
-            place_holder = None
+                create_db()
+            else:
+                renew()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            add_todo()
+        place_holder = None
     place_holder = None
     speaker.say("What's your plan sir?")
     speaker.runAndWait()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            item = recognizer.recognize_google(listener)
-            if 'exit' in item or 'quit' in item or 'Xzibit' in item:
-                speaker.say('Your to-do list has been left intact sir.')
-                renew()
-            sys.stdout.write(f"Item: {item}")
-            speaker.say(f"I heard {item}. Which category you want me to add it to?")
-            speaker.runAndWait()
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener_ = recognizer.listen(source, timeout=3, phrase_time_limit=3)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            category = recognizer.recognize_google(listener_)
-            if 'exit' in category or 'quit' in category or 'Xzibit' in category:
-                speaker.say('Your to-do list has been left intact sir.')
-                renew()
-            sys.stdout.write(f"Category: {category}")
-            # passes the category and item to uploader() in helper_functions/database.py which updates the database
-            response = database.uploader(category, item)
-            speaker.say(response)
-            speaker.say("Do you want to add anything else to your to-do list?")
-            speaker.runAndWait()
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener_continue = recognizer.listen(source, timeout=3, phrase_time_limit=3)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            category_continue = recognizer.recognize_google(listener_continue)
-            if any(re.search(line, category_continue, flags=re.IGNORECASE) for line in keywords.exit()):
-                renew()
-            else:
-                add_todo()
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that.")
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        item = recognizer.recognize_google(listener)
+        if 'exit' in item or 'quit' in item or 'Xzibit' in item:
+            speaker.say('Your to-do list has been left intact sir.')
             renew()
-        place_holder = None
+        sys.stdout.write(f"\rItem: {item}")
+        speaker.say(f"I heard {item}. Which category you want me to add it to?")
+        speaker.runAndWait()
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener_ = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        category = recognizer.recognize_google(listener_)
+        if 'exit' in category or 'quit' in category or 'Xzibit' in category:
+            speaker.say('Your to-do list has been left intact sir.')
+            renew()
+        sys.stdout.write(f"\rCategory: {category}")
+        # passes the category and item to uploader() in helper_functions/database.py which updates the database
+        response = database.uploader(category, item)
+        speaker.say(response)
+        speaker.say("Do you want to add anything else to your to-do list?")
+        speaker.runAndWait()
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener_continue = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        category_continue = recognizer.recognize_google(listener_continue)
+        if any(re.search(line, category_continue, flags=re.IGNORECASE) for line in keywords.exit()):
+            renew()
+        else:
+            add_todo()
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        sys.stdout.write("\r")
+        speaker.say("I didn't quite get that.")
+        renew()
+    place_holder = None
     renew()
 
 
@@ -1313,33 +1305,32 @@ def delete_todo():
         renew()
     speaker.say("Which one should I remove sir?")
     speaker.runAndWait()
-    with sr.Microphone() as source:
-        dummy.has_been_called = True
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            item = recognizer.recognize_google(listener)
-            if any(re.search(line, item, flags=re.IGNORECASE) for line in keywords.exit()):
-                renew()
-            response = database.deleter(item)
-            # if the return message from database starts with 'Looks' it means that the item wasn't matched for deletion
-            if response.startswith('Looks'):
-                sys.stdout.write(f'\r{response}')
-                speaker.say(response)
-                speaker.runAndWait()
-                delete_todo()
-            else:
-                speaker.say(response)
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                renew()
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
+    dummy.has_been_called = True
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        item = recognizer.recognize_google(listener)
+        if any(re.search(line, item, flags=re.IGNORECASE) for line in keywords.exit()):
+            renew()
+        response = database.deleter(item)
+        # if the return message from database starts with 'Looks' it means that the item wasn't matched for deletion
+        if response.startswith('Looks'):
+            sys.stdout.write(f'\r{response}')
+            speaker.say(response)
+            speaker.runAndWait()
             delete_todo()
-        place_holder = None
+        else:
+            speaker.say(response)
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        if place_holder == 0:
+            place_holder = None
+            renew()
+        sys.stdout.write("\r")
+        speaker.say("I didn't quite get that. Try again.")
+        place_holder = 0
+        delete_todo()
+    place_holder = None
     renew()
 
 
@@ -1352,28 +1343,27 @@ def delete_db():
     else:
         speaker.say(f'I did not find any database sir.')
         renew()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            response = recognizer.recognize_google(listener)
-            if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
-                os.remove(file_name)
-                speaker.say("I've removed your database sir.")
-            else:
-                speaker.say("Your database has been left intact sir.")
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        response = recognizer.recognize_google(listener)
+        if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
+            os.remove(file_name)
+            speaker.say("I've removed your database sir.")
+        else:
+            speaker.say("Your database has been left intact sir.")
+        renew()
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        if place_holder == 0:
+            place_holder = None
             renew()
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                renew()
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            speaker.runAndWait()
-            place_holder = 0
-            delete_db()
-        place_holder = None
+        sys.stdout.write("\r")
+        speaker.say("I didn't quite get that. Try again.")
+        speaker.runAndWait()
+        place_holder = 0
+        delete_db()
+    place_holder = None
 
 
 def distance(starting_point, destination):
@@ -1384,26 +1374,25 @@ def distance(starting_point, destination):
     if not destination:
         speaker.say("Destination please?")
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                destination = recognizer.recognize_google(listener)
-                if len(destination.split()) > 2:
-                    speaker.say("I asked for a destination sir, not a sentence. Try again.")
-                    distance(starting_point=None, destination=None)
-                if 'exit' in destination or 'quit' in destination or 'Xzibit' in destination:
-                    renew()
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            destination = recognizer.recognize_google(listener)
+            if len(destination.split()) > 2:
+                speaker.say("I asked for a destination sir, not a sentence. Try again.")
                 distance(starting_point=None, destination=None)
-            place_holder = None
+            if 'exit' in destination or 'quit' in destination or 'Xzibit' in destination:
+                renew()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            distance(starting_point=None, destination=None)
+        place_holder = None
 
     if starting_point:
         # if starting_point is received gets latitude and longitude of that location
@@ -1452,33 +1441,32 @@ def locate_places(place):
     if not place:
         speaker.say("Tell me the name of a place!")
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                converted = recognizer.recognize_google(listener)
-                for word in converted.split():
-                    if word[0].isupper():
-                        place += word + ' '
-                    elif '.' in word:
-                        place += word + ' '
-                if not place:
-                    keyword = 'is'
-                    before_keyword, keyword, after_keyword = converted.partition(keyword)
-                    place = after_keyword.replace(' in', '').strip()
-                if 'exit' in place or 'quit' in place or 'Xzibit' in place:
-                    place_holder = None
-                    renew()
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, TypeError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                locate_places(place=None)
-            place_holder = None
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            converted = recognizer.recognize_google(listener)
+            if 'exit' in place or 'quit' in place or 'Xzibit' in place:
+                place_holder = None
+                renew()
+            for word in converted.split():
+                if word[0].isupper():
+                    place += word + ' '
+                elif '.' in word:
+                    place += word + ' '
+            if not place:
+                keyword = 'is'
+                before_keyword, keyword, after_keyword = converted.partition(keyword)
+                place = after_keyword.replace(' in', '').strip()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, TypeError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            locate_places(place=None)
+        place_holder = None
     try:
         destination_location = geo_locator.geocode(place)
         coordinates = destination_location.latitude, destination_location.longitude
@@ -1500,7 +1488,7 @@ def locate_places(place):
             speaker.say(f"{place} is in {city or county}, {state}" if country == location_info['country']
                         else f"{place} is in {city or county}, {state}, in {country}")
         locate_places.has_been_called = True
-    except:
+    except TypeError:
         speaker.say(f"{place} is not a real place on Earth sir! Try again.")
         locate_places(place=None)
     distance(starting_point=None, destination=place)
@@ -1513,34 +1501,33 @@ def directions(place):
     if not place:
         speaker.say("You might want to give a location.")
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                converted = recognizer.recognize_google(listener)
-                place = ''
-                for word in converted.split():
-                    if word[0].isupper():
-                        place += word + ' '
-                    elif '.' in word:
-                        place += word + ' '
-                place = place.replace('I ', '').strip()
-                if not place:
-                    speaker.say("I can't take you to anywhere without a location sir!")
-                    directions(place=None)
-                if 'exit' in place or 'quit' in place or 'Xzibit' in place:
-                    place_holder = None
-                    renew()
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            converted = recognizer.recognize_google(listener)
+            place = ''
+            for word in converted.split():
+                if word[0].isupper():
+                    place += word + ' '
+                elif '.' in word:
+                    place += word + ' '
+            place = place.replace('I ', '').strip()
+            if not place:
+                speaker.say("I can't take you to anywhere without a location sir!")
                 directions(place=None)
-            place_holder = None
+            if 'exit' in place or 'quit' in place or 'Xzibit' in place:
+                place_holder = None
+                renew()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            directions(place=None)
+        place_holder = None
     destination_location = geo_locator.geocode(place)
     coordinates = destination_location.latitude, destination_location.longitude
     located = geo_locator.reverse(coordinates, language='en')
@@ -1562,7 +1549,7 @@ def directions(place):
     renew()
 
 
-def alarm(hour, minute, am_pm):
+def alarm(hour, minute, am_pm, msg):
     """Passes hour, minute and am/pm to Alarm class which initiates a thread for alarm clock in the background"""
     global place_holder
     if hour and minute and am_pm:
@@ -1572,38 +1559,40 @@ def alarm(hour, minute, am_pm):
     else:
         speaker.say('Please tell me a time sir!')
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                converted = recognizer.recognize_google(listener)
-                if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-                    place_holder = None
-                    renew()
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            converted = recognizer.recognize_google(listener)
+            if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+                place_holder = None
+                renew()
+            else:
+                alarm_time = converted.split()[0]
+                am_pm = converted.split()[-1]
+                if ":" in converted:
+                    hour = int(alarm_time.split(":")[0])
+                    minute = int(alarm_time.split(":")[-1])
                 else:
-                    alarm_time = converted.split()[0]
-                    am_pm = converted.split()[-1]
-                    if ":" in converted:
-                        hour = int(alarm_time.split(":")[0])
-                        minute = int(alarm_time.split(":")[-1])
-                    else:
-                        hour = int(alarm_time.split()[0])
-                        minute = 0
-                    hour, minute = f"{hour:02}", f"{minute:02}"
-                    am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
-                    alarm(hour=hour, minute=minute, am_pm=am_pm)
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                alarm(hour=None, minute=None, am_pm=None)
-            place_holder = None
-    speaker.say(f"Sure sir! Alarm has been set for {hour}:{minute} {am_pm}.")
-    sys.stdout.write(f"Alarm has been set for {hour}:{minute} {am_pm} sir!")
+                    hour = int(alarm_time.split()[0])
+                    minute = 0
+                hour, minute = f"{hour:02}", f"{minute:02}"
+                am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
+                alarm(hour=hour, minute=minute, am_pm=am_pm, msg='')
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            alarm(hour=None, minute=None, am_pm=None, msg='')
+        place_holder = None
+    if 'wake' in msg.lower().strip():
+        speaker.say(f"Sure sir! I will wake you up at {hour}:{minute} {am_pm}.")
+    else:
+        speaker.say(f"Sure sir! Alarm has been set for {hour}:{minute} {am_pm}.")
+    sys.stdout.write(f"\rAlarm has been set for {hour}:{minute} {am_pm} sir!")
     renew()
 
 
@@ -1624,44 +1613,39 @@ def kill_alarm():
             pass
         speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
     else:
-        sys.stdout.write(f"{', '.join(alarm_state).replace('.lock', '')}")
+        sys.stdout.write(f"\r{', '.join(alarm_state).replace('.lock', '')}")
         speaker.say("Please let me know which alarm you want to remove. Current alarms on your screen sir!")
         speaker.runAndWait()
-        with sr.Microphone() as source:
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            converted = recognizer.recognize_google(listener)
+            place_holder = None
+            alarm_time = converted.split()[0]
+            am_pm = converted.split()[-1]
+            if ":" in converted:
+                hour = int(alarm_time.split(":")[0])
+                minute = int(alarm_time.split(":")[-1])
+            else:
+                hour = int(alarm_time.split()[0])
+                minute = 0
+            hour, minute = f"{hour:02}", f"{minute:02}"
+            am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
             try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                converted = recognizer.recognize_google(listener)
+                os.remove(f"alarm/{hour}_{minute}_{am_pm}.lock")
+            except FileNotFoundError:
+                speaker.say(f"I wasn't able to find an alarm at {hour}:{minute} {am_pm}. Try again.")
+                kill_alarm()
+            speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
                 place_holder = None
-                alarm_time = converted.split()[0]
-                am_pm = converted.split()[-1]
-                if ":" in converted:
-                    hour = int(alarm_time.split(":")[0])
-                    minute = int(alarm_time.split(":")[-1])
-                else:
-                    hour = int(alarm_time.split()[0])
-                    minute = 0
-                hour, minute = f"{hour:02}", f"{minute:02}"
-                am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
-                try:
-                    os.remove(f"alarm/{hour}_{minute}_{am_pm}.lock")
-                except FileNotFoundError:
-                    speaker.say(f"I wasn't able to find an alarm at {hour}:{minute} {am_pm}. Try again.")
-                    kill_alarm()
-                speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                kill_alarm()
-            except FileNotFoundError as file_error:
-                sys.stdout.write(f"\r{file_error}")
-                speaker.say(f"Unable to find a lock file for {hour} {minute} {am_pm} sir! Try again!")
-                kill_alarm()
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            kill_alarm()
     renew()
 
 
@@ -1739,19 +1723,18 @@ def jokes():
     speaker.runAndWait()
     speaker.say("Do you want to hear another one sir?")
     speaker.runAndWait()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            converted = recognizer.recognize_google(listener)
-            place_holder = None
-            if any(word in converted.lower() for word in keywords.ok()):
-                jokes()
-            else:
-                renew()
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        converted = recognizer.recognize_google(listener)
+        place_holder = None
+        if any(word in converted.lower() for word in keywords.ok()):
+            jokes()
+        else:
             renew()
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        renew()
 
 
 def reminder(hour, minute, am_pm, message):
@@ -1764,44 +1747,43 @@ def reminder(hour, minute, am_pm, message):
     else:
         speaker.say('Please give me the reminder details sir!')
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                converted = recognizer.recognize_google(listener)
-                if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-                    place_holder = None
-                    renew()
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            converted = recognizer.recognize_google(listener)
+            if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+                place_holder = None
+                renew()
+            else:
+                message = re.search('to(.*)at', converted).group(1).strip()
+                """uses regex to find numbers in your statement and processes AM and PM information"""
+                extracted_time = re.findall(r'\s([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
+                    r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
+                extracted_time = extracted_time[0]
+                am_pm = extracted_time.split()[-1]
+                am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
+                alarm_time = extracted_time.split()[0]
+                if ":" in extracted_time:
+                    hour = int(alarm_time.split(":")[0])
+                    minute = int(alarm_time.split(":")[-1])
                 else:
-                    message = re.search('to(.*)at', converted).group(1).strip()
-                    """uses regex to find numbers in your statement and processes AM and PM information"""
-                    extracted_time = re.findall(r'\s([0-9]+\:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
-                        r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
-                    extracted_time = extracted_time[0]
-                    am_pm = extracted_time.split()[-1]
-                    am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
-                    alarm_time = extracted_time.split()[0]
-                    if ":" in extracted_time:
-                        hour = int(alarm_time.split(":")[0])
-                        minute = int(alarm_time.split(":")[-1])
-                    else:
-                        hour = int(alarm_time.split()[0])
-                        minute = 0
-                    # makes sure hour and minutes are two digits
-                    hour, minute = f"{hour:02}", f"{minute:02}"
-                    reminder(hour, minute, am_pm, message)
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError, IndexError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                reminder(hour=None, minute=None, am_pm=None, message=None)
-            place_holder = None
+                    hour = int(alarm_time.split()[0])
+                    minute = 0
+                # makes sure hour and minutes are two digits
+                hour, minute = f"{hour:02}", f"{minute:02}"
+                reminder(hour, minute, am_pm, message)
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError, IndexError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            reminder(hour=None, minute=None, am_pm=None, message=None)
+        place_holder = None
     speaker.say(f"Sure sir! I will remind you to {message} at {hour}:{minute} {am_pm}.")
-    sys.stdout.write(f"I will remind you to {message} at {hour}:{minute} {am_pm} sir!")
+    sys.stdout.write(f"\rI will remind you to {message} at {hour}:{minute} {am_pm} sir!")
     renew()
 
 
@@ -1863,53 +1845,51 @@ def maps_api(query):
         sys.stdout.write(f"\r{item['Name']} -- {item['Rating']} -- "
                          f"{''.join([j for j in item['Address'] if not j.isdigit()])}")
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                converted = recognizer.recognize_google(listener)
-                if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-                    renew()
-                if any(word in converted.lower() for word in keywords.ok()):
-                    place_holder = None
-                    maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
-                    webbrowser.open(maps_url)
-                    speaker.say("Directions on your screen sir!")
-                    renew()
-                elif results == 1:
-                    renew()
-                elif n == results:
-                    speaker.say("I've run out of options sir!")
-                    renew()
-                else:
-                    continue
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError, IndexError):
-                maps_api.has_been_called = True
-                return True
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            converted = recognizer.recognize_google(listener)
+            if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+                renew()
+            if any(word in converted.lower() for word in keywords.ok()):
+                place_holder = None
+                maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
+                webbrowser.open(maps_url)
+                speaker.say("Directions on your screen sir!")
+                renew()
+            elif results == 1:
+                renew()
+            elif n == results:
+                speaker.say("I've run out of options sir!")
+                renew()
+            else:
+                continue
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError, IndexError):
+            maps_api.has_been_called = True
+            return True
 
 
 def notes():
     """Listens to the user and saves everything to a notes.txt file"""
     global place_holder
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rNotes::Listener activated..") and playsound('start.mp3')
-            listener = recognizer.listen(source, timeout=5, phrase_time_limit=10)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            converted = recognizer.recognize_google(listener)
-            if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-                renew()
-            else:
-                with open(r'notes.txt', 'a') as writer:
-                    writer.write(f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"
-                                 f"{converted}\n")
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                renew()
-            place_holder = 0
-            notes()
+    try:
+        sys.stdout.write("\rNotes::Listener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=5, phrase_time_limit=10)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        converted = recognizer.recognize_google(listener)
+        if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+            renew()
+        else:
+            with open(r'notes.txt', 'a') as writer:
+                writer.write(f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"
+                             f"{converted}\n")
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        if place_holder == 0:
+            place_holder = None
+            renew()
+        place_holder = 0
+        notes()
 
 
 def github(target):
@@ -1928,38 +1908,37 @@ def github(target):
         sys.stdout.write(f"\r{', '.join(newest)}")
         speaker.say(f"I found {len(target)} results. On your screen sir! Which one shall I clone?")
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                converted = recognizer.recognize_google(listener)
-                if any(word in converted.lower() for word in keywords.exit()):
-                    place_holder = None
-                    renew()
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            converted = recognizer.recognize_google(listener)
+            if any(word in converted.lower() for word in keywords.exit()):
                 place_holder = None
-                if 'first' in converted.lower():
-                    item = 1
-                elif 'second' in converted.lower():
-                    item = 2
-                elif 'third' in converted.lower():
-                    item = 3
-                else:
-                    item = None
-                    speaker.say("Only first second or third can be accepted sir! Try again!")
-                    github(target)
-                os.system(f"""cd {home} && git clone {target[item]}""")
-                cloned = target[item].split('/')[-1].replace('.git', '')
-                speaker.say(f"I've cloned {cloned} on your home directory sir!")
                 renew()
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
+            place_holder = None
+            if 'first' in converted.lower():
+                item = 1
+            elif 'second' in converted.lower():
+                item = 2
+            elif 'third' in converted.lower():
+                item = 3
+            else:
+                item = None
+                speaker.say("Only first second or third can be accepted sir! Try again!")
                 github(target)
+            os.system(f"""cd {home} && git clone {target[item]}""")
+            cloned = target[item].split('/')[-1].replace('.git', '')
+            speaker.say(f"I've cloned {cloned} on your home directory sir!")
+            renew()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            github(target)
     else:
         speaker.say(f"I found {len(target)} repositories sir! You may want to be more specific.")
         renew()
@@ -1973,36 +1952,12 @@ def send_sms(target):
     if not target:
         speaker.say("Please tell me a number sir!")
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                number = recognizer.recognize_google(listener)
-                sys.stdout.write(f'\rNumber: {number}')
-                place_holder = None
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                send_sms(target=None)
-    else:
-        number = target
-    if len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) != 10:
-        sys.stdout.write(f'\r{number}')
-        speaker.say("I don't think that's a right number sir! Phone numbers are 10 digits. Try again!")
-        send_sms(target=None)
-    speaker.say("What would you like to send sir?")
-    speaker.runAndWait()
-    with sr.Microphone() as source:
         try:
             sys.stdout.write("\rListener activated..") and playsound('start.mp3')
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r") and playsound('end.mp3')
-            body = recognizer.recognize_google(listener)
+            number = recognizer.recognize_google(listener)
+            sys.stdout.write(f'\rNumber: {number}')
             place_holder = None
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
@@ -2011,27 +1966,50 @@ def send_sms(target):
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
-            send_sms(target=number)
+            number = None
+            send_sms(target=None)
+    else:
+        number = target
+    if len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) != 10:
+        sys.stdout.write(f'\r{number}')
+        speaker.say("I don't think that's a right number sir! Phone numbers are 10 digits. Try again!")
+        send_sms(target=None)
+    speaker.say("What would you like to send sir?")
+    speaker.runAndWait()
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        body = recognizer.recognize_google(listener)
+        place_holder = None
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        if place_holder == 0:
+            place_holder = None
+            renew()
+        sys.stdout.write("\r")
+        speaker.say("I didn't quite get that. Try again.")
+        place_holder = 0
+        body = None
+        send_sms(target=number)
     sys.stdout.write(f'\r{body}::to::{number}')
     speaker.say(f'{body} to {number}. Do you want me to proceed?')
     speaker.runAndWait()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            converted = recognizer.recognize_google(listener)
-            if not any(word in converted.lower() for word in keywords.ok()):
-                speaker.say("Message will not be sent sir!")
-                renew()
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                renew()
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            send_sms(target=number)
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+        sys.stdout.write("\r") and playsound('end.mp3')
+        converted = recognizer.recognize_google(listener)
+        if not any(word in converted.lower() for word in keywords.ok()):
+            speaker.say("Message will not be sent sir!")
+            renew()
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        if place_holder == 0:
+            place_holder = None
+            renew()
+        sys.stdout.write("\r")
+        speaker.say("I didn't quite get that. Try again.")
+        place_holder = 0
+        send_sms(target=number)
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
     gmail_user = os.getenv('gmail_user') or aws.gmail_user()
@@ -2119,17 +2097,17 @@ def television(converted):
         elif "what's" in phrase or 'currently' in phrase:
             speaker.say(f'{tv.current_app()} is running on your TV.')
         elif 'change' in phrase or 'source' in phrase:
-            source = ''
+            tv_source = ''
             for word in phrase.split():
                 if word[0].isupper():
-                    source += word + ' '
-            if not source:
+                    tv_source += word + ' '
+            if not tv_source:
                 speaker.say("I didn't quite get that.")
             try:
-                tv.set_source(source.strip())
-                speaker.say(f"I've changed the source to {source}.")
+                tv.set_source(tv_source.strip())
+                speaker.say(f"I've changed the source to {tv_source}.")
             except ValueError:
-                speaker.say(f"I didn't find the source {source} on your TV sir!")
+                speaker.say(f"I didn't find the source {tv_source} on your TV sir!")
         elif 'shutdown' in phrase or 'shut down' in phrase or 'turn off' in phrase:
             speaker.say('Shutting down the TV now.')
             speaker.runAndWait()
@@ -2193,9 +2171,10 @@ def google(query):
             refined = ' '.join(repeats)
             output = refined + required[1] + '.' + required[2]
         # TODO: modify all regex searches in a single line
-        match = re.search(r'\w{3} \d{1}, \d{4}', output) or re.search(r'\w{3} \d{2}, \d{4}', output) or \
-                re.search(r'\w{3}, \d{1}, \d{4}', output) or re.search(r'\w{3}, \d{2}, \d{4}', output) or \
-                re.search(r'\w{3} \d{1} \d{4}', output) or re.search(r'\w{3} \d{2} \d{4}', output)
+        match = re.search(r'\w{3} \d, \d{4}', output) or re.search(r'\w{3} \d{2}, \d{4}', output) or \
+            re.search(r'\w{3}, \d, \d{4}', output) or re.search(r'\w{3}, \d{2}, \d{4}', output) or \
+            re.search(r'\w{3} \d \d{4}', output) or re.search(r'\w{3} \d{2} \d{4}', output) or \
+            re.search(r'\w{3}, \d \d{4}', output) or re.search(r'\w{3}, \d{2} \d{4}', output)
         if match:
             output = output.replace(match.group(), '')
         sys.stdout.write(f'\r{output}')
@@ -2211,23 +2190,23 @@ def google_search(phrase):
     if not phrase:
         speaker.say("Please tell me the search phrase.")
         speaker.runAndWait()
-        with sr.Microphone() as source:
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                phrase = recognizer.recognize_google(listener)
-                converted = phrase.lower()
-                if 'exit' in converted or 'quit' in converted or 'xzibit' in converted or 'cancel' in converted:
-                    renew()
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                if place_holder == 0:
-                    place_holder = None
-                    renew()
-                sys.stdout.write("\r")
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                google_search(None)
+
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            phrase = recognizer.recognize_google(listener)
+            converted = phrase.lower()
+            if 'exit' in converted or 'quit' in converted or 'xzibit' in converted or 'cancel' in converted:
+                renew()
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            google_search(None)
     search = str(phrase).replace(' ', '+')
     unknown_url = f"https://www.google.com/search?q={search}"
     webbrowser.open(unknown_url)
@@ -2243,7 +2222,7 @@ def sentry_mode():
         dummy.has_been_called = True
     try:
         sys.stdout.write("\rSentry Mode")
-        listener = recognizer.listen(source_for_sentry_mode, timeout=None, phrase_time_limit=3)
+        listener = recognizer.listen(source, timeout=None, phrase_time_limit=3)
         sys.stdout.write("\r")
         key = recognizer.recognize_google(listener)
         if 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'Showtime' in \
@@ -2293,37 +2272,36 @@ def shutdown():
     global place_holder
     speaker.say(f"{random.choice(confirmation)} turn off the machine?")
     speaker.runAndWait()
-    with sr.Microphone() as source:
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r")
-            converted = recognizer.recognize_google(listener)
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+        sys.stdout.write("\r")
+        converted = recognizer.recognize_google(listener)
+        place_holder = None
+        if any(word in converted.lower() for word in keywords.ok()):
+            memory_consumed = size_converter()
+            speaker.say(f"Shutting down sir!")
+            speaker.say(exit_msg)
+            speaker.runAndWait()
+            sys.stdout.write(
+                f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
+            [os.remove(f"alarm/{file}") if file != 'dummy.lock' else None for file in os.listdir('alarm')]
+            [os.remove(f"reminder/{file}") if file != 'dummy.lock' else None for file in os.listdir('reminder')]
+            if operating_system == 'Darwin':
+                subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
+            elif operating_system == 'Windows':
+                os.system("shutdown /s /t 1")
+        else:
+            speaker.say("Machine state is left intact sir!")
+            renew()
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        if place_holder == 0:
             place_holder = None
-            if any(word in converted.lower() for word in keywords.ok()):
-                memory_consumed = size_converter()
-                speaker.say(f"Shutting down sir!")
-                speaker.say(exit_msg)
-                speaker.runAndWait()
-                sys.stdout.write(
-                    f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
-                [os.remove(f"alarm/{file}") if file != 'dummy.lock' else None for file in os.listdir('alarm')]
-                [os.remove(f"reminder/{file}") if file != 'dummy.lock' else None for file in os.listdir('reminder')]
-                if operating_system == 'Darwin':
-                    subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
-                elif operating_system == 'Windows':
-                    os.system("shutdown /s /t 1")
-            else:
-                speaker.say("Machine state is left intact sir!")
-                renew()
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            if place_holder == 0:
-                place_holder = None
-                renew()
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            shutdown()
+            renew()
+        sys.stdout.write("\r")
+        speaker.say("I didn't quite get that. Try again.")
+        place_holder = 0
+        shutdown()
 
 
 def dummy():
@@ -2424,6 +2402,6 @@ if __name__ == '__main__':
 
     # starts sentry mode
     playsound('initialize.mp3')
-    with sr.Microphone() as source_for_sentry_mode:
-        recognizer.adjust_for_ambient_noise(source_for_sentry_mode)
+    with sr.Microphone() as source:
+        recognizer.adjust_for_ambient_noise(source)
         sentry_mode()

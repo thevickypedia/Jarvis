@@ -110,7 +110,7 @@ class Keywords:
         return key
 
     def kill_alarm(self):
-        key = ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off']
+        key = ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off', 'stop another alarm']
         return key
 
     def reminder(self):
