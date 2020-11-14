@@ -237,7 +237,6 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in conversation.form()):
         speaker.say("I am a program, I'm without form.")
-        dummy.has_been_called = True
         renew()
 
     elif any(word in converted.lower() for word in keywords.geopy()):
@@ -377,7 +376,6 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
-        dummy.has_been_called = True
         renew()
 
     elif any(word in converted.lower() for word in conversation.capabilities()):
@@ -386,17 +384,14 @@ def conditions(converted):
                     'system configuration, tell your investment details, locate your phone, find distance between '
                     'places, set an alarm, play music on smart devices around you, control your TV, tell a joke, send'
                     ' a message, set reminders, scan and clone your GitHub repositories, and much more. Time to ask,.')
-        dummy.has_been_called = True
         renew()
 
     elif any(word in converted.lower() for word in conversation.languages()):
         speaker.say("Tricky question!. I'm configured in python, and I can speak English.")
-        dummy.has_been_called = True
         renew()
 
     elif any(word in converted.lower() for word in conversation.whats_up()):
         speaker.say("My listeners are up. There is nothing I cannot process. So ask me anything..")
-        dummy.has_been_called = True
         renew()
 
     elif any(word in converted.lower() for word in conversation.what()):
@@ -411,7 +406,6 @@ def conditions(converted):
         speaker.say("I am Jarvis. A virtual assistant designed by Mr.Raauv.")
         speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
         speaker.say("I can seamlessly take care of your daily tasks, and also help with most of your work!")
-        dummy.has_been_called = True
         renew()
 
     elif any(word in converted.lower() for word in keywords.exit()):
@@ -944,13 +938,17 @@ def locate():
     """Locates your iPhone using icloud api for python"""
     global place_holder
     if dummy.has_been_called:
+        dummy.has_been_called = False
         speaker.say("Would you like to ring it?")
     else:
         stat = icloud_api.iphone.status()
         bat_percent = round(stat['batteryLevel'] * 100)
         device_model = stat['deviceDisplayName']
         phone_name = stat['name']
-        speaker.say(f"Your iPhone is at {location_info['city']}, {location_info['state']}.")
+        post_code = '"'.join(list(location_info['postcode'].split('-')[0]))
+        iphone_location = f"Your iphone is near {location_info['road']}, {location_info['city']} " \
+                          f"{location_info['state']}. Zipcode: {post_code}, {location_info['country']}"
+        speaker.say(iphone_location)
         speaker.say(f"Some more details. Battery: {bat_percent}%, Name: {phone_name}, Model: {device_model}")
         speaker.say("Would you like to ring it?")
     speaker.runAndWait()
@@ -1307,7 +1305,6 @@ def delete_todo():
         renew()
     speaker.say("Which one should I remove sir?")
     speaker.runAndWait()
-    dummy.has_been_called = True
     try:
         sys.stdout.write("\rListener activated..") and playsound('start.mp3')
         listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
@@ -1490,7 +1487,7 @@ def locate_places(place):
             speaker.say(f"{place} is in {city or county}, {state}" if country == location_info['country']
                         else f"{place} is in {city or county}, {state}, in {country}")
         locate_places.has_been_called = True
-    except TypeError:
+    except (TypeError, AttributeError):
         speaker.say(f"{place} is not a real place on Earth sir! Try again.")
         locate_places(place=None)
     distance(starting_point=None, destination=place)
