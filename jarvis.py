@@ -52,13 +52,14 @@ def initialize():
     if dummy.has_been_called:
         speaker.say("What can I do for you?")
         dummy.has_been_called = False
-    elif current == 'AM' and int(clock) < 10:
+    elif str(datetime.now().strftime("%p")) == 'AM' and int(datetime.now().strftime("%I")) < 10:
         speaker.say("Good Morning.")
-    elif current == 'AM' and int(clock) >= 10:
+    elif str(datetime.now().strftime("%p")) == 'AM' and int(datetime.now().strftime("%I")) >= 10:
         speaker.say("Hope you're having a nice morning.")
-    elif current == 'PM' and (int(clock) == 12 or int(clock) < 3):
+    elif str(datetime.now().strftime("%p")) == 'PM' and (int(datetime.now().strftime("%I")) == 12 or
+                                                         int(datetime.now().strftime("%I")) < 3):
         speaker.say("Good Afternoon.")
-    elif current == 'PM' and int(clock) < 6:
+    elif str(datetime.now().strftime("%p")) == 'PM' and int(datetime.now().strftime("%I")) < 6:
         speaker.say("Good Evening.")
     else:
         speaker.say("Hope you're having a nice night.")
@@ -101,6 +102,7 @@ def alive():
             sentry_mode()
         waiter += 1
         converted = None
+    if not converted:
         alive()
     if any(word in converted.lower() for word in keywords.sleep()):
         speaker.say(f"Activating sentry mode, enjoy yourself sir!")
@@ -368,7 +370,7 @@ def conditions(converted):
         apps(converted.split()[-1])
 
     elif any(word in converted.lower() for word in keywords.music()):
-        if 'speaker' in converted.lower() or 'tv' in converted.lower():
+        if 'speaker' in converted.lower():
             music(converted)
         else:
             music(None)
@@ -420,7 +422,7 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.kill()):
         memory_consumed = size_converter()
         speaker.say(f"Shutting down sir!")
-        speaker.say(exit_msg)
+        speaker.say(exit_message())
         speaker.runAndWait()
         sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
         Alarm(None, None, None)
@@ -2242,7 +2244,7 @@ def sentry_mode():
     except KeyboardInterrupt:
         memory_consumed = size_converter()
         speaker.say(f"Shutting down sir!")
-        speaker.say(exit_msg)
+        speaker.say(exit_message())
         speaker.runAndWait()
         sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
         Alarm(None, None, None)
@@ -2267,6 +2269,34 @@ def size_converter():
     return response
 
 
+def exit_message():
+    """variety of exit messages based on day of week and time of day"""
+    weekend = ['Friday', 'Saturday']
+
+    current = datetime.now().strftime("%p")  # current part of day (AM/PM)
+    clock = datetime.now().strftime("%I")  # current hour
+    today = datetime.now().strftime("%A")  # current day
+
+    if current == 'AM' and int(clock) < 10:
+        exit_msg = f"Have a nice day, and happy {today}."
+    elif current == 'AM' and int(clock) >= 10:
+        exit_msg = f"Enjoy your {today}."
+    elif current == 'PM' and (int(clock) == 12 or int(clock) < 3) and today in weekend:
+        exit_msg = "Have a nice afternoon, and enjoy your weekend."
+    elif current == 'PM' and (int(clock) == 12 or int(clock) < 3):
+        exit_msg = "Have a nice afternoon."
+    elif current == 'PM' and int(clock) < 6 and today in weekend:
+        exit_msg = "Have a nice evening, and enjoy your weekend."
+    elif current == 'PM' and int(clock) < 6:
+        exit_msg = "Have a nice evening."
+    elif today in weekend:
+        exit_msg = "Have a nice night, and enjoy your weekend."
+    else:
+        exit_msg = "Have a nice night."
+
+    return exit_msg
+
+
 def shutdown():
     """Gets confirmation and turns off the machine"""
     global place_holder
@@ -2281,7 +2311,7 @@ def shutdown():
         if any(word in converted.lower() for word in keywords.ok()):
             memory_consumed = size_converter()
             speaker.say(f"Shutting down sir!")
-            speaker.say(exit_msg)
+            speaker.say(exit_message())
             speaker.runAndWait()
             sys.stdout.write(
                 f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
@@ -2354,9 +2384,6 @@ if __name__ == '__main__':
     sys.stdout.write("\rPLEASE WAIT::Training model for punctuations")
     punctuation = Punctuator(model_file='model.pcl')
     database = Database()
-    current = datetime.now().strftime("%p")  # current part of day (AM/PM)
-    clock = datetime.now().strftime("%I")  # current hour
-    today = datetime.now().strftime("%A")  # current day
 
     # {function_name}.has_been_called is use to denote which function has triggered the other
     report.has_been_called, locate_places.has_been_called, directions.has_been_called, maps_api.has_been_called \
@@ -2380,25 +2407,6 @@ if __name__ == '__main__':
     else:
         operating_system = None
         exit(0)
-
-    # variety of exit messages based on day of week and time of day
-    weekend = ['Friday', 'Saturday']
-    if current == 'AM' and int(clock) < 10:
-        exit_msg = f"Have a nice day, and happy {today}."
-    elif current == 'AM' and int(clock) >= 10:
-        exit_msg = f"Enjoy your {today}."
-    elif current == 'PM' and (int(clock) == 12 or int(clock) < 3) and today in weekend:
-        exit_msg = "Have a nice afternoon, and enjoy your weekend."
-    elif current == 'PM' and (int(clock) == 12 or int(clock) < 3):
-        exit_msg = "Have a nice afternoon."
-    elif current == 'PM' and int(clock) < 6 and today in weekend:
-        exit_msg = "Have a nice evening, and enjoy your weekend."
-    elif current == 'PM' and int(clock) < 6:
-        exit_msg = "Have a nice evening."
-    elif today in weekend:
-        exit_msg = "Have a nice night, and enjoy your weekend."
-    else:
-        exit_msg = "Have a nice night."
 
     # starts sentry mode
     playsound('initialize.mp3')
