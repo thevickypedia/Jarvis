@@ -2169,7 +2169,7 @@ def google(query):
         a = {"Google": google_results}
         for k, v in a.items():
             for result in v:
-                response = result['titles'] + ' url: ' + result['links'] if result['links'] else result['titles']
+                response = result['titles']
                 results.append(response)
     except NoResultsOrTrafficError:
         suggest_url = "http://suggestqueries.google.com/complete/search"
@@ -2193,9 +2193,6 @@ def google(query):
             return True
     if results:
         output = results[0]
-        open_url = (output.split('url:')[-1].strip())
-        ref_url = open_url.replace('https://www.google.com/url?q=https://www.', '').split('/')[0]
-        output = (output.split('url:')[0].strip())
         if '\n' in output:
             required = output.split('\n')
             modify = required[0].strip()
@@ -2213,34 +2210,7 @@ def google(query):
         if match:
             output = output.replace(match.group(), '')
         sys.stdout.write(f'\r{output}')
-        speaker.say(f'On the website {ref_url}" they say,')
         speaker.say(output)
-        speaker.say("Would you like to learn more sir?")
-        speaker.runAndWait()
-        try:
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            phrase = recognizer.recognize_google(listener)
-            converted = phrase.lower()
-            if any(word in converted.lower() for word in keywords.ok()):
-                webbrowser.open(open_url)
-                speaker.say("I've opened up a link to the article.")
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            speaker.say("I didn't quite get that.")
-            speaker.say("Would you like to learn more sir?")
-            speaker.runAndWait()
-            try:
-                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-                sys.stdout.write("\r") and playsound('end.mp3')
-                phrase = recognizer.recognize_google(listener)
-                converted = phrase.lower()
-                if any(word in converted.lower() for word in keywords.ok()):
-                    webbrowser.open(open_url)
-                    speaker.say("I've opened up a link to the article.")
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-                renew()
         renew()
     else:
         return True
@@ -2281,7 +2251,7 @@ def time_travel():
     current_hour = int(datetime.now().strftime("%I"))
     if current_hour in range(4, 12) and am_or_pm == 'AM':
         greet = 'Morning'
-    elif current_hour in range(1, 4) and am_or_pm == 'PM':
+    elif am_or_pm == 'PM' and (current_hour == 12 or current_hour in range(1, 4)):
         greet = 'Afternoon'
     elif current_hour in range(4, 8) and am_or_pm == 'PM':
         greet = 'Evening'
@@ -2463,9 +2433,9 @@ if __name__ == '__main__':
     database = Database()
 
     # {function_name}.has_been_called is use to denote which function has triggered the other
-    report.has_been_called, locate_places.has_been_called, directions.has_been_called, maps_api.has_been_called \
-        = False, False, False, False
-    for functions in [dummy, delete_todo, todo, add_todo, time_travel]:
+    report.has_been_called, locate_places.has_been_called, directions.has_been_called, maps_api.has_been_called, \
+        time_travel.has_been_called = False, False, False, False, False
+    for functions in [dummy, delete_todo, todo, add_todo]:
         functions.has_been_called = False
 
     # noinspection PyTypeChecker
