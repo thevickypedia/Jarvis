@@ -29,7 +29,7 @@ class Keywords:
         return key
 
     def report(self):
-        key = ['report', 'good morning']
+        key = ['report']
         return key
 
     def robinhood(self):

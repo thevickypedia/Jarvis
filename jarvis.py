@@ -466,14 +466,14 @@ def conditions(converted):
 def report():
     """Initiates a list of function that I tend to check first thing in the morning"""
     sys.stdout.write("\rStarting today's report")
-    report.has_been_called = True
+    report.has_been_called, time_travel.has_been_called = True, True
     date()
     current_time(None)
     weather(None)
     todo()
     gmail()
     news()
-    report.has_been_called = False
+    report.has_been_called, time_travel.has_been_called = False, False
     renew()
 
 
@@ -482,8 +482,11 @@ def date():
     dt_string = datetime.now().strftime("%A, %B")
     date_ = engine().ordinal(datetime.now().strftime("%d"))
     year = datetime.now().strftime("%Y")
-    dt_string = dt_string + date_ + ', ' + year
-    speaker.say(f'Today is {dt_string}')
+    if time_travel.has_been_called:
+        dt_string = dt_string + date_
+    else:
+        dt_string = dt_string + date_ + ', ' + year
+    speaker.say(f"It's {dt_string}")
     if report.has_been_called:
         pass
     else:
@@ -516,7 +519,7 @@ def current_time(place):
             speaker.say(f'The current time in {time_location} is {time_tz}.')
     else:
         c_time = datetime.now().strftime("%I:%M %p")
-        speaker.say(f'The current time is: {c_time}.')
+        speaker.say(f'{c_time}.')
     if report.has_been_called:
         pass
     else:
@@ -604,7 +607,31 @@ def weather(place):
     temp_feel_f = int(round(pytemperature.k2f(feels_like), 2))
     sunrise = datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p")
-    if place or not report.has_been_called:
+    if time_travel.has_been_called:
+        if temp_feel_f < 40:
+            feeling = 'freezing'
+        elif temp_feel_f in range(41, 60):
+            feeling = 'cool'
+        elif temp_feel_f in range(61, 75):
+            feeling = 'optimal'
+        elif temp_feel_f in range(75, 85):
+            feeling = 'warm'
+        elif temp_feel_f > 85:
+            feeling = 'hot'
+        else:
+            feeling = ''
+        wind_speed = response['current']['wind_speed']
+        try:
+            alerts = response['alerts'][0]['event']
+            start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")
+            end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
+        except (IndexError, AttributeError, KeyError):
+            alerts, start_alert, end_alert = None, None, None
+        output = f'The weather at {city} is a {feeling} {temp_f}°, but due to the current wind conditions ' \
+                 f'(which is {wind_speed} miles per hour), it feels like {temp_feel_f}°.'
+        if alerts and start_alert and end_alert:
+            output += f'You have a weather alert for {alerts} between {start_alert} and {end_alert}'
+    elif place or not report.has_been_called:
         output = f'The weather at {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \
                  f'It currently feels like {temp_feel_f}°F, and the current condition is {condition}.'
     else:
@@ -1048,7 +1075,7 @@ def gmail():
         speaker.say("I'm unable access your email sir.")
         renew()
     if n == 0:
-        speaker.say("You don't have any unread email sir")
+        speaker.say("You don't have any emails to catch up sir")
         speaker.runAndWait()
     else:
         speaker.say(f'You have {n} unread emails sir. Do you want me to check it?')  # user check before reading subject
@@ -1173,7 +1200,9 @@ def todo():
     global place_holder
     sys.stdout.write("\rLooking for to-do database..")
     # if this function has been called by report() says database status and passes else it will ask for db creation
-    if not os.path.isfile(file_name) and report.has_been_called:
+    if not os.path.isfile(file_name) and report.has_been_called and time_travel.has_been_called:
+        pass
+    elif not os.path.isfile(file_name) and report.has_been_called:
         speaker.say("You don't have a database created for your to-do list sir.")
     elif not os.path.isfile(file_name):
         speaker.say("You don't have a database created for your to-do list sir.")
@@ -1214,6 +1243,10 @@ def todo():
                 response = f"Your to-do items are, {item}, in {category} category."
                 speaker.say(response)
                 sys.stdout.write(f"\r{response}")
+        elif report.has_been_called and not time_travel.has_been_called:
+            speaker.say("You don't have any tasks in your to-do list sir.")
+        elif time_travel.has_been_called:
+            pass
         else:
             speaker.say("You don't have any tasks in your to-do list sir.")
 
@@ -2136,7 +2169,7 @@ def google(query):
         a = {"Google": google_results}
         for k, v in a.items():
             for result in v:
-                response = result['titles']
+                response = result['titles'] + ' url: ' + result['links'] if result['links'] else result['titles']
                 results.append(response)
     except NoResultsOrTrafficError:
         suggest_url = "http://suggestqueries.google.com/complete/search"
@@ -2160,6 +2193,9 @@ def google(query):
             return True
     if results:
         output = results[0]
+        open_url = (output.split('url:')[-1].strip())
+        ref_url = open_url.replace('https://www.google.com/url?q=https://www.', '').split('/')[0]
+        output = (output.split('url:')[0].strip())
         if '\n' in output:
             required = output.split('\n')
             modify = required[0].strip()
@@ -2177,7 +2213,34 @@ def google(query):
         if match:
             output = output.replace(match.group(), '')
         sys.stdout.write(f'\r{output}')
+        speaker.say(f'On the website {ref_url}" they say,')
         speaker.say(output)
+        speaker.say("Would you like to learn more sir?")
+        speaker.runAndWait()
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            phrase = recognizer.recognize_google(listener)
+            converted = phrase.lower()
+            if any(word in converted.lower() for word in keywords.ok()):
+                webbrowser.open(open_url)
+                speaker.say("I've opened up a link to the article.")
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            speaker.say("I didn't quite get that.")
+            speaker.say("Would you like to learn more sir?")
+            speaker.runAndWait()
+            try:
+                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                sys.stdout.write("\r") and playsound('end.mp3')
+                phrase = recognizer.recognize_google(listener)
+                converted = phrase.lower()
+                if any(word in converted.lower() for word in keywords.ok()):
+                    webbrowser.open(open_url)
+                    speaker.say("I've opened up a link to the article.")
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+                renew()
         renew()
     else:
         return True
@@ -2213,6 +2276,22 @@ def google_search(phrase):
     renew()
 
 
+def time_travel():
+    am_or_pm = datetime.now().strftime("%p")
+    current_hour = int(datetime.now().strftime("%I"))
+    if current_hour in range(4, 12) and am_or_pm == 'AM':
+        greet = 'Morning'
+    elif current_hour in range(1, 4) and am_or_pm == 'PM':
+        greet = 'Afternoon'
+    elif current_hour in range(4, 8) and am_or_pm == 'PM':
+        greet = 'Evening'
+    else:
+        greet = 'Night'
+
+    speaker.say(f"Good {greet} Vignesh.")
+    report()
+
+
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action"""
     global waiter
@@ -2224,7 +2303,9 @@ def sentry_mode():
         listener = recognizer.listen(source, timeout=None, phrase_time_limit=3)
         sys.stdout.write("\r")
         key = recognizer.recognize_google(listener)
-        if 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'Showtime' in \
+        if 'good' in key.lower():
+            time_travel()
+        elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'Showtime' in \
                 key or 'time to work' in key or 'spin up' in key:
             speaker.say(f'{random.choice(wake_up1)}')
             initialize()
@@ -2268,8 +2349,6 @@ def size_converter():
 
 def exit_message():
     """variety of exit messages based on day of week and time of day"""
-    weekend = ['Friday', 'Saturday']
-
     current = datetime.now().strftime("%p")  # current part of day (AM/PM)
     clock = datetime.now().strftime("%I")  # current hour
     today = datetime.now().strftime("%A")  # current day
@@ -2374,6 +2453,7 @@ if __name__ == '__main__':
     confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']
 
     model_file = os.listdir()
+    weekend = ['Friday', 'Saturday']
     if 'model.pcl' not in model_file:
         sys.stdout.write("\rPLEASE WAIT::Downloading model file for punctuations")
         os.system("""curl https://thevickypedia.com/punctuator/model.pcl --output model.pcl --silent""")
@@ -2385,7 +2465,7 @@ if __name__ == '__main__':
     # {function_name}.has_been_called is use to denote which function has triggered the other
     report.has_been_called, locate_places.has_been_called, directions.has_been_called, maps_api.has_been_called \
         = False, False, False, False
-    for functions in [dummy, delete_todo, todo, add_todo]:
+    for functions in [dummy, delete_todo, todo, add_todo, time_travel]:
         functions.has_been_called = False
 
     # noinspection PyTypeChecker
