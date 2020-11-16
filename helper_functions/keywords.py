@@ -145,6 +145,10 @@ class Keywords:
         key = ['tv', 'television']
         return key
 
+    def volume(self):
+        key = ['volume']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key

@@ -374,6 +374,16 @@ def conditions(converted):
         else:
             music(None)
 
+    elif any(word in converted.lower() for word in keywords.volume()):
+        if 'mute' in converted.lower():
+            level = 0
+        elif 'max' in converted.lower() or 'full' in converted.lower():
+            level = 100
+        else:
+            level = re.findall(r'\b\d+\b', converted)
+            level = int(level[0]) if level else 50
+        volume_controller(level)
+
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         renew()
@@ -2246,7 +2256,22 @@ def google_search(phrase):
     renew()
 
 
+def volume_controller(level):
+    """Controls volume from the numbers received. There are no chances for None. If you don't give a volume %
+    conditions() is set to assume it as 50% Since Mac(s) run on a volume of 16 bars controlled by 8 digits, I have
+    changed the level to become single digit with respect to 8 (eg: 50% becomes 4) for osX"""
+    sys.stdout.write("\r")
+    if operating_system == 'Darwin':
+        level = round((8 * level)/100)
+        os.system(f'osascript -e "set Volume {level}"')
+    elif operating_system == 'Windows':
+        os.system(f'SetVol.exe {level}')
+    speaker.say("You got it sir.")
+    renew()
+
+
 def time_travel():
+    """Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way"""
     am_or_pm = datetime.now().strftime("%p")
     current_hour = int(datetime.now().strftime("%I"))
     if current_hour in range(4, 12) and am_or_pm == 'AM':
@@ -2391,6 +2416,7 @@ if __name__ == '__main__':
     keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
     conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
     operating_system = platform.system()  # detects current operating system
+    current_dir = os.listdir()  # stores the list of files in current directory
     aws = AWSClients()
     limit = sys.getrecursionlimit()
     sys.setrecursionlimit(limit * 10)
@@ -2422,15 +2448,16 @@ if __name__ == '__main__':
 
     confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']
 
-    model_file = os.listdir()
     weekend = ['Friday', 'Saturday']
-    if 'model.pcl' not in model_file:
+    if 'model.pcl' not in current_dir:
         sys.stdout.write("\rPLEASE WAIT::Downloading model file for punctuations")
-        os.system("""curl https://thevickypedia.com/punctuator/model.pcl --output model.pcl --silent""")
+        os.system("""curl https://thevickypedia.com/Jarvis/punctuator/model.pcl --output model.pcl --silent""")
+        sys.stdout.write("\r")
 
     sys.stdout.write("\rPLEASE WAIT::Training model for punctuations")
     punctuation = Punctuator(model_file='model.pcl')
     database = Database()
+    sys.stdout.write("\r")
 
     # {function_name}.has_been_called is use to denote which function has triggered the other
     report.has_been_called, locate_places.has_been_called, directions.has_been_called, maps_api.has_been_called, \
@@ -2451,6 +2478,10 @@ if __name__ == '__main__':
         # noinspection PyTypeChecker,PyUnresolvedReferences
         speaker.setProperty("voice", voices[0].id)  # voice module #0 for Windows
         speaker.setProperty('rate', 190)  # speech rate is slowed down in Windows for optimal experience
+        if 'SetVol.exe' not in current_dir:
+            sys.stdout.write("\rPLEASE WAIT::Downloading volume controller for Windows")
+            os.system("""curl https://thevickypedia.com/Jarvis/SetVol.exe --output SetVol.exe --silent""")
+            sys.stdout.write("\r")
     else:
         operating_system = None
         exit(0)

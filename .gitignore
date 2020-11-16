@@ -5,5 +5,6 @@ text2audio.py
 lib/docker_requirements.txt
 Dockerfile
 model.pcl
+SetVol.exe
 training_data.yaml
 notes.txt
