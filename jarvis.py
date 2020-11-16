@@ -576,7 +576,6 @@ def webpage(target):
             web_url = f"https://{web}"
             webbrowser.open(web_url)
         speaker.say(f"I have opened {host}")
-        speaker.runAndWait()
         renew()
 
 
@@ -690,7 +689,6 @@ def system_info():
         o_system = None
     speaker.say(f"You're running {o_system}, with {cpu} cores. Your physical drive capacity is {total}. "
                 f"You have used up {used} of space. Your free space is {free}. Your RAM capacity is {ram}")
-    speaker.runAndWait()
     renew()
 
 
@@ -739,8 +737,7 @@ def wiki_pedia():
     # stops with two sentences before reading whole passage
     formatted = punctuation.punctuate(' '.join(splitter(' '.join(summary.split('.')[0:2]))))
     speaker.say(formatted)
-    speaker.runAndWait()
-    speaker.say("Do you want me to continue?")  # gets confirmation to read the whole passage
+    speaker.say("Do you want me to continue sir?")  # gets confirmation to read the whole passage
     speaker.runAndWait()
     try:
         sys.stdout.write("\rListener activated..") and playsound('start.mp3')
@@ -964,16 +961,14 @@ def chatter_bot():
         speaker.say('Let me remove the training modules.')
         os.system('rm db*')
         os.system(f'rm -rf {file2}')
-        speaker.runAndWait()
         renew()
     else:
         response = bot.get_response(keyword)
         if response == 'What is AI?':
             speaker.say(f'The chat bot is unable to get a response for the phrase, {keyword}. Try something else.')
-            speaker.runAndWait()
         else:
             speaker.say(f'{response}')
-            speaker.runAndWait()
+        speaker.runAndWait()
         chatter_bot()
 
 
@@ -981,7 +976,6 @@ def location():
     """Gets your current location"""
     city, state, country = location_info['city'], location_info['state'], location_info['country']
     speaker.say(f"You're at {city} {state}, in {country}")
-    speaker.runAndWait()
     renew()
 
 
@@ -1022,7 +1016,6 @@ def locate():
     place_holder = None
     if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
         speaker.say("Ringing your iPhone now.")
-        speaker.runAndWait()
         icloud_api.iphone.play_sound()
         speaker.say("I can also enable lost mode. Would you like to do it?")
         speaker.runAndWait()
@@ -1035,11 +1028,7 @@ def locate():
             message = 'Return my phone immediately.'
             icloud_api.iphone.lost_device(recovery, message)
             speaker.say("I've enabled lost mode on your phone.")
-            speaker.runAndWait()
-        else:
-            renew()
-    else:
-        renew()
+    renew()
 
 
 def music(device):
