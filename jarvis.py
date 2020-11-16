@@ -476,14 +476,14 @@ def conditions(converted):
 def report():
     """Initiates a list of function that I tend to check first thing in the morning"""
     sys.stdout.write("\rStarting today's report")
-    report.has_been_called, time_travel.has_been_called = True, True
+    report.has_been_called = True
     date()
     current_time(None)
     weather(None)
     todo()
     gmail()
     news()
-    report.has_been_called, time_travel.has_been_called = False, False
+    report.has_been_called = False
     renew()
 
 
@@ -497,7 +497,7 @@ def date():
     else:
         dt_string = dt_string + date_ + ', ' + year
     speaker.say(f"It's {dt_string}")
-    if report.has_been_called:
+    if report.has_been_called or time_travel.has_been_called:
         pass
     else:
         renew()
@@ -530,7 +530,7 @@ def current_time(place):
     else:
         c_time = datetime.now().strftime("%I:%M %p")
         speaker.say(f'{c_time}.')
-    if report.has_been_called:
+    if report.has_been_called or time_travel.has_been_called:
         pass
     else:
         renew()
@@ -618,18 +618,26 @@ def weather(place):
     sunrise = datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p")
     if time_travel.has_been_called:
-        if temp_feel_f < 40:
+        if 'rain' in condition or 'showers' in condition:
+            feeling = 'rainy'
+            weather_suggest = 'You might need an umbrella" if you plan to head out.'
+        elif temp_feel_f < 40:
             feeling = 'freezing'
+            weather_suggest = 'Perhaps" it is time for winter clothing.'
         elif temp_feel_f in range(41, 60):
             feeling = 'cool'
+            weather_suggest = 'I think a lighter jacket would suffice" if you plan to head out.'
         elif temp_feel_f in range(61, 75):
             feeling = 'optimal'
+            weather_suggest = 'It might be a perfect weather for a hike, or perhaps a walk.'
         elif temp_feel_f in range(75, 85):
             feeling = 'warm'
+            weather_suggest = 'It is a perfect weather for some outdoor entertainment.'
         elif temp_feel_f > 85:
             feeling = 'hot'
+            weather_suggest = "I would not consider thick clothes today."
         else:
-            feeling = ''
+            feeling, weather_suggest = '', ''
         wind_speed = response['current']['wind_speed']
         try:
             alerts = response['alerts'][0]['event']
@@ -637,8 +645,12 @@ def weather(place):
             end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
         except (IndexError, AttributeError, KeyError):
             alerts, start_alert, end_alert = None, None, None
-        output = f'The weather at {city} is a {feeling} {temp_f}°, but due to the current wind conditions ' \
-                 f'(which is {wind_speed} miles per hour), it feels like {temp_feel_f}°.'
+        if wind_speed > 10:
+            output = f'The weather at {city} is a {feeling} {temp_f}°, but due to the current wind conditions ' \
+                     f'(which is {wind_speed} miles per hour), it feels like {temp_feel_f}°. {weather_suggest}'
+        else:
+            output = f'The weather at {city} is a {feeling} {temp_f}°, and it currently feels like {temp_feel_f}°. ' \
+                     f'{weather_suggest}'
         if alerts and start_alert and end_alert:
             output += f'You have a weather alert for {alerts} between {start_alert} and {end_alert}'
     elif place or not report.has_been_called:
@@ -651,7 +663,7 @@ def weather(place):
     sys.stdout.write(f"\r{output}")
     speaker.say(output)
     speaker.runAndWait()
-    if report.has_been_called:
+    if report.has_been_called or time_travel.has_been_called:
         pass
     else:
         renew()
@@ -764,6 +776,8 @@ def news():
 
     if report.has_been_called:
         pass
+    elif time_travel.has_been_called:
+        sentry_mode()
     else:
         renew()
 
@@ -1071,10 +1085,17 @@ def gmail():
     u = os.getenv('gmail_user') or aws.gmail_user()
     p = os.getenv('gmail_pass') or aws.gmail_pass()
 
-    mail = imaplib.IMAP4_SSL('imap.gmail.com')  # connects to imaplib
-    mail.login(u, p)
-    mail.list()
-    mail.select('inbox')  # choose inbox
+    try:
+        mail = imaplib.IMAP4_SSL('imap.gmail.com')  # connects to imaplib
+        mail.login(u, p)
+        mail.list()
+        mail.select('inbox')  # choose inbox
+    except TimeoutError:
+        mail = None
+        speaker.say("I wasn't able to check your emails sir. I think you have your VPN turned ON. If so, disconnect "
+                    "it.")
+        speaker.runAndWait()
+        sentry_mode()
 
     n = 0
     return_code, messages = mail.search(None, 'UNSEEN')  # looks for unread emails
@@ -1133,7 +1154,7 @@ def gmail():
             gmail()
 
         place_holder = None
-    if report.has_been_called:
+    if report.has_been_called or time_travel.has_been_called:
         pass
     else:
         renew()
@@ -1210,7 +1231,7 @@ def todo():
     global place_holder
     sys.stdout.write("\rLooking for to-do database..")
     # if this function has been called by report() says database status and passes else it will ask for db creation
-    if not os.path.isfile(file_name) and report.has_been_called and time_travel.has_been_called:
+    if not os.path.isfile(file_name) and time_travel.has_been_called:
         pass
     elif not os.path.isfile(file_name) and report.has_been_called:
         speaker.say("You don't have a database created for your to-do list sir.")
@@ -1260,7 +1281,7 @@ def todo():
         else:
             speaker.say("You don't have any tasks in your to-do list sir.")
 
-    if report.has_been_called:
+    if report.has_been_called or time_travel.has_been_called:
         speaker.runAndWait()
     else:
         renew()
@@ -2081,7 +2102,7 @@ def television(converted):
             speaker.say(f"I've turned on the TV sir!")
             tv = TV()
         except OSError:
-            speaker.say("I wasn't able to turn on your TV sir! I think you have your VPN turned ON. If so? disconnect"
+            speaker.say("I wasn't able to turn on your TV sir! I think you have your VPN turned ON. If so, disconnect"
                         " it. And make sure you are on the same network as your TV.")
         renew()
     if tv:
@@ -2284,7 +2305,27 @@ def time_travel():
         greet = 'Night'
 
     speaker.say(f"Good {greet} Vignesh.")
-    report()
+
+    time_travel.has_been_called = True
+    date()
+    current_time(None)
+    weather(None)
+    todo()
+    gmail()
+    speaker.say('Would you like to hear the latest news?')
+    speaker.runAndWait()
+    try:
+        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+        sys.stdout.write("\r")
+        phrase = recognizer.recognize_google(listener)
+        if any(word in phrase.lower() for word in keywords.ok()):
+            news()
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
+        time_travel.has_been_called = False
+        sentry_mode()
+    time_travel.has_been_called = False
+    sentry_mode()
 
 
 def sentry_mode():
@@ -2298,16 +2339,17 @@ def sentry_mode():
         listener = recognizer.listen(source, timeout=None, phrase_time_limit=3)
         sys.stdout.write("\r")
         key = recognizer.recognize_google(listener)
-        if 'good' in key.lower():
+        key = key.lower()
+        if 'good morning' in key or 'good afternoon' in key or 'good evening' in key or 'good night' in key:
             time_travel()
-        elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'Showtime' in \
+        elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'showtime' in \
                 key or 'time to work' in key or 'spin up' in key:
             speaker.say(f'{random.choice(wake_up1)}')
             initialize()
         elif 'you there' in key or 'buddy' in key or 'are you there' in key:
             speaker.say(f'{random.choice(wake_up2)}')
             initialize()
-        elif 'Jarvis' in key or 'jarvis' in key:
+        elif 'jarvis' in key:
             speaker.say(f'{random.choice(wake_up3)}')
             initialize()
         else:
@@ -2421,6 +2463,27 @@ if __name__ == '__main__':
     limit = sys.getrecursionlimit()
     sys.setrecursionlimit(limit * 10)
 
+    # noinspection PyTypeChecker
+    volume = int(speaker.getProperty("volume")) * 100
+    sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Female: 1/17 Male: 0/7')
+
+    voices = speaker.getProperty("voices")  # gets the list of voices available
+
+    if operating_system == 'Darwin':
+        # noinspection PyTypeChecker,PyUnresolvedReferences
+        speaker.setProperty("voice", voices[7].id)  # voice module #7 for MacOS
+    elif operating_system == 'Windows':
+        # noinspection PyTypeChecker,PyUnresolvedReferences
+        speaker.setProperty("voice", voices[0].id)  # voice module #0 for Windows
+        speaker.setProperty('rate', 190)  # speech rate is slowed down in Windows for optimal experience
+        if 'SetVol.exe' not in current_dir:
+            sys.stdout.write("\rPLEASE WAIT::Downloading volume controller for Windows")
+            os.system("""curl https://thevickypedia.com/Jarvis/SetVol.exe --output SetVol.exe --silent""")
+            sys.stdout.write("\r")
+    else:
+        operating_system = None
+        exit(0)
+
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run
     # waiter is used in renew() so that when waiter hits 12 count, active listener automatically goes to sentry mode
@@ -2429,16 +2492,23 @@ if __name__ == '__main__':
     suggestion_count = 0
 
     # initiates geo_locator and stores current location info as json so it could be used in couple of other functions
-    options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
-    geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
-    icloud_user = os.getenv('icloud_user') or aws.icloud_user()
-    icloud_pass = os.getenv('icloud_pass') or aws.icloud_pass()
-    icloud_api = PyiCloudService(icloud_user, icloud_pass)
-    raw_location = icloud_api.iphone.location()
-    current_lat = raw_location['latitude']
-    current_lon = raw_location['longitude']
-    locator = geo_locator.reverse(f'{current_lat}, {current_lon}')
-    location_info = locator.raw['address']
+    try:
+        options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
+        geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
+        icloud_user = os.getenv('icloud_user') or aws.icloud_user()
+        icloud_pass = os.getenv('icloud_pass') or aws.icloud_pass()
+        icloud_api = PyiCloudService(icloud_user, icloud_pass)
+        raw_location = icloud_api.iphone.location()
+        current_lat = raw_location['latitude']
+        current_lon = raw_location['longitude']
+        locator = geo_locator.reverse(f'{current_lat}, {current_lon}')
+        location_info = locator.raw['address']
+    except requests.exceptions.ConnectionError:
+        sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
+        speaker.say("I was unable to connect to the internet. Please check your connection settings and retry. "
+                    "Remember to check for VPN settings, as it can also be a factor in open Wi-Fi connections.")
+        speaker.runAndWait()
+        exit()
 
     # different responses for different conditions in senty mode
     wake_up1 = ['Up and running sir.', 'Online and ready sir.', "I've indeed been uploaded sir!", 'Listeners have been '
@@ -2464,27 +2534,6 @@ if __name__ == '__main__':
         time_travel.has_been_called = False, False, False, False, False
     for functions in [dummy, delete_todo, todo, add_todo]:
         functions.has_been_called = False
-
-    # noinspection PyTypeChecker
-    volume = int(speaker.getProperty("volume")) * 100
-    sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Female: 1/17 Male: 0/7')
-
-    voices = speaker.getProperty("voices")  # gets the list of voices available
-
-    if operating_system == 'Darwin':
-        # noinspection PyTypeChecker,PyUnresolvedReferences
-        speaker.setProperty("voice", voices[7].id)  # voice module #7 for MacOS
-    elif operating_system == 'Windows':
-        # noinspection PyTypeChecker,PyUnresolvedReferences
-        speaker.setProperty("voice", voices[0].id)  # voice module #0 for Windows
-        speaker.setProperty('rate', 190)  # speech rate is slowed down in Windows for optimal experience
-        if 'SetVol.exe' not in current_dir:
-            sys.stdout.write("\rPLEASE WAIT::Downloading volume controller for Windows")
-            os.system("""curl https://thevickypedia.com/Jarvis/SetVol.exe --output SetVol.exe --silent""")
-            sys.stdout.write("\r")
-    else:
-        operating_system = None
-        exit(0)
 
     # starts sentry mode
     playsound('initialize.mp3')
