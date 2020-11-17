@@ -149,6 +149,10 @@ class Keywords:
         key = ['volume']
         return key
 
+    def face_detection(self):
+        key = ['face', 'recognize', 'who am i', 'detect', 'facial', 'recognition', 'detection']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key

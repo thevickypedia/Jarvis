@@ -384,6 +384,9 @@ def conditions(converted):
             level = int(level[0]) if level else 50
         volume_controller(level)
 
+    elif any(word in converted.lower() for word in keywords.face_detection()):
+        face_detection()
+
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         renew()
@@ -2277,6 +2280,23 @@ def volume_controller(level):
     elif operating_system == 'Windows':
         os.system(f'SetVol.exe {level}')
     speaker.say("You got it sir.")
+    renew()
+
+
+def face_detection():
+    if operating_system == 'Darwin':
+        from facial_recognition import Face
+        sys.stdout.write("\r")
+        speaker.say('Initializing facial recognition. Please smile at the camera for me.')
+        speaker.runAndWait()
+        result = Face().face_detection_recognition()
+        if 'face' in result or 'faces' in result:
+            speaker.say(result)
+        else:
+            speaker.say(f'Hi {result}! How can I be of service to you?')
+    elif operating_system == 'Windows':
+        speaker.say("I am sorry, currently facial recognition and detection is only supported on MacOS, due to the "
+                    "package installation issues on Windows. Is there anything else I can help you with?")
     renew()
 
 
