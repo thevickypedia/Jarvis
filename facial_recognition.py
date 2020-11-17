@@ -64,16 +64,14 @@ class Face:
         if not recognized:
             sys.stdout.write('\rNo faces were recognized. Passing on to face detection.')
             if not Face().face_detection():  # initiates face detection if no faces were "recognized"
-                result = 'No faces were recognized. nor detected. Please check if your camera is working, ' \
+                recognized = 'No faces were recognized. nor detected. Please check if your camera is working, ' \
                          'and look at the camera.'
             else:
-                result = 'I was able to detect a face sir, but was unable to recognize it.'
-            sys.stdout.write(f'\r{result}')
-            return result
-        else:
-            return recognized
+                recognized = 'I was able to detect a face sir, but was unable to recognize it.'
+            sys.stdout.write(f'\r{recognized}')
+        sys.stdout.write("\r")
+        return recognized
 
 
 if __name__ == '__main__':
-    sys.stdout.write("\r")
     sys.stdout.write(Face().face_detection_recognition())
