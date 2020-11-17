@@ -385,7 +385,7 @@ def conditions(converted):
         volume_controller(level)
 
     elif any(word in converted.lower() for word in keywords.face_detection()):
-        face_detection()
+        face_recognition_detection()
 
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -2283,15 +2283,61 @@ def volume_controller(level):
     renew()
 
 
-def face_detection():
+def face_recognition_detection():
     if operating_system == 'Darwin':
         from facial_recognition import Face
         sys.stdout.write("\r")
         speaker.say('Initializing facial recognition. Please smile at the camera for me.')
         speaker.runAndWait()
-        result = Face().face_detection_recognition()
-        if 'face' in result or 'faces' in result:
-            speaker.say(result)
+        sys.stdout.write('\rLooking for faces to recognize.')
+        try:
+            result = Face().face_recognition()
+        except BlockingIOError:
+            result = None
+            speaker.say("I was unable to access the camera. Facial recognition can work only when cameras are "
+                        "present and accessible.")
+            renew()
+        if not result:
+            sys.stdout.write('\rLooking for faces to detect.')
+            speaker.say("No faces were recognized. Switching on to face detection.")
+            speaker.runAndWait()
+            result = Face().face_detection()
+            if not result:
+                sys.stdout.write('\rNo faces were recognized nor detected.')
+                speaker.say('No faces were recognized. nor detected. Please check if your camera is working, '
+                            'and look at the camera when you retry.')
+                renew()
+            sys.stdout.write('\rNew face has been detected. Like to give it a name?')
+            speaker.say('I was able to detect a face, but was unable to recognize it.')
+            os.system('open cv2_open.jpg')
+            speaker.say("I've taken a photo of you. Preview on your screen. Would you like to give it a name, "
+                        "so that I can add it to my database of known list? If you're ready, please tell me a name, "
+                        "or simply say exit.")
+            speaker.runAndWait()
+            try:
+                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                sys.stdout.write("\r")
+                phrase = recognizer.recognize_google(listener)
+                if any(word in phrase.lower() for word in keywords.exit()):
+                    os.remove('cv2_open.jpg')
+                    speaker.say("I've deleted the image.")
+                    renew()
+                else:
+                    sys.stdout.write(f"\r{phrase}")
+                    phrase = phrase.replace(' ', '_')
+                    # creates a named directory if it is not found already else simply ignores
+                    os.system(f'cd train && mkdir {phrase}') if phrase not in os.listdir('train') else None
+                    c_time = datetime.now().strftime("%I_%M_%p")
+                    img_name = f"{phrase}_{c_time}.jpg"  # adds current time to image name to avoid overwrite
+                    os.rename('cv2_open.jpg', img_name)  # renames the files
+                    os.system(f"mv {img_name} train/{phrase}")  # moves the file under the named directory within train
+                    speaker.say(f"Image has been saved as {img_name}. I will be able to recognize {phrase} in the "
+                                f"future.")
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
+                os.remove('cv2_open.jpg')
+                speaker.say("I did not get any response, so I've deleted the image.")
+                renew()
         else:
             speaker.say(f'Hi {result}! How can I be of service to you?')
     elif operating_system == 'Windows':

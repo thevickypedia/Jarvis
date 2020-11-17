@@ -11,7 +11,18 @@ class Face:
             self.training_dataset = "train"  # main dir within which training images are placed under named directories
             self.learning_rate = 0.6  # tolerance level - keep switching this until you find perfection in recognition
             self.model = "hog"  # model using which the images are matched
-            self.validation_video = cv2.VideoCapture(1)  # camera id - depends on installed camera applications
+            source = None
+            for i in range(0, 3):
+                cap = cv2.VideoCapture(i)
+                if cap is None or not cap.isOpened():
+                    pass
+                else:
+                    source = i
+                    break
+            if source is None:
+                sys.stdout.write('\rNo cameras were found.')
+                raise BlockingIOError
+            self.validation_video = cv2.VideoCapture(source)  # camera id - depends on installed camera applications
             self.train_faces, self.train_names = [], []
             for character_dir in os.listdir(self.training_dataset):  # loads the training dataset
                 try:
@@ -53,25 +64,12 @@ class Face:
             # But happens only when the value is true so ¯\_(ツ)_/¯
             try:
                 if faces:
-                    return True
+                    pass
             except ValueError:
+                cv2.imwrite('cv2_open.jpg', image)
+                self.validation_video.release()
                 return True
-
-    @staticmethod
-    def face_detection_recognition():
-        sys.stdout.write('\rLooking for known faces to recognize.')
-        recognized = Face().face_recognition()  # name of the recognized face is stored here
-        if not recognized:
-            sys.stdout.write('\rNo faces were recognized. Passing on to face detection.')
-            if not Face().face_detection():  # initiates face detection if no faces were "recognized"
-                recognized = 'No faces were recognized. nor detected. Please check if your camera is working, ' \
-                         'and look at the camera.'
-            else:
-                recognized = 'I was able to detect a face sir, but was unable to recognize it.'
-            sys.stdout.write(f'\r{recognized}')
-        sys.stdout.write("\r")
-        return recognized
 
 
 if __name__ == '__main__':
-    sys.stdout.write(Face().face_detection_recognition())
+    sys.stdout.write(Face().face_recognition())
