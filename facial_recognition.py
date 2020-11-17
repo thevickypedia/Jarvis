@@ -13,8 +13,8 @@ class Face:
             self.model = "hog"  # model using which the images are matched
             source = None
             for i in range(0, 3):
-                cap = cv2.VideoCapture(i)
-                if cap is None or not cap.isOpened():
+                cam = cv2.VideoCapture(i)
+                if cam is None or not cam.isOpened() or cam.read() == (False, None):
                     pass
                 else:
                     source = i
