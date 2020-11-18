@@ -1114,13 +1114,19 @@ def gmail():
                     for response_part in mail_data:
                         if isinstance(response_part, tuple):  # checks for type(response_part)
                             original_email = email.message_from_bytes(response_part[1])
+                            sender = (original_email['From']).split(' <')[0]
+                            sub = make_header(decode_header(original_email['Subject'])) \
+                                if original_email['Subject'] else None
                             raw_receive = (original_email['Received'].split(';')[-1]).strip()
-                            try:
+                            if '(PDT)' in raw_receive:
                                 datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
                                                + timedelta(hours=2)
-                            except ValueError:
+                            elif '(PST)' in raw_receive:
                                 datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0800 (PST)") \
                                                + timedelta(hours=2)
+                            else:
+                                sys.stdout.write(f'\rEmail from {sender} has a weird time stamp. Please check.')
+                                datetime_obj = datetime.now()  # sets to current date if PST or PDT are not found
                             received_date = datetime_obj.strftime("%Y-%m-%d")
                             current_date = datetime.today().date()
                             yesterday = current_date - timedelta(days=1)
@@ -1131,8 +1137,6 @@ def gmail():
                                 receive = datetime_obj.strftime("yesterday, at %I:%M %p")
                             else:
                                 receive = datetime_obj.strftime("on %A, %B %d, at %I:%M %p")
-                            sender = (original_email['From']).split(' <')[0]
-                            sub = make_header(decode_header(original_email['Subject']))
                             speaker.say(f"You have an email from, {sender}, with subject, {sub}, {receive}")
                             speaker.runAndWait()
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
@@ -2287,6 +2291,8 @@ def face_recognition_detection():
     if operating_system == 'Darwin':
         from facial_recognition import Face
         sys.stdout.write("\r")
+        train_dir = 'train'
+        os.mkdir(train_dir) if train_dir not in current_dir else None
         speaker.say('Initializing facial recognition. Please smile at the camera for me.')
         speaker.runAndWait()
         sys.stdout.write('\rLooking for faces to recognize.')
@@ -2327,11 +2333,11 @@ def face_recognition_detection():
                     sys.stdout.write(f"\r{phrase}")
                     phrase = phrase.replace(' ', '_')
                     # creates a named directory if it is not found already else simply ignores
-                    os.system(f'cd train && mkdir {phrase}') if phrase not in os.listdir('train') else None
+                    os.system(f'cd {train_dir} && mkdir {phrase}') if phrase not in os.listdir(train_dir) else None
                     c_time = datetime.now().strftime("%I_%M_%p")
                     img_name = f"{phrase}_{c_time}.jpg"  # adds current time to image name to avoid overwrite
                     os.rename('cv2_open.jpg', img_name)  # renames the files
-                    os.system(f"mv {img_name} train/{phrase}")  # moves the file under the named directory within train
+                    os.system(f"mv {img_name} {train_dir}/{phrase}")  # move files into named directory within train_dir
                     speaker.say(f"Image has been saved as {img_name}. I will be able to recognize {phrase} in the "
                                 f"future.")
             except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):

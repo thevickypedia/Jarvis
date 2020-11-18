@@ -7,35 +7,32 @@ import face_recognition
 
 class Face:
     def __init__(self):
-        try:
-            self.training_dataset = "train"  # main dir within which training images are placed under named directories
-            self.learning_rate = 0.6  # tolerance level - keep switching this until you find perfection in recognition
-            self.model = "hog"  # model using which the images are matched
-            source = None
-            for i in range(0, 3):
-                cam = cv2.VideoCapture(i)
-                if cam is None or not cam.isOpened() or cam.read() == (False, None):
-                    pass
-                else:
-                    source = i
-                    break
-            if source is None:
-                sys.stdout.write('\rNo cameras were found.')
-                raise BlockingIOError
-            self.validation_video = cv2.VideoCapture(source)  # camera id - depends on installed camera applications
-            self.train_faces, self.train_names = [], []
-            for character_dir in os.listdir(self.training_dataset):  # loads the training dataset
-                try:
-                    for file_name in os.listdir(f'{self.training_dataset}/{character_dir}'):
-                        # loads all the files within the named repo
-                        img = face_recognition.load_image_file(f'{self.training_dataset}/{character_dir}/{file_name}')
-                        encoded = face_recognition.face_encodings(img)[0]  # generates face encoding matrix
-                        self.train_faces.append(encoded)  # loads ended values to match
-                        self.train_names.append(character_dir)  # loads the names of each named sub directories
-                except (IndexError, NotADirectoryError):
-                    pass
-        except FileNotFoundError:  # passes if "train" directory was not found
-            pass
+        self.training_dataset = "train"  # main dir within which training images are placed under named directories
+        self.learning_rate = 0.6  # tolerance level - keep switching this until you find perfection in recognition
+        self.model = "hog"  # model using which the images are matched
+        source = None
+        for i in range(0, 3):
+            cam = cv2.VideoCapture(i)
+            if cam is None or not cam.isOpened() or cam.read() == (False, None):
+                pass
+            else:
+                source = i
+                break
+        if source is None:
+            sys.stdout.write('\rNo cameras were found.')
+            raise BlockingIOError
+        self.validation_video = cv2.VideoCapture(source)  # camera id - depends on installed camera applications
+        self.train_faces, self.train_names = [], []
+        for character_dir in os.listdir(self.training_dataset):  # loads the training dataset
+            try:
+                for file_name in os.listdir(f'{self.training_dataset}/{character_dir}'):
+                    # loads all the files within the named repo
+                    img = face_recognition.load_image_file(f'{self.training_dataset}/{character_dir}/{file_name}')
+                    encoded = face_recognition.face_encodings(img)[0]  # generates face encoding matrix
+                    self.train_faces.append(encoded)  # loads ended values to match
+                    self.train_names.append(character_dir)  # loads the names of each named sub directories
+            except (IndexError, NotADirectoryError):
+                pass
 
     def face_recognition(self):
         for _ in range(20):
