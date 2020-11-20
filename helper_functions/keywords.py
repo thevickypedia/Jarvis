@@ -73,7 +73,8 @@ class Keywords:
         return key
 
     def add_todo(self):
-        key = ['update my to do list', 'add to do', 'add items to my to do list', 'new task']
+        key = ['update my to do list', 'add tasks', 'add items to my to do list', 'new task', 'add new task',
+               'add a new task']
         return key
 
     def delete_todo(self):
@@ -94,7 +95,7 @@ class Keywords:
 
     def avoid(self):
         key = ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
-               'a.m.', 'p.m.']
+               'a.m.', 'p.m.', 'update my to do list']
         return key
 
     def geopy(self):

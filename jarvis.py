@@ -133,7 +133,8 @@ def conditions(converted):
     """Conditions function is used to check the message processed, and use the keywords to do a regex match and trigger
     the appropriate function which has dedicated task"""
     sys.stdout.write(f'\r{converted}')
-    if any(word in converted.lower() for word in keywords.date()):
+    if any(word in converted.lower() for word in keywords.date()) and \
+            not any(word in converted.lower() for word in keywords.avoid()):
         date()
 
     elif any(word in converted.lower() for word in keywords.time()):
@@ -305,9 +306,9 @@ def conditions(converted):
         jokes()
 
     elif any(word in converted.lower() for word in keywords.reminder()):
-        message = re.search('to(.*)at', converted).group(1).strip()
         """uses regex to find numbers in your statement and processes AM and PM information"""
         try:
+            message = re.search('to(.*)at', converted).group(1).strip()
             extracted_time = re.findall(r'\s([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
                 r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
             extracted_time = extracted_time[0]
@@ -323,7 +324,7 @@ def conditions(converted):
             # makes sure hour and minutes are two digits
             hour, minute = f"{hour:02}", f"{minute:02}"
             reminder(hour, minute, am_pm, message)
-        except IndexError:
+        except (IndexError, AttributeError):
             reminder(hour=None, minute=None, am_pm=None, message=None)
 
     elif any(word in converted.lower() for word in keywords.notes()):
@@ -649,10 +650,10 @@ def weather(place):
             alerts, start_alert, end_alert = None, None, None
         if wind_speed > 10:
             output = f'The weather at {city} is a {feeling} {temp_f}°, but due to the current wind conditions ' \
-                     f'(which is {wind_speed} miles per hour), it feels like {temp_feel_f}°. {weather_suggest}'
+                     f'(which is {wind_speed} miles per hour), it feels like {temp_feel_f}°. {weather_suggest}. '
         else:
             output = f'The weather at {city} is a {feeling} {temp_f}°, and it currently feels like {temp_feel_f}°. ' \
-                     f'{weather_suggest}'
+                     f'{weather_suggest}. '
         if alerts and start_alert and end_alert:
             output += f'You have a weather alert for {alerts} between {start_alert} and {end_alert}'
     elif place or not report.has_been_called:
@@ -764,14 +765,19 @@ def news():
     """Says news around you and skips going to renew() if the function is called by report()"""
     news_source = 'fox'
     sys.stdout.write(f'\rGetting news from {news_source} news.')
-    speaker.say("News around you!")
-    from newsapi import NewsApiClient
+    from newsapi import NewsApiClient, newsapi_exception
     newsapi = NewsApiClient(api_key=os.getenv('news_api') or aws.news_api())
-    all_articles = newsapi.get_top_headlines(sources=f'{news_source}-news')
+    try:
+        all_articles = newsapi.get_top_headlines(sources=f'{news_source}-news')
+    except newsapi_exception.NewsAPIException:
+        all_articles = None
+        speaker.say("I wasn't able to get the news sir! I think the News API broke, you may try after sometime.")
 
-    for article in all_articles['articles']:
-        speaker.say(article['title'])
-    speaker.say("That's the end of news around you.")
+    if all_articles:
+        speaker.say("News around you!")
+        for article in all_articles['articles']:
+            speaker.say(article['title'])
+        speaker.say("That's the end of news around you.")
     speaker.runAndWait()
 
     if report.has_been_called:
@@ -1832,6 +1838,9 @@ def reminder(hour, minute, am_pm, message):
                 # makes sure hour and minutes are two digits
                 hour, minute = f"{hour:02}", f"{minute:02}"
                 reminder(hour, minute, am_pm, message)
+        except AttributeError:
+            speaker.say('Reminder format should be::Remind me to do Something, at Some time. Try again.')
+            reminder(None, None, None, None)
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError, IndexError):
             if place_holder == 0:
                 place_holder = None
@@ -2279,7 +2288,7 @@ def volume_controller(level):
     changed the level to become single digit with respect to 8 (eg: 50% becomes 4) for osX"""
     sys.stdout.write("\r")
     if operating_system == 'Darwin':
-        level = round((8 * level)/100)
+        level = round((8 * level) / 100)
         os.system(f'osascript -e "set Volume {level}"')
     elif operating_system == 'Windows':
         os.system(f'SetVol.exe {level}')
@@ -2382,10 +2391,11 @@ def time_travel():
         phrase = recognizer.recognize_google(listener)
         if any(word in phrase.lower() for word in keywords.ok()):
             news()
-    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
-        time_travel.has_been_called = False
-        sentry_mode()
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        pass
     time_travel.has_been_called = False
+    speaker.say(f"Activating sentry mode, enjoy yourself sir!")
+    speaker.runAndWait()
     sentry_mode()
 
 
@@ -2401,7 +2411,8 @@ def sentry_mode():
         sys.stdout.write("\r")
         key = recognizer.recognize_google(listener)
         key = key.lower()
-        if 'good morning' in key or 'good afternoon' in key or 'good evening' in key or 'good night' in key:
+        if 'good morning' in key or 'good afternoon' in key or 'good evening' in key or 'good night' in key or \
+                'goodnight' in key:
             time_travel()
         elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'showtime' in \
                 key or 'time to work' in key or 'spin up' in key:
