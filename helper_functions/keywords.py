@@ -154,6 +154,10 @@ class Keywords:
         key = ['face', 'recognize', 'who am i', 'detect', 'facial', 'recognition', 'detection']
         return key
 
+    def speed_test(self):
+        key = ['speed', 'fast']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key

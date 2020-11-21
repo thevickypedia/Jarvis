@@ -388,6 +388,9 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.face_detection()):
         face_recognition_detection()
 
+    elif any(word in converted.lower() for word in keywords.speed_test()):
+        speed_test()
+
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         renew()
@@ -431,11 +434,11 @@ def conditions(converted):
         restart()
 
     elif any(word in converted.lower() for word in keywords.kill()):
-        memory_consumed = size_converter()
         speaker.say(f"Shutting down sir!")
         speaker.say(exit_message())
         speaker.runAndWait()
-        sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
+        sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
+                         f"\nTotal runtime: {time_converter(time.perf_counter())}")
         Alarm(None, None, None)
         Reminder(None, None, None, None)
         exit(0)
@@ -2364,6 +2367,27 @@ def face_recognition_detection():
     renew()
 
 
+def speed_test():
+    from speedtest import Speedtest
+    st = Speedtest()
+    client_locator = geo_locator.reverse(f"{st.results.client.get('lat')}, {st.results.client.get('lon')}")
+    client_location = client_locator.raw['address']
+    city, state = client_location.get('city'), client_location.get('state')
+    isp = st.results.client.get('isp').replace(',', '').replace('.', '')
+    sys.stdout.write(f"\rStarting speed test with your ISP: {isp}. Location: {city}, {state}")
+    speaker.say(f"Starting speed test sir! I.S.P: {isp}. Location: {city} {state}")
+    speaker.runAndWait()
+    st.download() and st.upload()
+    ping = round(st.results.ping)
+    download = size_converter(st.results.download)
+    upload = size_converter(st.results.upload)
+    sys.stdout.write(f'\rPing: {ping}m/s\tDownload: {download}\tUpload: {upload}')
+    speaker.say(f'Ping rate: {ping} milli seconds')
+    speaker.say(f'Download speed: {download} per second.')
+    speaker.say(F'Upload speed: {upload} per second.')
+    renew()
+
+
 def time_travel():
     """Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way"""
     am_or_pm = datetime.now().strftime("%p")
@@ -2437,25 +2461,24 @@ def sentry_mode():
         threshold += 1
         sentry_mode()
     except KeyboardInterrupt:
-        memory_consumed = size_converter()
         speaker.say(f"Shutting down sir!")
         speaker.say(exit_message())
         speaker.runAndWait()
-        sys.stdout.write(f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
+        sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
+                         f"\nTotal runtime: {time_converter(time.perf_counter())}")
         Alarm(None, None, None)
         Reminder(None, None, None, None)
         exit(0)
 
 
-def size_converter():
+def size_converter(byte_size):
     """Gets the current memory consumed and converts it to human friendly format"""
-    if operating_system == 'Darwin':
-        import resource
-        byte_size = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    elif operating_system == 'Windows':
-        byte_size = Process(os.getpid()).memory_info().peak_wset
-    else:
-        byte_size = None
+    if not byte_size:
+        if operating_system == 'Darwin':
+            import resource
+            byte_size = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        elif operating_system == 'Windows':
+            byte_size = Process(os.getpid()).memory_info().peak_wset
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
     integer = int(math.floor(math.log(byte_size, 1024)))
     power = math.pow(1024, integer)
@@ -2510,12 +2533,11 @@ def shutdown():
         converted = recognizer.recognize_google(listener)
         place_holder = None
         if any(word in converted.lower() for word in keywords.ok()):
-            memory_consumed = size_converter()
             speaker.say(f"Shutting down sir!")
             speaker.say(exit_message())
             speaker.runAndWait()
-            sys.stdout.write(
-                f"\rMemory consumed: {memory_consumed}\nTotal runtime: {time_converter(time.perf_counter())}")
+            sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
+                             f"\nTotal runtime: {time_converter(time.perf_counter())}")
             [os.remove(f"alarm/{file}") if file != 'dummy.lock' else None for file in os.listdir('alarm')]
             [os.remove(f"reminder/{file}") if file != 'dummy.lock' else None for file in os.listdir('reminder')]
             if operating_system == 'Darwin':
