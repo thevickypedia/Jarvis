@@ -336,16 +336,17 @@ def conditions(converted):
         auth = HTTPBasicAuth(git_user, git_pass)
         request = requests.get(f'https://api.github.com/user/repos?type=all&per_page=100', auth=auth)
         response = request.json()
-        result, repos, total, private, archived, licensed = [], [], 0, 0, 0, 0
+        result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
         for i in range(len(response)):
             total += 1
+            forked += 1 if response[i]['fork'] else 0
             private += 1 if response[i]['private'] else 0
             archived += 1 if response[i]['archived'] else 0
             licensed += 1 if response[i]['license'] else 0
             repos.append({response[i]['name'].replace('_', ' ').replace('-', ' '): response[i]['clone_url']})
         if 'how many' in converted:
-            speaker.say(f'You have {total} repositories sir, out of which {private} are private, {licensed} '
-                        f'are licensed, and {archived} archived.')
+            speaker.say(f'You have {total} repositories sir, out of which {forked} are forked, {private} are private, '
+                        f'{licensed} are licensed, and {archived} archived.')
             renew()
         [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
          for word in converted.lower().split() for item in repos for repo, clone_url in item.items()]
@@ -1188,19 +1189,8 @@ def meaning(keyword):
             sys.stdout.write("\r") and playsound('end.mp3')
             if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.exit()):
                 renew()
-            definition = dictionary.meaning(response)
-            if definition:
-                n = 0
-                vowel = ['A', 'E', 'I', 'O', 'U']
-                for key, value in definition.items():
-                    insert = 'an' if key[0] in vowel else 'a'
-                    repeat = 'also' if n != 0 else ''
-                    n += 1
-                    mean = ', '.join(value[0:2])
-                    speaker.say(f'{keyword} is {repeat} {insert} {key}, which means {mean}.')
             else:
-                speaker.say("Keyword should be a single word. Try again")
-                meaning(None)
+                meaning(response)
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
                 place_holder = None
@@ -1222,6 +1212,21 @@ def meaning(keyword):
                 n += 1
                 mean = ', '.join(value[0:2])
                 speaker.say(f'{keyword} is {repeat} {insert} {key}, which means {mean}.')
+            speaker.say(f'Do you wanna know how {keyword} is spelled?')
+            speaker.runAndWait()
+            try:
+                sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+                listener = recognizer.listen(source, timeout=3, phrase_time_limit=3)
+                response = recognizer.recognize_google(listener)
+                if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
+                    for letter in list(keyword.lower()):
+                        speaker.say(letter)
+                    speaker.runAndWait()
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+                pass
+        else:
+            speaker.say("Keyword should be a single word. Try again")
+            meaning(None)
     renew()
 
 
