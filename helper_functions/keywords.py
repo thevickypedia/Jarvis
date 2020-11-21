@@ -158,6 +158,10 @@ class Keywords:
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key
 
+    def restart(self):
+        key = ['restart', 'reboot']
+        return key
+
     def exit(self):
         key = ['exit', 'quit', 'sleep', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
                'see you later', 'talk to you later', 'activate sentry mode', "that's it", 'that is it']

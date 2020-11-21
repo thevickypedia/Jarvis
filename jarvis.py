@@ -427,6 +427,9 @@ def conditions(converted):
         speaker.runAndWait()
         sentry_mode()
 
+    elif any(word in converted.lower() for word in keywords.restart()):
+        restart()
+
     elif any(word in converted.lower() for word in keywords.kill()):
         memory_consumed = size_converter()
         speaker.say(f"Shutting down sir!")
@@ -2401,7 +2404,11 @@ def time_travel():
 
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action"""
-    global waiter
+    global waiter, threshold
+    if threshold > 1500:
+        speaker.say("My run time has reached the threshold!")
+        restart()
+
     waiter = 0
     if greet_check == 'initialized':
         dummy.has_been_called = True
@@ -2427,6 +2434,7 @@ def sentry_mode():
         else:
             sentry_mode()
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
+        threshold += 1
         sentry_mode()
     except KeyboardInterrupt:
         memory_consumed = size_converter()
@@ -2480,6 +2488,14 @@ def exit_message():
         exit_msg = "Have a nice night."
 
     return exit_msg
+
+
+def restart():
+    """restart() triggers restart.py which triggers Jarvis after 5 seconds"""
+    speaker.say('Restarting now sir! I will be up and running momentarily.')
+    speaker.runAndWait()
+    os.system(f'python3 restart.py')
+    exit(1)
 
 
 def shutdown():
@@ -2559,9 +2575,12 @@ if __name__ == '__main__':
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run
     # waiter is used in renew() so that when waiter hits 12 count, active listener automatically goes to sentry mode
+    # suggestion_count is used in google_searchparser to limit the number of times suggestions are used.
+        # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
+    # threshold is used to sanity check the sentry_mode() so that Jarvis doesn't run into Fatal Python error.
+        # This happens when the same functions is repeatedly called with no end::Cannot recover from stack overflow.
     place_holder, greet_check, tv = None, None, None
-    waiter = 0
-    suggestion_count = 0
+    waiter, suggestion_count, threshold = 0, 0, 0
 
     # initiates geo_locator and stores current location info as json so it could be used in couple of other functions
     try:
@@ -2606,6 +2625,8 @@ if __name__ == '__main__':
         time_travel.has_been_called = False, False, False, False, False
     for functions in [dummy, delete_todo, todo, add_todo]:
         functions.has_been_called = False
+
+    sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}")
 
     # starts sentry mode
     playsound('initialize.mp3')
