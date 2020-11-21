@@ -936,12 +936,13 @@ def repeater():
 def chatter_bot():
     """Initiates chat bot, currently not supported for Windows"""
     global place_holder
-    if operating_system == 'Windows':
-        speaker.say('Seems like you are running a Windows operating system. Requirements have version conflicting '
-                    'installations. So, currently chat bot is available only for mac OS.')
-        renew()
-
-    file1, file2 = 'db.sqlite3', f"/Users/{os.environ.get('USER')}/nltk_data"
+    file1 = 'db.sqlite3'
+    if operating_system == 'Darwin':
+        file2 = f"/Users/{os.environ.get('USER')}/nltk_data"
+    elif operating_system == 'Windows':
+        file2 = f"{os.getenv('APPDATA')}\\nltk_data"
+    else:
+        file2 = None
     if os.path.isfile(file1) and os.path.isdir(file2):
         from chatterbot import ChatBot
         from chatterbot.trainers import ChatterBotCorpusTrainer
@@ -964,6 +965,8 @@ def chatter_bot():
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
         if place_holder == 0:
             place_holder = None
+            os.system('rm db*')
+            os.system(f'rm -rf {file2}')
             renew()
         sys.stdout.write("\r")
         speaker.say("I didn't quite get that. Try again.")

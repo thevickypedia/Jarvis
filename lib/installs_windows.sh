@@ -21,6 +21,10 @@ then
   pip3 install pyicloud==0.9.7
   pip3 install geopy==2.0.0
   pip3 install PyDictionary==2.0.1
+  pip3 install ChatterBot==1.0.0
+  pip3 install chatterbot-corpus==1.2.0
+  pip3 install sqlalchemy==1.2
+  pip3 install sqlalchemy==1.3.6
   pip3 install googlehomepush==0.1.0
   pip3 install axju-jokes==1.0.3
   pip3 install timezonefinder==4.4.1
@@ -39,7 +43,3 @@ else
   echo "Bye. Hope to see you soon."
   echo "**********************************************************************************************************"
 fi
-#pip3 install ChatterBot==1.0.0 --ignore-installed PyYAML
-#pip3 install chatterbot-corpus==1.2.0 --ignore-installed PyYAML
-#pip3 install sqlalchemy==1.2
-#pip3 install python-dateutil==2.7
