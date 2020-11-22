@@ -1286,8 +1286,9 @@ def todo():
                 result[category] = result[category] + ', ' + item  # updates category if already found in result
         sys.stdout.write("\r")
         if result:
+            speaker.say('Your to-do items are')
             for category, item in result.items():  # browses dictionary and stores result in response and says it
-                response = f"Your to-do items are, {item}, in {category} category."
+                response = f"{item}, in {category} category."
                 speaker.say(response)
                 sys.stdout.write(f"\r{response}")
         elif report.has_been_called and not time_travel.has_been_called:
@@ -2113,12 +2114,12 @@ def television(converted):
     class is also initiated which is set global for other statements to use it."""
     global tv
     phrase = converted.replace('TV', '')
-    if 'wake' in phrase or 'turn on' in phrase:
+    if 'wake' in phrase or 'turn on' in phrase or 'connect' in phrase or 'status' in phrase:
         from wakeonlan import send_magic_packet as wake
         try:
             mac_address = os.getenv('tv_mac') or aws.tv_mac()
             wake(mac_address)
-            speaker.say(f"I've turned on the TV sir!")
+            speaker.say(f"TV features have been integrated sir!")
             tv = TV()
         except OSError:
             speaker.say("I wasn't able to turn on your TV sir! I think you have your VPN turned ON. If so, disconnect"
@@ -2200,7 +2201,7 @@ def television(converted):
     else:
         converted = converted.replace('my', 'your')
         speaker.say(f"I'm sorry sir! I wasn't able to {converted}, as the TV state is unknown! You can ask me to "
-                    f"turn on the TV to start using the TV features.")
+                    f"turn on or connect to the TV to start using the TV features.")
     renew()
 
 
