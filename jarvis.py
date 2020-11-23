@@ -26,7 +26,9 @@ from playsound import playsound
 from psutil import Process, virtual_memory
 from punctuator import Punctuator
 from pyicloud import PyiCloudService
+from pyicloud.exceptions import PyiCloudAPIResponseException, PyiCloudFailedLoginException
 from requests.auth import HTTPBasicAuth
+from speedtest import Speedtest, ConfigRetrievalError
 from wordninja import split as splitter
 
 from alarm import Alarm
@@ -2466,8 +2468,6 @@ def face_recognition_detection():
 
 
 def speed_test():
-    from speedtest import Speedtest
-    st = Speedtest()
     client_locator = geo_locator.reverse(f"{st.results.client.get('lat')}, {st.results.client.get('lon')}")
     client_location = client_locator.raw['address']
     city, state = client_location.get('city'), client_location.get('state')
@@ -2702,24 +2702,45 @@ if __name__ == '__main__':
     place_holder, greet_check, tv = None, None, None
     waiter, suggestion_count, threshold = 0, 0, 0
 
+    # Uses speed test api to check for internet connection
+    try:
+        st = Speedtest()
+    except ConfigRetrievalError:
+        sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
+        speaker.say("I was unable to connect to the internet sir! Please check your connection settings and retry.")
+        speaker.runAndWait()
+        st = None
+        exit()
+
     # initiates geo_locator and stores current location info as json so it could be used in couple of other functions
     try:
-        options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
-        geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
+        # tries with icloud api to get your phone's location for precise location services
         icloud_user = os.getenv('icloud_user') or aws.icloud_user()
         icloud_pass = os.getenv('icloud_pass') or aws.icloud_pass()
         icloud_api = PyiCloudService(icloud_user, icloud_pass)
         raw_location = icloud_api.iphone.location()
         current_lat = raw_location['latitude']
         current_lon = raw_location['longitude']
-        locator = geo_locator.reverse(f'{current_lat}, {current_lon}')
-        location_info = locator.raw['address']
+    except (TypeError, PyiCloudAPIResponseException, PyiCloudFailedLoginException):
+        # uses latitude and longitude information from your IP's client when unable to connect to icloud
+        current_lat = st.results.client['lat']
+        current_lon = st.results.client['lon']
+        speaker.say("I had trouble accessing the iCloud API, so I'll be using your I.P address for location. "
+                    "Please note that this may not be accurate enough for location services.")
+        speaker.runAndWait()
     except requests.exceptions.ConnectionError:
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
+        current_lat, current_lon = None, None
         speaker.say("I was unable to connect to the internet. Please check your connection settings and retry. "
                     "Remember to check for VPN settings, as it can also be a factor in open Wi-Fi connections.")
         speaker.runAndWait()
         exit()
+
+    # Uses the latitude and longitude information and converts to the required address.
+    options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
+    geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
+    locator = geo_locator.reverse(f'{current_lat}, {current_lon}')
+    location_info = locator.raw['address']
 
     # different responses for different conditions in senty mode
     wake_up1 = ['Up and running sir.', 'Online and ready sir.', "I've indeed been uploaded sir!", 'Listeners have been '
