@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 from urllib.request import urlopen
 
 import certifi
+import pytemperature
 import pyttsx3 as audio
 import requests
 import speech_recognition as sr
@@ -156,7 +157,14 @@ def conditions(converted):
                 place += word + ' '
             elif '.' in word:
                 place += word + ' '
-        if place:
+        checker = converted.lower()
+        if 'tomorrow' in checker or 'day after' in checker or 'next week' in checker or 'tonight' in checker or \
+                'afternoon' in checker or 'evening' in checker:
+            if place:
+                weather_condition(place, converted)
+            else:
+                weather_condition(None, converted)
+        elif place:
             weather(place)
         else:
             weather(None)
@@ -594,7 +602,6 @@ def weather(place):
     """Says weather at any location and skips going to renew() if the function is called by report()
     Says weather at current location by getting IP using reverse geocoding if no place is received"""
     sys.stdout.write('\rGetting your weather info')
-    import pytemperature
     api_key = os.getenv('weather_api') or aws.weather_api()
     if place:
         desired_location = geo_locator.geocode(place)
@@ -649,20 +656,12 @@ def weather(place):
         else:
             feeling, weather_suggest = '', ''
         wind_speed = response['current']['wind_speed']
-        try:
-            alerts = response['alerts'][0]['event']
-            start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")
-            end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
-        except (IndexError, AttributeError, KeyError):
-            alerts, start_alert, end_alert = None, None, None
         if wind_speed > 10:
             output = f'The weather at {city} is a {feeling} {temp_f}°, but due to the current wind conditions ' \
                      f'(which is {wind_speed} miles per hour), it feels like {temp_feel_f}°. {weather_suggest}. '
         else:
             output = f'The weather at {city} is a {feeling} {temp_f}°, and it currently feels like {temp_feel_f}°. ' \
                      f'{weather_suggest}. '
-        if alerts and start_alert and end_alert:
-            output += f'You have a weather alert for {alerts} between {start_alert} and {end_alert}'
     elif place or not report.has_been_called:
         output = f'The weather at {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \
                  f'It currently feels like {temp_feel_f}°F, and the current condition is {condition}.'
@@ -670,6 +669,14 @@ def weather(place):
         output = f'You are currently at {weather_location}. The weather at your location is {temp_f}°F, with a high ' \
                  f'of {high}, and a low of {low}. It currently feels Like {temp_feel_f}°F, and the current ' \
                  f'condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}'
+    try:
+        alerts = response['alerts'][0]['event']
+        start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")
+        end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
+    except (IndexError, AttributeError, KeyError):
+        alerts, start_alert, end_alert = None, None, None
+    if alerts and start_alert and end_alert:
+        output += f'You have a weather alert for {alerts} between {start_alert} and {end_alert}'
     sys.stdout.write(f"\r{output}")
     speaker.say(output)
     speaker.runAndWait()
@@ -677,6 +684,88 @@ def weather(place):
         pass
     else:
         renew()
+
+
+def weather_condition(place, msg):
+    """Weather report when your phrase has conditions in it like tomorrow, day after, next week and specific part
+    of the day etc. weather_condition() uses conditional blocks to fetch keywords and determine the output"""
+    if place:
+        desired_location = geo_locator.geocode(place)
+        coordinates = desired_location.latitude, desired_location.longitude
+        located = geo_locator.reverse(coordinates, language='en')
+        data = located.raw
+        address = data['address']
+        city = address['city'] if 'city' in address.keys() else None
+        state = address['state'] if 'state' in address.keys() else None
+        lat = located.latitude
+        lon = located.longitude
+    else:
+        city, state, = location_info['city'], location_info['state']
+        lat = current_lat
+        lon = current_lon
+    api_key = os.getenv('weather_api')
+    api_endpoint = "http://api.openweathermap.org/data/2.5/"
+    weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={api_key}'
+    r = urlopen(weather_url)  # sends request to the url created
+    response = json.loads(r.read())  # loads the response in a json
+    weather_location = f'{city} {state}'
+    if 'tonight' in msg:
+        key = 0
+        tell = 'tonight'
+    elif 'day after' in msg:
+        key = 2
+        tell = 'day after tomorrow '
+    elif 'tomorrow' in msg:
+        key = 1
+        tell = 'tomorrow '
+    elif 'next week' in msg:
+        key = -1
+        next_week = datetime.fromtimestamp(response['daily'][-1]['dt']).strftime("%A, %B %d")
+        tell = f"on {' '.join(next_week.split()[0:-1])} {engine().ordinal(next_week.split()[-1])}"
+    else:
+        key = 0
+        tell = 'today '
+    if 'morning' in msg:
+        when = 'morn'
+        tell += 'morning'
+    elif 'evening' in msg:
+        when = 'eve'
+        tell += 'evening'
+    elif 'tonight' in msg:
+        when = 'night'
+    elif 'night' in msg:
+        when = 'night'
+        tell += 'night'
+    else:
+        when = 'day'
+        tell += ''
+    try:
+        alerts = response['alerts'][key]['event']
+        start_alert = datetime.fromtimestamp(response['alerts'][key]['start']).strftime("%I:%M %p")
+        end_alert = datetime.fromtimestamp(response['alerts'][key]['end']).strftime("%I:%M %p")
+    except (IndexError, AttributeError, KeyError):
+        alerts, start_alert, end_alert = None, None, None
+    temperature = response['daily'][key]['temp'][when]
+    feels_like = response['daily'][key]['feels_like'][when]
+    condition = response['daily'][key]['weather'][0]['description']
+    sunrise = response['daily'][key]['sunrise']
+    sunset = response['daily'][key]['sunset']
+    maxi = response['daily'][key]['temp']['max']
+    mini = response['daily'][1]['temp']['min']
+    high = int(round(pytemperature.k2f(maxi), 2))
+    low = int(round(pytemperature.k2f(mini), 2))
+    temp_f = int(round(pytemperature.k2f(temperature), 2))
+    temp_feel_f = int(round(pytemperature.k2f(feels_like), 2))
+    sunrise = datetime.fromtimestamp(sunrise).strftime("%I:%M %p")
+    sunset = datetime.fromtimestamp(sunset).strftime("%I:%M %p")
+    output = f'The weather in {weather_location} {tell} would be {temp_f}°F, with a high ' \
+             f'of {high}, and a low of {low}. But due to {condition} it will fee like it is {temp_feel_f}°F. ' \
+             f'Sunrise at {sunrise}. Sunset at {sunset}'
+    if alerts and start_alert and end_alert:
+        output += f'There is a weather alert for {alerts} between {start_alert} and {end_alert}'
+    sys.stdout.write(f'\r{output}')
+    speaker.say(output)
+    renew()
 
 
 def system_info():
@@ -2607,9 +2696,9 @@ if __name__ == '__main__':
     # greet_check is used in initialize() to greet only for the first run
     # waiter is used in renew() so that when waiter hits 12 count, active listener automatically goes to sentry mode
     # suggestion_count is used in google_searchparser to limit the number of times suggestions are used.
-        # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
+    # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
     # threshold is used to sanity check the sentry_mode() so that Jarvis doesn't run into Fatal Python error.
-        # This happens when the same functions is repeatedly called with no end::Cannot recover from stack overflow.
+    # This happens when the same functions is repeatedly called with no end::Cannot recover from stack overflow.
     place_holder, greet_check, tv = None, None, None
     waiter, suggestion_count, threshold = 0, 0, 0
 
