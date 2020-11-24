@@ -705,7 +705,7 @@ def weather_condition(place, msg):
         city, state, = location_info['city'], location_info['state']
         lat = current_lat
         lon = current_lon
-    api_key = os.getenv('weather_api')
+    api_key = os.getenv('weather_api') or aws.weather_api()
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
     weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={api_key}'
     r = urlopen(weather_url)  # sends request to the url created
@@ -1760,9 +1760,9 @@ def alarm(hour, minute, am_pm, msg):
             alarm(hour=None, minute=None, am_pm=None, msg='')
         place_holder = None
     if 'wake' in msg.lower().strip():
-        speaker.say(f"Sure sir! I will wake you up at {hour}:{minute} {am_pm}.")
+        speaker.say(f"{random.choice(acknowledgement)} I will wake you up at {hour}:{minute} {am_pm}.")
     else:
-        speaker.say(f"Sure sir! Alarm has been set for {hour}:{minute} {am_pm}.")
+        speaker.say(f"{random.choice(acknowledgement)} Alarm has been set for {hour}:{minute} {am_pm}.")
     sys.stdout.write(f"\rAlarm has been set for {hour}:{minute} {am_pm} sir!")
     renew()
 
@@ -1956,7 +1956,7 @@ def reminder(hour, minute, am_pm, message):
             place_holder = 0
             reminder(hour=None, minute=None, am_pm=None, message=None)
         place_holder = None
-    speaker.say(f"Sure sir! I will remind you to {message} at {hour}:{minute} {am_pm}.")
+    speaker.say(f"{random.choice(acknowledgement)} I will remind you to {message} at {hour}:{minute} {am_pm}.")
     sys.stdout.write(f"\rI will remind you to {message} at {hour}:{minute} {am_pm} sir!")
     renew()
 
@@ -2219,28 +2219,28 @@ def television(converted):
     if tv:
         if 'increase' in phrase:
             tv.increase_volume()
-            speaker.say('Done sir!')
+            speaker.say(f'{random.choice(acknowledgement)}!')
         elif 'decrease' in phrase or 'reduce' in phrase:
             tv.decrease_volume()
-            speaker.say('Done sir!')
+            speaker.say(f'{random.choice(acknowledgement)}!')
         elif 'mute' in phrase:
             tv.mute()
-            speaker.say('Done sir!')
+            speaker.say(f'{random.choice(acknowledgement)}!')
         elif 'pause' in phrase or 'hold' in phrase:
             tv.pause()
-            speaker.say('Done sir!')
+            speaker.say(f'{random.choice(acknowledgement)}!')
         elif 'resume' in phrase or 'play' in phrase:
             tv.play()
-            speaker.say('Done sir!')
+            speaker.say(f'{random.choice(acknowledgement)}!')
         elif 'rewind' in phrase:
             tv.rewind()
-            speaker.say('Done sir!')
+            speaker.say(f'{random.choice(acknowledgement)}!')
         elif 'forward' in phrase:
             tv.forward()
-            speaker.say('Done sir!')
+            speaker.say(f'{random.choice(acknowledgement)}!')
         elif 'stop' in phrase:
             tv.stop()
-            speaker.say('Done sir!')
+            speaker.say(f'{random.choice(acknowledgement)}!')
         elif 'set' in phrase:
             vol = int(''.join([str(s) for s in re.findall(r'\b\d+\b', phrase)]))
             sys.stdout.write(f'\rRequested volume: {vol}')
@@ -2398,7 +2398,7 @@ def volume_controller(level):
         os.system(f'osascript -e "set Volume {level}"')
     elif operating_system == 'Windows':
         os.system(f'SetVol.exe {level}')
-    speaker.say("You got it sir.")
+    speaker.say(f"{random.choice(acknowledgement)}")
     renew()
 
 
@@ -2527,7 +2527,8 @@ def time_travel():
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action"""
     global waiter, threshold
-    if threshold > 1500:
+    threshold += 1
+    if threshold > 15000:
         speaker.say("My run time has reached the threshold!")
         restart()
 
@@ -2556,7 +2557,6 @@ def sentry_mode():
         else:
             sentry_mode()
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
-        threshold += 1
         sentry_mode()
     except KeyboardInterrupt:
         speaker.say(f"Shutting down sir!")
@@ -2749,6 +2749,8 @@ if __name__ == '__main__':
     wake_up3 = ["I'm here sir!."]
 
     confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']
+    acknowledgement = ['You got it sir!', 'Roger that!', 'Done sir!', 'By all means sir!', 'Indeed sir!', 'Gladly sir!',
+                       'Without fail sir!', 'Sure sir!']
 
     weekend = ['Friday', 'Saturday']
     if 'model.pcl' not in current_dir:
