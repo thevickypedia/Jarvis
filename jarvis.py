@@ -21,6 +21,7 @@ import speech_recognition as sr
 import yaml
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim, options
+from geopy.exc import GeocoderUnavailable, GeopyError
 from inflect import engine
 from playsound import playsound
 from psutil import Process, virtual_memory
@@ -107,7 +108,7 @@ def alive():
         converted = None
     if not converted:
         alive()
-    if any(word in converted.lower() for word in keywords.sleep()):
+    elif any(word in converted.lower() for word in keywords.sleep()):
         speaker.say(f"Activating sentry mode, enjoy yourself sir!")
         speaker.runAndWait()
         sentry_mode()
@@ -289,25 +290,7 @@ def conditions(converted):
         kill_alarm()
 
     elif any(word in converted.lower() for word in keywords.alarm()):
-        """uses regex to find numbers in your statement and processes AM and PM information"""
-        try:
-            extracted_time = re.findall(r'\s([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
-                r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
-            extracted_time = extracted_time[0]
-            am_pm = extracted_time.split()[-1]
-            am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
-            alarm_time = extracted_time.split()[0]
-            if ":" in extracted_time:
-                hour = int(alarm_time.split(":")[0])
-                minute = int(alarm_time.split(":")[-1])
-            else:
-                hour = int(alarm_time.split()[0])
-                minute = 0
-            # makes sure hour and minutes are two digits
-            hour, minute = f"{hour:02}", f"{minute:02}"
-            alarm(hour, minute, am_pm, converted)
-        except IndexError:
-            alarm(hour=None, minute=None, am_pm=None, msg=converted)
+        alarm(converted.lower())
 
     elif any(word in converted.lower() for word in keywords.google_home()):
         google_home(device=None, file=None)
@@ -316,26 +299,7 @@ def conditions(converted):
         jokes()
 
     elif any(word in converted.lower() for word in keywords.reminder()):
-        """uses regex to find numbers in your statement and processes AM and PM information"""
-        try:
-            message = re.search('to(.*)at', converted).group(1).strip()
-            extracted_time = re.findall(r'\s([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
-                r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
-            extracted_time = extracted_time[0]
-            am_pm = extracted_time.split()[-1]
-            am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
-            alarm_time = extracted_time.split()[0]
-            if ":" in extracted_time:
-                hour = int(alarm_time.split(":")[0])
-                minute = int(alarm_time.split(":")[-1])
-            else:
-                hour = int(alarm_time.split()[0])
-                minute = 0
-            # makes sure hour and minutes are two digits
-            hour, minute = f"{hour:02}", f"{minute:02}"
-            reminder(hour, minute, am_pm, message)
-        except (IndexError, AttributeError):
-            reminder(hour=None, minute=None, am_pm=None, message=None)
+        reminder(converted.lower())
 
     elif any(word in converted.lower() for word in keywords.notes()):
         notes()
@@ -670,12 +634,12 @@ def weather(place):
     else:
         output = f'You are currently at {weather_location}. The weather at your location is {temp_f}°F, with a high ' \
                  f'of {high}, and a low of {low}. It currently feels Like {temp_feel_f}°F, and the current ' \
-                 f'condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}'
-    try:
+                 f'condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}. '
+    if 'alerts' in response:
         alerts = response['alerts'][0]['event']
         start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")
         end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
-    except (IndexError, AttributeError, KeyError):
+    else:
         alerts, start_alert, end_alert = None, None, None
     if alerts and start_alert and end_alert:
         output += f'You have a weather alert for {alerts} between {start_alert} and {end_alert}'
@@ -741,11 +705,11 @@ def weather_condition(place, msg):
     else:
         when = 'day'
         tell += ''
-    try:
+    if 'alerts' in response:
         alerts = response['alerts'][key]['event']
         start_alert = datetime.fromtimestamp(response['alerts'][key]['start']).strftime("%I:%M %p")
         end_alert = datetime.fromtimestamp(response['alerts'][key]['end']).strftime("%I:%M %p")
-    except (IndexError, AttributeError, KeyError):
+    else:
         alerts, start_alert, end_alert = None, None, None
     temperature = response['daily'][key]['temp'][when]
     feels_like = response['daily'][key]['feels_like'][when]
@@ -762,7 +726,7 @@ def weather_condition(place, msg):
     sunset = datetime.fromtimestamp(sunset).strftime("%I:%M %p")
     output = f'The weather in {weather_location} {tell} would be {temp_f}°F, with a high ' \
              f'of {high}, and a low of {low}. But due to {condition} it will fee like it is {temp_feel_f}°F. ' \
-             f'Sunrise at {sunrise}. Sunset at {sunset}'
+             f'Sunrise at {sunrise}. Sunset at {sunset}. '
     if alerts and start_alert and end_alert:
         output += f'There is a weather alert for {alerts} between {start_alert} and {end_alert}'
     sys.stdout.write(f'\r{output}')
@@ -1720,13 +1684,37 @@ def directions(place):
     renew()
 
 
-def alarm(hour, minute, am_pm, msg):
+def alarm(msg):
     """Passes hour, minute and am/pm to Alarm class which initiates a thread for alarm clock in the background"""
     global place_holder
-    if hour and minute and am_pm:
-        f_name = f"{hour}_{minute}_{am_pm}"
-        open(f'alarm/{f_name}.lock', 'a')
-        Alarm(hour, minute, am_pm).start()
+    extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', msg) or \
+        re.findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', msg)
+    if extracted_time:
+        extracted_time = extracted_time[0]
+        am_pm = extracted_time.split()[-1]
+        am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
+        alarm_time = extracted_time.split()[0]
+        if ":" in extracted_time:
+            hour = int(alarm_time.split(":")[0])
+            minute = int(alarm_time.split(":")[-1])
+        else:
+            hour = int(alarm_time.split()[0])
+            minute = 0
+        # makes sure hour and minutes are two digits
+        hour, minute = f"{hour:02}", f"{minute:02}"
+        am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
+        if int(hour) <= 12 and int(minute) <= 59:
+            f_name = f"{hour}_{minute}_{am_pm}"
+            open(f'alarm/{f_name}.lock', 'a')
+            Alarm(hour, minute, am_pm).start()
+            if 'wake' in msg.lower().strip():
+                speaker.say(f"{random.choice(acknowledgement)} I will wake you up at {hour}:{minute} {am_pm}.")
+            else:
+                speaker.say(f"{random.choice(acknowledgement)} Alarm has been set for {hour}:{minute} {am_pm}.")
+            sys.stdout.write(f"\rAlarm has been set for {hour}:{minute} {am_pm} sir!")
+        else:
+            speaker.say(f"An alarm at {hour} {minute} {am_pm}? Are you an alien? "
+                        f"I don't think a time like that exists on Earth.")
     else:
         speaker.say('Please tell me a time sir!')
         speaker.runAndWait()
@@ -1739,31 +1727,16 @@ def alarm(hour, minute, am_pm, msg):
                 place_holder = None
                 renew()
             else:
-                alarm_time = converted.split()[0]
-                am_pm = converted.split()[-1]
-                if ":" in converted:
-                    hour = int(alarm_time.split(":")[0])
-                    minute = int(alarm_time.split(":")[-1])
-                else:
-                    hour = int(alarm_time.split()[0])
-                    minute = 0
-                hour, minute = f"{hour:02}", f"{minute:02}"
-                am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
-                alarm(hour=hour, minute=minute, am_pm=am_pm, msg='')
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError):
+                alarm(converted)
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
                 place_holder = None
                 renew()
             sys.stdout.write("\r")
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
-            alarm(hour=None, minute=None, am_pm=None, msg='')
+            alarm(msg='')
         place_holder = None
-    if 'wake' in msg.lower().strip():
-        speaker.say(f"{random.choice(acknowledgement)} I will wake you up at {hour}:{minute} {am_pm}.")
-    else:
-        speaker.say(f"{random.choice(acknowledgement)} Alarm has been set for {hour}:{minute} {am_pm}.")
-    sys.stdout.write(f"\rAlarm has been set for {hour}:{minute} {am_pm} sir!")
     renew()
 
 
@@ -1778,10 +1751,7 @@ def kill_alarm():
         speaker.say("You have no alarms set sir!")
     elif len(alarm_state) == 1:
         hour, minute, am_pm = alarm_state[0][0:2], alarm_state[0][3:5], alarm_state[0][6:8]
-        try:
-            os.remove(f"alarm/{alarm_state[0]}")
-        except FileNotFoundError:
-            pass
+        os.remove(f"alarm/{alarm_state[0]}")
         speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
     else:
         sys.stdout.write(f"\r{', '.join(alarm_state).replace('.lock', '')}")
@@ -1803,12 +1773,12 @@ def kill_alarm():
                 minute = 0
             hour, minute = f"{hour:02}", f"{minute:02}"
             am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
-            try:
+            if f'{hour}_{minute}_{am_pm}.lock' in os.listdir('alarm'):
                 os.remove(f"alarm/{hour}_{minute}_{am_pm}.lock")
-            except FileNotFoundError:
+                speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
+            else:
                 speaker.say(f"I wasn't able to find an alarm at {hour}:{minute} {am_pm}. Try again.")
                 kill_alarm()
-            speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             if place_holder == 0:
                 place_holder = None
@@ -1908,57 +1878,57 @@ def jokes():
         renew()
 
 
-def reminder(hour, minute, am_pm, message):
+def reminder(converted):
     """Passes hour, minute, am/pm and reminder message to Reminder class which initiates a thread for reminder"""
     global place_holder
-    if hour and minute and am_pm and message:
-        f_name = f"{hour}_{minute}_{am_pm}"
-        open(f'reminder/{f_name}.lock', 'a')
-        Reminder(hour, minute, am_pm, message).start()
-    else:
-        speaker.say('Please give me the reminder details sir!')
+    message = re.search('to(.*)at', converted)
+    if not message:
+        message = re.search('to(.*)', converted)
+        if not message:
+            speaker.say('Reminder format should be::Remind me to do something, at some time.')
+            sys.stdout.write('Reminder format should be::Remind ME to do something, AT some time.')
+            renew()
+    extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
+        r'([0-9]+\s?(?:a.m.|p.m.:?))', converted)
+    if not extracted_time:
+        speaker.say("When do you want to be reminded sir?")
         speaker.runAndWait()
         try:
             sys.stdout.write("\rListener activated..") and playsound('start.mp3')
             listener = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r") and playsound('end.mp3')
             converted = recognizer.recognize_google(listener)
-            if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-                place_holder = None
-                renew()
-            else:
-                message = re.search('to(.*)at', converted).group(1).strip()
-                """uses regex to find numbers in your statement and processes AM and PM information"""
-                extracted_time = re.findall(r'\s([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
-                    r'\s([0-9]+\s?(?:a.m.|p.m.:?))', converted)
-                extracted_time = extracted_time[0]
-                am_pm = extracted_time.split()[-1]
-                am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
-                alarm_time = extracted_time.split()[0]
-                if ":" in extracted_time:
-                    hour = int(alarm_time.split(":")[0])
-                    minute = int(alarm_time.split(":")[-1])
-                else:
-                    hour = int(alarm_time.split()[0])
-                    minute = 0
-                # makes sure hour and minutes are two digits
-                hour, minute = f"{hour:02}", f"{minute:02}"
-                reminder(hour, minute, am_pm, message)
-        except AttributeError:
-            speaker.say('Reminder format should be::Remind me to do Something, at Some time. Try again.')
-            reminder(None, None, None, None)
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, ValueError, IndexError):
-            if place_holder == 0:
-                place_holder = None
-                renew()
-            sys.stdout.write("\r")
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            reminder(hour=None, minute=None, am_pm=None, message=None)
-        place_holder = None
-    speaker.say(f"{random.choice(acknowledgement)} I will remind you to {message} at {hour}:{minute} {am_pm}.")
-    sys.stdout.write(f"\rI will remind you to {message} at {hour}:{minute} {am_pm} sir!")
-    renew()
+            extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
+                r'([0-9]+\s?(?:a.m.|p.m.:?))', converted)
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            renew()
+    if message and extracted_time:
+        message = message.group(1).strip()
+        extracted_time = extracted_time[0]
+        am_pm = extracted_time.split()[-1]
+        am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
+        alarm_time = extracted_time.split()[0]
+        if ":" in extracted_time:
+            hour = int(alarm_time.split(":")[0])
+            minute = int(alarm_time.split(":")[-1])
+        else:
+            hour = int(alarm_time.split()[0])
+            minute = 0
+        # makes sure hour and minutes are two digits
+        hour, minute = f"{hour:02}", f"{minute:02}"
+        if int(hour) <= 12 and int(minute) <= 59:
+            Reminder(hour, minute, am_pm, message)
+            speaker.say(f"{random.choice(acknowledgement)} I will remind you to {message} at {hour}:{minute} {am_pm}.")
+            sys.stdout.write(f"\rI will remind you to {message} at {hour}:{minute} {am_pm} sir!")
+            renew()
+        else:
+            speaker.say(f"A reminder at {hour} {minute} {am_pm}? Are you an alien? "
+                        f"I don't think a time like that exists on Earth.")
+            renew()
+    else:
+        speaker.say('Reminder format should be::Remind me to do something, at some time.')
+        sys.stdout.write('Reminder format should be::Remind ME to do something, AT some time.')
+        renew()
 
 
 def maps_api(query):
@@ -2210,8 +2180,8 @@ def television(converted):
         try:
             mac_address = os.getenv('tv_mac') or aws.tv_mac()
             wake(mac_address)
-            speaker.say(f"TV features have been integrated sir!")
             tv = TV()
+            speaker.say(f"TV features have been integrated sir!")
         except OSError:
             speaker.say("I wasn't able to turn on your TV sir! I think you have your VPN turned ON. If so, disconnect"
                         " it. And make sure you are on the same network as your TV.")
@@ -2528,7 +2498,7 @@ def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action"""
     global waiter, threshold
     threshold += 1
-    if threshold > 15000:
+    if threshold > 5000:
         speaker.say("My run time has reached the threshold!")
         restart()
 
@@ -2541,8 +2511,8 @@ def sentry_mode():
         sys.stdout.write("\r")
         key = recognizer.recognize_google(listener)
         key = key.lower()
-        if 'good morning' in key or 'good afternoon' in key or 'good evening' in key or 'good night' in key or \
-                'goodnight' in key:
+        if 'good morning jarvis' in key or 'good afternoon jarvis' in key or 'good evening jarvis' in key or \
+                'good night jarvis' in key or 'goodnight' in key:
             time_travel()
         elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'showtime' in \
                 key or 'time to work' in key or 'spin up' in key:
@@ -2556,7 +2526,11 @@ def sentry_mode():
             initialize()
         else:
             sentry_mode()
-    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        sentry_mode()
+    except RecursionError:
+        current_limit = sys.getrecursionlimit()
+        sys.setrecursionlimit(current_limit * 10)
         sentry_mode()
     except KeyboardInterrupt:
         speaker.say(f"Shutting down sir!")
@@ -2694,11 +2668,12 @@ if __name__ == '__main__':
 
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run
+    # tv is set to None at the start
     # waiter is used in renew() so that when waiter hits 12 count, active listener automatically goes to sentry mode
     # suggestion_count is used in google_searchparser to limit the number of times suggestions are used.
-    # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
+        # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
     # threshold is used to sanity check the sentry_mode() so that Jarvis doesn't run into Fatal Python error.
-    # This happens when the same functions is repeatedly called with no end::Cannot recover from stack overflow.
+        # This happens when the same functions is repeatedly called with no end::Cannot recover from stack overflow.
     place_holder, greet_check, tv = None, None, None
     waiter, suggestion_count, threshold = 0, 0, 0
 
@@ -2736,11 +2711,15 @@ if __name__ == '__main__':
         speaker.runAndWait()
         exit()
 
-    # Uses the latitude and longitude information and converts to the required address.
-    options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
-    geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
-    locator = geo_locator.reverse(f'{current_lat}, {current_lon}')
-    location_info = locator.raw['address']
+    try:
+        # Uses the latitude and longitude information and converts to the required address.
+        options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
+        geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
+        locator = geo_locator.reverse(f'{current_lat}, {current_lon}')
+        location_info = locator.raw['address']
+    except (GeocoderUnavailable, GeopyError):
+        speaker.say('Received an error while retrieving your address sir! I think a restart should fix this.')
+        restart()
 
     # different responses for different conditions in senty mode
     wake_up1 = ['Up and running sir.', 'Online and ready sir.', "I've indeed been uploaded sir!", 'Listeners have been '
