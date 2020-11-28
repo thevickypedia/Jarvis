@@ -7,7 +7,8 @@ if [[ "$check" != "$condition" ]]; then
   else echo "Found Homebrew, skipping installation"
 fi
 #python3 -m venv venv
-brew install portaudio@19.6.0
+brew install portaudio
+brew install blueutil
 pip install --upgrade pip
 python3 -m pip install SpeechRecognition==3.8.1
 python3 -m pip install PyAudio==0.2.11

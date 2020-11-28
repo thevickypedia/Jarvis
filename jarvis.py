@@ -9,8 +9,10 @@ import ssl
 import subprocess
 import sys
 import time
+import unicodedata
 import webbrowser
 from datetime import datetime, timedelta
+from subprocess import CalledProcessError
 from urllib.request import urlopen
 
 import certifi
@@ -20,8 +22,8 @@ import requests
 import speech_recognition as sr
 import yaml
 from geopy.distance import geodesic
-from geopy.geocoders import Nominatim, options
 from geopy.exc import GeocoderUnavailable, GeopyError
+from geopy.geocoders import Nominatim, options
 from inflect import engine
 from playsound import playsound
 from psutil import Process, virtual_memory
@@ -365,6 +367,13 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.speed_test()):
         speed_test()
+
+    elif any(word in converted.lower() for word in keywords.bluetooth()):
+        if operating_system == 'Darwin':
+            bluetooth(phrase=converted.lower())
+        else:
+            speaker.say("Bluetooth connectivity on Windows is beyond my capabilities sir!")
+            renew()
 
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -2456,6 +2465,63 @@ def speed_test():
     renew()
 
 
+def bluetooth(phrase):
+    """Find and connect to bluetooth devices near by"""
+    if 'turn off' in phrase or 'power off' in phrase:
+        subprocess.call(f"blueutil --power 0", shell=True)
+        speaker.say(f"Bluetooth has been turned off sir!")
+    elif 'turn on' in phrase or 'power on' in phrase:
+        subprocess.call(f"blueutil --power 1", shell=True)
+        speaker.say(f"Bluetooth has been turned on sir!")
+    renew()
+
+    devices_dict = []
+
+    def connector(targets):
+        connection_made = False
+        for target in targets:
+            if any(re.search(line, target['Name'], flags=re.IGNORECASE) for line in phrase.split()):
+                try:
+                    if 'disconnect' in phrase:
+                        subprocess.call(f"blueutil --disconnect {target['macAddress']}", shell=True)
+                        speaker.say(f"Disconnected from {target['Name']}")
+                    elif 'connect' in phrase:
+                        subprocess.call(f"blueutil --connect {target['macAddress']}", shell=True)
+                        speaker.say(f"Connected to {target['Name']}")
+                    connection_made = True
+                except CalledProcessError:
+                    speaker.say(f"I was unable to contact {target['Name']}")
+                break
+        return connection_made
+
+    def scanner(devices):
+        for device in devices:
+            if device:
+                mac_finder = re.compile(r'(?:[0-9a-fA-F]-?){12}', re.IGNORECASE) if '-' in device.split(',')[0] else \
+                    re.compile(r'(?:[0-9a-fA-F]:?){12}', re.IGNORECASE)
+                mac_address = re.findall(mac_finder, device)[0]
+                status = 'Not Connected' if 'not connected' in device else 'Connected'
+                name = (re.findall(r'\"(.+?)\"', device)[0])
+                device_info = {
+                    'Name': unicodedata.normalize("NFKD", name),
+                    'Status': status,
+                    'macAddress': mac_address
+                }
+                devices_dict.append(device_info)
+
+    paired = subprocess.check_output("blueutil --paired", shell=True)
+    paired = paired.decode('utf-8').split('\n')
+    scanner(devices=paired)
+    if not connector(targets=devices_dict):
+        speaker.say('No connections were established, looking for unpaired ones.')
+        speaker.runAndWait()
+        unpaired = subprocess.check_output("blueutil --inquiry", shell=True)
+        unpaired = unpaired.decode('utf-8').split('\n')
+        scanner(devices=unpaired)
+        connector(targets=devices_dict)
+    renew()
+
+
 def time_travel():
     """Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way"""
     am_or_pm = datetime.now().strftime("%p")
@@ -2729,7 +2795,7 @@ if __name__ == '__main__':
 
     confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']
     acknowledgement = ['You got it sir!', 'Roger that!', 'Done sir!', 'By all means sir!', 'Indeed sir!', 'Gladly sir!',
-                       'Without fail sir!', 'Sure sir!']
+                       'Without fail sir!', 'Sure sir!', 'Buttoned up sir!', 'Executed sir!']
 
     weekend = ['Friday', 'Saturday']
     if 'model.pcl' not in current_dir:
