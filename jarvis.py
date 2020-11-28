@@ -2576,20 +2576,23 @@ def sentry_mode():
         listener = recognizer.listen(source, timeout=None, phrase_time_limit=3)
         sys.stdout.write("\r")
         key = recognizer.recognize_google(listener)
-        key = key.lower()
-        if 'good morning jarvis' in key or 'good afternoon jarvis' in key or 'good evening jarvis' in key or \
-                'good night jarvis' in key or 'goodnight' in key:
-            time_travel()
+        key = key.lower().strip()
+        if key == 'jarvis' or key == 'buddy':
+            speaker.say(f'{random.choice(wake_up3)}')
+            initialize()
+        elif 'good' in key:
+            if 'good morning jarvis' in key or 'good afternoon jarvis' in key or 'good evening jarvis' in key or \
+                    'good night jarvis' in key or 'goodnight jarvis' in key:
+                time_travel()
         elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'showtime' in \
                 key or 'time to work' in key or 'spin up' in key:
             speaker.say(f'{random.choice(wake_up1)}')
             initialize()
-        elif 'you there' in key or 'buddy' in key or 'are you there' in key:
+        elif 'you there' in key or 'are you there' in key:
             speaker.say(f'{random.choice(wake_up2)}')
             initialize()
-        elif 'jarvis' in key:
-            speaker.say(f'{random.choice(wake_up3)}')
-            initialize()
+        elif 'jarvis' in key or 'buddy' in key:
+            conditions(key)
         else:
             sentry_mode()
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):

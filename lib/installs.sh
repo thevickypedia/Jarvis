@@ -8,7 +8,7 @@ if [[ "$check" != "$condition" ]]; then
 fi
 #python3 -m venv venv
 brew install portaudio
-brew install blueutil
+git clone https://github.com/toy/blueutil.git && cd blueutil && make && make install && cd ../ && rm -rf blueutil
 pip install --upgrade pip
 python3 -m pip install SpeechRecognition==3.8.1
 python3 -m pip install PyAudio==0.2.11
