@@ -12,7 +12,6 @@ import time
 import unicodedata
 import webbrowser
 from datetime import datetime, timedelta
-from subprocess import CalledProcessError
 from urllib.request import urlopen
 
 import certifi
@@ -371,8 +370,8 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.bluetooth()):
         if operating_system == 'Darwin':
             bluetooth(phrase=converted.lower())
-        else:
-            speaker.say("Bluetooth connectivity on Windows is beyond my capabilities sir!")
+        elif operating_system == 'Windows':
+            speaker.say("Bluetooth connectivity on Windows hasn't been developed sir!")
             renew()
 
     elif any(word in converted.lower() for word in conversation.greeting()):
@@ -2469,56 +2468,57 @@ def bluetooth(phrase):
     """Find and connect to bluetooth devices near by"""
     if 'turn off' in phrase or 'power off' in phrase:
         subprocess.call(f"blueutil --power 0", shell=True)
+        sys.stdout.write('\rBluetooth has been turned off')
         speaker.say(f"Bluetooth has been turned off sir!")
     elif 'turn on' in phrase or 'power on' in phrase:
         subprocess.call(f"blueutil --power 1", shell=True)
+        sys.stdout.write('\rBluetooth has been turned on')
         speaker.say(f"Bluetooth has been turned on sir!")
-    renew()
+    elif 'disconnect' in phrase and ('bluetooth' in phrase or 'devices' in phrase):
+        subprocess.call(f"blueutil --power 0", shell=True)
+        time.sleep(2)
+        subprocess.call(f"blueutil --power 1", shell=True)
+        speaker.say('All bluetooth devices have been disconnected sir!')
+    else:
+        def connector(targets):
+            connection_attempt = False
+            for target in targets:
+                if target['name']:
+                    target['name'] = unicodedata.normalize("NFKD", target['name'])
+                    if any(re.search(line, target['name'], flags=re.IGNORECASE) for line in phrase.split()):
+                        connection_attempt = True
+                        if 'disconnect' in phrase:
+                            output = subprocess.getoutput(f"blueutil --disconnect {target['address']}")
+                            if not output:
+                                sys.stdout.write(f"\rDisconnected from {target['name']}")
+                                time.sleep(2)  # included a sleep here, so it avoids voice swapping between devices
+                                speaker.say(f"Disconnected from {target['name']} sir!")
+                            else:
+                                speaker.say(f"I was unable to disconnect {target['name']} sir!. "
+                                            f"Perhaps it was never connected.")
+                        elif 'connect' in phrase:
+                            output = subprocess.getoutput(f"blueutil --connect {target['address']}")
+                            if not output:
+                                sys.stdout.write(f"\rConnected to {target['name']}")
+                                time.sleep(2)  # included a sleep here, so it avoids voice swapping between devices
+                                speaker.say(f"Connected to {target['name']} sir!")
+                            else:
+                                speaker.say(f"Unable to connect {target['name']} sir!, please make sure the device is "
+                                            f"turned on and ready to pair.")
+                        break
+            return connection_attempt
 
-    devices_dict = []
-
-    def connector(targets):
-        connection_made = False
-        for target in targets:
-            if any(re.search(line, target['Name'], flags=re.IGNORECASE) for line in phrase.split()):
-                try:
-                    if 'disconnect' in phrase:
-                        subprocess.call(f"blueutil --disconnect {target['macAddress']}", shell=True)
-                        speaker.say(f"Disconnected from {target['Name']}")
-                    elif 'connect' in phrase:
-                        subprocess.call(f"blueutil --connect {target['macAddress']}", shell=True)
-                        speaker.say(f"Connected to {target['Name']}")
-                    connection_made = True
-                except CalledProcessError:
-                    speaker.say(f"I was unable to contact {target['Name']}")
-                break
-        return connection_made
-
-    def scanner(devices):
-        for device in devices:
-            if device:
-                mac_finder = re.compile(r'(?:[0-9a-fA-F]-?){12}', re.IGNORECASE) if '-' in device.split(',')[0] else \
-                    re.compile(r'(?:[0-9a-fA-F]:?){12}', re.IGNORECASE)
-                mac_address = re.findall(mac_finder, device)[0]
-                status = 'Not Connected' if 'not connected' in device else 'Connected'
-                name = (re.findall(r'\"(.+?)\"', device)[0])
-                device_info = {
-                    'Name': unicodedata.normalize("NFKD", name),
-                    'Status': status,
-                    'macAddress': mac_address
-                }
-                devices_dict.append(device_info)
-
-    paired = subprocess.check_output("blueutil --paired", shell=True)
-    paired = paired.decode('utf-8').split('\n')
-    scanner(devices=paired)
-    if not connector(targets=devices_dict):
-        speaker.say('No connections were established, looking for unpaired ones.')
-        speaker.runAndWait()
-        unpaired = subprocess.check_output("blueutil --inquiry", shell=True)
-        unpaired = unpaired.decode('utf-8').split('\n')
-        scanner(devices=unpaired)
-        connector(targets=devices_dict)
+        sys.stdout.write('\rScanning paired Bluetooth devices')
+        paired = subprocess.getoutput("blueutil --paired --format json")
+        paired = json.loads(paired)
+        if not connector(targets=paired):
+            sys.stdout.write('\rScanning UN-paired Bluetooth devices')
+            speaker.say('No connections were established sir, looking for un-paired devices.')
+            speaker.runAndWait()
+            unpaired = subprocess.getoutput("blueutil --inquiry --format json")
+            unpaired = json.loads(unpaired)
+            connector(targets=unpaired) if unpaired else speaker.say('No un-paired devices found sir! '
+                                                                     'You may want to be more precise.')
     renew()
 
 
