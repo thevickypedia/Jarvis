@@ -1,10 +1,18 @@
 # looks for brew installation and installs only if brew is not found in /usr/local/bin
-check=$(which brew)
-condition="/usr/local/bin/brew"
-if [[ "$check" != "$condition" ]]; then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+brew_check=$(which brew)
+brew_condition="/usr/local/bin/brew"
+if [[ "$brew_check" != "$brew_condition" ]]; then
   echo "Installing Homebrew"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   else echo "Found Homebrew, skipping installation"
+fi
+# looks for git installation and installs only if git is not found in /usr/bin
+git_check=$(which git)
+git_condition="/usr/bin/git"
+if [[ "$git_check" != "$git_condition" ]]; then
+  echo "Installing Git CLI"
+  brew install git
+  else echo "Found Git CLI, skipping installation"
 fi
 #python3 -m venv venv
 brew install portaudio
