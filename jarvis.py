@@ -1819,12 +1819,11 @@ def google_home(device, file):
     from socket import socket, AF_INET, SOCK_DGRAM
     from googlehomepush import GoogleHome
     from pychromecast.error import ChromecastConnectionError
-    your_ip = ''
-    s = socket(AF_INET, SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    your_ip += s.getsockname()[0]
-    s.close()
-    look_up = ('.'.join(your_ip.split('.')[0:3]))
+    socket_ = socket(AF_INET, SOCK_DGRAM)
+    socket_.connect(("8.8.8.8", 80))
+    ip_address = socket_.getsockname()[0]
+    socket_.close()
+    look_up = ('.'.join(ip_address.split('.')[0:3]))
     ip_range = [3, 7, 15]
     devices = {}
     for n in ip_range:
@@ -1925,7 +1924,9 @@ def reminder(converted):
         # makes sure hour and minutes are two digits
         hour, minute = f"{hour:02}", f"{minute:02}"
         if int(hour) <= 12 and int(minute) <= 59:
-            Reminder(hour, minute, am_pm, message)
+            f_name = f"{hour}_{minute}_{am_pm}"
+            open(f'reminder/{f_name}.lock', 'a')
+            Reminder(hour, minute, am_pm, message).start()
             speaker.say(f"{random.choice(acknowledgement)} I will remind you to {message} at {hour}:{minute} {am_pm}.")
             sys.stdout.write(f"\rI will remind you to {message} at {hour}:{minute} {am_pm} sir!")
             renew()
@@ -2573,7 +2574,7 @@ def sentry_mode():
         dummy.has_been_called = True
     try:
         sys.stdout.write("\rSentry Mode")
-        listener = recognizer.listen(source, timeout=None, phrase_time_limit=3)
+        listener = recognizer.listen(source, timeout=None, phrase_time_limit=5)
         sys.stdout.write("\r")
         key = recognizer.recognize_google(listener)
         key = key.lower().strip()
