@@ -45,9 +45,6 @@ from tv_controls import TV
 logging.disable()
 
 
-# TODO: include face recognition
-
-
 def initialize():
     """Function to initialize when woke up from sleep mode. greet_check and dummy are to ensure greeting is given only
     for the first time, the script is run place_holder is set for all the functions so that the function runs only ONCE
@@ -177,7 +174,7 @@ def conditions(converted):
         system_info()
 
     elif any(word in converted.lower() for word in keywords.wikipedia()):
-        wiki_pedia()
+        wikipedia_()
 
     elif any(word in converted.lower() for word in keywords.news()):
         news()
@@ -766,7 +763,7 @@ def system_info():
     renew()
 
 
-def wiki_pedia():
+def wikipedia_():
     """gets any information from wikipedia using it's API"""
     global place_holder
     import wikipedia
@@ -785,7 +782,7 @@ def wiki_pedia():
         speaker.say("I didn't quite get that. Try again.")
         place_holder = 0
         keyword = None
-        wiki_pedia()
+        wikipedia_()
 
     place_holder = None
     if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
@@ -806,7 +803,7 @@ def wiki_pedia():
         except wikipedia.exceptions.PageError:
             speaker.say(f"I'm sorry sir! I didn't get a response from wikipedia for the phrase: {keyword}. Try again!")
             summary = None
-            wiki_pedia()
+            wikipedia_()
         # stops with two sentences before reading whole passage
         formatted = punctuation.punctuate(' '.join(splitter(' '.join(summary.split('.')[0:2]))))
         speaker.say(formatted)
@@ -831,9 +828,9 @@ def news():
     news_source = 'fox'
     sys.stdout.write(f'\rGetting news from {news_source} news.')
     from newsapi import NewsApiClient, newsapi_exception
-    newsapi = NewsApiClient(api_key=os.getenv('news_api') or aws.news_api())
+    news_api = NewsApiClient(api_key=os.getenv('news_api') or aws.news_api())
     try:
-        all_articles = newsapi.get_top_headlines(sources=f'{news_source}-news')
+        all_articles = news_api.get_top_headlines(sources=f'{news_source}-news')
     except newsapi_exception.NewsAPIException:
         all_articles = None
         speaker.say("I wasn't able to get the news sir! I think the News API broke, you may try after sometime.")
@@ -1014,7 +1011,7 @@ def chatter_bot():
         bot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
         trainer = ChatterBotCorpusTrainer(bot)
         trainer.train("chatterbot.corpus.english")
-        speaker.say('The chatbot is ready. You may start a conversation now.')
+        speaker.say('The chat-bot is ready. You may start a conversation now.')
         speaker.runAndWait()
     try:
         sys.stdout.write("\rListener activated..") and playsound('start.mp3')
@@ -2317,11 +2314,7 @@ def google(query):
             [repeats.append(word) for word in sentence.split() if word not in repeats]
             refined = ' '.join(repeats)
             output = refined + required[1] + '.' + required[2]
-        # TODO: modify all regex searches in a single line
-        match = re.search(r'\w{3} \d, \d{4}', output) or re.search(r'\w{3} \d{2}, \d{4}', output) or \
-            re.search(r'\w{3}, \d, \d{4}', output) or re.search(r'\w{3}, \d{2}, \d{4}', output) or \
-            re.search(r'\w{3} \d \d{4}', output) or re.search(r'\w{3} \d{2} \d{4}', output) or \
-            re.search(r'\w{3}, \d \d{4}', output) or re.search(r'\w{3}, \d{2} \d{4}', output)
+        match = re.search(r'(\w{3},|\w{3}) (\d,|\d|\d{2},|\d{2}) \d{4}', output)
         if match:
             output = output.replace(match.group(), '')
         sys.stdout.write(f'\r{output}')
@@ -2781,7 +2774,7 @@ if __name__ == '__main__':
         speaker.say('Received an error while retrieving your address sir! I think a restart should fix this.')
         restart()
 
-    # different responses for different conditions in senty mode
+    # different responses for different conditions in sentry mode
     wake_up1 = ['Up and running sir.', 'Online and ready sir.', "I've indeed been uploaded sir!", 'Listeners have been '
                                                                                                   'activated sir!']
     wake_up2 = ['For you sir!, Always!', 'At your service sir.']
