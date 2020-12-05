@@ -1059,7 +1059,7 @@ def locate():
         dummy.has_been_called = False
         speaker.say("Would you like to ring it?")
     else:
-        stat = icloud_api.iphone.status()
+        stat = icloud_api.devices[2].status()
         bat_percent = round(stat['batteryLevel'] * 100)
         device_model = stat['deviceDisplayName']
         phone_name = stat['name']
@@ -1089,7 +1089,7 @@ def locate():
     place_holder = None
     if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
         speaker.say("Ringing your iPhone now.")
-        icloud_api.iphone.play_sound()
+        icloud_api.devices[2].play_sound()
         speaker.say("I can also enable lost mode. Would you like to do it?")
         speaker.runAndWait()
         sys.stdout.write("\rListener activated..") and playsound('start.mp3')
@@ -1099,7 +1099,7 @@ def locate():
         if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
             recovery = os.getenv('icloud_recovery') or aws.icloud_recovery()
             message = 'Return my phone immediately.'
-            icloud_api.iphone.lost_device(recovery, message)
+            icloud_api.devices[2].lost_device(recovery, message)
             speaker.say("I've enabled lost mode on your phone.")
     renew()
 
@@ -1675,11 +1675,12 @@ def directions(place):
     maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
     webbrowser.open(maps_url)
     speaker.say("Directions on your screen sir!")
-    if re.match(start_country, end_country, flags=re.IGNORECASE):
-        directions.has_been_called = True
-        distance(starting_point=None, destination=place)
-    else:
-        speaker.say("You might need a flight to get there!")
+    if start_country and end_country:
+        if re.match(start_country, end_country, flags=re.IGNORECASE):
+            directions.has_been_called = True
+            distance(starting_point=None, destination=place)
+        else:
+            speaker.say("You might need a flight to get there!")
     renew()
 
 
@@ -1996,7 +1997,7 @@ def maps_api(query):
             converted = recognizer.recognize_google(listener)
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 renew()
-            if any(word in converted.lower() for word in keywords.ok()):
+            elif any(word in converted.lower() for word in keywords.ok()):
                 place_holder = None
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                 webbrowser.open(maps_url)
@@ -2175,7 +2176,7 @@ def television(converted):
     class is also initiated which is set global for other statements to use it."""
     global tv
     phrase = converted.replace('TV', '')
-    if 'wake' in phrase or 'turn on' in phrase or 'connect' in phrase or 'status' in phrase:
+    if 'wake' in phrase or 'turn on' in phrase or 'connect' in phrase or 'status' in phrase or 'control' in phrase:
         from wakeonlan import send_magic_packet as wake
         try:
             mac_address = os.getenv('tv_mac') or aws.tv_mac()
@@ -2186,7 +2187,7 @@ def television(converted):
             speaker.say("I wasn't able to turn on your TV sir! I think you have your VPN turned ON. If so, disconnect"
                         " it. And make sure you are on the same network as your TV.")
         renew()
-    if tv:
+    elif tv:
         if 'increase' in phrase:
             tv.increase_volume()
             speaker.say(f'{random.choice(acknowledgement)}!')
@@ -2694,9 +2695,10 @@ if __name__ == '__main__':
     conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
     operating_system = platform.system()  # detects current operating system
     current_dir = os.listdir()  # stores the list of files in current directory
-    aws = AWSClients()
-    limit = sys.getrecursionlimit()
-    sys.setrecursionlimit(limit * 100)
+    aws = AWSClients()  # initiates AWSClients object to fetch credentials from AWS secrets
+    database = Database()  # initiates Database() for TO-DO items
+    limit = sys.getrecursionlimit()  # fetches current recursion limit
+    sys.setrecursionlimit(limit * 100)  # increases the recursion limit by 100 times
 
     # noinspection PyTypeChecker
     volume = int(speaker.getProperty("volume")) * 100
@@ -2746,7 +2748,7 @@ if __name__ == '__main__':
         icloud_user = os.getenv('icloud_user') or aws.icloud_user()
         icloud_pass = os.getenv('icloud_pass') or aws.icloud_pass()
         icloud_api = PyiCloudService(icloud_user, icloud_pass)
-        raw_location = icloud_api.iphone.location()
+        raw_location = icloud_api.devices[2].location()
         current_lat = raw_location['latitude']
         current_lon = raw_location['longitude']
     except (TypeError, PyiCloudAPIResponseException, PyiCloudFailedLoginException):
@@ -2792,7 +2794,6 @@ if __name__ == '__main__':
 
     sys.stdout.write("\rPLEASE WAIT::Training model for punctuations")
     punctuation = Punctuator(model_file='model.pcl')
-    database = Database()
     sys.stdout.write("\r")
 
     # {function_name}.has_been_called is use to denote which function has triggered the other
