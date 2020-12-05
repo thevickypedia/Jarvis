@@ -788,47 +788,42 @@ def wiki_pedia():
         wiki_pedia()
 
     place_holder = None
-    if 'no' in keyword.lower().split() or 'nope' in keyword.lower().split() or 'thank you' in \
-            keyword.lower().split() or "that's it" in keyword.lower().split():
+    if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
         renew()
-
-    sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
-    try:
-        summary = wikipedia.summary(keyword)
-    except wikipedia.exceptions.DisambiguationError as e:  # checks for the right keyword in case of 1+ matches
-        sys.stdout.write(f'\r{e}')
-        speaker.say('Your keyword has multiple results sir. Please pick any one displayed on your screen.')
-        speaker.runAndWait()
-        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-        listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-        sys.stdout.write("\r") and playsound('end.mp3')
-        keyword1 = recognizer.recognize_google(listener1)
-        summary = wikipedia.summary(keyword1)
-    except wikipedia.exceptions.PageError:
-        speaker.say(f"I'm sorry sir! I didn't get a response from wikipedia for the phrase: {keyword}. Try again!")
-        summary = None
-        wiki_pedia()
-    # stops with two sentences before reading whole passage
-    formatted = punctuation.punctuate(' '.join(splitter(' '.join(summary.split('.')[0:2]))))
-    speaker.say(formatted)
-    speaker.say("Do you want me to continue sir?")  # gets confirmation to read the whole passage
-    speaker.runAndWait()
-    try:
-        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-        listener2 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-        sys.stdout.write("\r") and playsound('end.mp3')
-        response = recognizer.recognize_google(listener2)
-    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-        sys.stdout.write("\r")
-        speaker.say("I'm sorry sir, I didn't get your response.")
-        response = None
-        renew()
-    place_holder = None
-    if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
-        speaker.say(''.join(summary.split('.')[3:-1]))
     else:
-        pass
-    renew()
+        sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
+        try:
+            summary = wikipedia.summary(keyword)
+        except wikipedia.exceptions.DisambiguationError as e:  # checks for the right keyword in case of 1+ matches
+            sys.stdout.write(f'\r{e}')
+            speaker.say('Your keyword has multiple results sir. Please pick any one displayed on your screen.')
+            speaker.runAndWait()
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener1 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            keyword1 = recognizer.recognize_google(listener1)
+            summary = wikipedia.summary(keyword1)
+        except wikipedia.exceptions.PageError:
+            speaker.say(f"I'm sorry sir! I didn't get a response from wikipedia for the phrase: {keyword}. Try again!")
+            summary = None
+            wiki_pedia()
+        # stops with two sentences before reading whole passage
+        formatted = punctuation.punctuate(' '.join(splitter(' '.join(summary.split('.')[0:2]))))
+        speaker.say(formatted)
+        speaker.say("Do you want me to continue sir?")  # gets confirmation to read the whole passage
+        speaker.runAndWait()
+        try:
+            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+            listener2 = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('end.mp3')
+            response = recognizer.recognize_google(listener2)
+            place_holder = None
+            if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
+                speaker.say(''.join(summary.split('.')[3:-1]))
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            sys.stdout.write("\r")
+            speaker.say("I'm sorry sir, I didn't get your response.")
+        renew()
 
 
 def news():
@@ -981,20 +976,20 @@ def repeater():
         sys.stdout.write("\r") and playsound('end.mp3')
         keyword = recognizer.recognize_google(listener)
         sys.stdout.write(keyword)
+        if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
+            pass
+        else:
+            speaker.say(f"I heard {keyword}")
+        renew()
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
         if place_holder == 0:
             place_holder = None
             renew()
-        sys.stdout.write("\r")
-        speaker.say("I didn't quite get that. Try again.")
-        place_holder = 0
-        keyword = None
-        repeater()
-    place_holder = None
-    if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
-        renew()
-    speaker.say(f"I heard {keyword}")
-    renew()
+        else:
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            repeater()
 
 
 def chatter_bot():
@@ -1026,32 +1021,31 @@ def chatter_bot():
         listener = recognizer.listen(source, timeout=5, phrase_time_limit=5)
         sys.stdout.write("\r") and playsound('end.mp3')
         keyword = recognizer.recognize_google(listener)
+        place_holder = None
+        if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
+            speaker.say('Let me remove the training modules.')
+            os.system('rm db*')
+            os.system(f'rm -rf {file2}')
+            renew()
+        else:
+            response = bot.get_response(keyword)
+            if response == 'What is AI?':
+                speaker.say(f'The chat bot is unable to get a response for the phrase, {keyword}. Try something else.')
+            else:
+                speaker.say(f'{response}')
+            speaker.runAndWait()
+            chatter_bot()
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
         if place_holder == 0:
             place_holder = None
             os.system('rm db*')
             os.system(f'rm -rf {file2}')
             renew()
-        sys.stdout.write("\r")
-        speaker.say("I didn't quite get that. Try again.")
-        place_holder = 0
-        keyword = None
-        chatter_bot()
-
-    place_holder = None
-    if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
-        speaker.say('Let me remove the training modules.')
-        os.system('rm db*')
-        os.system(f'rm -rf {file2}')
-        renew()
-    else:
-        response = bot.get_response(keyword)
-        if response == 'What is AI?':
-            speaker.say(f'The chat bot is unable to get a response for the phrase, {keyword}. Try something else.')
         else:
-            speaker.say(f'{response}')
-        speaker.runAndWait()
-        chatter_bot()
+            sys.stdout.write("\r")
+            speaker.say("I didn't quite get that. Try again.")
+            place_holder = 0
+            chatter_bot()
 
 
 def location():
@@ -2596,11 +2590,7 @@ def sentry_mode():
             conditions(key)
         else:
             sentry_mode()
-    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-        sentry_mode()
-    except RecursionError:
-        current_limit = sys.getrecursionlimit()
-        sys.setrecursionlimit(current_limit * 10)
+    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
         sentry_mode()
     except KeyboardInterrupt:
         speaker.say(f"Shutting down sir!")
@@ -2713,7 +2703,7 @@ if __name__ == '__main__':
     current_dir = os.listdir()  # stores the list of files in current directory
     aws = AWSClients()
     limit = sys.getrecursionlimit()
-    sys.setrecursionlimit(limit * 10)
+    sys.setrecursionlimit(limit * 100)
 
     # noinspection PyTypeChecker
     volume = int(speaker.getProperty("volume")) * 100
