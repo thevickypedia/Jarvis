@@ -414,13 +414,7 @@ def conditions(converted):
         restart()
 
     elif any(word in converted.lower() for word in keywords.kill()):
-        speaker.say(f"Shutting down sir!")
-        speaker.say(exit_message())
-        speaker.runAndWait()
-        sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
-                         f"\nTotal runtime: {time_converter(time.perf_counter())}")
-        Alarm(None, None, None)
-        Reminder(None, None, None, None)
+        exit_process()
         exit(0)
 
     elif any(word in converted.lower() for word in keywords.shutdown()):
@@ -1879,7 +1873,7 @@ def jokes():
 
 def reminder(converted):
     """Passes hour, minute, am/pm and reminder message to Reminder class which initiates a thread for reminder"""
-    global place_holder
+    global place_holder, remind_list
     message = re.search('to(.*)at', converted)
     if not message:
         message = re.search('to(.*)', converted)
@@ -1918,6 +1912,9 @@ def reminder(converted):
         if int(hour) <= 12 and int(minute) <= 59:
             f_name = f"{hour}_{minute}_{am_pm}"
             open(f'reminder/{f_name}.lock', 'a')
+            appender = f', and {message} at {hour}:{minute} {am_pm}' if remind_list else \
+                f'{message} at {hour}:{minute} {am_pm}'
+            remind_list.append(appender)
             Reminder(hour, minute, am_pm, message).start()
             speaker.say(f"{random.choice(acknowledgement)} I will remind you to {message} at {hour}:{minute} {am_pm}.")
             sys.stdout.write(f"\rI will remind you to {message} at {hour}:{minute} {am_pm} sir!")
@@ -2580,20 +2577,15 @@ def sentry_mode():
         elif 'you there' in key or 'are you there' in key:
             speaker.say(f'{random.choice(wake_up2)}')
             initialize()
-        elif 'jarvis' in key or 'buddy' in key:
+        elif 'jarvis' in key or 'buddy' in key or 'hey' in key:
+            key = key.replace('jarvis ', '').replace('buddy ', '').replace('hey ', '')
             conditions(key)
         else:
             sentry_mode()
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
         sentry_mode()
     except KeyboardInterrupt:
-        speaker.say(f"Shutting down sir!")
-        speaker.say(exit_message())
-        speaker.runAndWait()
-        sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
-                         f"\nTotal runtime: {time_converter(time.perf_counter())}")
-        Alarm(None, None, None)
-        Reminder(None, None, None, None)
+        exit_process()
         exit(0)
 
 
@@ -2639,6 +2631,39 @@ def exit_message():
     return exit_msg
 
 
+def remove_files():
+    [os.remove(f"alarm/{file}") if file != 'dummy.lock' else None for file in os.listdir('alarm')]
+    [os.remove(f"reminder/{file}") if file != 'dummy.lock' else None for file in os.listdir('reminder')]
+
+
+def exit_process():
+    global remind_list
+    alarms, reminders = [], 0
+    for file in os.listdir('alarm'):
+        if file != 'dummy.lock':
+            alarms.append(file)
+    for file in os.listdir('reminder'):
+        if file != 'dummy.lock':
+            reminders = 1
+    if reminders:
+        remind_list = ''.join(remind_list)
+        sys.stdout.write(f'\r{remind_list}')
+        speaker.say(f"You have a pending reminder to {remind_list} sir! This will be removed while shutting down.")
+    if alarms:
+        alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
+        alarms = alarms.replace('.lock', '')
+        sys.stdout.write(f"\r{alarms}")
+        speaker.say(f"You have a pending alarm at {alarms} sir! This will be removed while shutting down.")
+    speaker.say(f"Shutting down now sir!")
+    speaker.say(exit_message())
+    speaker.runAndWait()
+    remove_files()
+    sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
+                     f"\nTotal runtime: {time_converter(time.perf_counter())}")
+    Alarm(None, None, None)
+    Reminder(None, None, None, None)
+
+
 def restart():
     """restart() triggers restart.py which triggers Jarvis after 5 seconds"""
     speaker.say('Restarting now sir! I will be up and running momentarily.')
@@ -2659,13 +2684,7 @@ def shutdown():
         converted = recognizer.recognize_google(listener)
         place_holder = None
         if any(word in converted.lower() for word in keywords.ok()):
-            speaker.say(f"Shutting down sir!")
-            speaker.say(exit_message())
-            speaker.runAndWait()
-            sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
-                             f"\nTotal runtime: {time_converter(time.perf_counter())}")
-            [os.remove(f"alarm/{file}") if file != 'dummy.lock' else None for file in os.listdir('alarm')]
-            [os.remove(f"reminder/{file}") if file != 'dummy.lock' else None for file in os.listdir('reminder')]
+            exit_process()
             if operating_system == 'Darwin':
                 subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
             elif operating_system == 'Windows':
@@ -2729,7 +2748,7 @@ if __name__ == '__main__':
         # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
     # threshold is used to sanity check the sentry_mode() so that Jarvis doesn't run into Fatal Python error.
         # This happens when the same functions is repeatedly called with no end::Cannot recover from stack overflow.
-    place_holder, greet_check, tv = None, None, None
+    place_holder, greet_check, tv, remind_list = None, None, None, []
     waiter, suggestion_count, threshold = 0, 0, 0
 
     # Uses speed test api to check for internet connection

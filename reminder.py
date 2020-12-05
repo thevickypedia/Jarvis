@@ -21,7 +21,6 @@ class Reminder(Thread):
             self.message = message
             self.reminder_state = True
         else:
-            [os.remove(f"{directory}/{file}") if file != 'dummy.lock' else None for file in os.listdir(directory)]
             self.reminder_state = False
             os._exit(0)
 
@@ -62,9 +61,9 @@ class Reminder(Thread):
 
 
 if __name__ == '__main__':
-    hour = '02'
-    minute = '02'
-    am_pm = 'PM'
-    f_name = f"{hour}_{minute}_{am_pm}"
-    open(f'reminder/{f_name}.lock', 'a')
-    Reminder(hour, minute, am_pm, 'Finish pending tasks').start()
+    test_hour = '02'
+    test_minute = '02'
+    test_am_pm = 'PM'
+    test_f_name = f"{test_hour}_{test_minute}_{test_am_pm}"
+    open(f'reminder/{test_f_name}.lock', 'a')
+    Reminder(test_hour, test_minute, test_am_pm, 'Finish pending tasks').start()

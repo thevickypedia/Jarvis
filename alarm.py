@@ -17,7 +17,6 @@ class Alarm(Thread):
             self.am_pm = am_pm
             self.alarm_state = True
         else:
-            [os.remove(f"{directory}/{file}") if file != 'dummy.lock' else None for file in os.listdir(directory)]
             self.alarm_state = False
             os._exit(0)
 
