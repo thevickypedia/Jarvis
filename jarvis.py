@@ -95,21 +95,17 @@ def alive():
         listener = recognizer.listen(source, timeout=None, phrase_time_limit=5)
         sys.stdout.write("\r") and playsound('end.mp3') if waiter == 0 else sys.stdout.write("\r")
         converted = recognizer.recognize_google(listener)
-        if 'are you there' in converted.lower() or converted.strip() == 'Jarvis' or 'you there' in \
-                converted.lower():
-            speaker.say("I'm here sir!")
-            renew()
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-        if waiter == 12:  # waits for a minute and goes to sleep
-            sentry_mode()
-        waiter += 1
-        converted = None
+        if waiter != 12:  # waits for a minute and goes to sleep
+            waiter += 1
+            converted = None
+        else:
+            converted = 'sleep'
     if not converted:
         alive()
     elif any(word in converted.lower() for word in keywords.sleep()):
         speaker.say(f"Activating sentry mode, enjoy yourself sir!")
         speaker.runAndWait()
-        sentry_mode()
     else:
         conditions(converted)
 
@@ -135,7 +131,13 @@ def conditions(converted):
     """Conditions function is used to check the message processed, and use the keywords to do a regex match and trigger
     the appropriate function which has dedicated task"""
     sys.stdout.write(f'\r{converted}')
-    if any(word in converted.lower() for word in keywords.date()) and \
+
+    if 'are you there' in converted.lower() or converted.strip() == 'Jarvis' or 'you there' in \
+            converted.lower():
+        speaker.say("I'm here sir!")
+        renew()
+
+    elif any(word in converted.lower() for word in keywords.date()) and \
             not any(word in converted.lower() for word in keywords.avoid()):
         date()
 
@@ -408,7 +410,7 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.exit()):
         speaker.say(f"Activating sentry mode, enjoy yourself sir.")
         speaker.runAndWait()
-        sentry_mode()
+        return
 
     elif any(word in converted.lower() for word in keywords.restart()):
         restart()
@@ -836,10 +838,8 @@ def news():
         speaker.say("That's the end of news around you.")
     speaker.runAndWait()
 
-    if report.has_been_called:
+    if report.has_been_called or time_travel.has_been_called:
         pass
-    elif time_travel.has_been_called:
-        sentry_mode()
     else:
         renew()
 
@@ -1127,7 +1127,6 @@ def music(device):
         sys.stdout.write('\r')
         speaker.say("Enjoy your music sir!")
         speaker.runAndWait()
-        sentry_mode()
 
 
 def gmail():
@@ -1147,11 +1146,10 @@ def gmail():
         mail.list()
         mail.select('inbox')  # choose inbox
     except TimeoutError:
-        mail = None
         speaker.say("I wasn't able to check your emails sir. I think you have your VPN turned ON. If so, disconnect "
                     "it.")
         speaker.runAndWait()
-        sentry_mode()
+        return
 
     n = 0
     return_code, messages = mail.search(None, 'UNSEEN')  # looks for unread emails
@@ -1846,7 +1844,6 @@ def google_home(device, file):
             speaker.say(f"That's interesting, you've asked me to play on {len(chosen)} devices at a time. "
                         f"I hope you'll enjoy this sir.")
         speaker.runAndWait()
-        sentry_mode()
 
 
 def jokes():
@@ -2419,7 +2416,7 @@ def face_recognition_detection():
                     os.system(f"mv {img_name} {train_dir}/{phrase}")  # move files into named directory within train_dir
                     speaker.say(f"Image has been saved as {img_name}. I will be able to recognize {phrase} in the "
                                 f"future.")
-            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
+            except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
                 os.remove('cv2_open.jpg')
                 speaker.say("I did not get any response, so I've deleted the image.")
                 renew()
@@ -2543,50 +2540,58 @@ def time_travel():
     time_travel.has_been_called = False
     speaker.say(f"Activating sentry mode, enjoy yourself sir!")
     speaker.runAndWait()
-    sentry_mode()
 
 
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action"""
     global waiter, threshold
-    threshold += 1
-    if threshold > 5000:
-        speaker.say("My run time has reached the threshold!")
-        restart()
+    while True:
+        threshold += 1
+        if threshold > 5000:
+            speaker.say("My run time has reached the threshold!")
+            if operating_system == 'Darwin':
+                os.system(f'osascript -e "set Volume 2"')
+            elif operating_system == 'Windows':
+                os.system('SetVol.exe 20')
+            restart()
 
-    waiter = 0
-    if greet_check == 'initialized':
-        dummy.has_been_called = True
-    try:
-        sys.stdout.write("\rSentry Mode")
-        listener = recognizer.listen(source, timeout=None, phrase_time_limit=5)
-        sys.stdout.write("\r")
-        key = recognizer.recognize_google(listener)
-        key = key.lower().strip()
-        if key == 'jarvis' or key == 'buddy':
-            speaker.say(f'{random.choice(wake_up3)}')
-            initialize()
-        elif 'good' in key:
-            if 'good morning jarvis' in key or 'good afternoon jarvis' in key or 'good evening jarvis' in key or \
-                    'good night jarvis' in key or 'goodnight jarvis' in key:
+        waiter = 0
+        if greet_check == 'initialized':
+            dummy.has_been_called = True
+        try:
+            sys.stdout.write("\rSentry Mode")
+            listener = recognizer.listen(source, timeout=None, phrase_time_limit=5)
+            sys.stdout.write("\r")
+            key = recognizer.recognize_google(listener)
+            key = key.lower().strip()
+            if datetime.now().strftime("%I:%M %p") == '07:00 AM':
+                if operating_system == 'Darwin':
+                    os.system(f'osascript -e "set Volume 8"')
+                elif operating_system == 'Windows':
+                    os.system('SetVol.exe 100')
                 time_travel()
-        elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or 'showtime' in \
-                key or 'time to work' in key or 'spin up' in key:
-            speaker.say(f'{random.choice(wake_up1)}')
-            initialize()
-        elif 'you there' in key or 'are you there' in key:
-            speaker.say(f'{random.choice(wake_up2)}')
-            initialize()
-        elif 'jarvis' in key or 'buddy' in key or 'hey' in key:
-            key = key.replace('jarvis ', '').replace('buddy ', '').replace('hey ', '')
-            conditions(key)
-        else:
-            sentry_mode()
-    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
-        sentry_mode()
-    except KeyboardInterrupt:
-        exit_process()
-        exit(0)
+            elif key == 'jarvis' or key == 'buddy':
+                speaker.say(f'{random.choice(wake_up3)}')
+                initialize()
+            elif 'good' in key:
+                if ('morning' in key or 'night' in key or 'afternoon' in key or 'after noon' in key or
+                        'evening' in key) and 'jarvis' in key:
+                    time_travel()
+            elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or \
+                    'showtime' in key or 'time to work' in key or 'spin up' in key:
+                speaker.say(f'{random.choice(wake_up1)}')
+                initialize()
+            elif 'you there' in key or 'are you there' in key:
+                speaker.say(f'{random.choice(wake_up2)}')
+                initialize()
+            elif 'jarvis' in key or 'buddy' in key or 'hey' in key:
+                key = key.replace('jarvis ', '').replace('buddy ', '').replace('hey ', '')
+                conditions(key.strip())
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
+            pass
+        except KeyboardInterrupt:
+            exit_process()
+            exit(0)
 
 
 def size_converter(byte_size):
@@ -2666,6 +2671,7 @@ def exit_process():
 
 def restart():
     """restart() triggers restart.py which triggers Jarvis after 5 seconds"""
+    sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(time.perf_counter())}")
     speaker.say('Restarting now sir! I will be up and running momentarily.')
     speaker.runAndWait()
     os.system(f'python3 restart.py')
@@ -2821,7 +2827,12 @@ if __name__ == '__main__':
     for functions in [dummy, delete_todo, todo, add_todo]:
         functions.has_been_called = False
 
-    sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}")
+    if operating_system == 'Darwin':
+        os.system(f'osascript -e "set Volume 4"')
+    elif operating_system == 'Windows':
+        os.system('SetVol.exe 50')
+
+    sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
 
     # starts sentry mode
     playsound('initialize.mp3')
