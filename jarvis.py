@@ -2554,7 +2554,16 @@ def sentry_mode():
             elif operating_system == 'Windows':
                 os.system('SetVol.exe 20')
             restart()
-
+        if datetime.now().strftime("%I:%M %p") == '07:00 AM':
+            if operating_system == 'Darwin':
+                os.system(f'osascript -e "set Volume 8"')
+            elif operating_system == 'Windows':
+                os.system('SetVol.exe 100')
+            time_travel()
+            if operating_system == 'Darwin':
+                os.system(f'osascript -e "set Volume 4"')
+            elif operating_system == 'Windows':
+                os.system('SetVol.exe 50')
         waiter = 0
         if greet_check == 'initialized':
             dummy.has_been_called = True
@@ -2564,13 +2573,7 @@ def sentry_mode():
             sys.stdout.write("\r")
             key = recognizer.recognize_google(listener)
             key = key.lower().strip()
-            if datetime.now().strftime("%I:%M %p") == '07:00 AM':
-                if operating_system == 'Darwin':
-                    os.system(f'osascript -e "set Volume 8"')
-                elif operating_system == 'Windows':
-                    os.system('SetVol.exe 100')
-                time_travel()
-            elif key == 'jarvis' or key == 'buddy':
+            if key == 'jarvis' or key == 'buddy':
                 speaker.say(f'{random.choice(wake_up3)}')
                 initialize()
             elif 'good' in key:
@@ -2584,8 +2587,8 @@ def sentry_mode():
             elif 'you there' in key or 'are you there' in key:
                 speaker.say(f'{random.choice(wake_up2)}')
                 initialize()
-            elif 'jarvis' in key or 'buddy' in key or 'hey' in key:
-                key = key.replace('jarvis ', '').replace('buddy ', '').replace('hey ', '')
+            elif 'jarvis' in key or 'buddy' in key:
+                key = key.replace('jarvis ', '').replace('buddy ', '')
                 conditions(key.strip())
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
             pass
