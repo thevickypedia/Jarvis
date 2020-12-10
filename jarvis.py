@@ -2538,7 +2538,7 @@ def time_travel():
 
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action"""
-    global waiter, threshold
+    global waiter, threshold, morning_msg
     while True:
         threshold += 1
         if threshold > 5000:
@@ -2548,22 +2548,24 @@ def sentry_mode():
             elif operating_system == 'Windows':
                 os.system('SetVol.exe 20')
             restart()
-        if datetime.now().strftime("%I:%M %p") == '07:00 AM' and int(datetime.now().strftime('%S')) in list(
-                range(0, 20)) and datetime.now().strftime("%A") not in ['Saturday', 'Sunday']:
-            if operating_system == 'Darwin':
-                os.system(f'osascript -e "set Volume 8"')
-            elif operating_system == 'Windows':
-                os.system('SetVol.exe 100')
-            speaker.say('Good Morning.')
-            report.has_been_called = True
-            date()
-            current_time(None)
-            weather(None)
-            report.has_been_called = False
-            if operating_system == 'Darwin':
-                os.system(f'osascript -e "set Volume 4"')
-            elif operating_system == 'Windows':
-                os.system('SetVol.exe 50')
+        if not morning_msg:
+            if datetime.now().strftime("%I:%M %p") == '07:00 AM' and int(datetime.now().strftime('%S')) in list(
+                    range(0, 20)) and datetime.now().strftime("%A") not in ['Saturday', 'Sunday']:
+                if operating_system == 'Darwin':
+                    os.system(f'osascript -e "set Volume 8"')
+                elif operating_system == 'Windows':
+                    os.system('SetVol.exe 100')
+                speaker.say('Good Morning.')
+                report.has_been_called = True
+                date()
+                current_time(None)
+                weather(None)
+                report.has_been_called = False
+                if operating_system == 'Darwin':
+                    os.system(f'osascript -e "set Volume 4"')
+                elif operating_system == 'Windows':
+                    os.system('SetVol.exe 50')
+                morning_msg = True
         waiter = 0
         if greet_check == 'initialized':
             dummy.has_been_called = True
@@ -2757,7 +2759,7 @@ if __name__ == '__main__':
         # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
     # threshold is used to sanity check the sentry_mode() so that Jarvis doesn't run into Fatal Python error.
         # This happens when the same functions is repeatedly called with no end::Cannot recover from stack overflow.
-    place_holder, greet_check, tv, remind_list = None, None, None, []
+    place_holder, greet_check, tv, remind_list, morning_msg = None, None, None, [], False
     waiter, suggestion_count, threshold = 0, 0, 0
 
     # Uses speed test api to check for internet connection
