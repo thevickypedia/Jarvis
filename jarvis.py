@@ -45,6 +45,20 @@ from tv_controls import TV
 logging.disable()
 
 
+def greeting():
+    am_or_pm = datetime.now().strftime("%p")
+    current_hour = int(datetime.now().strftime("%I"))
+    if current_hour in range(4, 12) and am_or_pm == 'AM':
+        greet = 'Morning'
+    elif am_or_pm == 'PM' and (current_hour == 12 or current_hour in range(1, 4)):
+        greet = 'Afternoon'
+    elif current_hour in range(4, 8) and am_or_pm == 'PM':
+        greet = 'Evening'
+    else:
+        greet = 'Night'
+    return greet
+
+
 def initialize():
     """Function to initialize when woke up from sleep mode. greet_check and dummy are to ensure greeting is given only
     for the first time, the script is run place_holder is set for all the functions so that the function runs only ONCE
@@ -54,17 +68,8 @@ def initialize():
     if dummy.has_been_called:
         speaker.say("What can I do for you?")
         dummy.has_been_called = False
-    elif str(datetime.now().strftime("%p")) == 'AM' and int(datetime.now().strftime("%I")) < 10:
-        speaker.say("Good Morning.")
-    elif str(datetime.now().strftime("%p")) == 'AM' and int(datetime.now().strftime("%I")) >= 10:
-        speaker.say("Hope you're having a nice morning.")
-    elif str(datetime.now().strftime("%p")) == 'PM' and (int(datetime.now().strftime("%I")) == 12 or
-                                                         int(datetime.now().strftime("%I")) < 3):
-        speaker.say("Good Afternoon.")
-    elif str(datetime.now().strftime("%p")) == 'PM' and int(datetime.now().strftime("%I")) < 6:
-        speaker.say("Good Evening.")
     else:
-        speaker.say("Hope you're having a nice night.")
+        speaker.say(f'Good {greeting()}.')
     speaker.runAndWait()
     try:
         sys.stdout.write("\rListener activated..") and playsound('start.mp3')
@@ -624,18 +629,18 @@ def weather(place):
             feeling, weather_suggest = '', ''
         wind_speed = response['current']['wind_speed']
         if wind_speed > 10:
-            output = f'The weather at {city} is a {feeling} {temp_f}°, but due to the current wind conditions ' \
+            output = f'The weather in {city} is a {feeling} {temp_f}°, but due to the current wind conditions ' \
                      f'(which is {wind_speed} miles per hour), it feels like {temp_feel_f}°. {weather_suggest}. '
         else:
-            output = f'The weather at {city} is a {feeling} {temp_f}°, and it currently feels like {temp_feel_f}°. ' \
+            output = f'The weather in {city} is a {feeling} {temp_f}°, and it currently feels like {temp_feel_f}°. ' \
                      f'{weather_suggest}. '
     elif place or not report.has_been_called:
-        output = f'The weather at {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \
+        output = f'The weather in {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \
                  f'It currently feels like {temp_feel_f}°F, and the current condition is {condition}.'
     else:
-        output = f'You are currently at {weather_location}. The weather at your location is {temp_f}°F, with a high ' \
-                 f'of {high}, and a low of {low}. It currently feels Like {temp_feel_f}°F, and the current ' \
-                 f'condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}. '
+        output = f'The weather in {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \
+                 f'It currently feels Like {temp_feel_f}°F, and the current condition is {condition}. ' \
+                 f'Sunrise at {sunrise}. Sunset at {sunset}. '
     if 'alerts' in response:
         alerts = response['alerts'][0]['event']
         start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")
@@ -2507,18 +2512,7 @@ def bluetooth(phrase):
 
 def time_travel():
     """Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way"""
-    am_or_pm = datetime.now().strftime("%p")
-    current_hour = int(datetime.now().strftime("%I"))
-    if current_hour in range(4, 12) and am_or_pm == 'AM':
-        greet = 'Morning'
-    elif am_or_pm == 'PM' and (current_hour == 12 or current_hour in range(1, 4)):
-        greet = 'Afternoon'
-    elif current_hour in range(4, 8) and am_or_pm == 'PM':
-        greet = 'Evening'
-    else:
-        greet = 'Night'
-
-    speaker.say(f"Good {greet} Vignesh.")
+    speaker.say(f"Good {greeting()} Vignesh.")
 
     time_travel.has_been_called = True
     date()
@@ -2554,12 +2548,18 @@ def sentry_mode():
             elif operating_system == 'Windows':
                 os.system('SetVol.exe 20')
             restart()
-        if datetime.now().strftime("%I:%M %p") == '07:00 AM':
+        if datetime.now().strftime("%I:%M %p") == '07:00 AM' and int(datetime.now().strftime('%S')) in list(
+                range(0, 20)) and datetime.now().strftime("%A") not in ['Saturday', 'Sunday']:
             if operating_system == 'Darwin':
                 os.system(f'osascript -e "set Volume 8"')
             elif operating_system == 'Windows':
                 os.system('SetVol.exe 100')
-            time_travel()
+            speaker.say('Good Morning.')
+            report.has_been_called = True
+            date()
+            current_time(None)
+            weather(None)
+            report.has_been_called = False
             if operating_system == 'Darwin':
                 os.system(f'osascript -e "set Volume 4"')
             elif operating_system == 'Windows':
