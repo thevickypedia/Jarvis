@@ -85,6 +85,7 @@ def initialize():
 def renew():
     """renew() function resets the waiter count which indeed sends the alive() function to sentry mode after a minute"""
     global waiter
+    speaker.runAndWait()
     waiter = 0
     alive()
 
@@ -93,7 +94,6 @@ def alive():
     """alive() function will keep listening and send the response to conditions() This function runs only for a minute
     and goes to sentry_mode() if nothing is heard"""
     global waiter
-    speaker.runAndWait()
     try:
         sys.stdout.write("\rListener activated..") and playsound('start.mp3') if waiter == 0 else \
             sys.stdout.write("\rListener activated..")
@@ -101,16 +101,17 @@ def alive():
         sys.stdout.write("\r") and playsound('end.mp3') if waiter == 0 else sys.stdout.write("\r")
         converted = recognizer.recognize_google(listener)
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        converted = None
         if waiter != 12:  # waits for a minute and goes to sleep
             waiter += 1
-            converted = None
         else:
-            converted = 'sleep'
+            return
     if not converted:
         alive()
     elif any(word in converted.lower() for word in keywords.sleep()):
         speaker.say(f"Activating sentry mode, enjoy yourself sir!")
         speaker.runAndWait()
+        return
     else:
         conditions(converted)
 
@@ -1132,6 +1133,7 @@ def music(device):
         sys.stdout.write('\r')
         speaker.say("Enjoy your music sir!")
         speaker.runAndWait()
+        return
 
 
 def gmail():
@@ -1995,7 +1997,7 @@ def maps_api(query):
             sys.stdout.write("\r") and playsound('end.mp3')
             converted = recognizer.recognize_google(listener)
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-                renew()
+                break
             elif any(word in converted.lower() for word in keywords.ok()):
                 place_holder = None
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
@@ -2534,6 +2536,7 @@ def time_travel():
     time_travel.has_been_called = False
     speaker.say(f"Activating sentry mode, enjoy yourself sir!")
     speaker.runAndWait()
+    return
 
 
 def sentry_mode():
@@ -2658,7 +2661,10 @@ def exit_process():
     if reminders:
         remind_list = ''.join(remind_list)
         sys.stdout.write(f'\r{remind_list}')
-        speaker.say(f"You have a pending reminder to {remind_list} sir! This will be removed while shutting down.")
+        if remind_list:
+            speaker.say(f"You have a pending reminder to {remind_list} sir! This will be removed while shutting down.")
+        else:
+            speaker.say(f"You have a pending reminder sir! This will be removed while shutting down.")
     if alarms:
         alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
         alarms = alarms.replace('.lock', '')
