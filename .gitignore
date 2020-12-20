@@ -1,11 +1,23 @@
+# python generated
 .idea
 venv
-speech2text.py
-text2audio.py
-lib/docker_requirements.txt
+
+# training directories with images of faces for recognition
+train
+
+# WIP: Dockerfile and it's requirements file
 Dockerfile
+lib/docker_requirements.txt
+
+# Files that will be downloaded while starting Jarvis
 model.pcl
 SetVol.exe
+
+# Unknown words will be saved for later review
 training_data.yaml
+# to-do items stored in a database
+tasks.db
+# Notes saved when asked to Jarvis
 notes.txt
-train
+# Contacts to call or message
+contacts.yml
