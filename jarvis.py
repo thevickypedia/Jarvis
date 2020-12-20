@@ -41,11 +41,10 @@ from helper_functions.keywords import Keywords
 from reminder import Reminder
 from tv_controls import TV
 
-# suppress all logging
-logging.disable()
-
 
 def listener(timeout, phrase_limit):
+    """Function to activate listener, this function will be called by most upcoming functions to listen to user input.
+    Returns 'SR_ERROR' as a string which is conditioned to respond appropriately."""
     try:
         sys.stdout.write("\rListener activated..") and playsound('start.mp3')
         listened = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_limit)
@@ -57,6 +56,7 @@ def listener(timeout, phrase_limit):
 
 
 def greeting():
+    """Function that returns a greeting based on the current time of the day."""
     am_or_pm = datetime.now().strftime("%p")
     current_hour = int(datetime.now().strftime("%I"))
     if current_hour in range(4, 12) and am_or_pm == 'AM':
@@ -2177,8 +2177,8 @@ def google(query):
         if '\n' in output:
             required = output.split('\n')
             modify = required[0].strip()
-            splitted = ' '.join(splitter(modify.replace('.', 'rEpLaCInG')))
-            sentence = splitted.replace(' rEpLaCInG ', '.')
+            split_val = ' '.join(splitter(modify.replace('.', 'rEpLaCInG')))
+            sentence = split_val.replace(' rEpLaCInG ', '.')
             repeats = []
             [repeats.append(word) for word in sentence.split() if word not in repeats]
             refined = ' '.join(repeats)
@@ -2448,7 +2448,7 @@ def sentry_mode():
             elif 'jarvis' in key or 'buddy' in key:
                 key = key.replace('jarvis ', '').replace('buddy ', '').replace('hey ', '')
                 conditions(key.strip())
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError, RecursionError):
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             pass
         except KeyboardInterrupt:
             exit_process()
@@ -2472,7 +2472,7 @@ def size_converter(byte_size):
 
 
 def exit_message():
-    """variety of exit messages based on day of week and time of day"""
+    """Variety of exit messages based on day of week and time of day"""
     current = datetime.now().strftime("%p")  # current part of day (AM/PM)
     clock = datetime.now().strftime("%I")  # current hour
     today = datetime.now().strftime("%A")  # current day
@@ -2498,11 +2498,13 @@ def exit_message():
 
 
 def remove_files():
+    """Function that deletes all alarm files and reminder files."""
     [os.remove(f"alarm/{file}") if file != 'dummy.lock' else None for file in os.listdir('alarm')]
     [os.remove(f"reminder/{file}") if file != 'dummy.lock' else None for file in os.listdir('reminder')]
 
 
 def exit_process():
+    """Function that holds the list of operations done upon exit."""
     global remind_list
     alarms, reminders = [], 0
     for file in os.listdir('alarm'):
@@ -2534,7 +2536,8 @@ def exit_process():
 
 
 def restart():
-    """restart() triggers restart.py which triggers Jarvis after 5 seconds"""
+    """restart() triggers restart.py which in turn starts Jarvis after 5 seconds.
+    Doing this changes the PID to avoid any Fatal Errors occurred by long running threads."""
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(time.perf_counter())}")
     speaker.say('Restarting now sir! I will be up and running momentarily.')
     speaker.runAndWait()
@@ -2585,6 +2588,7 @@ if __name__ == '__main__':
     database = Database()  # initiates Database() for TO-DO items
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 100)  # increases the recursion limit by 100 times
+    logging.disable()  # suppress all logging within imported modules
 
     # noinspection PyTypeChecker
     volume = int(speaker.getProperty("volume")) * 100
