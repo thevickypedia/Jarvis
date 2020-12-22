@@ -95,7 +95,7 @@ class Keywords:
 
     def avoid(self):
         key = ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
-               'a.m.', 'p.m.', 'update my to do list']
+               'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari']
         return key
 
     def geopy(self):

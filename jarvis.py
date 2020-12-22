@@ -50,6 +50,7 @@ def listener(timeout, phrase_limit):
         listened = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_limit)
         sys.stdout.write("\r") and playsound('end.mp3')
         return_val = recognizer.recognize_google(listened)
+        sys.stdout.write(f'\r{return_val}')
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
         return_val = 'SR_ERROR'
     return return_val
@@ -335,13 +336,14 @@ def conditions(converted):
             speaker.say(f'You have {total} repositories sir, out of which {forked} are forked, {private} are private, '
                         f'{licensed} are licensed, and {archived} archived.')
             renew()
-        [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
-         for word in converted.lower().split() for item in repos for repo, clone_url in item.items()]
-        if result:
-            github(target=result)
         else:
-            speaker.say("Sorry sir! I did not find that repo.")
-            renew()
+            [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
+             for word in converted.lower().split() for item in repos for repo, clone_url in item.items()]
+            if result:
+                github(target=result)
+            else:
+                speaker.say("Sorry sir! I did not find that repo.")
+                renew()
 
     elif any(word in converted.lower() for word in keywords.txt_message()):
         number = '-'.join([str(s) for s in re.findall(r'\b\d+\b', converted)])
@@ -807,6 +809,7 @@ def wikipedia_():
                 summary = None
                 wikipedia_()
             # stops with two sentences before reading whole passage
+            # TODO::review the below purpose and remove punctuations if not used
             formatted = punctuation.punctuate(' '.join(splitter(' '.join(summary.split('.')[0:2]))))
             speaker.say(formatted)
             speaker.say("Do you want me to continue sir?")  # gets confirmation to read the whole passage
@@ -857,7 +860,7 @@ def apps(keyword):
         keyword = listener(3, 5)
         if keyword != 'SR_ERROR':
             if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
-                renew()
+                return renew()
         else:
             if place_holder == 0:
                 place_holder = None
@@ -919,7 +922,7 @@ def repeater():
     speaker.runAndWait()
     keyword = listener(3, 10)
     if keyword != 'SR_ERROR':
-        sys.stdout.write(keyword)
+        sys.stdout.write(f'\r{keyword}')
         if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
             pass
         else:
@@ -1978,8 +1981,11 @@ def send_sms(target):
         speaker.runAndWait()
         number = listener(3, 5)
         if number != 'SR_ERROR':
-            sys.stdout.write(f'\rNumber: {number}')
-            place_holder = None
+            if 'exit' in number or 'quit' in number or 'Xzibit' in number:
+                return renew()
+            else:
+                sys.stdout.write(f'\rNumber: {number}')
+                place_holder = None
         else:
             if place_holder == 0:
                 place_holder = None
