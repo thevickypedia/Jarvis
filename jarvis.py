@@ -12,6 +12,7 @@ import time
 import unicodedata
 import webbrowser
 from datetime import datetime, timedelta
+from threading import Thread
 from urllib.request import urlopen
 
 import certifi
@@ -387,6 +388,17 @@ def conditions(converted):
             speaker.say("Bluetooth connectivity on Windows hasn't been developed sir!")
             renew()
 
+    elif any(word in converted.lower() for word in keywords.brightness()):
+        if operating_system == 'Darwin':
+            speaker.say(random.choice(acknowledgement))
+            if 'increase' in converted.lower():
+                Thread(target=increase_brightness).start()
+            elif ('decrease' or 'reduce' or 'lower') in converted.lower():
+                Thread(target=decrease_brightness).start()
+        elif operating_system == 'Windows':
+            speaker.say("Modifying screen brightness on Windows hasn't been developed sir!")
+        renew()
+
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
         renew()
@@ -749,15 +761,12 @@ def weather_condition(place, msg):
 def system_info():
     """gets your system configuration for both mac and windows"""
     import shutil
-
     total, used, free = shutil.disk_usage("/")
-    total = f"{(total // (2 ** 30))} GB"
-    used = f"{(used // (2 ** 30))} GB"
-    free = f"{(free // (2 ** 30))} GB"
-
-    mem = virtual_memory()
-    ram = f"{mem.total // (2 ** 30)} GB"
-
+    total = size_converter(total)
+    used = size_converter(used)
+    free = size_converter(free)
+    ram = size_converter(virtual_memory().total).replace('.0', '')
+    ram_used = size_converter(virtual_memory().percent).replace(' B', ' %')
     cpu = str(os.cpu_count())
     if operating_system == 'Windows':
         o_system = platform.uname()[0] + platform.uname()[2]
@@ -766,7 +775,8 @@ def system_info():
     else:
         o_system = None
     speaker.say(f"You're running {o_system}, with {cpu} cores. Your physical drive capacity is {total}. "
-                f"You have used up {used} of space. Your free space is {free}. Your RAM capacity is {ram}")
+                f"You have used up {used} of space. Your free space is {free}. Your RAM capacity is {ram}. "
+                f"You are currently utilizing {ram_used} of your memory.")
     renew()
 
 
@@ -2375,6 +2385,16 @@ def bluetooth(phrase):
     renew()
 
 
+def increase_brightness():
+    for _ in range(32):
+        os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
+
+
+def decrease_brightness():
+    for _ in range(32):
+        os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
+
+
 def time_travel():
     """Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way"""
     speaker.say(f"Good {greeting()} Vignesh.")
@@ -2402,8 +2422,8 @@ def sentry_mode():
     while threshold < 5000:
         threshold += 1
         if not morning_msg:
-            # triggers between 7:00:20 AM (weekdays) and does not exceed 20 seconds so that it would not repeat the
-            # same message once again
+            # triggers between 7:00:20 and 7:00:20 AM (weekdays) and does not exceed 20 seconds so that,
+            # Jarvis would not repeat the same message once again
             if datetime.now().strftime("%I:%M %p") == '07:00 AM' and int(datetime.now().strftime('%S')) in list(
                     range(0, 20)) and datetime.now().strftime("%A") not in ['Saturday', 'Sunday']:
                 if operating_system == 'Darwin':

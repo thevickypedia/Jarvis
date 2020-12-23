@@ -162,6 +162,10 @@ class Keywords:
         key = ['connect', 'disconnect', 'bluetooth']
         return key
 
+    def brightness(self):
+        key = ['brightness', 'bright', 'dim']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key
