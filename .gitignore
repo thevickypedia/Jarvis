@@ -9,8 +9,7 @@ train
 Dockerfile
 lib/docker_requirements.txt
 
-# Files that will be downloaded while starting Jarvis
-model.pcl
+# File that will be downloaded while starting Jarvis if running on Windows OS
 SetVol.exe
 
 # Unknown words will be saved for later review

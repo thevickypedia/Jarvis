@@ -26,7 +26,6 @@ from geopy.geocoders import Nominatim, options
 from inflect import engine
 from playsound import playsound
 from psutil import Process, virtual_memory
-from punctuator import Punctuator
 from pyicloud import PyiCloudService
 from pyicloud.exceptions import PyiCloudAPIResponseException, PyiCloudFailedLoginException
 from requests.auth import HTTPBasicAuth
@@ -809,8 +808,7 @@ def wikipedia_():
                 summary = None
                 wikipedia_()
             # stops with two sentences before reading whole passage
-            # TODO::review the below purpose and remove punctuations if not used
-            formatted = punctuation.punctuate(' '.join(splitter(' '.join(summary.split('.')[0:2]))))
+            formatted = '. '.join(summary.split('. ')[0:2]) + '.'
             speaker.say(formatted)
             speaker.say("Do you want me to continue sir?")  # gets confirmation to read the whole passage
             speaker.runAndWait()
@@ -818,7 +816,7 @@ def wikipedia_():
             if response != 'SR_ERROR':
                 place_holder = None
                 if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
-                    speaker.say(''.join(summary.split('.')[3:-1]))
+                    speaker.say('. '.join(summary.split('. ')[3:-1]))
             else:
                 sys.stdout.write("\r")
                 speaker.say("I'm sorry sir, I didn't get your response.")
@@ -2401,16 +2399,11 @@ def time_travel():
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action"""
     global waiter, threshold, morning_msg
-    while True:
+    while threshold < 5000:
         threshold += 1
-        if threshold > 5000:
-            speaker.say("My run time has reached the threshold!")
-            if operating_system == 'Darwin':
-                os.system(f'osascript -e "set Volume 2"')
-            elif operating_system == 'Windows':
-                os.system('SetVol.exe 20')
-            restart()
         if not morning_msg:
+            # triggers between 7:00:20 AM (weekdays) and does not exceed 20 seconds so that it would not repeat the
+            # same message once again
             if datetime.now().strftime("%I:%M %p") == '07:00 AM' and int(datetime.now().strftime('%S')) in list(
                     range(0, 20)) and datetime.now().strftime("%A") not in ['Saturday', 'Sunday']:
                 if operating_system == 'Darwin':
@@ -2459,6 +2452,12 @@ def sentry_mode():
         except KeyboardInterrupt:
             exit_process()
             exit(0)
+    speaker.say("My run time has reached the threshold!")
+    if operating_system == 'Darwin':
+        os.system(f'osascript -e "set Volume 2"')
+    elif operating_system == 'Windows':
+        os.system('SetVol.exe 20')
+    restart()
 
 
 def size_converter(byte_size):
@@ -2683,14 +2682,6 @@ if __name__ == '__main__':
                        'Without fail sir!', 'Sure sir!', 'Buttoned up sir!', 'Executed sir!']
 
     weekend = ['Friday', 'Saturday']
-    if 'model.pcl' not in current_dir:
-        sys.stdout.write("\rPLEASE WAIT::Downloading model file for punctuations")
-        os.system("""curl https://thevickypedia.com/Jarvis/punctuator/model.pcl --output model.pcl --silent""")
-        sys.stdout.write("\r")
-
-    sys.stdout.write("\rPLEASE WAIT::Training model for punctuations")
-    punctuation = Punctuator(model_file='model.pcl')
-    sys.stdout.write("\r")
 
     # {function_name}.has_been_called is use to denote which function has triggered the other
     report.has_been_called, locate_places.has_been_called, directions.has_been_called, maps_api.has_been_called, \

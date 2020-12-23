@@ -37,7 +37,6 @@ python3 -m pip install axju-jokes==1.0.3
 python3 -m pip install timezonefinder==4.4.1
 python3 -m pip install inflect==4.1.0
 python3 -m pip install wordninja==2.0.0
-python3 -m pip install punctuator==0.9.6
 python3 -m pip install search_engine_parser==0.6.2
 python3 -m pip install boto3==1.16.12
 python3 -m pip install playsound==1.2.2

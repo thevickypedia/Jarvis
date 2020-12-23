@@ -30,7 +30,6 @@ then
   pip3 install timezonefinder==4.4.1
   pip3 install inflect==4.1.0
   pip3 install wordninja==2.0.0
-  pip3 install punctuator==0.9.6
   pip3 install search_engine_parser==0.6.2
   pip3 install boto3==1.16.12
   pip3 install playsound==1.2.2
