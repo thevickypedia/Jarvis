@@ -16,6 +16,7 @@ from threading import Thread
 from urllib.request import urlopen
 
 import certifi
+import holidays
 import pytemperature
 import pyttsx3 as audio
 import requests
@@ -153,7 +154,7 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.date()) and \
             not any(word in converted.lower() for word in keywords.avoid()):
-        date()
+        current_date()
 
     elif any(word in converted.lower() for word in keywords.time()):
         place = ''
@@ -392,16 +393,16 @@ def conditions(converted):
         checker = converted.lower()
         if operating_system == 'Darwin':
             speaker.say(random.choice(acknowledgement))
-            if 'set' in checker:
+            if 'set' in checker or re.findall(r'\b\d+\b', checker):
                 level = re.findall(r'\b\d+\b', checker)  # gets integers from string as a list
                 level = level if level else ['50']  # pass as list for brightness, as args must be iterable
                 Thread(target=set_brightness, args=level).start()
-            elif 'increase' in checker or 'bright' in checker or 'max' in checker or 'brighten' in checker or \
-                    'light up' in checker:
-                Thread(target=increase_brightness).start()
             elif 'decrease' in checker or 'reduce' in checker or 'lower' in checker or 'dark' in checker or \
                     'dim' in checker:
                 Thread(target=decrease_brightness).start()
+            elif 'increase' in checker or 'bright' in checker or 'max' in checker or 'brighten' in checker or \
+                    'light up' in checker:
+                Thread(target=increase_brightness).start()
         elif operating_system == 'Windows':
             speaker.say("Modifying screen brightness on Windows hasn't been developed sir!")
         renew()
@@ -497,7 +498,7 @@ def report():
     """Initiates a list of function that I tend to check first thing in the morning"""
     sys.stdout.write("\rStarting today's report")
     report.has_been_called = True
-    date()
+    current_date()
     current_time(None)
     weather(None)
     todo()
@@ -507,7 +508,7 @@ def report():
     renew()
 
 
-def date():
+def current_date():
     """Says today's date and skips going to renew() if the function is called by report()"""
     dt_string = datetime.now().strftime("%A, %B")
     date_ = engine().ordinal(datetime.now().strftime("%d"))
@@ -517,8 +518,10 @@ def date():
     else:
         dt_string = dt_string + date_ + ', ' + year
     speaker.say(f"It's {dt_string}")
+    if event:
+        speaker.say(f"It's also {event} sir!")
     if report.has_been_called or time_travel.has_been_called:
-        pass
+        speaker.say(f'The current time is, ')
     else:
         renew()
 
@@ -1149,15 +1152,16 @@ def gmail():
                                 sys.stdout.write(f'\rEmail from {sender} has a weird time stamp. Please check.')
                                 datetime_obj = datetime.now()  # sets to current date if PST or PDT are not found
                             received_date = datetime_obj.strftime("%Y-%m-%d")
-                            current_date = datetime.today().date()
-                            yesterday = current_date - timedelta(days=1)
+                            current_date_ = datetime.today().date()
+                            yesterday = current_date_ - timedelta(days=1)
                             # replaces current date with today or yesterday
-                            if received_date == str(current_date):
-                                receive = datetime_obj.strftime("today, at %I:%M %p")
+                            if received_date == str(current_date_):
+                                receive = datetime_obj.strftime("Today, at %I:%M %p")
                             elif received_date == str(yesterday):
-                                receive = datetime_obj.strftime("yesterday, at %I:%M %p")
+                                receive = datetime_obj.strftime("Yesterday, at %I:%M %p")
                             else:
                                 receive = datetime_obj.strftime("on %A, %B %d, at %I:%M %p")
+                            sys.stdout.write(f'\rReceived:{receive}::{received_date}\tSender: {sender}\tSubject: {sub}')
                             speaker.say(f"You have an email from, {sender}, with subject, {sub}, {receive}")
                             speaker.runAndWait()
         else:
@@ -2405,12 +2409,26 @@ def set_brightness(level):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
 
 
+def celebrate():
+    """Function to look if the current date is a holiday."""
+    day = datetime.today().date()
+    today = datetime.now().strftime("%d-%B")
+    us_holidays = holidays.CountryHoliday('US').get(day)
+    in_holidays = holidays.CountryHoliday('IND', prov='TN', state='TN').get(day)
+    if in_holidays:
+        return in_holidays
+    elif us_holidays and 'Observed' not in us_holidays:
+        return us_holidays
+    elif today == os.getenv('birthday') or today == aws.birthday():
+        return 'Your Birthday'
+
+
 def time_travel():
     """Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way"""
     speaker.say(f"Good {greeting()} Vignesh.")
 
     time_travel.has_been_called = True
-    date()
+    current_date()
     current_time(None)
     weather(None)
     todo()
@@ -2443,7 +2461,7 @@ def sentry_mode():
                     os.system('SetVol.exe 100')
                 speaker.say('Good Morning.')
                 report.has_been_called = True
-                date()
+                current_date()
                 current_time(None)
                 weather(None)
                 report.has_been_called = False
@@ -2458,7 +2476,7 @@ def sentry_mode():
             if datetime.now().strftime("%I:%M %p") == '09:00 PM':
                 if operating_system == 'Darwin':
                     Thread(target=decrease_brightness).start()  # set to lowest brightness
-                speaker.say(f'Good {greeting()} Sir! Have a pleasant sleep.')
+                speaker.say(f'Good Night Sir! Have a pleasant sleep.')
                 speaker.runAndWait()
                 evening_msg = True
         waiter = 0
@@ -2730,6 +2748,13 @@ if __name__ == '__main__':
         time_travel.has_been_called = False, False, False, False, False
     for functions in [dummy, delete_todo, todo, add_todo]:
         functions.has_been_called = False
+
+    # triggers celebrate function and wishes for a event if found.
+    event = celebrate()
+    if event:
+        event = event.replace(f'Your ', '')  # removes Your in case of birthday event
+        speaker.say(f'Happy {event} sir!')
+        speaker.runAndWait()
 
     if operating_system == 'Darwin':
         os.system(f'osascript -e "set Volume 4"')

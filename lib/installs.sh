@@ -47,3 +47,4 @@ python3 -m pip install cmake==3.18.2.post1
 python3 -m pip install dlib==19.21.0
 python3 -m pip install face-recognition==1.3.0
 python3 -m pip install speedtest-cli==2.1.2
+python3 -m pip install holidays

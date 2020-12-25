@@ -36,6 +36,7 @@ then
   pip3 install pywebostv==0.8.4
   pip3 install wakeonlan==1.1.6
   pip3 install speedtest-cli==2.1.2
+  pip3 install holidays
 else
   echo ""
   echo "**********************************************************************************************************"

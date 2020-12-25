@@ -105,3 +105,9 @@ class AWSClients:
         param = response['Parameter']
         val = param['Value']
         return val
+
+    def birthday(self):
+        response = AWSClients.client.get_parameter(Name='/Jarvis/birthday', WithDecryption=True)
+        param = response['Parameter']
+        val = param['Value']
+        return val
