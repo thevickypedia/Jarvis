@@ -163,7 +163,7 @@ class Keywords:
         return key
 
     def brightness(self):
-        key = ['brightness', 'bright', 'dim']
+        key = ['brightness', 'bright', 'dim', 'screen']
         return key
 
     def ok(self):

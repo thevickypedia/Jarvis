@@ -371,8 +371,8 @@ def conditions(converted):
         elif 'max' in converted.lower() or 'full' in converted.lower():
             level = 100
         else:
-            level = re.findall(r'\b\d+\b', converted)
-            level = int(level[0]) if level else 50
+            level = re.findall(r'\b\d+\b', converted)  # gets integers from string as a list
+            level = int(level[0]) if level else 50  # converted to int for volume
         volume_controller(level)
 
     elif any(word in converted.lower() for word in keywords.face_detection()):
@@ -389,11 +389,18 @@ def conditions(converted):
             renew()
 
     elif any(word in converted.lower() for word in keywords.brightness()):
+        checker = converted.lower()
         if operating_system == 'Darwin':
             speaker.say(random.choice(acknowledgement))
-            if 'increase' in converted.lower():
+            if 'set' in checker:
+                level = re.findall(r'\b\d+\b', checker)  # gets integers from string as a list
+                level = level if level else ['50']  # pass as list for brightness, as args must be iterable
+                Thread(target=set_brightness, args=level).start()
+            elif 'increase' in checker or 'bright' in checker or 'max' in checker or 'brighten' in checker or \
+                    'light up' in checker:
                 Thread(target=increase_brightness).start()
-            elif ('decrease' or 'reduce' or 'lower') in converted.lower():
+            elif 'decrease' in checker or 'reduce' in checker or 'lower' in checker or 'dark' in checker or \
+                    'dim' in checker:
                 Thread(target=decrease_brightness).start()
         elif operating_system == 'Windows':
             speaker.say("Modifying screen brightness on Windows hasn't been developed sir!")
@@ -443,7 +450,8 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.kill()):
         exit_process()
-        exit(0)
+        Alarm(None, None, None)
+        Reminder(None, None, None, None)
 
     elif any(word in converted.lower() for word in keywords.shutdown()):
         shutdown()
@@ -1306,11 +1314,11 @@ def add_todo():
                 sys.stdout.write("\r")
                 create_db()
             else:
-                renew()
+                return renew()
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
+                return renew()
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -1323,36 +1331,28 @@ def add_todo():
     if item != 'SR_ERROR':
         if 'exit' in item or 'quit' in item or 'Xzibit' in item:
             speaker.say('Your to-do list has been left intact sir.')
-            renew()
-        sys.stdout.write(f"\rItem: {item}")
-        speaker.say(f"I heard {item}. Which category you want me to add it to?")
-        speaker.runAndWait()
-        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-        category = listener(3, 5)
-        if category == 'SR_ERROR':
-            category = 'Unknown'
-        if 'exit' in category or 'quit' in category or 'Xzibit' in category:
-            speaker.say('Your to-do list has been left intact sir.')
-            renew()
         else:
-            sys.stdout.write(f"\rCategory: {category}")
-            # passes the category and item to uploader() in helper_functions/database.py which updates the database
-            response = database.uploader(category, item)
-            speaker.say(response)
-            speaker.say("Do you want to add anything else to your to-do list?")
+            sys.stdout.write(f"\rItem: {item}")
+            speaker.say(f"I heard {item}. Which category you want me to add it to?")
             speaker.runAndWait()
-            sys.stdout.write("\rListener activated..") and playsound('start.mp3')
-            listener_continue = recognizer.listen(source, timeout=3, phrase_time_limit=3)
-            sys.stdout.write("\r") and playsound('end.mp3')
-            category_continue = recognizer.recognize_google(listener_continue)
-            if any(re.search(line, category_continue, flags=re.IGNORECASE) for line in keywords.exit()):
-                renew()
+            category = listener(3, 5)
+            if category == 'SR_ERROR':
+                category = 'Unknown'
+            if 'exit' in category or 'quit' in category or 'Xzibit' in category:
+                speaker.say('Your to-do list has been left intact sir.')
             else:
-                add_todo()
+                sys.stdout.write(f"\rCategory: {category}")
+                # passes the category and item to uploader() in helper_functions/database.py which updates the database
+                response = database.uploader(category, item)
+                speaker.say(response)
+                speaker.say("Do you want to add anything else to your to-do list?")
+                speaker.runAndWait()
+                category_continue = listener(3, 5)
+                if any(re.search(line, category_continue, flags=re.IGNORECASE) for line in keywords.ok()):
+                    add_todo()
     else:
         sys.stdout.write("\r")
         speaker.say("I didn't quite get that.")
-        renew()
     place_holder = None
     renew()
 
@@ -1784,7 +1784,7 @@ def reminder(converted):
         if not message:
             speaker.say('Reminder format should be::Remind me to do something, at some time.')
             sys.stdout.write('Reminder format should be::Remind ME to do something, AT some time.')
-            renew()
+            return renew()
     extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
         r'([0-9]+\s?(?:a.m.|p.m.:?))', converted)
     if not extracted_time:
@@ -1818,7 +1818,7 @@ def reminder(converted):
             remind_list.append(appender)
             Reminder(hour, minute, am_pm, message).start()
             speaker.say(f"{random.choice(acknowledgement)} I will remind you to {message} at {hour}:{minute} {am_pm}.")
-            sys.stdout.write(f"\rI will remind you to {message} at {hour}:{minute} {am_pm} sir!")
+            sys.stdout.write(f"\r{message} at {hour}:{minute} {am_pm}")
             renew()
         else:
             speaker.say(f"A reminder at {hour} {minute} {am_pm}? Are you an alien? "
@@ -2068,7 +2068,6 @@ def television(converted):
         except OSError:
             speaker.say("I wasn't able to turn on your TV sir! I think you have your VPN turned ON. If so, disconnect"
                         " it. And make sure you are on the same network as your TV.")
-        renew()
     elif tv:
         if 'increase' in phrase:
             tv.increase_volume()
@@ -2137,8 +2136,7 @@ def television(converted):
                 speaker.say(f"I didn't find the source {tv_source} on your TV sir!")
         elif 'shutdown' in phrase or 'shut down' in phrase or 'turn off' in phrase:
             speaker.say('Shutting down the TV now.')
-            speaker.runAndWait()
-            tv.shutdown()
+            Thread(target=tv.shutdown).start()
             tv = None
         else:
             speaker.say("I didn't quite get that.")
@@ -2386,13 +2384,25 @@ def bluetooth(phrase):
 
 
 def increase_brightness():
+    """Increases the brightness to maximum in macOS"""
     for _ in range(32):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
 
 
 def decrease_brightness():
+    """Decreases the brightness to bare minimum in macOS"""
     for _ in range(32):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
+
+
+def set_brightness(level):
+    """Set brightness to a custom level. Since I'm using in-built apple script,
+    the only way to achieve this is to: set the brightness to bare minimum and increase {*}% from there or vice-versa"""
+    level = round((32 * int(level)) / 100)
+    for _ in range(32):
+        os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
+    for _ in range(level):
+        os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
 
 
 def time_travel():
@@ -2418,15 +2428,16 @@ def time_travel():
 
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action"""
-    global waiter, threshold, morning_msg
+    global waiter, threshold, morning_msg, evening_msg
     while threshold < 5000:
         threshold += 1
         if not morning_msg:
-            # triggers between 7:00:20 and 7:00:20 AM (weekdays) and does not exceed 20 seconds so that,
-            # Jarvis would not repeat the same message once again
-            if datetime.now().strftime("%I:%M %p") == '07:00 AM' and int(datetime.now().strftime('%S')) in list(
-                    range(0, 20)) and datetime.now().strftime("%A") not in ['Saturday', 'Sunday']:
+            # triggers between 7:00 AM (weekdays) and morning_msg is set to True so that,
+            # Jarvis would not repeat the same message once again before a restart
+            if datetime.now().strftime("%I:%M %p") == '07:00 AM' and \
+                    datetime.now().strftime("%A") not in ['Saturday', 'Sunday']:
                 if operating_system == 'Darwin':
+                    Thread(target=increase_brightness).start()  # set to max brightness
                     os.system(f'osascript -e "set Volume 8"')
                 elif operating_system == 'Windows':
                     os.system('SetVol.exe 100')
@@ -2441,6 +2452,15 @@ def sentry_mode():
                 elif operating_system == 'Windows':
                     os.system('SetVol.exe 50')
                 morning_msg = True
+        if not evening_msg:
+            # triggers at 9:00 PM and evening_msg is set to True so that,
+            # Jarvis would not try to dim the screen brightness once again
+            if datetime.now().strftime("%I:%M %p") == '09:00 PM':
+                if operating_system == 'Darwin':
+                    Thread(target=decrease_brightness).start()  # set to lowest brightness
+                speaker.say(f'Good {greeting()} Sir! Have a pleasant sleep.')
+                speaker.runAndWait()
+                evening_msg = True
         waiter = 0
         if greet_check == 'initialized':
             dummy.has_been_called = True
@@ -2456,6 +2476,10 @@ def sentry_mode():
             elif 'good' in key:
                 if ('morning' in key or 'night' in key or 'afternoon' in key or 'after noon' in key or
                         'evening' in key) and 'jarvis' in key:
+                    if 'night' in key:
+                        Thread(target=decrease_brightness).start()
+                    elif 'morning' in key:
+                        Thread(target=increase_brightness).start()
                     time_travel()
             elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or \
                     'showtime' in key or 'time to work' in key or 'spin up' in key:
@@ -2523,7 +2547,7 @@ def exit_message():
 
 
 def remove_files():
-    """Function that deletes all alarm files and reminder files."""
+    """Function that deletes all .lock files created for alarms and reminders."""
     [os.remove(f"alarm/{file}") if file != 'dummy.lock' else None for file in os.listdir('alarm')]
     [os.remove(f"reminder/{file}") if file != 'dummy.lock' else None for file in os.listdir('reminder')]
 
@@ -2547,7 +2571,7 @@ def exit_process():
             speaker.say(f"You have a pending reminder sir! This will be removed while shutting down.")
     if alarms:
         alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
-        alarms = alarms.replace('.lock', '')
+        alarms = alarms.replace('.lock', '').replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')
         sys.stdout.write(f"\r{alarms}")
         speaker.say(f"You have a pending alarm at {alarms} sir! This will be removed while shutting down.")
     speaker.say(f"Shutting down now sir!")
@@ -2556,8 +2580,6 @@ def exit_process():
     remove_files()
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
                      f"\nTotal runtime: {time_converter(time.perf_counter())}")
-    Alarm(None, None, None)
-    Reminder(None, None, None, None)
 
 
 def restart():
@@ -2644,7 +2666,7 @@ if __name__ == '__main__':
         # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
     # threshold is used to sanity check the sentry_mode() so that Jarvis doesn't run into Fatal Python error.
         # This happens when the same functions is repeatedly called with no end::Cannot recover from stack overflow.
-    place_holder, greet_check, tv, remind_list, morning_msg = None, None, None, [], False
+    place_holder, greet_check, tv, remind_list, morning_msg, evening_msg = None, None, None, [], False, False
     waiter, suggestion_count, threshold = 0, 0, 0
 
     # Uses speed test api to check for internet connection
