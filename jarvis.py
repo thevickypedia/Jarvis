@@ -375,6 +375,8 @@ def conditions(converted):
             level = re.findall(r'\b\d+\b', converted)  # gets integers from string as a list
             level = int(level[0]) if level else 50  # converted to int for volume
         volume_controller(level)
+        speaker.say(f"{random.choice(acknowledgement)}")
+        renew()
 
     elif any(word in converted.lower() for word in keywords.face_detection()):
         face_recognition_detection()
@@ -2246,8 +2248,6 @@ def volume_controller(level):
         os.system(f'osascript -e "set Volume {level}"')
     elif operating_system == 'Windows':
         os.system(f'SetVol.exe {level}')
-    speaker.say(f"{random.choice(acknowledgement)}")
-    renew()
 
 
 def face_recognition_detection():
@@ -2456,19 +2456,14 @@ def sentry_mode():
                     datetime.now().strftime("%A") not in ['Saturday', 'Sunday']:
                 if operating_system == 'Darwin':
                     Thread(target=increase_brightness).start()  # set to max brightness
-                    os.system(f'osascript -e "set Volume 8"')
-                elif operating_system == 'Windows':
-                    os.system('SetVol.exe 100')
+                volume_controller(100)
                 speaker.say('Good Morning.')
                 report.has_been_called = True
                 current_date()
                 current_time(None)
                 weather(None)
                 report.has_been_called = False
-                if operating_system == 'Darwin':
-                    os.system(f'osascript -e "set Volume 4"')
-                elif operating_system == 'Windows':
-                    os.system('SetVol.exe 50')
+                volume_controller(50)
                 morning_msg = True
         if not evening_msg:
             # triggers at 9:00 PM and evening_msg is set to True so that,
@@ -2515,10 +2510,7 @@ def sentry_mode():
             exit_process()
             exit(0)
     speaker.say("My run time has reached the threshold!")
-    if operating_system == 'Darwin':
-        os.system(f'osascript -e "set Volume 2"')
-    elif operating_system == 'Windows':
-        os.system('SetVol.exe 20')
+    volume_controller(20)
     restart()
 
 
@@ -2655,9 +2647,8 @@ if __name__ == '__main__':
     sys.setrecursionlimit(limit * 100)  # increases the recursion limit by 100 times
     logging.disable()  # suppress all logging within imported modules
 
-    # noinspection PyTypeChecker
-    volume = int(speaker.getProperty("volume")) * 100
-    sys.stdout.write(f'\rCurrent volume is: {volume}% Voice ID::Female: 1/17 Male: 0/7')
+    # Voice ID::reference
+    sys.stdout.write(f'\rVoice ID::Female: 1/17 Male: 0/7')
 
     voices = speaker.getProperty("voices")  # gets the list of voices available
 
@@ -2756,11 +2747,7 @@ if __name__ == '__main__':
         speaker.say(f'Happy {event} sir!')
         speaker.runAndWait()
 
-    if operating_system == 'Darwin':
-        os.system(f'osascript -e "set Volume 4"')
-    elif operating_system == 'Windows':
-        os.system('SetVol.exe 50')
-
+    volume_controller(50)
     sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
 
     # starts sentry mode
