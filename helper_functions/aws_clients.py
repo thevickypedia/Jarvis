@@ -64,8 +64,8 @@ class AWSClients:
         val = param['Value']
         return val
 
-    def remind(self):
-        response = AWSClients.client.get_parameter(Name='/Jarvis/remind', WithDecryption=True)
+    def phone(self):
+        response = AWSClients.client.get_parameter(Name='/Jarvis/phone', WithDecryption=True)
         param = response['Parameter']
         val = param['Value']
         return val

@@ -34,12 +34,12 @@ from requests.auth import HTTPBasicAuth
 from speedtest import Speedtest, ConfigRetrievalError
 from wordninja import split as splitter
 
-from alarm import Alarm
+from helper_functions.alarm import Alarm
 from helper_functions.aws_clients import AWSClients
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.keywords import Keywords
-from reminder import Reminder
+from helper_functions.reminder import Reminder
 from tv_controls import TV
 
 
@@ -47,9 +47,9 @@ def listener(timeout, phrase_limit):
     """Function to activate listener, this function will be called by most upcoming functions to listen to user input.
     Returns 'SR_ERROR' as a string which is conditioned to respond appropriately."""
     try:
-        sys.stdout.write("\rListener activated..") and playsound('start.mp3')
+        sys.stdout.write("\rListener activated..") and playsound('indicators/start.mp3')
         listened = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_limit)
-        sys.stdout.write("\r") and playsound('end.mp3')
+        sys.stdout.write("\r") and playsound('indicators/end.mp3')
         return_val = recognizer.recognize_google(listened)
         sys.stdout.write(f'\r{return_val}')
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
@@ -104,10 +104,10 @@ def alive():
     and goes to sentry_mode() if nothing is heard"""
     global waiter
     try:
-        sys.stdout.write("\rListener activated..") and playsound('start.mp3') if waiter == 0 else \
+        sys.stdout.write("\rListener activated..") and playsound('indicators/start.mp3') if waiter == 0 else \
             sys.stdout.write("\rListener activated..")
         listen = recognizer.listen(source, timeout=None, phrase_time_limit=5)
-        sys.stdout.write("\r") and playsound('end.mp3') if waiter == 0 else sys.stdout.write("\r")
+        sys.stdout.write("\r") and playsound('indicators/end.mp3') if waiter == 0 else sys.stdout.write("\r")
         converted = recognizer.recognize_google(listen)
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
         converted = None
@@ -520,7 +520,9 @@ def current_date():
     else:
         dt_string = dt_string + date_ + ', ' + year
     speaker.say(f"It's {dt_string}")
-    if event:
+    if event and event == 'Birthday':
+        speaker.say(f"It's also your {event} sir!")
+    elif event:
         speaker.say(f"It's also {event} sir!")
     if report.has_been_called or time_travel.has_been_called:
         speaker.say(f'The current time is, ')
@@ -2252,7 +2254,7 @@ def volume_controller(level):
 
 def face_recognition_detection():
     if operating_system == 'Darwin':
-        from facial_recognition import Face
+        from helper_functions.facial_recognition import Face
         sys.stdout.write("\r")
         train_dir = 'train'
         os.mkdir(train_dir) if train_dir not in current_dir else None
@@ -2420,7 +2422,7 @@ def celebrate():
     elif us_holidays and 'Observed' not in us_holidays:
         return us_holidays
     elif today == os.getenv('birthday') or today == aws.birthday():
-        return 'Your Birthday'
+        return 'Birthday'
 
 
 def time_travel():
@@ -2458,6 +2460,8 @@ def sentry_mode():
                     Thread(target=increase_brightness).start()  # set to max brightness
                 volume_controller(100)
                 speaker.say('Good Morning.')
+                if event:
+                    speaker.say(f'Happy {event}!')
                 report.has_been_called = True
                 current_date()
                 current_time(None)
@@ -2493,6 +2497,8 @@ def sentry_mode():
                         Thread(target=decrease_brightness).start()
                     elif 'morning' in key:
                         Thread(target=increase_brightness).start()
+                    if event:
+                        speaker.say(f'Happy {event}!')
                     time_travel()
             elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or \
                     'showtime' in key or 'time to work' in key or 'spin up' in key:
@@ -2552,6 +2558,9 @@ def exit_message():
         exit_msg = "Have a nice night, and enjoy your weekend."
     else:
         exit_msg = "Have a nice night."
+
+    if event:
+        exit_msg += f'\nAnd by the way, happy {event}'
 
     return exit_msg
 
@@ -2742,16 +2751,12 @@ if __name__ == '__main__':
 
     # triggers celebrate function and wishes for a event if found.
     event = celebrate()
-    if event:
-        event = event.replace(f'Your ', '')  # removes Your in case of birthday event
-        speaker.say(f'Happy {event} sir!')
-        speaker.runAndWait()
 
     volume_controller(50)
     sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
 
     # starts sentry mode
-    playsound('initialize.mp3')
+    playsound('indicators/initialize.mp3')
     with sr.Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
         sentry_mode()
