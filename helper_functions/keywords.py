@@ -103,7 +103,7 @@ class Keywords:
         return key
 
     def directions(self):
-        key = ['take me', 'get directions', 'to go to']
+        key = ['take me', 'get directions']
         return key
 
     def alarm(self):
@@ -147,7 +147,7 @@ class Keywords:
         return key
 
     def volume(self):
-        key = ['volume']
+        key = ['volume', 'mute']
         return key
 
     def face_detection(self):

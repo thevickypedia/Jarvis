@@ -1785,6 +1785,7 @@ def jokes():
 
 def reminder(converted):
     """Passes hour, minute, am/pm and reminder message to Reminder class which initiates a thread for reminder"""
+    # todo: add reminder message to filename so that restart will not affect
     global place_holder, remind_list
     message = re.search('to(.*)at', converted)
     if not message:
@@ -2412,11 +2413,11 @@ def set_brightness(level):
 
 
 def celebrate():
-    """Function to look if the current date is a holiday."""
+    """Function to look if the current date is a holiday or a birthday."""
     day = datetime.today().date()
     today = datetime.now().strftime("%d-%B")
-    us_holidays = holidays.CountryHoliday('US').get(day)
-    in_holidays = holidays.CountryHoliday('IND', prov='TN', state='TN').get(day)
+    us_holidays = holidays.CountryHoliday('US').get(day)  # checks if the current date is a US holiday
+    in_holidays = holidays.CountryHoliday('IND', prov='TN', state='TN').get(day)  # checks if Indian (esp TN) holiday
     if in_holidays:
         return in_holidays
     elif us_holidays and 'Observed' not in us_holidays:
@@ -2514,8 +2515,10 @@ def sentry_mode():
             pass
         except KeyboardInterrupt:
             exit_process()
-            exit(0)
+            Alarm(None, None, None)
+            Reminder(None, None, None, None)
     speaker.say("My run time has reached the threshold!")
+    logger.fatal('Restarting Now')
     volume_controller(20)
     restart()
 
@@ -2654,7 +2657,11 @@ if __name__ == '__main__':
     database = Database()  # initiates Database() for TO-DO items
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 100)  # increases the recursion limit by 100 times
-    logging.disable()  # suppress all logging within imported modules
+
+    logging.basicConfig(filename='threshold.log', filemode='a', level=logging.FATAL,
+                        format='%(asctime)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+    logger = logging.getLogger('jarvis.py')
+    logger.fatal('Starting Now')
 
     # Voice ID::reference
     sys.stdout.write(f'\rVoice ID::Female: 1/17 Male: 0/7')
