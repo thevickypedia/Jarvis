@@ -375,7 +375,7 @@ def conditions(converted):
             level = re.findall(r'\b\d+\b', converted)  # gets integers from string as a list
             level = int(level[0]) if level else 50  # converted to int for volume
         volume_controller(level)
-        speaker.say(f"{random.choice(acknowledgement)}")
+        speaker.say(f"{random.choice(ack)}")
         renew()
 
     elif any(word in converted.lower() for word in keywords.face_detection()):
@@ -394,7 +394,7 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.brightness()):
         checker = converted.lower()
         if operating_system == 'Darwin':
-            speaker.say(random.choice(acknowledgement))
+            speaker.say(random.choice(ack))
             if 'set' in checker or re.findall(r'\b\d+\b', checker):
                 level = re.findall(r'\b\d+\b', checker)  # gets integers from string as a list
                 level = level if level else ['50']  # pass as list for brightness, as args must be iterable
@@ -1623,16 +1623,15 @@ def alarm(msg):
         hour, minute = f"{hour:02}", f"{minute:02}"
         am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
         if int(hour) <= 12 and int(minute) <= 59:
-            f_name = f"{hour}_{minute}_{am_pm}"
-            open(f'alarm/{f_name}.lock', 'a')
+            open(f'alarm/{hour}_{minute}_{am_pm}.lock', 'a')
             Alarm(hour, minute, am_pm).start()
             if 'wake' in msg.lower().strip():
-                speaker.say(f"{random.choice(acknowledgement)} I will wake you up at {hour}:{minute} {am_pm}.")
+                speaker.say(f"{random.choice(ack)} I will wake you up at {hour}:{minute} {am_pm}.")
             else:
-                speaker.say(f"{random.choice(acknowledgement)} Alarm has been set for {hour}:{minute} {am_pm}.")
+                speaker.say(f"{random.choice(ack)} Alarm has been set for {hour}:{minute} {am_pm}.")
             sys.stdout.write(f"\rAlarm has been set for {hour}:{minute} {am_pm} sir!")
         else:
-            speaker.say(f"An alarm at {hour} {minute} {am_pm}? Are you an alien? "
+            speaker.say(f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
                         f"I don't think a time like that exists on Earth.")
     else:
         speaker.say('Please tell me a time sir!')
@@ -1661,7 +1660,7 @@ def kill_alarm():
     alarm_state is the list of lock files currently present"""
     global place_holder
     alarm_state = []
-    [alarm_state.append(file) if file != 'dummy.lock' else None for file in os.listdir('alarm')]
+    [alarm_state.append(file) if file != '.keep' else None for file in os.listdir('alarm')]
     alarm_state.remove('.DS_Store') if '.DS_Store' in alarm_state else None
     if not alarm_state:
         speaker.say("You have no alarms set sir!")
@@ -1785,11 +1784,10 @@ def jokes():
 
 def reminder(converted):
     """Passes hour, minute, am/pm and reminder message to Reminder class which initiates a thread for reminder"""
-    # todo: add reminder message to filename so that restart will not affect
-    global place_holder, remind_list
-    message = re.search('to(.*)at', converted)
+    global place_holder
+    message = re.search('to(.*)at', converted) or re.search('about(.*)at', converted)
     if not message:
-        message = re.search('to(.*)', converted)
+        message = re.search('to(.*)', converted) or re.search('about(.*)', converted)
         if not message:
             speaker.say('Reminder format should be::Remind me to do something, at some time.')
             sys.stdout.write('Reminder format should be::Remind ME to do something, AT some time.')
@@ -1806,6 +1804,7 @@ def reminder(converted):
         else:
             renew()
     if message and extracted_time:
+        to_about = 'about' if 'about' in converted else 'to'
         message = message.group(1).strip()
         extracted_time = extracted_time[0]
         am_pm = extracted_time.split()[-1]
@@ -1820,17 +1819,13 @@ def reminder(converted):
         # makes sure hour and minutes are two digits
         hour, minute = f"{hour:02}", f"{minute:02}"
         if int(hour) <= 12 and int(minute) <= 59:
-            f_name = f"{hour}_{minute}_{am_pm}"
-            open(f'reminder/{f_name}.lock', 'a')
-            appender = f', and {message} at {hour}:{minute} {am_pm}' if remind_list else \
-                f'{message} at {hour}:{minute} {am_pm}'
-            remind_list.append(appender)
+            open(f'reminder/{hour}_{minute}_{am_pm}|{message.replace(" ", "_")}.lock', 'a')
             Reminder(hour, minute, am_pm, message).start()
-            speaker.say(f"{random.choice(acknowledgement)} I will remind you to {message} at {hour}:{minute} {am_pm}.")
+            speaker.say(f"{random.choice(ack)} I will remind you {to_about} {message}, at {hour}:{minute} {am_pm}.")
             sys.stdout.write(f"\r{message} at {hour}:{minute} {am_pm}")
             renew()
         else:
-            speaker.say(f"A reminder at {hour} {minute} {am_pm}? Are you an alien? "
+            speaker.say(f"A reminder at {hour}:{minute} {am_pm}? Are you an alien? "
                         f"I don't think a time like that exists on Earth.")
             renew()
     else:
@@ -2080,28 +2075,28 @@ def television(converted):
     elif tv:
         if 'increase' in phrase:
             tv.increase_volume()
-            speaker.say(f'{random.choice(acknowledgement)}!')
+            speaker.say(f'{random.choice(ack)}!')
         elif 'decrease' in phrase or 'reduce' in phrase:
             tv.decrease_volume()
-            speaker.say(f'{random.choice(acknowledgement)}!')
+            speaker.say(f'{random.choice(ack)}!')
         elif 'mute' in phrase:
             tv.mute()
-            speaker.say(f'{random.choice(acknowledgement)}!')
+            speaker.say(f'{random.choice(ack)}!')
         elif 'pause' in phrase or 'hold' in phrase:
             tv.pause()
-            speaker.say(f'{random.choice(acknowledgement)}!')
+            speaker.say(f'{random.choice(ack)}!')
         elif 'resume' in phrase or 'play' in phrase:
             tv.play()
-            speaker.say(f'{random.choice(acknowledgement)}!')
+            speaker.say(f'{random.choice(ack)}!')
         elif 'rewind' in phrase:
             tv.rewind()
-            speaker.say(f'{random.choice(acknowledgement)}!')
+            speaker.say(f'{random.choice(ack)}!')
         elif 'forward' in phrase:
             tv.forward()
-            speaker.say(f'{random.choice(acknowledgement)}!')
+            speaker.say(f'{random.choice(ack)}!')
         elif 'stop' in phrase:
             tv.stop()
-            speaker.say(f'{random.choice(acknowledgement)}!')
+            speaker.say(f'{random.choice(ack)}!')
         elif 'set' in phrase:
             vol = int(''.join([str(s) for s in re.findall(r'\b\d+\b', phrase)]))
             sys.stdout.write(f'\rRequested volume: {vol}')
@@ -2570,33 +2565,36 @@ def exit_message():
 
 def remove_files():
     """Function that deletes all .lock files created for alarms and reminders."""
-    [os.remove(f"alarm/{file}") if file != 'dummy.lock' else None for file in os.listdir('alarm')]
-    [os.remove(f"reminder/{file}") if file != 'dummy.lock' else None for file in os.listdir('reminder')]
+    [os.remove(f"alarm/{file}") if file != '.keep' else None for file in os.listdir('alarm')]
+    [os.remove(f"reminder/{file}") if file != '.keep' else None for file in os.listdir('reminder')]
 
 
 def exit_process():
     """Function that holds the list of operations done upon exit."""
-    global remind_list
-    alarms, reminders = [], 0
+    alarms, reminders = [], {}
     for file in os.listdir('alarm'):
-        if file != 'dummy.lock':
+        if file != '.keep':
             alarms.append(file)
     for file in os.listdir('reminder'):
-        if file != 'dummy.lock':
-            reminders = 1
+        if file != '.keep':
+            split_val = file.replace('.lock', '').split('|')
+            reminders.update({split_val[0]: split_val[-1]})
     if reminders:
-        remind_list = ''.join(remind_list)
-        sys.stdout.write(f'\r{remind_list}')
-        if remind_list:
-            speaker.say(f"You have a pending reminder to {remind_list} sir! This will be removed while shutting down.")
+        if len(reminders) == 1:
+            speaker.say(f'You have a pending reminder sir!')
         else:
-            speaker.say(f"You have a pending reminder sir! This will be removed while shutting down.")
+            speaker.say(f'You have {len(reminders)} pending reminders sir!')
+        for key, value in reminders.items():
+            speaker.say(f"{value.replace('_', ' ')} at "
+                        f"{key.replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')}")
     if alarms:
         alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
         alarms = alarms.replace('.lock', '').replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')
         sys.stdout.write(f"\r{alarms}")
-        speaker.say(f"You have a pending alarm at {alarms} sir! This will be removed while shutting down.")
-    speaker.say(f"Shutting down now sir!")
+        speaker.say(f'You have a pending alarm at {alarms} sir!')
+    if reminders or alarms:
+        speaker.say('This will be removed while shutting down!')
+    speaker.say('Shutting down now sir!')
     speaker.say(exit_message())
     speaker.runAndWait()
     remove_files()
@@ -2691,7 +2689,7 @@ if __name__ == '__main__':
         # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
     # threshold is used to sanity check the sentry_mode() so that Jarvis doesn't run into Fatal Python error.
         # This happens when the same functions is repeatedly called with no end::Cannot recover from stack overflow.
-    place_holder, greet_check, tv, remind_list, morning_msg, evening_msg = None, None, None, [], False, False
+    place_holder, greet_check, tv, morning_msg, evening_msg = None, None, None, False, False
     waiter, suggestion_count, threshold = 0, 0, 0
 
     # Uses speed test api to check for internet connection
@@ -2745,8 +2743,8 @@ if __name__ == '__main__':
     wake_up3 = ["I'm here sir!."]
 
     confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']
-    acknowledgement = ['You got it sir!', 'Roger that!', 'Done sir!', 'By all means sir!', 'Indeed sir!', 'Gladly sir!',
-                       'Without fail sir!', 'Sure sir!', 'Buttoned up sir!', 'Executed sir!']
+    ack = ['You got it sir!', 'Roger that!', 'Done sir!', 'By all means sir!', 'Indeed sir!', 'Gladly sir!',
+           'Without fail sir!', 'Sure sir!', 'Buttoned up sir!', 'Executed sir!']
 
     weekend = ['Friday', 'Saturday']
 

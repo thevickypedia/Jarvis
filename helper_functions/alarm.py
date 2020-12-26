@@ -15,22 +15,20 @@ class Alarm(Thread):
             self.hours = hours
             self.minutes = minutes
             self.am_pm = am_pm
-            self.alarm_state = True
         else:
-            self.alarm_state = False
             os._exit(0)
 
     def run(self):
         operating_system = platform.system()
         music_dir = "mp3"
         tone = random.choice(os.listdir(music_dir))
-        while self.alarm_state:
+        files = os.listdir(directory)
+        file_name = f"{self.hours}_{self.minutes}_{self.am_pm}.lock"
+        while True:
             now = datetime.now()
             am_pm = now.strftime("%p")
             minute = now.strftime("%M")
             hour = now.strftime("%I")
-            files = os.listdir(directory)
-            file_name = f"{hour}_{minute}_{am_pm}.lock"
             if hour == self.hours and minute == self.minutes and am_pm == self.am_pm and file_name in files:
                 if operating_system == 'Darwin':
                     subprocess.call(["open", f"{music_dir}/{tone}"])
@@ -39,12 +37,3 @@ class Alarm(Thread):
                     os.system(f'start wmplayer "{location}\\{music_dir}\\{tone}"')
                 os.remove(f"{directory}/{file_name}")
                 return
-
-
-if __name__ == '__main__':
-    test_hour = '04'
-    test_minute = '30'
-    test_am_pm = 'PM'
-    test_f_name = f"{test_hour}_{test_minute}_{test_am_pm}"
-    open(f'../alarm/{test_f_name}.lock', 'a')
-    Alarm(test_hour, test_minute, test_am_pm).start()

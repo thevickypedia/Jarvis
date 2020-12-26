@@ -20,3 +20,5 @@ tasks.db
 notes.txt
 # Contacts to call or message
 contacts.yml
+# Start and restart logs will be saved here
+threshold.log

@@ -19,19 +19,17 @@ class Reminder(Thread):
             self.minutes = minutes
             self.am_pm = am_pm
             self.message = message
-            self.reminder_state = True
         else:
-            self.reminder_state = False
             os._exit(0)
 
     def run(self):
-        while self.reminder_state:
+        file_name = f'{self.hours}_{self.minutes}_{self.am_pm}|{self.message.replace(" ", "_")}.lock'
+        files = os.listdir(directory)
+        while True:
             now = datetime.now()
             am_pm = now.strftime("%p")
             minute = now.strftime("%M")
             hour = now.strftime("%I")
-            files = os.listdir(directory)
-            file_name = f"{hour}_{minute}_{am_pm}.lock"
             if hour == self.hours and minute == self.minutes and am_pm == self.am_pm and file_name in files:
                 # Establish a secure session with gmail's outgoing SMTP server using your gmail account
                 server = smtplib.SMTP("smtp.gmail.com", 587)
@@ -55,12 +53,3 @@ class Reminder(Thread):
                     ToastNotifier().show_toast(subject, body)
                 os.remove(f"{directory}/{file_name}")
                 return
-
-
-if __name__ == '__main__':
-    test_hour = '04'
-    test_minute = '30'
-    test_am_pm = 'PM'
-    test_f_name = f"{test_hour}_{test_minute}_{test_am_pm}"
-    open(f'../reminder/{test_f_name}.lock', 'a')
-    Reminder(test_hour, test_minute, test_am_pm, 'Finish pending tasks').start()
