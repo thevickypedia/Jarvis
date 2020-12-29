@@ -166,6 +166,14 @@ class Keywords:
         key = ['brightness', 'bright', 'dim', 'screen']
         return key
 
+    def guard_enable(self):
+        key = ['take care', 'heading out', 'keep an eye', 'turn on security mode', 'enable security mode']
+        return key
+
+    def guard_disable(self):
+        key = ["I'm back", 'I am back', 'turn off security mode', 'disable security mode']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key

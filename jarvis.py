@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 from threading import Thread
 from urllib.request import urlopen
 
+import boto3
 import certifi
 import holidays
 import pytemperature
@@ -38,6 +39,7 @@ from helper_functions.alarm import Alarm
 from helper_functions.aws_clients import AWSClients
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
+from helper_functions.emailer import send_mail
 from helper_functions.keywords import Keywords
 from helper_functions.reminder import Reminder
 from tv_controls import TV
@@ -408,6 +410,24 @@ def conditions(converted):
         elif operating_system == 'Windows':
             speaker.say("Modifying screen brightness on Windows hasn't been developed sir!")
         renew()
+
+    elif any(word in converted.lower() for word in keywords.guard_enable() or keywords.guard_disable()):
+        stop_flag = 'False'
+        guard_start = Thread(target=guard, args=[stop_flag])
+        if any(word in converted.lower() for word in keywords.guard_enable()):
+            logger.fatal('\nEnabled Security Mode\n')
+            speaker.say(f"Enabled security mode sir! I will look out for potential threats and keep you posted. "
+                        f"Have a nice {greeting()}, and enjoy yourself sir!")
+            speaker.runAndWait()
+            guard_start.start()
+            return
+        else:
+            # noinspection PyUnusedLocal
+            stop_flag = 'True'
+            guard_start.join()
+            logger.fatal('\nDisabled Security Mode\n')
+            speaker.say(f'Welcome back sir! Good {greeting()}.')
+            renew()
 
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -2442,6 +2462,96 @@ def time_travel():
     return
 
 
+def guard(stop_flag):
+    """Security Mode will enable camera and microphone in the background.
+    If any speech is recognized or a face is detected, there will another thread triggered to send notifications.
+    Notifications will be triggered only after 5 minutes of initial notification."""
+    import cv2
+    cam_source = None
+    for i in range(0, 3):
+        cam = cv2.VideoCapture(i)
+        if cam is None or not cam.isOpened() or cam.read() == (False, None):
+            pass
+        else:
+            cam_source = i
+            break
+    if cam_source is None:
+        raise BlockingIOError
+    validation_video = cv2.VideoCapture(cam_source)
+    cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    scale_factor = 1.1
+    min_neighbors = 5
+
+    notified = None
+    while True:
+        # Listens for any recognizable speech and saves it to a notes file
+        converted = None
+        try:
+            listened = recognizer.listen(source, timeout=3, phrase_time_limit=10)
+            converted = recognizer.recognize_google(listened)
+            if any(word in converted.lower() for word in keywords.guard_disable()):
+                return
+            else:
+                logger.fatal(f'Conversation::{converted}')
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            pass
+
+        # captures images and keeps storing it to a folder
+        ignore, image = validation_video.read()
+        scale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        faces = cascade.detectMultiScale(scale, scale_factor, min_neighbors)
+        date_extn = f"{datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p')}"
+        try:
+            if faces:
+                pass
+        except ValueError:
+            cv2.imwrite(f'threat/{date_extn}.jpg', image)
+            logger.fatal(f'Image of detected face stored as {date_extn}.jpg')
+        if f'{date_extn}.jpg' not in os.listdir('threat'):
+            date_extn = None
+
+        # if no notification was sent yet or if a phrase or face is detected notification thread will be triggered
+        if (not notified or float(time.time() - notified) > 300) and (converted or date_extn):
+            notified = time.time()
+            Thread(target=threat_notify, args=(converted, date_extn)).start()
+        else:
+            logger.fatal('Waiting for 60 seconds\n')
+
+        # if stop_flag value is received, security mode will be exited
+        if stop_flag == 'True':
+            return
+
+
+def threat_notify(converted, date_extn):
+    """threat notify is triggered by guard which sends an SMS using SNS and email using SES"""
+    dt_string = f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}"
+    title_ = f'Intruder Alert on {dt_string}'
+    text_ = None
+
+    if converted:
+        response = sns.publish(PhoneNumber=aws.phone(),
+                               Message=f"!!INTRUDER ALERT!!\n{dt_string}\n{converted}")
+        body_ = f"""<html><head></head><body><h2>Conversation of Intruder:</h2><br>{converted}<br><br>
+                                    <h2>Attached is a photo of the intruder.</h2>"""
+    else:
+        response = sns.publish(PhoneNumber=aws.phone(),
+                               Message=f"!!INTRUDER ALERT!!\n{dt_string}\nCheck your email for more information.")
+        body_ = f"""<html><head></head><body><h2>No conversation was recorded,
+                                but attached is a photo of the intruder.</h2>"""
+    if response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
+        logger.fatal('SNS notification has been sent.')
+    else:
+        logger.fatal(f'Unable to send SNS notification.\n{response}')
+
+    if date_extn:
+        attachments_ = [f'threat/{date_extn}.jpg']
+        response_ = send_mail(title_, text_, body_, attachments_)
+        if response_.get('ResponseMetadata').get('HTTPStatusCode') == 200:
+            logger.fatal('Email has been sent!\n')
+        else:
+            logger.fatal(f'Email dispatch was failed with response: {response_}\n')
+
+
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action"""
     global waiter, threshold, morning_msg, evening_msg
@@ -2573,10 +2683,10 @@ def exit_process():
     """Function that holds the list of operations done upon exit."""
     alarms, reminders = [], {}
     for file in os.listdir('alarm'):
-        if file != '.keep':
+        if file != '.keep' and file != '.DS_Store':
             alarms.append(file)
     for file in os.listdir('reminder'):
-        if file != '.keep':
+        if file != '.keep' and file != '.DS_Store':
             split_val = file.replace('.lock', '').split('|')
             reminders.update({split_val[0]: split_val[-1]})
     if reminders:
@@ -2626,6 +2736,7 @@ def shutdown():
                 subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
             elif operating_system == 'Windows':
                 os.system("shutdown /s /t 1")
+            exit(0)
         else:
             speaker.say("Machine state is left intact sir!")
             renew()
@@ -2655,11 +2766,7 @@ if __name__ == '__main__':
     database = Database()  # initiates Database() for TO-DO items
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 100)  # increases the recursion limit by 100 times
-
-    logging.basicConfig(filename='threshold.log', filemode='a', level=logging.FATAL,
-                        format='%(asctime)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
-    logger = logging.getLogger('jarvis.py')
-    logger.fatal('Starting Now')
+    sns = boto3.client('sns')
 
     # Voice ID::reference
     sys.stdout.write(f'\rVoice ID::Female: 1/17 Male: 0/7')
@@ -2759,6 +2866,12 @@ if __name__ == '__main__':
 
     volume_controller(50)
     sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
+
+    # Initiates logger to log start time, restart time and results from security mode
+    logging.basicConfig(filename='threshold.log', filemode='a', level=logging.FATAL,
+                        format='%(asctime)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+    logger = logging.getLogger('jarvis.py')
+    logger.fatal('Starting Now')
 
     # starts sentry mode
     playsound('indicators/initialize.mp3')
