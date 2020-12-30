@@ -108,7 +108,7 @@ def alive():
     try:
         sys.stdout.write("\rListener activated..") and playsound('indicators/start.mp3') if waiter == 0 else \
             sys.stdout.write("\rListener activated..")
-        listen = recognizer.listen(source, timeout=None, phrase_time_limit=5)
+        listen = recognizer.listen(source, timeout=5, phrase_time_limit=5)
         sys.stdout.write("\r") and playsound('indicators/end.mp3') if waiter == 0 else sys.stdout.write("\r")
         converted = recognizer.recognize_google(listen)
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
@@ -733,7 +733,7 @@ def weather_condition(place, msg):
     weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={api_key}'
     r = urlopen(weather_url)  # sends request to the url created
     response = json.loads(r.read())  # loads the response in a json
-    weather_location = f'{city} {state}'
+    weather_location = f'{city} {state}' if city and state else place
     if 'tonight' in msg:
         key = 0
         tell = 'tonight'
@@ -765,9 +765,9 @@ def weather_condition(place, msg):
         when = 'day'
         tell += ''
     if 'alerts' in response:
-        alerts = response['alerts'][key]['event']
-        start_alert = datetime.fromtimestamp(response['alerts'][key]['start']).strftime("%I:%M %p")
-        end_alert = datetime.fromtimestamp(response['alerts'][key]['end']).strftime("%I:%M %p")
+        alerts = response['alerts'][0]['event']
+        start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")
+        end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
     else:
         alerts, start_alert, end_alert = None, None, None
     temperature = response['daily'][key]['temp'][when]
@@ -832,7 +832,7 @@ def wikipedia_():
             wikipedia_()
     else:
         place_holder = None
-        if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
+        if any(word in keyword.lower() for word in keywords.exit()):
             renew()
         else:
             sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
@@ -860,7 +860,7 @@ def wikipedia_():
             response = listener(3, 5)
             if response != 'SR_ERROR':
                 place_holder = None
-                if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
+                if any(word in response.lower() for word in keywords.ok()):
                     speaker.say('. '.join(summary.split('. ')[3:-1]))
             else:
                 sys.stdout.write("\r")
@@ -1005,10 +1005,10 @@ def chatter_bot():
         trainer.train("chatterbot.corpus.english")
         speaker.say('The chat-bot is ready. You may start a conversation now.')
         speaker.runAndWait()
-    keyword = listener(5, 5)
+    keyword = listener(3, 5)
     if keyword != 'SR_ERROR':
         place_holder = None
-        if any(re.search(line, keyword, flags=re.IGNORECASE) for line in keywords.exit()):
+        if any(word in keyword.lower() for word in keywords.exit()):
             speaker.say('Let me remove the training modules.')
             os.system('rm db*')
             os.system(f'rm -rf {file2}')
@@ -1070,13 +1070,13 @@ def locate():
             locate()
     else:
         place_holder = None
-        if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
+        if any(word in phrase.lower() for word in keywords.ok()):
             speaker.say("Ringing your iPhone now.")
             icloud_api.devices[2].play_sound()
             speaker.say("I can also enable lost mode. Would you like to do it?")
             speaker.runAndWait()
             phrase = listener(3, 5)
-            if any(re.search(line, phrase, flags=re.IGNORECASE) for line in keywords.ok()):
+            if any(word in phrase.lower() for word in keywords.ok()):
                 recovery = os.getenv('icloud_recovery') or aws.icloud_recovery()
                 message = 'Return my phone immediately.'
                 icloud_api.devices[2].lost_device(recovery, message)
@@ -1156,7 +1156,7 @@ def gmail():
         speaker.runAndWait()
         response = listener(3, 5)
         if response != 'SR_ERROR':
-            if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
+            if any(word in response.lower() for word in keywords.ok()):
                 for nm in messages[0].split():
                     ignore, mail_data = mail.fetch(nm, '(RFC822)')
                     for response_part in mail_data:
@@ -1217,7 +1217,7 @@ def meaning(keyword):
         speaker.runAndWait()
         response = listener(3, 5)
         if response != 'SR_ERROR':
-            if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.exit()):
+            if any(word in response.lower() for word in keywords.exit()):
                 renew()
             else:
                 meaning(response)
@@ -1244,7 +1244,7 @@ def meaning(keyword):
             speaker.say(f'Do you wanna know how {keyword} is spelled?')
             speaker.runAndWait()
             response = listener(3, 5)
-            if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
+            if any(word in response.lower() for word in keywords.ok()):
                 for letter in list(keyword.lower()):
                     speaker.say(letter)
                 speaker.runAndWait()
@@ -1281,7 +1281,7 @@ def todo():
         speaker.runAndWait()
         key = listener(3, 5)
         if key != 'SR_ERROR':
-            if any(re.search(line, key, flags=re.IGNORECASE) for line in keywords.ok()):
+            if any(word in key.lower() for word in keywords.ok()):
                 todo.has_been_called = True
                 sys.stdout.write("\r")
                 create_db()
@@ -1337,7 +1337,7 @@ def add_todo():
         speaker.runAndWait()
         key = listener(3, 5)
         if key != 'SR_ERROR':
-            if any(re.search(line, key, flags=re.IGNORECASE) for line in keywords.ok()):
+            if any(word in key.lower() for word in keywords.ok()):
                 add_todo.has_been_called = True
                 sys.stdout.write("\r")
                 create_db()
@@ -1376,7 +1376,7 @@ def add_todo():
                 speaker.say("Do you want to add anything else to your to-do list?")
                 speaker.runAndWait()
                 category_continue = listener(3, 5)
-                if any(re.search(line, category_continue, flags=re.IGNORECASE) for line in keywords.ok()):
+                if any(word in category_continue.lower() for word in keywords.ok()):
                     add_todo()
     else:
         sys.stdout.write("\r")
@@ -1396,7 +1396,7 @@ def delete_todo():
     speaker.runAndWait()
     item = listener(3, 5)
     if item != 'SR_ERROR':
-        if any(re.search(line, item, flags=re.IGNORECASE) for line in keywords.exit()):
+        if 'exit' in item or 'quit' in item or 'Xzibit' in item:
             renew()
         response = database.deleter(item)
         # if the return message from database starts with 'Looks' it means that the item wasn't matched for deletion
@@ -1430,7 +1430,7 @@ def delete_db():
         speaker.runAndWait()
         response = listener(3, 5)
         if response != 'SR_ERROR':
-            if any(re.search(line, response, flags=re.IGNORECASE) for line in keywords.ok()):
+            if any(word in response.lower() for word in keywords.ok()):
                 os.remove(file_name)
                 speaker.say("I've removed your database sir.")
             else:
@@ -2589,7 +2589,7 @@ def sentry_mode():
             dummy.has_been_called = True
         try:
             sys.stdout.write("\rSentry Mode")
-            listen = recognizer.listen(source, timeout=None, phrase_time_limit=5)
+            listen = recognizer.listen(source, timeout=5, phrase_time_limit=5)
             sys.stdout.write("\r")
             key = recognizer.recognize_google(listen)
             key = key.lower().strip()

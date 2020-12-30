@@ -22,3 +22,5 @@ notes.txt
 contacts.yml
 # Start and restart logs will be saved here
 threshold.log
+# Store images of intruders
+threat
