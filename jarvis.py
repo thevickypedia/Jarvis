@@ -211,7 +211,7 @@ def conditions(converted):
         location()
 
     elif any(word in converted.lower() for word in keywords.locate()):
-        locate()
+        locate(converted)
 
     elif any(word in converted.lower() for word in keywords.gmail()):
         gmail()
@@ -1040,15 +1040,28 @@ def location():
     renew()
 
 
-def locate():
+def locate(converted):
     """Locates your iPhone using icloud api for python"""
-    # TODO: include option to locate any apple device connected to given apple id
     global place_holder
-    n, device = -1, None
+    target = re.search('iPhone(.*)|iMac(.*)', converted)
+    converted = converted.lower()
+    if target:
+        lookup = target.group()
+    elif 'macbook' in converted:
+        lookup = 'MacBook Pro'
+    elif 'airpods pro' in converted:
+        lookup = 'AirPods Pro'
+    elif 'airpods' in converted:
+        lookup = 'AirPods'
+    elif 'watch' in converted:
+        lookup = 'Apple Watch'
+    else:
+        lookup = 'iPhone 11 Pro Max'
+    index, device = -1, None
     for device in icloud_api.devices:
-        n += 1
-        if 'iPhone 11 Pro Max' in str(device):
-            device = icloud_api.devices[n]
+        index += 1
+        if lookup in str(device):
+            device = icloud_api.devices[index]
             break
     if not device:
         device = icloud_api.iphone
@@ -1061,7 +1074,7 @@ def locate():
         device_model = stat['deviceDisplayName']
         phone_name = stat['name']
         post_code = '"'.join(list(location_info['postcode'].split('-')[0]))
-        iphone_location = f"Your iphone is near {location_info['road']}, {location_info['city']} " \
+        iphone_location = f"Your {lookup} is near {location_info['road']}, {location_info['city']} " \
                           f"{location_info['state']}. Zipcode: {post_code}, {location_info['country']}"
         speaker.say(iphone_location)
         speaker.say(f"Some more details. Battery: {bat_percent}%, Name: {phone_name}, Model: {device_model}")
@@ -1076,11 +1089,11 @@ def locate():
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
             place_holder = 0
-            locate()
+            locate(converted)
     else:
         place_holder = None
         if any(word in phrase.lower() for word in keywords.ok()):
-            speaker.say("Ringing your iPhone now.")
+            speaker.say("Ringing your device now.")
             device.play_sound()
             speaker.say("I can also enable lost mode. Would you like to do it?")
             speaker.runAndWait()
