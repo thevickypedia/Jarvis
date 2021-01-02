@@ -53,7 +53,7 @@ class Keywords:
         return key
 
     def locate(self):
-        key = ['locate', 'look at', 'where is my phone', "where's my phone"]
+        key = ['locate', 'look at', 'where is my phone', "where's my phone", "where's my watch", 'where is my watch']
         return key
 
     def music(self):
@@ -198,3 +198,13 @@ class Keywords:
     def shutdown(self):
         key = ['shutdown', 'shut down', 'terminate']
         return key
+
+
+if __name__ == '__main__':
+    # TODO: begin diagnostics to use dictionaries instead of long nested if statements in conditions() in jarvis.py
+    """Since Python stores the methods and other attributes of a class in a dictionary, which is unordered, 
+    looping through and executing all of the functions in python is impossible.
+    Since we don't care about order, we can use the class's __dict__ and iter through it's items"""
+    for _, method in Keywords.__dict__.items():
+        if callable(method):
+            print(method(None))

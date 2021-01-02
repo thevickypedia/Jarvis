@@ -350,7 +350,7 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.txt_message()):
         number = '-'.join([str(s) for s in re.findall(r'\b\d+\b', converted)])
-        send_sms(target=number)
+        send_sms(number)
 
     elif any(word in converted.lower() for word in keywords.google_search()):
         phrase = converted.split('for')[-1] if 'for' in converted else None
@@ -1042,12 +1042,21 @@ def location():
 
 def locate():
     """Locates your iPhone using icloud api for python"""
+    # TODO: include option to locate any apple device connected to given apple id
     global place_holder
+    n, device = -1, None
+    for device in icloud_api.devices:
+        n += 1
+        if 'iPhone 11 Pro Max' in str(device):
+            device = icloud_api.devices[n]
+            break
+    if not device:
+        device = icloud_api.iphone
     if dummy.has_been_called:
         dummy.has_been_called = False
         speaker.say("Would you like to ring it?")
     else:
-        stat = icloud_api.devices[2].status()
+        stat = device.status()
         bat_percent = round(stat['batteryLevel'] * 100)
         device_model = stat['deviceDisplayName']
         phone_name = stat['name']
@@ -1072,14 +1081,14 @@ def locate():
         place_holder = None
         if any(word in phrase.lower() for word in keywords.ok()):
             speaker.say("Ringing your iPhone now.")
-            icloud_api.devices[2].play_sound()
+            device.play_sound()
             speaker.say("I can also enable lost mode. Would you like to do it?")
             speaker.runAndWait()
             phrase = listener(3, 5)
             if any(word in phrase.lower() for word in keywords.ok()):
                 recovery = os.getenv('icloud_recovery') or aws.icloud_recovery()
                 message = 'Return my phone immediately.'
-                icloud_api.devices[2].lost_device(recovery, message)
+                device.lost_device(recovery, message)
                 speaker.say("I've enabled lost mode on your phone.")
             else:
                 speaker.say("No action taken sir!")
@@ -2003,12 +2012,12 @@ def github(target):
         renew()
 
 
-def send_sms(target):
+def send_sms(number):
     """Sends a message to the number received. If no number was received, it will ask for a number, looks if it is
     10 digits and then sends a message."""
     global place_holder
     import smtplib
-    if not target:
+    if not number:
         speaker.say("Please tell me a number sir!")
         speaker.runAndWait()
         number = listener(3, 5)
@@ -2025,54 +2034,52 @@ def send_sms(target):
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
-                number = None
-                send_sms(target=None)
-    else:
-        number = target
-    if len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) != 10:
+                send_sms(number=None)
+    elif len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) != 10:
         sys.stdout.write(f'\r{number}')
         speaker.say("I don't think that's a right number sir! Phone numbers are 10 digits. Try again!")
-        send_sms(target=None)
-    speaker.say("What would you like to send sir?")
-    speaker.runAndWait()
-    body = listener(3, 5)
-    if body == 'SR_ERROR':
-        if place_holder == 0:
-            place_holder = None
-            renew()
-        else:
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            send_sms(target=number)
+        send_sms(number=None)
     else:
-        sys.stdout.write(f'\r{body}::to::{number}')
-        speaker.say(f'{body} to {number}. Do you want me to proceed?')
+        speaker.say("What would you like to send sir?")
         speaker.runAndWait()
-        converted = listener(3, 5)
-        if converted != 'SR_ERROR':
-            if not any(word in converted.lower() for word in keywords.ok()):
-                speaker.say("Message will not be sent sir!")
-            else:
-                server = smtplib.SMTP("smtp.gmail.com", 587)
-                server.starttls()
-                gmail_user = os.getenv('gmail_user') or aws.gmail_user()
-                gmail_pass = os.getenv('gmail_pass') or aws.gmail_pass()
-                server.login(user=gmail_user, password=gmail_pass)
-                to = f"+1{number}@tmomail.net"
-                subject = "Jarvis::Message from Vignesh"
-                sender = (f"From: {gmail_user}\r\n" + f"To: {to}\r\n" + f"Subject: {subject}\r\n" + "\r\r\n\n" + body)
-                server.sendmail(gmail_user, to, sender)
-                server.close()
-                speaker.say("Message has been sent sir!")
-            renew()
-        else:
+        body = listener(3, 5)
+        if body == 'SR_ERROR':
             if place_holder == 0:
                 place_holder = None
                 renew()
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
-                send_sms(target=number)
+                send_sms(number)
+        else:
+            sys.stdout.write(f'\r{body}::to::{number}')
+            speaker.say(f'{body} to {number}. Do you want me to proceed?')
+            speaker.runAndWait()
+            converted = listener(3, 5)
+            if converted != 'SR_ERROR':
+                if not any(word in converted.lower() for word in keywords.ok()):
+                    speaker.say("Message will not be sent sir!")
+                else:
+                    server = smtplib.SMTP("smtp.gmail.com", 587)
+                    server.starttls()
+                    gmail_user = os.getenv('gmail_user') or aws.gmail_user()
+                    gmail_pass = os.getenv('gmail_pass') or aws.gmail_pass()
+                    server.login(user=gmail_user, password=gmail_pass)
+                    to = f"+1{number}@tmomail.net"
+                    subject = "Jarvis::Message from Vignesh"
+                    sender = (f"From: {gmail_user}\n" + f"To: {to}\n" + f"Subject: {subject}\n" + "\n\n" + body)
+                    server.sendmail(gmail_user, to, sender)
+                    server.close()
+                    speaker.say("Message has been sent sir!")
+                renew()
+            else:
+                if place_holder == 0:
+                    place_holder = None
+                    renew()
+                else:
+                    speaker.say("I didn't quite get that. Try again.")
+                    place_holder = 0
+                    send_sms(number)
 
 
 def television(converted):
@@ -2815,7 +2822,7 @@ if __name__ == '__main__':
         icloud_user = os.getenv('icloud_user') or aws.icloud_user()
         icloud_pass = os.getenv('icloud_pass') or aws.icloud_pass()
         icloud_api = PyiCloudService(icloud_user, icloud_pass)
-        raw_location = icloud_api.devices[2].location()
+        raw_location = icloud_api.iphone.location()
         current_lat = raw_location['latitude']
         current_lon = raw_location['longitude']
     except (TypeError, PyiCloudAPIResponseException, PyiCloudFailedLoginException):
@@ -2844,14 +2851,14 @@ if __name__ == '__main__':
         restart()
 
     # different responses for different conditions in sentry mode
-    wake_up1 = ['Up and running sir.', 'Online and ready sir.', "I've indeed been uploaded sir!", 'Listeners have been '
-                                                                                                  'activated sir!']
-    wake_up2 = ['For you sir!, Always!', 'At your service sir.']
+    wake_up1 = ['Up and running sir.', "We are online and ready sir.", "I have indeed been uploaded sir!",
+                'My listeners have been activated sir!']
+    wake_up2 = ['For you sir - Always!', 'At your service sir.']
     wake_up3 = ["I'm here sir!."]
 
     confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']
-    ack = ['You got it sir!', 'Roger that!', 'Done sir!', 'By all means sir!', 'Indeed sir!', 'Gladly sir!',
-           'Without fail sir!', 'Sure sir!', 'Buttoned up sir!', 'Executed sir!']
+    ack = ['Check', 'Will do sir!', 'You got it sir!', 'Roger that!', 'Done sir!', 'By all means sir!', 'Indeed sir!',
+           'Gladly sir!', 'Without fail sir!', 'Sure sir!', 'Buttoned up sir!', 'Executed sir!']
 
     weekend = ['Friday', 'Saturday']
 

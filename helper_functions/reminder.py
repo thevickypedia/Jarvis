@@ -43,7 +43,7 @@ class Reminder(Thread):
                 body = self.message
                 subject = "REMINDER from Jarvis"
                 # Send text message through SMS gateway of destination number
-                message = (f"From: {from_}\r\n" + f"To: {to}\r\n" + f"Subject: {subject}\r\n" + "\r\r\n\n" + body)
+                message = (f"From: {from_}\n" + f"To: {to}\n" + f"Subject: {subject}\n" + "\n\n" + body)
                 server.sendmail(from_, to, message)
                 server.close()
                 if operating_system == 'Darwin':
