@@ -516,6 +516,43 @@ def conditions(converted):
                 renew()
 
 
+def location_services(device):
+    """initiates geo_locator and stores current location info as json so it could be used in couple of other functions
+    device is the argument passed when locating a particular apple device"""
+    try:
+        # tries with icloud api to get your phone's location for precise location services
+        if device:
+            raw_location = device.location()
+        else:
+            icloud_api = PyiCloudService(icloud_user, icloud_pass)
+            raw_location = icloud_api.iphone.location()
+        current_lat_ = raw_location['latitude']
+        current_lon_ = raw_location['longitude']
+    except (TypeError, PyiCloudAPIResponseException, PyiCloudFailedLoginException):
+        # uses latitude and longitude information from your IP's client when unable to connect to icloud
+        current_lat_ = st.results.client['lat']
+        current_lon_ = st.results.client['lon']
+        speaker.say("I had trouble accessing the iCloud API, so I'll be using your I.P address for location. "
+                    "Please note that this may not be accurate enough for location services.")
+        speaker.runAndWait()
+    except requests.exceptions.ConnectionError:
+        sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
+        speaker.say("I was unable to connect to the internet. Please check your connection settings and retry. "
+                    "Remember to check for VPN settings, as it can also be a factor in open Wi-Fi connections.")
+        speaker.runAndWait()
+        return exit(1)
+
+    try:
+        # Uses the latitude and longitude information and converts to the required address.
+        locator = geo_locator.reverse(f'{current_lat_}, {current_lon_}')
+        location_info_ = locator.raw['address']
+    except (GeocoderUnavailable, GeopyError):
+        speaker.say('Received an error while retrieving your address sir! I think a restart should fix this.')
+        return restart()
+
+    return current_lat_, current_lon_, location_info_
+
+
 def report():
     """Initiates a list of function that I tend to check first thing in the morning"""
     sys.stdout.write("\rStarting today's report")
@@ -1043,8 +1080,8 @@ def location():
 def locate(converted):
     """Locates your iPhone using icloud api for python"""
     global place_holder
-    target = re.search('iPhone(.*)|iMac(.*)', converted)
-    converted = converted.lower()
+    converted = converted.lower().replace('port', 'pod')
+    target = re.search('iphone(.*)|imac(.*)', converted)  # if a particular iPhone model is to be tracked (eg: iPhone X)
     if target:
         lookup = target.group()
     elif 'macbook' in converted:
@@ -1056,26 +1093,32 @@ def locate(converted):
     elif 'watch' in converted:
         lookup = 'Apple Watch'
     else:
-        lookup = 'iPhone 11 Pro Max'
-    index, device = -1, None
+        lookup = 'iPhone 11 Pro Max'  # defaults to my iPhone model
+
+    sys.stdout.write(f"\rLocating your {lookup}")
+
+    index, target_device = -1, None
+    icloud_api = PyiCloudService(icloud_user, icloud_pass)
     for device in icloud_api.devices:
         index += 1
         if lookup in str(device):
-            device = icloud_api.devices[index]
+            target_device = icloud_api.devices[index]
             break
-    if not device:
-        device = icloud_api.iphone
+    if not target_device:
+        target_device = icloud_api.iphone
+
     if dummy.has_been_called:
         dummy.has_been_called = False
         speaker.say("Would you like to ring it?")
     else:
-        stat = device.status()
+        stat = target_device.status()
         bat_percent = round(stat['batteryLevel'] * 100)
         device_model = stat['deviceDisplayName']
         phone_name = stat['name']
-        post_code = '"'.join(list(location_info['postcode'].split('-')[0]))
-        iphone_location = f"Your {lookup} is near {location_info['road']}, {location_info['city']} " \
-                          f"{location_info['state']}. Zipcode: {post_code}, {location_info['country']}"
+        ignore_lat, ignore_lon, location_info_ = location_services(target_device)
+        post_code = '"'.join(list(location_info_['postcode'].split('-')[0]))
+        iphone_location = f"Your {lookup} is near {location_info_['road']}, {location_info_['city']} " \
+                          f"{location_info_['state']}. Zipcode: {post_code}, {location_info_['country']}"
         speaker.say(iphone_location)
         speaker.say(f"Some more details. Battery: {bat_percent}%, Name: {phone_name}, Model: {device_model}")
         speaker.say("Would you like to ring it?")
@@ -1094,14 +1137,14 @@ def locate(converted):
         place_holder = None
         if any(word in phrase.lower() for word in keywords.ok()):
             speaker.say("Ringing your device now.")
-            device.play_sound()
+            target_device.play_sound()
             speaker.say("I can also enable lost mode. Would you like to do it?")
             speaker.runAndWait()
             phrase = listener(3, 5)
             if any(word in phrase.lower() for word in keywords.ok()):
                 recovery = os.getenv('icloud_recovery') or aws.icloud_recovery()
                 message = 'Return my phone immediately.'
-                device.lost_device(recovery, message)
+                target_device.lost_device(recovery, message)
                 speaker.say("I've enabled lost mode on your phone.")
             else:
                 speaker.say("No action taken sir!")
@@ -2827,41 +2870,14 @@ if __name__ == '__main__':
         speaker.say("I was unable to connect to the internet sir! Please check your connection settings and retry.")
         speaker.runAndWait()
         st = None
-        exit()
+        exit(1)
 
-    # initiates geo_locator and stores current location info as json so it could be used in couple of other functions
-    try:
-        # tries with icloud api to get your phone's location for precise location services
-        icloud_user = os.getenv('icloud_user') or aws.icloud_user()
-        icloud_pass = os.getenv('icloud_pass') or aws.icloud_pass()
-        icloud_api = PyiCloudService(icloud_user, icloud_pass)
-        raw_location = icloud_api.iphone.location()
-        current_lat = raw_location['latitude']
-        current_lon = raw_location['longitude']
-    except (TypeError, PyiCloudAPIResponseException, PyiCloudFailedLoginException):
-        # uses latitude and longitude information from your IP's client when unable to connect to icloud
-        current_lat = st.results.client['lat']
-        current_lon = st.results.client['lon']
-        speaker.say("I had trouble accessing the iCloud API, so I'll be using your I.P address for location. "
-                    "Please note that this may not be accurate enough for location services.")
-        speaker.runAndWait()
-    except requests.exceptions.ConnectionError:
-        sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
-        current_lat, current_lon = None, None
-        speaker.say("I was unable to connect to the internet. Please check your connection settings and retry. "
-                    "Remember to check for VPN settings, as it can also be a factor in open Wi-Fi connections.")
-        speaker.runAndWait()
-        exit()
-
-    try:
-        # Uses the latitude and longitude information and converts to the required address.
-        options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
-        geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
-        locator = geo_locator.reverse(f'{current_lat}, {current_lon}')
-        location_info = locator.raw['address']
-    except (GeocoderUnavailable, GeopyError):
-        speaker.say('Received an error while retrieving your address sir! I think a restart should fix this.')
-        restart()
+    # stores icloud creds and necessary values for geo location to receive the latitude, longitude and address
+    icloud_user = os.getenv('icloud_user') or aws.icloud_user()
+    icloud_pass = os.getenv('icloud_pass') or aws.icloud_pass()
+    options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
+    geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
+    current_lat, current_lon, location_info = location_services(None)
 
     # different responses for different conditions in sentry mode
     wake_up1 = ['Up and running sir.', "We are online and ready sir.", "I have indeed been uploaded sir!",
