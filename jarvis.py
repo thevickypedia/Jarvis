@@ -78,53 +78,39 @@ def initialize():
     """Function to initialize when woke up from sleep mode. greet_check and dummy are to ensure greeting is given only
     for the first time, the script is run place_holder is set for all the functions so that the function runs only ONCE
     again in case of an exception"""
-    global place_holder, greet_check
+    global greet_check
     greet_check = 'initialized'
     if dummy.has_been_called:
         speaker.say("What can I do for you?")
         dummy.has_been_called = False
     else:
         speaker.say(f'Good {greeting()}.')
-    speaker.runAndWait()
-    listener_value = listener(3, 5)
-    if listener_value == 'SR_ERROR':
-        renew()
-    else:
-        conditions(listener_value)
+    renew()
 
 
 def renew():
-    """renew() function resets the waiter count which indeed sends the alive() function to sentry mode after a minute"""
-    global waiter
+    """renew() function will keep listening and send the response to conditions() This function runs only for a minute
+    and goes to sentry_mode() if nothing is heard"""
     speaker.runAndWait()
     waiter = 0
-    alive()
-
-
-def alive():
-    """alive() function will keep listening and send the response to conditions() This function runs only for a minute
-    and goes to sentry_mode() if nothing is heard"""
-    global waiter
-    try:
-        sys.stdout.write("\rListener activated..") and playsound('indicators/start.mp3') if waiter == 0 else \
-            sys.stdout.write("\rListener activated..")
-        listen = recognizer.listen(source, timeout=5, phrase_time_limit=5)
-        sys.stdout.write("\r") and playsound('indicators/end.mp3') if waiter == 0 else sys.stdout.write("\r")
-        converted = recognizer.recognize_google(listen)
-    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-        converted = None
-        if waiter != 12:  # waits for a minute and goes to sleep
-            waiter += 1
-        else:
-            return
-    if not converted:
-        alive()
-    elif any(word in converted.lower() for word in keywords.sleep()):
-        speaker.say(f"Activating sentry mode, enjoy yourself sir!")
-        speaker.runAndWait()
-        return
-    else:
-        conditions(converted)
+    while waiter < 12:
+        waiter += 1
+        try:
+            sys.stdout.write(f"\rListener activated..") and playsound('indicators/start.mp3') if waiter == 1 else \
+                sys.stdout.write(f"\rListener activated..")
+            listen = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+            sys.stdout.write("\r") and playsound('indicators/end.mp3') if waiter == 0 else sys.stdout.write("\r")
+            converted = recognizer.recognize_google(listen)
+            if any(word in converted.lower() for word in keywords.sleep()):
+                speaker.say(f"Activating sentry mode, enjoy yourself sir!")
+                speaker.runAndWait()
+                return
+            else:
+                conditions(converted)
+                speaker.runAndWait()
+                waiter = 0
+        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+            pass
 
 
 def time_converter(seconds):
@@ -152,7 +138,6 @@ def conditions(converted):
     if 'are you there' in converted.lower() or converted.strip() == 'Jarvis' or 'you there' in \
             converted.lower():
         speaker.say("I'm here sir!")
-        renew()
 
     elif any(word in converted.lower() for word in keywords.date()) and \
             not any(word in converted.lower() for word in keywords.avoid()):
@@ -266,7 +251,6 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in conversation.form()):
         speaker.say("I am a program, I'm without form.")
-        renew()
 
     elif any(word in converted.lower() for word in keywords.geopy()):
         # tries to look for words starting with an upper case letter
@@ -338,7 +322,6 @@ def conditions(converted):
         if 'how many' in converted:
             speaker.say(f'You have {total} repositories sir, out of which {forked} are forked, {private} are private, '
                         f'{licensed} are licensed, and {archived} archived.')
-            renew()
         else:
             [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
              for word in converted.lower().split() for item in repos for repo, clone_url in item.items()]
@@ -346,7 +329,6 @@ def conditions(converted):
                 github(target=result)
             else:
                 speaker.say("Sorry sir! I did not find that repo.")
-                renew()
 
     elif any(word in converted.lower() for word in keywords.txt_message()):
         number = '-'.join([str(s) for s in re.findall(r'\b\d+\b', converted)])
@@ -378,7 +360,6 @@ def conditions(converted):
             level = int(level[0]) if level else 50  # converted to int for volume
         volume_controller(level)
         speaker.say(f"{random.choice(ack)}")
-        renew()
 
     elif any(word in converted.lower() for word in keywords.face_detection()):
         face_recognition_detection()
@@ -391,7 +372,6 @@ def conditions(converted):
             bluetooth(phrase=converted.lower())
         elif operating_system == 'Windows':
             speaker.say("Bluetooth connectivity on Windows hasn't been developed sir!")
-            renew()
 
     elif any(word in converted.lower() for word in keywords.brightness()):
         checker = converted.lower()
@@ -409,7 +389,6 @@ def conditions(converted):
                 Thread(target=increase_brightness).start()
         elif operating_system == 'Windows':
             speaker.say("Modifying screen brightness on Windows hasn't been developed sir!")
-        renew()
 
     elif any(word in converted.lower() for word in keywords.guard_enable() or keywords.guard_disable()):
         stop_flag = 'False'
@@ -427,11 +406,9 @@ def conditions(converted):
             guard_start.join()
             logger.fatal('\nDisabled Security Mode\n')
             speaker.say(f'Welcome back sir! Good {greeting()}.')
-            renew()
 
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
-        renew()
 
     elif any(word in converted.lower() for word in conversation.capabilities()):
         speaker.say('There is a lot I can do. For example: I can get you the weather at any location, news around '
@@ -439,34 +416,23 @@ def conditions(converted):
                     'system configuration, tell your investment details, locate your phone, find distance between '
                     'places, set an alarm, play music on smart devices around you, control your TV, tell a joke, send'
                     ' a message, set reminders, scan and clone your GitHub repositories, and much more. Time to ask,.')
-        renew()
 
     elif any(word in converted.lower() for word in conversation.languages()):
         speaker.say("Tricky question!. I'm configured in python, and I can speak English.")
-        renew()
 
     elif any(word in converted.lower() for word in conversation.whats_up()):
         speaker.say("My listeners are up. There is nothing I cannot process. So ask me anything..")
-        renew()
 
     elif any(word in converted.lower() for word in conversation.what()):
         speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
-        renew()
 
     elif any(word in converted.lower() for word in conversation.who()):
         speaker.say("I am Jarvis. A virtual assistant designed by Mr.Raauv.")
-        renew()
 
     elif any(word in converted.lower() for word in conversation.about_me()):
         speaker.say("I am Jarvis. A virtual assistant designed by Mr.Raauv.")
         speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
         speaker.say("I can seamlessly take care of your daily tasks, and also help with most of your work!")
-        renew()
-
-    elif any(word in converted.lower() for word in keywords.exit()):
-        speaker.say(f"Activating sentry mode, enjoy yourself sir.")
-        speaker.runAndWait()
-        return
 
     elif any(word in converted.lower() for word in keywords.restart()):
         restart()
@@ -513,7 +479,6 @@ def conditions(converted):
                 search = str(converted).replace(' ', '+')
                 unknown_url = f"https://www.google.com/search?q={search}"
                 webbrowser.open(unknown_url)
-                renew()
 
 
 def location_services(device):
@@ -564,11 +529,10 @@ def report():
     gmail()
     news()
     report.has_been_called = False
-    renew()
 
 
 def current_date():
-    """Says today's date and skips going to renew() if the function is called by report()"""
+    """Says today's date and adds the current time in speaker queue if report or time_travel function was called"""
     dt_string = datetime.now().strftime("%A, %B")
     date_ = engine().ordinal(datetime.now().strftime("%d"))
     year = datetime.now().strftime("%Y")
@@ -583,12 +547,10 @@ def current_date():
         speaker.say(f"It's also {event} sir!")
     if report.has_been_called or time_travel.has_been_called:
         speaker.say(f'The current time is, ')
-    else:
-        renew()
 
 
 def current_time(place):
-    """Says current time and skips going to renew() if the function is called by report()"""
+    """Says current time at the requested location if any else with respect to the current timezone"""
     if place:
         from timezonefinder import TimezoneFinder
         import pytz
@@ -614,10 +576,6 @@ def current_time(place):
     else:
         c_time = datetime.now().strftime("%I:%M %p")
         speaker.say(f'{c_time}.')
-    if report.has_been_called or time_travel.has_been_called:
-        pass
-    else:
-        renew()
 
 
 def webpage(target):
@@ -635,7 +593,7 @@ def webpage(target):
         converted = listener(3, 5)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-                renew()
+                return
             elif '.' in converted and len(list(converted)) == 1:
                 _target = (word for word in converted.split() if '.' in word)
                 webpage(_target)
@@ -646,7 +604,6 @@ def webpage(target):
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -657,11 +614,10 @@ def webpage(target):
             web_url = f"https://{web}"
             webbrowser.open(web_url)
         speaker.say(f"I have opened {host}")
-        renew()
 
 
 def weather(place):
-    """Says weather at any location and skips going to renew() if the function is called by report()
+    """Says weather at any location if a specific location is mentioned
     Says weather at current location by getting IP using reverse geocoding if no place is received"""
     sys.stdout.write('\rGetting your weather info')
     api_key = os.getenv('weather_api') or aws.weather_api()
@@ -741,11 +697,6 @@ def weather(place):
         output += f'You have a weather alert for {alerts} between {start_alert} and {end_alert}'
     sys.stdout.write(f"\r{output}")
     speaker.say(output)
-    speaker.runAndWait()
-    if report.has_been_called or time_travel.has_been_called:
-        pass
-    else:
-        renew()
 
 
 def weather_condition(place, msg):
@@ -827,7 +778,6 @@ def weather_condition(place, msg):
         output += f'There is a weather alert for {alerts} between {start_alert} and {end_alert}'
     sys.stdout.write(f'\r{output}')
     speaker.say(output)
-    renew()
 
 
 def system_info():
@@ -849,7 +799,6 @@ def system_info():
     speaker.say(f"You're running {o_system}, with {cpu} cores. Your physical drive capacity is {total}. "
                 f"You have used up {used} of space. Your free space is {free}. Your RAM capacity is {ram}. "
                 f"You are currently utilizing {ram_used} of your memory.")
-    renew()
 
 
 def wikipedia_():
@@ -862,7 +811,6 @@ def wikipedia_():
     if keyword == 'SR_ERROR':
         if place_holder == 0:
             place_holder = None
-            renew()
         else:
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
@@ -870,7 +818,7 @@ def wikipedia_():
     else:
         place_holder = None
         if any(word in keyword.lower() for word in keywords.exit()):
-            renew()
+            pass
         else:
             sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
             try:
@@ -884,7 +832,6 @@ def wikipedia_():
                     summary = wikipedia.summary(keyword1)
                 else:
                     summary = None
-                    renew()
             except wikipedia.exceptions.PageError:
                 speaker.say(f"I'm sorry sir! I didn't get a response for the phrase: {keyword}. Try again!")
                 summary = None
@@ -902,11 +849,10 @@ def wikipedia_():
             else:
                 sys.stdout.write("\r")
                 speaker.say("I'm sorry sir, I didn't get your response.")
-            renew()
 
 
 def news():
-    """Says news around you and skips going to renew() if the function is called by report()"""
+    """Says news around you"""
     news_source = 'fox'
     sys.stdout.write(f'\rGetting news from {news_source} news.')
     from newsapi import NewsApiClient, newsapi_exception
@@ -922,12 +868,9 @@ def news():
         for article in all_articles['articles']:
             speaker.say(article['title'])
         speaker.say("That's the end of news around you.")
-    speaker.runAndWait()
 
     if report.has_been_called or time_travel.has_been_called:
-        pass
-    else:
-        renew()
+        speaker.runAndWait()
 
 
 def apps(keyword):
@@ -940,11 +883,10 @@ def apps(keyword):
         keyword = listener(3, 5)
         if keyword != 'SR_ERROR':
             if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
-                return renew()
+                return
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -972,7 +914,6 @@ def apps(keyword):
             apps(None)
         else:
             speaker.say(f"I have opened {keyword}")
-    renew()
 
 
 def robinhood():
@@ -992,7 +933,6 @@ def robinhood():
     speaker.say(stock_value)
     speaker.runAndWait()
     sys.stdout.write('\r')
-    renew()
 
 
 def repeater():
@@ -1007,11 +947,9 @@ def repeater():
             pass
         else:
             speaker.say(f"I heard {keyword}")
-        renew()
     else:
         if place_holder == 0:
             place_holder = None
-            renew()
         else:
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
@@ -1049,7 +987,6 @@ def chatter_bot():
             speaker.say('Let me remove the training modules.')
             os.system('rm db*')
             os.system(f'rm -rf {file2}')
-            renew()
         else:
             response = bot.get_response(keyword)
             if response == 'What is AI?':
@@ -1063,7 +1000,6 @@ def chatter_bot():
             place_holder = None
             os.system('rm db*')
             os.system(f'rm -rf {file2}')
-            renew()
         else:
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
@@ -1074,7 +1010,6 @@ def location():
     """Gets your current location"""
     city, state, country = location_info['city'], location_info['state'], location_info['country']
     speaker.say(f"You're at {city} {state}, in {country}")
-    renew()
 
 
 def locate(converted):
@@ -1127,7 +1062,6 @@ def locate(converted):
     if phrase == 'SR_ERROR':
         if place_holder == 0:
             place_holder = None
-            renew()
         else:
             speaker.say("I didn't quite get that. Try again.")
             dummy.has_been_called = True
@@ -1148,7 +1082,6 @@ def locate(converted):
                 speaker.say("I've enabled lost mode on your phone.")
             else:
                 speaker.say("No action taken sir!")
-        renew()
 
 
 def music(device):
@@ -1184,7 +1117,7 @@ def music(device):
 
 
 def gmail():
-    """Reads unread emails from your gmail account and skips going to renew() if the function is called by report()"""
+    """Reads unread emails from your gmail account for which the creds are stored in env variables"""
     global place_holder
     sys.stdout.write("\rFetching new emails..")
     import email
@@ -1212,7 +1145,6 @@ def gmail():
             n = n + 1
     else:
         speaker.say("I'm unable access your email sir.")
-        renew()
     if n == 0:
         speaker.say("You don't have any emails to catch up sir")
         speaker.runAndWait()
@@ -1256,7 +1188,6 @@ def gmail():
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 speaker.runAndWait()
@@ -1265,9 +1196,7 @@ def gmail():
 
         place_holder = None
     if report.has_been_called or time_travel.has_been_called:
-        pass
-    else:
-        renew()
+        speaker.runAndWait()
 
 
 def meaning(keyword):
@@ -1283,13 +1212,13 @@ def meaning(keyword):
         response = listener(3, 5)
         if response != 'SR_ERROR':
             if any(word in response.lower() for word in keywords.exit()):
-                renew()
+                return
             else:
                 meaning(response)
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
+                return
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -1316,7 +1245,7 @@ def meaning(keyword):
         else:
             speaker.say("Keyword should be a single word sir! Try again")
             meaning(None)
-    renew()
+    return
 
 
 def create_db():
@@ -1328,17 +1257,15 @@ def create_db():
     elif add_todo.has_been_called:
         add_todo.has_been_called = False
         add_todo()
-    renew()
+    return
 
 
 def todo():
-    """Says your to-do list and skips going to renew() if the function is called by report()"""
+    """Says the item and category stored in your to-do list"""
     global place_holder
     sys.stdout.write("\rLooking for to-do database..")
     # if this function has been called by report() says database status and passes else it will ask for db creation
-    if not os.path.isfile(file_name) and time_travel.has_been_called:
-        pass
-    elif not os.path.isfile(file_name) and report.has_been_called:
+    if not os.path.isfile(file_name) and (time_travel.has_been_called or report.has_been_called):
         speaker.say("You don't have a database created for your to-do list sir.")
     elif not os.path.isfile(file_name):
         speaker.say("You don't have a database created for your to-do list sir.")
@@ -1351,11 +1278,11 @@ def todo():
                 sys.stdout.write("\r")
                 create_db()
             else:
-                renew()
+                return
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
+                return
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -1386,8 +1313,6 @@ def todo():
 
     if report.has_been_called or time_travel.has_been_called:
         speaker.runAndWait()
-    else:
-        renew()
 
 
 def add_todo():
@@ -1407,11 +1332,11 @@ def add_todo():
                 sys.stdout.write("\r")
                 create_db()
             else:
-                return renew()
+                return
         else:
             if place_holder == 0:
                 place_holder = None
-                return renew()
+                return
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -1447,7 +1372,6 @@ def add_todo():
         sys.stdout.write("\r")
         speaker.say("I didn't quite get that.")
     place_holder = None
-    renew()
 
 
 def delete_todo():
@@ -1456,13 +1380,13 @@ def delete_todo():
     sys.stdout.write("\rLooking for to-do database..")
     if not os.path.isfile(file_name):
         speaker.say("You don't have a database created for your to-do list sir.")
-        renew()
+        return
     speaker.say("Which one should I remove sir?")
     speaker.runAndWait()
     item = listener(3, 5)
     if item != 'SR_ERROR':
         if 'exit' in item or 'quit' in item or 'Xzibit' in item:
-            renew()
+            return
         response = database.deleter(item)
         # if the return message from database starts with 'Looks' it means that the item wasn't matched for deletion
         if response.startswith('Looks'):
@@ -1475,13 +1399,12 @@ def delete_todo():
     else:
         if place_holder == 0:
             place_holder = None
-            renew()
+            return
         else:
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
             delete_todo()
     place_holder = None
-    renew()
 
 
 def delete_db():
@@ -1489,7 +1412,7 @@ def delete_db():
     global place_holder
     if not os.path.isfile(file_name):
         speaker.say(f'I did not find any database sir.')
-        renew()
+        return
     else:
         speaker.say(f'{random.choice(confirmation)} delete your database?')
         speaker.runAndWait()
@@ -1500,11 +1423,11 @@ def delete_db():
                 speaker.say("I've removed your database sir.")
             else:
                 speaker.say("Your database has been left intact sir.")
-            renew()
+            return
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
+                return
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 speaker.runAndWait()
@@ -1527,11 +1450,11 @@ def distance(starting_point, destination):
                 speaker.say("I asked for a destination sir, not a sentence. Try again.")
                 distance(starting_point=None, destination=None)
             if 'exit' in destination or 'quit' in destination or 'Xzibit' in destination:
-                renew()
+                return
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
+                return
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -1576,7 +1499,7 @@ def distance(starting_point, destination):
             speaker.say(f"You may also ask where is {destination}")
     else:
         speaker.say(f"{starting_point} is {miles} miles away from {destination}.")
-    renew()
+    return
 
 
 def locate_places(place):
@@ -1589,7 +1512,7 @@ def locate_places(place):
         if converted != 'SR_ERROR':
             if 'exit' in place or 'quit' in place or 'Xzibit' in place:
                 place_holder = None
-                renew()
+                return
             for word in converted.split():
                 if word[0].isupper():
                     place += word + ' '
@@ -1602,7 +1525,7 @@ def locate_places(place):
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
+                return
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -1656,11 +1579,11 @@ def directions(place):
                 directions(place=None)
             if 'exit' in place or 'quit' in place or 'Xzibit' in place:
                 place_holder = None
-                renew()
+                return
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
+                return
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -1685,7 +1608,7 @@ def directions(place):
             distance(starting_point=None, destination=place)
         else:
             speaker.say("You might need a flight to get there!")
-    renew()
+    return
 
 
 def alarm(msg):
@@ -1725,19 +1648,19 @@ def alarm(msg):
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 place_holder = None
-                renew()
+                return
             else:
                 alarm(converted)
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
+                return
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
                 alarm(msg='')
         place_holder = None
-    renew()
+    return
 
 
 def kill_alarm():
@@ -1779,12 +1702,12 @@ def kill_alarm():
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
+                return
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
                 kill_alarm()
-    renew()
+    return
 
 
 def google_home(device, file):
@@ -1831,7 +1754,7 @@ def google_home(device, file):
             sys.stdout.write(f"{device},  ")
         speaker.say(f"You have {len(devices)} devices in your IP range. Devices list on your screen sir! You can "
                     f"choose one and ask me to play some music on any of these.")
-        renew()
+        return
     else:
         from googlehomepush.http_server import serve_file
         chosen = []
@@ -1864,7 +1787,7 @@ def jokes():
         place_holder = None
         if any(word in converted.lower() for word in keywords.ok()):
             jokes()
-    renew()
+    return
 
 
 def reminder(converted):
@@ -1876,7 +1799,7 @@ def reminder(converted):
         if not message:
             speaker.say('Reminder format should be::Remind me to do something, at some time.')
             sys.stdout.write('Reminder format should be::Remind ME to do something, AT some time.')
-            return renew()
+            return
     extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
         r'([0-9]+\s?(?:a.m.|p.m.:?))', converted)
     if not extracted_time:
@@ -1887,7 +1810,7 @@ def reminder(converted):
             extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
                 r'([0-9]+\s?(?:a.m.|p.m.:?))', converted)
         else:
-            renew()
+            return
     if message and extracted_time:
         to_about = 'about' if 'about' in converted else 'to'
         message = message.group(1).strip()
@@ -1908,15 +1831,13 @@ def reminder(converted):
             Reminder(hour, minute, am_pm, message).start()
             speaker.say(f"{random.choice(ack)} I will remind you {to_about} {message}, at {hour}:{minute} {am_pm}.")
             sys.stdout.write(f"\r{message} at {hour}:{minute} {am_pm}")
-            renew()
         else:
             speaker.say(f"A reminder at {hour}:{minute} {am_pm}? Are you an alien? "
                         f"I don't think a time like that exists on Earth.")
-            renew()
     else:
         speaker.say('Reminder format should be::Remind me to do something, at some time.')
         sys.stdout.write('Reminder format should be::Remind ME to do something, AT some time.')
-        renew()
+    return
 
 
 def maps_api(query):
@@ -1986,12 +1907,12 @@ def maps_api(query):
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                 webbrowser.open(maps_url)
                 speaker.say("Directions on your screen sir!")
-                renew()
+                return
             elif results == 1:
-                renew()
+                return
             elif n == results:
                 speaker.say("I've run out of options sir!")
-                renew()
+                return
             else:
                 continue
         else:
@@ -2005,7 +1926,7 @@ def notes():
     converted = listener(5, 10)
     if converted != 'SR_ERROR':
         if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-            renew()
+            return
         else:
             with open(r'notes.txt', 'a') as writer:
                 writer.write(f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"
@@ -2013,7 +1934,7 @@ def notes():
     else:
         if place_holder == 0:
             place_holder = None
-            renew()
+            return
         else:
             place_holder = 0
             notes()
@@ -2028,7 +1949,7 @@ def github(target):
         os.system(f"""cd {home} && git clone -q {target[0]}""")
         cloned = target[0].split('/')[-1].replace('.git', '')
         speaker.say(f"I've cloned {cloned} on your home directory sir!")
-        renew()
+        return
     elif len(target) <= 3:
         newest = []
         [newest.append(new.split('/')[-1]) for new in target]
@@ -2039,7 +1960,7 @@ def github(target):
         if converted != 'SR_ERROR':
             if any(word in converted.lower() for word in keywords.exit()):
                 place_holder = None
-                renew()
+                return
             place_holder = None
             if 'first' in converted.lower():
                 item = 1
@@ -2054,18 +1975,18 @@ def github(target):
             os.system(f"""cd {home} && git clone {target[item]}""")
             cloned = target[item].split('/')[-1].replace('.git', '')
             speaker.say(f"I've cloned {cloned} on your home directory sir!")
-            renew()
+            return
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
+                return
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
                 github(target)
     else:
         speaker.say(f"I found {len(target)} repositories sir! You may want to be more specific.")
-        renew()
+        return
 
 
 def send_sms(number):
@@ -2079,14 +2000,14 @@ def send_sms(number):
         number = listener(3, 5)
         if number != 'SR_ERROR':
             if 'exit' in number or 'quit' in number or 'Xzibit' in number:
-                return renew()
+                return
             else:
                 sys.stdout.write(f'\rNumber: {number}')
                 place_holder = None
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
+                return
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -2102,7 +2023,7 @@ def send_sms(number):
         if body == 'SR_ERROR':
             if place_holder == 0:
                 place_holder = None
-                renew()
+                return
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -2127,11 +2048,11 @@ def send_sms(number):
                     server.sendmail(gmail_user, to, sender)
                     server.close()
                     speaker.say("Message has been sent sir!")
-                renew()
+                return
             else:
                 if place_holder == 0:
                     place_holder = None
-                    renew()
+                    return
                 else:
                     speaker.say("I didn't quite get that. Try again.")
                     place_holder = 0
@@ -2231,7 +2152,6 @@ def television(converted):
         converted = converted.replace('my', 'your')
         speaker.say(f"I'm sorry sir! I wasn't able to {converted}, as the TV state is unknown! You can ask me to "
                     f"turn on or connect to the TV to start using the TV features.")
-    renew()
 
 
 def google(query):
@@ -2287,7 +2207,7 @@ def google(query):
             output = output.replace(match.group(), '')
         sys.stdout.write(f'\r{output}')
         speaker.say(output)
-        renew()
+        return
     else:
         return True
 
@@ -2301,13 +2221,13 @@ def google_search(phrase):
         converted = listener(3, 5)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'xzibit' in converted or 'cancel' in converted:
-                renew()
+                return
             else:
                 phrase = converted.lower()
         else:
             if place_holder == 0:
                 place_holder = None
-                renew()
+                return
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
@@ -2316,7 +2236,6 @@ def google_search(phrase):
     unknown_url = f"https://www.google.com/search?q={search}"
     webbrowser.open(unknown_url)
     speaker.say(f"I've opened up a google search for: {phrase}.")
-    renew()
 
 
 def volume_controller(level):
@@ -2346,7 +2265,7 @@ def face_recognition_detection():
             result = None
             speaker.say("I was unable to access the camera. Facial recognition can work only when cameras are "
                         "present and accessible.")
-            renew()
+            return
         if not result:
             sys.stdout.write('\rLooking for faces to detect.')
             speaker.say("No faces were recognized. Switching on to face detection.")
@@ -2356,7 +2275,7 @@ def face_recognition_detection():
                 sys.stdout.write('\rNo faces were recognized nor detected.')
                 speaker.say('No faces were recognized. nor detected. Please check if your camera is working, '
                             'and look at the camera when you retry.')
-                renew()
+                return
             sys.stdout.write('\rNew face has been detected. Like to give it a name?')
             speaker.say('I was able to detect a face, but was unable to recognize it.')
             os.system('open cv2_open.jpg')
@@ -2388,7 +2307,6 @@ def face_recognition_detection():
     elif operating_system == 'Windows':
         speaker.say("I am sorry, currently facial recognition and detection is only supported on Windows, due to the "
                     "package installation issues. Is there anything else I can help you with?")
-    renew()
 
 
 def speed_test():
@@ -2407,7 +2325,6 @@ def speed_test():
     speaker.say(f'Ping rate: {ping} milli seconds')
     speaker.say(f'Download speed: {download} per second.')
     speaker.say(F'Upload speed: {upload} per second.')
-    renew()
 
 
 def bluetooth(phrase):
@@ -2465,7 +2382,6 @@ def bluetooth(phrase):
             unpaired = json.loads(unpaired)
             connector(targets=unpaired) if unpaired else speaker.say('No un-paired devices found sir! '
                                                                      'You may want to be more precise.')
-    renew()
 
 
 def increase_brightness():
@@ -2617,37 +2533,31 @@ def threat_notify(converted, date_extn):
 
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action"""
-    global waiter, threshold, morning_msg, evening_msg
+    threshold = 0
     while threshold < 5000:
         threshold += 1
-        if not morning_msg:
-            # triggers between 7:00 AM (weekdays) and morning_msg is set to True so that,
-            # Jarvis would not repeat the same message once again before a restart
-            if datetime.now().strftime("%I:%M %p") == '07:00 AM' and \
-                    datetime.now().strftime("%A") not in ['Saturday', 'Sunday']:
-                if operating_system == 'Darwin':
-                    Thread(target=increase_brightness).start()  # set to max brightness
-                volume_controller(100)
-                speaker.say('Good Morning.')
-                if event:
-                    speaker.say(f'Happy {event}!')
-                report.has_been_called = True
-                current_date()
-                current_time(None)
-                weather(None)
-                report.has_been_called = False
-                volume_controller(50)
-                morning_msg = True
-        if not evening_msg:
-            # triggers at 9:00 PM and evening_msg is set to True so that,
-            # Jarvis would not try to dim the screen brightness once again
-            if datetime.now().strftime("%I:%M %p") == '09:00 PM':
-                if operating_system == 'Darwin':
-                    Thread(target=decrease_brightness).start()  # set to lowest brightness
-                speaker.say(f'Good Night Sir! Have a pleasant sleep.')
-                speaker.runAndWait()
-                evening_msg = True
-        waiter = 0
+        # triggers between 7:00 AM (weekdays) and morning_msg is set to True so that,
+        # Jarvis would not repeat the same message once again before a restart
+        if datetime.now().strftime("%I:%M %p") == '07:00 AM':
+            if operating_system == 'Darwin':
+                Thread(target=increase_brightness).start()  # set to max brightness
+            volume_controller(100)
+            speaker.say('Good Morning.')
+            if event:
+                speaker.say(f'Happy {event}!')
+            report.has_been_called = True
+            current_date()
+            current_time(None)
+            weather(None)
+            report.has_been_called = False
+            volume_controller(50)
+        # triggers at 9:00 PM and evening_msg is set to True so that,
+        # Jarvis would not try to dim the screen brightness once again
+        if datetime.now().strftime("%I:%M %p") == '09:00 PM':
+            if operating_system == 'Darwin':
+                Thread(target=decrease_brightness).start()  # set to lowest brightness
+            speaker.say(f'Good Night Sir! Have a pleasant sleep.')
+            speaker.runAndWait()
         if greet_check == 'initialized':
             dummy.has_been_called = True
         try:
@@ -2677,8 +2587,9 @@ def sentry_mode():
                 speaker.say(f'{random.choice(wake_up2)}')
                 initialize()
             elif 'jarvis' in key or 'buddy' in key:
-                key = key.replace('jarvis ', '').replace('buddy ', '').replace('hey ', '')
+                key = key.replace('jarvis ', '').replace('buddy ', '').replace('hey ', '').replace(' jarvis', '')
                 conditions(key.strip())
+            speaker.runAndWait()
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             pass
         except KeyboardInterrupt:
@@ -2802,11 +2713,11 @@ def shutdown():
             exit(0)
         else:
             speaker.say("Machine state is left intact sir!")
-            renew()
+            return
     else:
         if place_holder == 0:
             place_holder = None
-            renew()
+            return
         else:
             speaker.say("I didn't quite get that. Try again.")
             place_holder = 0
@@ -2860,7 +2771,7 @@ if __name__ == '__main__':
     # threshold is used to sanity check the sentry_mode() so that Jarvis doesn't run into Fatal Python error.
         # This happens when the same functions is repeatedly called with no end::Cannot recover from stack overflow.
     place_holder, greet_check, tv, morning_msg, evening_msg = None, None, None, False, False
-    waiter, suggestion_count, threshold = 0, 0, 0
+    suggestion_count = 0
 
     # Uses speed test api to check for internet connection
     try:
