@@ -1719,15 +1719,18 @@ def google_home(device, file):
         I have used "sys.stdout = open(os.devnull, 'w')" to suppress any print statements. To enable this again at a
         later time use "sys.stdout = sys.__stdout__"
     Note: When music is played and immediately stopped/tasked the google home device, it is most likely to except
-    Broken Pipe error which usually happens when you write to a socket fully closed on the other Broken Pipe occurs
-    when one end of the connection tries sending data while the other end has already closed the connection.
+     Broken Pipe error. This usually happens when you write to a socket that is fully closed.
+     Broken Pipe occurs when one end of the connection tries sending data while the other end has closed the connection.
     This can simply be ignored or handled using the below in socket module (NOT PREFERRED).
     ''' except IOError as error:
             import errno
             if error.errno != errno.EPIPE:
-                sys.stdout.write(e)
+                sys.stdout.write(error)
                 pass'''
     """
+    speaker.say('Scanning your IP range for Google Home devices sir!')
+    speaker.runAndWait()
+    sys.stdout.write('\rScanning your IP range for Google Home devices..')
     from socket import socket, AF_INET, SOCK_DGRAM
     from googlehomepush import GoogleHome
     from pychromecast.error import ChromecastConnectionError
@@ -1735,25 +1738,36 @@ def google_home(device, file):
     socket_.connect(("8.8.8.8", 80))
     ip_address = socket_.getsockname()[0]
     socket_.close()
-    look_up = ('.'.join(ip_address.split('.')[0:3]))
-    ip_range = [3, 7, 15]
-    devices = {}
-    for n in ip_range:
+    network_id = ('.'.join(ip_address.split('.')[0:3]))
+
+    def ip_scan(host_id):
+        """Scans the IP range using the received args as host id in an IP address"""
         try:
-            device_info = GoogleHome(host=f"{look_up}.{n}").cc
+            device_info = GoogleHome(host=f"{network_id}.{host_id}").cc
             device_info = str(device_info)
             device_name = device_info.split("'")[3]
-            ip = device_info.split("'")[1]
+            device_ip = device_info.split("'")[1]
             # port = sample.split("'")[2].split()[1].replace(',', '')
-            devices.update({device_name: ip})
+            return device_name, device_ip
         except ChromecastConnectionError:
             pass
+
+    from concurrent.futures import ThreadPoolExecutor  # scan time after MultiThread: < 10 seconds (usual bs: 3 minutes)
+    devices = []
+    with ThreadPoolExecutor(max_workers=5000) as executor:  # max workers set to 5K (to scan 255 IPs) for less wait time
+        for info in executor.map(ip_scan, range(1, 256)):  # scans host IDs 1 to 255 (eg: 192.168.1.1 to 192.168.1.255)
+            devices.append(info)  # this includes all the NoneType values returned by unassigned host IDs
+    devices = dict([i for i in devices if i])  # removes None values and converts list to dictionary of name and ip pair
+
     if not device or not file:
         sys.stdout.write('\r')
-        for device, ip in devices.items():
-            sys.stdout.write(f"{device},  ")
-        speaker.say(f"You have {len(devices)} devices in your IP range. Devices list on your screen sir! You can "
-                    f"choose one and ask me to play some music on any of these.")
+
+        def comma_separator(list_):
+            """Seperates commas using simple .join() function and analysis based on length of the list (args)"""
+            return ', and '.join([', '.join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
+
+        speaker.say(f"You have {len(devices)} devices in your IP range sir! {comma_separator(list(devices.keys()))}. "
+                    f"You can choose one and ask me to play some music on any of these.")
         return
     else:
         from googlehomepush.http_server import serve_file
