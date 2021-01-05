@@ -2532,32 +2532,44 @@ def threat_notify(converted, date_extn):
 
 
 def sentry_mode():
-    """Sentry mode, all it does is to wait for the right keyword to wake up and get into action"""
-    threshold = 0
+    """Sentry mode, all it does is to wait for the right keyword to wake up and get into action.
+    threshold is used to sanity check sentry_mode() so that:
+     1. Jarvis doesn't run into Fatal Python error
+     2. Jarvis restarts at least twice a day and gets a new pid
+    morning_msg and evening_msg are set to False initially and to True when their purpose is done for the day.
+     this is done to avoid Jarvis repeating the task as it completes within a minute.
+     Alternatively, a condition to check and run within first 15 seconds can be implemented."""
+    threshold, morning_msg, evening_msg = 0, False, False
     while threshold < 5000:
         threshold += 1
-        # triggers between 7:00 AM (weekdays) and morning_msg is set to True so that,
-        # Jarvis would not repeat the same message once again before a restart
-        if datetime.now().strftime("%I:%M %p") == '07:00 AM':
-            if operating_system == 'Darwin':
-                Thread(target=increase_brightness).start()  # set to max brightness
-            volume_controller(100)
-            speaker.say('Good Morning.')
-            if event:
-                speaker.say(f'Happy {event}!')
-            report.has_been_called = True
-            current_date()
-            current_time(None)
-            weather(None)
-            report.has_been_called = False
-            volume_controller(50)
-        # triggers at 9:00 PM and evening_msg is set to True so that,
-        # Jarvis would not try to dim the screen brightness once again
-        if datetime.now().strftime("%I:%M %p") == '09:00 PM':
-            if operating_system == 'Darwin':
-                Thread(target=decrease_brightness).start()  # set to lowest brightness
-            speaker.say(f'Good Night Sir! Have a pleasant sleep.')
-            speaker.runAndWait()
+        if not morning_msg:
+            # triggers between 7:00 AM (weekdays) and morning_msg is set to True so that,
+            # Jarvis would not repeat the same message once again before a restart
+            if datetime.now().strftime("%I:%M %p") == '07:00 AM' and \
+                    datetime.now().strftime("%A") not in ['Saturday', 'Sunday']:
+                if operating_system == 'Darwin':
+                    Thread(target=increase_brightness).start()  # set to max brightness
+                volume_controller(100)
+                speaker.say('Good Morning.')
+                if event:
+                    speaker.say(f'Happy {event}!')
+                report.has_been_called = True
+                current_date()
+                current_time(None)
+                weather(None)
+                speaker.runAndWait()
+                report.has_been_called = False
+                volume_controller(50)
+                morning_msg = True
+        if not evening_msg:
+            # triggers at 9:00 PM and evening_msg is set to True so that,
+            # Jarvis would not try to dim the screen brightness once again
+            if datetime.now().strftime("%I:%M %p") == '09:00 PM':
+                if operating_system == 'Darwin':
+                    Thread(target=decrease_brightness).start()  # set to lowest brightness
+                speaker.say(f'Good Night Sir! Have a pleasant sleep.')
+                speaker.runAndWait()
+                evening_msg = True
         if greet_check == 'initialized':
             dummy.has_been_called = True
         try:
@@ -2764,13 +2776,10 @@ if __name__ == '__main__':
 
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run
-    # tv is set to None at the start
-    # waiter is used in renew() so that when waiter hits 12 count, active listener automatically goes to sentry mode
+    # tv is set to None instead of TV() at the start to avoid turning on the TV unnecessarily
     # suggestion_count is used in google_searchparser to limit the number of times suggestions are used.
         # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
-    # threshold is used to sanity check the sentry_mode() so that Jarvis doesn't run into Fatal Python error.
-        # This happens when the same functions is repeatedly called with no end::Cannot recover from stack overflow.
-    place_holder, greet_check, tv, morning_msg, evening_msg = None, None, None, False, False
+    place_holder, greet_check, tv = None, None, None
     suggestion_count = 0
 
     # Uses speed test api to check for internet connection
