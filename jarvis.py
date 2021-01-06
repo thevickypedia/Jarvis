@@ -1264,9 +1264,8 @@ def todo():
     """Says the item and category stored in your to-do list"""
     global place_holder
     sys.stdout.write("\rLooking for to-do database..")
-    # if this function has been called by report() says database status and passes else it will ask for db creation
     if not os.path.isfile(file_name) and (time_travel.has_been_called or report.has_been_called):
-        speaker.say("You don't have a database created for your to-do list sir.")
+        pass
     elif not os.path.isfile(file_name):
         speaker.say("You don't have a database created for your to-do list sir.")
         speaker.say("Would you like to spin up one now?")
@@ -1345,7 +1344,7 @@ def add_todo():
     place_holder = None
     speaker.say("What's your plan sir?")
     speaker.runAndWait()
-    item = listener(3, 5)
+    item = listener(3, 6)
     if item != 'SR_ERROR':
         if 'exit' in item or 'quit' in item or 'Xzibit' in item:
             speaker.say('Your to-do list has been left intact sir.')
@@ -1368,6 +1367,8 @@ def add_todo():
                 category_continue = listener(3, 5)
                 if any(word in category_continue.lower() for word in keywords.ok()):
                     add_todo()
+                else:
+                    speaker.say('Alright')
     else:
         sys.stdout.write("\r")
         speaker.say("I didn't quite get that.")
@@ -2276,7 +2277,6 @@ def face_recognition_detection():
         try:
             result = Face().face_recognition()
         except BlockingIOError:
-            result = None
             speaker.say("I was unable to access the camera. Facial recognition can work only when cameras are "
                         "present and accessible.")
             return

@@ -9,11 +9,6 @@ from wakeonlan import send_magic_packet as wake
 
 from helper_functions.aws_clients import AWSClients
 
-aws = AWSClients()
-mac_address = os.getenv('tv_mac') or aws.tv_mac()
-ip_address = os.getenv('tv_ip') or aws.tv_ip()
-client_key = os.getenv('tv_client_key') or aws.tv_client_key()
-
 
 class TV:
     """All the TV controls wrapped in individual functions."""
@@ -23,6 +18,10 @@ class TV:
         """Client key will be displayed on the TV when you accept the connection for the first time.
         Store the dict value as an env variable and use it as below. Using TV's ip makes the initial
         response much quicker but it looks for the TVs in ip range if an ip is not found."""
+        aws = AWSClients()
+        ip_address = os.getenv('tv_ip') or aws.tv_ip()
+        client_key = os.getenv('tv_client_key') or aws.tv_client_key()
+
         store = {'client_key': client_key}
         try:
             self.client = WebOSClient(ip_address)
@@ -151,6 +150,8 @@ class TV:
 
 
 if __name__ == '__main__':
+    aws_ = AWSClients()
+    mac_address = os.getenv('tv_mac') or aws_.tv_mac()
     sys.stdout.write(f"\r{TV().launch_app('Disney')}")
     time.sleep(10)
     wake(mac_address)
