@@ -497,8 +497,8 @@ def location_services(device):
         # uses latitude and longitude information from your IP's client when unable to connect to icloud
         current_lat_ = st.results.client['lat']
         current_lon_ = st.results.client['lon']
-        speaker.say("I had trouble accessing the iCloud API, so I'll be using your I.P address for location. "
-                    "Please note that this may not be accurate enough for location services.")
+        speaker.say("I have trouble accessing the i-cloud API, so I'll be using your I.P address to get your location. "
+                    "Please note that - this may not be accurate enough for location services.")
         speaker.runAndWait()
     except requests.exceptions.ConnectionError:
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
@@ -932,7 +932,7 @@ def robinhood():
     sys.stdout.write(f'\r{stock_value}')
     speaker.say(stock_value)
     speaker.runAndWait()
-    sys.stdout.write('\r')
+    sys.stdout.write("\r")
 
 
 def repeater():
@@ -1110,7 +1110,7 @@ def music(device):
             subprocess.call(["open", chosen])
         elif operating_system == 'Windows':
             os.system(f'start wmplayer "{chosen}"')
-        sys.stdout.write('\r')
+        sys.stdout.write("\r")
         speaker.say("Enjoy your music sir!")
         speaker.runAndWait()
         return
@@ -1267,8 +1267,10 @@ def todo():
     if not os.path.isfile(file_name) and (time_travel.has_been_called or report.has_been_called):
         pass
     elif not os.path.isfile(file_name):
-        speaker.say("You don't have a database created for your to-do list sir.")
-        speaker.say("Would you like to spin up one now?")
+        if place_holder == 0:
+            speaker.say("Would you like to create a database for your to-do list?")
+        else:
+            speaker.say("You don't have a database created for your to-do list sir. Would you like to spin up one now?")
         speaker.runAndWait()
         key = listener(3, 5)
         if key != 'SR_ERROR':
@@ -1761,7 +1763,7 @@ def google_home(device, file):
     devices = dict([i for i in devices if i])  # removes None values and converts list to dictionary of name and ip pair
 
     if not device or not file:
-        sys.stdout.write('\r')
+        sys.stdout.write("\r")
 
         def comma_separator(list_):
             """Seperates commas using simple .join() function and analysis based on length of the list (args)"""
@@ -1779,7 +1781,7 @@ def google_home(device, file):
             google_home(None, None)
         for target in chosen:
             file_url = serve_file(file, "audio/mp3")  # serves the file on local host and generates the play url
-            sys.stdout.write('\r')
+            sys.stdout.write("\r")
             sys.stdout = open(os.devnull, 'w')  # suppresses print statement from "googlehomepush/__init.py__"
             GoogleHome(host=target).play(file_url, "audio/mp3")
             sys.stdout = sys.__stdout__  # removes print statement's suppression above
@@ -1808,9 +1810,9 @@ def jokes():
 def reminder(converted):
     """Passes hour, minute, am/pm and reminder message to Reminder class which initiates a thread for reminder"""
     global place_holder
-    message = re.search('to(.*)at', converted) or re.search('about(.*)at', converted)
+    message = re.search(' to (.*) at ', converted) or re.search(' about (.*) at ', converted)
     if not message:
-        message = re.search('to(.*)', converted) or re.search('about(.*)', converted)
+        message = re.search(' to (.*)', converted) or re.search(' about (.*)', converted)
         if not message:
             speaker.say('Reminder format should be::Remind me to do something, at some time.')
             sys.stdout.write('Reminder format should be::Remind ME to do something, AT some time.')
@@ -2031,7 +2033,7 @@ def send_sms(number):
         sys.stdout.write(f'\r{number}')
         speaker.say("I don't think that's a right number sir! Phone numbers are 10 digits. Try again!")
         send_sms(number=None)
-    else:
+    if number and len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) == 10:
         speaker.say("What would you like to send sir?")
         speaker.runAndWait()
         body = listener(3, 5)
@@ -2589,9 +2591,8 @@ def sentry_mode():
         try:
             sys.stdout.write("\rSentry Mode")
             listen = recognizer.listen(source, timeout=5, phrase_time_limit=5)
-            sys.stdout.write("\r")
-            key = recognizer.recognize_google(listen)
-            key = key.lower().strip()
+            sys.stdout.write(f"\r")
+            key = recognizer.recognize_google(listen).lower().strip()
             if key == 'jarvis' or key == 'buddy':
                 speaker.say(f'{random.choice(wake_up3)}')
                 initialize()
