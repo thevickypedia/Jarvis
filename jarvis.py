@@ -32,6 +32,7 @@ from psutil import Process, virtual_memory
 from pyicloud import PyiCloudService
 from pyicloud.exceptions import PyiCloudAPIResponseException, PyiCloudFailedLoginException
 from requests.auth import HTTPBasicAuth
+from socket import socket, AF_INET, SOCK_DGRAM, gethostname
 from speedtest import Speedtest, ConfigRetrievalError
 from wordninja import split as splitter
 
@@ -163,8 +164,8 @@ def conditions(converted):
             elif '.' in word:
                 place += word + ' '
         checker = converted.lower()
-        if 'tomorrow' in checker or 'day after' in checker or 'next week' in checker or 'tonight' in checker or \
-                'afternoon' in checker or 'evening' in checker:
+        weather_cond = ['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']
+        if any(match in checker for match in weather_cond):
             if place:
                 weather_condition(place, converted)
             else:
@@ -482,18 +483,21 @@ def conditions(converted):
 
 
 def location_services(device):
-    """initiates geo_locator and stores current location info as json so it could be used in couple of other functions
+    """Initiates geo_locator and stores current location info as json so it could be used in couple of other functions
     device is the argument passed when locating a particular apple device"""
     try:
-        # tries with icloud api to get your phone's location for precise location services
-        if device:
-            raw_location = device.location()
+        # tries with icloud api to get your device's location for precise location services
+        if not device:
+            device = device_selector(None)
+        raw_location = device.location()
+        if not raw_location and place_holder == 'Apple':
+            return 'None', 'None', 'None'
+        elif not raw_location:
+            raise PyiCloudAPIResponseException
         else:
-            icloud_api = PyiCloudService(icloud_user, icloud_pass)
-            raw_location = icloud_api.iphone.location()
-        current_lat_ = raw_location['latitude']
-        current_lon_ = raw_location['longitude']
-    except (TypeError, PyiCloudAPIResponseException, PyiCloudFailedLoginException):
+            current_lat_ = raw_location['latitude']
+            current_lon_ = raw_location['longitude']
+    except (PyiCloudAPIResponseException, PyiCloudFailedLoginException):
         # uses latitude and longitude information from your IP's client when unable to connect to icloud
         current_lat_ = st.results.client['lat']
         current_lon_ = st.results.client['lon']
@@ -1006,6 +1010,42 @@ def chatter_bot():
             chatter_bot()
 
 
+def device_selector(converted):
+    """Returns the device name from the user's input after checking the apple devices list.
+    Returns your default device when not able to find it."""
+    if converted and isinstance(converted, str):
+        converted = converted.lower().replace('port', 'pods')
+        target = re.search('iphone(.*)|imac(.*)', converted)  # name of the apple device to be tracked (eg: iPhone X)
+        if target:
+            lookup = target.group()
+        elif 'macbook' in converted:
+            lookup = 'MacBook Pro'
+        elif 'airpods' in converted:
+            lookup = 'AirPods'
+        elif 'airpods pro' in converted:
+            lookup = 'AirPods Pro'
+        elif 'watch' in converted:
+            lookup = 'Apple Watch'
+        else:
+            lookup = 'iPhone 11 Pro Max'  # defaults to my iPhone model
+    elif isinstance(converted, dict):
+        lookup = converted
+    elif not converted:
+        lookup = gethostname()
+    else:
+        lookup = 'iPhone 11 Pro Max'
+    index, target_device = -1, None
+    icloud_api = PyiCloudService(icloud_user, icloud_pass)
+    for device in icloud_api.devices:
+        index += 1
+        if lookup.lower() in str(device).lower():
+            target_device = icloud_api.devices[index]
+            break
+    if not target_device:
+        target_device = icloud_api.iphone
+    return target_device
+
+
 def location():
     """Gets your current location"""
     city, state, country = location_info['city'], location_info['state'], location_info['country']
@@ -1015,48 +1055,29 @@ def location():
 def locate(converted):
     """Locates your iPhone using icloud api for python"""
     global place_holder
-    converted = converted.lower().replace('port', 'pod')
-    target = re.search('iphone(.*)|imac(.*)', converted)  # if a particular iPhone model is to be tracked (eg: iPhone X)
-    if target:
-        lookup = target.group()
-    elif 'macbook' in converted:
-        lookup = 'MacBook Pro'
-    elif 'airpods pro' in converted:
-        lookup = 'AirPods Pro'
-    elif 'airpods' in converted:
-        lookup = 'AirPods'
-    elif 'watch' in converted:
-        lookup = 'Apple Watch'
-    else:
-        lookup = 'iPhone 11 Pro Max'  # defaults to my iPhone model
-
-    sys.stdout.write(f"\rLocating your {lookup}")
-
-    index, target_device = -1, None
-    icloud_api = PyiCloudService(icloud_user, icloud_pass)
-    for device in icloud_api.devices:
-        index += 1
-        if lookup in str(device):
-            target_device = icloud_api.devices[index]
-            break
-    if not target_device:
-        target_device = icloud_api.iphone
-
+    target_device = device_selector(converted)
+    sys.stdout.write(f"\rLocating your {target_device}")
     if dummy.has_been_called:
         dummy.has_been_called = False
         speaker.say("Would you like to ring it?")
     else:
-        stat = target_device.status()
-        bat_percent = round(stat['batteryLevel'] * 100)
-        device_model = stat['deviceDisplayName']
-        phone_name = stat['name']
+        place_holder = 'Apple'
         ignore_lat, ignore_lon, location_info_ = location_services(target_device)
-        post_code = '"'.join(list(location_info_['postcode'].split('-')[0]))
-        iphone_location = f"Your {lookup} is near {location_info_['road']}, {location_info_['city']} " \
-                          f"{location_info_['state']}. Zipcode: {post_code}, {location_info_['country']}"
-        speaker.say(iphone_location)
-        speaker.say(f"Some more details. Battery: {bat_percent}%, Name: {phone_name}, Model: {device_model}")
-        speaker.say("Would you like to ring it?")
+        place_holder = None
+        lookup = str(target_device).split(':')[0].strip()
+        if location_info_ == 'None':
+            speaker.say(f"I wasn't able to locate your {lookup} sir! It is probably offline.")
+        else:
+            post_code = '"'.join(list(location_info_['postcode'].split('-')[0]))
+            iphone_location = f"Your {lookup} is near {location_info_['road']}, {location_info_['city']} " \
+                              f"{location_info_['state']}. Zipcode: {post_code}, {location_info_['country']}"
+            speaker.say(iphone_location)
+            stat = target_device.status()
+            bat_percent = f"Battery: {round(stat['batteryLevel'] * 100)} %, " if stat['batteryLevel'] else ''
+            device_model = stat['deviceDisplayName']
+            phone_name = stat['name']
+            speaker.say(f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
+            speaker.say("Would you like to ring it?")
     speaker.runAndWait()
     phrase = listener(3, 5)
     if phrase == 'SR_ERROR':
@@ -1734,7 +1755,6 @@ def google_home(device, file):
     speaker.say('Scanning your IP range for Google Home devices sir!')
     speaker.runAndWait()
     sys.stdout.write('\rScanning your IP range for Google Home devices..')
-    from socket import socket, AF_INET, SOCK_DGRAM
     from googlehomepush import GoogleHome
     from pychromecast.error import ChromecastConnectionError
     socket_ = socket(AF_INET, SOCK_DGRAM)
@@ -2268,6 +2288,7 @@ def volume_controller(level):
 
 
 def face_recognition_detection():
+    """Initiates face recognition script and looks for images stored in named directories within 'train' directory."""
     if operating_system == 'Darwin':
         from helper_functions.facial_recognition import Face
         sys.stdout.write("\r")
@@ -2326,6 +2347,7 @@ def face_recognition_detection():
 
 
 def speed_test():
+    """Initiates speed test and says the ping rate, download and upload speed."""
     client_locator = geo_locator.reverse(f"{st.results.client.get('lat')}, {st.results.client.get('lon')}")
     client_location = client_locator.raw['address']
     city, state = client_location.get('city'), client_location.get('state')
@@ -2360,6 +2382,7 @@ def bluetooth(phrase):
         speaker.say('All bluetooth devices have been disconnected sir!')
     else:
         def connector(targets):
+            """Scans bluetooth devices in range and establishes connection with the matching device in phrase."""
             connection_attempt = False
             for target in targets:
                 if target['name']:
@@ -2812,7 +2835,7 @@ if __name__ == '__main__':
     icloud_pass = os.getenv('icloud_pass') or aws.icloud_pass()
     options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
     geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
-    current_lat, current_lon, location_info = location_services(None)
+    current_lat, current_lon, location_info = location_services(device_selector(None))
 
     # different responses for different conditions in sentry mode
     wake_up1 = ['Up and running sir.', "We are online and ready sir.", "I have indeed been uploaded sir!",
