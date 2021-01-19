@@ -51,13 +51,24 @@ def listener(timeout, phrase_limit):
     Returns 'SR_ERROR' as a string which is conditioned to respond appropriately."""
     try:
         sys.stdout.write("\rListener activated..") and playsound('indicators/start.mp3')
-        listened = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_limit)
+        listened = recognizer.listen(source, timeout=timeout)
         sys.stdout.write("\r") and playsound('indicators/end.mp3')
         return_val = recognizer.recognize_google(listened)
         sys.stdout.write(f'\r{return_val}')
     except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
         return_val = 'SR_ERROR'
     return return_val
+
+
+def split(key):
+    if 'and' in key:
+        for each in key.split('and'):
+            conditions(each.strip())
+    elif 'also' in key:
+        for each in key.split('also'):
+            conditions(each.strip())
+    else:
+        conditions(key.strip())
 
 
 def greeting():
@@ -99,7 +110,7 @@ def renew():
         try:
             sys.stdout.write(f"\rListener activated..") and playsound('indicators/start.mp3') if waiter == 1 else \
                 sys.stdout.write(f"\rListener activated..")
-            listen = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+            listen = recognizer.listen(source, timeout=5)
             sys.stdout.write("\r") and playsound('indicators/end.mp3') if waiter == 0 else sys.stdout.write("\r")
             converted = recognizer.recognize_google(listen)
             if any(word in converted.lower() for word in keywords.sleep()):
@@ -107,7 +118,7 @@ def renew():
                 speaker.runAndWait()
                 return
             else:
-                conditions(converted)
+                split(converted)
                 speaker.runAndWait()
                 waiter = 0
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
@@ -644,7 +655,7 @@ def weather(place):
     r = urlopen(weather_url)  # sends request to the url created
     response = json.loads(r.read())  # loads the response in a json
 
-    weather_location = f'{city} {state}'.replace('None', '') if city != state else f'{city}' or f'{state}'
+    weather_location = f'{city} - {state}'.replace('None', '') if city != state else f'{city}' or f'{state}'
     temperature = response['current']['temp']
     condition = response['current']['weather'][0]['description']
     feels_like = response['current']['feels_like']
@@ -680,17 +691,17 @@ def weather(place):
         wind_speed = response['current']['wind_speed']
         if wind_speed > 10:
             output = f'The weather in {city} is a {feeling} {temp_f}°, but due to the current wind conditions ' \
-                     f'(which is {wind_speed} miles per hour), it feels like {temp_feel_f}°. {weather_suggest}. '
+                     f'(which is {wind_speed} miles per hour), it feels like {temp_feel_f}°. {weather_suggest}.'
         else:
             output = f'The weather in {city} is a {feeling} {temp_f}°, and it currently feels like {temp_feel_f}°. ' \
-                     f'{weather_suggest}. '
+                     f'{weather_suggest}.'
     elif place or not report.has_been_called:
         output = f'The weather in {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \
                  f'It currently feels like {temp_feel_f}°F, and the current condition is {condition}.'
     else:
         output = f'The weather in {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \
                  f'It currently feels Like {temp_feel_f}°F, and the current condition is {condition}. ' \
-                 f'Sunrise at {sunrise}. Sunset at {sunset}. '
+                 f'Sunrise at {sunrise}. Sunset at {sunset}.'
     if 'alerts' in response:
         alerts = response['alerts'][0]['event']
         start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")
@@ -698,7 +709,7 @@ def weather(place):
     else:
         alerts, start_alert, end_alert = None, None, None
     if alerts and start_alert and end_alert:
-        output += f'You have a weather alert for {alerts} between {start_alert} and {end_alert}'
+        output += f' You have a weather alert for {alerts} between {start_alert} and {end_alert}'
     sys.stdout.write(f"\r{output}")
     speaker.say(output)
 
@@ -2613,7 +2624,7 @@ def sentry_mode():
             dummy.has_been_called = True
         try:
             sys.stdout.write("\rSentry Mode")
-            listen = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+            listen = recognizer.listen(source, timeout=5)
             sys.stdout.write(f"\r")
             key = recognizer.recognize_google(listen).lower().strip()
             if key == 'jarvis' or key == 'buddy':
@@ -2638,7 +2649,7 @@ def sentry_mode():
                 initialize()
             elif 'jarvis' in key or 'buddy' in key:
                 key = key.replace('jarvis ', '').replace('buddy ', '').replace('hey ', '').replace(' jarvis', '')
-                conditions(key.strip())
+                split(key)
             speaker.runAndWait()
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             pass
