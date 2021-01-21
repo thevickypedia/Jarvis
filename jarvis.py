@@ -51,7 +51,7 @@ def listener(timeout, phrase_limit):
     Returns 'SR_ERROR' as a string which is conditioned to respond appropriately."""
     try:
         sys.stdout.write("\rListener activated..") and playsound('indicators/start.mp3')
-        listened = recognizer.listen(source, timeout=timeout)
+        listened = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_limit)
         sys.stdout.write("\r") and playsound('indicators/end.mp3')
         return_val = recognizer.recognize_google(listened)
         sys.stdout.write(f'\r{return_val}')
@@ -110,7 +110,7 @@ def renew():
         try:
             sys.stdout.write(f"\rListener activated..") and playsound('indicators/start.mp3') if waiter == 1 else \
                 sys.stdout.write(f"\rListener activated..")
-            listen = recognizer.listen(source, timeout=5)
+            listen = recognizer.listen(source, timeout=5, phrase_time_limit=5)
             sys.stdout.write("\r") and playsound('indicators/end.mp3') if waiter == 0 else sys.stdout.write("\r")
             converted = recognizer.recognize_google(listen)
             if any(word in converted.lower() for word in keywords.sleep()):
@@ -402,6 +402,11 @@ def conditions(converted):
         elif operating_system == 'Windows':
             speaker.say("Modifying screen brightness on Windows hasn't been developed sir!")
 
+    elif any(word in converted.lower() for word in keywords.lights()):
+        converted = [converted.lower()]
+        speaker.say(random.choice(ack))
+        Thread(target=lights, args=converted).start()
+
     elif any(word in converted.lower() for word in keywords.guard_enable() or keywords.guard_disable()):
         stop_flag = 'False'
         guard_start = Thread(target=guard, args=[stop_flag])
@@ -517,8 +522,7 @@ def location_services(device):
         speaker.runAndWait()
     except requests.exceptions.ConnectionError:
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
-        speaker.say("I was unable to connect to the internet. Please check your connection settings and retry. "
-                    "Remember to check for VPN settings, as it can also be a factor in open Wi-Fi connections.")
+        speaker.say("I was unable to connect to the internet. Please check your connection settings and retry.")
         speaker.runAndWait()
         return exit(1)
 
@@ -542,6 +546,7 @@ def report():
     weather(None)
     todo()
     gmail()
+    robinhood()
     news()
     report.has_been_called = False
 
@@ -1164,9 +1169,9 @@ def gmail():
         mail.login(u, p)
         mail.list()
         mail.select('inbox')  # choose inbox
-    except TimeoutError:
-        speaker.say("I wasn't able to check your emails sir. I think you have your VPN turned ON. If so, disconnect "
-                    "it.")
+    except TimeoutError as TimeOut:
+        logger.info(TimeOut)
+        speaker.say("I wasn't able to check your emails sir. You might need to check to logs.")
         speaker.runAndWait()
         return
 
@@ -1768,11 +1773,9 @@ def google_home(device, file):
     sys.stdout.write('\rScanning your IP range for Google Home devices..')
     from googlehomepush import GoogleHome
     from pychromecast.error import ChromecastConnectionError
-    socket_ = socket(AF_INET, SOCK_DGRAM)
-    socket_.connect(("8.8.8.8", 80))
-    ip_address = socket_.getsockname()[0]
-    socket_.close()
-    network_id = ('.'.join(ip_address.split('.')[0:3]))
+    network_id = vpn_checker()
+    if not network_id:
+        return
 
     def ip_scan(host_id):
         """Scans the IP range using the received args as host id in an IP address"""
@@ -2114,7 +2117,9 @@ def television(converted):
     class is also initiated which is set global for other statements to use it."""
     global tv
     phrase = converted.replace('TV', '')
-    if 'wake' in phrase or 'turn on' in phrase or 'connect' in phrase or 'status' in phrase or 'control' in phrase:
+    if not vpn_checker():
+        return
+    elif 'wake' in phrase or 'turn on' in phrase or 'connect' in phrase or 'status' in phrase or 'control' in phrase:
         from wakeonlan import send_magic_packet as wake
         try:
             mac_address = os.getenv('tv_mac') or aws.tv_mac()
@@ -2122,8 +2127,8 @@ def television(converted):
             tv = TV()
             speaker.say(f"TV features have been integrated sir!")
         except OSError:
-            speaker.say("I wasn't able to turn on your TV sir! I think you have your VPN turned ON. If so, disconnect"
-                        " it. And make sure you are on the same network as your TV.")
+            speaker.say("I wasn't able to connect to your TV sir! Please make sure you are on the "
+                        "same network as your TV, and your TV is connected to a power source.")
     elif tv:
         if 'increase' in phrase:
             tv.increase_volume()
@@ -2456,6 +2461,61 @@ def set_brightness(level):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
 
 
+def lights(converted):
+    """Controller for smart lights"""
+
+    from helper_functions.lights import MagicHomeApi
+
+    def turn_on(host):
+        controller = MagicHomeApi(device_ip=host, device_type=1)
+        controller.turn_on()
+
+    def turn_off(host):
+        controller = MagicHomeApi(device_ip=host, device_type=1)
+        controller.turn_off()
+
+    def warm(host):
+        controller = MagicHomeApi(device_ip=host, device_type=1)
+        controller.update_device(r=0, g=0, b=0, warm_white=255)
+
+    def cool(host):
+        controller = MagicHomeApi(device_ip=host, device_type=2)
+        controller.update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
+
+    light_host_id = [19, 20, 21, 22, 24]  # list of host IDs (last 2 or 3 digits in an IP address)
+    connection_status = vpn_checker()
+    if not connection_status:
+        return
+    else:
+        if 'turn on' in converted:
+            [turn_on(f'{connection_status}.{i}') for i in light_host_id]
+        elif 'turn off' in converted:
+            [turn_off(f'{connection_status}.{i}') for i in light_host_id]
+        elif 'cool' in converted or 'white' in converted:
+            [cool(f'{connection_status}.{i}') for i in light_host_id]
+        elif 'warm' in converted or 'yellow' in converted:
+            [warm(f'{connection_status}.{i}') for i in light_host_id]
+
+
+def vpn_checker():
+    """Uses simple check on network id to see if it is connected to local host or not
+    returns the network id if local host"""
+    from urllib.request import urlopen
+    import json
+    socket_ = socket(AF_INET, SOCK_DGRAM)
+    socket_.connect(("8.8.8.8", 80))
+    ip_address = socket_.getsockname()[0]
+    socket_.close()
+    if not (ip_address.startswith('192') | ip_address.startswith('127')):
+        info = json.load(urlopen('http://ipinfo.io/json'))
+        sys.stdout.write(f"\rVPN connection is detected to {info.get('ip')} at {info.get('city')}, "
+                         f"{info.get('region')} maintained by {info.get('org')}")
+        speaker.say("You have your VPN turned on. Details on your screen sir! Please note that, none of the home "
+                    "integrations will work with VPN enabled.")
+    else:
+        return '.'.join(ip_address.split('.')[0:3])
+
+
 def celebrate():
     """Function to look if the current date is a holiday or a birthday."""
     day = datetime.today().date()
@@ -2599,6 +2659,7 @@ def sentry_mode():
                     datetime.now().strftime("%A") not in ['Saturday', 'Sunday']:
                 if operating_system == 'Darwin':
                     Thread(target=increase_brightness).start()  # set to max brightness
+                Thread(target=lights, args=['turn on']).start()  # turns on the lights
                 volume_controller(100)
                 speaker.say('Good Morning.')
                 if event:
@@ -2617,6 +2678,7 @@ def sentry_mode():
             if datetime.now().strftime("%I:%M %p") == '09:00 PM':
                 if operating_system == 'Darwin':
                     Thread(target=decrease_brightness).start()  # set to lowest brightness
+                Thread(target=lights, args=['turn off']).start()  # turns off the lights
                 speaker.say(f'Good Night Sir! Have a pleasant sleep.')
                 speaker.runAndWait()
                 evening_msg = True
@@ -2624,7 +2686,7 @@ def sentry_mode():
             dummy.has_been_called = True
         try:
             sys.stdout.write("\rSentry Mode")
-            listen = recognizer.listen(source, timeout=5)
+            listen = recognizer.listen(source, timeout=5, phrase_time_limit=5)
             sys.stdout.write(f"\r")
             key = recognizer.recognize_google(listen).lower().strip()
             if key == 'jarvis' or key == 'buddy':
@@ -2644,7 +2706,7 @@ def sentry_mode():
                     'showtime' in key or 'time to work' in key or 'spin up' in key:
                 speaker.say(f'{random.choice(wake_up1)}')
                 initialize()
-            elif 'you there' in key or 'are you there' in key:
+            elif 'you there' in key or 'are you there' in key or 'you up' in key:
                 speaker.say(f'{random.choice(wake_up2)}')
                 initialize()
             elif 'jarvis' in key or 'buddy' in key:

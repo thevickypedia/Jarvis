@@ -166,6 +166,10 @@ class Keywords:
         key = ['brightness', 'bright', 'dim', 'screen']
         return key
 
+    def lights(self):
+        key = ['lights', 'hallway', 'kitchen', 'living room', 'bedroom']
+        return key
+
     def guard_enable(self):
         key = ['take care', 'heading out', 'keep an eye', 'turn on security mode', 'enable security mode']
         return key
