@@ -652,7 +652,7 @@ def weather(place):
         lat = located.latitude
         lon = located.longitude
     else:
-        city, state, = location_info['city'], location_info['state']
+        city, state = location_info['city'], location_info['state']
         lat = current_lat
         lon = current_lon
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
@@ -660,7 +660,7 @@ def weather(place):
     r = urlopen(weather_url)  # sends request to the url created
     response = json.loads(r.read())  # loads the response in a json
 
-    weather_location = f'{city} - {state}'.replace('None', '') if city != state else f'{city}' or f'{state}'
+    weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
     temperature = response['current']['temp']
     condition = response['current']['weather'][0]['description']
     feels_like = response['current']['feels_like']
@@ -838,7 +838,7 @@ def wikipedia_():
     else:
         place_holder = None
         if any(word in keyword.lower() for word in keywords.exit()):
-            pass
+            return
         else:
             sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
             try:
@@ -2466,10 +2466,6 @@ def lights(converted):
 
     from helper_functions.lights import MagicHomeApi
 
-    def turn_on(host):
-        controller = MagicHomeApi(device_ip=host, device_type=1)
-        controller.turn_on()
-
     def turn_off(host):
         controller = MagicHomeApi(device_ip=host, device_type=1)
         controller.turn_off()
@@ -2482,17 +2478,21 @@ def lights(converted):
         controller = MagicHomeApi(device_ip=host, device_type=2)
         controller.update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
 
-    light_host_id = [19, 20, 21, 22, 24]  # list of host IDs (last 2 or 3 digits in an IP address)
+    if 'hallway' in converted:
+        light_host_id = [19, 20, 21, 22, 24]
+    elif 'kitchen' in converted:
+        light_host_id = [25, 26]
+    else:
+        light_host_id = [19, 20, 21, 22, 24, 25, 26]
+
     connection_status = vpn_checker()
     if not connection_status:
         return
     else:
-        if 'turn on' in converted:
-            [turn_on(f'{connection_status}.{i}') for i in light_host_id]
+        if 'turn on' in converted or 'cool' in converted or 'white' in converted:
+            [cool(f'{connection_status}.{i}') for i in light_host_id]
         elif 'turn off' in converted:
             [turn_off(f'{connection_status}.{i}') for i in light_host_id]
-        elif 'cool' in converted or 'white' in converted:
-            [cool(f'{connection_status}.{i}') for i in light_host_id]
         elif 'warm' in converted or 'yellow' in converted:
             [warm(f'{connection_status}.{i}') for i in light_host_id]
 
@@ -2652,36 +2652,33 @@ def sentry_mode():
     threshold, morning_msg, evening_msg = 0, False, False
     while threshold < 5000:
         threshold += 1
-        if not morning_msg:
-            # triggers between 7:00 AM (weekdays) and morning_msg is set to True so that,
+        if not morning_msg and datetime.now().strftime("%I:%M %p") == '07:00 AM':
+            # triggers at 7:00 AM and morning_msg is set to True so that,
             # Jarvis would not repeat the same message once again before a restart
-            if datetime.now().strftime("%I:%M %p") == '07:00 AM' and \
-                    datetime.now().strftime("%A") not in ['Saturday', 'Sunday']:
-                if operating_system == 'Darwin':
-                    Thread(target=increase_brightness).start()  # set to max brightness
-                Thread(target=lights, args=['turn on']).start()  # turns on the lights
-                volume_controller(100)
-                speaker.say('Good Morning.')
-                if event:
-                    speaker.say(f'Happy {event}!')
-                report.has_been_called = True
-                current_date()
-                current_time(None)
-                weather(None)
-                speaker.runAndWait()
-                report.has_been_called = False
-                volume_controller(50)
-                morning_msg = True
-        if not evening_msg:
+            if operating_system == 'Darwin':
+                Thread(target=increase_brightness).start()  # set to max brightness
+            Thread(target=lights, args=['turn on']).start()  # turns on the lights
+            volume_controller(100)
+            speaker.say('Good Morning.')
+            if event:
+                speaker.say(f'Happy {event}!')
+            report.has_been_called = True
+            current_date()
+            current_time(None)
+            weather(None)
+            speaker.runAndWait()
+            report.has_been_called = False
+            volume_controller(50)
+            morning_msg = True
+        if not evening_msg and datetime.now().strftime("%I:%M %p") == '09:00 PM':
             # triggers at 9:00 PM and evening_msg is set to True so that,
-            # Jarvis would not try to dim the screen brightness once again
-            if datetime.now().strftime("%I:%M %p") == '09:00 PM':
-                if operating_system == 'Darwin':
-                    Thread(target=decrease_brightness).start()  # set to lowest brightness
-                Thread(target=lights, args=['turn off']).start()  # turns off the lights
-                speaker.say(f'Good Night Sir! Have a pleasant sleep.')
-                speaker.runAndWait()
-                evening_msg = True
+            # Jarvis would not repeat the same message once again before a restart
+            if operating_system == 'Darwin':
+                Thread(target=decrease_brightness).start()  # set to lowest brightness
+            Thread(target=lights, args=['turn off']).start()  # turns off the lights
+            speaker.say(f'Good Night Sir! Have a pleasant sleep.')
+            speaker.runAndWait()
+            evening_msg = True
         if greet_check == 'initialized':
             dummy.has_been_called = True
         try:
@@ -2697,8 +2694,10 @@ def sentry_mode():
                         'evening' in key) and 'jarvis' in key:
                     if 'night' in key:
                         Thread(target=decrease_brightness).start()
+                        Thread(target=lights, args=['turn off']).start()
                     elif 'morning' in key:
                         Thread(target=increase_brightness).start()
+                        Thread(target=lights, args=['cool']).start()
                     if event:
                         speaker.say(f'Happy {event}!')
                     time_travel()
