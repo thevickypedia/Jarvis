@@ -36,7 +36,11 @@ then
   pip3 install pywebostv==0.8.4
   pip3 install wakeonlan==1.1.6
   pip3 install speedtest-cli==2.1.2
-  pip3 install holidays==0.10.4
+  pip3 install holiday==0.10.4
+  pip3 install randfacts==0.2.6
+  pip3 install PyAutoGui==0.9.52
+  pip3 install wikiquotes==1.4
+  
 else
   echo ""
   echo "**********************************************************************************************************"
