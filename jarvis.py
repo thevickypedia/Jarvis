@@ -2495,6 +2495,9 @@ def headsortails():
     moves = ["head", "tails"]
     cmove = random.choice(moves)
     speaker.say("I chose " + cmove + "sir")
+                                            
+                                         
+def 
 
 
 def lights(converted):
