@@ -33,6 +33,9 @@ python3 -m pip install PyDictionary==2.0.1
 python3 -m pip install ChatterBot==1.0.0
 python3 -m pip install chatterbot-corpus==1.2.0
 python3 -m pip install googlehomepush==0.1.0
+python3 -m pip3 install randfacts==0.2.6
+python3 -m pip3 install PyAutoGui==0.9.52
+python3 -m pip3 install wikiquotes==1.4
 python3 -m pip install axju-jokes==1.0.3
 python3 -m pip install timezonefinder==4.4.1
 python3 -m pip install inflect==4.1.0
