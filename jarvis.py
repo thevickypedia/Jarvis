@@ -23,6 +23,9 @@ import pyttsx3 as audio
 import requests
 import speech_recognition as sr
 import yaml
+import randfacts
+import wikiquotes
+import PyAutoGui
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
 from geopy.geocoders import Nominatim, options
