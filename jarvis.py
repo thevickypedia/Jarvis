@@ -464,6 +464,18 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.chatbot()):
         chatter_bot()
+    
+    elif any(word in converted.lower() for word in keywords.facts()):
+        facts()
+                                      
+    elif any(word in converted.lower() for word in keywords.quotes()):
+        quotes()
+                                      
+    elif any(word in converted.lower() for word in keywords.screenshot()):
+        screenshot()
+                                      
+    elif any(word in converted.lower() for word in keywords.headsortails()):
+        headsortails()                                  
 
     else:
         if maps_api(converted):
@@ -2459,6 +2471,27 @@ def set_brightness(level):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
     for _ in range(level):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
+          
+                                            
+def facts():
+    x = randfacts.getFact()
+    speaker.say(x)
+
+                         
+def quotes():
+    englishquote = wikiquotes.random_quote("english")
+    speaker.say(englishquote)
+                                            
+                                         
+def screenshot():
+    myScreenshot = pyautogui.screenshot()
+    myScreenshot.save('YOUR DIRECTORY')
+                                            
+                                            
+def headsortails():
+    moves = ["head", "tails"]
+    cmove = random.choice(moves)
+    speaker.say("I chose " + cmove + "sir")
 
 
 def lights(converted):
