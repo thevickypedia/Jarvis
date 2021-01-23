@@ -21,7 +21,7 @@ class Keywords:
         return key
 
     def wikipedia(self):
-        key = ['wikipedia', 'fact', 'facts', 'info', 'information']
+        key = ['wikipedia', 'info', 'information']
         return key
 
     def news(self):
@@ -201,6 +201,22 @@ class Keywords:
 
     def shutdown(self):
         key = ['shutdown', 'shut down', 'terminate']
+        return key
+    
+    def screenshot(self):
+        key = ['picture', 'screenshot']
+        return key
+    
+    def headsortails(self):
+        key = ['heads or tails']
+        return key
+    
+    def facts(self):
+        key = ['fact', 'facts']
+        return key
+    
+    def quotes(self):
+        key = ['saying', 'quote']
         return key
 
 
