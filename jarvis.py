@@ -1,5 +1,4 @@
 import json
-import logging
 import math
 import os
 import platform
@@ -12,6 +11,7 @@ import time
 import unicodedata
 import webbrowser
 from datetime import datetime, timedelta
+from socket import socket, AF_INET, SOCK_DGRAM, gethostname
 from threading import Thread
 from urllib.request import urlopen
 
@@ -32,18 +32,19 @@ from psutil import Process, virtual_memory
 from pyicloud import PyiCloudService
 from pyicloud.exceptions import PyiCloudAPIResponseException, PyiCloudFailedLoginException
 from requests.auth import HTTPBasicAuth
-from socket import socket, AF_INET, SOCK_DGRAM, gethostname
 from speedtest import Speedtest, ConfigRetrievalError
 from wordninja import split as splitter
 
 from helper_functions.alarm import Alarm
 from helper_functions.aws_clients import AWSClients
+from helper_functions.communicator import gmail_offline
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.emailer import send_mail
 from helper_functions.keywords import Keywords
 from helper_functions.reminder import Reminder
-from tv_controls import TV
+from helper_functions.tv_controls import TV
+from logger import logger
 
 
 def listener(timeout, phrase_limit):
@@ -321,8 +322,7 @@ def conditions(converted):
         git_user = os.getenv('git_user') or aws.git_user()
         git_pass = os.getenv('git_pass') or aws.git_pass()
         auth = HTTPBasicAuth(git_user, git_pass)
-        request = requests.get(f'https://api.github.com/user/repos?type=all&per_page=100', auth=auth)
-        response = request.json()
+        response = requests.get(f'https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
         result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
         for i in range(len(response)):
             total += 1
@@ -1170,7 +1170,7 @@ def gmail():
         mail.list()
         mail.select('inbox')  # choose inbox
     except TimeoutError as TimeOut:
-        logger.info(TimeOut)
+        logger.fatal(TimeOut)
         speaker.say("I wasn't able to check your emails sir. You might need to check to logs.")
         speaker.runAndWait()
         return
@@ -2641,6 +2641,51 @@ def threat_notify(converted, date_extn):
             logger.fatal(f'Email dispatch was failed with response: {response_}\n')
 
 
+def offline_communicator():
+    """The communicator.py will look for emails in a dedicated thread so Jarvis can run simultaneously.
+    This may cause a recursion limit error, so either increase the limit or go with a timed wait.
+
+    To replicate a working model for offline communicator:
+        1. Set/Create a dedicated email account for offline communication
+            (# Less secure and # Jarvis will mark mails as read and can't undo as he uses sockets to read emails.)
+        2. Send an email from a specific email address to avoid unnecessary response. - sender in communicator.py
+        3. The subject line should only have the exact phrase you want Jarvis to do.
+        4. To "log" the response and send it out as notification, I made some changes to the pyttsx3 module. (below)
+        5. I also stop the response from being spoken after 10 seconds so that the loop can start before I stop it.
+        6. voice_changer() is called because when I stop the speaker, it resets the voice property that I set in main()
+
+    Changes in "pyttsx3":
+        1. Created a global variable in say() -> pyttsx3/engine.py (before proxy) and store the response.
+        2. Created a new method and return the global variable which I created in say().
+        3. The new method (vig() in this case) is called to get the response which is then sent as SNS notification.
+        4. Doing the above simple steps, avoids making changes to all the functions within conditions() above.
+
+    More cool stuff:
+    I created a REST API on AWS API Gateway and linked it to a JavaScript on my webpage. When a request is submitted,
+    the JavaScript makes a POST call to the API which then triggers a lambda job on AWS that sends the email for me.
+    As Jarvis will be watching for the UNREAD emails, he will process my request and send an SMS using AWS SNS.
+    Check it out: https://thevickypedia.com/jarvisoffline
+    NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails."""
+
+    while True:
+        request = gmail_offline()
+        if request:
+            logger.fatal(f'Received offline input::{request}')
+            split(request)
+            response = speaker.vig()
+            if response:
+                aws_response = sns.publish(PhoneNumber=aws.phone(), Message=response)
+                logger.fatal(f'Processed output::{response}')
+                if aws_response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
+                    logger.fatal('Response from Jarvis has been sent as SNS notification!')
+                else:
+                    logger.fatal(f'Unable to send response from Jarvis: {aws_response}')
+                time.sleep(10)
+                speaker.stop()
+                voice_changer()
+        time.sleep(10)
+
+
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action.
     threshold is used to sanity check sentry_mode() so that:
@@ -2718,6 +2763,11 @@ def sentry_mode():
             exit_process()
             Alarm(None, None, None)
             Reminder(None, None, None, None)
+        except (MemoryError, RuntimeError, RuntimeWarning, RecursionError, TimeoutError, Exception):
+            unknown_error = sys.exc_info()[0]
+            logger.fatal(f'Unknown exception::{unknown_error.__name__}')
+            speaker.say('I faced an unknown exception.')
+            restart()
     speaker.say("My run time has reached the threshold!")
     logger.fatal('Restarting Now')
     volume_controller(20)
@@ -2851,6 +2901,25 @@ def dummy():
     return None
 
 
+def voice_changer():
+    """Alters voice and rate of speech according to the Operating System"""
+    voices = speaker.getProperty("voices")  # gets the list of voices available
+    if operating_system == 'Darwin':
+        # noinspection PyTypeChecker,PyUnresolvedReferences
+        speaker.setProperty("voice", voices[7].id)  # voice module #7 for MacOS
+    elif operating_system == 'Windows':
+        # noinspection PyTypeChecker,PyUnresolvedReferences
+        speaker.setProperty("voice", voices[0].id)  # voice module #0 for Windows
+        speaker.setProperty('rate', 190)  # speech rate is slowed down in Windows for optimal experience
+        if 'SetVol.exe' not in current_dir:
+            sys.stdout.write("\rPLEASE WAIT::Downloading volume controller for Windows")
+            os.system("""curl https://thevickypedia.com/Jarvis/SetVol.exe --output SetVol.exe --silent""")
+            sys.stdout.write("\r")
+    else:
+        logger.fatal(f'Unsupported Operating System::{operating_system}.')
+        exit(0)
+
+
 if __name__ == '__main__':
     speaker = audio.init()  # initiates speaker
     recognizer = sr.Recognizer()  # initiates recognizer that uses google's translation
@@ -2867,28 +2936,13 @@ if __name__ == '__main__':
     # Voice ID::reference
     sys.stdout.write(f'\rVoice ID::Female: 1/17 Male: 0/7')
 
-    voices = speaker.getProperty("voices")  # gets the list of voices available
-
-    if operating_system == 'Darwin':
-        # noinspection PyTypeChecker,PyUnresolvedReferences
-        speaker.setProperty("voice", voices[7].id)  # voice module #7 for MacOS
-    elif operating_system == 'Windows':
-        # noinspection PyTypeChecker,PyUnresolvedReferences
-        speaker.setProperty("voice", voices[0].id)  # voice module #0 for Windows
-        speaker.setProperty('rate', 190)  # speech rate is slowed down in Windows for optimal experience
-        if 'SetVol.exe' not in current_dir:
-            sys.stdout.write("\rPLEASE WAIT::Downloading volume controller for Windows")
-            os.system("""curl https://thevickypedia.com/Jarvis/SetVol.exe --output SetVol.exe --silent""")
-            sys.stdout.write("\r")
-    else:
-        operating_system = None
-        exit(0)
+    voice_changer()
 
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run
     # tv is set to None instead of TV() at the start to avoid turning on the TV unnecessarily
     # suggestion_count is used in google_searchparser to limit the number of times suggestions are used.
-        # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
+    # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
     place_holder, greet_check, tv = None, None, None
     suggestion_count = 0
 
@@ -2933,11 +2987,10 @@ if __name__ == '__main__':
     volume_controller(50)
     sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
 
-    # Initiates logger to log start time, restart time and results from security mode
-    logging.basicConfig(filename='threshold.log', filemode='a', level=logging.FATAL,
-                        format='%(asctime)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
-    logger = logging.getLogger('jarvis.py')
     logger.fatal('Starting Now')
+
+    # Initiates offline communicator in a dedicated thread
+    Thread(target=offline_communicator).start()
 
     # starts sentry mode
     playsound('indicators/initialize.mp3')

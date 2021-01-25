@@ -3,6 +3,7 @@ import boto3
 
 class AWSClients:
     """All the required oauth and api keys are stored in ssm parameters and are fetched where ever required."""
+
     def __init__(self):
         self.client = boto3.client('ssm')
 
@@ -110,6 +111,24 @@ class AWSClients:
 
     def birthday(self):
         response = self.client.get_parameter(Name='/Jarvis/birthday', WithDecryption=True)
+        param = response['Parameter']
+        val = param['Value']
+        return val
+
+    def offline_receive_user(self):
+        response = self.client.get_parameter(Name='/Jarvis/offline_receive_user', WithDecryption=True)
+        param = response['Parameter']
+        val = param['Value']
+        return val
+
+    def offline_receive_pass(self):
+        response = self.client.get_parameter(Name='/Jarvis/offline_receive_pass', WithDecryption=True)
+        param = response['Parameter']
+        val = param['Value']
+        return val
+
+    def offline_sender(self):
+        response = self.client.get_parameter(Name='/Jarvis/offline_sender', WithDecryption=True)
         param = response['Parameter']
         val = param['Value']
         return val
