@@ -2210,9 +2210,9 @@ def google(query):
         try:
             suggestion = r.json()[1][1]
             suggestion_count += 1
-            if suggestion_count >= 3:
+            if suggestion_count >= 3:  # avoids infinite suggestions over the same suggestion
                 suggestion_count = 0
-                speaker.say(r.json()[1][0].replace('=', ''))
+                speaker.say(r.json()[1][0].replace('=', ''))  # picks the closest match and opens a google search
                 speaker.runAndWait()
                 google_maps.has_been_called = True
                 return True
@@ -2221,7 +2221,12 @@ def google(query):
         except IndexError:
             return True
     if results:
-        output = results[0]
+        [results.remove(result) for result in results if len(result.split()) < 3]  # removes results with dummy words
+        if not results:
+            return True
+        results = results[0:3]  # picks top 3 (first appeared on Google)
+        results.sort(key=lambda x: len(x.split()), reverse=True)  # sorts in reverse by the word count of each sentence
+        output = results[0]  # picks the top most result
         if '\n' in output:
             required = output.split('\n')
             modify = required[0].strip()
@@ -2235,6 +2240,7 @@ def google(query):
         match = re.search(r'(\w{3},|\w{3}) (\d,|\d|\d{2},|\d{2}) \d{4}', output)
         if match:
             output = output.replace(match.group(), '')
+        output = output.replace('\\', ' or ')
         sys.stdout.write(f'\r{output}')
         speaker.say(output)
         return
