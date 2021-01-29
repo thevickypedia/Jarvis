@@ -1,21 +1,16 @@
+"""todo: remove the whole thing below and make it as an SQS subscription.
+   todo: Using that the current pull model can be changed to push model."""
+
 import email
 import imaplib
-import os
-
-from helper_functions.aws_clients import AWSClients
 from logger import logger
 
-aws = AWSClients()
 
-
-def gmail_offline():
+def gmail_offline(username, password, commander):
     """Reads UNREAD emails from the dedicated account for offline communication with Jarvis"""
-    u = os.getenv('offline_receive_user') or aws.offline_receive_user()
-    p = os.getenv('offline_receive_pass') or aws.offline_receive_pass()
-
     try:
         mail = imaplib.IMAP4_SSL('imap.gmail.com')  # connects to imaplib
-        mail.login(u, p)
+        mail.login(username, password)
         mail.list()
         mail.select('inbox')  # choose inbox
     except TimeoutError as TimeOut:
@@ -28,9 +23,9 @@ def gmail_offline():
         for _ in messages[0].split():
             n = n + 1
     elif return_code != 'OK':
-        pass
+        return
     if n == 0:
-        pass
+        return
     else:
         for nm in messages[0].split():
             ignore, mail_data = mail.fetch(nm, '(RFC822)')
@@ -38,7 +33,8 @@ def gmail_offline():
                 if isinstance(response_part, tuple):
                     original_email = email.message_from_bytes(response_part[1])
                     sender = (original_email['From']).split('<')[-1].split('>')[0].strip()
-                    if sender == os.getenv('offline_sender') or aws.offline_sender():
+                    if sender == commander:
+                        # noinspection PyUnresolvedReferences
                         email_message = email.message_from_string(mail_data[0][1].decode('utf-8'))
                         for part in email_message.walk():
                             if part.get_content_type() == "text/plain":
@@ -46,9 +42,3 @@ def gmail_offline():
                                 return body
                     else:
                         logger.fatal(f'Email was received from {sender}')
-
-
-if __name__ == '__main__':
-    response = gmail_offline()
-    if response:
-        print(response)

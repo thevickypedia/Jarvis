@@ -319,8 +319,6 @@ def conditions(converted):
         notes()
 
     elif any(word in converted.lower() for word in keywords.github()):
-        git_user = os.getenv('git_user') or aws.git_user()
-        git_pass = os.getenv('git_pass') or aws.git_pass()
         auth = HTTPBasicAuth(git_user, git_pass)
         response = requests.get(f'https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
         result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
@@ -408,21 +406,12 @@ def conditions(converted):
         Thread(target=lights, args=converted).start()
 
     elif any(word in converted.lower() for word in keywords.guard_enable() or keywords.guard_disable()):
-        stop_flag = 'False'
-        guard_start = Thread(target=guard, args=[stop_flag])
         if any(word in converted.lower() for word in keywords.guard_enable()):
-            logger.fatal('\nEnabled Security Mode\n')
+            logger.fatal('Enabled Security Mode')
             speaker.say(f"Enabled security mode sir! I will look out for potential threats and keep you posted. "
                         f"Have a nice {greeting()}, and enjoy yourself sir!")
             speaker.runAndWait()
-            guard_start.start()
-            return
-        else:
-            # noinspection PyUnusedLocal
-            stop_flag = 'True'
-            guard_start.join()
-            logger.fatal('\nDisabled Security Mode\n')
-            speaker.say(f'Welcome back sir! Good {greeting()}.')
+            guard()
 
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -466,7 +455,7 @@ def conditions(converted):
         chatter_bot()
 
     else:
-        if maps_api(converted):
+        if google_maps(converted):
             if google(converted):
                 # if none of the conditions above are met, it writes your statement to an yaml file for future training
                 train_file = {'Uncategorized': converted}
@@ -486,8 +475,8 @@ def conditions(converted):
 
                 # if none of the conditions above are met, opens a google search on default browser
                 sys.stdout.write(f"\r{converted}")
-                if maps_api.has_been_called:
-                    maps_api.has_been_called = False
+                if google_maps.has_been_called:
+                    google_maps.has_been_called = False
                     speaker.say("I have also opened a google search for your request.")
                 else:
                     speaker.say(f"I heard {converted}. Let me look that up.")
@@ -640,7 +629,6 @@ def weather(place):
     """Says weather at any location if a specific location is mentioned
     Says weather at current location by getting IP using reverse geocoding if no place is received"""
     sys.stdout.write('\rGetting your weather info')
-    api_key = os.getenv('weather_api') or aws.weather_api()
     if place:
         desired_location = geo_locator.geocode(place)
         coordinates = desired_location.latitude, desired_location.longitude
@@ -656,7 +644,7 @@ def weather(place):
         lat = current_lat
         lon = current_lon
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
-    weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={api_key}'
+    weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={weather_api}'
     r = urlopen(weather_url)  # sends request to the url created
     response = json.loads(r.read())  # loads the response in a json
 
@@ -736,9 +724,8 @@ def weather_condition(place, msg):
         city, state, = location_info['city'], location_info['state']
         lat = current_lat
         lon = current_lon
-    api_key = os.getenv('weather_api') or aws.weather_api()
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
-    weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={api_key}'
+    weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={weather_api}'
     r = urlopen(weather_url)  # sends request to the url created
     response = json.loads(r.read())  # loads the response in a json
     weather_location = f'{city} {state}' if city and state else place
@@ -876,9 +863,9 @@ def news():
     news_source = 'fox'
     sys.stdout.write(f'\rGetting news from {news_source} news.')
     from newsapi import NewsApiClient, newsapi_exception
-    news_api = NewsApiClient(api_key=os.getenv('news_api') or aws.news_api())
+    news_client = NewsApiClient(api_key=news_api)
     try:
-        all_articles = news_api.get_top_headlines(sources=f'{news_source}-news')
+        all_articles = news_client.get_top_headlines(sources=f'{news_source}-news')
     except newsapi_exception.NewsAPIException:
         all_articles = None
         speaker.say("I wasn't able to get the news sir! I think the News API broke, you may try after sometime.")
@@ -940,11 +927,8 @@ def robinhood():
     """Gets investment from robinhood api"""
     sys.stdout.write('\rGetting your investment details.')
     from pyrh import Robinhood
-    u = os.getenv('robinhood_user') or aws.robinhood_user()
-    p = os.getenv('robinhood_pass') or aws.robinhood_pass()
-    q = os.getenv('robinhood_qr') or aws.robinhood_qr()
     rh = Robinhood()
-    rh.login(username=u, password=p, qr_code=q)
+    rh.login(username=robin_user, password=robin_pass, qr_code=robin_qr)
     raw_result = rh.positions()
     result = raw_result['results']
     from helper_functions.robinhood import watcher
@@ -1113,7 +1097,6 @@ def locate(converted):
             speaker.runAndWait()
             phrase = listener(3, 5)
             if any(word in phrase.lower() for word in keywords.ok()):
-                recovery = os.getenv('icloud_recovery') or aws.icloud_recovery()
                 message = 'Return my phone immediately.'
                 target_device.lost_device(recovery, message)
                 speaker.say("I've enabled lost mode on your phone.")
@@ -1161,12 +1144,9 @@ def gmail():
     import imaplib
     from email.header import decode_header, make_header
 
-    u = os.getenv('gmail_user') or aws.gmail_user()
-    p = os.getenv('gmail_pass') or aws.gmail_pass()
-
     try:
         mail = imaplib.IMAP4_SSL('imap.gmail.com')  # connects to imaplib
-        mail.login(u, p)
+        mail.login(gmail_user, gmail_pass)
         mail.list()
         mail.select('inbox')  # choose inbox
     except TimeoutError as TimeOut:
@@ -1891,13 +1871,12 @@ def reminder(converted):
     return
 
 
-def maps_api(query):
+def google_maps(query):
     """Uses google's places api to get places near by or any particular destination.
     This function is triggered when the words in user's statement doesn't match with any predefined functions."""
     global place_holder
-    api_key = os.getenv('maps_api') or aws.maps_api()
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
-    response = requests.get(maps_url + 'query=' + query + '&key=' + api_key)
+    response = requests.get(maps_url + 'query=' + query + '&key=' + maps_api)
     collection = response.json()['results']
     required = []
     for element in range(len(collection)):
@@ -1967,7 +1946,7 @@ def maps_api(query):
             else:
                 continue
         else:
-            maps_api.has_been_called = True
+            google_maps.has_been_called = True
             return True
 
 
@@ -2090,8 +2069,6 @@ def send_sms(number):
                 else:
                     server = smtplib.SMTP("smtp.gmail.com", 587)
                     server.starttls()
-                    gmail_user = os.getenv('gmail_user') or aws.gmail_user()
-                    gmail_pass = os.getenv('gmail_pass') or aws.gmail_pass()
                     server.login(user=gmail_user, password=gmail_pass)
                     to = f"+1{number}@tmomail.net"
                     subject = "Jarvis::Message from Vignesh"
@@ -2122,8 +2099,7 @@ def television(converted):
     elif 'wake' in phrase or 'turn on' in phrase or 'connect' in phrase or 'status' in phrase or 'control' in phrase:
         from wakeonlan import send_magic_packet as wake
         try:
-            mac_address = os.getenv('tv_mac') or aws.tv_mac()
-            wake(mac_address)
+            wake(tv_mac_address)
             tv = TV()
             speaker.say(f"TV features have been integrated sir!")
         except OSError:
@@ -2238,7 +2214,7 @@ def google(query):
                 suggestion_count = 0
                 speaker.say(r.json()[1][0].replace('=', ''))
                 speaker.runAndWait()
-                maps_api.has_been_called = True
+                google_maps.has_been_called = True
                 return True
             else:
                 google(suggestion)
@@ -2255,6 +2231,7 @@ def google(query):
             [repeats.append(word) for word in sentence.split() if word not in repeats]
             refined = ' '.join(repeats)
             output = refined + required[1] + '.' + required[2]
+        output = output.replace('\\', ' or ')
         match = re.search(r'(\w{3},|\w{3}) (\d,|\d|\d{2},|\d{2}) \d{4}', output)
         if match:
             output = output.replace(match.group(), '')
@@ -2526,7 +2503,7 @@ def celebrate():
         return in_holidays
     elif us_holidays and 'Observed' not in us_holidays:
         return us_holidays
-    elif today == os.getenv('birthday') or today == aws.birthday():
+    elif today == birthday:
         return 'Birthday'
 
 
@@ -2551,51 +2528,72 @@ def time_travel():
     return
 
 
-def guard(stop_flag):
+def guard():
     """Security Mode will enable camera and microphone in the background.
     If any speech is recognized or a face is detected, there will another thread triggered to send notifications.
     Notifications will be triggered only after 5 minutes of initial notification."""
     import cv2
-    cam_source = None
+    cam_source, cam = None, None
     for i in range(0, 3):
-        cam = cv2.VideoCapture(i)
+        cam = cv2.VideoCapture(i)  # tries thrice to choose the camera for which Jarvis has access
         if cam is None or not cam.isOpened() or cam.read() == (False, None):
             pass
         else:
-            cam_source = i
+            cam_source = i  # source for security cam is chosen
+            cam.release()
             break
     if cam_source is None:
-        raise BlockingIOError
-    validation_video = cv2.VideoCapture(cam_source)
-    cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    scale_factor = 1.1
-    min_neighbors = 5
+        cam_error = 'Guarding mode disabled as I was unable to access it.'
+        logger.fatal(cam_error)
+        response = sns.publish(PhoneNumber=phone_number, Message=cam_error)
+        if response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
+            logger.fatal('SNS notification has been sent.')
+        else:
+            logger.fatal(f'Unable to send SNS notification.\n{response}')
 
-    notified = None
+    scale_factor = 1.1  # Parameter specifying how much the image size is reduced at each image scale.
+    min_neighbors = 5  # Parameter specifying how many neighbors each candidate rectangle should have, to retain it.
+    notified, date_extn, converted = None, None, None
+
     while True:
         # Listens for any recognizable speech and saves it to a notes file
-        converted = None
         try:
-            listened = recognizer.listen(source, timeout=3, phrase_time_limit=10)
-            converted = recognizer.recognize_google(listened)
-            if any(word in converted.lower() for word in keywords.guard_disable()):
-                return
-            else:
-                logger.fatal(f'Conversation::{converted}')
+            sys.stdout.write("\rSECURITY MODE")
+            with sr.Microphone() as source_:
+                recognizer.adjust_for_ambient_noise(source_)
+                listened = recognizer.listen(source_, timeout=3, phrase_time_limit=10)
+                converted = recognizer.recognize_google(listened)
+                converted = converted.replace('Jarvis', '').strip()
+                sys.stdout.write(f"\r{converted}")
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             pass
 
-        # captures images and keeps storing it to a folder
-        ignore, image = validation_video.read()
-        scale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        faces = cascade.detectMultiScale(scale, scale_factor, min_neighbors)
-        date_extn = f"{datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p')}"
-        try:
-            if faces:
-                pass
-        except ValueError:
-            cv2.imwrite(f'threat/{date_extn}.jpg', image)
-            logger.fatal(f'Image of detected face stored as {date_extn}.jpg')
+        if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable()):
+            logger.fatal('Disabled security mode')
+            speaker.say(f'Welcome back sir! Good {greeting()}.')
+            if f'{date_extn}.jpg' in os.listdir('threat'):
+                speaker.say("We had a potential threat sir! Please check your email to confirm.")
+            speaker.runAndWait()
+            sys.stdout.write('\rDisabled Security Mode')
+            break
+        elif converted:
+            logger.fatal(f'Conversation::{converted}')
+
+        if cam_source is not None:
+            # captures images and keeps storing it to a folder
+            validation_video = cv2.VideoCapture(cam_source)
+            cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+            ignore, image = validation_video.read()
+            scale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            faces = cascade.detectMultiScale(scale, scale_factor, min_neighbors)
+            date_extn = f"{datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p')}"
+            try:
+                if faces:
+                    pass
+            except ValueError:
+                cv2.imwrite(f'threat/{date_extn}.jpg', image)
+                logger.fatal(f'Image of detected face stored as {date_extn}.jpg')
+
         if f'{date_extn}.jpg' not in os.listdir('threat'):
             date_extn = None
 
@@ -2603,12 +2601,6 @@ def guard(stop_flag):
         if (not notified or float(time.time() - notified) > 300) and (converted or date_extn):
             notified = time.time()
             Thread(target=threat_notify, args=(converted, date_extn)).start()
-        else:
-            logger.fatal('Waiting for 60 seconds\n')
-
-        # if stop_flag value is received, security mode will be exited
-        if stop_flag == 'True':
-            return
 
 
 def threat_notify(converted, date_extn):
@@ -2618,12 +2610,12 @@ def threat_notify(converted, date_extn):
     text_ = None
 
     if converted:
-        response = sns.publish(PhoneNumber=aws.phone(),
+        response = sns.publish(PhoneNumber=phone_number,
                                Message=f"!!INTRUDER ALERT!!\n{dt_string}\n{converted}")
         body_ = f"""<html><head></head><body><h2>Conversation of Intruder:</h2><br>{converted}<br><br>
                                     <h2>Attached is a photo of the intruder.</h2>"""
     else:
-        response = sns.publish(PhoneNumber=aws.phone(),
+        response = sns.publish(PhoneNumber=phone_number,
                                Message=f"!!INTRUDER ALERT!!\n{dt_string}\nCheck your email for more information.")
         body_ = f"""<html><head></head><body><h2>No conversation was recorded,
                                 but attached is a photo of the intruder.</h2>"""
@@ -2636,7 +2628,7 @@ def threat_notify(converted, date_extn):
         attachments_ = [f'threat/{date_extn}.jpg']
         response_ = send_mail(title_, text_, body_, attachments_)
         if response_.get('ResponseMetadata').get('HTTPStatusCode') == 200:
-            logger.fatal('Email has been sent!\n')
+            logger.fatal('Email has been sent!')
         else:
             logger.fatal(f'Email dispatch was failed with response: {response_}\n')
 
@@ -2667,14 +2659,14 @@ def offline_communicator():
     Check it out: https://thevickypedia.com/jarvisoffline
     NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails."""
 
-    while True:
-        request = gmail_offline()
+    while STATUS:
+        request = gmail_offline(username=offline_receive_user, password=offline_receive_pass, commander=offline_sender)
         if request:
             logger.fatal(f'Received offline input::{request}')
             split(request)
             response = speaker.vig()
             if response:
-                aws_response = sns.publish(PhoneNumber=aws.phone(), Message=response)
+                aws_response = sns.publish(PhoneNumber=phone_number, Message=response)
                 logger.fatal(f'Processed output::{response}')
                 if aws_response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
                     logger.fatal('Response from Jarvis has been sent as SNS notification!')
@@ -2684,6 +2676,7 @@ def offline_communicator():
                 speaker.stop()
                 voice_changer()
         time.sleep(10)
+    logger.fatal('Disabled Offline Communicator')
 
 
 def sentry_mode():
@@ -2729,7 +2722,7 @@ def sentry_mode():
         try:
             sys.stdout.write("\rSentry Mode")
             listen = recognizer.listen(source, timeout=5, phrase_time_limit=5)
-            sys.stdout.write(f"\r")
+            sys.stdout.write("\r")
             key = recognizer.recognize_google(listen).lower().strip()
             if key == 'jarvis' or key == 'buddy':
                 speaker.say(f'{random.choice(wake_up3)}')
@@ -2827,6 +2820,8 @@ def remove_files():
 
 def exit_process():
     """Function that holds the list of operations done upon exit."""
+    global STATUS
+    STATUS = False
     alarms, reminders = [], {}
     for file in os.listdir('alarm'):
         if file != '.keep' and file != '.DS_Store':
@@ -2861,6 +2856,8 @@ def exit_process():
 def restart():
     """restart() triggers restart.py which in turn starts Jarvis after 5 seconds.
     Doing this changes the PID to avoid any Fatal Errors occurred by long running threads."""
+    global STATUS
+    STATUS = False
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(time.perf_counter())}")
     speaker.say('Restarting now sir! I will be up and running momentarily.')
     speaker.runAndWait()
@@ -2921,6 +2918,10 @@ def voice_changer():
 
 
 if __name__ == '__main__':
+    logger.fatal('Starting Now::Run STATUS has been set')
+    STATUS = True
+    # Voice ID::reference
+    sys.stdout.write(f'\rVoice ID::Female: 1/17 Male: 0/7')
     speaker = audio.init()  # initiates speaker
     recognizer = sr.Recognizer()  # initiates recognizer that uses google's translation
     keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
@@ -2933,10 +2934,29 @@ if __name__ == '__main__':
     sys.setrecursionlimit(limit * 100)  # increases the recursion limit by 100 times
     sns = boto3.client('sns')
 
-    # Voice ID::reference
-    sys.stdout.write(f'\rVoice ID::Female: 1/17 Male: 0/7')
-
     voice_changer()
+
+    # Get all necessary credentials and api keys from env vars or aws client
+    sys.stdout.write("\rFetching credentials and API keys.")
+    git_user = os.getenv('git_user') or aws.git_user()
+    git_pass = os.getenv('git_pass') or aws.git_pass()
+    weather_api = os.getenv('weather_api') or aws.weather_api()
+    news_api = os.getenv('news_api') or aws.news_api()
+    maps_api = os.getenv('maps_api') or aws.maps_api()
+    gmail_user = os.getenv('gmail_user') or aws.gmail_user()
+    gmail_pass = os.getenv('gmail_pass') or aws.gmail_pass()
+    robin_user = os.getenv('robinhood_user') or aws.robinhood_user()
+    robin_pass = os.getenv('robinhood_pass') or aws.robinhood_pass()
+    robin_qr = os.getenv('robinhood_qr') or aws.robinhood_qr()
+    tv_mac_address = os.getenv('tv_mac') or aws.tv_mac()
+    birthday = os.getenv('birthday') or aws.birthday()
+    offline_receive_user = os.getenv('offline_receive_user') or aws.offline_receive_user()
+    offline_receive_pass = os.getenv('offline_receive_pass') or aws.offline_receive_pass()
+    offline_sender = os.getenv('offline_sender') or aws.offline_sender()
+    icloud_user = os.getenv('icloud_user') or aws.icloud_user()
+    icloud_pass = os.getenv('icloud_pass') or aws.icloud_pass()
+    recovery = os.getenv('icloud_recovery') or aws.icloud_recovery()
+    phone_number = os.getenv('phone') or aws.phone()
 
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run
@@ -2956,9 +2976,7 @@ if __name__ == '__main__':
         st = None
         exit(1)
 
-    # stores icloud creds and necessary values for geo location to receive the latitude, longitude and address
-    icloud_user = os.getenv('icloud_user') or aws.icloud_user()
-    icloud_pass = os.getenv('icloud_pass') or aws.icloud_pass()
+    # stores necessary values for geo location to receive the latitude, longitude and address
     options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
     geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
     current_lat, current_lon, location_info = location_services(device_selector(None))
@@ -2976,20 +2994,18 @@ if __name__ == '__main__':
     weekend = ['Friday', 'Saturday']
 
     # {function_name}.has_been_called is use to denote which function has triggered the other
-    report.has_been_called, locate_places.has_been_called, directions.has_been_called, maps_api.has_been_called, \
+    report.has_been_called, locate_places.has_been_called, directions.has_been_called, google_maps.has_been_called, \
         time_travel.has_been_called = False, False, False, False, False
     for functions in [dummy, delete_todo, todo, add_todo]:
         functions.has_been_called = False
 
-    # triggers celebrate function and wishes for a event if found.
-    event = celebrate()
+    event = celebrate()  # triggers celebrate function and wishes for a event if found.
+    volume_controller(50)  # defaults to volume 50%
 
-    volume_controller(50)
     sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
 
-    logger.fatal('Starting Now')
-
     # Initiates offline communicator in a dedicated thread
+    logger.fatal('Enabled Offline Communicator')
     Thread(target=offline_communicator).start()
 
     # starts sentry mode
