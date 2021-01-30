@@ -35,5 +35,8 @@ class Alarm(Thread):
                 elif operating_system == 'Windows':
                     location = os.path.abspath(os.getcwd())
                     os.system(f'start wmplayer "{location}\\{music_dir}\\{tone}"')
-                os.remove(f"{directory}/{file_name}")
+                try:
+                    os.remove(f"{directory}/{file_name}")
+                except FileNotFoundError:
+                    os.remove(f"../{directory}/{file_name}")
                 return

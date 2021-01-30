@@ -51,5 +51,8 @@ class Reminder(Thread):
                 elif operating_system == 'Windows':
                     from win10toast import ToastNotifier
                     ToastNotifier().show_toast(subject, body)
-                os.remove(f"{directory}/{file_name}")
+                try:
+                    os.remove(f"{directory}/{file_name}")
+                except FileNotFoundError:
+                    os.remove(f"../{directory}/{file_name}")
                 return

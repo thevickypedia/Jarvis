@@ -2667,7 +2667,12 @@ def offline_communicator():
 
     while STATUS:
         request = gmail_offline(username=offline_receive_user, password=offline_receive_pass, commander=offline_sender)
-        if request:
+        if not request:
+            continue
+        elif 'ERROR' in request:
+            speaker.say(f"The offline communicator has faced a {request} sir! Let me restart myself to fix this.")
+            restart()
+        elif request:
             logger.fatal(f'Received offline input::{request}')
             split(request)
             response = speaker.vig()

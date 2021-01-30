@@ -1,5 +1,5 @@
 """Initiates logger to log start time, restart time, results from security mode and offline communicator
-In order to use a common logger and use the same logger in multiple files, logger has been created dedicatedly."""
+In order to use a common logger across multiple files, a dedicated logger has been created."""
 
 import logging
 
