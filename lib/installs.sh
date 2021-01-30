@@ -22,7 +22,7 @@ python3 -m pip install SpeechRecognition==3.8.1
 python3 -m pip install PyAudio==0.2.11
 python3 -m pip install pyttsx3==2.90
 python3 -m pip install pytemperature==1.0
-python3 -m pip install psutil==5.7.2
+python3 -m pip install psutil==5.8.0
 python3 -m pip install wikipedia==1.4.0
 python3 -m pip install newsapi-python==0.2.6
 python3 -m pip install pyrh==2.0
@@ -48,3 +48,4 @@ python3 -m pip install dlib==19.21.0
 python3 -m pip install face-recognition==1.3.0
 python3 -m pip install speedtest-cli==2.1.2
 python3 -m pip install holidays==0.10.4
+python3 -m pip install randfacts==0.2.8

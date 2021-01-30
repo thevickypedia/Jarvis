@@ -31,6 +31,7 @@ from playsound import playsound
 from psutil import Process, virtual_memory
 from pyicloud import PyiCloudService
 from pyicloud.exceptions import PyiCloudAPIResponseException, PyiCloudFailedLoginException
+from randfacts import getFact
 from requests.auth import HTTPBasicAuth
 from speedtest import Speedtest, ConfigRetrievalError
 from wordninja import split as splitter
@@ -412,6 +413,12 @@ def conditions(converted):
                         f"Have a nice {greeting()}, and enjoy yourself sir!")
             speaker.runAndWait()
             guard()
+
+    elif any(word in converted.lower() for word in keywords.flip_a_coin()):
+        speaker.say(f"It's {random.choice(['heads', 'tails'])} sir!")
+
+    elif any(word in converted.lower() for word in keywords.facts()):
+        speaker.say(getFact(False))
 
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')

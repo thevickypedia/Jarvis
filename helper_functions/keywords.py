@@ -21,7 +21,7 @@ class Keywords:
         return key
 
     def wikipedia(self):
-        key = ['wikipedia', 'fact', 'facts', 'info', 'information']
+        key = ['wikipedia', 'info', 'information']
         return key
 
     def news(self):
@@ -176,6 +176,14 @@ class Keywords:
 
     def guard_disable(self):
         key = ["I'm back", 'I am back', 'turn off security mode', 'disable security mode']
+        return key
+
+    def flip_a_coin(self):
+        key = ['head', 'tail', 'flip']
+        return key
+
+    def facts(self):
+        key = ['fact', 'facts']
         return key
 
     def ok(self):

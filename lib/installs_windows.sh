@@ -13,7 +13,7 @@ then
   pip3 install pyttsx3==2.71
   pip3 install SpeechRecognition==3.8.1
   pip3 install pytemperature==1.0
-  pip3 install psutil==5.7.2
+  pip3 install psutil==5.8.0
   pip3 install wikipedia==1.4.0
   pip3 install newsapi-python==0.2.6
   pip3 install pyrh==2.0
@@ -37,6 +37,7 @@ then
   pip3 install wakeonlan==1.1.6
   pip3 install speedtest-cli==2.1.2
   pip3 install holidays==0.10.4
+  pip3 install randfacts==0.2.8
 else
   echo ""
   echo "**********************************************************************************************************"
