@@ -210,6 +210,10 @@ class Keywords:
     def shutdown(self):
         key = ['shutdown', 'shut down', 'terminate']
         return key
+    
+    def battery(self):
+        key = ['battery', 'charge']
+        return key
 
 
 if __name__ == '__main__':
