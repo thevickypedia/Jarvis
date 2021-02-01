@@ -2690,7 +2690,7 @@ def offline_communicator():
                     logger.fatal('Response from Jarvis has been sent as SNS notification!')
                 else:
                     logger.fatal(f'Unable to send response from Jarvis: {aws_response}')
-                time.sleep(10)
+                time.sleep(20)  # timed wait so that, .stop() executes only after speaker thread is loaded with response
                 speaker.stop()
                 voice_changer()
         time.sleep(10)
@@ -2739,9 +2739,10 @@ def sentry_mode():
             dummy.has_been_called = True
         try:
             sys.stdout.write("\rSentry Mode")
-            listen = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+            listen = recognizer.listen(source, timeout=5, phrase_time_limit=7)
             sys.stdout.write("\r")
-            key = recognizer.recognize_google(listen).lower().strip()
+            key_original = recognizer.recognize_google(listen).strip()
+            key = key_original.lower()
             if key == 'jarvis' or key == 'buddy':
                 speaker.say(f'{random.choice(wake_up3)}')
                 initialize()
@@ -2765,8 +2766,10 @@ def sentry_mode():
                 speaker.say(f'{random.choice(wake_up2)}')
                 initialize()
             elif 'jarvis' in key or 'buddy' in key:
-                key = key.replace('jarvis ', '').replace('buddy ', '').replace('hey ', '').replace(' jarvis', '')
-                split(key)
+                converted = key_original.replace('jarvis ', '').replace('buddy ', '').replace('hey ', '') \
+                    .replace(' jarvis', '').replace('Jarvis ', '').replace('Buddy ', '').replace('Hey ', '') \
+                    .replace(' Jarvis', '')
+                split(converted)
             speaker.runAndWait()
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             pass
@@ -2774,9 +2777,10 @@ def sentry_mode():
             exit_process()
             Alarm(None, None, None)
             Reminder(None, None, None, None)
-        except (MemoryError, RuntimeError, RuntimeWarning, RecursionError, TimeoutError, Exception):
+        except (RuntimeError, RecursionError, TimeoutError):
+            import traceback
             unknown_error = sys.exc_info()[0]
-            logger.fatal(f'Unknown exception::{unknown_error.__name__}')
+            logger.fatal(f'Unknown exception::{unknown_error.__name__}\n{traceback.format_exc()}')  # include traceback
             speaker.say('I faced an unknown exception.')
             restart()
     speaker.say("My run time has reached the threshold!")
