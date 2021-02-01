@@ -28,7 +28,7 @@ from geopy.exc import GeocoderUnavailable, GeopyError
 from geopy.geocoders import Nominatim, options
 from inflect import engine
 from playsound import playsound
-from psutil import Process, virtual_memory
+from psutil import Process, virtual_memory, sensors_battery
 from pyicloud import PyiCloudService
 from pyicloud.exceptions import PyiCloudAPIResponseException, PyiCloudFailedLoginException
 from randfacts import getFact
@@ -232,6 +232,9 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.create_db()):
         create_db()
+        
+    elif any(word in converted.lower() for word in keywords.battery()):
+        battery()
 
     elif any(word in converted.lower() for word in keywords.distance()) and \
             not any(word in converted.lower() for word in keywords.avoid()):
@@ -2449,6 +2452,26 @@ def set_brightness(level):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
     for _ in range(level):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
+                                            
+                                          
+def battery():
+    """
+    Provides basic info about battery info win32
+    """
+    if operating_system == 'Windows':
+        # https://stackoverflow.com/a/41988506/6771356
+
+        def secs2hours(secs):
+            mm, ss = divmod(secs, 60)
+            hh, mm = divmod(mm, 60)
+            return "%d:%02d:%02d" % (hh, mm, ss)
+        batt = psutil.sensors_battery()
+        if batt.power_plugged:
+            speaker.say("Battery is charging: %s%%" % batt.percent)
+        else:
+            speaker.say("charge is %s%%, time left is %s" % (batt.percent, secs2hours(batt.secsleft)))
+    elif operating_system == 'Darwin':
+        speaker.say("Battery detection systems have not been develped for MacOs sir")
 
 
 def lights(converted):
