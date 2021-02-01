@@ -415,6 +415,7 @@ def conditions(converted):
             guard()
 
     elif any(word in converted.lower() for word in keywords.flip_a_coin()):
+        playsound('indicators/Coin Drop.mp3')
         speaker.say(f"It's {random.choice(['heads', 'tails'])} sir!")
 
     elif any(word in converted.lower() for word in keywords.facts()):
