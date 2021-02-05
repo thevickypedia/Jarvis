@@ -22,8 +22,9 @@ def gmail_offline(username, password, commander):
         logger.fatal(f"Offline Communicator::TimeOut Error. Current TimeOut: {socket.getdefaulttimeout()}\n{TimeOut}")
         return 'TimeOut ERROR'
     except:  # live with bad way of exception handling as imaplib doesn't have a method/function for "imaplib.error"
+        import traceback
         imap_error = sys.exc_info()[0]
-        logger.fatal(f'Offline Communicator::Login Error.\n{imap_error}')
+        logger.fatal(f'Offline Communicator::{imap_error}\n{traceback.format_exc()}')
         return 'Login ERROR'
     socket.setdefaulttimeout(None)  # revert default timeout for new socket connections to None
 

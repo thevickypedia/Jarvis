@@ -2214,6 +2214,8 @@ def google(query):
             "q": query,
         }
         r = requests.get(suggest_url, params)
+        if not r:
+            return True
         try:
             suggestion = r.json()[1][1]
             suggestion_count += 1
@@ -2675,10 +2677,11 @@ def offline_communicator():
     while STATUS:
         request = gmail_offline(username=offline_receive_user, password=offline_receive_pass, commander=offline_sender)
         if not request:
-            continue
+            pass
         elif 'ERROR' in request:
-            speaker.say(f"The offline communicator has faced a {request} sir! Let me restart myself to fix this.")
-            restart()
+            speaker.say(f"The offline communicator has faced a {request} sir! Initiated a timed wait of 1 minute.")
+            speaker.runAndWait()
+            time.sleep(50)
         elif request:
             logger.fatal(f'Received offline input::{request}')
             split(request)
@@ -2752,9 +2755,11 @@ def sentry_mode():
                     if 'night' in key:
                         Thread(target=decrease_brightness).start()
                         Thread(target=lights, args=['turn off']).start()
+                        evening_msg = True
                     elif 'morning' in key:
                         Thread(target=increase_brightness).start()
                         Thread(target=lights, args=['cool']).start()
+                        morning_msg = True
                     if event:
                         speaker.say(f'Happy {event}!')
                     time_travel()
