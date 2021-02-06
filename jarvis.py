@@ -9,7 +9,6 @@ import re
 import smtplib
 import socket
 import ssl
-import subprocess
 import sys
 import time
 import traceback
@@ -17,6 +16,7 @@ import unicodedata
 import webbrowser
 from datetime import datetime, timedelta
 from email.header import decode_header, make_header
+from subprocess import call, check_output, getoutput, PIPE, Popen
 from threading import Thread
 from urllib.request import urlopen
 
@@ -421,10 +421,15 @@ def conditions(converted):
             guard()
 
     elif any(word in converted.lower() for word in keywords.flip_a_coin()):
-        speaker.say(f"It's {random.choice(['heads', 'tails'])} sir!")
+        playsound('indicators/coin.mp3')
+        time.sleep(0.5)
+        speaker.say(f"""{random.choice(['You got', 'It landed on', "It's"])} {random.choice(['heads', 'tails'])} sir""")
 
     elif any(word in converted.lower() for word in keywords.facts()):
         speaker.say(getFact(False))
+
+    elif any(word in converted.lower() for word in keywords.meetings()):
+        meetings()
 
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -921,7 +926,7 @@ def apps(keyword):
             speaker.say(f"I did not find the app {keyword}. Try again.")
             apps(None)
     elif operating_system == 'Darwin':
-        v = (subprocess.check_output("ls /Applications/", shell=True))
+        v = (check_output("ls /Applications/", shell=True))
         apps_ = (v.decode('utf-8').split('\n'))
 
         for app in apps_:
@@ -1140,7 +1145,7 @@ def music(device):
         google_home(device, chosen)
     else:
         if operating_system == 'Darwin':
-            subprocess.call(["open", chosen])
+            call(["open", chosen])
         elif operating_system == 'Windows':
             os.system(f'start wmplayer "{chosen}"')
         sys.stdout.write("\r")
@@ -2382,17 +2387,17 @@ def speed_test():
 def bluetooth(phrase):
     """Find and connect to bluetooth devices near by"""
     if 'turn off' in phrase or 'power off' in phrase:
-        subprocess.call(f"blueutil --power 0", shell=True)
+        call(f"blueutil --power 0", shell=True)
         sys.stdout.write('\rBluetooth has been turned off')
         speaker.say(f"Bluetooth has been turned off sir!")
     elif 'turn on' in phrase or 'power on' in phrase:
-        subprocess.call(f"blueutil --power 1", shell=True)
+        call(f"blueutil --power 1", shell=True)
         sys.stdout.write('\rBluetooth has been turned on')
         speaker.say(f"Bluetooth has been turned on sir!")
     elif 'disconnect' in phrase and ('bluetooth' in phrase or 'devices' in phrase):
-        subprocess.call(f"blueutil --power 0", shell=True)
+        call(f"blueutil --power 0", shell=True)
         time.sleep(2)
-        subprocess.call(f"blueutil --power 1", shell=True)
+        call(f"blueutil --power 1", shell=True)
         speaker.say('All bluetooth devices have been disconnected sir!')
     else:
         def connector(targets):
@@ -2404,7 +2409,7 @@ def bluetooth(phrase):
                     if any(re.search(line, target['name'], flags=re.IGNORECASE) for line in phrase.split()):
                         connection_attempt = True
                         if 'disconnect' in phrase:
-                            output = subprocess.getoutput(f"blueutil --disconnect {target['address']}")
+                            output = getoutput(f"blueutil --disconnect {target['address']}")
                             if not output:
                                 sys.stdout.write(f"\rDisconnected from {target['name']}")
                                 time.sleep(2)  # included a sleep here, so it avoids voice swapping between devices
@@ -2413,7 +2418,7 @@ def bluetooth(phrase):
                                 speaker.say(f"I was unable to disconnect {target['name']} sir!. "
                                             f"Perhaps it was never connected.")
                         elif 'connect' in phrase:
-                            output = subprocess.getoutput(f"blueutil --connect {target['address']}")
+                            output = getoutput(f"blueutil --connect {target['address']}")
                             if not output:
                                 sys.stdout.write(f"\rConnected to {target['name']}")
                                 time.sleep(2)  # included a sleep here, so it avoids voice swapping between devices
@@ -2425,13 +2430,13 @@ def bluetooth(phrase):
             return connection_attempt
 
         sys.stdout.write('\rScanning paired Bluetooth devices')
-        paired = subprocess.getoutput("blueutil --paired --format json")
+        paired = getoutput("blueutil --paired --format json")
         paired = json.loads(paired)
         if not connector(targets=paired):
             sys.stdout.write('\rScanning UN-paired Bluetooth devices')
             speaker.say('No connections were established sir, looking for un-paired devices.')
             speaker.runAndWait()
-            unpaired = subprocess.getoutput("blueutil --inquiry --format json")
+            unpaired = getoutput("blueutil --inquiry --format json")
             unpaired = json.loads(unpaired)
             connector(targets=unpaired) if unpaired else speaker.say('No un-paired devices found sir! '
                                                                      'You may want to be more precise.')
@@ -2530,12 +2535,14 @@ def celebrate():
 
 def time_travel():
     """Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way"""
-    speaker.say(f"Good {greeting()} Vignesh.")
-
+    day = greeting()
+    speaker.say(f"Good {day} Vignesh.")
     time_travel.has_been_called = True
     current_date()
     current_time(None)
     weather(None)
+    speaker.runAndWait()
+    meetings() if day == 'Morning' else None
     todo()
     gmail()
     speaker.say('Would you like to hear the latest news?')
@@ -2746,6 +2753,47 @@ def offline_communicator():
         return offline_communicator_initiate()  # return used here will terminate the current function
 
 
+def meetings():
+    """Uses applescript to fetch calendar events from Microsoft Outlook"""
+
+    # todo: Investigate on using appscript for python instead of applescript
+    # todo: Add windows support or scrap windows functionalities completely
+
+    if operating_system == 'Windows':
+        speaker.say("Meetings feature on Windows hasn't been developed yet sir!")
+        return
+    today = datetime.now().strftime("%A")
+    args = [1, 3]
+    process = Popen(['/usr/bin/osascript', 'meetings.scpt'] + [str(arg) for arg in args], stdout=PIPE, stderr=PIPE)
+    out, err = process.communicate()
+    if error := process.returncode:  # stores process.returncode in error if process.returncode is not 0
+        speaker.say("I was unable to read your Outlook sir! Please make sure it is in sync.")
+        logger.fatal(f"Failed to read outlook with exit code: {error}\n{err}")
+    else:
+        events = out.decode()
+        if not events:
+            speaker.say("You don't have any meetings in the next 12 hours sir!")
+            return
+        events = events.replace(f', date {today}, ', ' rEpLaCInG ')
+        event_time = events.split('rEpLaCInG')[1:]
+        event_name = events.split('rEpLaCInG')[0].split(', ')
+        event_name = [i.strip() for n, i in enumerate(event_name) if i not in event_name[n + 1:]]  # remove duplicates
+        count = len(event_name)
+        speaker.say(f'You have {count} meetings for today sir!') if count > 1 else ''
+        events = {}
+        for i in range(count):
+            event_time[i] = re.search(' at (.*)', event_time[i]).group(1).strip()
+            dt_string = datetime.strptime(event_time[i], '%I:%M:%S %p')
+            event_time[i] = dt_string.strftime('%I:%M %p')
+            events.update({event_name[i]: event_time[i]})
+        ordered_data = sorted(events.items(), key=lambda x: datetime.strptime(x[1], '%I:%M %p'))
+        for meeting in ordered_data:
+            if count == 1:
+                speaker.say(f"You have a meeting at {meeting[1]} sir! {meeting[0].upper()}")
+            else:
+                speaker.say(f"{meeting[0]} at {meeting[1]}")
+
+
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action.
     threshold is used to sanity check sentry_mode() so that:
@@ -2947,7 +2995,7 @@ def shutdown():
         if any(word in converted.lower() for word in keywords.ok()):
             exit_process()
             if operating_system == 'Darwin':
-                subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
+                call(['osascript', '-e', 'tell app "System Events" to shut down'])
             elif operating_system == 'Windows':
                 os.system("shutdown /s /t 1")
             exit(0)

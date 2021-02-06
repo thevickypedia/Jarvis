@@ -186,6 +186,10 @@ class Keywords:
         key = ['fact', 'facts']
         return key
 
+    def meetings(self):
+        key = ['meeting', 'appointment', 'schedule']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key

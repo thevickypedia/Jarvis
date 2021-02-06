@@ -38,6 +38,7 @@ then
   pip3 install speedtest-cli==2.1.2
   pip3 install holidays==0.10.4
   pip3 install randfacts==0.2.8
+  pip3 install pywin32
 else
   echo ""
   echo "**********************************************************************************************************"
