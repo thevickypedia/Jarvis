@@ -1,17 +1,22 @@
+import email
+import imaplib
 import json
 import math
 import os
 import platform
 import random
 import re
+import smtplib
+import socket
 import ssl
 import subprocess
 import sys
 import time
+import traceback
 import unicodedata
 import webbrowser
 from datetime import datetime, timedelta
-from socket import socket, AF_INET, SOCK_DGRAM, gethostname
+from email.header import decode_header, make_header
 from threading import Thread
 from urllib.request import urlopen
 
@@ -38,7 +43,6 @@ from wordninja import split as splitter
 
 from helper_functions.alarm import Alarm
 from helper_functions.aws_clients import AWSClients
-from helper_functions.communicator import gmail_offline
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.emailer import send_mail
@@ -63,11 +67,11 @@ def listener(timeout, phrase_limit):
 
 
 def split(key):
-    if 'and' in key:
-        for each in key.split('and'):
+    if ' and ' in key:
+        for each in key.split(' and '):
             conditions(each.strip())
-    elif 'also' in key:
-        for each in key.split('also'):
+    elif ' also ' in key:
+        for each in key.split(' also '):
             conditions(each.strip())
     else:
         conditions(key.strip())
@@ -120,6 +124,8 @@ def renew():
                 speaker.runAndWait()
                 return
             else:
+                remove = ['buddy', 'jarvis', 'hey']
+                converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
                 split(converted)
                 speaker.runAndWait()
                 waiter = 0
@@ -1038,7 +1044,7 @@ def device_selector(converted):
     elif isinstance(converted, dict):
         lookup = converted
     elif not converted:
-        lookup = gethostname()
+        lookup = socket.gethostname()
     else:
         lookup = 'iPhone 11 Pro Max'
     index, target_device = -1, None
@@ -1147,9 +1153,6 @@ def gmail():
     """Reads unread emails from your gmail account for which the creds are stored in env variables"""
     global place_holder
     sys.stdout.write("\rFetching new emails..")
-    import email
-    import imaplib
-    from email.header import decode_header, make_header
 
     try:
         mail = imaplib.IMAP4_SSL('imap.gmail.com')  # connects to imaplib
@@ -1165,8 +1168,7 @@ def gmail():
     n = 0
     return_code, messages = mail.search(None, 'UNSEEN')  # looks for unread emails
     if return_code == 'OK':
-        for _ in messages[0].split():
-            n = n + 1
+        n = len(messages[0].split())
     else:
         speaker.say("I'm unable access your email sir.")
     if n == 0:
@@ -2026,11 +2028,22 @@ def github(target):
         return
 
 
+def notify(user, password, number, body):
+    """Send text message through SMS gateway of destination number"""
+    subject = "Message from Jarvis" if number == phone_number else "Jarvis::Message from Vignesh"
+    to = f"{number}@tmomail.net"
+    message = (f"From: {user}\n" + f"To: {to}\n" + f"Subject: {subject}\n" + "\n\n" + body)
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()
+    server.login(user=user, password=password)
+    server.sendmail(user, to, message)
+    server.close()
+
+
 def send_sms(number):
     """Sends a message to the number received. If no number was received, it will ask for a number, looks if it is
     10 digits and then sends a message."""
     global place_holder
-    import smtplib
     if not number:
         speaker.say("Please tell me a number sir!")
         speaker.runAndWait()
@@ -2074,14 +2087,7 @@ def send_sms(number):
                 if not any(word in converted.lower() for word in keywords.ok()):
                     speaker.say("Message will not be sent sir!")
                 else:
-                    server = smtplib.SMTP("smtp.gmail.com", 587)
-                    server.starttls()
-                    server.login(user=gmail_user, password=gmail_pass)
-                    to = f"+1{number}@tmomail.net"
-                    subject = "Jarvis::Message from Vignesh"
-                    sender = (f"From: {gmail_user}\n" + f"To: {to}\n" + f"Subject: {subject}\n" + "\n\n" + body)
-                    server.sendmail(gmail_user, to, sender)
-                    server.close()
+                    notify(user=gmail_user, password=gmail_pass, number=number, body=body)
                     speaker.say("Message has been sent sir!")
                 return
             else:
@@ -2100,7 +2106,7 @@ def television(converted):
     if the request is to turn on the TV, else it exits with a bummer. Once the tv is turned on, the TV
     class is also initiated which is set global for other statements to use it."""
     global tv
-    phrase = converted.replace('TV', '')
+    phrase = converted.replace('TV', '').lower()
     if not vpn_checker():
         return
     elif 'wake' in phrase or 'turn on' in phrase or 'connect' in phrase or 'status' in phrase or 'control' in phrase:
@@ -2494,7 +2500,7 @@ def vpn_checker():
     returns the network id if local host"""
     from urllib.request import urlopen
     import json
-    socket_ = socket(AF_INET, SOCK_DGRAM)
+    socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     socket_.connect(("8.8.8.8", 80))
     ip_address = socket_.getsockname()[0]
     socket_.close()
@@ -2648,56 +2654,96 @@ def threat_notify(converted, date_extn):
             logger.fatal(f'Email dispatch was failed with response: {response_}\n')
 
 
+def offline_communicator_initiate():
+    """Initiates offline communicator in a dedicated thread"""
+    logger.fatal('Enabled Offline Communicator')
+    Thread(target=offline_communicator).start()
+
+
 def offline_communicator():
-    """The communicator.py will look for emails in a dedicated thread so Jarvis can run simultaneously.
-    This may cause a recursion limit error, so either increase the limit or go with a timed wait.
+    """The following code will look for emails in a dedicated thread so Jarvis can run simultaneously.
+    WARNING: Running sockets with a 30 second wait time is brutal, so I login once and keep checking for emails
+    in a while STATUS loop. This may cause various exceptions when the login session expires or when google terminates
+    the session So I catch the exception and circle back to restart the offline_communicator() after 2 minutes.
 
     To replicate a working model for offline communicator:
-        1. Set/Create a dedicated email account for offline communication
-            (# Less secure and # Jarvis will mark mails as read and can't undo as he uses sockets to read emails.)
-        2. Send an email from a specific email address to avoid unnecessary response. - sender in communicator.py
-        3. The subject line should only have the exact phrase you want Jarvis to do.
+        1. Set/Create a dedicated email account for offline communication (as it is less secure)
+        2. Send an email from a specific email address to avoid unnecessary response. - ENV VAR: offline_sender
+        3. The body of the email should only have the exact command you want Jarvis to do.
         4. To "log" the response and send it out as notification, I made some changes to the pyttsx3 module. (below)
-        5. I also stop the response from being spoken after 10 seconds so that the loop can start before I stop it.
+        5. I also stop the response from being spoken.
         6. voice_changer() is called because when I stop the speaker, it resets the voice property that I set in main()
 
     Changes in "pyttsx3":
         1. Created a global variable in say() -> pyttsx3/engine.py (before proxy) and store the response.
         2. Created a new method and return the global variable which I created in say().
         3. The new method (vig() in this case) is called to get the response which is then sent as SNS notification.
-        4. Doing the above simple steps, avoids making changes to all the functions within conditions() above.
+        4. Doing so, avoids making changes to all the functions within conditions() to notify the response from Jarvis.
 
-    More cool stuff:
-    I created a REST API on AWS API Gateway and linked it to a JavaScript on my webpage. When a request is submitted,
+    ""More cool stuff"":
+    * I created a REST API on AWS API Gateway and linked it to a JavaScript on my webpage. When a request is submitted,
     the JavaScript makes a POST call to the API which then triggers a lambda job on AWS that sends the email for me.
-    As Jarvis will be watching for the UNREAD emails, he will process my request and send an SMS using AWS SNS.
-    Check it out: https://thevickypedia.com/jarvisoffline
-    NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails."""
+    * As Jarvis will be watching for the UNREAD emails, he will process my request and send an SMS using AWS SNS.
+    ** Check it out: https://thevickypedia.com/jarvisoffline
+    ** NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails.
+    * I created an iPhone shortcut with frequently used offline commands as suggestions to make it one click
+    communication with Jarvis
+    * You can also make Jarvis check for emails from your "number@tmomail.net" but the response time will be > 5 min"""
 
-    while STATUS:
-        request = gmail_offline(username=offline_receive_user, password=offline_receive_pass, commander=offline_sender)
-        if not request:
-            pass
-        elif 'ERROR' in request:
-            speaker.say(f"The offline communicator has faced a {request} sir! Initiated a timed wait of 1 minute.")
-            speaker.runAndWait()
-            time.sleep(50)
-        elif request:
-            logger.fatal(f'Received offline input::{request}')
-            split(request)
-            response = speaker.vig()
+    try:
+        socket.setdefaulttimeout(10)  # set default timeout for new socket connections to 10 seconds
+        mail = imaplib.IMAP4_SSL('imap.gmail.com')  # connects to imaplib
+        mail.login(offline_receive_user, offline_receive_pass)
+        mail.list()
+        socket.setdefaulttimeout(None)  # revert default timeout for new socket connections to None
+        response = None
+        while STATUS:
+            mail.select('inbox')  # choose inbox
+            return_code, messages = mail.search(None, 'UNSEEN')
+            if return_code == 'OK':
+                n = len(messages[0].split())
+            else:
+                logger.fatal(f"Offline Communicator::Search Error.\n{return_code}")
+                raise RuntimeError
+            if not n:
+                pass
+            else:
+                for bytecode in messages[0].split():
+                    ignore, mail_data = mail.fetch(bytecode, '(RFC822)')
+                    for response_part in mail_data:
+                        if isinstance(response_part, tuple):
+                            original_email = email.message_from_bytes(response_part[1])
+                            sender = (original_email['From']).split('<')[-1].split('>')[0].strip()
+                            if sender == offline_sender:
+                                # noinspection PyUnresolvedReferences
+                                email_message = email.message_from_string(mail_data[0][1].decode('utf-8'))
+                                for part in email_message.walk():
+                                    required_type = ["text/html", "text/plain"]
+                                    if part.get_content_type() in required_type:
+                                        body = part.get_payload(decode=True).decode('utf-8').strip()
+                                        logger.fatal(f'Received offline input::{body}')
+                                        mail.store(bytecode, "+FLAGS", "\\Deleted")  # marks email as deleted
+                                        mail.expunge()  # DELETES (not send to Trash) the email permanently
+                                        split(body)
+                                        response = speaker.vig()
+                                        speaker.stop()
+                                        voice_changer()
+                            else:
+                                mail.store(bytecode, "-FLAGS", "\\Seen")  # set "-FLAGS" to un-see/mark as unread
             if response:
-                aws_response = sns.publish(PhoneNumber=phone_number, Message=response)
-                logger.fatal(f'Processed output::{response}')
-                if aws_response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
-                    logger.fatal('Response from Jarvis has been sent as SNS notification!')
-                else:
-                    logger.fatal(f'Unable to send response from Jarvis: {aws_response}')
-                time.sleep(20)  # timed wait so that, .stop() executes only after speaker thread is loaded with response
-                speaker.stop()
-                voice_changer()
-        time.sleep(10)
-    logger.fatal('Disabled Offline Communicator')
+                notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
+                logger.fatal('Response from Jarvis has been sent as SNS notification!')
+                response = None  # reset response to None to avoid receiving same message endlessly
+            time.sleep(30)  # waits for 30 seconds before attempting next search
+        logger.fatal('Disabled Offline Communicator')
+        mail.close()  # closes imap lib
+        mail.logout()
+    except (imaplib.IMAP4.abort, imaplib.IMAP4.error, socket.timeout, RuntimeError):
+        imap_error = sys.exc_info()[0]
+        logger.fatal(f'Offline Communicator::{imap_error.__name__}\n{traceback.format_exc()}')  # include traceback
+        logger.fatal('Restarting Offline Communicator')
+        time.sleep(120)  # restart the session after 2 minutes in case of any of the above exceptions
+        return offline_communicator_initiate()  # return used here will terminate the current function
 
 
 def sentry_mode():
@@ -2776,13 +2822,12 @@ def sentry_mode():
                 split(converted.strip())
             speaker.runAndWait()
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
-            pass
+            continue
         except KeyboardInterrupt:
             exit_process()
             Alarm(None, None, None)
             Reminder(None, None, None, None)
         except (RuntimeError, RecursionError, TimeoutError):
-            import traceback
             unknown_error = sys.exc_info()[0]
             logger.fatal(f'Unknown exception::{unknown_error.__name__}\n{traceback.format_exc()}')  # include traceback
             speaker.say('I faced an unknown exception.')
@@ -3030,9 +3075,7 @@ if __name__ == '__main__':
 
     sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
 
-    # Initiates offline communicator in a dedicated thread
-    logger.fatal('Enabled Offline Communicator')
-    Thread(target=offline_communicator).start()
+    offline_communicator_initiate()  # dedicated function to initiate offline communicator to ease restart
 
     # starts sentry mode
     playsound('indicators/initialize.mp3')
