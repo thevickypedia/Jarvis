@@ -28,6 +28,8 @@ import pyttsx3 as audio
 import requests
 import speech_recognition as sr
 import yaml
+import urllib.request
+import facebook
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
 from geopy.geocoders import Nominatim, options
@@ -430,6 +432,15 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.meetings()):
         meetings()
+        
+    elif any(word in converted.lower() for word in keywords.timer()):
+        timer(converted)
+        
+    elif any(word in converted.lower() for word in keywords.facebook()):
+        facebook(profile)
+        
+    elif any(word in converted.lower() for word in keywords.wallpaper()):
+        wallpaper()
 
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -2520,6 +2531,67 @@ def vpn_checker():
                     "integrations will work with VPN enabled.")
     else:
         return '.'.join(ip_address.split('.')[0:3])
+                         
+                         
+def timer(converted):
+    speaker.say("For how many minutes?")
+    speaker.runAndWait()
+    timer0 = listener(3, 5)
+    converted.replace('for', 'minutes', 'minute', 'in', '')
+
+    timer1 = float(timer0)
+    timer2 = timer1 * 60
+    speaker.say(f'I will remind you in {timer2} seconds')
+
+    time.sleep(timer2)
+    speaker.say('Your time has been finished sir')
+                         
+                         
+def facebook(profile):
+    oauth_access_token = profile['keys']['FB_TOKEN'] # Your Facebook GraphAPI credentials
+    graph = facebook.GraphAPI(oauth_access_token)
+
+    try:
+        results = graph.request("me/notifications")
+    except facebook.GraphAPIError:
+        speaker.say("I have not been authorized to query your Facebook sir.")
+        return
+    else:
+        speaker.say("I apologize, there's a problem with that service at the moment.")
+
+    if not len(results['data']):
+        speaker.say("You have no Facebook notifications sir. ")
+        return
+
+    updates = []
+    for notification in results['data']:
+        updates.append(notification['title'])
+
+    count = len(results['data'])
+    speaker.say("You have " + str(count) + " Facebook notifications. " + " ".join(updates) + ". ")
+    return
+                         
+           
+def wallpaper():
+    folder = 'YOUR DIRECTORY'
+    for the_file in os.listdir(folder):
+        file_path = os.path.join(folder, the_file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print(e)
+    api_key = 'YOUR UNSPLASH API KEY'
+    url = 'https://api.unsplash.com/photos/random?client_id=' + api_key  # pic from unspalsh.com
+    http = urllib3.PoolManager()
+    f = http.request('GET', url)
+    json_string = f.read()
+    f.close()
+    parsed_json = json.loads(json_string)
+    photo = parsed_json['urls']['full']
+    urllib.request.urlretrieve(photo, "YOUR DIRECTORY")
+    subprocess.call(["killall Dock"], shell=True)
+    speaker.say('wallpaper changed successfully sir')
 
 
 def celebrate():
