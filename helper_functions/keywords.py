@@ -214,6 +214,18 @@ class Keywords:
     def shutdown(self):
         key = ['shutdown', 'shut down', 'terminate']
         return key
+    
+    def wallpaper(self):
+        key = ['wallpaper', 'background']
+        return key
+    
+    def facebook(self):
+        key = ['facebook']
+        return key
+    
+    def timer(self):
+        key = ['stopwatch', 'timer']
+        return key
 
 
 if __name__ == '__main__':
