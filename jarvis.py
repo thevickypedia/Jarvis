@@ -2111,7 +2111,8 @@ def television(converted):
     if the request is to turn on the TV, else it exits with a bummer. Once the tv is turned on, the TV
     class is also initiated which is set global for other statements to use it."""
     global tv
-    phrase = converted.replace('TV', '').lower()
+    phrase_exc = converted.replace('TV', '')
+    phrase = phrase_exc.lower()
     if not vpn_checker():
         return
     elif 'wake' in phrase or 'turn on' in phrase or 'connect' in phrase or 'status' in phrase or 'control' in phrase:
@@ -2149,7 +2150,7 @@ def television(converted):
             tv.stop()
             speaker.say(f'{random.choice(ack)}!')
         elif 'set' in phrase:
-            vol = int(''.join([str(s) for s in re.findall(r'\b\d+\b', phrase)]))
+            vol = int(''.join([str(s) for s in re.findall(r'\b\d+\b', phrase_exc)]))
             sys.stdout.write(f'\rRequested volume: {vol}')
             if vol:
                 tv.set_volume(vol)
@@ -2158,39 +2159,41 @@ def television(converted):
                 speaker.say(f"{vol} doesn't match the right format sir!")
         elif 'volume' in phrase:
             speaker.say(f"The current volume on your TV is, {tv.get_volume()}%")
-        elif 'what are the apps' in phrase or 'what are the applications' in phrase:
+        elif 'app' in phrase or 'application' in phrase:
             sys.stdout.write(f'\r{tv.list_apps()}')
             speaker.say('App list on your screen sir!')
             speaker.runAndWait()
             time.sleep(5)
         elif 'open' in phrase or 'launch' in phrase:
             app_name = ''
-            for word in phrase.split():
+            for word in phrase_exc.split():
                 if word[0].isupper():
                     app_name += word + ' '
             if not app_name:
                 speaker.say("I didn't quite get that.")
-            try:
-                tv.launch_app(app_name.strip())
-                speaker.say(f"I've launched {app_name} on your TV sir!")
-            except ValueError:
-                speaker.say(f"I didn't find the app {app_name} on your TV sir!")
+            else:
+                try:
+                    tv.launch_app(app_name.strip())
+                    speaker.say(f"I've launched {app_name} on your TV sir!")
+                except ValueError:
+                    speaker.say(f"I didn't find the app {app_name} on your TV sir!")
         elif "what's" in phrase or 'currently' in phrase:
             speaker.say(f'{tv.current_app()} is running on your TV.')
         elif 'change' in phrase or 'source' in phrase:
             tv_source = ''
-            for word in phrase.split():
+            for word in phrase_exc.split():
                 if word[0].isupper():
                     tv_source += word + ' '
             if not tv_source:
                 speaker.say("I didn't quite get that.")
-            try:
-                tv.set_source(tv_source.strip())
-                speaker.say(f"I've changed the source to {tv_source}.")
-            except ValueError:
-                speaker.say(f"I didn't find the source {tv_source} on your TV sir!")
+            else:
+                try:
+                    tv.set_source(tv_source.strip())
+                    speaker.say(f"I've changed the source to {tv_source}.")
+                except ValueError:
+                    speaker.say(f"I didn't find the source {tv_source} on your TV sir!")
         elif 'shutdown' in phrase or 'shut down' in phrase or 'turn off' in phrase:
-            speaker.say('Shutting down the TV now.')
+            speaker.say('Alright! Shutting down the TV now.')
             Thread(target=tv.shutdown).start()
             tv = None
         else:
@@ -2770,8 +2773,8 @@ def meetings():
         speaker.say("I was unable to read your Outlook sir! Please make sure it is in sync.")
         logger.fatal(f"Failed to read outlook with exit code: {error}\n{err}")
     else:
-        events = out.decode()
-        if not events:
+        events = out.decode().strip()
+        if not events or events == ',':
             speaker.say("You don't have any meetings in the next 12 hours sir!")
             return
         events = events.replace(f', date {today}, ', ' rEpLaCInG ')
