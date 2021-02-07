@@ -50,3 +50,4 @@ python3 -m pip install speedtest-cli==2.1.2
 python3 -m pip install holidays==0.10.4
 python3 -m pip install randfacts==0.2.8
 python3 -m pip install appscript==1.1.2
+python3 -m pip install facebook2==2.2.1
