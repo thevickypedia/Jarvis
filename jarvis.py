@@ -617,7 +617,7 @@ def webpage(target):
         global place_holder
         speaker.say("Which website shall I open sir?")
         speaker.runAndWait()
-        converted = listener(3, 5)
+        converted = listener(3, 4)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 return
@@ -866,7 +866,7 @@ def wikipedia_():
             speaker.say(formatted)
             speaker.say("Do you want me to continue sir?")  # gets confirmation to read the whole passage
             speaker.runAndWait()
-            response = listener(3, 5)
+            response = listener(3, 3)
             if response != 'SR_ERROR':
                 place_holder = None
                 if any(word in response.lower() for word in keywords.ok()):
@@ -1097,7 +1097,7 @@ def locate(converted):
             speaker.say(f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
             speaker.say("Would you like to ring it?")
     speaker.runAndWait()
-    phrase = listener(3, 5)
+    phrase = listener(3, 3)
     if phrase == 'SR_ERROR':
         if place_holder == 0:
             place_holder = None
@@ -1113,7 +1113,7 @@ def locate(converted):
             target_device.play_sound()
             speaker.say("I can also enable lost mode. Would you like to do it?")
             speaker.runAndWait()
-            phrase = listener(3, 5)
+            phrase = listener(3, 3)
             if any(word in phrase.lower() for word in keywords.ok()):
                 message = 'Return my phone immediately.'
                 target_device.lost_device(recovery, message)
@@ -1182,7 +1182,7 @@ def gmail():
     else:
         speaker.say(f'You have {n} unread emails sir. Do you want me to check it?')  # user check before reading subject
         speaker.runAndWait()
-        response = listener(3, 5)
+        response = listener(3, 3)
         if response != 'SR_ERROR':
             if any(word in response.lower() for word in keywords.ok()):
                 for nm in messages[0].split():
@@ -1268,7 +1268,7 @@ def meaning(keyword):
                 speaker.say(f'{keyword} is {repeat} {insert} {key}, which means {mean}.')
             speaker.say(f'Do you wanna know how {keyword} is spelled?')
             speaker.runAndWait()
-            response = listener(3, 5)
+            response = listener(3, 3)
             if any(word in response.lower() for word in keywords.ok()):
                 for letter in list(keyword.lower()):
                     speaker.say(letter)
@@ -1303,7 +1303,7 @@ def todo():
         else:
             speaker.say("You don't have a database created for your to-do list sir. Would you like to spin up one now?")
         speaker.runAndWait()
-        key = listener(3, 5)
+        key = listener(3, 3)
         if key != 'SR_ERROR':
             if any(word in key.lower() for word in keywords.ok()):
                 todo.has_been_called = True
@@ -1357,7 +1357,7 @@ def add_todo():
         speaker.say("You don't have a database created for your to-do list sir.")
         speaker.say("Would you like to spin up one now?")
         speaker.runAndWait()
-        key = listener(3, 5)
+        key = listener(3, 3)
         if key != 'SR_ERROR':
             if any(word in key.lower() for word in keywords.ok()):
                 add_todo.has_been_called = True
@@ -1377,7 +1377,7 @@ def add_todo():
     place_holder = None
     speaker.say("What's your plan sir?")
     speaker.runAndWait()
-    item = listener(3, 6)
+    item = listener(3, 5)
     if item != 'SR_ERROR':
         if 'exit' in item or 'quit' in item or 'Xzibit' in item:
             speaker.say('Your to-do list has been left intact sir.')
@@ -1397,7 +1397,7 @@ def add_todo():
                 speaker.say(response)
                 speaker.say("Do you want to add anything else to your to-do list?")
                 speaker.runAndWait()
-                category_continue = listener(3, 5)
+                category_continue = listener(3, 3)
                 if any(word in category_continue.lower() for word in keywords.ok()):
                     add_todo()
                 else:
@@ -1450,7 +1450,7 @@ def delete_db():
     else:
         speaker.say(f'{random.choice(confirmation)} delete your database?')
         speaker.runAndWait()
-        response = listener(3, 5)
+        response = listener(3, 3)
         if response != 'SR_ERROR':
             if any(word in response.lower() for word in keywords.ok()):
                 os.remove(file_name)
@@ -1827,7 +1827,7 @@ def jokes():
     speaker.runAndWait()
     speaker.say("Do you want to hear another one sir?")
     speaker.runAndWait()
-    converted = listener(3, 5)
+    converted = listener(3, 3)
     if converted != 'SR_ERROR':
         place_holder = None
         if any(word in converted.lower() for word in keywords.ok()):
@@ -1942,7 +1942,7 @@ def google_maps(query):
         sys.stdout.write(f"\r{item['Name']} -- {item['Rating']} -- "
                          f"{''.join([j for j in item['Address'] if not j.isdigit()])}")
         speaker.runAndWait()
-        converted = listener(3, 5)
+        converted = listener(3, 3)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 break
@@ -1961,7 +1961,7 @@ def google_maps(query):
                 continue
         else:
             google_maps.has_been_called = True
-            return True
+            return
 
 
 def notes():
@@ -2052,7 +2052,7 @@ def send_sms(number):
     if not number:
         speaker.say("Please tell me a number sir!")
         speaker.runAndWait()
-        number = listener(3, 5)
+        number = listener(3, 6)
         if number != 'SR_ERROR':
             if 'exit' in number or 'quit' in number or 'Xzibit' in number:
                 return
@@ -2237,16 +2237,16 @@ def google(query):
                 suggestion_count = 0
                 speaker.say(r.json()[1][0].replace('=', ''))  # picks the closest match and opens a google search
                 speaker.runAndWait()
-                google_maps.has_been_called = True
-                return True
+                return False
             else:
                 google(suggestion)
         except IndexError:
             return True
     if results:
         [results.remove(result) for result in results if len(result.split()) < 3]  # removes results with dummy words
-        if not results:
-            return True
+    else:
+        return False
+    if results:
         results = results[0:3]  # picks top 3 (first appeared on Google)
         results.sort(key=lambda x: len(x.split()), reverse=True)  # sorts in reverse by the word count of each sentence
         output = results[0]  # picks the top most result
@@ -2266,7 +2266,8 @@ def google(query):
         output = output.replace('\\', ' or ')
         sys.stdout.write(f'\r{output}')
         speaker.say(output)
-        return
+        speaker.runAndWait()
+        return False
     else:
         return True
 
@@ -2475,14 +2476,17 @@ def lights(converted):
     def turn_off(host):
         controller = MagicHomeApi(device_ip=host, device_type=1)
         controller.turn_off()
+        time.sleep(1)
 
     def warm(host):
         controller = MagicHomeApi(device_ip=host, device_type=1)
         controller.update_device(r=0, g=0, b=0, warm_white=255)
+        time.sleep(1)
 
     def cool(host):
         controller = MagicHomeApi(device_ip=host, device_type=2)
         controller.update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
+        time.sleep(1)
 
     if 'hallway' in converted:
         light_host_id = [19, 20, 21, 22, 24]
@@ -2550,7 +2554,7 @@ def time_travel():
     gmail()
     speaker.say('Would you like to hear the latest news?')
     speaker.runAndWait()
-    phrase = listener(3, 5)
+    phrase = listener(3, 3)
     if any(word in phrase.lower() for word in keywords.ok()):
         news()
     time_travel.has_been_called = False
@@ -2748,7 +2752,7 @@ def offline_communicator():
         logger.fatal('Disabled Offline Communicator')
         mail.close()  # closes imap lib
         mail.logout()
-    except (imaplib.IMAP4.abort, imaplib.IMAP4.error, socket.timeout, RuntimeError):
+    except (imaplib.IMAP4.abort, imaplib.IMAP4.error, socket.timeout, RuntimeError, ConnectionResetError):
         imap_error = sys.exc_info()[0]
         logger.fatal(f'Offline Communicator::{imap_error.__name__}\n{traceback.format_exc()}')  # include traceback
         logger.fatal('Restarting Offline Communicator')
@@ -2758,10 +2762,6 @@ def offline_communicator():
 
 def meetings():
     """Uses applescript to fetch calendar events from Microsoft Outlook"""
-
-    # todo: Investigate on using appscript for python instead of applescript
-    # todo: Add windows support or scrap windows functionalities completely
-
     if operating_system == 'Windows':
         speaker.say("Meetings feature on Windows hasn't been developed yet sir!")
         return
@@ -2805,36 +2805,9 @@ def sentry_mode():
     morning_msg and evening_msg are set to False initially and to True when their purpose is done for the day.
      this is done to avoid Jarvis repeating the task as it completes within a minute.
      Alternatively, a condition to check and run within first 15 seconds can be implemented."""
-    threshold, morning_msg, evening_msg = 0, False, False
+    threshold = 0
     while threshold < 5000:
         threshold += 1
-        if not morning_msg and datetime.now().strftime("%I:%M %p") == '07:00 AM':
-            # triggers at 7:00 AM and morning_msg is set to True so that,
-            # Jarvis would not repeat the same message once again before a restart
-            if operating_system == 'Darwin':
-                Thread(target=increase_brightness).start()  # set to max brightness
-            Thread(target=lights, args=['turn on']).start()  # turns on the lights
-            volume_controller(100)
-            speaker.say('Good Morning.')
-            if event:
-                speaker.say(f'Happy {event}!')
-            report.has_been_called = True
-            current_date()
-            current_time(None)
-            weather(None)
-            speaker.runAndWait()
-            report.has_been_called = False
-            volume_controller(50)
-            morning_msg = True
-        if not evening_msg and datetime.now().strftime("%I:%M %p") == '09:00 PM':
-            # triggers at 9:00 PM and evening_msg is set to True so that,
-            # Jarvis would not repeat the same message once again before a restart
-            if operating_system == 'Darwin':
-                Thread(target=decrease_brightness).start()  # set to lowest brightness
-            Thread(target=lights, args=['turn off']).start()  # turns off the lights
-            speaker.say(f'Good Night Sir! Have a pleasant sleep.')
-            speaker.runAndWait()
-            evening_msg = True
         if greet_check == 'initialized':
             dummy.has_been_called = True
         try:
@@ -2843,35 +2816,27 @@ def sentry_mode():
             sys.stdout.write("\r")
             key_original = recognizer.recognize_google(listen).strip()
             key = key_original.lower()
-            if key == 'jarvis' or key == 'buddy':
-                speaker.say(f'{random.choice(wake_up3)}')
-                initialize()
-            elif 'good' in key:
-                if ('morning' in key or 'night' in key or 'afternoon' in key or 'after noon' in key or
+            if 'jarvis' in key or 'buddy' in key:
+                if key == 'jarvis' or key == 'buddy':
+                    speaker.say(f'{random.choice(wake_up3)}')
+                    initialize()
+                elif ('morning' in key or 'night' in key or 'afternoon' in key or 'after noon' in key or
                         'evening' in key) and 'jarvis' in key:
-                    if 'night' in key:
-                        Thread(target=decrease_brightness).start()
-                        Thread(target=lights, args=['turn off']).start()
-                        evening_msg = True
-                    elif 'morning' in key:
-                        Thread(target=increase_brightness).start()
-                        Thread(target=lights, args=['cool']).start()
-                        morning_msg = True
                     if event:
                         speaker.say(f'Happy {event}!')
                     time_travel()
-            elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or \
-                    'showtime' in key or 'time to work' in key or 'spin up' in key:
-                speaker.say(f'{random.choice(wake_up1)}')
-                initialize()
-            elif 'you there' in key or 'are you there' in key or 'you up' in key:
-                speaker.say(f'{random.choice(wake_up2)}')
-                initialize()
-            elif 'jarvis' in key or 'buddy' in key:
-                remove = ['buddy', 'jarvis', 'hey']
-                converted = ' '.join([i for i in key_original.split() if i.lower() not in remove])
-                split(converted.strip())
-            speaker.runAndWait()
+                elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or \
+                        'showtime' in key or 'time to work' in key or 'spin up' in key:
+                    speaker.say(f'{random.choice(wake_up1)}')
+                    initialize()
+                elif 'you there' in key or 'are you there' in key or 'you up' in key:
+                    speaker.say(f'{random.choice(wake_up2)}')
+                    initialize()
+                elif 'jarvis' in key or 'buddy' in key:
+                    remove = ['buddy', 'jarvis', 'hey']
+                    converted = ' '.join([i for i in key_original.split() if i.lower() not in remove])
+                    split(converted.strip())
+                speaker.runAndWait()
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             continue
         except KeyboardInterrupt:
@@ -2992,7 +2957,7 @@ def shutdown():
     global place_holder
     speaker.say(f"{random.choice(confirmation)} turn off the machine?")
     speaker.runAndWait()
-    converted = listener(3, 5)
+    converted = listener(3, 3)
     if converted != 'SR_ERROR':
         place_holder = None
         if any(word in converted.lower() for word in keywords.ok()):
