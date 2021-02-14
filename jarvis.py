@@ -2835,7 +2835,11 @@ def sentry_mode():
                 elif 'jarvis' in key or 'buddy' in key:
                     remove = ['buddy', 'jarvis', 'hey']
                     converted = ' '.join([i for i in key_original.split() if i.lower() not in remove])
-                    split(converted.strip())
+                    if converted:
+                        split(converted.strip())
+                    else:
+                        speaker.say(f'{random.choice(wake_up3)}')
+                        initialize()
                 speaker.runAndWait()
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
             continue
