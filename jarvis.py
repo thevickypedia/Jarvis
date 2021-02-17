@@ -1702,7 +1702,7 @@ def kill_alarm():
     alarm_state is the list of lock files currently present"""
     global place_holder
     alarm_state = []
-    [alarm_state.append(file) if file != '.keep' else None for file in os.listdir('alarm')]
+    [alarm_state.append(file) for file in os.listdir('alarm') if file != '.keep']
     alarm_state.remove('.DS_Store') if '.DS_Store' in alarm_state else None
     if not alarm_state:
         speaker.say("You have no alarms set sir!")
@@ -1803,7 +1803,7 @@ def google_home(device, file):
     else:
         from googlehomepush.http_server import serve_file
         chosen = []
-        [chosen.append(value) if key.lower() in device.lower() else None for key, value in devices.items()]
+        [chosen.append(value) for key, value in devices.items() if key.lower() in device.lower()]
         if not chosen:
             speaker.say("I don't see any matching devices sir!. Let me help you.")
             google_home(None, None)
@@ -2909,8 +2909,8 @@ def exit_message():
 
 def remove_files():
     """Function that deletes all .lock files created for alarms and reminders."""
-    [os.remove(f"alarm/{file}") if file != '.keep' else None for file in os.listdir('alarm')]
-    [os.remove(f"reminder/{file}") if file != '.keep' else None for file in os.listdir('reminder')]
+    [os.remove(f"alarm/{file}") for file in os.listdir('alarm') if file != '.keep']
+    [os.remove(f"reminder/{file}") for file in os.listdir('reminder') if file != '.keep']
 
 
 def exit_process():
