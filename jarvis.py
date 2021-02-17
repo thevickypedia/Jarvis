@@ -1769,14 +1769,17 @@ def google_home(device, file):
                 sys.stdout.write(error)
                 pass'''
     """
+
+    network_id = vpn_checker()
+    if network_id.startswith('VPN'):
+        return
+
     speaker.say('Scanning your IP range for Google Home devices sir!')
     sys.stdout.write('\rScanning your IP range for Google Home devices..')
     speaker.runAndWait()
     from googlehomepush import GoogleHome
     from pychromecast.error import ChromecastConnectionError
-    network_id = '.'.join(vpn_checker().split('.')[0:3])
-    if network_id.startswith('VPN'):
-        return
+    network_id = '.'.join(network_id.split('.')[0:3])
 
     def ip_scan(host_id):
         """Scans the IP range using the received args as host id in an IP address"""
@@ -2117,12 +2120,14 @@ def television(converted):
     TV class from tv_controls.py fails to connect to the tv, so the television function responds only
     if the request is to turn on the TV, else it exits with a bummer. Once the tv is turned on, the TV
     class is also initiated which is set global for other statements to use it."""
+
+    if vpn_checker().startswith('VPN'):
+        return
+
     global tv
     phrase_exc = converted.replace('TV', '')
     phrase = phrase_exc.lower()
-    if vpn_checker().startswith('VPN'):
-        return
-    elif 'wake' in phrase or 'turn on' in phrase or 'connect' in phrase or 'status' in phrase or 'control' in phrase:
+    if 'wake' in phrase or 'turn on' in phrase or 'connect' in phrase or 'status' in phrase or 'control' in phrase:
         from wakeonlan import send_magic_packet as wake
         try:
             wake(tv_mac_address)
@@ -2478,6 +2483,10 @@ def set_brightness(level):
 def lights(converted):
     """Controller for smart lights"""
 
+    connection_status = vpn_checker()
+    if connection_status.startswith('VPN'):
+        return
+
     from helper_functions.lights import MagicHomeApi
 
     def turn_off(host):
@@ -2506,16 +2515,13 @@ def lights(converted):
     else:
         light_host_id = hallway + kitchen
 
-    connection_status = vpn_checker()
-    if connection_status.startswith('VPN'):
-        return
-    else:
-        if 'turn on' in converted or 'cool' in converted or 'white' in converted:
-            [cool(f'{connection_status}.{i}') for i in light_host_id]
-        elif 'turn off' in converted:
-            [turn_off(f'{connection_status}.{i}') for i in light_host_id]
-        elif 'warm' in converted or 'yellow' in converted:
-            [warm(f'{connection_status}.{i}') for i in light_host_id]
+    network_id = '.'.join(connection_status.split('.')[0:3])
+    if 'turn on' in converted or 'cool' in converted or 'white' in converted:
+        [cool(f'{network_id}.{i}') for i in light_host_id]
+    elif 'turn off' in converted:
+        [turn_off(f'{network_id}.{i}') for i in light_host_id]
+    elif 'warm' in converted or 'yellow' in converted:
+        [warm(f'{network_id}.{i}') for i in light_host_id]
 
 
 def vpn_checker():
