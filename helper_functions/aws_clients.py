@@ -132,3 +132,15 @@ class AWSClients:
         param = response['Parameter']
         val = param['Value']
         return val
+
+    def hallway_ip(self):
+        response = self.client.get_parameter(Name='/Jarvis/hallway_ip', WithDecryption=True)
+        param = response['Parameter']
+        val = param['Value']
+        return val
+
+    def kitchen_ip(self):
+        response = self.client.get_parameter(Name='/Jarvis/kitchen_ip', WithDecryption=True)
+        param = response['Parameter']
+        val = param['Value']
+        return val

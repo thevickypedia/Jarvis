@@ -2488,12 +2488,16 @@ def lights(converted):
         controller.update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
         time.sleep(1)
 
+    # env var or aws secret stored as a string. eg: '19,20,21'
+    hallway = [int(i) for i in hallway_ip.split(',') if i.isdigit()]
+    kitchen = [int(i) for i in kitchen_ip.split(',') if i.isdigit()]
+
     if 'hallway' in converted:
-        light_host_id = [19, 20, 21, 22, 24]
+        light_host_id = hallway
     elif 'kitchen' in converted:
-        light_host_id = [25, 26]
+        light_host_id = kitchen
     else:
-        light_host_id = [19, 20, 21, 22, 24, 25, 26]
+        light_host_id = hallway + kitchen
 
     connection_status = vpn_checker()
     if not connection_status:
@@ -3048,6 +3052,8 @@ if __name__ == '__main__':
     icloud_pass = os.getenv('icloud_pass') or aws.icloud_pass()
     recovery = os.getenv('icloud_recovery') or aws.icloud_recovery()
     phone_number = os.getenv('phone') or aws.phone()
+    hallway_ip = os.getenv('hallway_ip') or aws.hallway_ip()
+    kitchen_ip = os.getenv('kitchen_ip') or aws.kitchen_ip()
 
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run
