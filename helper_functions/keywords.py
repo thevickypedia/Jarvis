@@ -16,6 +16,10 @@ class Keywords:
         key = ['system', 'configuration']
         return key
 
+    def ip_info(self):
+        key = ['IP', 'address']
+        return key
+
     def webpage(self):
         key = ['website', 'webpage', 'web page', '.']
         return key

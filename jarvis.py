@@ -197,6 +197,11 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.system_info()):
         system_info()
 
+    elif any(word in converted.lower() for word in keywords.ip_info()):
+        ip_address = vpn_checker().replace('VPN::', '')
+        speaker.say(f"Your IP address for {socket.gethostname()} is {ip_address}.")
+        return
+
     elif any(word in converted.lower() for word in keywords.wikipedia()):
         wikipedia_()
 
@@ -821,9 +826,11 @@ def system_info():
         o_system = (platform.platform()).split('.')[0]
     else:
         o_system = None
-    speaker.say(f"You're running {o_system}, with {cpu} cores. Your physical drive capacity is {total}. "
-                f"You have used up {used} of space. Your free space is {free}. Your RAM capacity is {ram}. "
-                f"You are currently utilizing {ram_used} of your memory.")
+    sys_config = f"You're running {o_system}, with {cpu} cores. Your physical drive capacity is {total}. " \
+                 f"You have used up {used} of space. Your free space is {free}. Your RAM capacity is {ram}. " \
+                 f"You are currently utilizing {ram_used} of your memory."
+    sys.stdout.write(f'\r{sys_config}')
+    speaker.say(sys_config)
 
 
 def wikipedia_():
@@ -1763,12 +1770,12 @@ def google_home(device, file):
                 pass'''
     """
     speaker.say('Scanning your IP range for Google Home devices sir!')
-    speaker.runAndWait()
     sys.stdout.write('\rScanning your IP range for Google Home devices..')
+    speaker.runAndWait()
     from googlehomepush import GoogleHome
     from pychromecast.error import ChromecastConnectionError
-    network_id = vpn_checker()
-    if not network_id:
+    network_id = '.'.join(vpn_checker().split('.')[0:3])
+    if network_id.startswith('VPN'):
         return
 
     def ip_scan(host_id):
@@ -1794,7 +1801,7 @@ def google_home(device, file):
         sys.stdout.write("\r")
 
         def comma_separator(list_):
-            """Seperates commas using simple .join() function and analysis based on length of the list (args)"""
+            """Separates commas using simple .join() function and analysis based on length of the list (args)"""
             return ', and '.join([', '.join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
 
         speaker.say(f"You have {len(devices)} devices in your IP range sir! {comma_separator(list(devices.keys()))}. "
@@ -2113,7 +2120,7 @@ def television(converted):
     global tv
     phrase_exc = converted.replace('TV', '')
     phrase = phrase_exc.lower()
-    if not vpn_checker():
+    if vpn_checker().startswith('VPN'):
         return
     elif 'wake' in phrase or 'turn on' in phrase or 'connect' in phrase or 'status' in phrase or 'control' in phrase:
         from wakeonlan import send_magic_packet as wake
@@ -2500,7 +2507,7 @@ def lights(converted):
         light_host_id = hallway + kitchen
 
     connection_status = vpn_checker()
-    if not connection_status:
+    if connection_status.startswith('VPN'):
         return
     else:
         if 'turn on' in converted or 'cool' in converted or 'white' in converted:
@@ -2521,13 +2528,13 @@ def vpn_checker():
     ip_address = socket_.getsockname()[0]
     socket_.close()
     if not (ip_address.startswith('192') | ip_address.startswith('127')):
+        ip_address = 'VPN::' + ip_address
         info = json.load(urlopen('http://ipinfo.io/json'))
         sys.stdout.write(f"\rVPN connection is detected to {info.get('ip')} at {info.get('city')}, "
                          f"{info.get('region')} maintained by {info.get('org')}")
         speaker.say("You have your VPN turned on. Details on your screen sir! Please note that, none of the home "
                     "integrations will work with VPN enabled.")
-    else:
-        return '.'.join(ip_address.split('.')[0:3])
+    return ip_address
 
 
 def celebrate():
