@@ -93,16 +93,13 @@ def greeting():
 
 
 def initialize():
-    """Function to initialize when woke up from sleep mode. greet_check and dummy are to ensure greeting is given only
-    for the first time, the script is run place_holder is set for all the functions so that the function runs only ONCE
-    again in case of an exception"""
+    """Awakens from sleep mode. greet_check is to ensure greeting is given only for the first function call."""
     global greet_check
-    greet_check = 'initialized'
-    if dummy.has_been_called:
+    if greet_check:
         speaker.say("What can I do for you?")
-        dummy.has_been_called = False
     else:
         speaker.say(f'Good {greeting()}.')
+        greet_check = 'initialized'
     renew()
 
 
@@ -1082,8 +1079,7 @@ def locate(converted):
     global place_holder
     target_device = device_selector(converted)
     sys.stdout.write(f"\rLocating your {target_device}")
-    if dummy.has_been_called:
-        dummy.has_been_called = False
+    if place_holder == 0:
         speaker.say("Would you like to ring it?")
     else:
         place_holder = 'Apple'
@@ -1110,7 +1106,6 @@ def locate(converted):
             place_holder = None
         else:
             speaker.say("I didn't quite get that. Try again.")
-            dummy.has_been_called = True
             place_holder = 0
             locate(converted)
     else:
@@ -2819,15 +2814,10 @@ def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action.
     threshold is used to sanity check sentry_mode() so that:
      1. Jarvis doesn't run into Fatal Python error
-     2. Jarvis restarts at least twice a day and gets a new pid
-    morning_msg and evening_msg are set to False initially and to True when their purpose is done for the day.
-     this is done to avoid Jarvis repeating the task as it completes within a minute.
-     Alternatively, a condition to check and run within first 15 seconds can be implemented."""
+     2. Jarvis restarts at least twice a day and gets a new pid"""
     threshold = 0
     while threshold < 5000:
         threshold += 1
-        if greet_check == 'initialized':
-            dummy.has_been_called = True
         try:
             sys.stdout.write("\rSentry Mode")
             listen = recognizer.listen(source, timeout=5, phrase_time_limit=7)
@@ -3002,11 +2992,6 @@ def shutdown():
             shutdown()
 
 
-def dummy():
-    """dummy function to play around with conditional statements within other functions"""
-    return None
-
-
 def voice_changer():
     """Alters voice and rate of speech according to the Operating System"""
     voices = speaker.getProperty("voices")  # gets the list of voices available
@@ -3107,7 +3092,7 @@ if __name__ == '__main__':
     # {function_name}.has_been_called is use to denote which function has triggered the other
     report.has_been_called, locate_places.has_been_called, directions.has_been_called, google_maps.has_been_called, \
         time_travel.has_been_called = False, False, False, False, False
-    for functions in [dummy, delete_todo, todo, add_todo]:
+    for functions in [delete_todo, todo, add_todo]:
         functions.has_been_called = False
 
     event = celebrate()  # triggers celebrate function and wishes for a event if found.
