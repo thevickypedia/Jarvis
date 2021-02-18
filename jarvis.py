@@ -2046,6 +2046,7 @@ def github(target):
 def notify(user, password, number, body):
     """Send text message through SMS gateway of destination number"""
     subject = "Message from Jarvis" if number == phone_number else "Jarvis::Message from Vignesh"
+    body = body.encode('ascii', 'ignore').decode('ascii')  # ignore symbols like ° without throwing UnicodeEncodeError
     to = f"{number}@tmomail.net"
     message = (f"From: {user}\n" + f"To: {to}\n" + f"Subject: {subject}\n" + "\n\n" + body)
     server = smtplib.SMTP("smtp.gmail.com", 587)
