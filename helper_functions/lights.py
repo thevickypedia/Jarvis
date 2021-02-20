@@ -1,30 +1,33 @@
-"""Source::https://github.com/adamkempenich/magichome-python"""
+"""Reference::https://github.com/adamkempenich/magichome-python"""
 
 import datetime
 import socket
 import struct
 import sys
 
+from logger import logger
+
 
 class MagicHomeApi:
     """Representation of a MagicHome device."""
 
-    def __init__(self, device_ip, device_type, keep_alive=True):
+    def __init__(self, device_ip, device_type, operation):
         """"Initialize a device."""
         self.device_ip = device_ip
         self.device_type = device_type
+        self.operation = operation
         self.API_PORT = 5577
         self.latest_connection = datetime.datetime.now()
-        self.keep_alive = keep_alive
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.settimeout(3)
         try:
             # print("Establishing connection with the device.")
             self.s.connect((self.device_ip, self.API_PORT))
         except socket.error as error:
-            sys.stdout.write(f"\rSocket error on {device_ip}: {error}")
-            if self.s:
-                self.s.close()
+            self.s.close()
+            error_msg = f"\rSocket error on {device_ip}: {error}"
+            sys.stdout.write(error_msg)
+            logger.fatal(f'{error_msg} while performing "{self.operation}"')
 
     def turn_on(self):
         """Turn a device on."""
@@ -144,10 +147,8 @@ class MagicHomeApi:
                 self.s.connect((self.device_ip, self.API_PORT))
             message_length = len(bytes_)
             self.s.send(struct.pack("B" * message_length, *bytes_))
-            # Close the connection unless requested not to
-            if not self.keep_alive:
-                self.s.close()
         except socket.error as error:
-            sys.stdout.write(f"\rSocket error on {self.device_ip}: {error}")
-            if self.s:
-                self.s.close()
+            error_msg = f"\rSocket error on {self.device_ip}: {error}"
+            sys.stdout.write(error_msg)
+            logger.fatal(f'{error_msg} while performing "{self.operation}"')
+        self.s.close()

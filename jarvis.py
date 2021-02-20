@@ -121,9 +121,12 @@ def renew():
                 speaker.runAndWait()
                 return
             else:
-                remove = ['buddy', 'jarvis', 'hey']
+                remove = ['buddy', 'jarvis', 'hey', 'hello']
                 converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
-                split(converted)
+                if not converted or 'you there' in converted:
+                    speaker.say(random.choice(wake_up3))
+                else:
+                    split(converted)
                 speaker.runAndWait()
                 waiter = 0
         except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
@@ -152,11 +155,7 @@ def conditions(converted):
     the appropriate function which has dedicated task"""
     sys.stdout.write(f'\r{converted}')
 
-    if 'are you there' in converted.lower() or converted.strip() == 'Jarvis' or 'you there' in \
-            converted.lower():
-        speaker.say("I'm here sir!")
-
-    elif any(word in converted.lower() for word in keywords.date()) and \
+    if any(word in converted.lower() for word in keywords.date()) and \
             not any(word in converted.lower() for word in keywords.avoid()):
         current_date()
 
@@ -410,9 +409,10 @@ def conditions(converted):
             speaker.say("Modifying screen brightness on Windows hasn't been developed sir!")
 
     elif any(word in converted.lower() for word in keywords.lights()):
-        converted = [converted.lower()]
-        speaker.say(random.choice(ack))
-        Thread(target=lights, args=converted).start()
+        connection_status = vpn_checker()
+        if not connection_status.startswith('VPN'):
+            speaker.say(random.choice(ack))
+            Thread(target=lights, args=[converted.lower(), connection_status]).start()
 
     elif any(word in converted.lower() for word in keywords.guard_enable() or keywords.guard_disable()):
         if any(word in converted.lower() for word in keywords.guard_enable()):
@@ -2207,7 +2207,7 @@ def television(converted):
         else:
             speaker.say("I didn't quite get that.")
     else:
-        converted = converted.replace('my', 'your')
+        converted = converted.replace('my', 'your').replace('please', '').replace('will you', '').strip()
         speaker.say(f"I'm sorry sir! I wasn't able to {converted}, as the TV state is unknown! You can ask me to "
                     f"turn on or connect to the TV to start using the TV features.")
 
@@ -2391,7 +2391,7 @@ def speed_test():
     download = size_converter(st.results.download)
     upload = size_converter(st.results.upload)
     sys.stdout.write(f'\rPing: {ping}m/s\tDownload: {download}\tUpload: {upload}')
-    speaker.say(f'Ping rate: {ping} milli seconds')
+    speaker.say(f'Ping rate: {ping} milli seconds.')
     speaker.say(f'Download speed: {download} per second.')
     speaker.say(F'Upload speed: {upload} per second.')
 
@@ -2476,31 +2476,27 @@ def set_brightness(level):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
 
 
-def lights(converted):
+def lights(converted, connection_status):
     """Controller for smart lights"""
-
-    connection_status = vpn_checker()
-    if connection_status.startswith('VPN'):
-        return
 
     from helper_functions.lights import MagicHomeApi
 
     def turn_off(host):
-        controller = MagicHomeApi(device_ip=host, device_type=1)
+        controller = MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off')
         controller.turn_off()
         time.sleep(1)
 
     def warm(host):
-        controller = MagicHomeApi(device_ip=host, device_type=1)
+        controller = MagicHomeApi(device_ip=host, device_type=1, operation='Warm Lights')
         controller.update_device(r=0, g=0, b=0, warm_white=255)
         time.sleep(1)
 
     def cool(host):
-        controller = MagicHomeApi(device_ip=host, device_type=2)
+        controller = MagicHomeApi(device_ip=host, device_type=2, operation='Cool Lights')
         controller.update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
         time.sleep(1)
 
-    # env var or aws secret stored as a string. eg: '19,20,21'
+    # host id's for each light bulb stored in env var or aws secret as a string. eg: '19,20,21'
     hallway = [int(i) for i in hallway_ip.split(',') if i.isdigit()]
     kitchen = [int(i) for i in kitchen_ip.split(',') if i.isdigit()]
 
@@ -2511,7 +2507,7 @@ def lights(converted):
     else:
         light_host_id = hallway + kitchen
 
-    network_id = '.'.join(connection_status.split('.')[0:3])
+    network_id = '.'.join(connection_status.split('.')[:-1])  # gets network id removing host_id from the IP address
     if 'turn on' in converted or 'cool' in converted or 'white' in converted:
         [cool(f'{network_id}.{i}') for i in light_host_id]
     elif 'turn off' in converted:
@@ -2534,7 +2530,7 @@ def vpn_checker():
         info = json.load(urlopen('http://ipinfo.io/json'))
         sys.stdout.write(f"\rVPN connection is detected to {info.get('ip')} at {info.get('city')}, "
                          f"{info.get('region')} maintained by {info.get('org')}")
-        speaker.say("You have your VPN turned on. Details on your screen sir! Please note that, none of the home "
+        speaker.say("You have your VPN turned on. Details on your screen sir! Please note that none of the home "
                     "integrations will work with VPN enabled.")
     return ip_address
 
@@ -3078,10 +3074,10 @@ if __name__ == '__main__':
     current_lat, current_lon, location_info = location_services(device_selector(None))
 
     # different responses for different conditions in sentry mode
-    wake_up1 = ['Up and running sir.', "We are online and ready sir.", "I have indeed been uploaded sir!",
+    wake_up1 = ['Up and running sir!', "We are online and ready sir!", "I have indeed been uploaded sir!",
                 'My listeners have been activated sir!']
-    wake_up2 = ['For you sir - Always!', 'At your service sir.']
-    wake_up3 = ["I'm here sir!."]
+    wake_up2 = ['For you sir - Always!', 'At your service sir!']
+    wake_up3 = ["I'm here sir!"]
 
     confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']
     ack = ['Check', 'Will do sir!', 'You got it sir!', 'Roger that!', 'Done sir!', 'By all means sir!', 'Indeed sir!',
