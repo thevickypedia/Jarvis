@@ -1,7 +1,7 @@
 class Keywords:
     """list of keywords for each function which is condition matched in jarvis.py"""
     def date(self):
-        key = ['date', 'day']
+        key = ['date']
         return key
 
     def time(self):

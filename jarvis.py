@@ -2813,7 +2813,8 @@ def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action.
     threshold is used to sanity check sentry_mode() so that:
      1. Jarvis doesn't run into Fatal Python error
-     2. Jarvis restarts at least twice a day and gets a new pid"""
+     2. Jarvis restarts at least twice a day and gets a new pid
+     3. Maintains mandatory sleep hours 1-3 AM (use bypass in phrase to bypass it)"""
     threshold = 0
     while threshold < 5000:
         threshold += 1
@@ -2825,7 +2826,10 @@ def sentry_mode():
             sys.stdout.write(f"\r{key_original}")
             key = key_original.lower()
             if 'jarvis' in key or 'buddy' in key:
-                if key == 'jarvis' or key == 'buddy':
+                c_time = datetime.now().strftime("%I:%M %p")
+                if int(c_time.split(':')[0]) in range(1, 4) and c_time.split()[-1] == 'AM' and 'bypass' not in key:
+                    speaker.say(f"It is {c_time} sir! You should be sleeping already. Good Night")
+                elif key == 'jarvis' or key == 'buddy':
                     speaker.say(f'{random.choice(wake_up3)}')
                     initialize()
                 elif ('morning' in key or 'night' in key or 'afternoon' in key or 'after noon' in key or
@@ -2841,7 +2845,7 @@ def sentry_mode():
                     speaker.say(f'{random.choice(wake_up2)}')
                     initialize()
                 elif 'jarvis' in key or 'buddy' in key:
-                    remove = ['buddy', 'jarvis', 'hey']
+                    remove = ['buddy', 'jarvis', 'hey', 'bypass']
                     converted = ' '.join([i for i in key_original.split() if i.lower() not in remove])
                     if converted:
                         split(converted.strip())
@@ -3076,8 +3080,6 @@ if __name__ == '__main__':
 
     volume_controller(50)  # defaults to volume 50%
     voice_changer()  # changes voice to default values given
-    speaker.say('Voice module has been configured sir!')
-    speaker.runAndWait()
 
     # Get all necessary credentials and api keys from env vars or aws client
     sys.stdout.write("\rFetching credentials and API keys.")
