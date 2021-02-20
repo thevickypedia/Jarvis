@@ -1,7 +1,7 @@
 class Keywords:
     """list of keywords for each function which is condition matched in jarvis.py"""
     def date(self):
-        key = ['date']
+        key = ['date', 'day']
         return key
 
     def time(self):
@@ -194,6 +194,10 @@ class Keywords:
         key = ['meeting', 'appointment', 'schedule']
         return key
 
+    def voice_changer(self):
+        key = ['voice', 'module', 'audio']
+        return key
+
     def ok(self):
         key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
         return key
@@ -208,7 +212,7 @@ class Keywords:
         return key
 
     def sleep(self):
-        key = ['exit', 'quit', 'sleep', 'Xzibit', 'see you later', 'talk to you later', 'activate sentry mode']
+        key = ['exit', 'quit', 'sleep', 'Xzibit', 'activate sentry mode']
         return key
 
     def kill(self):

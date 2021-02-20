@@ -433,6 +433,9 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.meetings()):
         meetings()
 
+    elif any(word in converted.lower() for word in keywords.voice_changer()):
+        voice_changer(converted)
+
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
 
@@ -2819,6 +2822,7 @@ def sentry_mode():
             listen = recognizer.listen(source, timeout=5, phrase_time_limit=7)
             sys.stdout.write("\r")
             key_original = recognizer.recognize_google(listen).strip()
+            sys.stdout.write(f"\r{key_original}")
             key = key_original.lower()
             if 'jarvis' in key or 'buddy' in key:
                 if key == 'jarvis' or key == 'buddy':
@@ -2988,23 +2992,69 @@ def shutdown():
             shutdown()
 
 
-def voice_changer():
-    """Alters voice and rate of speech according to the Operating System"""
+# noinspection PyTypeChecker,PyUnresolvedReferences
+def voice_changer(change=None):
+    """Alters voice and rate of speech according to the Operating System.
+    Alternatively you can choose from a variety of voices available for your device."""
+
+    global place_holder
     voices = speaker.getProperty("voices")  # gets the list of voices available
-    if operating_system == 'Darwin':
-        # noinspection PyTypeChecker,PyUnresolvedReferences
-        speaker.setProperty("voice", voices[7].id)  # voice module #7 for MacOS
-    elif operating_system == 'Windows':
-        # noinspection PyTypeChecker,PyUnresolvedReferences
-        speaker.setProperty("voice", voices[0].id)  # voice module #0 for Windows
-        speaker.setProperty('rate', 190)  # speech rate is slowed down in Windows for optimal experience
-        if 'SetVol.exe' not in current_dir:
-            sys.stdout.write("\rPLEASE WAIT::Downloading volume controller for Windows")
-            os.system("""curl https://thevickypedia.com/Jarvis/SetVol.exe --output SetVol.exe --silent""")
-            sys.stdout.write("\r")
+    avail_voices = len(voices)
+
+    # noinspection PyUnresolvedReferences
+    def voice_default(voice_id=(7, 0)):  # default values set as tuple
+        if operating_system == 'Darwin':
+            speaker.setProperty("voice", voices[voice_id[0]].id)  # voice module #7 for MacOS
+        elif operating_system == 'Windows':
+            speaker.setProperty("voice", voices[voice_id[-1]].id)  # voice module #0 for Windows
+            speaker.setProperty('rate', 190)  # speech rate is slowed down in Windows for optimal experience
+        else:
+            logger.fatal(f'Unsupported Operating System::{operating_system}.')
+            exit(0)
+    if change:
+        if distribution := [int(s) for s in re.findall(r'\b\d+\b', change)]:
+            place_holder = 'custom'
+        else:
+            distribution = range(avail_voices)
+        for module_id in distribution:
+            if module_id < avail_voices:
+                voice_default([module_id])  # passing a list as default is tuple and index values are used to reference
+                sys.stdout.write(f'\rVoice module has been re-configured to {module_id}')
+                if not place_holder:
+                    speaker.say('Voice module has been re-configured sir! Would you like me to retain this?')
+                    place_holder = 1
+                elif place_holder == 1:
+                    speaker.say("Here's an example of one of my other voices sir!. Would you like me to use this one?")
+                    place_holder = 2
+                elif place_holder == 'custom':
+                    speaker.say('Is this the one you wanted sir?')
+                else:
+                    speaker.say('How about this one sir?')
+            else:
+                speaker.say(f'The voice module number {module_id} is not available for your device sir! '
+                            f'You may want to try a module number between 0 and {avail_voices - 1}')
+            speaker.runAndWait()
+            keyword = listener(3, 5)
+            if keyword == 'SR_ERROR':
+                voice_default()
+                speaker.say("Sorry, I had trouble understanding. I'm back to my default voice.")
+                place_holder = 0
+                return
+            elif 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
+                voice_default()
+                speaker.say('Reverting the changes to default voice module sir!')
+                place_holder = 0
+                return
+            elif any(word in keyword.lower() for word in keywords.ok()):
+                speaker.say(random.choice(ack))
+                place_holder = 0
+                return
+            elif custom_id := [int(id_) for id_ in re.findall(r'\b\d+\b', keyword)]:
+                place_holder = 'custom'
+                voice_changer(str(custom_id))
+                break
     else:
-        logger.fatal(f'Unsupported Operating System::{operating_system}.')
-        exit(0)
+        voice_default()
 
 
 if __name__ == '__main__':
@@ -3024,7 +3074,10 @@ if __name__ == '__main__':
     sys.setrecursionlimit(limit * 100)  # increases the recursion limit by 100 times
     sns = boto3.client('sns')
 
-    voice_changer()
+    volume_controller(50)  # defaults to volume 50%
+    voice_changer()  # changes voice to default values given
+    speaker.say('Voice module has been configured sir!')
+    speaker.runAndWait()
 
     # Get all necessary credentials and api keys from env vars or aws client
     sys.stdout.write("\rFetching credentials and API keys.")
@@ -3092,7 +3145,6 @@ if __name__ == '__main__':
         functions.has_been_called = False
 
     event = celebrate()  # triggers celebrate function and wishes for a event if found.
-    volume_controller(50)  # defaults to volume 50%
 
     sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
 
