@@ -2769,7 +2769,7 @@ def offline_communicator():
         logger.fatal(f'Offline Communicator::{imap_error.__name__}\n{traceback.format_exc()}')  # include traceback
         logger.fatal('Restarting Offline Communicator')
         time.sleep(120)  # restart the session after 2 minutes in case of any of the above exceptions
-        return offline_communicator_initiate()  # return used here will terminate the current function
+        offline_communicator_initiate()  # return used here will terminate the current function
 
 
 def meetings():
@@ -2865,7 +2865,6 @@ def sentry_mode():
             speaker.say('I faced an unknown exception.')
             restart()
     speaker.say("My run time has reached the threshold!")
-    logger.fatal('Restarting Now')
     volume_controller(20)
     restart()
 
@@ -2925,6 +2924,7 @@ def exit_process():
     """Function that holds the list of operations done upon exit."""
     global STATUS
     STATUS = False
+    logger.fatal('JARVIS::Stopping Now::Run STATUS has been unset')
     alarms, reminders = [], {}
     for file in os.listdir('alarm'):
         if file != '.keep' and file != '.DS_Store':
@@ -2934,6 +2934,7 @@ def exit_process():
             split_val = file.replace('.lock', '').split('|')
             reminders.update({split_val[0]: split_val[-1]})
     if reminders:
+        logger.fatal(f'JARVIS::Deleting Reminders - {reminders}')
         if len(reminders) == 1:
             speaker.say(f'You have a pending reminder sir!')
         else:
@@ -2942,6 +2943,7 @@ def exit_process():
             speaker.say(f"{value.replace('_', ' ')} at "
                         f"{key.replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')}")
     if alarms:
+        logger.fatal(f'JARVIS::Deleting Alarms - {alarms}')
         alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
         alarms = alarms.replace('.lock', '').replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')
         sys.stdout.write(f"\r{alarms}")
@@ -2961,6 +2963,7 @@ def restart():
     Doing this changes the PID to avoid any Fatal Errors occurred by long running threads."""
     global STATUS
     STATUS = False
+    logger.fatal('JARVIS::Restarting Now::Run STATUS has been unset')
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(time.perf_counter())}")
     speaker.say('Restarting now sir! I will be up and running momentarily.')
     speaker.runAndWait()
@@ -3062,10 +3065,10 @@ def voice_changer(change=None):
 
 
 if __name__ == '__main__':
-    logger.fatal('Starting Now::Run STATUS has been set')
     STATUS = True
-    # Voice ID::reference
-    sys.stdout.write(f'\rVoice ID::Female: 1/17 Male: 0/7')
+    logger.fatal('JARVIS::Starting Now::Run STATUS has been set')
+
+    sys.stdout.write(f'\rVoice ID::Female: 1/17 Male: 0/7')  # Voice ID::reference
     speaker = audio.init()  # initiates speaker
     recognizer = sr.Recognizer()  # initiates recognizer that uses google's translation
     keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
@@ -3076,7 +3079,7 @@ if __name__ == '__main__':
     database = Database()  # initiates Database() for TO-DO items
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 100)  # increases the recursion limit by 100 times
-    sns = boto3.client('sns')
+    sns = boto3.client('sns')  # initiates sns for notification service
 
     volume_controller(50)  # defaults to volume 50%
     voice_changer()  # changes voice to default values given
@@ -3110,8 +3113,7 @@ if __name__ == '__main__':
     # tv is set to None instead of TV() at the start to avoid turning on the TV unnecessarily
     # suggestion_count is used in google_searchparser to limit the number of times suggestions are used.
     # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
-    place_holder, greet_check, tv = None, None, None
-    suggestion_count = 0
+    place_holder, greet_check, tv, suggestion_count = None, None, None, 0
 
     # Uses speed test api to check for internet connection
     try:
@@ -3120,7 +3122,6 @@ if __name__ == '__main__':
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
         speaker.say("I was unable to connect to the internet sir! Please check your connection settings and retry.")
         speaker.runAndWait()
-        st = None
         exit(1)
 
     # stores necessary values for geo location to receive the latitude, longitude and address
