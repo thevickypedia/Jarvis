@@ -468,8 +468,7 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.kill()):
         exit_process()
-        Alarm(None, None, None)
-        Reminder(None, None, None, None)
+        terminator()
 
     elif any(word in converted.lower() for word in keywords.shutdown()):
         shutdown()
@@ -2561,7 +2560,6 @@ def time_travel():
     current_time(None)
     weather(None)
     speaker.runAndWait()
-    meetings() if day == 'Morning' else None
     todo()
     gmail()
     speaker.say('Would you like to hear the latest news?')
@@ -2857,8 +2855,7 @@ def sentry_mode():
             continue
         except KeyboardInterrupt:
             exit_process()
-            Alarm(None, None, None)
-            Reminder(None, None, None, None)
+            terminator()
         except (RuntimeError, RecursionError, TimeoutError):
             unknown_error = sys.exc_info()[0]
             logger.fatal(f'Unknown exception::{unknown_error.__name__}\n{traceback.format_exc()}')  # include traceback
@@ -2912,6 +2909,13 @@ def exit_message():
         exit_msg += f'\nAnd by the way, happy {event}'
 
     return exit_msg
+
+
+def terminator():
+    """Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.
+    Using this, eliminates the hassle of forcing multiple threads to stop."""
+    # noinspection PyUnresolvedReferences,PyProtectedMember
+    os._exit(0)
 
 
 def remove_files():
@@ -2968,7 +2972,7 @@ def restart():
     speaker.say('Restarting now sir! I will be up and running momentarily.')
     speaker.runAndWait()
     os.system(f'python3 restart.py')
-    exit(1)
+    exit(1)  # Don't call terminator() here as, os._exit(1) will kill the background threads running in parallel
 
 
 def shutdown():
@@ -2985,7 +2989,7 @@ def shutdown():
                 call(['osascript', '-e', 'tell app "System Events" to shut down'])
             elif operating_system == 'Windows':
                 os.system("shutdown /s /t 1")
-            exit(0)
+            terminator()
         else:
             speaker.say("Machine state is left intact sir!")
             return
@@ -2999,13 +3003,13 @@ def shutdown():
             shutdown()
 
 
-# noinspection PyTypeChecker,PyUnresolvedReferences
 def voice_changer(change=None):
     """Alters voice and rate of speech according to the Operating System.
     Alternatively you can choose from a variety of voices available for your device."""
 
     global place_holder
     voices = speaker.getProperty("voices")  # gets the list of voices available
+    # noinspection PyTypeChecker,PyUnresolvedReferences
     avail_voices = len(voices)
 
     # noinspection PyUnresolvedReferences
@@ -3017,7 +3021,7 @@ def voice_changer(change=None):
             speaker.setProperty('rate', 190)  # speech rate is slowed down in Windows for optimal experience
         else:
             logger.fatal(f'Unsupported Operating System::{operating_system}.')
-            exit(0)
+            terminator()
     if change:
         if distribution := [int(s) for s in re.findall(r'\b\d+\b', change)]:
             place_holder = 'custom'
@@ -3122,7 +3126,7 @@ if __name__ == '__main__':
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
         speaker.say("I was unable to connect to the internet sir! Please check your connection settings and retry.")
         speaker.runAndWait()
-        exit(1)
+        terminator()
 
     # stores necessary values for geo location to receive the latitude, longitude and address
     options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())

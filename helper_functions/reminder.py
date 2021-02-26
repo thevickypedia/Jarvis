@@ -14,13 +14,10 @@ operating_system = platform.system()
 class Reminder(Thread):
     def __init__(self, hours, minutes, am_pm, message):
         super(Reminder, self).__init__()
-        if hours and minutes and am_pm:
-            self.hours = hours
-            self.minutes = minutes
-            self.am_pm = am_pm
-            self.message = message
-        else:
-            os._exit(0)
+        self.hours = hours
+        self.minutes = minutes
+        self.am_pm = am_pm
+        self.message = message
 
     def run(self):
         file_name = f'{self.hours}_{self.minutes}_{self.am_pm}|{self.message.replace(" ", "_")}.lock'
@@ -51,8 +48,5 @@ class Reminder(Thread):
                 elif operating_system == 'Windows':
                     from win10toast import ToastNotifier
                     ToastNotifier().show_toast(subject, body)
-                try:
-                    os.remove(f"{directory}/{file_name}")
-                except FileNotFoundError:
-                    os.remove(f"../{directory}/{file_name}")
+                os.remove(f"{directory}/{file_name}")
                 return

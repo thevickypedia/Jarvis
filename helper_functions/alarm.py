@@ -11,12 +11,9 @@ directory = 'alarm'  # dir need not be '../alarm' as the Thread is triggered by 
 class Alarm(Thread):
     def __init__(self, hours, minutes, am_pm):
         super(Alarm, self).__init__()
-        if hours and minutes and am_pm:
-            self.hours = hours
-            self.minutes = minutes
-            self.am_pm = am_pm
-        else:
-            os._exit(0)
+        self.hours = hours
+        self.minutes = minutes
+        self.am_pm = am_pm
 
     def run(self):
         operating_system = platform.system()
@@ -35,8 +32,5 @@ class Alarm(Thread):
                 elif operating_system == 'Windows':
                     location = os.path.abspath(os.getcwd())
                     os.system(f'start wmplayer "{location}\\{music_dir}\\{tone}"')
-                try:
-                    os.remove(f"{directory}/{file_name}")
-                except FileNotFoundError:
-                    os.remove(f"../{directory}/{file_name}")
+                os.remove(f"{directory}/{file_name}")
                 return
