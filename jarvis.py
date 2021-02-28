@@ -542,7 +542,7 @@ def location_services(device):
         if not raw_location and place_holder == 'Apple':
             return 'None', 'None', 'None'
         elif not raw_location:
-            raise PyiCloudAPIResponseException
+            raise PyiCloudAPIResponseException(reason=f'Unable to retrieve location for {device}')
         else:
             current_lat_ = raw_location['latitude']
             current_lon_ = raw_location['longitude']
@@ -551,7 +551,7 @@ def location_services(device):
         current_lat_ = st.results.client['lat']
         current_lon_ = st.results.client['lon']
         speaker.say("I have trouble accessing the i-cloud API, so I'll be using your I.P address to get your location. "
-                    "Please note that - this may not be accurate enough for location services.")
+                    "Please note that this may not be accurate enough for location services.")
         speaker.runAndWait()
     except requests.exceptions.ConnectionError:
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
@@ -2761,16 +2761,17 @@ def offline_communicator():
                                         logger.fatal(f'Received offline input::{body}')
                                         mail.store(bytecode, "+FLAGS", "\\Deleted")  # marks email as deleted
                                         mail.expunge()  # DELETES (not send to Trash) the email permanently
-                                        split(body)
-                                        response = speaker.vig()
-                                        speaker.stop()
-                                        voice_changer()
+                                        if body:
+                                            split(body)
+                                            response = f'Request:\n{body}\n\nResponse:\n{speaker.vig()}'
+                                            speaker.stop()
+                                            voice_changer()
                             else:
                                 mail.store(bytecode, "-FLAGS", "\\Seen")  # set "-FLAGS" to un-see/mark as unread
             if response:
-                response = None  # reset response to None to avoid receiving same message endlessly
-                logger.fatal('Response from Jarvis has been sent!')
                 notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
+                logger.fatal('Response from Jarvis has been sent!')
+                response = None  # reset response to None to avoid receiving same message endlessly
             time.sleep(30)  # waits for 30 seconds before attempting next search
         logger.fatal('Disabled Offline Communicator')
         mail.close()  # closes imap lib
