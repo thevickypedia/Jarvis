@@ -1,9 +1,5 @@
-import email
 import imaplib
-import json
-import math
 import os
-import platform
 import random
 import re
 import smtplib
@@ -12,12 +8,18 @@ import ssl
 import sys
 import time
 import traceback
-import unicodedata
 import webbrowser
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
+from email import message_from_bytes, message_from_string
 from email.header import decode_header, make_header
+from json import load, loads
+from math import ceil, log, floor, pow
+from platform import uname, platform, system
+from shutil import disk_usage
 from subprocess import call, check_output, getoutput, PIPE, Popen
 from threading import Thread
+from unicodedata import normalize
 from urllib.request import urlopen
 
 import boto3
@@ -27,18 +29,34 @@ import pytemperature
 import pyttsx3 as audio
 import requests
 import speech_recognition as sr
+import wikipedia
 import yaml
+from PyDictionary import PyDictionary
+from chatterbot import ChatBot
+from chatterbot.trainers import ChatterBotCorpusTrainer
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
 from geopy.geocoders import Nominatim, options
+from googlehomepush import GoogleHome
+from googlehomepush.http_server import serve_file
 from inflect import engine
+from joke.jokes import geek, icanhazdad, chucknorris, icndb
+from newsapi import NewsApiClient, newsapi_exception
 from playsound import playsound
 from psutil import Process, virtual_memory
+from pychromecast.error import ChromecastConnectionError
 from pyicloud import PyiCloudService
 from pyicloud.exceptions import PyiCloudAPIResponseException, PyiCloudFailedLoginException
+from pyrh import Robinhood
+from pytz import timezone
 from randfacts import getFact
 from requests.auth import HTTPBasicAuth
+from search_engine_parser.core.engines.google import Search as GoogleSearch
+from search_engine_parser.core.exceptions import NoResultsOrTrafficError
 from speedtest import Speedtest, ConfigRetrievalError
+from timezonefinder import TimezoneFinder
+from wakeonlan import send_magic_packet as wake
+from wolframalpha import Client as Think
 from wordninja import split as splitter
 
 from helper_functions.alarm import Alarm
@@ -46,10 +64,13 @@ from helper_functions.aws_clients import AWSClients
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.emailer import send_mail
+from helper_functions.facial_recognition import Face
 from helper_functions.keywords import Keywords
+from helper_functions.lights import MagicHomeApi
+from helper_functions.logger import logger
 from helper_functions.reminder import Reminder
+from helper_functions.robinhood import watcher
 from helper_functions.tv_controls import TV
-from logger import logger
 
 
 def listener(timeout, phrase_limit):
@@ -67,10 +88,10 @@ def listener(timeout, phrase_limit):
 
 
 def split(key):
-    if ' and ' in key:
+    if ' and ' in key and not any(word in key.lower() for word in keywords.avoid()):
         for each in key.split(' and '):
             conditions(each.strip())
-    elif ' also ' in key:
+    elif ' also ' in key and not any(word in key.lower() for word in keywords.avoid()):
         for each in key.split(' also '):
             conditions(each.strip())
     else:
@@ -477,36 +498,37 @@ def conditions(converted):
         chatter_bot()
 
     else:
-        if google_maps(converted):
-            if google(converted):
-                # if none of the conditions above are met, it writes your statement to an yaml file for future training
-                train_file = {'Uncategorized': converted}
-                if os.path.isfile('training_data.yaml'):
-                    with open(r'training_data.yaml', 'r') as reader:
-                        content = reader.read()
+        if alpha(converted):
+            if google_maps(converted):
+                if google(converted):
+                    # if none of the conditions above are met, your statement is written to an yaml file for review
+                    train_file = {'Uncategorized': converted}
+                    if os.path.isfile('training_data.yaml'):
+                        with open(r'training_data.yaml', 'r') as reader:
+                            content = reader.read()
+                            for key, value in train_file.items():
+                                if str(value) not in content:  # avoids duplication in yaml file
+                                    dict_file = [{key: [value]}]
+                                    with open(r'training_data.yaml', 'a') as writer:
+                                        yaml.dump(dict_file, writer)
+                    else:
                         for key, value in train_file.items():
-                            if str(value) not in content:  # avoids duplication in yaml file
-                                dict_file = [{key: [value]}]
-                                with open(r'training_data.yaml', 'a') as writer:
-                                    yaml.dump(dict_file, writer)
-                else:
-                    for key, value in train_file.items():
-                        train_file = [{key: [value]}]
-                    with open(r'training_data.yaml', 'a') as writer:
-                        yaml.dump(train_file, writer)
+                            train_file = [{key: [value]}]
+                        with open(r'training_data.yaml', 'a') as writer:
+                            yaml.dump(train_file, writer)
 
-                # if none of the conditions above are met, opens a google search on default browser
-                sys.stdout.write(f"\r{converted}")
-                if google_maps.has_been_called:
-                    google_maps.has_been_called = False
-                    speaker.say("I have also opened a google search for your request.")
-                else:
-                    speaker.say(f"I heard {converted}. Let me look that up.")
-                    speaker.runAndWait()
-                    speaker.say("I have opened a google search for your request.")
-                search = str(converted).replace(' ', '+')
-                unknown_url = f"https://www.google.com/search?q={search}"
-                webbrowser.open(unknown_url)
+                    # if none of the conditions above are met, opens a google search on default browser
+                    sys.stdout.write(f"\r{converted}")
+                    if google_maps.has_been_called:
+                        google_maps.has_been_called = False
+                        speaker.say("I have also opened a google search for your request.")
+                    else:
+                        speaker.say(f"I heard {converted}. Let me look that up.")
+                        speaker.runAndWait()
+                        speaker.say("I have opened a google search for your request.")
+                    search = str(converted).replace(' ', '+')
+                    unknown_url = f"https://www.google.com/search?q={search}"
+                    webbrowser.open(unknown_url)
 
 
 def location_services(device):
@@ -583,8 +605,6 @@ def current_date():
 def current_time(place):
     """Says current time at the requested location if any else with respect to the current timezone"""
     if place:
-        from timezonefinder import TimezoneFinder
-        import pytz
         tf = TimezoneFinder()
         place_tz = geo_locator.geocode(place)
         coordinates = place_tz.latitude, place_tz.longitude
@@ -595,7 +615,7 @@ def current_time(place):
         state = address['state'] if 'state' in address.keys() else None
         time_location = f'{city} {state}'.replace('None', '') if city or state else place
         zone = tf.timezone_at(lat=place_tz.latitude, lng=place_tz.longitude)
-        datetime_zone = datetime.now(pytz.timezone(zone))
+        datetime_zone = datetime.now(timezone(zone))
         date_tz = datetime_zone.strftime("%A, %B %d, %Y")
         time_tz = datetime_zone.strftime("%I:%M %p")
         dt_string = datetime.now().strftime("%A, %B %d, %Y")
@@ -668,7 +688,7 @@ def weather(place):
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
     weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={weather_api}'
     r = urlopen(weather_url)  # sends request to the url created
-    response = json.loads(r.read())  # loads the response in a json
+    response = loads(r.read())  # loads the response in a json
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
     temperature = response['current']['temp']
@@ -749,7 +769,7 @@ def weather_condition(place, msg):
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
     weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={weather_api}'
     r = urlopen(weather_url)  # sends request to the url created
-    response = json.loads(r.read())  # loads the response in a json
+    response = loads(r.read())  # loads the response in a json
     weather_location = f'{city} {state}' if city and state else place
     if 'tonight' in msg:
         key = 0
@@ -811,8 +831,7 @@ def weather_condition(place, msg):
 
 def system_info():
     """gets your system configuration for both mac and windows"""
-    import shutil
-    total, used, free = shutil.disk_usage("/")
+    total, used, free = disk_usage("/")
     total = size_converter(total)
     used = size_converter(used)
     free = size_converter(free)
@@ -820,9 +839,9 @@ def system_info():
     ram_used = size_converter(virtual_memory().percent).replace(' B', ' %')
     cpu = str(os.cpu_count())
     if operating_system == 'Windows':
-        o_system = platform.uname()[0] + platform.uname()[2]
+        o_system = uname()[0] + uname()[2]
     elif operating_system == 'Darwin':
-        o_system = (platform.platform()).split('.')[0]
+        o_system = (platform()).split('.')[0]
     else:
         o_system = None
     sys_config = f"You're running {o_system}, with {cpu} cores. Your physical drive capacity is {total}. " \
@@ -835,7 +854,6 @@ def system_info():
 def wikipedia_():
     """gets any information from wikipedia using it's API"""
     global place_holder
-    import wikipedia
     speaker.say("Please tell the keyword.")
     speaker.runAndWait()
     keyword = listener(3, 5)
@@ -886,7 +904,6 @@ def news():
     """Says news around you"""
     news_source = 'fox'
     sys.stdout.write(f'\rGetting news from {news_source} news.')
-    from newsapi import NewsApiClient, newsapi_exception
     news_client = NewsApiClient(api_key=news_api)
     try:
         all_articles = news_client.get_top_headlines(sources=f'{news_source}-news')
@@ -950,12 +967,10 @@ def apps(keyword):
 def robinhood():
     """Gets investment from robinhood api"""
     sys.stdout.write('\rGetting your investment details.')
-    from pyrh import Robinhood
     rh = Robinhood()
     rh.login(username=robin_user, password=robin_pass, qr_code=robin_qr)
     raw_result = rh.positions()
     result = raw_result['results']
-    from helper_functions.robinhood import watcher
     stock_value = watcher(rh, result)
     sys.stdout.write(f'\r{stock_value}')
     speaker.say(stock_value)
@@ -985,7 +1000,7 @@ def repeater():
 
 
 def chatter_bot():
-    """Initiates chat bot, currently not supported for Windows"""
+    """Initiates chat bot"""
     global place_holder
     file1 = 'db.sqlite3'
     if operating_system == 'Darwin':
@@ -995,14 +1010,10 @@ def chatter_bot():
     else:
         file2 = None
     if os.path.isfile(file1) and os.path.isdir(file2):
-        from chatterbot import ChatBot
-        from chatterbot.trainers import ChatterBotCorpusTrainer
         bot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
     else:
         speaker.say('Give me a moment while I train the module.')
         speaker.runAndWait()
-        from chatterbot import ChatBot
-        from chatterbot.trainers import ChatterBotCorpusTrainer
         bot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
         trainer = ChatterBotCorpusTrainer(bot)
         trainer.train("chatterbot.corpus.english")
@@ -1193,7 +1204,7 @@ def gmail():
                     ignore, mail_data = mail.fetch(nm, '(RFC822)')
                     for response_part in mail_data:
                         if isinstance(response_part, tuple):  # checks for type(response_part)
-                            original_email = email.message_from_bytes(response_part[1])
+                            original_email = message_from_bytes(response_part[1])
                             sender = (original_email['From']).split(' <')[0]
                             sub = make_header(decode_header(original_email['Subject'])) \
                                 if original_email['Subject'] else None
@@ -1237,7 +1248,6 @@ def gmail():
 def meaning(keyword):
     """Gets meaning for a word skimmed from your statement using PyDictionary"""
     global place_holder
-    from PyDictionary import PyDictionary
     dictionary = PyDictionary()
     if keyword == 'word':
         keyword = None
@@ -1526,7 +1536,7 @@ def distance(starting_point, destination):
             drive_time = int(t_taken * 60)
             speaker.say(f"It might take you about {drive_time} minutes to get there sir!")
         else:
-            drive_time = math.ceil(t_taken)
+            drive_time = ceil(t_taken)
             if drive_time == 1:
                 speaker.say(f"It might take you about {drive_time} hour to get there sir!")
             else:
@@ -1774,8 +1784,6 @@ def google_home(device, file):
     speaker.say('Scanning your IP range for Google Home devices sir!')
     sys.stdout.write('\rScanning your IP range for Google Home devices..')
     speaker.runAndWait()
-    from googlehomepush import GoogleHome
-    from pychromecast.error import ChromecastConnectionError
     network_id = '.'.join(network_id.split('.')[0:3])
 
     def ip_scan(host_id):
@@ -1790,7 +1798,7 @@ def google_home(device, file):
         except ChromecastConnectionError:
             pass
 
-    from concurrent.futures import ThreadPoolExecutor  # scan time after MultiThread: < 10 seconds (usual bs: 3 minutes)
+    # scan time after MultiThread: < 10 seconds (usual bs: 3 minutes)
     devices = []
     with ThreadPoolExecutor(max_workers=5000) as executor:  # max workers set to 5K (to scan 255 IPs) for less wait time
         for info in executor.map(ip_scan, range(1, 256)):  # scans host IDs 1 to 255 (eg: 192.168.1.1 to 192.168.1.255)
@@ -1808,7 +1816,6 @@ def google_home(device, file):
                     f"You can choose one and ask me to play some music on any of these.")
         return
     else:
-        from googlehomepush.http_server import serve_file
         chosen = []
         [chosen.append(value) for key, value in devices.items() if key.lower() in device.lower()]
         if not chosen:
@@ -1829,7 +1836,6 @@ def google_home(device, file):
 def jokes():
     """Uses jokes lib to say chucknorris jokes"""
     global place_holder
-    from joke.jokes import geek, icanhazdad, chucknorris, icndb
     speaker.say(random.choice([geek, icanhazdad, chucknorris, icndb])())
     speaker.runAndWait()
     speaker.say("Do you want to hear another one sir?")
@@ -2126,7 +2132,6 @@ def television(converted):
     phrase_exc = converted.replace('TV', '')
     phrase = phrase_exc.lower()
     if 'wake' in phrase or 'turn on' in phrase or 'connect' in phrase or 'status' in phrase or 'control' in phrase:
-        from wakeonlan import send_magic_packet as wake
         try:
             wake(tv_mac_address)
             tv = TV()
@@ -2214,14 +2219,27 @@ def television(converted):
                     f"turn on or connect to the TV to start using the TV features.")
 
 
+def alpha(text):
+    client = Think(app_id=think_id)
+    res = client.query(text)
+    if res['@success'] == 'false':
+        return True
+    else:
+        try:
+            response = next(res.results).text
+            response = response.replace('\n', '. ').strip()
+            sys.stdout.write(f'\r{response}')
+            speaker.say(response)
+        except StopIteration:
+            return True
+
+
 def google(query):
     """Uses Google's search engine parser and gets the first result that shows up on a google search.
     If it is unable to get the result, Jarvis sends a request to suggestqueries.google.com to rephrase
     the query and then looks up using the search engine parser once again. global suggestion_count is used
     to make sure the suggestions and parsing don't run on an infinite loop."""
     global suggestion_count
-    from search_engine_parser.core.engines.google import Search as GoogleSearch
-    from search_engine_parser.core.exceptions import NoResultsOrTrafficError
     search_engine = GoogleSearch()
     results = []
     try:
@@ -2323,7 +2341,6 @@ def volume_controller(level):
 def face_recognition_detection():
     """Initiates face recognition script and looks for images stored in named directories within 'train' directory."""
     if operating_system == 'Darwin':
-        from helper_functions.facial_recognition import Face
         sys.stdout.write("\r")
         train_dir = 'train'
         os.mkdir(train_dir) if train_dir not in current_dir else None
@@ -2419,7 +2436,7 @@ def bluetooth(phrase):
             connection_attempt = False
             for target in targets:
                 if target['name']:
-                    target['name'] = unicodedata.normalize("NFKD", target['name'])
+                    target['name'] = normalize("NFKD", target['name'])
                     if any(re.search(line, target['name'], flags=re.IGNORECASE) for line in phrase.split()):
                         connection_attempt = True
                         if 'disconnect' in phrase:
@@ -2445,13 +2462,13 @@ def bluetooth(phrase):
 
         sys.stdout.write('\rScanning paired Bluetooth devices')
         paired = getoutput("blueutil --paired --format json")
-        paired = json.loads(paired)
+        paired = loads(paired)
         if not connector(targets=paired):
             sys.stdout.write('\rScanning UN-paired Bluetooth devices')
             speaker.say('No connections were established sir, looking for un-paired devices.')
             speaker.runAndWait()
             unpaired = getoutput("blueutil --inquiry --format json")
-            unpaired = json.loads(unpaired)
+            unpaired = loads(unpaired)
             connector(targets=unpaired) if unpaired else speaker.say('No un-paired devices found sir! '
                                                                      'You may want to be more precise.')
 
@@ -2480,8 +2497,6 @@ def set_brightness(level):
 
 def lights(converted, connection_status):
     """Controller for smart lights"""
-
-    from helper_functions.lights import MagicHomeApi
 
     def turn_off(host):
         controller = MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off')
@@ -2521,15 +2536,13 @@ def lights(converted, connection_status):
 def vpn_checker():
     """Uses simple check on network id to see if it is connected to local host or not
     returns the network id if local host"""
-    from urllib.request import urlopen
-    import json
     socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     socket_.connect(("8.8.8.8", 80))
     ip_address = socket_.getsockname()[0]
     socket_.close()
     if not (ip_address.startswith('192') | ip_address.startswith('127')):
         ip_address = 'VPN::' + ip_address
-        info = json.load(urlopen('http://ipinfo.io/json'))
+        info = load(urlopen('http://ipinfo.io/json'))
         sys.stdout.write(f"\rVPN connection is detected to {info.get('ip')} at {info.get('city')}, "
                          f"{info.get('region')} maintained by {info.get('org')}")
         speaker.say("You have your VPN turned on. Details on your screen sir! Please note that none of the home "
@@ -2736,11 +2749,11 @@ def offline_communicator():
                     ignore, mail_data = mail.fetch(bytecode, '(RFC822)')
                     for response_part in mail_data:
                         if isinstance(response_part, tuple):
-                            original_email = email.message_from_bytes(response_part[1])
+                            original_email = message_from_bytes(response_part[1])
                             sender = (original_email['From']).split('<')[-1].split('>')[0].strip()
                             if sender == offline_sender:
                                 # noinspection PyUnresolvedReferences
-                                email_message = email.message_from_string(mail_data[0][1].decode('utf-8'))
+                                email_message = message_from_string(mail_data[0][1].decode('utf-8'))
                                 for part in email_message.walk():
                                     required_type = ["text/html", "text/plain"]
                                     if part.get_content_type() in required_type:
@@ -2755,9 +2768,9 @@ def offline_communicator():
                             else:
                                 mail.store(bytecode, "-FLAGS", "\\Seen")  # set "-FLAGS" to un-see/mark as unread
             if response:
-                notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
-                logger.fatal('Response from Jarvis has been sent as SNS notification!')
                 response = None  # reset response to None to avoid receiving same message endlessly
+                logger.fatal('Response from Jarvis has been sent!')
+                notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
             time.sleep(30)  # waits for 30 seconds before attempting next search
         logger.fatal('Disabled Offline Communicator')
         mail.close()  # closes imap lib
@@ -2831,7 +2844,7 @@ def sentry_mode():
                     speaker.say(f'{random.choice(wake_up3)}')
                     initialize()
                 elif ('morning' in key or 'night' in key or 'afternoon' in key or 'after noon' in key or
-                        'evening' in key) and 'jarvis' in key:
+                      'evening' in key) and 'jarvis' in key:
                     if event:
                         speaker.say(f'Happy {event}!')
                     time_travel()
@@ -2861,6 +2874,7 @@ def sentry_mode():
             logger.fatal(f'Unknown exception::{unknown_error.__name__}\n{traceback.format_exc()}')  # include traceback
             speaker.say('I faced an unknown exception.')
             restart()
+    speaker.stop()  # stops before starting a new speaker loop to avoid conflict with offline communicator
     speaker.say("My run time has reached the threshold!")
     volume_controller(20)
     restart()
@@ -2870,13 +2884,13 @@ def size_converter(byte_size):
     """Gets the current memory consumed and converts it to human friendly format"""
     if not byte_size:
         if operating_system == 'Darwin':
-            import resource
-            byte_size = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+            from resource import getrusage, RUSAGE_SELF
+            byte_size = getrusage(RUSAGE_SELF).ru_maxrss
         elif operating_system == 'Windows':
             byte_size = Process(os.getpid()).memory_info().peak_wset
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-    integer = int(math.floor(math.log(byte_size, 1024)))
-    power = math.pow(1024, integer)
+    integer = int(floor(log(byte_size, 1024)))
+    power = pow(1024, integer)
     size = round(byte_size / power, 2)
     response = str(size) + ' ' + size_name[integer]
     return response
@@ -3077,7 +3091,7 @@ if __name__ == '__main__':
     recognizer = sr.Recognizer()  # initiates recognizer that uses google's translation
     keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
     conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
-    operating_system = platform.system()  # detects current operating system
+    operating_system = system()  # detects current operating system
     current_dir = os.listdir()  # stores the list of files in current directory
     aws = AWSClients()  # initiates AWSClients object to fetch credentials from AWS secrets
     database = Database()  # initiates Database() for TO-DO items
@@ -3111,6 +3125,7 @@ if __name__ == '__main__':
     phone_number = os.getenv('phone') or aws.phone()
     hallway_ip = os.getenv('hallway_ip') or aws.hallway_ip()
     kitchen_ip = os.getenv('kitchen_ip') or aws.kitchen_ip()
+    think_id = os.getenv('think_id') or aws.think_id()
 
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run

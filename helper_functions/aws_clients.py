@@ -144,3 +144,9 @@ class AWSClients:
         param = response['Parameter']
         val = param['Value']
         return val
+
+    def think_id(self):
+        response = self.client.get_parameter(Name='/Jarvis/think_id', WithDecryption=True)
+        param = response['Parameter']
+        val = param['Value']
+        return val

@@ -5,7 +5,7 @@ import socket
 import struct
 import sys
 
-from logger import logger
+from helper_functions.logger import logger
 
 
 class MagicHomeApi:
