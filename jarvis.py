@@ -1205,8 +1205,8 @@ def gmail():
                     for response_part in mail_data:
                         if isinstance(response_part, tuple):  # checks for type(response_part)
                             original_email = message_from_bytes(response_part[1])
-                            sender = (original_email['From']).split(' <')[0]
-                            sub = make_header(decode_header(original_email['Subject'])) \
+                            sender = make_header(decode_header((original_email['From']).split(' <')[0]))
+                            subject = make_header(decode_header(original_email['Subject'])) \
                                 if original_email['Subject'] else None
                             raw_receive = (original_email['Received'].split(';')[-1]).strip()
                             if '(PDT)' in raw_receive:
@@ -1228,8 +1228,8 @@ def gmail():
                                 receive = datetime_obj.strftime("Yesterday, at %I:%M %p")
                             else:
                                 receive = datetime_obj.strftime("on %A, %B %d, at %I:%M %p")
-                            sys.stdout.write(f'\rReceived:{receive}::{received_date}\tSender: {sender}\tSubject: {sub}')
-                            speaker.say(f"You have an email from, {sender}, with subject, {sub}, {receive}")
+                            sys.stdout.write(f'\rReceived:{receive}\tSender: {sender}\tSubject: {subject}')
+                            speaker.say(f"You have an email from, {sender}, with subject, {subject}, {receive}")
                             speaker.runAndWait()
         else:
             if place_holder == 0:
