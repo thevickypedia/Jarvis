@@ -376,7 +376,23 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.google_search()):
         phrase = converted.split('for')[-1] if 'for' in converted else None
         google_search(phrase)
+    
+    elif any(word in converted.lower() for word in keywords.youtube_search()):
+        phrase = converted.split('for')[-1] if 'for' in converted else None
+        youtube_search(phrase)
 
+    elif any(word in converted.lower() for word in keywords.yahoo_search()):
+        phrase = converted.split('for')[-1] if 'for' in converted else None
+        yahoo_search(phrase)
+
+    elif any(word in converted.lower() for word in keywords.bing_search()):
+        phrase = converted.split('for')[-1] if 'for' in converted else None
+        bing_search(phrase)
+
+    elif any(word in converted.lower() for word in keywords.amazon_search()):
+        phrase = converted.split('for')[-1] if 'for' in converted else None
+        amazon_search(phrase)
+                                      
     elif any(word in converted.lower() for word in keywords.tv()):
         television(converted)
 
@@ -447,6 +463,10 @@ def conditions(converted):
         playsound('indicators/coin.mp3')
         time.sleep(0.5)
         speaker.say(f"""{random.choice(['You got', 'It landed on', "It's"])} {random.choice(['heads', 'tails'])} sir""")
+        
+    elif any(word in converted.lower() for word in keywords.roll_a_dice()):
+        time.sleep(0.5)
+        speaker.say(f"""{random.choice(['You got', 'It landed on', "It's"])} {random.choice(['one', 'two', 'three', 'four', 'five', 'six'])} sir""")
 
     elif any(word in converted.lower() for word in keywords.facts()):
         speaker.say(getFact(False))
@@ -2324,6 +2344,114 @@ def google_search(phrase):
     unknown_url = f"https://www.google.com/search?q={search}"
     webbrowser.open(unknown_url)
     speaker.say(f"I've opened up a google search for: {phrase}.")
+                         
+                         
+def youtube_search(phrase):
+    """Opens up a youtube search for the phrase received. If nothing was received, gets phrase from user."""
+    global place_holder
+    if not phrase:
+        speaker.say("Please tell me the search phrase.")
+        speaker.runAndWait()
+        converted = listener(3, 3)
+        if converted != 'SR_ERROR':
+            if 'exit' in converted or 'quit' in converted or 'xzibit' in converted or 'cancel' in converted:
+                renew()
+            else:
+                phrase = converted.lower()
+        else:
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            else:
+                speaker.say("I didn't quite get that. Try again.")
+                place_holder = 0
+                google_search(None)
+    search = str(phrase).replace(' ', '+')
+    unknown_url = f"https://www.youtube.com/results?search_query={search}"
+    webbrowser.open(unknown_url)
+    speaker.say(f"I've opened up a youtube search for: {phrase}.")
+    renew()
+
+
+def bing_search(phrase):
+    """Opens up a bing search for the phrase received. If nothing was received, gets phrase from user."""
+    global place_holder
+    if not phrase:
+        speaker.say("Please tell me the search phrase.")
+        speaker.runAndWait()
+        converted = listener(3, 3)
+        if converted != 'SR_ERROR':
+            if 'exit' in converted or 'quit' in converted or 'xzibit' in converted or 'cancel' in converted:
+                renew()
+            else:
+                phrase = converted.lower()
+        else:
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            else:
+                speaker.say("I didn't quite get that. Try again.")
+                place_holder = 0
+                google_search(None)
+    search = str(phrase).replace(' ', '+')
+    unknown_url = f"https://www.bing.com/search?q={search}"
+    webbrowser.open(unknown_url)
+    speaker.say(f"I've opened up a bing search for: {phrase}.")
+    renew()
+
+
+def yahoo_search(phrase):
+    """Opens up a yahoo search for the phrase received. If nothing was received, gets phrase from user."""
+    global place_holder
+    if not phrase:
+        speaker.say("Please tell me the search phrase.")
+        speaker.runAndWait()
+        converted = listener(3, 3)
+        if converted != 'SR_ERROR':
+            if 'exit' in converted or 'quit' in converted or 'xzibit' in converted or 'cancel' in converted:
+                renew()
+            else:
+                phrase = converted.lower()
+        else:
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            else:
+                speaker.say("I didn't quite get that. Try again.")
+                place_holder = 0
+                google_search(None)
+    search = str(phrase).replace(' ', '+')
+    unknown_url = f"https://in.search.yahoo.com/search?p={search}"
+    webbrowser.open(unknown_url)
+    speaker.say(f"I've opened up a yahoo search for: {phrase}.")
+    renew()
+
+
+def amazon_search(phrase):
+    """Opens up an amazon search for the phrase received. If nothing was received, gets phrase from user."""
+    global place_holder
+    if not phrase:
+        speaker.say("Please tell me the search phrase.")
+        speaker.runAndWait()
+        converted = listener(3, 3)
+        if converted != 'SR_ERROR':
+            if 'exit' in converted or 'quit' in converted or 'xzibit' in converted or 'cancel' in converted:
+                renew()
+            else:
+                phrase = converted.lower()
+        else:
+            if place_holder == 0:
+                place_holder = None
+                renew()
+            else:
+                speaker.say("I didn't quite get that. Try again.")
+                place_holder = 0
+                google_search(None)
+    search = str(phrase).replace(' ', '+')
+    unknown_url = f"https://www.amazon.in/s?k={search}" # You can replace .in with .com
+    webbrowser.open(unknown_url)
+    speaker.say(f"I've opened up a amazon search for: {phrase}.")
+    renew()
 
 
 def volume_controller(level):
