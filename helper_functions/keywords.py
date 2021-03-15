@@ -145,6 +145,22 @@ class Keywords:
     def google_search(self):
         key = ['google search']
         return key
+    
+    def youtube_search(self):
+        key = ['youtube search', 'search youtube']
+        return key
+
+    def amazon_search(self):
+        key = ['amazon search', 'search amazon']
+        return key
+
+    def bing_search(self):
+        key = ['bing search', 'search bing', 'being search', 'search being']
+        return key
+
+    def yahoo_search(self):
+        key = ['yahoo search', 'search yahoo']
+        return key
 
     def tv(self):
         key = ['tv', 'television']
@@ -184,6 +200,10 @@ class Keywords:
 
     def flip_a_coin(self):
         key = ['head', 'tail', 'flip']
+        return key
+    
+    def roll_a_dice(self):
+        key =['roll', 'dice]
         return key
 
     def facts(self):
