@@ -17,6 +17,7 @@ from json import load, loads
 from math import ceil, log, floor, pow
 from platform import uname, platform, system
 from shutil import disk_usage
+from socket import timeout as s_timeout, gaierror
 from subprocess import call, check_output, getoutput, PIPE, Popen
 from threading import Thread
 from unicodedata import normalize
@@ -192,7 +193,8 @@ def conditions(converted):
         else:
             current_time(None)
 
-    elif any(word in converted.lower() for word in keywords.weather()):
+    elif any(word in converted.lower() for word in keywords.weather()) and \
+            not any(word in converted.lower() for word in keywords.avoid()):
         place = ''
         for word in converted.split():
             if word[0].isupper():
@@ -1208,6 +1210,8 @@ def gmail():
                             sender = make_header(decode_header((original_email['From']).split(' <')[0]))
                             subject = make_header(decode_header(original_email['Subject'])) \
                                 if original_email['Subject'] else None
+                            if subject:
+                                subject = ''.join(str(subject).splitlines())
                             raw_receive = (original_email['Received'].split(';')[-1]).strip()
                             if '(PDT)' in raw_receive:
                                 datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
@@ -2230,7 +2234,7 @@ def alpha(text):
             response = response.replace('\n', '. ').strip()
             sys.stdout.write(f'\r{response}')
             speaker.say(response)
-        except StopIteration:
+        except (StopIteration, AttributeError):
             return True
 
 
@@ -2776,7 +2780,7 @@ def offline_communicator():
         logger.fatal('Disabled Offline Communicator')
         mail.close()  # closes imap lib
         mail.logout()
-    except (imaplib.IMAP4.abort, imaplib.IMAP4.error, socket.timeout, RuntimeError, ConnectionResetError):
+    except (imaplib.IMAP4.abort, imaplib.IMAP4.error, s_timeout, gaierror, RuntimeError, ConnectionResetError):
         imap_error = sys.exc_info()[0]
         logger.fatal(f'Offline Communicator::{imap_error.__name__}\n{traceback.format_exc()}')  # include traceback
         logger.fatal('Restarting Offline Communicator')
