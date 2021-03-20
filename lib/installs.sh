@@ -6,13 +6,14 @@ if [[ "$brew_check" != "$brew_condition" ]]; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   else echo "Found Homebrew, skipping installation"
 fi
-# looks for git installation and installs only if git is not found in /usr/bin
+# looks for git and installs only if git is not found in /usr/bin or /usr/local/bin (if installed using brew)
 git_check=$(which git)
-git_condition="/usr/bin/git"
-if [[ "$git_check" != "$git_condition" ]]; then
-  echo "Installing Git CLI"
+git_condition_1="/usr/bin/git"
+git_condition_2="/usr/local/bin/git"
+if [[ "$git_check" == "$git_condition_1" || "$git_check" == "$git_condition_2" ]]; then
+  echo "Found Git CLI, skipping installation"
+  else echo "Installing Git CLI"
   brew install git
-  else echo "Found Git CLI, skipping installation"
 fi
 #python3 -m venv venv
 brew install portaudio
