@@ -434,7 +434,6 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.lights()):
         connection_status = vpn_checker()
         if not connection_status.startswith('VPN'):
-            speaker.say(random.choice(ack))
             Thread(target=lights, args=[converted.lower(), connection_status]).start()
 
     elif any(word in converted.lower() for word in keywords.guard_enable() or keywords.guard_disable()):
@@ -2501,25 +2500,23 @@ def set_brightness(level):
 
 def lights(converted, connection_status):
     """Controller for smart lights"""
+    network_id = '.'.join(connection_status.split('.')[:-1])  # gets network id removing host_id from the IP address
 
     def turn_off(host):
         controller = MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off')
         controller.turn_off()
-        time.sleep(1)
 
     def warm(host):
         controller = MagicHomeApi(device_ip=host, device_type=1, operation='Warm Lights')
         controller.update_device(r=0, g=0, b=0, warm_white=255)
-        time.sleep(1)
 
     def cool(host):
         controller = MagicHomeApi(device_ip=host, device_type=2, operation='Cool Lights')
         controller.update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
-        time.sleep(1)
 
     # host id's for each light bulb stored in env var or aws secret as a string. eg: '19,20,21'
-    hallway = [int(i) for i in hallway_ip.split(',') if i.isdigit()]
-    kitchen = [int(i) for i in kitchen_ip.split(',') if i.isdigit()]
+    hallway = [f'{network_id}.{int(i)}' for i in hallway_ip.split(',') if i.isdigit()]
+    kitchen = [f'{network_id}.{int(i)}' for i in kitchen_ip.split(',') if i.isdigit()]
 
     if 'hallway' in converted:
         light_host_id = hallway
@@ -2528,13 +2525,20 @@ def lights(converted, connection_status):
     else:
         light_host_id = hallway + kitchen
 
-    network_id = '.'.join(connection_status.split('.')[:-1])  # gets network id removing host_id from the IP address
+    lights_count = len(light_host_id)
     if 'turn on' in converted or 'cool' in converted or 'white' in converted:
-        [cool(f'{network_id}.{i}') for i in light_host_id]
+        speaker.say(f'Sure! Turning on {lights_count} lights!')
+        with ThreadPoolExecutor(max_workers=lights_count) as executor:
+            executor.map(cool, light_host_id)
     elif 'turn off' in converted:
-        [turn_off(f'{network_id}.{i}') for i in light_host_id]
+        speaker.say(f'Alright! Turning off {lights_count} lights!')
+        with ThreadPoolExecutor(max_workers=lights_count) as executor:
+            executor.map(turn_off, light_host_id)
     elif 'warm' in converted or 'yellow' in converted:
-        [warm(f'{network_id}.{i}') for i in light_host_id]
+        speaker.say(f'Sure! Setting {lights_count} lights to yellow!') if 'yellow' in converted else \
+            speaker.say(f'Sure! Setting {lights_count} lights to warm!')
+        with ThreadPoolExecutor(max_workers=lights_count) as executor:
+            executor.map(warm, light_host_id)
 
 
 def vpn_checker():
@@ -2881,7 +2885,7 @@ def sentry_mode():
             restart()
     speaker.stop()  # stops before starting a new speaker loop to avoid conflict with offline communicator
     speaker.say("My run time has reached the threshold!")
-    volume_controller(20)
+    volume_controller(5)
     restart()
 
 
