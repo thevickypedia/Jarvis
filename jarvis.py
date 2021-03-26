@@ -1,38 +1,30 @@
-import imaplib
 import os
-import random
 import re
-import smtplib
-import socket
-import ssl
 import sys
-import time
-import traceback
-import webbrowser
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from email import message_from_bytes, message_from_string
 from email.header import decode_header, make_header
+from imaplib import IMAP4, IMAP4_SSL
 from json import load, loads
 from math import ceil, log, floor, pow
 from platform import uname, platform, system
+from random import choice
 from shutil import disk_usage
-from socket import timeout as s_timeout, gaierror
+from smtplib import SMTP
+from socket import socket, gethostname, AF_INET, SOCK_DGRAM, setdefaulttimeout, gaierror, timeout as s_timeout
+from ssl import create_default_context
 from subprocess import call, check_output, getoutput, PIPE, Popen
 from threading import Thread
+from time import time, sleep, perf_counter
+from traceback import format_exc
 from unicodedata import normalize
 from urllib.request import urlopen
+from webbrowser import open as web_open
 
-import boto3
-import certifi
-import holidays
-import pytemperature
-import pyttsx3 as audio
-import requests
-import speech_recognition as sr
-import wikipedia
-import yaml
 from PyDictionary import PyDictionary
+from boto3 import client
+from certifi import where
 from chatterbot import ChatBot
 from chatterbot.trainers import ChatterBotCorpusTrainer
 from geopy.distance import geodesic
@@ -40,6 +32,7 @@ from geopy.exc import GeocoderUnavailable, GeopyError
 from geopy.geocoders import Nominatim, options
 from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
+from holidays import CountryHoliday
 from inflect import engine
 from joke.jokes import geek, icanhazdad, chucknorris, icndb
 from newsapi import NewsApiClient, newsapi_exception
@@ -49,16 +42,22 @@ from pychromecast.error import ChromecastConnectionError
 from pyicloud import PyiCloudService
 from pyicloud.exceptions import PyiCloudAPIResponseException, PyiCloudFailedLoginException
 from pyrh import Robinhood
+from pytemperature import k2f
+from pyttsx3 import init
 from pytz import timezone
 from randfacts import getFact
+from requests import get, exceptions as requests_exceptions
 from requests.auth import HTTPBasicAuth
 from search_engine_parser.core.engines.google import Search as GoogleSearch
 from search_engine_parser.core.exceptions import NoResultsOrTrafficError
+from speech_recognition import Microphone, Recognizer, UnknownValueError, RequestError, WaitTimeoutError
 from speedtest import Speedtest, ConfigRetrievalError
 from timezonefinder import TimezoneFinder
 from wakeonlan import send_magic_packet as wake
+from wikipedia import summary, exceptions as wiki_exceptions
 from wolframalpha import Client as Think
 from wordninja import split as splitter
+from yaml import dump
 
 from helper_functions.alarm import Alarm
 from helper_functions.aws_clients import AWSClients
@@ -83,7 +82,7 @@ def listener(timeout, phrase_limit):
         sys.stdout.write("\r") and playsound('indicators/end.mp3')
         return_val = recognizer.recognize_google(listened)
         sys.stdout.write(f'\r{return_val}')
-    except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+    except (UnknownValueError, RequestError, WaitTimeoutError):
         return_val = 'SR_ERROR'
     return return_val
 
@@ -146,12 +145,12 @@ def renew():
                 remove = ['buddy', 'jarvis', 'hey', 'hello']
                 converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
                 if not converted or 'you there' in converted:
-                    speaker.say(random.choice(wake_up3))
+                    speaker.say(choice(wake_up3))
                 else:
                     split(converted)
                 speaker.runAndWait()
                 waiter = 0
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        except (UnknownValueError, RequestError, WaitTimeoutError):
             pass
 
 
@@ -218,7 +217,7 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.ip_info()):
         ip_address = vpn_checker().replace('VPN::', '')
-        speaker.say(f"Your IP address for {socket.gethostname()} is {ip_address}.")
+        speaker.say(f"Your IP address for {gethostname()} is {ip_address}.")
         return
 
     elif any(word in converted.lower() for word in keywords.wikipedia()):
@@ -351,7 +350,7 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.github()):
         auth = HTTPBasicAuth(git_user, git_pass)
-        response = requests.get(f'https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
+        response = get(f'https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
         result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
         for i in range(len(response)):
             total += 1
@@ -400,7 +399,7 @@ def conditions(converted):
             level = re.findall(r'\b\d+\b', converted)  # gets integers from string as a list
             level = int(level[0]) if level else 50  # converted to int for volume
         volume_controller(level)
-        speaker.say(f"{random.choice(ack)}")
+        speaker.say(f"{choice(ack)}")
 
     elif any(word in converted.lower() for word in keywords.face_detection()):
         face_recognition_detection()
@@ -417,7 +416,7 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.brightness()):
         checker = converted.lower()
         if operating_system == 'Darwin':
-            speaker.say(random.choice(ack))
+            speaker.say(choice(ack))
             if 'set' in checker or re.findall(r'\b\d+\b', checker):
                 level = re.findall(r'\b\d+\b', checker)  # gets integers from string as a list
                 level = level if level else ['50']  # pass as list for brightness, as args must be iterable
@@ -446,8 +445,8 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.flip_a_coin()):
         playsound('indicators/coin.mp3')
-        time.sleep(0.5)
-        speaker.say(f"""{random.choice(['You got', 'It landed on', "It's"])} {random.choice(['heads', 'tails'])} sir""")
+        sleep(0.5)
+        speaker.say(f"""{choice(['You got', 'It landed on', "It's"])} {choice(['heads', 'tails'])} sir""")
 
     elif any(word in converted.lower() for word in keywords.facts()):
         speaker.say(getFact(False))
@@ -511,12 +510,12 @@ def conditions(converted):
                                 if str(value) not in content:  # avoids duplication in yaml file
                                     dict_file = [{key: [value]}]
                                     with open(r'training_data.yaml', 'a') as writer:
-                                        yaml.dump(dict_file, writer)
+                                        dump(dict_file, writer)
                     else:
                         for key, value in train_file.items():
                             train_file = [{key: [value]}]
                         with open(r'training_data.yaml', 'a') as writer:
-                            yaml.dump(train_file, writer)
+                            dump(train_file, writer)
 
                     # if none of the conditions above are met, opens a google search on default browser
                     sys.stdout.write(f"\r{converted}")
@@ -529,7 +528,7 @@ def conditions(converted):
                         speaker.say("I have opened a google search for your request.")
                     search = str(converted).replace(' ', '+')
                     unknown_url = f"https://www.google.com/search?q={search}"
-                    webbrowser.open(unknown_url)
+                    web_open(unknown_url)
 
 
 def location_services(device):
@@ -554,7 +553,7 @@ def location_services(device):
         speaker.say("I have trouble accessing the i-cloud API, so I'll be using your I.P address to get your location. "
                     "Please note that this may not be accurate enough for location services.")
         speaker.runAndWait()
-    except requests.exceptions.ConnectionError:
+    except requests_exceptions.ConnectionError:
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
         speaker.say("I was unable to connect to the internet. Please check your connection settings and retry.")
         speaker.runAndWait()
@@ -664,7 +663,7 @@ def webpage(target):
     else:
         for web in host:
             web_url = f"https://{web}"
-            webbrowser.open(web_url)
+            web_open(web_url)
         speaker.say(f"I have opened {host}")
 
 
@@ -696,11 +695,11 @@ def weather(place):
     condition = response['current']['weather'][0]['description']
     feels_like = response['current']['feels_like']
     maxi = response['daily'][0]['temp']['max']
-    high = int(round(pytemperature.k2f(maxi), 2))
+    high = int(round(k2f(maxi), 2))
     mini = response['daily'][0]['temp']['min']
-    low = int(round(pytemperature.k2f(mini), 2))
-    temp_f = int(round(pytemperature.k2f(temperature), 2))
-    temp_feel_f = int(round(pytemperature.k2f(feels_like), 2))
+    low = int(round(k2f(mini), 2))
+    temp_f = int(round(k2f(temperature), 2))
+    temp_feel_f = int(round(k2f(feels_like), 2))
     sunrise = datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p")
     if time_travel.has_been_called:
@@ -815,10 +814,10 @@ def weather_condition(place, msg):
     sunset = response['daily'][key]['sunset']
     maxi = response['daily'][key]['temp']['max']
     mini = response['daily'][1]['temp']['min']
-    high = int(round(pytemperature.k2f(maxi), 2))
-    low = int(round(pytemperature.k2f(mini), 2))
-    temp_f = int(round(pytemperature.k2f(temperature), 2))
-    temp_feel_f = int(round(pytemperature.k2f(feels_like), 2))
+    high = int(round(k2f(maxi), 2))
+    low = int(round(k2f(mini), 2))
+    temp_f = int(round(k2f(temperature), 2))
+    temp_feel_f = int(round(k2f(feels_like), 2))
     sunrise = datetime.fromtimestamp(sunrise).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(sunset).strftime("%I:%M %p")
     output = f'The weather in {weather_location} {tell} would be {temp_f}°F, with a high ' \
@@ -872,22 +871,22 @@ def wikipedia_():
         else:
             sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
             try:
-                summary = wikipedia.summary(keyword)
-            except wikipedia.exceptions.DisambiguationError as e:  # checks for the right keyword in case of 1+ matches
+                result = summary(keyword)
+            except wiki_exceptions.DisambiguationError as e:  # checks for the right keyword in case of 1+ matches
                 sys.stdout.write(f'\r{e}')
                 speaker.say('Your keyword has multiple results sir. Please pick any one displayed on your screen.')
                 speaker.runAndWait()
                 keyword1 = listener(3, 5)
                 if keyword1 != 'SR_ERROR':
-                    summary = wikipedia.summary(keyword1)
+                    result = summary(keyword1)
                 else:
-                    summary = None
-            except wikipedia.exceptions.PageError:
+                    result = None
+            except wiki_exceptions.PageError:
                 speaker.say(f"I'm sorry sir! I didn't get a response for the phrase: {keyword}. Try again!")
-                summary = None
+                result = None
                 wikipedia_()
             # stops with two sentences before reading whole passage
-            formatted = '. '.join(summary.split('. ')[0:2]) + '.'
+            formatted = '. '.join(result.split('. ')[0:2]) + '.'
             speaker.say(formatted)
             speaker.say("Do you want me to continue sir?")  # gets confirmation to read the whole passage
             speaker.runAndWait()
@@ -895,7 +894,7 @@ def wikipedia_():
             if response != 'SR_ERROR':
                 place_holder = None
                 if any(word in response.lower() for word in keywords.ok()):
-                    speaker.say('. '.join(summary.split('. ')[3:-1]))
+                    speaker.say('. '.join(result.split('. ')[3:-1]))
             else:
                 sys.stdout.write("\r")
                 speaker.say("I'm sorry sir, I didn't get your response.")
@@ -1067,7 +1066,7 @@ def device_selector(converted):
     elif isinstance(converted, dict):
         lookup = converted
     elif not converted:
-        lookup = socket.gethostname()
+        lookup = gethostname()
     else:
         lookup = 'iPhone 11 Pro Max'
     index, target_device = -1, None
@@ -1155,7 +1154,7 @@ def music(device):
     file = []
     for music_file in get_music_files:
         file.append(music_file)
-    chosen = random.choice(file)
+    chosen = choice(file)
 
     if device:
         google_home(device, chosen)
@@ -1176,7 +1175,7 @@ def gmail():
     sys.stdout.write("\rFetching new emails..")
 
     try:
-        mail = imaplib.IMAP4_SSL('imap.gmail.com')  # connects to imaplib
+        mail = IMAP4_SSL('imap.gmail.com')  # connects to imaplib
         mail.login(gmail_user, gmail_pass)
         mail.list()
         mail.select('inbox')  # choose inbox
@@ -1465,7 +1464,7 @@ def delete_db():
         speaker.say(f'I did not find any database sir.')
         return
     else:
-        speaker.say(f'{random.choice(confirmation)} delete your database?')
+        speaker.say(f'{choice(confirmation)} delete your database?')
         speaker.runAndWait()
         response = listener(3, 3)
         if response != 'SR_ERROR':
@@ -1651,7 +1650,7 @@ def directions(place):
     start_country = location_info['country']
     start = current_lat, current_lon
     maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
-    webbrowser.open(maps_url)
+    web_open(maps_url)
     speaker.say("Directions on your screen sir!")
     if start_country and end_country:
         if re.match(start_country, end_country, flags=re.IGNORECASE):
@@ -1685,9 +1684,9 @@ def alarm(msg):
             open(f'alarm/{hour}_{minute}_{am_pm}.lock', 'a')
             Alarm(hour, minute, am_pm).start()
             if 'wake' in msg.lower().strip():
-                speaker.say(f"{random.choice(ack)} I will wake you up at {hour}:{minute} {am_pm}.")
+                speaker.say(f"{choice(ack)} I will wake you up at {hour}:{minute} {am_pm}.")
             else:
-                speaker.say(f"{random.choice(ack)} Alarm has been set for {hour}:{minute} {am_pm}.")
+                speaker.say(f"{choice(ack)} Alarm has been set for {hour}:{minute} {am_pm}.")
             sys.stdout.write(f"\rAlarm has been set for {hour}:{minute} {am_pm} sir!")
         else:
             speaker.say(f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
@@ -1839,7 +1838,7 @@ def google_home(device, file):
 def jokes():
     """Uses jokes lib to say chucknorris jokes"""
     global place_holder
-    speaker.say(random.choice([geek, icanhazdad, chucknorris, icndb])())
+    speaker.say(choice([geek, icanhazdad, chucknorris, icndb])())
     speaker.runAndWait()
     speaker.say("Do you want to hear another one sir?")
     speaker.runAndWait()
@@ -1890,7 +1889,7 @@ def reminder(converted):
         if int(hour) <= 12 and int(minute) <= 59:
             open(f'reminder/{hour}_{minute}_{am_pm}|{message.replace(" ", "_")}.lock', 'a')
             Reminder(hour, minute, am_pm, message).start()
-            speaker.say(f"{random.choice(ack)} I will remind you {to_about} {message}, at {hour}:{minute} {am_pm}.")
+            speaker.say(f"{choice(ack)} I will remind you {to_about} {message}, at {hour}:{minute} {am_pm}.")
             sys.stdout.write(f"\r{message} at {hour}:{minute} {am_pm}")
         else:
             speaker.say(f"A reminder at {hour}:{minute} {am_pm}? Are you an alien? "
@@ -1906,7 +1905,7 @@ def google_maps(query):
     This function is triggered when the words in user's statement doesn't match with any predefined functions."""
     global place_holder
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
-    response = requests.get(maps_url + 'query=' + query + '&key=' + maps_api)
+    response = get(maps_url + 'query=' + query + '&key=' + maps_api)
     collection = response.json()['results']
     required = []
     for element in range(len(collection)):
@@ -1965,7 +1964,7 @@ def google_maps(query):
             elif any(word in converted.lower() for word in keywords.ok()):
                 place_holder = None
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
-                webbrowser.open(maps_url)
+                web_open(maps_url)
                 speaker.say("Directions on your screen sir!")
                 return
             elif results == 1:
@@ -2055,7 +2054,7 @@ def notify(user, password, number, body):
     body = body.encode('ascii', 'ignore').decode('ascii')  # ignore symbols like ° without throwing UnicodeEncodeError
     to = f"{number}@tmomail.net"
     message = (f"From: {user}\n" + f"To: {to}\n" + f"Subject: {subject}\n" + "\n\n" + body)
-    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server = SMTP("smtp.gmail.com", 587)
     server.starttls()
     server.login(user=user, password=password)
     server.sendmail(user, to, message)
@@ -2145,28 +2144,28 @@ def television(converted):
     elif tv:
         if 'increase' in phrase:
             tv.increase_volume()
-            speaker.say(f'{random.choice(ack)}!')
+            speaker.say(f'{choice(ack)}!')
         elif 'decrease' in phrase or 'reduce' in phrase:
             tv.decrease_volume()
-            speaker.say(f'{random.choice(ack)}!')
+            speaker.say(f'{choice(ack)}!')
         elif 'mute' in phrase:
             tv.mute()
-            speaker.say(f'{random.choice(ack)}!')
+            speaker.say(f'{choice(ack)}!')
         elif 'pause' in phrase or 'hold' in phrase:
             tv.pause()
-            speaker.say(f'{random.choice(ack)}!')
+            speaker.say(f'{choice(ack)}!')
         elif 'resume' in phrase or 'play' in phrase:
             tv.play()
-            speaker.say(f'{random.choice(ack)}!')
+            speaker.say(f'{choice(ack)}!')
         elif 'rewind' in phrase:
             tv.rewind()
-            speaker.say(f'{random.choice(ack)}!')
+            speaker.say(f'{choice(ack)}!')
         elif 'forward' in phrase:
             tv.forward()
-            speaker.say(f'{random.choice(ack)}!')
+            speaker.say(f'{choice(ack)}!')
         elif 'stop' in phrase:
             tv.stop()
-            speaker.say(f'{random.choice(ack)}!')
+            speaker.say(f'{choice(ack)}!')
         elif 'set' in phrase:
             vol = int(''.join([str(s) for s in re.findall(r'\b\d+\b', phrase_exc)]))
             sys.stdout.write(f'\rRequested volume: {vol}')
@@ -2181,7 +2180,7 @@ def television(converted):
             sys.stdout.write(f'\r{tv.list_apps()}')
             speaker.say('App list on your screen sir!')
             speaker.runAndWait()
-            time.sleep(5)
+            sleep(5)
         elif 'open' in phrase or 'launch' in phrase:
             app_name = ''
             for word in phrase_exc.split():
@@ -2223,8 +2222,8 @@ def television(converted):
 
 
 def alpha(text):
-    client = Think(app_id=think_id)
-    res = client.query(text)
+    alpha_client = Think(app_id=think_id)
+    res = alpha_client.query(text)
     if res['@success'] == 'false':
         return True
     else:
@@ -2258,7 +2257,7 @@ def google(query):
             "client": "firefox",
             "q": query,
         }
-        r = requests.get(suggest_url, params)
+        r = get(suggest_url, params)
         if not r:
             return True
         try:
@@ -2325,7 +2324,7 @@ def google_search(phrase):
                 google_search(None)
     search = str(phrase).replace(' ', '+')
     unknown_url = f"https://www.google.com/search?q={search}"
-    webbrowser.open(unknown_url)
+    web_open(unknown_url)
     speaker.say(f"I've opened up a google search for: {phrase}.")
 
 
@@ -2430,7 +2429,7 @@ def bluetooth(phrase):
         speaker.say(f"Bluetooth has been turned on sir!")
     elif 'disconnect' in phrase and ('bluetooth' in phrase or 'devices' in phrase):
         call(f"blueutil --power 0", shell=True)
-        time.sleep(2)
+        sleep(2)
         call(f"blueutil --power 1", shell=True)
         speaker.say('All bluetooth devices have been disconnected sir!')
     else:
@@ -2446,7 +2445,7 @@ def bluetooth(phrase):
                             output = getoutput(f"blueutil --disconnect {target['address']}")
                             if not output:
                                 sys.stdout.write(f"\rDisconnected from {target['name']}")
-                                time.sleep(2)  # included a sleep here, so it avoids voice swapping between devices
+                                sleep(2)  # included a sleep here, so it avoids voice swapping between devices
                                 speaker.say(f"Disconnected from {target['name']} sir!")
                             else:
                                 speaker.say(f"I was unable to disconnect {target['name']} sir!. "
@@ -2455,7 +2454,7 @@ def bluetooth(phrase):
                             output = getoutput(f"blueutil --connect {target['address']}")
                             if not output:
                                 sys.stdout.write(f"\rConnected to {target['name']}")
-                                time.sleep(2)  # included a sleep here, so it avoids voice swapping between devices
+                                sleep(2)  # included a sleep here, so it avoids voice swapping between devices
                                 speaker.say(f"Connected to {target['name']} sir!")
                             else:
                                 speaker.say(f"Unable to connect {target['name']} sir!, please make sure the device is "
@@ -2544,7 +2543,7 @@ def lights(converted, connection_status):
 def vpn_checker():
     """Uses simple check on network id to see if it is connected to local host or not
     returns the network id if local host"""
-    socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    socket_ = socket(AF_INET, SOCK_DGRAM)
     socket_.connect(("8.8.8.8", 80))
     ip_address = socket_.getsockname()[0]
     socket_.close()
@@ -2562,8 +2561,8 @@ def celebrate():
     """Function to look if the current date is a holiday or a birthday."""
     day = datetime.today().date()
     today = datetime.now().strftime("%d-%B")
-    us_holidays = holidays.CountryHoliday('US').get(day)  # checks if the current date is a US holiday
-    in_holidays = holidays.CountryHoliday('IND', prov='TN', state='TN').get(day)  # checks if Indian (esp TN) holiday
+    us_holidays = CountryHoliday('US').get(day)  # checks if the current date is a US holiday
+    in_holidays = CountryHoliday('IND', prov='TN', state='TN').get(day)  # checks if Indian (esp TN) holiday
     if in_holidays:
         return in_holidays
     elif us_holidays and 'Observed' not in us_holidays:
@@ -2625,13 +2624,13 @@ def guard():
         # Listens for any recognizable speech and saves it to a notes file
         try:
             sys.stdout.write("\rSECURITY MODE")
-            with sr.Microphone() as source_:
+            with Microphone() as source_:
                 recognizer.adjust_for_ambient_noise(source_)
                 listened = recognizer.listen(source_, timeout=3, phrase_time_limit=10)
                 converted = recognizer.recognize_google(listened)
                 converted = converted.replace('Jarvis', '').strip()
                 sys.stdout.write(f"\r{converted}")
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        except (UnknownValueError, RequestError, WaitTimeoutError):
             pass
 
         if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable()):
@@ -2664,8 +2663,8 @@ def guard():
             date_extn = None
 
         # if no notification was sent yet or if a phrase or face is detected notification thread will be triggered
-        if (not notified or float(time.time() - notified) > 300) and (converted or date_extn):
-            notified = time.time()
+        if (not notified or float(time() - notified) > 300) and (converted or date_extn):
+            notified = time()
             Thread(target=threat_notify, args=(converted, date_extn)).start()
 
 
@@ -2736,11 +2735,11 @@ def offline_communicator():
     * You can also make Jarvis check for emails from your "number@tmomail.net" but the response time will be > 5 min"""
 
     try:
-        socket.setdefaulttimeout(10)  # set default timeout for new socket connections to 10 seconds
-        mail = imaplib.IMAP4_SSL('imap.gmail.com')  # connects to imaplib
+        setdefaulttimeout(10)  # set default timeout for new socket connections to 10 seconds
+        mail = IMAP4_SSL('imap.gmail.com')  # connects to imaplib
         mail.login(offline_receive_user, offline_receive_pass)
         mail.list()
-        socket.setdefaulttimeout(None)  # revert default timeout for new socket connections to None
+        setdefaulttimeout(None)  # revert default timeout for new socket connections to None
         response = None
         while STATUS:
             mail.select('inbox')  # choose inbox
@@ -2780,15 +2779,15 @@ def offline_communicator():
                 notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
                 logger.fatal('Response from Jarvis has been sent!')
                 response = None  # reset response to None to avoid receiving same message endlessly
-            time.sleep(30)  # waits for 30 seconds before attempting next search
+            sleep(30)  # waits for 30 seconds before attempting next search
         logger.fatal('Disabled Offline Communicator')
         mail.close()  # closes imap lib
         mail.logout()
-    except (imaplib.IMAP4.abort, imaplib.IMAP4.error, s_timeout, gaierror, RuntimeError, ConnectionResetError):
+    except (IMAP4.abort, IMAP4.error, s_timeout, gaierror, RuntimeError, ConnectionResetError):
         imap_error = sys.exc_info()[0]
-        logger.fatal(f'Offline Communicator::{imap_error.__name__}\n{traceback.format_exc()}')  # include traceback
+        logger.fatal(f'Offline Communicator::{imap_error.__name__}\n{format_exc()}')  # include traceback
         logger.fatal('Restarting Offline Communicator')
-        time.sleep(120)  # restart the session after 2 minutes in case of any of the above exceptions
+        sleep(120)  # restart the session after 2 minutes in case of any of the above exceptions
         offline_communicator_initiate()  # return used here will terminate the current function
 
 
@@ -2850,7 +2849,7 @@ def sentry_mode():
                 if int(c_time.split(':')[0]) in range(1, 4) and c_time.split()[-1] == 'AM' and 'bypass' not in key:
                     speaker.say(f"It is {c_time} sir! You should be sleeping already. Good Night")
                 elif key == 'jarvis' or key == 'buddy':
-                    speaker.say(f'{random.choice(wake_up3)}')
+                    speaker.say(f'{choice(wake_up3)}')
                     initialize()
                 elif ('morning' in key or 'night' in key or 'afternoon' in key or 'after noon' in key or
                       'evening' in key) and 'jarvis' in key:
@@ -2859,10 +2858,10 @@ def sentry_mode():
                     time_travel()
                 elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or \
                         'showtime' in key or 'time to work' in key or 'spin up' in key:
-                    speaker.say(f'{random.choice(wake_up1)}')
+                    speaker.say(f'{choice(wake_up1)}')
                     initialize()
                 elif 'you there' in key or 'are you there' in key or 'you up' in key:
-                    speaker.say(f'{random.choice(wake_up2)}')
+                    speaker.say(f'{choice(wake_up2)}')
                     initialize()
                 elif 'jarvis' in key or 'buddy' in key:
                     remove = ['buddy', 'jarvis', 'hey', 'bypass']
@@ -2870,17 +2869,17 @@ def sentry_mode():
                     if converted:
                         split(converted.strip())
                     else:
-                        speaker.say(f'{random.choice(wake_up3)}')
+                        speaker.say(f'{choice(wake_up3)}')
                         initialize()
                 speaker.runAndWait()
-        except (sr.UnknownValueError, sr.RequestError, sr.WaitTimeoutError):
+        except (UnknownValueError, RequestError, WaitTimeoutError):
             continue
         except KeyboardInterrupt:
             exit_process()
             terminator()
         except (RuntimeError, RecursionError, TimeoutError):
             unknown_error = sys.exc_info()[0]
-            logger.fatal(f'Unknown exception::{unknown_error.__name__}\n{traceback.format_exc()}')  # include traceback
+            logger.fatal(f'Unknown exception::{unknown_error.__name__}\n{format_exc()}')  # include traceback
             speaker.say('I faced an unknown exception.')
             restart()
     speaker.stop()  # stops before starting a new speaker loop to avoid conflict with offline communicator
@@ -2982,7 +2981,7 @@ def exit_process():
     speaker.runAndWait()
     remove_files()
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
-                     f"\nTotal runtime: {time_converter(time.perf_counter())}")
+                     f"\nTotal runtime: {time_converter(perf_counter())}")
 
 
 def restart():
@@ -2991,7 +2990,7 @@ def restart():
     global STATUS
     STATUS = False
     logger.fatal('JARVIS::Restarting Now::Run STATUS has been unset')
-    sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(time.perf_counter())}")
+    sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(perf_counter())}")
     speaker.say('Restarting now sir! I will be up and running momentarily.')
     speaker.runAndWait()
     os.system(f'python3 restart.py')
@@ -3001,7 +3000,7 @@ def restart():
 def shutdown():
     """Gets confirmation and turns off the machine"""
     global place_holder
-    speaker.say(f"{random.choice(confirmation)} turn off the machine?")
+    speaker.say(f"{choice(confirmation)} turn off the machine?")
     speaker.runAndWait()
     converted = listener(3, 3)
     if converted != 'SR_ERROR':
@@ -3080,7 +3079,7 @@ def voice_changer(change=None):
                 place_holder = 0
                 return
             elif any(word in keyword.lower() for word in keywords.ok()):
-                speaker.say(random.choice(ack))
+                speaker.say(choice(ack))
                 place_holder = 0
                 return
             elif custom_id := [int(id_) for id_ in re.findall(r'\b\d+\b', keyword)]:
@@ -3096,8 +3095,8 @@ if __name__ == '__main__':
     logger.fatal('JARVIS::Starting Now::Run STATUS has been set')
 
     sys.stdout.write(f'\rVoice ID::Female: 1/17 Male: 0/7')  # Voice ID::reference
-    speaker = audio.init()  # initiates speaker
-    recognizer = sr.Recognizer()  # initiates recognizer that uses google's translation
+    speaker = init()  # initiates speaker
+    recognizer = Recognizer()  # initiates recognizer that uses google's translation
     keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
     conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
     operating_system = system()  # detects current operating system
@@ -3106,7 +3105,7 @@ if __name__ == '__main__':
     database = Database()  # initiates Database() for TO-DO items
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 100)  # increases the recursion limit by 100 times
-    sns = boto3.client('sns')  # initiates sns for notification service
+    sns = client('sns')  # initiates sns for notification service
 
     volume_controller(50)  # defaults to volume 50%
     voice_changer()  # changes voice to default values given
@@ -3153,7 +3152,7 @@ if __name__ == '__main__':
         terminator()
 
     # stores necessary values for geo location to receive the latitude, longitude and address
-    options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
+    options.default_ssl_context = create_default_context(cafile=where())
     geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
     current_lat, current_lon, location_info = location_services(device_selector(None))
 
@@ -3183,6 +3182,6 @@ if __name__ == '__main__':
 
     # starts sentry mode
     playsound('indicators/initialize.mp3')
-    with sr.Microphone() as source:
+    with Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
         sentry_mode()
