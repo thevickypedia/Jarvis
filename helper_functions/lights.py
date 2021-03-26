@@ -1,9 +1,9 @@
 """Reference::https://github.com/adamkempenich/magichome-python"""
 
 import datetime
-import socket
-import struct
 import sys
+from socket import socket, AF_INET, SOCK_STREAM, error as sock_error
+from struct import pack
 
 from helper_functions.logger import logger
 
@@ -18,12 +18,12 @@ class MagicHomeApi:
         self.operation = operation
         self.API_PORT = 5577
         self.latest_connection = datetime.datetime.now()
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s = socket(AF_INET, SOCK_STREAM)
         self.s.settimeout(3)
         try:
             # print("Establishing connection with the device.")
             self.s.connect((self.device_ip, self.API_PORT))
-        except socket.error as error:
+        except sock_error as error:
             self.s.close()
             error_msg = f"\rSocket error on {device_ip}: {error}"
             sys.stdout.write(error_msg)
@@ -146,8 +146,8 @@ class MagicHomeApi:
                 sys.stdout.write("\rConnection timed out, reestablishing.")
                 self.s.connect((self.device_ip, self.API_PORT))
             message_length = len(bytes_)
-            self.s.send(struct.pack("B" * message_length, *bytes_))
-        except socket.error as error:
+            self.s.send(pack("B" * message_length, *bytes_))
+        except sock_error as error:
             error_msg = f"\rSocket error on {self.device_ip}: {error}"
             sys.stdout.write(error_msg)
             logger.fatal(f'{error_msg} while performing "{self.operation}"')

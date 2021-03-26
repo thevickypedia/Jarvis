@@ -1,4 +1,4 @@
-import math
+from math import fsum
 
 
 def watcher(rh, result):
@@ -29,7 +29,7 @@ def watcher(rh, result):
             profit_total.append(difference)
 
     net_worth = round(rh.equity())
-    total_buy = round(math.fsum(shares_total))
+    total_buy = round(fsum(shares_total))
     total_diff = round(net_worth - total_buy)
 
     output = f'You have purchased {n} stocks and currently own {n_} shares sir. ' \

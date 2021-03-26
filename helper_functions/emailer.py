@@ -1,8 +1,10 @@
 import os
-import boto3
+from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.application import MIMEApplication
+
+from boto3 import client
+
 from helper_functions.aws_clients import AWSClients
 
 aws = AWSClients()
@@ -35,7 +37,7 @@ def send_mail(title: str, text: str = None, html: str = None, attachments: list 
     The sender needs to be a verified email in SES.
     """
     msg = create_multipart_message(title, text, html, attachments)
-    ses_client = boto3.client('ses')  # Use your settings here
+    ses_client = client('ses')  # Use your settings here
     return ses_client.send_raw_email(
         Source=msg.get('From'),
         Destinations=[msg.get('To')],

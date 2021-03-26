@@ -1,5 +1,5 @@
 import os
-import sqlite3
+from sqlite3 import connect
 
 file_name = 'tasks.db'
 
@@ -18,13 +18,13 @@ class Database:
         if os.path.isfile(self.file_name):
             return f"A database named, {self.file_name}, already exists."
         else:
-            connection = sqlite3.connect(self.file_name)
+            connection = connect(self.file_name)
             connection.execute(f"CREATE TABLE {self.table_name} (category, item, id INTEGER PRIMARY KEY )")
             connection.commit()
             return "A database has been created."
 
     def downloader(self):
-        connection = sqlite3.connect(self.file_name)
+        connection = connect(self.file_name)
         connector = connection.cursor()
         connector.execute(f"SELECT category, item from {self.table_name}")
         response = connector.fetchall()
@@ -32,7 +32,7 @@ class Database:
         return response
 
     def uploader(self, category, item):
-        connection = sqlite3.connect(self.file_name)
+        connection = connect(self.file_name)
         response = Database().downloader()
         for c, i in response:  # browses through all categories and items
             if i == item and c == category:  # checks if already present and updates items in case of repeated category
@@ -42,7 +42,7 @@ class Database:
         return f"I've added the item: {item} to the category: {category}."
 
     def deleter(self, item):
-        connection = sqlite3.connect(self.file_name)
+        connection = connect(self.file_name)
         response = Database().downloader()
         check = 0
         for c, i in response:  # browses through all categories and items

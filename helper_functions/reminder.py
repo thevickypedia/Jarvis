@@ -1,7 +1,7 @@
 import os
 import platform
-import smtplib
 from datetime import datetime
+from smtplib import SMTP
 from threading import Thread
 
 from helper_functions.aws_clients import AWSClients
@@ -29,7 +29,7 @@ class Reminder(Thread):
             hour = now.strftime("%I")
             if hour == self.hours and minute == self.minutes and am_pm == self.am_pm and file_name in files:
                 # Establish a secure session with gmail's outgoing SMTP server using your gmail account
-                server = smtplib.SMTP("smtp.gmail.com", 587)
+                server = SMTP("smtp.gmail.com", 587)
                 server.starttls()
                 gmail_user = os.getenv('gmail_user') or aws.gmail_user()
                 gmail_pass = os.getenv('gmail_pass') or aws.gmail_pass()

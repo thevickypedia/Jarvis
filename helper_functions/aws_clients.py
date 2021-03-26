@@ -1,11 +1,11 @@
-import boto3
+from boto3 import client
 
 
 class AWSClients:
     """All the required oauth and api keys are stored in ssm parameters and are fetched where ever required."""
 
     def __init__(self):
-        self.client = boto3.client('ssm')
+        self.client = client('ssm')
 
     def weather_api(self):
         response = self.client.get_parameter(Name='/Jarvis/weather_api', WithDecryption=True)

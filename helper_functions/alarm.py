@@ -1,8 +1,8 @@
 import os
-import platform
-import random
-import subprocess
 from datetime import datetime
+from platform import system
+from random import choice
+from subprocess import call
 from threading import Thread
 
 directory = 'alarm'  # dir need not be '../alarm' as the Thread is triggered by jarvis.py which is in root dir
@@ -16,9 +16,9 @@ class Alarm(Thread):
         self.am_pm = am_pm
 
     def run(self):
-        operating_system = platform.system()
+        operating_system = system()
         music_dir = "mp3"
-        tone = random.choice(os.listdir(music_dir))
+        tone = choice(os.listdir(music_dir))
         files = os.listdir(directory)
         file_name = f"{self.hours}_{self.minutes}_{self.am_pm}.lock"
         while True:
@@ -28,7 +28,7 @@ class Alarm(Thread):
             hour = now.strftime("%I")
             if hour == self.hours and minute == self.minutes and am_pm == self.am_pm and file_name in files:
                 if operating_system == 'Darwin':
-                    subprocess.call(["open", f"{music_dir}/{tone}"])
+                    call(["open", f"{music_dir}/{tone}"])
                 elif operating_system == 'Windows':
                     location = os.path.abspath(os.getcwd())
                     os.system(f'start wmplayer "{location}\\{music_dir}\\{tone}"')
