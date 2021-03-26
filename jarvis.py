@@ -952,16 +952,24 @@ def apps(keyword):
         v = (check_output("ls /Applications/", shell=True))
         apps_ = (v.decode('utf-8').split('\n'))
 
+        app_check = False
         for app in apps_:
             if re.search(keyword, app, flags=re.IGNORECASE) is not None:
                 keyword = app
+                app_check = True
+                break
 
-        app_status = os.system(f"open /Applications/'{keyword}'")
-        if app_status == 256:
+        if not app_check:
             speaker.say(f"I did not find the app {keyword}. Try again.")
             apps(None)
         else:
-            speaker.say(f"I have opened {keyword}")
+            app_status = os.system(f"open /Applications/'{keyword}'")
+            keyword = keyword.replace('.app', '')
+            if app_status == 256:
+                speaker.say(f"I'm sorry sir! I wasn't able to launch {keyword}. "
+                            f"You might need to check its permissions.")
+            else:
+                speaker.say(f"I have opened {keyword}")
 
 
 def robinhood():
@@ -2580,6 +2588,7 @@ def time_travel():
     current_time(None)
     weather(None)
     speaker.runAndWait()
+    meetings() if day == 'Morning' else None
     todo()
     gmail()
     speaker.say('Would you like to hear the latest news?')
