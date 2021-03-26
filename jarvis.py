@@ -2130,26 +2130,43 @@ def send_sms(number):
 
 
 def television(converted):
-    """television() controls all actions on a TV. In the main() method tv is set to None if the
-    TV class from tv_controls.py fails to connect to the tv, so the television function responds only
-    if the request is to turn on the TV, else it exits with a bummer. Once the tv is turned on, the TV
-    class is also initiated which is set global for other statements to use it."""
-
-    if vpn_checker().startswith('VPN'):
-        return
+    """Controls all actions on a TV (LG Web OS). In the main() method tv is set to None. Given a command related to TV,
+       Jarvis will try to ping the TV and then power it on if the host is unreachable. Then executes the said command.
+       Once the tv is turned on, the TV class is also initiated and assigned to tv variable which is set global for
+       other statements to use it."""
 
     global tv
     phrase_exc = converted.replace('TV', '')
     phrase = phrase_exc.lower()
-    if 'wake' in phrase or 'turn on' in phrase or 'connect' in phrase or 'status' in phrase or 'control' in phrase:
+
+    # One can also use tv_status = lambda: os.system(f"ping ....) but adhering to pep 8 best practice using a def
+    def tv_status():
+        return os.system(f"ping -c 1 -t 1 {tv_ip_address} >/dev/null")  # pings TV IP and returns 0 if host is reachable
+
+    if vpn_checker().startswith('VPN'):
+        return
+    elif ('turn off' in phrase or 'shutdown' in phrase or 'shut down' in phrase) and tv_status() != 0:
+        speaker.say("I wasn't able to connect to your TV sir! I guess your TV is powered off already.")
+        return
+    elif tv_status() != 0:
+        Thread(target=lambda mac_address: wake(mac_address), args=[tv_mac_address]).start()  # turns TV on in a thread
+        speaker.say("Looks like your TV is powered off sir! Let me try to turn it back on!")
+        speaker.runAndWait()  # speaks the message to buy some time while the TV is connecting to network
+
+    if tv_status() != 0:  # checks if TV is reachable even before trying to launch the TV connector
+        speaker.say("I wasn't able to connect to your TV sir! Please make sure you are on the "
+                    "same network as your TV, and your TV is connected to a power source.")
+        return
+    elif not tv:
         try:
-            wake(tv_mac_address)
             tv = TV()
-            speaker.say(f"TV features have been integrated sir!")
+            if 'turn on' in phrase or 'connect' in phrase:
+                speaker.say(f"TV features have been integrated sir!")
+                return
         except OSError:
-            speaker.say("I wasn't able to connect to your TV sir! Please make sure you are on the "
-                        "same network as your TV, and your TV is connected to a power source.")
-    elif tv:
+            pass
+
+    if tv:
         if 'increase' in phrase:
             tv.increase_volume()
             speaker.say(f'{choice(ack)}!')
@@ -2218,15 +2235,14 @@ def television(converted):
                 except ValueError:
                     speaker.say(f"I didn't find the source {tv_source} on your TV sir!")
         elif 'shutdown' in phrase or 'shut down' in phrase or 'turn off' in phrase:
-            speaker.say('Alright! Shutting down the TV now.')
             Thread(target=tv.shutdown).start()
+            speaker.say('Sure sir! Turning your TV off.')
             tv = None
         else:
             speaker.say("I didn't quite get that.")
     else:
         converted = converted.replace('my', 'your').replace('please', '').replace('will you', '').strip()
-        speaker.say(f"I'm sorry sir! I wasn't able to {converted}, as the TV state is unknown! You can ask me to "
-                    f"turn on or connect to the TV to start using the TV features.")
+        speaker.say(f"I'm sorry sir! I wasn't able to {converted}, as the TV state is unknown!")
 
 
 def alpha(text):
@@ -3131,6 +3147,7 @@ if __name__ == '__main__':
     robin_user = os.getenv('robinhood_user') or aws.robinhood_user()
     robin_pass = os.getenv('robinhood_pass') or aws.robinhood_pass()
     robin_qr = os.getenv('robinhood_qr') or aws.robinhood_qr()
+    tv_ip_address = os.getenv('tv_ip') or aws.tv_ip()
     tv_mac_address = os.getenv('tv_mac') or aws.tv_mac()
     birthday = os.getenv('birthday') or aws.birthday()
     offline_receive_user = os.getenv('offline_receive_user') or aws.offline_receive_user()
