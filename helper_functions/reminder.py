@@ -31,9 +31,9 @@ class Reminder(Thread):
                 # Establish a secure session with gmail's outgoing SMTP server using your gmail account
                 server = SMTP("smtp.gmail.com", 587)
                 server.starttls()
-                gmail_user = os.getenv('gmail_user') or aws.gmail_user()
-                gmail_pass = os.getenv('gmail_pass') or aws.gmail_pass()
-                remind = os.getenv('phone') or aws.phone()
+                gmail_user = os.environ.get('gmail_user') or aws.gmail_user()
+                gmail_pass = os.environ.get('gmail_pass') or aws.gmail_pass()
+                remind = os.environ.get('phone') or aws.phone()
                 server.login(user=gmail_user, password=gmail_pass)
                 from_ = gmail_user
                 to = f"{remind}@tmomail.net"

@@ -14,8 +14,8 @@ def create_multipart_message(title: str, text: str = None, html: str = None, att
     multipart_content_subtype = 'alternative' if text and html else 'mixed'
     msg = MIMEMultipart(multipart_content_subtype)
     msg['Subject'] = title
-    msg['From'] = f"Jarvis <{os.getenv('gmail_user') or aws.gmail_user()}>"
-    recipients = [os.getenv('robinhood_user') or aws.robinhood_user()]
+    msg['From'] = f"Jarvis <{os.environ.get('gmail_user') or aws.gmail_user()}>"
+    recipients = [os.environ.get('robinhood_user') or aws.robinhood_user()]
     msg['To'] = ', '.join(recipients)
     if text:
         part = MIMEText(text, 'plain')

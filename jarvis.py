@@ -37,12 +37,11 @@ from inflect import engine
 from joke.jokes import geek, icanhazdad, chucknorris, icndb
 from newsapi import NewsApiClient, newsapi_exception
 from playsound import playsound
-from psutil import Process, virtual_memory
+from psutil import Process, virtual_memory, cpu_count, boot_time
 from pychromecast.error import ChromecastConnectionError
 from pyicloud import PyiCloudService
 from pyicloud.exceptions import PyiCloudAPIResponseException, PyiCloudFailedLoginException
 from pyrh import Robinhood
-from pytemperature import k2f
 from pyttsx3 import init
 from pytz import timezone
 from randfacts import getFact
@@ -70,6 +69,7 @@ from helper_functions.lights import MagicHomeApi
 from helper_functions.logger import logger
 from helper_functions.reminder import Reminder
 from helper_functions.robinhood import watcher
+from helper_functions.temperature import k2f, c2f
 from helper_functions.tv_controls import TV
 
 
@@ -155,18 +155,19 @@ def renew():
 
 
 def time_converter(seconds):
-    """Run time calculator"""
+    """Modifies seconds to appropriate days/hours/minutes/seconds"""
+    days = round(seconds // 86400)
     seconds = round(seconds % (24 * 3600))
-    hour = round(seconds // 3600)
+    hours = round(seconds // 3600)
     seconds %= 3600
     minutes = round(seconds // 60)
     seconds %= 60
-    if hour:
-        return f'{hour} hours, {minutes} minutes, {seconds} seconds'
-    elif minutes == 1:
-        return f'{minutes} minute, {seconds} seconds'
+    if days:
+        return f'{days} days, {hours} hours, {minutes} minutes, and {seconds} seconds'
+    elif hours:
+        return f'{hours} hours, {minutes} minutes, and {seconds} seconds'
     elif minutes:
-        return f'{minutes} minutes, {seconds} seconds'
+        return f'{minutes} minutes, and {seconds} seconds'
     elif seconds:
         return f'{seconds} seconds'
 
@@ -433,7 +434,7 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.lights()):
         connection_status = vpn_checker()
         if not connection_status.startswith('VPN'):
-            Thread(target=lights, args=[converted.lower(), connection_status]).start()
+            lights(converted=converted.lower(), connection_status=connection_status)
 
     elif any(word in converted.lower() for word in keywords.guard_enable() or keywords.guard_disable()):
         if any(word in converted.lower() for word in keywords.guard_enable()):
@@ -456,6 +457,9 @@ def conditions(converted):
 
     elif any(word in converted.lower() for word in keywords.voice_changer()):
         voice_changer(converted)
+
+    elif any(word in converted.lower() for word in keywords.system_vitals()):
+        system_vitals()
 
     elif any(word in converted.lower() for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -837,16 +841,17 @@ def system_info():
     free = size_converter(free)
     ram = size_converter(virtual_memory().total).replace('.0', '')
     ram_used = size_converter(virtual_memory().percent).replace(' B', ' %')
-    cpu = str(os.cpu_count())
+    physical = cpu_count(logical=False)
+    logical = cpu_count(logical=True)
     if operating_system == 'Windows':
         o_system = uname()[0] + uname()[2]
     elif operating_system == 'Darwin':
         o_system = (platform()).split('.')[0]
     else:
         o_system = None
-    sys_config = f"You're running {o_system}, with {cpu} cores. Your physical drive capacity is {total}. " \
-                 f"You have used up {used} of space. Your free space is {free}. Your RAM capacity is {ram}. " \
-                 f"You are currently utilizing {ram_used} of your memory."
+    sys_config = f"You're running {o_system}, with {physical} physical cores and {logical} logical cores. " \
+                 f"Your physical drive capacity is {total}. You have used up {used} of space. Your free space is " \
+                 f"{free}. Your RAM capacity is {ram}. You are currently utilizing {ram_used} of your memory."
     sys.stdout.write(f'\r{sys_config}')
     speaker.say(sys_config)
 
@@ -1014,7 +1019,7 @@ def chatter_bot():
     if operating_system == 'Darwin':
         file2 = f"/Users/{os.environ.get('USER')}/nltk_data"
     elif operating_system == 'Windows':
-        file2 = f"{os.getenv('APPDATA')}\\nltk_data"
+        file2 = f"{os.environ.get('APPDATA')}\\nltk_data"
     else:
         file2 = None
     if os.path.isfile(file1) and os.path.isdir(file2):
@@ -2550,7 +2555,7 @@ def lights(converted, connection_status):
 
     lights_count = len(light_host_id)
     if 'turn on' in converted or 'cool' in converted or 'white' in converted:
-        speaker.say(f'Sure! Turning on {lights_count} lights!')
+        speaker.say(f'Sure sir! Turning on {lights_count} lights!')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(cool, light_host_id)
     elif 'turn off' in converted:
@@ -2558,8 +2563,8 @@ def lights(converted, connection_status):
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(turn_off, light_host_id)
     elif 'warm' in converted or 'yellow' in converted:
-        speaker.say(f'Sure! Setting {lights_count} lights to yellow!') if 'yellow' in converted else \
-            speaker.say(f'Sure! Setting {lights_count} lights to warm!')
+        speaker.say(f'Sure sir! Setting {lights_count} lights to yellow!') if 'yellow' in converted else \
+            speaker.say(f'Sure sir! Setting {lights_count} lights to warm!')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(warm, light_host_id)
 
@@ -2613,8 +2618,6 @@ def time_travel():
     if any(word in phrase.lower() for word in keywords.ok()):
         news()
     time_travel.has_been_called = False
-    speaker.say(f"Activating sentry mode, enjoy yourself sir!")
-    speaker.runAndWait()
     return
 
 
@@ -2853,6 +2856,66 @@ def meetings():
                 speaker.say(f"{meeting[0]} at {meeting[1]}")
 
 
+def system_vitals():
+    """Reads system vitals using powermetrics on MacOS"""
+
+    if operating_system == 'Windows':
+        speaker.say("Reading vitals on Windows hasn't been developed yet sir")
+        return
+
+    output = ""
+    if password := os.environ.get('password'):  # local machine's password to run sudo command
+        critical_info = [each.strip() for each in
+                         (os.popen(f'echo {password} | sudo -S powermetrics --samplers smc -i1 -n1')).read().split('\n')
+                         if each != '']
+
+        def extract_nos(input_):
+            """Extracts number part from a string"""
+            return float('.'.join([str(s) for s in re.findall(r'\b\d+\b', input_)]).strip())
+
+        def format_nos(n):
+            """Removes .0 float values and returns as int (if found, else returns the received float value)"""
+            return int(n) if isinstance(n, float) and n.is_integer() else n
+
+        sys.stdout.write('\r')
+        boot_time_, cpu_temp, gpu_temp, fan_speed = None, None, None, None
+        for info in critical_info:
+            # if 'Boot time' in info:
+            #     boot_time_ = info.strip('Boot time: ').strip()
+            if 'CPU die temperature' in info:
+                cpu_temp = info.strip('CPU die temperature: ').replace(' C', '').strip()
+            if 'GPU die temperature' in info:
+                gpu_temp = info.strip('GPU die temperature: ').replace(' C', '').strip()
+            if 'Fan' in info:
+                fan_speed = info.strip('Fan: ').replace(' rpm', '').strip()
+
+        if cpu_temp:
+            cpu = f'Your current average CPU temperature is {format_nos(c2f(extract_nos(cpu_temp)))}°F. '
+            output += cpu
+            speaker.say(cpu)
+        if gpu_temp:
+            gpu = f'GPU temperature is {format_nos(c2f(extract_nos(gpu_temp)))}°F. '
+            output += gpu
+            speaker.say(gpu)
+        if fan_speed:
+            fan = f'Current fan speed is {format_nos(extract_nos(fan_speed))} RPM. '
+            output += fan
+            speaker.say(fan)
+
+    model = (check_output("sysctl hw.model", shell=True)).decode('utf-8').split('\n')  # gets model info
+    result = list(filter(None, model))[0]  # removes empty string ('\n')
+    model = ''.join([i for i in result.split(':')[-1].strip() if not i.isdigit() and i != ','])  # removes version info
+
+    restart_time = datetime.fromtimestamp(boot_time())
+    second = (datetime.now() - restart_time).total_seconds()
+    restart_time = datetime.strftime(restart_time, "%A, %B %d, at %I:%M %p")
+    restart_duration = time_converter(seconds=second)
+    output += f'Restarted on: {restart_time} - {restart_duration} ago from now.'
+    sys.stdout.write(output)
+    speaker.say(f'Your {model} was last booted on {restart_time}. '
+                f'Current boot time is: {restart_duration}')
+
+
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action.
     threshold is used to sanity check sentry_mode() so that:
@@ -2860,7 +2923,7 @@ def sentry_mode():
      2. Jarvis restarts at least twice a day and gets a new pid
      3. Maintains mandatory sleep hours 1-3 AM (use bypass in phrase to bypass it)"""
     threshold = 0
-    while threshold < 5000:
+    while threshold < 50_000:
         threshold += 1
         try:
             sys.stdout.write("\rSentry Mode")
@@ -3095,7 +3158,7 @@ def voice_changer(change=None):
             keyword = listener(3, 5)
             if keyword == 'SR_ERROR':
                 voice_default()
-                speaker.say("Sorry, I had trouble understanding. I'm back to my default voice.")
+                speaker.say("Sorry sir! I had trouble understanding. I'm back to my default voice.")
                 place_holder = 0
                 return
             elif 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
@@ -3137,29 +3200,29 @@ if __name__ == '__main__':
 
     # Get all necessary credentials and api keys from env vars or aws client
     sys.stdout.write("\rFetching credentials and API keys.")
-    git_user = os.getenv('git_user') or aws.git_user()
-    git_pass = os.getenv('git_pass') or aws.git_pass()
-    weather_api = os.getenv('weather_api') or aws.weather_api()
-    news_api = os.getenv('news_api') or aws.news_api()
-    maps_api = os.getenv('maps_api') or aws.maps_api()
-    gmail_user = os.getenv('gmail_user') or aws.gmail_user()
-    gmail_pass = os.getenv('gmail_pass') or aws.gmail_pass()
-    robin_user = os.getenv('robinhood_user') or aws.robinhood_user()
-    robin_pass = os.getenv('robinhood_pass') or aws.robinhood_pass()
-    robin_qr = os.getenv('robinhood_qr') or aws.robinhood_qr()
-    tv_ip_address = os.getenv('tv_ip') or aws.tv_ip()
-    tv_mac_address = os.getenv('tv_mac') or aws.tv_mac()
-    birthday = os.getenv('birthday') or aws.birthday()
-    offline_receive_user = os.getenv('offline_receive_user') or aws.offline_receive_user()
-    offline_receive_pass = os.getenv('offline_receive_pass') or aws.offline_receive_pass()
-    offline_sender = os.getenv('offline_sender') or aws.offline_sender()
-    icloud_user = os.getenv('icloud_user') or aws.icloud_user()
-    icloud_pass = os.getenv('icloud_pass') or aws.icloud_pass()
-    recovery = os.getenv('icloud_recovery') or aws.icloud_recovery()
-    phone_number = os.getenv('phone') or aws.phone()
-    hallway_ip = os.getenv('hallway_ip') or aws.hallway_ip()
-    kitchen_ip = os.getenv('kitchen_ip') or aws.kitchen_ip()
-    think_id = os.getenv('think_id') or aws.think_id()
+    git_user = os.environ.get('git_user') or aws.git_user()
+    git_pass = os.environ.get('git_pass') or aws.git_pass()
+    weather_api = os.environ.get('weather_api') or aws.weather_api()
+    news_api = os.environ.get('news_api') or aws.news_api()
+    maps_api = os.environ.get('maps_api') or aws.maps_api()
+    gmail_user = os.environ.get('gmail_user') or aws.gmail_user()
+    gmail_pass = os.environ.get('gmail_pass') or aws.gmail_pass()
+    robin_user = os.environ.get('robinhood_user') or aws.robinhood_user()
+    robin_pass = os.environ.get('robinhood_pass') or aws.robinhood_pass()
+    robin_qr = os.environ.get('robinhood_qr') or aws.robinhood_qr()
+    tv_ip_address = os.environ.get('tv_ip') or aws.tv_ip()
+    tv_mac_address = os.environ.get('tv_mac') or aws.tv_mac()
+    birthday = os.environ.get('birthday') or aws.birthday()
+    offline_receive_user = os.environ.get('offline_receive_user') or aws.offline_receive_user()
+    offline_receive_pass = os.environ.get('offline_receive_pass') or aws.offline_receive_pass()
+    offline_sender = os.environ.get('offline_sender') or aws.offline_sender()
+    icloud_user = os.environ.get('icloud_user') or aws.icloud_user()
+    icloud_pass = os.environ.get('icloud_pass') or aws.icloud_pass()
+    recovery = os.environ.get('icloud_recovery') or aws.icloud_recovery()
+    phone_number = os.environ.get('phone') or aws.phone()
+    hallway_ip = os.environ.get('hallway_ip') or aws.hallway_ip()
+    kitchen_ip = os.environ.get('kitchen_ip') or aws.kitchen_ip()
+    think_id = os.environ.get('think_id') or aws.think_id()
 
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run

@@ -12,7 +12,6 @@ then
   conda install pyaudio=0.2.11
   pip3 install pyttsx3==2.71
   pip3 install SpeechRecognition==3.8.1
-  pip3 install pytemperature==1.0
   pip3 install psutil==5.8.0
   pip3 install wikipedia==1.4.0
   pip3 install newsapi-python==0.2.6

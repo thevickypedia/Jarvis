@@ -13,7 +13,7 @@ class Keywords:
         return key
 
     def system_info(self):
-        key = ['system', 'configuration']
+        key = ['configuration']
         return key
 
     def ip_info(self):
@@ -196,6 +196,10 @@ class Keywords:
 
     def voice_changer(self):
         key = ['voice', 'module', 'audio']
+        return key
+
+    def system_vitals(self):
+        key = ['vitals', 'statistics', 'readings', 'stats']
         return key
 
     def ok(self):

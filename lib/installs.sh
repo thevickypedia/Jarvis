@@ -22,7 +22,6 @@ pip install --upgrade pip
 python3 -m pip install SpeechRecognition==3.8.1
 python3 -m pip install PyAudio==0.2.11
 python3 -m pip install pyttsx3==2.90
-python3 -m pip install pytemperature==1.0
 python3 -m pip install psutil==5.8.0
 python3 -m pip install wikipedia==1.4.0
 python3 -m pip install newsapi-python==0.2.6
