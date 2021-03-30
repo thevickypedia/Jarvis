@@ -1138,6 +1138,7 @@ def locate(converted):
         place_holder = None
         if any(word in phrase.lower() for word in keywords.ok()):
             speaker.say("Ringing your device now.")
+            # todo: play sound to run in parallel whilst saying location info
             target_device.play_sound()
             speaker.say("I can also enable lost mode. Would you like to do it?")
             speaker.runAndWait()
@@ -1573,7 +1574,7 @@ def locate_places(place):
         speaker.runAndWait()
         converted = listener(3, 5)
         if converted != 'SR_ERROR':
-            if 'exit' in place or 'quit' in place or 'Xzibit' in place:
+            if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 place_holder = None
                 return
             for word in converted.split():
@@ -2857,37 +2858,48 @@ def meetings():
 
 
 def system_vitals():
-    """Reads system vitals using powermetrics on MacOS"""
+    """Reads system vitals on MacOS"""
 
     if operating_system == 'Windows':
         speaker.say("Reading vitals on Windows hasn't been developed yet sir")
         return
 
-    output = ""
-    if password := os.environ.get('password'):  # local machine's password to run sudo command
-        critical_info = [each.strip() for each in
-                         (os.popen(f'echo {password} | sudo -S powermetrics --samplers smc -i1 -n1')).read().split('\n')
-                         if each != '']
+    def extract_nos(input_):
+        """Extracts number part from a string"""
+        return float('.'.join(re.findall(r"\d+", input_)))
 
-        def extract_nos(input_):
-            """Extracts number part from a string"""
-            return float('.'.join([str(s) for s in re.findall(r'\b\d+\b', input_)]).strip())
+    def format_nos(input_):
+        """Removes .0 float values and returns as int (if found, else returns the received float value)"""
+        return int(input_) if isinstance(input_, float) and input_.is_integer() else input_
 
-        def format_nos(n):
-            """Removes .0 float values and returns as int (if found, else returns the received float value)"""
-            return int(n) if isinstance(n, float) and n.is_integer() else n
+    def extract_str(input_):
+        """Extracts strings from the received input"""
+        return ''.join([i for i in input_ if not i.isdigit() and i not in [',', '.', '?', '-', ';', '!', ':']])
 
-        sys.stdout.write('\r')
-        boot_time_, cpu_temp, gpu_temp, fan_speed = None, None, None, None
-        for info in critical_info:
-            # if 'Boot time' in info:
-            #     boot_time_ = info.strip('Boot time: ').strip()
-            if 'CPU die temperature' in info:
-                cpu_temp = info.strip('CPU die temperature: ').replace(' C', '').strip()
-            if 'GPU die temperature' in info:
-                gpu_temp = info.strip('GPU die temperature: ').replace(' C', '').strip()
-            if 'Fan' in info:
-                fan_speed = info.strip('Fan: ').replace(' rpm', '').strip()
+    device = (check_output("sysctl hw.model", shell=True)).decode('utf-8').split('\n')  # gets model info
+    result = list(filter(None, device))[0]  # removes empty string ('\n')
+    model = extract_str(result).replace('hwmodel', '').strip()
+    version = extract_nos(''.join(device))
+
+    boot_time_, cpu_temp, gpu_temp, fan_speed, output = None, None, None, None, ""
+    if password := os.environ.get('PASSWORD'):  # local machine's password to run sudo command
+        if version >= 12:  # smc information is available only on 12+ versions (tested on 11.3, 12.1 and 16.1 versions)
+            critical_info = [each.strip() for each in
+                             (os.popen(f'echo {password} | sudo -S powermetrics --samplers smc -i1 -n1')).read().split('\n')
+                             if each != '']
+            sys.stdout.write('\r')
+
+            for info in critical_info:
+                if 'CPU die temperature' in info:
+                    cpu_temp = info.strip('CPU die temperature: ').replace(' C', '').strip()
+                if 'GPU die temperature' in info:
+                    gpu_temp = info.strip('GPU die temperature: ').replace(' C', '').strip()
+                if 'Fan' in info:
+                    fan_speed = info.strip('Fan: ').replace(' rpm', '').strip()
+        else:
+            fan_speed = check_output(
+                f'echo {password} | sudo -S spindump 1 1 -file /tmp/spindump.txt > /dev/null 2>&1;grep "Fan speed" '
+                '/tmp/spindump.txt;sudo rm /tmp/spindump.txt', shell=True).decode('utf-8')
 
         if cpu_temp:
             cpu = f'Your current average CPU temperature is {format_nos(c2f(extract_nos(cpu_temp)))}°F. '
@@ -2902,16 +2914,12 @@ def system_vitals():
             output += fan
             speaker.say(fan)
 
-    model = (check_output("sysctl hw.model", shell=True)).decode('utf-8').split('\n')  # gets model info
-    result = list(filter(None, model))[0]  # removes empty string ('\n')
-    model = ''.join([i for i in result.split(':')[-1].strip() if not i.isdigit() and i != ','])  # removes version info
-
     restart_time = datetime.fromtimestamp(boot_time())
     second = (datetime.now() - restart_time).total_seconds()
     restart_time = datetime.strftime(restart_time, "%A, %B %d, at %I:%M %p")
     restart_duration = time_converter(seconds=second)
     output += f'Restarted on: {restart_time} - {restart_duration} ago from now.'
-    sys.stdout.write(output)
+    sys.stdout.write(f'\r{output}')
     speaker.say(f'Your {model} was last booted on {restart_time}. '
                 f'Current boot time is: {restart_duration}')
 
