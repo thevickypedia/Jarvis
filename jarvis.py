@@ -2884,9 +2884,9 @@ def system_vitals():
     boot_time_, cpu_temp, gpu_temp, fan_speed, output = None, None, None, None, ""
     if password := os.environ.get('PASSWORD'):  # local machine's password to run sudo command
         if version >= 12:  # smc information is available only on 12+ versions (tested on 11.3, 12.1 and 16.1 versions)
-            critical_info = [each.strip() for each in
-                             (os.popen(f'echo {password} | sudo -S powermetrics --samplers smc -i1 -n1')).read().split('\n')
-                             if each != '']
+            critical_info = [each.strip() for each in (os.popen(
+                f'echo {password} | sudo -S powermetrics --samplers smc -i1 -n1'
+            )).read().split('\n') if each != '']
             sys.stdout.write('\r')
 
             for info in critical_info:
@@ -2968,12 +2968,12 @@ def sentry_mode():
                         speaker.say(f'{choice(wake_up3)}')
                         initialize()
                 speaker.runAndWait()
-        except (UnknownValueError, RequestError, WaitTimeoutError):
+        except (UnknownValueError, RequestError, WaitTimeoutError, RuntimeError):
             continue
         except KeyboardInterrupt:
             exit_process()
             terminator()
-        except (RuntimeError, RecursionError, TimeoutError):
+        except (RecursionError, TimeoutError):
             unknown_error = sys.exc_info()[0]
             logger.fatal(f'Unknown exception::{unknown_error.__name__}\n{format_exc()}')  # include traceback
             speaker.say('I faced an unknown exception.')
@@ -3088,9 +3088,12 @@ def restart():
     logger.fatal('JARVIS::Restarting Now::Run STATUS has been unset')
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(perf_counter())}")
     speaker.say('Restarting now sir! I will be up and running momentarily.')
-    speaker.runAndWait()
+    try:
+        speaker.runAndWait()
+    except RuntimeError:
+        pass
     os.system(f'python3 restart.py')
-    exit(1)  # Don't call terminator() here as, os._exit(1) will kill the background threads running in parallel
+    exit(1)  # Don't call terminator() as, os._exit(1) in that func will kill the background threads running in parallel
 
 
 def shutdown():
