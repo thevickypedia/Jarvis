@@ -1086,6 +1086,7 @@ def device_selector(converted):
     icloud_api = PyiCloudService(icloud_user, icloud_pass)
     for device in icloud_api.devices:
         index += 1
+        # todo: use regex or close_matches to find the precise device and remove the abuse of converted
         if lookup.lower() in str(device).lower():
             target_device = icloud_api.devices[index]
             break
@@ -1106,25 +1107,13 @@ def locate(converted):
     target_device = device_selector(converted)
     sys.stdout.write(f"\rLocating your {target_device}")
     if place_holder == 0:
-        speaker.say("Would you like to ring it?")
+        speaker.say("Would you like to get the location details?")
     else:
-        place_holder = 'Apple'
-        ignore_lat, ignore_lon, location_info_ = location_services(target_device)
-        place_holder = None
-        lookup = str(target_device).split(':')[0].strip()
-        if location_info_ == 'None':
-            speaker.say(f"I wasn't able to locate your {lookup} sir! It is probably offline.")
-        else:
-            post_code = '"'.join(list(location_info_['postcode'].split('-')[0]))
-            iphone_location = f"Your {lookup} is near {location_info_['road']}, {location_info_['city']} " \
-                              f"{location_info_['state']}. Zipcode: {post_code}, {location_info_['country']}"
-            speaker.say(iphone_location)
-            stat = target_device.status()
-            bat_percent = f"Battery: {round(stat['batteryLevel'] * 100)} %, " if stat['batteryLevel'] else ''
-            device_model = stat['deviceDisplayName']
-            phone_name = stat['name']
-            speaker.say(f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
-            speaker.say("Would you like to ring it?")
+        target_device.play_sound()
+        before_keyword, keyword, after_keyword = target_device.partition(':')  # partitions the hostname information
+        speaker.say(f"Your {before_keyword} should be ringing now sir!")
+        speaker.runAndWait()
+        speaker.say("Would you like to get the location details?")
     speaker.runAndWait()
     phrase = listener(3, 3)
     if phrase == 'SR_ERROR':
@@ -1137,9 +1126,22 @@ def locate(converted):
     else:
         place_holder = None
         if any(word in phrase.lower() for word in keywords.ok()):
-            speaker.say("Ringing your device now.")
-            # todo: play sound to run in parallel whilst saying location info
-            target_device.play_sound()
+            place_holder = 'Apple'
+            ignore_lat, ignore_lon, location_info_ = location_services(target_device)
+            place_holder = None
+            lookup = str(target_device).split(':')[0].strip()
+            if location_info_ == 'None':
+                speaker.say(f"I wasn't able to locate your {lookup} sir! It is probably offline.")
+            else:
+                post_code = '"'.join(list(location_info_['postcode'].split('-')[0]))
+                iphone_location = f"Your {lookup} is near {location_info_['road']}, {location_info_['city']} " \
+                                  f"{location_info_['state']}. Zipcode: {post_code}, {location_info_['country']}"
+                speaker.say(iphone_location)
+                stat = target_device.status()
+                bat_percent = f"Battery: {round(stat['batteryLevel'] * 100)} %, " if stat['batteryLevel'] else ''
+                device_model = stat['deviceDisplayName']
+                phone_name = stat['name']
+                speaker.say(f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
             speaker.say("I can also enable lost mode. Would you like to do it?")
             speaker.runAndWait()
             phrase = listener(3, 3)
