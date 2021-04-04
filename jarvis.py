@@ -3131,6 +3131,11 @@ def shutdown(proceed=False):
         if any(word in converted.lower() for word in keywords.ok()):
             exit_process()
             if operating_system == 'Darwin':
+                pid_check = check_output("ps -ef | grep 'iTerm\\|Terminal'", shell=True)  # use pid to kill terminals
+                pid_list = pid_check.decode('utf-8').split('\n')
+                for id_ in pid_list:
+                    if id_ and 'Applications' in id_ and '/usr/bin/login' not in id_:
+                        check_output(f'kill -9 {id_.split()[1]} >/dev/null', shell=True)
                 call(['osascript', '-e', 'tell app "System Events" to shut down'])
             elif operating_system == 'Windows':
                 os.system("shutdown /s /t 1")
