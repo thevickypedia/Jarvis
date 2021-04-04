@@ -8,6 +8,7 @@ from email.header import decode_header, make_header
 from imaplib import IMAP4, IMAP4_SSL
 from json import load, loads
 from math import ceil, log, floor, pow
+from multiprocessing.pool import ThreadPool
 from platform import uname, platform, system
 from random import choice
 from shutil import disk_usage
@@ -453,7 +454,7 @@ def conditions(converted):
         speaker.say(getFact(False))
 
     elif any(word in converted.lower() for word in keywords.meetings()):
-        meetings()
+        speaker.say(meetings())
 
     elif any(word in converted.lower() for word in keywords.voice_changer()):
         voice_changer(converted)
@@ -2609,6 +2610,7 @@ def celebrate():
 
 def time_travel():
     """Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way"""
+    meeting = ThreadPool(processes=1).apply_async(meetings)
     day = greeting()
     speaker.say(f"Good {day} Vignesh.")
     time_travel.has_been_called = True
@@ -2616,7 +2618,7 @@ def time_travel():
     current_time(None)
     weather(None)
     speaker.runAndWait()
-    meetings() if day == 'Morning' else None
+    speaker.say(meeting.get()) if day == 'Morning' else None
     todo()
     gmail()
     speaker.say('Would you like to hear the latest news?')
@@ -2829,26 +2831,24 @@ def offline_communicator():
 def meetings():
     """Uses applescript to fetch calendar events from Microsoft Outlook"""
     if operating_system == 'Windows':
-        speaker.say("Meetings feature on Windows hasn't been developed yet sir!")
-        return
+        return "Meetings feature on Windows hasn't been developed yet sir!"
     today = datetime.now().strftime("%A")
     args = [1, 3]
     process = Popen(['/usr/bin/osascript', 'meetings.scpt'] + [str(arg) for arg in args], stdout=PIPE, stderr=PIPE)
     out, err = process.communicate()
     if error := process.returncode:  # stores process.returncode in error if process.returncode is not 0
-        speaker.say("I was unable to read your Outlook sir! Please make sure it is in sync.")
         logger.fatal(f"Failed to read outlook with exit code: {error}\n{err}")
+        return "I was unable to read your Outlook sir! Please make sure it is in sync."
     else:
         events = out.decode().strip()
         if not events or events == ',':
-            speaker.say("You don't have any meetings in the next 12 hours sir!")
-            return
+            return "You don't have any meetings in the next 12 hours sir!"
         events = events.replace(f', date {today}, ', ' rEpLaCInG ')
         event_time = events.split('rEpLaCInG')[1:]
         event_name = events.split('rEpLaCInG')[0].split(', ')
         event_name = [i.strip() for n, i in enumerate(event_name) if i not in event_name[n + 1:]]  # remove duplicates
         count = len(event_name)
-        speaker.say(f'You have {count} meetings for today sir!') if count > 1 else ''
+        meeting_status = f'You have {count} meetings for today sir! ' if count > 1 else None
         events = {}
         for i in range(count):
             event_time[i] = re.search(' at (.*)', event_time[i]).group(1).strip()
@@ -2856,11 +2856,13 @@ def meetings():
             event_time[i] = dt_string.strftime('%I:%M %p')
             events.update({event_name[i]: event_time[i]})
         ordered_data = sorted(events.items(), key=lambda x: datetime.strptime(x[1], '%I:%M %p'))
-        for meeting in ordered_data:
+        for index, meeting in enumerate(ordered_data):
             if count == 1:
-                speaker.say(f"You have a meeting at {meeting[1]} sir! {meeting[0].upper()}")
+                meeting_status += f"You have a meeting at {meeting[1]} sir! {meeting[0].upper()}. "
             else:
-                speaker.say(f"{meeting[0]} at {meeting[1]}")
+                meeting_status += f"{meeting[0]} at {meeting[1]}, " if index + 1 < len(ordered_data) else \
+                    f"{meeting[0]} at {meeting[1]}."
+        return meeting_status
 
 
 def system_vitals():
