@@ -2159,7 +2159,7 @@ def television(converted):
     elif tv_status() != 0:
         arp_output = check_output(f"arp {tv_ip_address}", shell=True).decode('utf-8')  # arp on tv ip to get mac address
         tv_mac_address = re.search(' at (.*) on ', arp_output).group().replace(' at ', '').replace(' on ', '')  # format
-        if not tv_mac_address or tv_mac_address.strip() == '(INCOMPLETE)':
+        if not tv_mac_address or tv_mac_address == '(INCOMPLETE)':
             tv_mac_address = os.environ.get('tv_mac') or aws.tv_mac()
         Thread(target=lambda mac_address: wake(mac_address), args=[tv_mac_address]).start()  # turns TV on in a thread
         speaker.say("Looks like your TV is powered off sir! Let me try to turn it back on!")
@@ -2927,7 +2927,19 @@ def system_vitals():
     output += f'Restarted on: {restart_time} - {restart_duration} ago from now.'
     sys.stdout.write(f'\r{output}')
     speaker.say(f'Your {model} was last booted on {restart_time}. '
-                f'Current boot time is: {restart_duration}')
+                f'Current boot time is: {restart_duration}.')
+    if second >= 172800:
+        boot_extreme = re.search('(.*) days', restart_duration)
+        if boot_extreme:
+            warn = int(boot_extreme.group().replace(' days', '').strip())
+            speaker.say(f'Sir! your {model} has been running continuously for more than {warn} days. '
+                        f'You must consider a reboot for better performance.')
+            speaker.say('Would you like me to restart it for you sir?')
+            speaker.runAndWait()
+            response = listener(3, 3)
+            if any(word in response.lower() for word in keywords.ok()):
+                exit_process()
+                shutdown(proceed=True)
 
 
 def sentry_mode():
@@ -3080,7 +3092,10 @@ def exit_process():
         speaker.say('This will be removed while shutting down!')
     speaker.say('Shutting down now sir!')
     speaker.say(exit_message())
-    speaker.runAndWait()
+    try:
+        speaker.runAndWait()
+    except RuntimeError:
+        pass
     remove_files()
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
                      f"\nTotal runtime: {time_converter(perf_counter())}")
@@ -3102,12 +3117,15 @@ def restart():
     exit(1)  # Don't call terminator() as, os._exit(1) in that func will kill the background threads running in parallel
 
 
-def shutdown():
+def shutdown(proceed=False):
     """Gets confirmation and turns off the machine"""
     global place_holder
-    speaker.say(f"{choice(confirmation)} turn off the machine?")
-    speaker.runAndWait()
-    converted = listener(3, 3)
+    if not proceed:
+        speaker.say(f"{choice(confirmation)} turn off the machine?")
+        speaker.runAndWait()
+        converted = listener(3, 3)
+    else:
+        converted = 'yes'
     if converted != 'SR_ERROR':
         place_holder = None
         if any(word in converted.lower() for word in keywords.ok()):
@@ -3149,6 +3167,7 @@ def voice_changer(change=None):
         else:
             logger.fatal(f'Unsupported Operating System::{operating_system}.')
             terminator()
+
     if change:
         if distribution := [int(s) for s in re.findall(r'\b\d+\b', change)]:
             place_holder = 'custom'
