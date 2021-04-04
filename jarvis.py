@@ -1874,7 +1874,7 @@ def reminder(converted):
         message = re.search(' to (.*)', converted) or re.search(' about (.*)', converted)
         if not message:
             speaker.say('Reminder format should be::Remind me to do something, at some time.')
-            sys.stdout.write('Reminder format should be::Remind ME to do something, AT some time.')
+            sys.stdout.write('\rReminder format should be::Remind ME to do something, AT some time.')
             return
     extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
         r'([0-9]+\s?(?:a.m.|p.m.:?))', converted)
@@ -2157,6 +2157,10 @@ def television(converted):
         speaker.say("I wasn't able to connect to your TV sir! I guess your TV is powered off already.")
         return
     elif tv_status() != 0:
+        arp_output = check_output(f"arp {tv_ip_address}", shell=True).decode('utf-8')  # arp on tv ip to get mac address
+        tv_mac_address = re.search(' at (.*) on ', arp_output).group().replace(' at ', '').replace(' on ', '')  # format
+        if not tv_mac_address or tv_mac_address.strip() == '(INCOMPLETE)':
+            tv_mac_address = os.environ.get('tv_mac') or aws.tv_mac()
         Thread(target=lambda mac_address: wake(mac_address), args=[tv_mac_address]).start()  # turns TV on in a thread
         speaker.say("Looks like your TV is powered off sir! Let me try to turn it back on!")
         speaker.runAndWait()  # speaks the message to buy some time while the TV is connecting to network
@@ -2933,7 +2937,7 @@ def sentry_mode():
      2. Jarvis restarts at least twice a day and gets a new pid
      3. Maintains mandatory sleep hours 1-3 AM (use bypass in phrase to bypass it)"""
     threshold = 0
-    while threshold < 50_000:
+    while threshold < 5_000:
         threshold += 1
         try:
             sys.stdout.write("\rSentry Mode")
@@ -3224,7 +3228,6 @@ if __name__ == '__main__':
     robin_pass = os.environ.get('robinhood_pass') or aws.robinhood_pass()
     robin_qr = os.environ.get('robinhood_qr') or aws.robinhood_qr()
     tv_ip_address = os.environ.get('tv_ip') or aws.tv_ip()
-    tv_mac_address = os.environ.get('tv_mac') or aws.tv_mac()
     birthday = os.environ.get('birthday') or aws.birthday()
     offline_receive_user = os.environ.get('offline_receive_user') or aws.offline_receive_user()
     offline_receive_pass = os.environ.get('offline_receive_pass') or aws.offline_receive_pass()
