@@ -490,7 +490,10 @@ def conditions(converted):
         speaker.say("I can seamlessly take care of your daily tasks, and also help with most of your work!")
 
     elif any(word in converted.lower() for word in keywords.restart()):
-        restart()
+        if 'computer' in converted.lower():
+            restart('PC')
+        else:
+            restart()
 
     elif any(word in converted.lower() for word in keywords.kill()):
         exit_process()
@@ -2874,22 +2877,8 @@ def system_vitals():
         speaker.say("Reading vitals on Windows hasn't been developed yet sir")
         return
 
-    def extract_nos(input_):
-        """Extracts number part from a string"""
-        return float('.'.join(re.findall(r"\d+", input_)))
-
-    def format_nos(input_):
-        """Removes .0 float values and returns as int (if found, else returns the received float value)"""
-        return int(input_) if isinstance(input_, float) and input_.is_integer() else input_
-
-    def extract_str(input_):
-        """Extracts strings from the received input"""
-        return ''.join([i for i in input_ if not i.isdigit() and i not in [',', '.', '?', '-', ';', '!', ':']])
-
-    device = (check_output("sysctl hw.model", shell=True)).decode('utf-8').split('\n')  # gets model info
-    result = list(filter(None, device))[0]  # removes empty string ('\n')
-    model = extract_str(result).replace('hwmodel', '').strip()
-    version = extract_nos(''.join(device))
+    version = host_info('version')
+    model = host_info('model')
 
     boot_time_, cpu_temp, gpu_temp, fan_speed, output = None, None, None, None, ""
     if password := os.environ.get('PASSWORD'):  # local machine's password to run sudo command
@@ -2943,7 +2932,7 @@ def system_vitals():
             response = listener(3, 3)
             if any(word in response.lower() for word in keywords.ok()):
                 exit_process()
-                shutdown(proceed=True)
+                restart(target='PC_Proceed')
 
 
 def sentry_mode():
@@ -3105,9 +3094,65 @@ def exit_process():
                      f"\nTotal runtime: {time_converter(perf_counter())}")
 
 
-def restart():
-    """restart() triggers restart.py which in turn starts Jarvis after 5 seconds.
-    Doing this changes the PID to avoid any Fatal Errors occurred by long running threads."""
+def extract_nos(input_):
+    """Extracts number part from a string"""
+    return float('.'.join(re.findall(r"\d+", input_)))
+
+
+def format_nos(input_):
+    """Removes .0 float values and returns as int (if found, else returns the received float value)"""
+    return int(input_) if isinstance(input_, float) and input_.is_integer() else input_
+
+
+def extract_str(input_):
+    """Extracts strings from the received input"""
+    return ''.join([i for i in input_ if not i.isdigit() and i not in [',', '.', '?', '-', ';', '!', ':']])
+
+
+def host_info(required):
+    """Returns required info either model or the version of the PC"""
+    device = (check_output("sysctl hw.model", shell=True)).decode('utf-8').split('\n')  # gets model info
+    result = list(filter(None, device))[0]  # removes empty string ('\n')
+    model = extract_str(result).replace('hwmodel', '').strip()
+    version = extract_nos(''.join(device))
+    if required == 'model':
+        return model
+    elif required == 'version':
+        return version
+
+
+def stop_terminal():
+    """Uses pid to kill terminals as terminals await unser confirmation interrupting shutdown/restart"""
+    pid_check = check_output("ps -ef | grep 'iTerm\\|Terminal'", shell=True)
+    pid_list = pid_check.decode('utf-8').split('\n')
+    for id_ in pid_list:
+        if id_ and 'Applications' in id_ and '/usr/bin/login' not in id_:
+            check_output(f'kill -9 {id_.split()[1]} >/dev/null', shell=True)
+
+
+def restart(target=None):
+    """restart(None) triggers restart.py which in turn starts Jarvis after 5 seconds.
+    Doing this changes the PID to avoid any Fatal Errors occurred by long running threads.
+    restart(PC) will restart the machine after getting confirmation.
+    restart(anything_else) will restart the machine without getting any confirmation."""
+    if target:
+        if target == 'PC':
+            speaker.say(f'{choice(confirmation)} restart your {host_info("model")}?')
+            speaker.runAndWait()
+            converted = listener(3, 3)
+        else:
+            converted = 'yes'
+        if any(word in converted.lower() for word in keywords.ok()):
+            exit_process()
+            if operating_system == 'Darwin':
+                stop_terminal()
+                call(['osascript', '-e', 'tell app "System Events" to restart'])
+            elif operating_system == 'Windows':
+                os.system("shutdown /r /t 1")
+            terminator()
+        else:
+            speaker.say("Machine state is left intact sir!")
+            return
     global STATUS
     STATUS = False
     logger.fatal('JARVIS::Restarting Now::Run STATUS has been unset')
@@ -3135,11 +3180,7 @@ def shutdown(proceed=False):
         if any(word in converted.lower() for word in keywords.ok()):
             exit_process()
             if operating_system == 'Darwin':
-                pid_check = check_output("ps -ef | grep 'iTerm\\|Terminal'", shell=True)  # use pid to kill terminals
-                pid_list = pid_check.decode('utf-8').split('\n')
-                for id_ in pid_list:
-                    if id_ and 'Applications' in id_ and '/usr/bin/login' not in id_:
-                        check_output(f'kill -9 {id_.split()[1]} >/dev/null', shell=True)
+                stop_terminal()
                 call(['osascript', '-e', 'tell app "System Events" to shut down'])
             elif operating_system == 'Windows':
                 os.system("shutdown /s /t 1")
