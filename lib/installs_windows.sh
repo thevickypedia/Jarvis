@@ -34,7 +34,7 @@ then
   pip3 install playsound==1.2.2
   pip3 install pywebostv==0.8.4
   pip3 install wakeonlan==1.1.6
-  pip3 install speedtest-cli==2.1.2
+  pip3 install speedtest-cli==2.1.3
   pip3 install holidays==0.10.4
   pip3 install randfacts==0.2.8
   pip3 install pywin32==300
