@@ -556,16 +556,21 @@ def location_services(device):
             current_lon_ = raw_location['longitude']
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException):
         # uses latitude and longitude information from your IP's client when unable to connect to icloud
-        current_lat_ = st.results.client['lat']
-        current_lon_ = st.results.client['lon']
+        if st:
+            current_lat_ = st.results.client.get('lat')
+            current_lon_ = st.results.client.get('lon')
+        else:
+            resp = urlopen('http://ipinfo.io/json')
+            lat_lon = load(resp)['loc'].split(',')
+            current_lat_ = lat_lon[0]
+            current_lon_ = lat_lon[1]
         speaker.say("I have trouble accessing the i-cloud API, so I'll be using your I.P address to get your location. "
                     "Please note that this may not be accurate enough for location services.")
         speaker.runAndWait()
     except requests_exceptions.ConnectionError:
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
         speaker.say("I was unable to connect to the internet. Please check your connection settings and retry.")
-        speaker.runAndWait()
-        return exit(1)
+        return
 
     try:
         # Uses the latitude and longitude information and converts to the required address.
@@ -2440,6 +2445,9 @@ def face_recognition_detection():
 
 def speed_test():
     """Initiates speed test and says the ping rate, download and upload speed."""
+    if not st:
+        speaker.say('The speed test module has run into some issues sir! The feature is currently unstable.')
+        return
     client_locator = geo_locator.reverse(f"{st.results.client.get('lat')}, {st.results.client.get('lon')}")
     client_location = client_locator.raw['address']
     city, state = client_location.get('city'), client_location.get('state')
@@ -2853,7 +2861,7 @@ def meetings():
     event_name = [i.strip() for n, i in enumerate(event_name) if i not in event_name[n + 1:]]  # remove duplicates
     count = len(event_time)
     [event_name.remove(e) for e in event_name if len(e) <= 5] if count != len(event_name) else None
-    meeting_status = f'You have {count} meetings for today sir! ' if count > 1 else None
+    meeting_status = f'You have {count} meetings for today sir! ' if count > 1 else ''
     events = {}
     for i in range(count):
         event_time[i] = re.search(' at (.*)', event_time[i]).group(1).strip()
@@ -3324,6 +3332,8 @@ if __name__ == '__main__':
         speaker.say("I was unable to connect to the internet sir! Please check your connection settings and retry.")
         speaker.runAndWait()
         terminator()
+    except ValueError:
+        st = None
 
     # stores necessary values for geo location to receive the latitude, longitude and address
     options.default_ssl_context = create_default_context(cafile=where())
