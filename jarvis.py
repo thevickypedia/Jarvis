@@ -135,7 +135,7 @@ def renew():
         try:
             sys.stdout.write(f"\rListener activated..") and playsound('indicators/start.mp3') if waiter == 1 else \
                 sys.stdout.write(f"\rListener activated..")
-            listen = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+            listen = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r") and playsound('indicators/end.mp3') if waiter == 0 else sys.stdout.write("\r")
             converted = recognizer.recognize_google(listen)
             if any(word in converted.lower() for word in keywords.sleep()):
@@ -569,7 +569,7 @@ def location_services(device):
 
     try:
         # Uses the latitude and longitude information and converts to the required address.
-        locator = geo_locator.reverse(f'{current_lat_}, {current_lon_}')
+        locator = geo_locator.reverse(f'{current_lat_}, {current_lon_}', language='en')
         location_info_ = locator.raw['address']
     except (GeocoderUnavailable, GeopyError):
         speaker.say('Received an error while retrieving your address sir! I think a restart should fix this.')
@@ -937,7 +937,7 @@ def apps(keyword):
     if not keyword or keyword in ignore:
         speaker.say("Which app shall I open sir?")
         speaker.runAndWait()
-        keyword = listener(3, 5)
+        keyword = listener(3, 4)
         if keyword != 'SR_ERROR':
             if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
                 return
@@ -1276,7 +1276,7 @@ def meaning(keyword):
     if keyword is None:
         speaker.say("Please tell a keyword.")
         speaker.runAndWait()
-        response = listener(3, 5)
+        response = listener(3, 3)
         if response != 'SR_ERROR':
             if any(word in response.lower() for word in keywords.exit()):
                 return
@@ -1421,7 +1421,7 @@ def add_todo():
             sys.stdout.write(f"\rItem: {item}")
             speaker.say(f"I heard {item}. Which category you want me to add it to?")
             speaker.runAndWait()
-            category = listener(3, 5)
+            category = listener(3, 3)
             if category == 'SR_ERROR':
                 category = 'Unknown'
             if 'exit' in category or 'quit' in category or 'Xzibit' in category:
@@ -1514,7 +1514,7 @@ def distance(starting_point, destination):
     if not destination:
         speaker.say("Destination please?")
         speaker.runAndWait()
-        destination = listener(3, 5)
+        destination = listener(3, 4)
         if destination != 'SR_ERROR':
             if len(destination.split()) > 2:
                 speaker.say("I asked for a destination sir, not a sentence. Try again.")
@@ -1578,7 +1578,7 @@ def locate_places(place):
     if not place:
         speaker.say("Tell me the name of a place!")
         speaker.runAndWait()
-        converted = listener(3, 5)
+        converted = listener(3, 4)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 place_holder = None
@@ -1635,7 +1635,7 @@ def directions(place):
     if not place:
         speaker.say("You might want to give a location.")
         speaker.runAndWait()
-        converted = listener(3, 5)
+        converted = listener(3, 4)
         if converted != 'SR_ERROR':
             place = ''
             for word in converted.split():
@@ -1714,7 +1714,7 @@ def alarm(msg):
     else:
         speaker.say('Please tell me a time sir!')
         speaker.runAndWait()
-        converted = listener(3, 5)
+        converted = listener(3, 4)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 place_holder = None
@@ -1750,7 +1750,7 @@ def kill_alarm():
         sys.stdout.write(f"\r{', '.join(alarm_state).replace('.lock', '')}")
         speaker.say("Please let me know which alarm you want to remove. Current alarms on your screen sir!")
         speaker.runAndWait()
-        converted = listener(3, 5)
+        converted = listener(3, 4)
         if converted != 'SR_ERROR':
             place_holder = None
             alarm_time = converted.split()[0]
@@ -1885,7 +1885,7 @@ def reminder(converted):
     if not extracted_time:
         speaker.say("When do you want to be reminded sir?")
         speaker.runAndWait()
-        converted = listener(3, 5)
+        converted = listener(3, 4)
         if converted != 'SR_ERROR':
             extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
                 r'([0-9]+\s?(?:a.m.|p.m.:?))', converted)
@@ -2088,7 +2088,7 @@ def send_sms(number):
     if not number:
         speaker.say("Please tell me a number sir!")
         speaker.runAndWait()
-        number = listener(3, 6)
+        number = listener(3, 5)
         if number != 'SR_ERROR':
             if 'exit' in number or 'quit' in number or 'Xzibit' in number:
                 return
@@ -2123,7 +2123,7 @@ def send_sms(number):
             sys.stdout.write(f'\r{body}::to::{number}')
             speaker.say(f'{body} to {number}. Do you want me to proceed?')
             speaker.runAndWait()
-            converted = listener(3, 5)
+            converted = listener(3, 3)
             if converted != 'SR_ERROR':
                 if not any(word in converted.lower() for word in keywords.ok()):
                     speaker.say("Message will not be sent sir!")
@@ -2946,7 +2946,7 @@ def sentry_mode():
         threshold += 1
         try:
             sys.stdout.write("\rSentry Mode")
-            listen = recognizer.listen(source, timeout=5, phrase_time_limit=7)
+            listen = recognizer.listen(source, timeout=5, phrase_time_limit=3)
             sys.stdout.write("\r")
             key_original = recognizer.recognize_google(listen).strip()
             sys.stdout.write(f"\r{key_original}")
@@ -3241,7 +3241,7 @@ def voice_changer(change=None):
                 speaker.say(f'The voice module number {module_id} is not available for your device sir! '
                             f'You may want to try a module number between 0 and {avail_voices - 1}')
             speaker.runAndWait()
-            keyword = listener(3, 5)
+            keyword = listener(3, 3)
             if keyword == 'SR_ERROR':
                 voice_default()
                 speaker.say("Sorry sir! I had trouble understanding. I'm back to my default voice.")
