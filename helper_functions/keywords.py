@@ -211,7 +211,7 @@ class Keywords:
         return key
 
     def exit(self):
-        key = ['exit', 'quit', 'sleep', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
+        key = ['exit', 'quit', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
                'see you later', 'talk to you later', 'activate sentry mode', "that's it", 'that is it']
         return key
 
@@ -233,6 +233,6 @@ if __name__ == '__main__':
     """Since Python stores the methods and other attributes of a class in a dictionary, which is unordered, 
     looping through and executing all of the functions in python is impossible.
     Since we don't care about order, we can use the class's __dict__ and iter through it's items"""
-    for _, method in Keywords.__dict__.items():
-        if callable(method):
-            print(method(None))
+    for method_name, return_value in Keywords.__dict__.items():
+        if callable(return_value):
+            print(method_name, return_value(None))

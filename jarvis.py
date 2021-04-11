@@ -138,8 +138,13 @@ def renew():
             listen = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r") and playsound('indicators/end.mp3') if waiter == 0 else sys.stdout.write("\r")
             converted = recognizer.recognize_google(listen)
+            # todo: change to screen lock instead of sleep
             if any(word in converted.lower() for word in keywords.sleep()):
-                speaker.say(f"Activating sentry mode, enjoy yourself sir!")
+                if 'pc' in converted.lower() or 'computer' in converted.lower() or 'imac' in converted.lower():
+                    os.system("""osascript -e 'tell app "System Events" to sleep'""")
+                    speaker.say(choice(ack))
+                else:
+                    speaker.say(f"Activating sentry mode, enjoy yourself sir!")
                 speaker.runAndWait()
                 return
             else:
@@ -488,6 +493,14 @@ def conditions(converted):
         speaker.say("I am Jarvis. A virtual assistant designed by Mr.Raauv.")
         speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
         speaker.say("I can seamlessly take care of your daily tasks, and also help with most of your work!")
+
+    elif any(word in converted.lower() for word in keywords.sleep()):
+        # todo: change to screen lock instead of sleep
+        if 'pc' in converted.lower() or 'computer' in converted.lower() or 'imac' in converted.lower():
+            os.system("""osascript -e 'tell app "System Events" to sleep'""")
+            speaker.say(choice(ack))
+        else:
+            speaker.say(f"Activating sentry mode, enjoy yourself sir!")
 
     elif any(word in converted.lower() for word in keywords.restart()):
         if 'computer' in converted.lower():
@@ -2440,7 +2453,7 @@ def face_recognition_detection():
 
 def speed_test():
     """Initiates speed test and says the ping rate, download and upload speed."""
-    client_locator = geo_locator.reverse(f"{st.results.client.get('lat')}, {st.results.client.get('lon')}")
+    client_locator = geo_locator.reverse(st.lat_lon, language='en')
     client_location = client_locator.raw['address']
     city, state = client_location.get('city'), client_location.get('state')
     isp = st.results.client.get('isp').replace(',', '').replace('.', '')
@@ -2921,7 +2934,7 @@ def system_vitals():
     sys.stdout.write(f'\r{output}')
     speaker.say(f'Your {model} was last booted on {restart_time}. '
                 f'Current boot time is: {restart_duration}.')
-    if second >= 172800:
+    if second >= 172_800:
         boot_extreme = re.search('(.*) days', restart_duration)
         if boot_extreme:
             warn = int(boot_extreme.group().replace(' days', '').strip())
@@ -2942,27 +2955,27 @@ def sentry_mode():
      2. Jarvis restarts at least twice a day and gets a new pid
      3. Maintains mandatory sleep hours 1-3 AM (use bypass in phrase to bypass it)"""
     threshold = 0
-    while threshold < 5_000:
+    while threshold < 10_000:
         threshold += 1
         try:
             sys.stdout.write("\rSentry Mode")
-            listen = recognizer.listen(source, timeout=5, phrase_time_limit=3)
+            listen = recognizer.listen(source, timeout=5, phrase_time_limit=7)
             sys.stdout.write("\r")
             key_original = recognizer.recognize_google(listen).strip()
             sys.stdout.write(f"\r{key_original}")
             key = key_original.lower()
             if 'jarvis' in key or 'buddy' in key:
                 c_time = datetime.now().strftime("%I:%M %p")
-                if int(c_time.split(':')[0]) in range(1, 4) and c_time.split()[-1] == 'AM' and 'bypass' not in key:
+                if ('morning' in key or 'night' in key or 'afternoon' in key or 'after noon' in key or
+                        'evening' in key) and 'jarvis' in key and 'tonight' not in key:
+                    if event:
+                        speaker.say(f'Happy {event}!')
+                    time_travel()
+                elif int(c_time.split(':')[0]) in range(1, 4) and c_time.split()[-1] == 'AM' and 'bypass' not in key:
                     speaker.say(f"It is {c_time} sir! You should be sleeping already. Good Night")
                 elif key == 'jarvis' or key == 'buddy':
                     speaker.say(f'{choice(wake_up3)}')
                     initialize()
-                elif ('morning' in key or 'night' in key or 'afternoon' in key or 'after noon' in key or
-                      'evening' in key) and 'jarvis' in key:
-                    if event:
-                        speaker.say(f'Happy {event}!')
-                    time_travel()
                 elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or \
                         'showtime' in key or 'time to work' in key or 'spin up' in key:
                     speaker.say(f'{choice(wake_up1)}')
@@ -2979,12 +2992,12 @@ def sentry_mode():
                         speaker.say(f'{choice(wake_up3)}')
                         initialize()
                 speaker.runAndWait()
-        except (UnknownValueError, RequestError, WaitTimeoutError, RuntimeError):
+        except (UnknownValueError, RequestError, WaitTimeoutError):
             continue
         except KeyboardInterrupt:
             exit_process()
             terminator()
-        except (RecursionError, TimeoutError):
+        except (RecursionError, TimeoutError, RuntimeError):
             unknown_error = sys.exc_info()[0]
             logger.fatal(f'Unknown exception::{unknown_error.__name__}\n{format_exc()}')  # include traceback
             speaker.say('I faced an unknown exception.')
