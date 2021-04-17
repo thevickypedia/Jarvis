@@ -138,24 +138,14 @@ def renew():
             listen = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r") and playsound('indicators/end.mp3') if waiter == 0 else sys.stdout.write("\r")
             converted = recognizer.recognize_google(listen)
-            # todo: change to screen lock instead of sleep
-            if any(word in converted.lower() for word in keywords.sleep()):
-                if 'pc' in converted.lower() or 'computer' in converted.lower() or 'imac' in converted.lower():
-                    os.system("""osascript -e 'tell app "System Events" to sleep'""")
-                    speaker.say(choice(ack))
-                else:
-                    speaker.say(f"Activating sentry mode, enjoy yourself sir!")
-                speaker.runAndWait()
-                return
+            remove = ['buddy', 'jarvis', 'hey', 'hello']
+            converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
+            if not converted or 'you there' in converted:
+                speaker.say(choice(wake_up3))
             else:
-                remove = ['buddy', 'jarvis', 'hey', 'hello']
-                converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
-                if not converted or 'you there' in converted:
-                    speaker.say(choice(wake_up3))
-                else:
-                    split(converted)
-                speaker.runAndWait()
-                waiter = 0
+                split(converted)
+            speaker.runAndWait()
+            waiter = 0
         except (UnknownValueError, RequestError, WaitTimeoutError):
             pass
 
@@ -495,9 +485,12 @@ def conditions(converted):
         speaker.say("I can seamlessly take care of your daily tasks, and also help with most of your work!")
 
     elif any(word in converted.lower() for word in keywords.sleep()):
-        # todo: change to screen lock instead of sleep
-        if 'pc' in converted.lower() or 'computer' in converted.lower() or 'imac' in converted.lower():
-            os.system("""osascript -e 'tell app "System Events" to sleep'""")
+        converted = converted.lower()
+        if 'pc' in converted or 'computer' in converted or 'imac' in converted or 'screen' in converted:
+            # os.system("""osascript -e 'tell app "System Events" to sleep'""")  # requires restarting Jarvis manually
+            os.system("""
+            osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'
+            """)
             speaker.say(choice(ack))
         else:
             speaker.say(f"Activating sentry mode, enjoy yourself sir!")
@@ -1079,7 +1072,7 @@ def device_selector(converted):
     """Returns the device name from the user's input after checking the apple devices list.
     Returns your default device when not able to find it."""
     if converted and isinstance(converted, str):
-        converted = converted.lower().replace('port', 'pods')
+        converted = converted.lower().replace('port', 'pods').replace('10', 'x').strip()
         target = re.search('iphone(.*)|imac(.*)', converted)  # name of the apple device to be tracked (eg: iPhone X)
         if target:
             lookup = target.group()

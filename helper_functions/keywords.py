@@ -167,7 +167,7 @@ class Keywords:
         return key
 
     def brightness(self):
-        key = ['brightness', 'bright', 'dim', 'screen']
+        key = ['brightness', 'bright', 'dim']
         return key
 
     def lights(self):
@@ -216,7 +216,7 @@ class Keywords:
         return key
 
     def sleep(self):
-        key = ['exit', 'quit', 'sleep', 'Xzibit', 'activate sentry mode']
+        key = ['exit', 'quit', 'lock', 'sleep', 'Xzibit', 'activate sentry mode']
         return key
 
     def kill(self):
