@@ -2754,7 +2754,7 @@ def offline_communicator():
     """The following code will look for emails in a dedicated thread so Jarvis can run simultaneously.
     WARNING: Running sockets with a 30 second wait time is brutal, so I login once and keep checking for emails
     in a while STATUS loop. This may cause various exceptions when the login session expires or when google terminates
-    the session So I catch the exception and circle back to restart the offline_communicator() after 2 minutes.
+    the session. So I use exception handlers and circle back to restart the offline_communicator() after 2 minutes.
 
     To replicate a working model for offline communicator:
         1. Set/Create a dedicated email account for offline communication (as it is less secure)
@@ -2762,13 +2762,18 @@ def offline_communicator():
         3. The body of the email should only have the exact command you want Jarvis to do.
         4. To "log" the response and send it out as notification, I made some changes to the pyttsx3 module. (below)
         5. I also stop the response from being spoken.
-        6. voice_changer() is called because when I stop the speaker, it resets the voice property that I set in main()
+        6. voice_changer() is called, because when I stop the speaker, voice property is reset from what I set in main()
 
     Changes in "pyttsx3":
         1. Created a global variable in say() -> pyttsx3/engine.py (before proxy) and store the response.
         2. Created a new method and return the global variable which I created in say().
-        3. The new method (vig() in this case) is called to get the response which is then sent as SNS notification.
+        3. The new method (vig() in this case) is called to get the response which is then sent as an SMS notification.
         4. Doing so, avoids making changes to all the functions within conditions() to notify the response from Jarvis.
+
+    Env Vars:
+    offline_receive_user - email address which is getting checked for a command
+    offline_receive_pass - password for the above email address
+    offline_sender - email from which the command the expected, A.K.A - commander
 
     ""More cool stuff"":
     * I created a REST API on AWS API Gateway and linked it to a JavaScript on my webpage. When a request is submitted,
@@ -2819,6 +2824,7 @@ def offline_communicator():
                                             response = f'Request:\n{body}\n\nResponse:\n{speaker.vig()}'
                                             speaker.stop()
                                             voice_changer()
+                                            break
                             else:
                                 mail.store(bytecode, "-FLAGS", "\\Seen")  # set "-FLAGS" to un-see/mark as unread
             if response:
@@ -3361,7 +3367,7 @@ if __name__ == '__main__':
     offline_communicator_initiate()  # dedicated function to initiate offline communicator to ease restart
 
     # starts sentry mode
-    playsound('indicators/initialize.mp3')
+    Thread(target=playsound, args=['indicators/initialize.mp3']).start()
     with Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
         sentry_mode()
