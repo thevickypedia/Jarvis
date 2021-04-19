@@ -89,14 +89,17 @@ def listener(timeout, phrase_limit):
 
 
 def split(key):
+    """Splits the input at 'and' or 'also' and makes it multiple commands to execute if found in statement."""
+    exit_check = False  # this is specifically to catch the sleep command which should break the while loop in renew()
     if ' and ' in key and not any(word in key.lower() for word in keywords.avoid()):
         for each in key.split(' and '):
-            conditions(each.strip())
+            exit_check = conditions(each.strip())
     elif ' also ' in key and not any(word in key.lower() for word in keywords.avoid()):
         for each in key.split(' also '):
-            conditions(each.strip())
+            exit_check = conditions(each.strip())
     else:
-        conditions(key.strip())
+        exit_check = conditions(key.strip())
+    return exit_check
 
 
 def greeting():
@@ -126,8 +129,9 @@ def initialize():
 
 
 def renew():
-    """renew() function will keep listening and send the response to conditions() This function runs only for a minute
-    and goes to sentry_mode() if nothing is heard"""
+    """renew() function will keep listening and send the response to conditions()
+    This function runs only for a minute and goes to sentry_mode() if nothing is heard.
+    split(converted) is a condition so that, loop breaks when if sleep in conditions() returns True."""
     speaker.runAndWait()
     waiter = 0
     while waiter < 12:
@@ -143,7 +147,8 @@ def renew():
             if not converted or 'you there' in converted:
                 speaker.say(choice(wake_up3))
             else:
-                split(converted)
+                if split(converted):
+                    break  # split() returns what conditions function returns. Condition() returns True only for sleep.
             speaker.runAndWait()
             waiter = 0
         except (UnknownValueError, RequestError, WaitTimeoutError):
@@ -215,7 +220,6 @@ def conditions(converted):
     elif any(word in converted.lower() for word in keywords.ip_info()):
         ip_address = vpn_checker().replace('VPN::', '')
         speaker.say(f"Your IP address for {gethostname()} is {ip_address}.")
-        return
 
     elif any(word in converted.lower() for word in keywords.wikipedia()):
         wikipedia_()
@@ -494,6 +498,7 @@ def conditions(converted):
             speaker.say(choice(ack))
         else:
             speaker.say(f"Activating sentry mode, enjoy yourself sir!")
+        return True
 
     elif any(word in converted.lower() for word in keywords.restart()):
         if 'computer' in converted.lower():
@@ -2277,6 +2282,8 @@ def alpha(text):
             response = next(res.results).text
             response = response.replace('\n', '. ').strip()
             sys.stdout.write(f'\r{response}')
+            if response == '(no data available)':
+                return True
             speaker.say(response)
         except (StopIteration, AttributeError):
             return True
