@@ -217,8 +217,25 @@ def conditions(converted):
         system_info()
 
     elif any(word in converted_lower for word in keywords.ip_info()):
-        ip_address = vpn_checker().replace('VPN::', '')
-        speaker.say(f"Your IP address for {gethostname()} is {ip_address}.")
+        if 'public' in converted_lower:
+            if not internet_checker():
+                speaker.say("You are not connected to the internet sir!")
+                return
+            if ssid := get_ssid():
+                ssid = f'for the connection {ssid} '
+            else:
+                ssid = ''
+            if public_ip := load(urlopen('http://ipinfo.io/json')).get('ip'):
+                output = f"My public IP {ssid}is {public_ip}"
+            elif public_ip := loads(urlopen('http://ip.jsontest.com').read()).get('ip'):
+                output = f"My public IP {ssid}is {public_ip}"
+            else:
+                output = 'I was unable to fetch the public IP sir!'
+        else:
+            ip_address = vpn_checker().replace('VPN::', '')
+            output = f"My local IP address for {gethostname()} is {ip_address}"
+        sys.stdout.write(f'\r{output}')
+        speaker.say(output)
 
     elif any(word in converted_lower for word in keywords.wikipedia()):
         wikipedia_()
@@ -2953,6 +2970,32 @@ def system_vitals():
                 restart(target='PC_Proceed')
 
 
+def get_ssid():
+    """Returns the WiFi or Ethernet SSID"""
+    if operating_system == 'Darwin':
+        process = Popen(
+            ['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'],
+            stdout=PIPE)
+        out, err = process.communicate()
+        if error := process.returncode:
+            logger.fatal(f"Failed to fetch SSID with exit code: {error}\n{err}")
+        # noinspection PyTypeChecker
+        return dict(map(str.strip, info.split(': ')) for info in out.decode('utf-8').split('\n')[:-1]).get('SSID')
+    elif operating_system == 'Windows':
+        netsh = check_output("netsh wlan show interfaces", shell=True)
+        for info in netsh.decode('utf-8').split('\n')[:-1]:
+            if 'SSID' in info:
+                return info.strip('SSID').replace('SSID', '').replace(':', '').strip()
+
+
+def internet_checker():
+    """Uses speed test api to check for internet connection"""
+    try:
+        return Speedtest()
+    except ConfigRetrievalError:
+        return False
+
+
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action.
     threshold is used to sanity check sentry_mode() so that:
@@ -3334,10 +3377,9 @@ if __name__ == '__main__':
     # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
     place_holder, greet_check, tv, suggestion_count = None, None, None, 0
 
-    # Uses speed test api to check for internet connection
-    try:
-        st = Speedtest()
-    except ConfigRetrievalError:
+    if st := internet_checker():
+        sys.stdout.write(f'\rINTERNET::Connected to {get_ssid()}')
+    else:
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
         speaker.say("I was unable to connect to the internet sir! Please check your connection settings and retry.")
         speaker.runAndWait()
