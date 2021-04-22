@@ -3188,7 +3188,7 @@ def stop_terminal():
     pid_list = pid_check.decode('utf-8').split('\n')
     for id_ in pid_list:
         if id_ and 'Applications' in id_ and '/usr/bin/login' not in id_:
-            check_output(f'kill -9 {id_.split()[1]} >/dev/null', shell=True)
+            os.system(f'kill -9 {id_.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
 
 
 def restart(target=None):
