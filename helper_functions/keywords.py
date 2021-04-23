@@ -17,7 +17,7 @@ class Keywords:
         return key
 
     def ip_info(self):
-        key = ['ip', 'address']
+        key = ['address']
         return key
 
     def webpage(self):

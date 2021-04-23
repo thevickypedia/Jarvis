@@ -216,7 +216,7 @@ def conditions(converted):
     elif any(word in converted_lower for word in keywords.system_info()):
         system_info()
 
-    elif any(word in converted_lower for word in keywords.ip_info()):
+    elif any(word in converted for word in keywords.ip_info()) or 'IP' in converted.split():
         if 'public' in converted_lower:
             if not internet_checker():
                 speaker.say("You are not connected to the internet sir!")
