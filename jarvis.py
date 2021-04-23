@@ -999,7 +999,7 @@ def apps(keyword):
             speaker.say(f"I did not find the app {keyword}. Try again.")
             apps(None)
         else:
-            app_status = os.system(f"open /Applications/'{keyword}'")
+            app_status = os.system(f"open /Applications/'{keyword}' > /dev/null 2>&1")
             keyword = keyword.replace('.app', '')
             if app_status == 256:
                 speaker.say(f"I'm sorry sir! I wasn't able to launch {keyword}. "
@@ -1068,7 +1068,7 @@ def chatter_bot():
         place_holder = None
         if any(word in keyword.lower() for word in keywords.exit()):
             speaker.say('Let me remove the training modules.')
-            os.system('rm db*')
+            os.system('rm db* > /dev/null 2>&1')
             os.system(f'rm -rf {file2}')
         else:
             response = bot.get_response(keyword)
@@ -1081,7 +1081,7 @@ def chatter_bot():
     else:
         if place_holder == 0:
             place_holder = None
-            os.system('rm db*')
+            os.system('rm db* > /dev/null 2>&1')
             os.system(f'rm -rf {file2}')
         else:
             speaker.say("I didn't quite get that. Try again.")
@@ -2078,7 +2078,7 @@ def github(target):
                 item = None
                 speaker.say("Only first second or third can be accepted sir! Try again!")
                 github(target)
-            os.system(f"""cd {home} && git clone {target[item]}""")
+            os.system(f"""cd {home} && git clone -q {target[item]}""")
             cloned = target[item].split('/')[-1].replace('.git', '')
             speaker.say(f"I've cloned {cloned} on your home directory sir!")
             return
