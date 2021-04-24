@@ -235,9 +235,13 @@ if __name__ == '__main__':
     Since we don't care about order, we can use the class's __dict__ and iter through it's items"""
     for method_name, return_value in Keywords.__dict__.items():
         if callable(return_value):
-            check = False
-            for word_ct in return_value(None):
-                if len(word_ct.split()) > 1:
-                    check = True
-            if not check:
-                print(method_name)
+            word_ct = 0
+            for _ in return_value(None):
+                word_ct += 1
+            check = []
+            for index, word_ct in enumerate(return_value(None)):
+                check.append(len(word_ct.split()))
+            print(f"Method Name: {method_name}\n"
+                  f"Number of Elements: {word_ct}\n"
+                  f"Elements: {return_value(None)}\n"
+                  f"Word count of Elements: {check}\n")
