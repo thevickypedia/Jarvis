@@ -1,287 +1,232 @@
 class Keywords:
     """list of keywords for each function which is condition matched in jarvis.py"""
+
     @staticmethod
     def date():
-        key = ['date']
-        return key
+        return ['date']
 
     @staticmethod
     def time():
-        key = ['time']
-        return key
+        return ['time']
 
     @staticmethod
     def weather():
-        key = ['weather', 'temperature']
-        return key
+        return ['weather', 'temperature']
 
     @staticmethod
     def system_info():
-        key = ['configuration']
-        return key
+        return ['configuration']
 
     @staticmethod
     def ip_info():
-        key = ['address']
-        return key
+        return ['address']
 
     @staticmethod
     def webpage():
-        key = ['website', 'webpage', 'web page', '.']
-        return key
+        return ['website', 'webpage', 'web page', '.']
 
     @staticmethod
     def wikipedia():
-        key = ['wikipedia', 'info', 'information']
-        return key
+        return ['wikipedia', 'info', 'information']
 
     @staticmethod
     def news():
-        key = ['news']
-        return key
+        return ['news']
 
     @staticmethod
     def report():
-        key = ['report']
-        return key
+        return ['report']
 
     @staticmethod
     def robinhood():
-        key = ['robinhood', 'investment', 'portfolio', 'summary']
-        return key
+        return ['robinhood', 'investment', 'portfolio', 'summary']
 
     @staticmethod
     def apps():
-        key = ['launch']
-        return key
+        return ['launch']
 
     @staticmethod
     def repeat():
-        key = ['repeat', 'train']
-        return key
+        return ['repeat', 'train']
 
     @staticmethod
     def chatbot():
-        key = ['chat', 'chatbot', 'chatter']
-        return key
+        return ['chat', 'chatbot', 'chatter']
 
     @staticmethod
     def location():
-        key = ['location', 'where am i']
-        return key
+        return ['location', 'where am i']
 
     @staticmethod
     def locate():
-        key = ['locate', 'where is my', "where's my"]
-        return key
+        return ['locate', 'where is my', "where's my"]
 
     @staticmethod
     def music():
-        key = ['music', 'songs', 'play']
-        return key
+        return ['music', 'songs', 'play']
 
     @staticmethod
     def gmail():
-        key = ['email', 'mail', 'emails', 'mails']
-        return key
+        return ['email', 'mail', 'emails', 'mails']
 
     @staticmethod
     def meaning():
-        key = ['meaning', 'meanings', 'dictionary', 'definition']
-        return key
+        return ['meaning', 'meanings', 'dictionary', 'definition']
 
     @staticmethod
     def create_db():
-        key = ['create a new database', 'create a new data base', 'create a database', 'create a data base']
-        return key
+        return ['create a new database', 'create a new data base', 'create a database', 'create a data base']
 
     @staticmethod
     def add_todo():
-        key = ['update my to do list', 'add tasks', 'add items to my to do list', 'new task', 'add new task',
-               'add a new task']
-        return key
+        return ['update my to do list', 'add tasks', 'add items to my to do list', 'new task', 'add new task',
+                'add a new task']
 
     @staticmethod
     def delete_todo():
-        key = ['remove items', 'delete items', 'remove some items']
-        return key
+        return ['remove items', 'delete items', 'remove some items']
 
     @staticmethod
     def delete_db():
-        key = ['delete database', 'delete data base', 'delete my database', 'delete my data base']
-        return key
+        return ['delete database', 'delete data base', 'delete my database', 'delete my data base']
 
     @staticmethod
     def list_todo():
-        key = ['plan']
-        return key
+        return ['plan']
 
     @staticmethod
     def distance():
-        key = ['far', 'distance', 'miles']
-        return key
+        return ['far', 'distance', 'miles']
 
     @staticmethod
     def avoid():
-        key = ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
-               'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter']
-        return key
+        return ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
+                'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter']
 
     @staticmethod
     def geopy():
-        key = ['where is', "where's", 'which city', 'which state', 'which country', 'which county']
-        return key
+        return ['where is', "where's", 'which city', 'which state', 'which country', 'which county']
 
     @staticmethod
     def directions():
-        key = ['take me', 'get directions']
-        return key
+        return ['take me', 'get directions']
 
     @staticmethod
     def alarm():
-        key = ['alarm', 'wake me']
-        return key
+        return ['alarm', 'wake me']
 
     @staticmethod
     def kill_alarm():
-        key = ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off', 'stop another alarm']
-        return key
+        return ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off', 'stop another alarm']
 
     @staticmethod
     def reminder():
-        key = ['remind', 'reminder']
-        return key
+        return ['remind', 'reminder']
 
     @staticmethod
     def google_home():
-        key = ['google home', 'googlehome']
-        return key
+        return ['google home', 'googlehome']
 
     @staticmethod
     def jokes():
-        key = ['joke', 'jokes', 'make me laugh']
-        return key
+        return ['joke', 'jokes', 'make me laugh']
 
     @staticmethod
     def notes():
-        key = ['notes', 'note']
-        return key
+        return ['notes', 'note']
 
     @staticmethod
     def github():
-        key = ['git', 'github', 'clone', 'GitHub']
-        return key
+        return ['git', 'github', 'clone', 'GitHub']
 
     @staticmethod
     def txt_message():
-        key = ['message', 'text', 'messages']
-        return key
+        return ['message', 'text', 'messages']
 
     @staticmethod
     def google_search():
-        key = ['google search']
-        return key
+        return ['google search']
 
     @staticmethod
     def tv():
-        key = ['tv', 'television']
-        return key
+        return ['tv', 'television']
 
     @staticmethod
     def volume():
-        key = ['volume', 'mute']
-        return key
+        return ['volume', 'mute']
 
     @staticmethod
     def face_detection():
-        key = ['face', 'recognize', 'who am i', 'detect', 'facial', 'recognition', 'detection']
-        return key
+        return ['face', 'recognize', 'who am i', 'detect', 'facial', 'recognition', 'detection']
 
     @staticmethod
     def speed_test():
-        key = ['speed', 'fast']
-        return key
+        return ['speed', 'fast']
 
     @staticmethod
     def bluetooth():
-        key = ['connect', 'disconnect', 'bluetooth']
-        return key
+        return ['connect', 'disconnect', 'bluetooth']
 
     @staticmethod
     def brightness():
-        key = ['brightness', 'bright', 'dim']
-        return key
+        return ['brightness', 'bright', 'dim']
 
     @staticmethod
     def lights():
-        key = ['lights', 'hallway', 'kitchen', 'living room', 'bedroom']
-        return key
+        return ['lights', 'hallway', 'kitchen', 'living room', 'bedroom']
 
     @staticmethod
     def guard_enable():
-        key = ['take care', 'heading out', 'keep an eye', 'turn on security mode', 'enable security mode']
-        return key
+        return ['take care', 'heading out', 'keep an eye', 'turn on security mode', 'enable security mode']
 
     @staticmethod
     def guard_disable():
-        key = ["I'm back", 'I am back', 'turn off security mode', 'disable security mode']
-        return key
+        return ["I'm back", 'I am back', 'turn off security mode', 'disable security mode']
 
     @staticmethod
     def flip_a_coin():
-        key = ['head', 'tail', 'flip']
-        return key
+        return ['head', 'tail', 'flip']
 
     @staticmethod
     def facts():
-        key = ['fact', 'facts']
-        return key
+        return ['fact', 'facts']
 
     @staticmethod
     def meetings():
-        key = ['meeting', 'appointment', 'schedule']
-        return key
+        return ['meeting', 'appointment', 'schedule']
 
     @staticmethod
     def voice_changer():
-        key = ['voice', 'module', 'audio']
-        return key
+        return ['voice', 'module', 'audio']
 
     @staticmethod
     def system_vitals():
-        key = ['vitals', 'statistics', 'readings', 'stats']
-        return key
+        return ['vitals', 'statistics', 'readings', 'stats']
 
     @staticmethod
     def ok():
-        key = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
-        return key
+        return ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
 
     @staticmethod
     def restart():
-        key = ['restart', 'reboot']
-        return key
+        return ['restart', 'reboot']
 
     @staticmethod
     def exit():
-        key = ['exit', 'quit', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
-               'see you later', 'talk to you later', 'activate sentry mode', "that's it", 'that is it']
-        return key
+        return ['exit', 'quit', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
+                'see you later', 'talk to you later', 'activate sentry mode', "that's it", 'that is it']
 
     @staticmethod
     def sleep():
-        key = ['exit', 'quit', 'lock', 'sleep', 'Xzibit', 'activate sentry mode']
-        return key
+        return ['exit', 'quit', 'lock', 'sleep', 'Xzibit', 'activate sentry mode']
 
     @staticmethod
     def kill():
-        key = ['kill', 'terminate yourself', 'stop running', 'stop']
-        return key
+        return ['kill', 'terminate yourself', 'stop running', 'stop']
 
     @staticmethod
     def shutdown():
-        key = ['shutdown', 'shut down', 'terminate']
-        return key
+        return ['shutdown', 'shut down', 'terminate']
 
 
 if __name__ == '__main__':
@@ -296,6 +241,7 @@ if __name__ == '__main__':
     print(funcs)
     # prove time complexity
     from timeit import timeit
+
     print(f"Accessing the class directly for {funcs} times:")
     print(timeit(f"""
 from helper_functions.keywords import Keywords
