@@ -99,7 +99,7 @@ class Keywords:
 
     def avoid(self):
         key = ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
-               'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human']
+               'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter']
         return key
 
     def geopy(self):
@@ -235,4 +235,9 @@ if __name__ == '__main__':
     Since we don't care about order, we can use the class's __dict__ and iter through it's items"""
     for method_name, return_value in Keywords.__dict__.items():
         if callable(return_value):
-            print(method_name, return_value(None))
+            check = False
+            for word_ct in return_value(None):
+                if len(word_ct.split()) > 1:
+                    check = True
+            if not check:
+                print(method_name)
