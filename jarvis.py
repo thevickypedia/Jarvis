@@ -182,7 +182,8 @@ def conditions(converted):
             not any(word in converted_lower for word in keywords.avoid()):
         current_date()
 
-    elif any(word in converted_lower for word in keywords.time()):
+    elif any(word in converted_lower for word in keywords.time()) and \
+            not any(word in converted_lower for word in keywords.avoid()):
         place = ''
         for word in converted.split():
             if word[0].isupper():
