@@ -101,7 +101,8 @@ class Keywords:
     @staticmethod
     def avoid():
         return ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
-                'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter']
+                'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter', 'server',
+                'cloud']
 
     @staticmethod
     def geopy():
@@ -202,6 +203,10 @@ class Keywords:
     @staticmethod
     def system_vitals():
         return ['vitals', 'statistics', 'readings', 'stats']
+
+    @staticmethod
+    def personal_cloud():
+        return ['personal cloud', 'private cloud', 'personal server', 'private server']
 
     @staticmethod
     def ok():

@@ -10,11 +10,12 @@ from json import load, loads
 from math import ceil, log, floor, pow
 from multiprocessing.pool import ThreadPool
 from platform import uname, platform, system
-from random import choice
-from shutil import disk_usage
+from random import choice, choices
+from shutil import disk_usage, rmtree
 from smtplib import SMTP
 from socket import socket, gethostname, AF_INET, SOCK_DGRAM, setdefaulttimeout, gaierror, timeout as s_timeout
 from ssl import create_default_context
+from string import ascii_letters, digits
 from subprocess import call, check_output, getoutput, PIPE, Popen
 from threading import Thread
 from time import time, sleep, perf_counter
@@ -24,6 +25,7 @@ from urllib.request import urlopen
 from webbrowser import open as web_open
 
 from PyDictionary import PyDictionary
+from appscript import app as apple_script
 from boto3 import client
 from certifi import where
 from chatterbot import ChatBot
@@ -478,6 +480,17 @@ def conditions(converted):
     elif any(word in converted_lower for word in keywords.system_vitals()):
         system_vitals()
 
+    elif any(word in converted_lower for word in keywords.personal_cloud()):
+        if 'enable' in converted_lower or 'initiate' in converted_lower or 'kick off' in converted_lower or \
+                'start' in converted_lower:
+            Thread(target=PersonalCloud.enable).start()
+            speaker.say("Personal Cloud has been triggered sir! I've sent the login details to your phone number.")
+        elif 'disable' in converted_lower or 'stop' in converted_lower:
+            Thread(target=PersonalCloud.disable).start()
+            speaker.say(choice(ack))
+        else:
+            speaker.say("I didn't quite get that sir! Please tell me if I should enable or disable your server.")
+
     elif any(word in converted_lower for word in conversation.greeting()):
         speaker.say('I am spectacular. I hope you are doing fine too.')
 
@@ -523,7 +536,8 @@ def conditions(converted):
         else:
             restart()
 
-    elif any(word in converted_lower for word in keywords.kill()):
+    elif any(word in converted_lower for word in keywords.kill()) and \
+            not any(word in converted_lower for word in keywords.avoid()):
         exit_process()
         terminator()
 
@@ -1188,12 +1202,11 @@ def locate(converted):
 def music(device):
     """Scans music directory in your profile for .mp3 files and plays using default player"""
     sys.stdout.write("\rScanning music files...")
-    user_profile = os.path.expanduser('~')
 
     if operating_system == 'Darwin':
-        path = os.walk(f"{user_profile}/Music")
+        path = os.walk(f"{home_dir}/Music")
     elif operating_system == 'Windows':
-        path = os.walk(f"{user_profile}\\Music")
+        path = os.walk(f"{home_dir}\\Music")
     else:
         path = None
 
@@ -2051,9 +2064,8 @@ def github(target):
     """Clones the github repository matched with existing repository in conditions()
     Asks confirmation if the results are more than 1 but less than 3 else asks to be more specific"""
     global place_holder
-    home = os.path.expanduser('~')
     if len(target) == 1:
-        os.system(f"""cd {home} && git clone -q {target[0]}""")
+        os.system(f"""cd {home_dir} && git clone -q {target[0]}""")
         cloned = target[0].split('/')[-1].replace('.git', '')
         speaker.say(f"I've cloned {cloned} on your home directory sir!")
         return
@@ -2079,7 +2091,7 @@ def github(target):
                 item = None
                 speaker.say("Only first second or third can be accepted sir! Try again!")
                 github(target)
-            os.system(f"""cd {home} && git clone -q {target[item]}""")
+            os.system(f"""cd {home_dir} && git clone -q {target[item]}""")
             cloned = target[item].split('/')[-1].replace('.git', '')
             speaker.say(f"I've cloned {cloned} on your home directory sir!")
             return
@@ -2989,6 +3001,45 @@ def get_ssid():
                 return info.strip('SSID').replace('SSID', '').replace(':', '').strip()
 
 
+class PersonalCloud:
+    """Controller for Personal Cloud
+    Reference: https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book"""
+
+    @staticmethod
+    def enable():
+        """
+        1. Gets env vars required for the personal cloud,
+        2. Generates random username and passphrase for login info,
+        3. Triggers personal cloud using a dedicated Terminal,
+        3. Sends an SMS to your mobile phone.
+        # todo: add ngrok integration to automatically kick off port routing if an existing port usage is not found
+                add the origin to SMS details
+        """
+        if 'personal_cloud' not in os.listdir(home_dir):
+            os.system(f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git")
+        personal_cloud_username = ''.join(choices(ascii_letters, k=10))
+        personal_cloud_passphrase = ''.join(choices(ascii_letters + digits, k=10))
+        exec_script = f"export PORT={os.environ.get('personal_cloud_port')} && " \
+                      f"export USERNAME={personal_cloud_username} && " \
+                      f"export PASSWORD={personal_cloud_passphrase} && " \
+                      f"export volume_name='{os.environ.get('personal_cloud_volume')}' && " \
+                      f"cd {home_dir}/personal_cloud && python3 server.py"
+        apple_script('Terminal').do_script(exec_script)
+        notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
+               body=f"Username: {personal_cloud_username}\nPassword: {personal_cloud_passphrase}")
+
+    @staticmethod
+    def disable():
+        """Shuts off the server.py to stop the personal cloud. This eliminates the hassle of passing args
+        and handling threads."""
+        pid_check = check_output("ps -ef | grep 'Python server.py'", shell=True)
+        pid_list = pid_check.decode('utf-8').split('\n')
+        for pid_info in pid_list:
+            if pid_info and 'Library' in pid_info and ('/bin/sh' not in pid_info or 'grep' not in pid_info):
+                os.system(f'kill -9 {pid_info.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
+        rmtree(f'{home_dir}/personal_cloud')  # delete repo while stopping server to pull the latest version next time
+
+
 def internet_checker():
     """Uses speed test api to check for internet connection"""
     try:
@@ -3342,6 +3393,7 @@ if __name__ == '__main__':
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 100)  # increases the recursion limit by 100 times
     sns = client('sns')  # initiates sns for notification service
+    home_dir = os.path.expanduser('~')  # gets the path to current user profile
 
     volume_controller(50)  # defaults to volume 50%
     voice_changer()  # changes voice to default values given
