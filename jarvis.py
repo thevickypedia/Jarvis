@@ -70,6 +70,7 @@ from helper_functions.facial_recognition import Face
 from helper_functions.keywords import Keywords
 from helper_functions.lights import MagicHomeApi
 from helper_functions.logger import logger
+from helper_functions.preset_values import preset_values
 from helper_functions.reminder import Reminder
 from helper_functions.robinhood import watcher
 from helper_functions.temperature import k2f, c2f
@@ -2292,7 +2293,7 @@ def television(converted):
                     speaker.say(f"I didn't find the source {tv_source} on your TV sir!")
         elif 'shutdown' in phrase or 'shut down' in phrase or 'turn off' in phrase:
             Thread(target=tv.shutdown).start()
-            speaker.say('Sure sir! Turning your TV off.')
+            speaker.say(f'{choice(ack)} Turning your TV off.')
             tv = None
         else:
             speaker.say("I didn't quite get that.")
@@ -2595,6 +2596,10 @@ def lights(converted, connection_status):
         controller = MagicHomeApi(device_ip=host, device_type=2, operation='Cool Lights')
         controller.update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
 
+    def preset(host, value):
+        controller = MagicHomeApi(device_ip=host, device_type=2, operation='Cool Lights')
+        controller.send_preset_function(preset_number=value, speed=101)
+
     # host id's for each light bulb stored in env var or aws secret as a string. eg: '19,20,21'
     hallway = [f'{network_id}.{int(i)}' for i in hallway_ip.split(',') if i.isdigit()]
     kitchen = [f'{network_id}.{int(i)}' for i in kitchen_ip.split(',') if i.isdigit()]
@@ -2608,18 +2613,32 @@ def lights(converted, connection_status):
 
     lights_count = len(light_host_id)
     if 'turn on' in converted or 'cool' in converted or 'white' in converted:
-        speaker.say(f'Sure sir! Turning on {lights_count} lights!')
+        speaker.say(f'{choice(ack)} Turning on {lights_count} lights!')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(cool, light_host_id)
     elif 'turn off' in converted:
-        speaker.say(f'Alright! Turning off {lights_count} lights!')
+        speaker.say(f'{choice(ack)} Turning off {lights_count} lights!')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(turn_off, light_host_id)
     elif 'warm' in converted or 'yellow' in converted:
-        speaker.say(f'Sure sir! Setting {lights_count} lights to yellow!') if 'yellow' in converted else \
+        speaker.say(f'{choice(ack)} Setting {lights_count} lights to yellow!') if 'yellow' in converted else \
             speaker.say(f'Sure sir! Setting {lights_count} lights to warm!')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(warm, light_host_id)
+    elif 'red' in converted:
+        speaker.say(f"{choice(ack)} I've changed {lights_count} lights to red!")
+        with ThreadPoolExecutor(max_workers=lights_count) as executor:
+            executor.map(preset, [light_host_id, preset_values['red']])
+    elif 'blue' in converted:
+        speaker.say(f"{choice(ack)} I've changed {lights_count} lights to blue!")
+        with ThreadPoolExecutor(max_workers=lights_count) as executor:
+            executor.map(preset, [light_host_id, preset_values['blue']])
+    elif 'green' in converted:
+        speaker.say(f"{choice(ack)} I've changed {lights_count} lights to green!")
+        with ThreadPoolExecutor(max_workers=lights_count) as executor:
+            executor.map(preset, [light_host_id, preset_values['green']])
+    else:
+        speaker.say("I didn't quite get that sir! What do you want me to do to your lights?")
 
 
 def vpn_checker():
