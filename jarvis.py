@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from email import message_from_bytes, message_from_string
 from email.header import decode_header, make_header
 from imaplib import IMAP4, IMAP4_SSL
-from json import load, loads
+from json import load as json_load, loads as json_loads
 from math import ceil, log, floor, pow
 from multiprocessing.pool import ThreadPool
 from platform import uname, platform, system
@@ -59,7 +59,7 @@ from wakeonlan import send_magic_packet as wake
 from wikipedia import summary, exceptions as wiki_exceptions
 from wolframalpha import Client as Think
 from wordninja import split as splitter
-from yaml import dump
+from yaml import dump as yaml_dump
 
 from helper_functions.alarm import Alarm
 from helper_functions.aws_clients import AWSClients
@@ -229,9 +229,9 @@ def conditions(converted):
                 ssid = f'for the connection {ssid} '
             else:
                 ssid = ''
-            if public_ip := load(urlopen('http://ipinfo.io/json')).get('ip'):
+            if public_ip := json_load(urlopen('http://ipinfo.io/json')).get('ip'):
                 output = f"My public IP {ssid}is {public_ip}"
-            elif public_ip := loads(urlopen('http://ip.jsontest.com').read()).get('ip'):
+            elif public_ip := json_loads(urlopen('http://ip.jsontest.com').read()).get('ip'):
                 output = f"My public IP {ssid}is {public_ip}"
             else:
                 output = 'I was unable to fetch the public IP sir!'
@@ -549,25 +549,23 @@ def conditions(converted):
         chatter_bot()
 
     else:
+        # if none of the conditions above are met, your statement is written to an yaml file for review
+        train_file = {'Uncategorized': converted}
+        if os.path.isfile('training_data.yaml'):
+            content = open(r'training_data.yaml', 'r').read()
+            for key, value in train_file.items():
+                if str(value) not in content:  # avoids duplication in yaml file
+                    dict_file = [{key: [value]}]
+                    with open(r'training_data.yaml', 'a') as writer:
+                        yaml_dump(dict_file, writer)
+        else:
+            for key, value in train_file.items():
+                train_file = [{key: [value]}]
+            with open(r'training_data.yaml', 'w') as writer:
+                yaml_dump(train_file, writer)
         if alpha(converted):
             if google_maps(converted):
                 if google(converted):
-                    # if none of the conditions above are met, your statement is written to an yaml file for review
-                    train_file = {'Uncategorized': converted}
-                    if os.path.isfile('training_data.yaml'):
-                        with open(r'training_data.yaml', 'r') as reader:
-                            content = reader.read()
-                            for key, value in train_file.items():
-                                if str(value) not in content:  # avoids duplication in yaml file
-                                    dict_file = [{key: [value]}]
-                                    with open(r'training_data.yaml', 'a') as writer:
-                                        dump(dict_file, writer)
-                    else:
-                        for key, value in train_file.items():
-                            train_file = [{key: [value]}]
-                        with open(r'training_data.yaml', 'a') as writer:
-                            dump(train_file, writer)
-
                     # if none of the conditions above are met, opens a google search on default browser
                     sys.stdout.write(f"\r{converted}")
                     if google_maps.has_been_called:
@@ -739,7 +737,7 @@ def weather(place):
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
     weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={weather_api}'
     r = urlopen(weather_url)  # sends request to the url created
-    response = loads(r.read())  # loads the response in a json
+    response = json_loads(r.read())  # loads the response in a json
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
     temperature = response['current']['temp']
@@ -820,7 +818,7 @@ def weather_condition(place, msg):
     api_endpoint = "http://api.openweathermap.org/data/2.5/"
     weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={weather_api}'
     r = urlopen(weather_url)  # sends request to the url created
-    response = loads(r.read())  # loads the response in a json
+    response = json_loads(r.read())  # loads the response in a json
     weather_location = f'{city} {state}' if city and state else place
     if 'tonight' in msg:
         key = 0
@@ -2547,13 +2545,13 @@ def bluetooth(phrase):
 
         sys.stdout.write('\rScanning paired Bluetooth devices')
         paired = getoutput("blueutil --paired --format json")
-        paired = loads(paired)
+        paired = json_loads(paired)
         if not connector(targets=paired):
             sys.stdout.write('\rScanning UN-paired Bluetooth devices')
             speaker.say('No connections were established sir, looking for un-paired devices.')
             speaker.runAndWait()
             unpaired = getoutput("blueutil --inquiry --format json")
-            unpaired = loads(unpaired)
+            unpaired = json_loads(unpaired)
             connector(targets=unpaired) if unpaired else speaker.say('No un-paired devices found sir! '
                                                                      'You may want to be more precise.')
 
@@ -2650,7 +2648,7 @@ def vpn_checker():
     socket_.close()
     if not (ip_address.startswith('192') | ip_address.startswith('127')):
         ip_address = 'VPN::' + ip_address
-        info = load(urlopen('http://ipinfo.io/json'))
+        info = json_load(urlopen('http://ipinfo.io/json'))
         sys.stdout.write(f"\rVPN connection is detected to {info.get('ip')} at {info.get('city')}, "
                          f"{info.get('region')} maintained by {info.get('org')}")
         speaker.say("You have your VPN turned on. Details on your screen sir! Please note that none of the home "
