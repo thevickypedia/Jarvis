@@ -549,20 +549,7 @@ def conditions(converted):
         chatter_bot()
 
     else:
-        # if none of the conditions above are met, your statement is written to an yaml file for review
-        train_file = {'Uncategorized': converted}
-        if os.path.isfile('training_data.yaml'):
-            content = open(r'training_data.yaml', 'r').read()
-            for key, value in train_file.items():
-                if str(value) not in content:  # avoids duplication in yaml file
-                    dict_file = [{key: [value]}]
-                    with open(r'training_data.yaml', 'a') as writer:
-                        yaml_dump(dict_file, writer)
-        else:
-            for key, value in train_file.items():
-                train_file = [{key: [value]}]
-            with open(r'training_data.yaml', 'w') as writer:
-                yaml_dump(train_file, writer)
+        Thread(target=unrecognized_dumper, args=[converted]).start()  # writes to training_data.yaml in a thread
         if alpha(converted):
             if google_maps(converted):
                 if google(converted):
@@ -578,6 +565,24 @@ def conditions(converted):
                     search = str(converted).replace(' ', '+')
                     unknown_url = f"https://www.google.com/search?q={search}"
                     web_open(unknown_url)
+
+
+def unrecognized_dumper(converted):
+    """If none of the conditions are met, converted text is written to a yaml file.
+    Note that Jarvis will still try to get results from google wolfram alpha and google."""
+    train_file = {'Uncategorized': converted}
+    if os.path.isfile('training_data.yaml'):
+        content = open(r'training_data.yaml', 'r').read()
+        for key, value in train_file.items():
+            if str(value) not in content:  # avoids duplication in yaml file
+                dict_file = [{key: [value]}]
+                with open(r'training_data.yaml', 'a') as writer:
+                    yaml_dump(dict_file, writer)
+    else:
+        for key, value in train_file.items():
+            train_file = [{key: [value]}]
+        with open(r'training_data.yaml', 'w') as writer:
+            yaml_dump(train_file, writer)
 
 
 def location_services(device):
