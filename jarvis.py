@@ -485,7 +485,8 @@ def conditions(converted):
         if 'enable' in converted_lower or 'initiate' in converted_lower or 'kick off' in converted_lower or \
                 'start' in converted_lower:
             Thread(target=PersonalCloud.enable).start()
-            speaker.say("Personal Cloud has been triggered sir! I've sent the login details to your phone number.")
+            speaker.say("Personal Cloud has been triggered sir! I will send the login details to your phone number "
+                        "once the server is up and running.")
         elif 'disable' in converted_lower or 'stop' in converted_lower:
             Thread(target=PersonalCloud.disable).start()
             speaker.say(choice(ack))
@@ -3030,30 +3031,54 @@ def get_ssid():
 
 class PersonalCloud:
     """Controller for Personal Cloud
-    Reference: https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book"""
+    Reference: https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book
+
+    Make sure to enable file access for Terminal window.
+    Step 1:
+        Mac OS 10.13.* and lower - System Preferences -> Security & Privacy -> Privacy -> Accessibility
+        Mac OS 10.14.* and higher - System Preferences -> Security & Privacy -> Privacy -> Full Disk Access
+    Step 2:
+        Unlock for admin privileges. Click on the "+" icon. Select Applications -> Utilities -> Terminal
+    """
 
     @staticmethod
     def enable():
         """
-        1. Gets env vars required for the personal cloud,
-        2. Generates random username and passphrase for login info,
-        3. Triggers personal cloud using a dedicated Terminal,
-        3. Sends an SMS to your mobile phone.
-        # todo: add ngrok integration to automatically kick off port routing if an existing port usage is not found
-                add the origin to SMS details
+        1. Clones personal_cloud repo,
+        2. Creates a dedicated virtual env and installs the requirements within it (ETA: ~20 seconds),
+        3. Gets and sets env vars required for the personal cloud,
+        4. Generates random username and passphrase for login info,
+        5. Triggers personal cloud using a dedicated Terminal,
+        6. Sends an SMS to your mobile phone.
         """
-        if 'personal_cloud' not in os.listdir(home_dir):
-            os.system(f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git")
+
+        if 'personal_cloud' in os.listdir(home_dir):
+            rmtree(f'{home_dir}/personal_cloud')  # delete repo for a fresh start
+
+        os.system(f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git")
         personal_cloud_username = ''.join(choices(ascii_letters, k=10))
         personal_cloud_passphrase = ''.join(choices(ascii_letters + digits, k=10))
+        personal_cloud_volume = os.environ.get('personal_cloud_volume')
+
+        ngrok_script = f"cd {home_dir}/personal_cloud && python3 -m venv venv " \
+                       f"&& source venv/bin/activate && " \
+                       f"export PORT={os.environ.get('personal_cloud_port')} && " \
+                       f"pip3 install -r requirements.txt && python3 ngrok.py"
+
         exec_script = f"export PORT={os.environ.get('personal_cloud_port')} && " \
                       f"export USERNAME={personal_cloud_username} && " \
                       f"export PASSWORD={personal_cloud_passphrase} && " \
-                      f"export volume_name='{os.environ.get('personal_cloud_volume')}' && " \
+                      f"export volume_name='{personal_cloud_volume}' && " \
                       f"cd {home_dir}/personal_cloud && python3 server.py"
+
+        apple_script('Terminal').do_script(ngrok_script)
         apple_script('Terminal').do_script(exec_script)
+
+        sleep(60)  # sleeps for 60 seconds to get the endpoint url generated within personal_cloud
+
+        url = open(f'{home_dir}/personal_cloud/url', 'r').read()
         notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
-               body=f"Username: {personal_cloud_username}\nPassword: {personal_cloud_passphrase}")
+               body=f"URL: {url}\nUsername: {personal_cloud_username}\nPassword: {personal_cloud_passphrase}")
 
     @staticmethod
     def disable():
