@@ -533,7 +533,7 @@ def conditions(converted):
 
     elif any(word in converted_lower for word in keywords.restart()):
         if 'pc' in converted_lower or 'computer' in converted_lower or 'imac' in converted_lower:
-            restart('PC')
+            restart(target='PC')
         else:
             restart()
 
@@ -3082,7 +3082,7 @@ def sentry_mode():
      2. Jarvis restarts at least twice a day and gets a new pid
      3. Maintains mandatory sleep hours 1-3 AM (use bypass in phrase to bypass it)"""
     threshold = 0
-    while threshold < 10_000:
+    while threshold < 5_000:
         threshold += 1
         try:
             sys.stdout.write("\rSentry Mode")
@@ -3188,9 +3188,11 @@ def terminator():
 
 
 def remove_files():
-    """Function that deletes all .lock files created for alarms and reminders."""
+    """Function that deletes all .lock files created for alarms and reminders.
+    Also deletes the location data in yaml format, to recreate a new one next time around."""
     [os.remove(f"alarm/{file}") for file in os.listdir('alarm') if file != '.keep']
     [os.remove(f"reminder/{file}") for file in os.listdir('reminder') if file != '.keep']
+    os.remove('location.yaml')
 
 
 def exit_process():
@@ -3469,7 +3471,9 @@ if __name__ == '__main__':
     options.default_ssl_context = create_default_context(cafile=where())
     geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
 
-    if os.path.isfile('location.yaml'):
+    # checks the modified time of location.yaml (if exists) and uses the data only if it was modified 72 hours ago
+    if os.path.isfile('location.yaml') and \
+            int(datetime.now().timestamp()) - int(os.stat('location.yaml').st_mtime) < 259_200:
         location_details = yaml_load(open('location.yaml'))
         current_lat = location_details['latitude']
         current_lon = location_details['longitude']
