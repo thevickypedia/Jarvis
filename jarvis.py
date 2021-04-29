@@ -2423,6 +2423,11 @@ def volume_controller(level):
         level = round((8 * level) / 100)
         os.system(f'osascript -e "set Volume {level}"')
     elif operating_system == 'Windows':
+        if 'SetVol.exe' not in current_dir:
+            # Courtesy: https://rlatour.com/setvol/
+            sys.stdout.write("\rPLEASE WAIT::Downloading volume controller for Windows")
+            os.system("""curl https://thevickypedia.com/Jarvis/SetVol.exe --output SetVol.exe --silent""")
+            sys.stdout.write("\r")
         os.system(f'SetVol.exe {level}')
 
 
