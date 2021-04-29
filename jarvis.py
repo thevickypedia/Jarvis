@@ -59,7 +59,7 @@ from wakeonlan import send_magic_packet as wake
 from wikipedia import summary, exceptions as wiki_exceptions
 from wolframalpha import Client as Think
 from wordninja import split as splitter
-from yaml import dump as yaml_dump
+from yaml import dump as yaml_dump, load as yaml_load
 
 from helper_functions.alarm import Alarm
 from helper_functions.aws_clients import AWSClients
@@ -3463,7 +3463,18 @@ if __name__ == '__main__':
     # stores necessary values for geo location to receive the latitude, longitude and address
     options.default_ssl_context = create_default_context(cafile=where())
     geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
-    current_lat, current_lon, location_info = location_services(device_selector(None))
+
+    if os.path.isfile('location.yaml'):
+        location_details = yaml_load(open('location.yaml'))
+        current_lat = location_details['latitude']
+        current_lon = location_details['longitude']
+        location_info = location_details['address']
+    else:
+        current_lat, current_lon, location_info = location_services(device_selector(None))
+        location_dumper = [{'latitude': current_lat}, {'longitude': current_lon}, {'address': location_info}]
+        with open('location.yaml', 'w') as location_writer:
+            for dumper in location_dumper:
+                yaml_dump(dumper, location_writer, default_flow_style=False)
 
     # different responses for different conditions in sentry mode
     wake_up1 = ['Up and running sir!', "We are online and ready sir!", "I have indeed been uploaded sir!",

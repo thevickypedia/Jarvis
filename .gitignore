@@ -2,7 +2,7 @@
 .idea
 venv
 
-# training directories with images of faces for recognition
+# training directory with images of faces for recognition
 train
 
 # WIP: Dockerfile and it's requirements file
@@ -14,13 +14,21 @@ SetVol.exe
 
 # Unknown words will be saved for later review
 training_data.yaml
+
 # to-do items stored in a database
 tasks.db
+
 # Notes saved when asked to Jarvis
 notes.txt
-# Contacts to call or message
+
+# WIP: Contacts to call or message
 contacts.yml
+
 # Start and restart logs will be saved here
 threshold.log
-# Store images of intruders
+
+# Storage for images of intruders
 threat
+
+# Storage for location details to reuse
+location.yaml
