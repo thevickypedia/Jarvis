@@ -10,10 +10,10 @@ from json import load as json_load, loads as json_loads
 from math import ceil, log, floor, pow
 from multiprocessing.pool import ThreadPool
 from platform import uname, platform, system
-from random import choice, choices
+from random import choice, choices, randrange
 from shutil import disk_usage, rmtree
 from smtplib import SMTP
-from socket import socket, gethostname, AF_INET, SOCK_DGRAM, setdefaulttimeout, gaierror, \
+from socket import socket, gethostname, gethostbyname, AF_INET, SOCK_DGRAM, setdefaulttimeout, gaierror, \
     timeout as s_timeout
 from ssl import create_default_context
 from string import ascii_letters, digits
@@ -483,7 +483,10 @@ def conditions(converted):
         system_vitals()
 
     elif any(word in converted_lower for word in keywords.personal_cloud()):
-        if 'enable' in converted_lower or 'initiate' in converted_lower or 'kick off' in converted_lower or \
+        if operating_system == 'Windows':
+            speaker.say("Personal cloud integration on Windows hasn't been developed yet sir!")
+            return
+        elif 'enable' in converted_lower or 'initiate' in converted_lower or 'kick off' in converted_lower or \
                 'start' in converted_lower:
             Thread(target=PersonalCloud.enable).start()
             speaker.say("Personal Cloud has been triggered sir! I will send the login details to your phone number "
@@ -2196,8 +2199,9 @@ def television(converted):
     phrase_exc = converted.replace('TV', '')
     phrase = phrase_exc.lower()
 
-    # One can also use tv_status = lambda: os.system(f"ping ....) but adhering to pep 8 best practice using a def
+    # 'tv_status = lambda: os.system(f"ping ....) #noqa' is an alternate but adhering to pep 8 best practice using a def
     def tv_status():
+        """Pings the tv and returns the status. 0 if able to ping, 256 if unable to ping."""
         return os.system(f"ping -c 1 -t 1 {tv_ip_address} >/dev/null")  # pings TV IP and returns 0 if host is reachable
 
     if vpn_checker().startswith('VPN'):
@@ -2486,8 +2490,8 @@ def face_recognition_detection():
         else:
             speaker.say(f'Hi {result}! How can I be of service to you?')
     elif operating_system == 'Windows':
-        speaker.say("I am sorry, currently facial recognition and detection is only supported on Windows, due to the "
-                    "package installation issues. Is there anything else I can help you with?")
+        speaker.say("I am sorry, currently facial recognition and detection is not supported on Windows, due to the "
+                    "package installation issues.")
 
 
 def speed_test():
@@ -3038,13 +3042,37 @@ class PersonalCloud:
     """Controller for Personal Cloud
     Reference: https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book
 
-    Make sure to enable file access for Terminal window.
-    Step 1:
-        Mac OS 10.13.* and lower - System Preferences -> Security & Privacy -> Privacy -> Accessibility
-        Mac OS 10.14.* and higher - System Preferences -> Security & Privacy -> Privacy -> Full Disk Access
-    Step 2:
-        Unlock for admin privileges. Click on the "+" icon. Select Applications -> Utilities -> Terminal
+    Make sure to enable file access for Terminal sessions. Steps:
+        Step 1:
+            Mac OS 10.14.* and higher - System Preferences -> Security & Privacy -> Privacy -> Full Disk Access
+            Mac OS 10.13.* and lower - System Preferences -> Security & Privacy -> Privacy -> Accessibility
+        Step 2:
+            Unlock for admin privileges. Click on the "+" icon. Select Applications -> Utilities -> Terminal
     """
+
+    @staticmethod
+    def get_port():
+        """
+        Chooses a TCP PORT number dynamically that is not being used. This is to ensure we don't rely on a single port.
+        Well-Known ports: 0 to 1023
+        Registered ports: 1024 to 49151
+        Dynamically available: 49152 to 65535
+        Alternate to active_sessions ->
+            check_output(f"echo {root_password} | sudo -S lsof -PiTCP -sTCP:LISTEN 2>&1;", shell=True).decode('utf-8')
+        'remove' should be an actual function as per pep-8 standards, bypassing it using  # noqa
+        """
+        active_sessions = check_output("netstat -anvp tcp | awk 'NR<3 || /LISTEN/' 2>&1;", shell=True).decode('utf-8')
+        if not (localhost := gethostbyname('localhost')):  # 'if not' in walrus operator to assign localhost manually
+            localhost = '127.0.0.1'
+        remove = lambda item: item.replace(localhost, '').replace(':', '').replace('.', '').replace('*', '')  # noqa
+        active_ports = []
+        for index, row in enumerate(active_sessions.split('\n')):
+            if row and index > 1:  # First row - Description of the netstat command, Second row - Headers for columns
+                active_ports.append(remove(row.split()[3]))
+        while True:
+            port = randrange(49152, 65535)
+            if port not in active_ports:
+                return port
 
     @staticmethod
     def delete_repo():
@@ -3055,12 +3083,13 @@ class PersonalCloud:
     @staticmethod
     def enable():
         """
-        1. Clones personal_cloud repo,
+        1. Clones personal_cloud repo in a dedicated Terminal,
         2. Creates a dedicated virtual env and installs the requirements within it (ETA: ~20 seconds),
-        3. Gets and sets env vars required for the personal cloud,
-        4. Generates random username and passphrase for login info,
-        5. Triggers personal cloud using a dedicated Terminal,
-        6. Sends an SMS to your mobile phone.
+        3. If personal_cloud_volume env var is provided, Jarvis will mount the drive if it is is connected to the device
+        4. Gets and sets env vars required for the personal cloud,
+        5. Generates random username and passphrase for login info,
+        6. Triggers personal cloud using a dedicated Terminal,
+        7. Sends an SMS with endpoint, username and password to your mobile phone.
         """
 
         PersonalCloud().delete_repo()
@@ -3070,16 +3099,16 @@ class PersonalCloud:
 
         apple_script('Terminal').do_script(initial_script)
 
+        personal_cloud_port = PersonalCloud.get_port()
         personal_cloud_username = ''.join(choices(ascii_letters, k=10))
         personal_cloud_passphrase = ''.join(choices(ascii_letters + digits, k=10))
-        personal_cloud_port = os.environ.get('personal_cloud_port')
         personal_cloud_volume = os.environ.get('personal_cloud_volume')
 
         if not PersonalCloud.volume_checker(volume_name=personal_cloud_volume) if personal_cloud_volume else None:
             logger.critical(f"Volume: {personal_cloud_volume} was not connected to your {host_info('model')}")
             personal_cloud_volume = None
 
-        # todo: generate port numbers randomly based on allowed TCP ports
+        # export PORT for both ngrok and exec scripts as they will be running in different Terminal sessions
         ngrok_script = f"cd {home_dir}/personal_cloud && export PORT={personal_cloud_port} && " \
                        f"source venv/bin/activate && python3 ngrok.py"
 
