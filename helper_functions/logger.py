@@ -6,7 +6,7 @@ from logging import basicConfig, getLogger
 basicConfig(
     filename='threshold.log', filemode='a',
     format='%(asctime)s - %(levelname)s - %(funcName)s - Line: %(lineno)d - %(message)s',
-    datefmt='%m/%d/%Y %I:%M:%S %p'
+    datefmt='%b-%d-%Y %H:%M:%S'
 )
 
 logger = getLogger('jarvis.py')
