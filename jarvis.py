@@ -10,10 +10,10 @@ from json import load as json_load, loads as json_loads
 from math import ceil, log, floor, pow
 from multiprocessing.pool import ThreadPool
 from platform import uname, platform, system
-from random import choice, choices, randrange
+from random import choice, choices
 from shutil import disk_usage, rmtree
 from smtplib import SMTP
-from socket import socket, gethostname, gethostbyname, AF_INET, SOCK_DGRAM, setdefaulttimeout, gaierror, \
+from socket import socket, gethostname, AF_INET, SOCK_DGRAM, setdefaulttimeout, gaierror, \
     timeout as s_timeout
 from ssl import create_default_context
 from string import ascii_letters, digits
@@ -459,7 +459,7 @@ def conditions(converted):
 
     elif any(word in converted_lower for word in keywords.guard_enable() or keywords.guard_disable()):
         if any(word in converted_lower for word in keywords.guard_enable()):
-            logger.fatal('Enabled Security Mode')
+            logger.critical('Enabled Security Mode')
             speaker.say(f"Enabled security mode sir! I will look out for potential threats and keep you posted. "
                         f"Have a nice {greeting()}, and enjoy yourself sir!")
             speaker.runAndWait()
@@ -1247,7 +1247,7 @@ def gmail():
         mail.list()
         mail.select('inbox')  # choose inbox
     except TimeoutError as TimeOut:
-        logger.fatal(TimeOut)
+        logger.error(TimeOut)
         speaker.say("I wasn't able to check your emails sir. You might need to check to logs.")
         speaker.runAndWait()
         return
@@ -2718,13 +2718,13 @@ def guard():
             cam.release()
             break
     if cam_source is None:
-        cam_error = 'Guarding mode disabled as I was unable to access it.'
-        logger.fatal(cam_error)
+        cam_error = 'Guarding mode disabled as I was unable to access any of the cameras.'
+        logger.error(cam_error)
         response = sns.publish(PhoneNumber=phone_number, Message=cam_error)
         if response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
-            logger.fatal('SNS notification has been sent.')
+            logger.critical('SNS notification has been sent.')
         else:
-            logger.fatal(f'Unable to send SNS notification.\n{response}')
+            logger.error(f'Unable to send SNS notification.\n{response}')
 
     scale_factor = 1.1  # Parameter specifying how much the image size is reduced at each image scale.
     min_neighbors = 5  # Parameter specifying how many neighbors each candidate rectangle should have, to retain it.
@@ -2744,7 +2744,7 @@ def guard():
             pass
 
         if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable()):
-            logger.fatal('Disabled security mode')
+            logger.critical('Disabled security mode')
             speaker.say(f'Welcome back sir! Good {greeting()}.')
             if f'{date_extn}.jpg' in os.listdir('threat'):
                 speaker.say("We had a potential threat sir! Please check your email to confirm.")
@@ -2752,7 +2752,7 @@ def guard():
             sys.stdout.write('\rDisabled Security Mode')
             break
         elif converted:
-            logger.fatal(f'Conversation::{converted}')
+            logger.critical(f'Conversation::{converted}')
 
         if cam_source is not None:
             # captures images and keeps storing it to a folder
@@ -2766,8 +2766,9 @@ def guard():
                 if faces:
                     pass
             except ValueError:
+                # log level set to critical because this is a known exception when try check 'if faces'
                 cv2.imwrite(f'threat/{date_extn}.jpg', image)
-                logger.fatal(f'Image of detected face stored as {date_extn}.jpg')
+                logger.critical(f'Image of detected face stored as {date_extn}.jpg')
 
         if f'{date_extn}.jpg' not in os.listdir('threat'):
             date_extn = None
@@ -2795,22 +2796,22 @@ def threat_notify(converted, date_extn):
         body_ = f"""<html><head></head><body><h2>No conversation was recorded,
                                 but attached is a photo of the intruder.</h2>"""
     if response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
-        logger.fatal('SNS notification has been sent.')
+        logger.critical('SNS notification has been sent.')
     else:
-        logger.fatal(f'Unable to send SNS notification.\n{response}')
+        logger.error(f'Unable to send SNS notification.\n{response}')
 
     if date_extn:
         attachments_ = [f'threat/{date_extn}.jpg']
         response_ = send_mail(title_, text_, body_, attachments_)
         if response_.get('ResponseMetadata').get('HTTPStatusCode') == 200:
-            logger.fatal('Email has been sent!')
+            logger.critical('Email has been sent!')
         else:
-            logger.fatal(f'Email dispatch was failed with response: {response_}\n')
+            logger.error(f'Email dispatch was failed with response: {response_}\n')
 
 
 def offline_communicator_initiate():
     """Initiates offline communicator in a dedicated thread"""
-    logger.fatal('Enabled Offline Communicator')
+    logger.critical('Enabled Offline Communicator')
     Thread(target=offline_communicator).start()
 
 
@@ -2862,7 +2863,7 @@ def offline_communicator():
             if return_code == 'OK':
                 n = len(messages[0].split())
             else:
-                logger.fatal(f"Offline Communicator::Search Error.\n{return_code}")
+                logger.error(f"Offline Communicator::Search Error.\n{return_code}")
                 raise RuntimeError
             if not n:
                 pass
@@ -2880,7 +2881,7 @@ def offline_communicator():
                                     required_type = ["text/html", "text/plain"]
                                     if part.get_content_type() in required_type:
                                         body = part.get_payload(decode=True).decode('utf-8').strip()
-                                        logger.fatal(f'Received offline input::{body}')
+                                        logger.critical(f'Received offline input::{body}')
                                         mail.store(bytecode, "+FLAGS", "\\Deleted")  # marks email as deleted
                                         mail.expunge()  # DELETES (not send to Trash) the email permanently
                                         if body:
@@ -2893,16 +2894,16 @@ def offline_communicator():
                                 mail.store(bytecode, "-FLAGS", "\\Seen")  # set "-FLAGS" to un-see/mark as unread
             if response:
                 notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
-                logger.fatal('Response from Jarvis has been sent!')
+                logger.critical('Response from Jarvis has been sent!')
                 response = None  # reset response to None to avoid receiving same message endlessly
             sleep(30)  # waits for 30 seconds before attempting next search
-        logger.fatal('Disabled Offline Communicator')
+        logger.critical('Disabled Offline Communicator')
         mail.close()  # closes imap lib
         mail.logout()
     except (IMAP4.abort, IMAP4.error, s_timeout, gaierror, RuntimeError, ConnectionResetError):
         imap_error = sys.exc_info()[0]
-        logger.fatal(f'Offline Communicator::{imap_error.__name__}\n{format_exc()}')  # include traceback
-        logger.fatal('Restarting Offline Communicator')
+        logger.error(f'Offline Communicator::{imap_error.__name__}\n{format_exc()}')  # include traceback
+        logger.error('Restarting Offline Communicator')
         sleep(120)  # restart the session after 2 minutes in case of any of the above exceptions
         offline_communicator_initiate()  # return used here will terminate the current function
 
@@ -2916,7 +2917,7 @@ def meetings():
     process = Popen(['/usr/bin/osascript', 'meetings.scpt'] + [str(arg) for arg in args], stdout=PIPE, stderr=PIPE)
     out, err = process.communicate()
     if error := process.returncode:  # stores process.returncode in error if process.returncode is not 0
-        logger.fatal(f"Failed to read outlook with exit code: {error}\n{err}")
+        logger.error(f"Failed to read outlook with exit code: {error}\n{err}")
         return "I was unable to read your Outlook sir! Please make sure it is in sync."
 
     events = out.decode().strip()
@@ -3023,7 +3024,7 @@ def get_ssid():
             stdout=PIPE)
         out, err = process.communicate()
         if error := process.returncode:
-            logger.fatal(f"Failed to fetch SSID with exit code: {error}\n{err}")
+            logger.error(f"Failed to fetch SSID with exit code: {error}\n{err}")
         # noinspection PyTypeChecker
         return dict(map(str.strip, info.split(': ')) for info in out.decode('utf-8').split('\n')[:-1]).get('SSID')
     elif operating_system == 'Windows':
@@ -3071,14 +3072,15 @@ class PersonalCloud:
 
         personal_cloud_username = ''.join(choices(ascii_letters, k=10))
         personal_cloud_passphrase = ''.join(choices(ascii_letters + digits, k=10))
+        personal_cloud_port = os.environ.get('personal_cloud_port')
         personal_cloud_volume = os.environ.get('personal_cloud_volume')
 
         # todo: generate port numbers randomly based on allowed TCP ports
-        # todo: mount and unmount volume if personal_cloud_volume env var is set
-        ngrok_script = f"cd {home_dir}/personal_cloud && export PORT={os.environ.get('personal_cloud_port')} && " \
+        # todo: mount and unmount volume if personal_cloud_volume env var is available
+        ngrok_script = f"cd {home_dir}/personal_cloud && export PORT={personal_cloud_port} && " \
                        f"source venv/bin/activate && python3 ngrok.py"
 
-        exec_script = f"export PORT={os.environ.get('personal_cloud_port')} && " \
+        exec_script = f"export PORT={personal_cloud_port} && " \
                       f"export USERNAME={personal_cloud_username} && " \
                       f"export PASSWORD={personal_cloud_passphrase} && " \
                       f"export volume_name='{personal_cloud_volume}' && " \
@@ -3167,7 +3169,7 @@ def sentry_mode():
             terminator()
         except (RecursionError, TimeoutError, RuntimeError):
             unknown_error = sys.exc_info()[0]
-            logger.fatal(f'Unknown exception::{unknown_error.__name__}\n{format_exc()}')  # include traceback
+            logger.error(f'Unknown exception::{unknown_error.__name__}\n{format_exc()}')  # include traceback
             speaker.say('I faced an unknown exception.')
             restart()
     speaker.stop()  # stops before starting a new speaker loop to avoid conflict with offline communicator
@@ -3240,7 +3242,7 @@ def exit_process():
     """Function that holds the list of operations done upon exit."""
     global STATUS
     STATUS = False
-    logger.fatal('JARVIS::Stopping Now::Run STATUS has been unset')
+    logger.critical('JARVIS::Stopping Now::Run STATUS has been unset')
     alarms, reminders = [], {}
     for file in os.listdir('alarm'):
         if file != '.keep' and file != '.DS_Store':
@@ -3250,7 +3252,7 @@ def exit_process():
             split_val = file.replace('.lock', '').split('|')
             reminders.update({split_val[0]: split_val[-1]})
     if reminders:
-        logger.fatal(f'JARVIS::Deleting Reminders - {reminders}')
+        logger.critical(f'JARVIS::Deleting Reminders - {reminders}')
         if len(reminders) == 1:
             speaker.say(f'You have a pending reminder sir!')
         else:
@@ -3259,7 +3261,7 @@ def exit_process():
             speaker.say(f"{value.replace('_', ' ')} at "
                         f"{key.replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')}")
     if alarms:
-        logger.fatal(f'JARVIS::Deleting Alarms - {alarms}')
+        logger.critical(f'JARVIS::Deleting Alarms - {alarms}')
         alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
         alarms = alarms.replace('.lock', '').replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')
         sys.stdout.write(f"\r{alarms}")
@@ -3338,7 +3340,7 @@ def restart(target=None):
             return
     global STATUS
     STATUS = False
-    logger.fatal('JARVIS::Restarting Now::Run STATUS has been unset')
+    logger.critical('JARVIS::Restarting Now::Run STATUS has been unset')
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(perf_counter())}")
     speaker.say('Restarting now sir! I will be up and running momentarily.')
     try:
@@ -3398,7 +3400,7 @@ def voice_changer(change=None):
             speaker.setProperty("voice", voices[voice_id[-1]].id)  # voice module #0 for Windows
             speaker.setProperty('rate', 190)  # speech rate is slowed down in Windows for optimal experience
         else:
-            logger.fatal(f'Unsupported Operating System::{operating_system}.')
+            logger.error(f'Unsupported Operating System::{operating_system}.')
             terminator()
 
     if change:
@@ -3444,7 +3446,7 @@ def voice_changer(change=None):
 
 if __name__ == '__main__':
     STATUS = True
-    logger.fatal('JARVIS::Starting Now::Run STATUS has been set')
+    logger.critical('JARVIS::Starting Now::Run STATUS has been set')
 
     sys.stdout.write(f'\rVoice ID::Female: 1/17 Male: 0/7')  # Voice ID::reference
     speaker = init()  # initiates speaker
