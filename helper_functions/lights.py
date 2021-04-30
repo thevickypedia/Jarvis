@@ -1,9 +1,9 @@
 """Reference::https://github.com/adamkempenich/magichome-python"""
 
-import datetime
-import sys
+from datetime import datetime
 from socket import socket, AF_INET, SOCK_STREAM, error as sock_error
 from struct import pack
+from sys import stdout
 
 from helper_functions.logger import logger
 
@@ -17,16 +17,16 @@ class MagicHomeApi:
         self.device_type = device_type
         self.operation = operation
         self.API_PORT = 5577
-        self.latest_connection = datetime.datetime.now()
+        self.latest_connection = datetime.now()
         self.s = socket(AF_INET, SOCK_STREAM)
         self.s.settimeout(3)
         try:
-            # print("Establishing connection with the device.")
+            # Establishing connection with the device.
             self.s.connect((self.device_ip, self.API_PORT))
         except sock_error as error:
             self.s.close()
             error_msg = f"\rSocket error on {device_ip}: {error}"
-            sys.stdout.write(error_msg)
+            stdout.write(error_msg)
             logger.fatal(f'{error_msg} while performing "{self.operation}"')
 
     def turn_on(self):
@@ -101,9 +101,10 @@ class MagicHomeApi:
                 self.send_bytes(*(message + [self.calculate_checksum(message)]))
         else:
             # Incompatible device received
-            sys.stdout.write("\rIncompatible device type received...")
+            stdout.write("\rIncompatible device type received...")
 
-    def check_number_range(self, number):
+    @staticmethod
+    def check_number_range(number):
         """Check if the given number is in the allowed range."""
         if number < 0:
             return 0
@@ -130,7 +131,8 @@ class MagicHomeApi:
             message = [0x61, preset_number, speed, 0x0F]
             self.send_bytes(*(message + [self.calculate_checksum(message)]))
 
-    def calculate_checksum(self, bytes_):
+    @staticmethod
+    def calculate_checksum(bytes_):
         """Calculate the checksum from an array of bytes."""
         return sum(bytes_) & 0xFF
 
@@ -139,16 +141,15 @@ class MagicHomeApi:
         If the device hasn't been communicated to in 5 minutes, reestablish the
         connection.
         """
-        check_connection_time = (datetime.datetime.now() -
-                                 self.latest_connection).total_seconds()
+        check_connection_time = (datetime.now() - self.latest_connection).total_seconds()
         try:
             if check_connection_time >= 290:
-                sys.stdout.write("\rConnection timed out, reestablishing.")
+                stdout.write("\rConnection timed out, reestablishing.")
                 self.s.connect((self.device_ip, self.API_PORT))
             message_length = len(bytes_)
             self.s.send(pack("B" * message_length, *bytes_))
         except sock_error as error:
             error_msg = f"\rSocket error on {self.device_ip}: {error}"
-            sys.stdout.write(error_msg)
+            stdout.write(error_msg)
             logger.fatal(f'{error_msg} while performing "{self.operation}"')
         self.s.close()
