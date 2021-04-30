@@ -420,7 +420,7 @@ def conditions(converted):
             level = re.findall(r'\b\d+\b', converted)  # gets integers from string as a list
             level = int(level[0]) if level else 50  # converted to int for volume
         volume_controller(level)
-        speaker.say(f"{choice(ack)}")
+        speaker.say(f"{choice(ack)}!")
 
     elif any(word in converted_lower for word in keywords.face_detection()):
         face_recognition_detection()
@@ -1304,7 +1304,6 @@ def gmail():
                 place_holder = None
             else:
                 speaker.say("I didn't quite get that. Try again.")
-                speaker.runAndWait()
                 place_holder = 0
                 gmail()
 
@@ -1750,9 +1749,9 @@ def alarm(msg):
             open(f'alarm/{hour}_{minute}_{am_pm}.lock', 'a')
             Alarm(hour, minute, am_pm).start()
             if 'wake' in msg.lower().strip():
-                speaker.say(f"{choice(ack)} I will wake you up at {hour}:{minute} {am_pm}.")
+                speaker.say(f"{choice(ack)}! I will wake you up at {hour}:{minute} {am_pm}.")
             else:
-                speaker.say(f"{choice(ack)} Alarm has been set for {hour}:{minute} {am_pm}.")
+                speaker.say(f"{choice(ack)}! Alarm has been set for {hour}:{minute} {am_pm}.")
             sys.stdout.write(f"\rAlarm has been set for {hour}:{minute} {am_pm} sir!")
         else:
             speaker.say(f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
@@ -1955,7 +1954,7 @@ def reminder(converted):
         if int(hour) <= 12 and int(minute) <= 59:
             open(f'reminder/{hour}_{minute}_{am_pm}|{message.replace(" ", "_")}.lock', 'a')
             Reminder(hour, minute, am_pm, message).start()
-            speaker.say(f"{choice(ack)} I will remind you {to_about} {message}, at {hour}:{minute} {am_pm}.")
+            speaker.say(f"{choice(ack)}! I will remind you {to_about} {message}, at {hour}:{minute} {am_pm}.")
             sys.stdout.write(f"\r{message} at {hour}:{minute} {am_pm}")
         else:
             speaker.say(f"A reminder at {hour}:{minute} {am_pm}? Are you an alien? "
@@ -2297,7 +2296,7 @@ def television(converted):
                     speaker.say(f"I didn't find the source {tv_source} on your TV sir!")
         elif 'shutdown' in phrase or 'shut down' in phrase or 'turn off' in phrase:
             Thread(target=tv.shutdown).start()
-            speaker.say(f'{choice(ack)} Turning your TV off.')
+            speaker.say(f'{choice(ack)}! Turning your TV off.')
             tv = None
         else:
             speaker.say("I didn't quite get that.")
@@ -2622,28 +2621,28 @@ def lights(converted, connection_status):
 
     lights_count = len(light_host_id)
     if 'turn on' in converted or 'cool' in converted or 'white' in converted:
-        speaker.say(f'{choice(ack)} Turning on {lights_count} lights!')
+        speaker.say(f'{choice(ack)}! Turning on {lights_count} lights!')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(cool, light_host_id)
     elif 'turn off' in converted:
-        speaker.say(f'{choice(ack)} Turning off {lights_count} lights!')
+        speaker.say(f'{choice(ack)}! Turning off {lights_count} lights!')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(turn_off, light_host_id)
     elif 'warm' in converted or 'yellow' in converted:
-        speaker.say(f'{choice(ack)} Setting {lights_count} lights to yellow!') if 'yellow' in converted else \
+        speaker.say(f'{choice(ack)}! Setting {lights_count} lights to yellow!') if 'yellow' in converted else \
             speaker.say(f'Sure sir! Setting {lights_count} lights to warm!')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(warm, light_host_id)
     elif 'red' in converted:
-        speaker.say(f"{choice(ack)} I've changed {lights_count} lights to red!")
+        speaker.say(f"{choice(ack)}! I've changed {lights_count} lights to red!")
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(preset, [light_host_id, preset_values['red']])
     elif 'blue' in converted:
-        speaker.say(f"{choice(ack)} I've changed {lights_count} lights to blue!")
+        speaker.say(f"{choice(ack)}! I've changed {lights_count} lights to blue!")
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(preset, [light_host_id, preset_values['blue']])
     elif 'green' in converted:
-        speaker.say(f"{choice(ack)} I've changed {lights_count} lights to green!")
+        speaker.say(f"{choice(ack)}! I've changed {lights_count} lights to green!")
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(preset, [light_host_id, preset_values['green']])
     else:
@@ -2953,41 +2952,45 @@ def system_vitals():
         speaker.say("Reading vitals on Windows hasn't been developed yet sir")
         return
 
+    if not root_password:
+        speaker.say("You haven't provided a root password for me to read system vitals sir! "
+                    "Add the root password as an environment variable for me to read.")
+        return
+
     version = host_info('version')
     model = host_info('model')
 
     boot_time_, cpu_temp, gpu_temp, fan_speed, output = None, None, None, None, ""
-    if password := os.environ.get('PASSWORD'):  # local machine's password to run sudo command
-        if version >= 12:  # smc information is available only on 12+ versions (tested on 11.3, 12.1 and 16.1 versions)
-            critical_info = [each.strip() for each in (os.popen(
-                f'echo {password} | sudo -S powermetrics --samplers smc -i1 -n1'
-            )).read().split('\n') if each != '']
-            sys.stdout.write('\r')
+    if version >= 12:  # smc information is available only on 12+ versions (tested on 11.3, 12.1 and 16.1 versions)
+        critical_info = [each.strip() for each in (os.popen(
+            f'echo {root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
+        )).read().split('\n') if each != '']
+        sys.stdout.write('\r')
 
-            for info in critical_info:
-                if 'CPU die temperature' in info:
-                    cpu_temp = info.strip('CPU die temperature: ').replace(' C', '').strip()
-                if 'GPU die temperature' in info:
-                    gpu_temp = info.strip('GPU die temperature: ').replace(' C', '').strip()
-                if 'Fan' in info:
-                    fan_speed = info.strip('Fan: ').replace(' rpm', '').strip()
-        else:
-            fan_speed = check_output(
-                f'echo {password} | sudo -S spindump 1 1 -file /tmp/spindump.txt > /dev/null 2>&1;grep "Fan speed" '
-                '/tmp/spindump.txt;sudo rm /tmp/spindump.txt', shell=True).decode('utf-8')
+        for info in critical_info:
+            if 'CPU die temperature' in info:
+                cpu_temp = info.strip('CPU die temperature: ').replace(' C', '').strip()
+            if 'GPU die temperature' in info:
+                gpu_temp = info.strip('GPU die temperature: ').replace(' C', '').strip()
+            if 'Fan' in info:
+                fan_speed = info.strip('Fan: ').replace(' rpm', '').strip()
+    else:
+        fan_speed = check_output(
+            f'echo {root_password} | sudo -S spindump 1 1 -file /tmp/spindump.txt > /dev/null 2>&1;grep "Fan speed" '
+            '/tmp/spindump.txt;sudo rm /tmp/spindump.txt', shell=True).decode('utf-8')
 
-        if cpu_temp:
-            cpu = f'Your current average CPU temperature is {format_nos(c2f(extract_nos(cpu_temp)))}°F. '
-            output += cpu
-            speaker.say(cpu)
-        if gpu_temp:
-            gpu = f'GPU temperature is {format_nos(c2f(extract_nos(gpu_temp)))}°F. '
-            output += gpu
-            speaker.say(gpu)
-        if fan_speed:
-            fan = f'Current fan speed is {format_nos(extract_nos(fan_speed))} RPM. '
-            output += fan
-            speaker.say(fan)
+    if cpu_temp:
+        cpu = f'Your current average CPU temperature is {format_nos(c2f(extract_nos(cpu_temp)))}°F. '
+        output += cpu
+        speaker.say(cpu)
+    if gpu_temp:
+        gpu = f'GPU temperature is {format_nos(c2f(extract_nos(gpu_temp)))}°F. '
+        output += gpu
+        speaker.say(gpu)
+    if fan_speed:
+        fan = f'Current fan speed is {format_nos(extract_nos(fan_speed))} RPM. '
+        output += fan
+        speaker.say(fan)
 
     restart_time = datetime.fromtimestamp(boot_time())
     second = (datetime.now() - restart_time).total_seconds()
@@ -3386,9 +3389,7 @@ def voice_changer(change=None):
             terminator()
 
     if change:
-        if distribution := [int(s) for s in re.findall(r'\b\d+\b', change)]:
-            place_holder = 'custom'
-        else:
+        if not (distribution := [int(s) for s in re.findall(r'\b\d+\b', change)]):  # walrus on if not distribution
             distribution = range(avail_voices)
         for module_id in distribution:
             if module_id < avail_voices:
@@ -3400,8 +3401,6 @@ def voice_changer(change=None):
                 elif place_holder == 1:
                     speaker.say("Here's an example of one of my other voices sir!. Would you like me to use this one?")
                     place_holder = 2
-                elif place_holder == 'custom':
-                    speaker.say('Is this the one you wanted sir?')
                 else:
                     speaker.say('How about this one sir?')
             else:
@@ -3424,7 +3423,6 @@ def voice_changer(change=None):
                 place_holder = 0
                 return
             elif custom_id := [int(id_) for id_ in re.findall(r'\b\d+\b', keyword)]:
-                place_holder = 'custom'
                 voice_changer(str(custom_id))
                 break
     else:
@@ -3476,6 +3474,8 @@ if __name__ == '__main__':
     hallway_ip = os.environ.get('hallway_ip') or aws.hallway_ip()
     kitchen_ip = os.environ.get('kitchen_ip') or aws.kitchen_ip()
     think_id = os.environ.get('think_id') or aws.think_id()
+    if not (root_password := os.environ.get('PASSWORD')):
+        sys.stdout.write('\rROOT PASSWORD is not set!')
 
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
     # greet_check is used in initialize() to greet only for the first run
