@@ -10,10 +10,11 @@ from json import load as json_load, loads as json_loads
 from math import ceil, log, floor, pow
 from multiprocessing.pool import ThreadPool
 from platform import uname, platform, system
-from random import choice, choices
+from random import choice, choices, randrange
 from shutil import disk_usage, rmtree
 from smtplib import SMTP
-from socket import socket, gethostname, AF_INET, SOCK_DGRAM, setdefaulttimeout, gaierror, timeout as s_timeout
+from socket import socket, gethostname, gethostbyname, AF_INET, SOCK_DGRAM, setdefaulttimeout, gaierror, \
+    timeout as s_timeout
 from ssl import create_default_context
 from string import ascii_letters, digits
 from subprocess import call, check_output, getoutput, PIPE, Popen
@@ -3045,6 +3046,12 @@ class PersonalCloud:
     """
 
     @staticmethod
+    def delete_repo():
+        """Called during enable and disable to delete any existing bits for a clean start next time."""
+        if 'personal_cloud' in os.listdir(home_dir):
+            rmtree(f'{home_dir}/personal_cloud')  # delete repo for a fresh start
+
+    @staticmethod
     def enable():
         """
         1. Clones personal_cloud repo,
@@ -3055,31 +3062,37 @@ class PersonalCloud:
         6. Sends an SMS to your mobile phone.
         """
 
-        if 'personal_cloud' in os.listdir(home_dir):
-            rmtree(f'{home_dir}/personal_cloud')  # delete repo for a fresh start
+        PersonalCloud().delete_repo()
+        initial_script = f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git && " \
+                         f"cd personal_cloud && python3 -m venv venv && source venv/bin/activate && " \
+                         f"pip3 install -r requirements.txt"
 
-        os.system(f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git")
+        apple_script('Terminal').do_script(initial_script)
+
         personal_cloud_username = ''.join(choices(ascii_letters, k=10))
         personal_cloud_passphrase = ''.join(choices(ascii_letters + digits, k=10))
         personal_cloud_volume = os.environ.get('personal_cloud_volume')
 
-        ngrok_script = f"cd {home_dir}/personal_cloud && python3 -m venv venv " \
-                       f"&& source venv/bin/activate && " \
-                       f"export PORT={os.environ.get('personal_cloud_port')} && " \
-                       f"pip3 install -r requirements.txt && python3 ngrok.py"
+        # todo: generate port numbers randomly based on allowed TCP ports
+        # todo: mount and unmount volume if personal_cloud_volume env var is set
+        ngrok_script = f"cd {home_dir}/personal_cloud && export PORT={os.environ.get('personal_cloud_port')} && " \
+                       f"source venv/bin/activate && python3 ngrok.py"
 
         exec_script = f"export PORT={os.environ.get('personal_cloud_port')} && " \
                       f"export USERNAME={personal_cloud_username} && " \
                       f"export PASSWORD={personal_cloud_passphrase} && " \
                       f"export volume_name='{personal_cloud_volume}' && " \
-                      f"cd {home_dir}/personal_cloud && python3 server.py"
+                      f"cd {home_dir}/personal_cloud && source venv/bin/activate && python3 server.py"
 
-        apple_script('Terminal').do_script(ngrok_script)
+        sleep(10)  # sleeps for 10 seconds to get the repo cloned locally
         apple_script('Terminal').do_script(exec_script)
 
-        sleep(60)  # sleeps for 60 seconds to get the endpoint url generated within personal_cloud
+        sleep(10)  # sleeps for 10 more seconds to get the requirements installed in venv
+        apple_script('Terminal').do_script(ngrok_script)
 
-        url = open(f'{home_dir}/personal_cloud/url', 'r').read()
+        sleep(10)  # sleeps for 10 more seconds to get the endpoint url generated within personal_cloud
+        url = open(f'{home_dir}/personal_cloud/url', 'r').read()  # commit #d564dfa... on personal_cloud
+
         notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
                body=f"URL: {url}\nUsername: {personal_cloud_username}\nPassword: {personal_cloud_passphrase}")
 
@@ -3087,12 +3100,12 @@ class PersonalCloud:
     def disable():
         """Shuts off the server.py to stop the personal cloud. This eliminates the hassle of passing args
         and handling threads."""
-        pid_check = check_output("ps -ef | grep 'Python server.py'", shell=True)
+        pid_check = check_output("ps -ef | grep 'Python server.py\\|Python ngrok.py'", shell=True)
         pid_list = pid_check.decode('utf-8').split('\n')
         for pid_info in pid_list:
             if pid_info and 'Library' in pid_info and ('/bin/sh' not in pid_info or 'grep' not in pid_info):
                 os.system(f'kill -9 {pid_info.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
-        rmtree(f'{home_dir}/personal_cloud')  # delete repo while stopping server to pull the latest version next time
+        PersonalCloud().delete_repo()
 
 
 def internet_checker():
