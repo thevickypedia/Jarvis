@@ -607,6 +607,8 @@ def location_services(device):
             current_lon_ = raw_location['longitude']
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException):
         # uses latitude and longitude information from your IP's client when unable to connect to icloud
+        icloud_error = sys.exc_info()[0]
+        logger.error(f'Unable to retrieve location::{icloud_error.__name__}\n{format_exc()}')  # include traceback
         current_lat_ = st.results.client['lat']
         current_lon_ = st.results.client['lon']
         speaker.say("I have trouble accessing the i-cloud API, so I'll be using your I.P address to get your location. "
@@ -2469,24 +2471,19 @@ def face_recognition_detection():
                         "or simply say exit.")
             speaker.runAndWait()
             phrase = listener(3, 5)
-            if phrase != 'SR_ERROR':
-                if any(word in phrase.lower() for word in keywords.exit()):
-                    os.remove('cv2_open.jpg')
-                    speaker.say("I've deleted the image.")
-                else:
-                    sys.stdout.write(f"\r{phrase}")
-                    phrase = phrase.replace(' ', '_')
-                    # creates a named directory if it is not found already else simply ignores
-                    os.system(f'cd {train_dir} && mkdir {phrase}') if phrase not in os.listdir(train_dir) else None
-                    c_time = datetime.now().strftime("%I_%M_%p")
-                    img_name = f"{phrase}_{c_time}.jpg"  # adds current time to image name to avoid overwrite
-                    os.rename('cv2_open.jpg', img_name)  # renames the files
-                    os.system(f"mv {img_name} {train_dir}/{phrase}")  # move files into named directory within train_dir
-                    speaker.say(f"Image has been saved as {img_name}. I will be able to recognize {phrase} in the "
-                                f"future.")
+            if any(word in phrase.lower() for word in keywords.ok()):
+                sys.stdout.write(f"\r{phrase}")
+                phrase = phrase.replace(' ', '_')
+                # creates a named directory if it is not found already else simply ignores
+                os.system(f'cd {train_dir} && mkdir {phrase}') if phrase not in os.listdir(train_dir) else None
+                c_time = datetime.now().strftime("%I_%M_%p")
+                img_name = f"{phrase}_{c_time}.jpg"  # adds current time to image name to avoid overwrite
+                os.rename('cv2_open.jpg', img_name)  # renames the files
+                os.system(f"mv {img_name} {train_dir}/{phrase}")  # move files into named directory within train_dir
+                speaker.say(f"Image has been saved as {img_name}. I will be able to recognize {phrase} in the future.")
             else:
                 os.remove('cv2_open.jpg')
-                speaker.say("I did not get any response, so I've deleted the image.")
+                speaker.say("I've deleted the image.")
         else:
             speaker.say(f'Hi {result}! How can I be of service to you?')
     elif operating_system == 'Windows':
@@ -3007,16 +3004,13 @@ def system_vitals():
     speaker.say(f'Your {model} was last booted on {restart_time}. '
                 f'Current boot time is: {restart_duration}.')
     if second >= 172_800:
-        boot_extreme = re.search('(.*) days', restart_duration)
-        if boot_extreme:
+        if boot_extreme := re.search('(.*) days', restart_duration):
             warn = int(boot_extreme.group().replace(' days', '').strip())
-            speaker.say(f'Sir! your {model} has been running continuously for more than {warn} days. '
-                        f'You must consider a reboot for better performance.')
-            speaker.say('Would you like me to restart it for you sir?')
+            speaker.say(f'Sir! your {model} has been running continuously for more than {warn} days. You must '
+                        f'consider a reboot for better performance. Would you like me to restart it for you sir?')
             speaker.runAndWait()
             response = listener(3, 3)
             if any(word in response.lower() for word in keywords.ok()):
-                exit_process()
                 restart(target='PC_Proceed')
 
 
@@ -3233,7 +3227,7 @@ def sentry_mode():
         except KeyboardInterrupt:
             exit_process()
             terminator()
-        except (RecursionError, TimeoutError, RuntimeError):
+        except (RecursionError, TimeoutError, RuntimeError, ConnectionResetError):
             unknown_error = sys.exc_info()[0]
             logger.error(f'Unknown exception::{unknown_error.__name__}\n{format_exc()}')  # include traceback
             speaker.say('I faced an unknown exception.')
@@ -3301,7 +3295,7 @@ def remove_files():
     Also deletes the location data in yaml format, to recreate a new one next time around."""
     [os.remove(f"alarm/{file}") for file in os.listdir('alarm') if file != '.keep']
     [os.remove(f"reminder/{file}") for file in os.listdir('reminder') if file != '.keep']
-    os.remove('location.yaml')
+    os.remove('location.yaml') if os.path.isfile('location.yaml') else None
 
 
 def exit_process():
