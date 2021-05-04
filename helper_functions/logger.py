@@ -1,10 +1,11 @@
 """Initiates logger to log start time, restart time, results from security mode and offline communicator
 In order to use a common logger across multiple files, a dedicated logger has been created."""
 
+from datetime import datetime
 from logging import basicConfig, getLogger
 
 basicConfig(
-    filename='threshold.log', filemode='a',
+    filename=datetime.now().strftime('logs/threshold_%H:%M:%S_%m-%d-%Y.log'), filemode='w',
     format='%(asctime)s - %(levelname)s - %(funcName)s - Line: %(lineno)d - %(message)s',
     datefmt='%b-%d-%Y %H:%M:%S'
 )

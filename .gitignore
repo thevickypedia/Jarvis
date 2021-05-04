@@ -25,10 +25,14 @@ notes.txt
 contacts.yml
 
 # Start and restart logs will be saved here
-threshold.log
+logs/*.log
 
 # Storage for images of intruders
 threat
 
 # Storage for location details to reuse
 location.yaml
+
+# .lock files for Alarms and Reminders
+alarm/*.lock
+reminder/*.lock
