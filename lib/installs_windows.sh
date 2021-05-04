@@ -1,8 +1,10 @@
 echo "**********************************************************************************************************"
 echo "Make sure Anaconda is installed, the commands 'conda' and 'pip3' work before proceeding."
+echo "Make sure Visual Studio C++ Build Tools is installed." 
 echo ""
 echo "Refer the below links for:"
 echo "Anaconda installation: https://docs.conda.io/projects/conda/en/latest/user-guide/install/"
+echo "VSC C++ Tools: https://visualstudio.microsoft.com/visual-cpp-build-tools/"
 echo "pip3 setup guide: https://stackoverflow.com/questions/41501636/how-to-install-pip3-on-windows"
 echo "**********************************************************************************************************"
 read -p "Are you sure you want to continue? <Y/N> " prompt
@@ -39,6 +41,9 @@ then
   pip3 install randfacts==0.2.8
   pip3 install pywin32==300
   pip3 install wolframalpha==4.1.1
+  pip3 install cmake==3.18.2.post1
+  pip3 install dlib==19.21.0
+  pip3 install face-recognition==1.3.0
 else
   echo ""
   echo "**********************************************************************************************************"
