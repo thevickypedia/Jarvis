@@ -2438,8 +2438,7 @@ def volume_controller(level):
 
 def face_recognition_detection():
     """Initiates face recognition script and looks for images stored in named directories within 'train' directory."""
-    if operating_system == 'Darwin':
-        sys.stdout.write("\r")
+    sys.stdout.write("\r")
         train_dir = 'train'
         os.mkdir(train_dir) if train_dir not in current_dir else None
         speaker.say('Initializing facial recognition. Please smile at the camera for me.')
@@ -2489,9 +2488,6 @@ def face_recognition_detection():
                 speaker.say("I did not get any response, so I've deleted the image.")
         else:
             speaker.say(f'Hi {result}! How can I be of service to you?')
-    elif operating_system == 'Windows':
-        speaker.say("I am sorry, currently facial recognition and detection is not supported on Windows, due to the "
-                    "package installation issues.")
 
 
 def speed_test():
