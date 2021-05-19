@@ -1,4 +1,4 @@
-import os
+from os.path import isfile
 from sqlite3 import connect
 
 file_name = 'tasks.db'
@@ -15,7 +15,7 @@ class Database:
         self.table_name = self.file_name.replace('.db', '')
 
     def create_db(self):
-        if os.path.isfile(self.file_name):
+        if isfile(self.file_name):
             return f"A database named, {self.file_name}, already exists."
         else:
             connection = connect(self.file_name)

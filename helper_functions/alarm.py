@@ -1,5 +1,5 @@
-import os
 from datetime import datetime
+from os import listdir, system, remove, path, getcwd
 from platform import system
 from random import choice
 from subprocess import call
@@ -18,8 +18,8 @@ class Alarm(Thread):
     def run(self):
         operating_system = system()
         music_dir = "mp3"
-        tone = choice(os.listdir(music_dir))
-        files = os.listdir(directory)
+        tone = choice(listdir(music_dir))
+        files = listdir(directory)
         file_name = f"{self.hours}_{self.minutes}_{self.am_pm}.lock"
         while True:
             now = datetime.now()
@@ -30,7 +30,7 @@ class Alarm(Thread):
                 if operating_system == 'Darwin':
                     call(["open", f"{music_dir}/{tone}"])
                 elif operating_system == 'Windows':
-                    location = os.path.abspath(os.getcwd())
-                    os.system(f'start wmplayer "{location}\\{music_dir}\\{tone}"')
-                os.remove(f"{directory}/{file_name}")
+                    location = path.abspath(getcwd())
+                    system(f'start wmplayer "{location}\\{music_dir}\\{tone}"')
+                remove(f"{directory}/{file_name}")
                 return

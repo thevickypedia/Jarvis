@@ -1,7 +1,7 @@
-import os
 import sys
-import time
+from os import environ
 from socket import gaierror
+from time import sleep
 
 from pywebostv.connection import WebOSClient
 from pywebostv.controls import SystemControl, MediaControl, ApplicationControl, SourceControl
@@ -19,8 +19,8 @@ class TV:
         Store the dict value as an env variable and use it as below. Using TV's ip makes the initial
         response much quicker but it looks for the TVs in ip range if an ip is not found."""
         aws = AWSClients()
-        ip_address = os.environ.get('tv_ip') or aws.tv_ip()
-        client_key = os.environ.get('tv_client_key') or aws.tv_client_key()
+        ip_address = environ.get('tv_ip') or aws.tv_ip()
+        client_key = environ.get('tv_client_key') or aws.tv_client_key()
 
         store = {'client_key': client_key}
         try:
@@ -145,13 +145,13 @@ class TV:
     def shutdown(self):
         """Notifies the TV about shutdown and shuts down after 3 seconds"""
         self.system.notify(f'Jarvis::SHUTTING DOWN now')
-        time.sleep(3)
+        sleep(3)
         self.system.power_off()
 
 
 if __name__ == '__main__':
     aws_ = AWSClients()
-    mac_address = os.environ.get('tv_mac') or aws_.tv_mac()
+    mac_address = environ.get('tv_mac') or aws_.tv_mac()
     sys.stdout.write(f"\r{TV().launch_app('Disney')}")
-    time.sleep(10)
+    sleep(10)
     wake(mac_address)

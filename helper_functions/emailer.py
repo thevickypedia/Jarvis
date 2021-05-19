@@ -1,7 +1,7 @@
-import os
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from os import environ, path
 
 from boto3 import client
 
@@ -14,8 +14,8 @@ def create_multipart_message(title: str, text: str = None, html: str = None, att
     multipart_content_subtype = 'alternative' if text and html else 'mixed'
     msg = MIMEMultipart(multipart_content_subtype)
     msg['Subject'] = title
-    msg['From'] = f"Jarvis <{os.environ.get('gmail_user') or aws.gmail_user()}>"
-    recipients = [os.environ.get('robinhood_user') or aws.robinhood_user()]
+    msg['From'] = f"Jarvis <{environ.get('gmail_user') or aws.gmail_user()}>"
+    recipients = [environ.get('robinhood_user') or aws.robinhood_user()]
     msg['To'] = ', '.join(recipients)
     if text:
         part = MIMEText(text, 'plain')
@@ -26,7 +26,7 @@ def create_multipart_message(title: str, text: str = None, html: str = None, att
     for attachment in attachments or []:
         with open(attachment, 'rb') as f:
             part = MIMEApplication(f.read())
-            part.add_header('Content-Disposition', 'attachment', filename=os.path.basename(attachment))
+            part.add_header('Content-Disposition', 'attachment', filename=path.basename(attachment))
             msg.attach(part)
     return msg
 

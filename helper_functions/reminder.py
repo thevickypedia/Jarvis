@@ -1,6 +1,6 @@
-import os
-import platform
 from datetime import datetime
+from os import listdir, environ, system, remove
+from platform import system as operating_system
 from smtplib import SMTP
 from threading import Thread
 
@@ -8,7 +8,6 @@ from helper_functions.aws_clients import AWSClients
 
 aws = AWSClients()
 directory = 'reminder'  # dir need not be '../reminder' as the Thread is triggered by jarvis.py which is in root dir
-operating_system = platform.system()
 
 
 class Reminder(Thread):
@@ -21,7 +20,7 @@ class Reminder(Thread):
 
     def run(self):
         file_name = f'{self.hours}_{self.minutes}_{self.am_pm}|{self.message.replace(" ", "_")}.lock'
-        files = os.listdir(directory)
+        files = listdir(directory)
         while True:
             now = datetime.now()
             am_pm = now.strftime("%p")
@@ -31,9 +30,9 @@ class Reminder(Thread):
                 # Establish a secure session with gmail's outgoing SMTP server using your gmail account
                 server = SMTP("smtp.gmail.com", 587)
                 server.starttls()
-                gmail_user = os.environ.get('gmail_user') or aws.gmail_user()
-                gmail_pass = os.environ.get('gmail_pass') or aws.gmail_pass()
-                remind = os.environ.get('phone') or aws.phone()
+                gmail_user = environ.get('gmail_user') or aws.gmail_user()
+                gmail_pass = environ.get('gmail_pass') or aws.gmail_pass()
+                remind = environ.get('phone') or aws.phone()
                 server.login(user=gmail_user, password=gmail_pass)
                 from_ = gmail_user
                 to = f"{remind}@tmomail.net"
@@ -43,10 +42,10 @@ class Reminder(Thread):
                 message = (f"From: {from_}\n" + f"To: {to}\n" + f"Subject: {subject}\n" + "\n\n" + body)
                 server.sendmail(from_, to, message)
                 server.close()
-                if operating_system == 'Darwin':
-                    os.system(f"""osascript -e 'display notification "{body}" with title "{subject}"'""")
-                elif operating_system == 'Windows':
+                if operating_system() == 'Darwin':
+                    system(f"""osascript -e 'display notification "{body}" with title "{subject}"'""")
+                elif operating_system() == 'Windows':
                     from win10toast import ToastNotifier
                     ToastNotifier().show_toast(subject, body)
-                os.remove(f"{directory}/{file_name}")
+                remove(f"{directory}/{file_name}")
                 return
