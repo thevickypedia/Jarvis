@@ -3109,14 +3109,18 @@ class PersonalCloud:
                       f"export volume_name='{personal_cloud_volume}' && " \
                       f"cd {home_dir}/personal_cloud && source venv/bin/activate && python3 server.py"
 
-        sleep(10)  # sleeps for 10 seconds to get the repo cloned locally
-        apple_script('Terminal').do_script(exec_script)
+        cloned_path = f'{home_dir}/personal_cloud'
+        while True:  # wait for the requirements to be installed after the repo was cloned
+            if 'personal_cloud' in os.listdir(home_dir) and 'venv' in os.listdir(cloned_path) and \
+                    'bin' in os.listdir(f'{cloned_path}/venv') and 'pyngrok' in os.listdir(f'{cloned_path}/venv/bin'):
+                apple_script('Terminal').do_script(exec_script)
+                apple_script('Terminal').do_script(ngrok_script)
+                break
 
-        sleep(10)  # sleeps for 10 more seconds to get the requirements installed in venv
-        apple_script('Terminal').do_script(ngrok_script)
-
-        sleep(10)  # sleeps for 10 more seconds to get the endpoint url generated within personal_cloud
-        url = open(f'{home_dir}/personal_cloud/url', 'r').read()  # commit #d564dfa... on personal_cloud
+        while True:  # wait for the endpoint url (as file) to get generated within personal_cloud
+            if 'url' in os.listdir(cloned_path):
+                url = open(f'{cloned_path}/url', 'r').read()  # commit #d564dfa... on personal_cloud
+                break
 
         notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
                body=f"URL: {url}\nUsername: {personal_cloud_username}\nPassword: {personal_cloud_passphrase}")
