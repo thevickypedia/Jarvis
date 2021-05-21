@@ -939,10 +939,7 @@ def wikipedia_():
                 speaker.say('Your keyword has multiple results sir. Please pick any one displayed on your screen.')
                 speaker.runAndWait()
                 keyword1 = listener(3, 5)
-                if keyword1 != 'SR_ERROR':
-                    result = summary(keyword1)
-                else:
-                    result = None
+                result = summary(keyword1) if keyword1 != 'SR_ERROR' else None
             except wiki_exceptions.PageError:
                 speaker.say(f"I'm sorry sir! I didn't get a response for the phrase: {keyword}. Try again!")
                 result = None
@@ -3184,8 +3181,15 @@ def sentry_mode():
      1. Jarvis doesn't run into Fatal Python error
      2. Jarvis restarts at least twice a day and gets a new pid
      3. Maintains mandatory sleep hours 1-3 AM (use bypass in phrase to bypass it)"""
+
+    def late_night(hot_word):
+        return True if int(c_time.split(':')[0]) in range(1, 4) and c_time.split()[-1] == 'AM' \
+                       and 'bypass' not in hot_word else False
+
+    time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'tonight']
+    wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
     threshold = 0
-    while threshold < 5_000:
+    while threshold < 10_000:
         threshold += 1
         try:
             sys.stdout.write("\rSentry Mode")
@@ -3194,26 +3198,33 @@ def sentry_mode():
             key_original = recognizer.recognize_google(listen).strip()
             sys.stdout.write(f"\r{key_original}")
             key = key_original.lower()
-            if 'jarvis' in key or 'buddy' in key:
-                c_time = datetime.now().strftime("%I:%M %p")
-                if ('morning' in key or 'night' in key or 'afternoon' in key or 'after noon' in key or
-                        'evening' in key) and 'jarvis' in key and 'tonight' not in key:
-                    if event:
-                        speaker.say(f'Happy {event}!')
-                    time_travel()
-                elif int(c_time.split(':')[0]) in range(1, 4) and c_time.split()[-1] == 'AM' and 'bypass' not in key:
+            c_time = datetime.now().strftime("%I:%M %p") if key else None
+            if [word for word in key.split() if word in time_of_day] and 'jarvis' in key:
+                if event:
+                    speaker.say(f'Happy {event}!')
+                time_travel()
+            elif key == 'jarvis' or key == 'buddy':
+                if late_night(hot_word=key):
                     speaker.say(f"It is {c_time} sir! You should be sleeping already. Good Night")
-                elif key == 'jarvis' or key == 'buddy':
+                else:
                     speaker.say(f'{choice(wake_up3)}')
                     initialize()
-                elif 'look alive' in key in key or 'wake up' in key or 'wakeup' in key or 'show time' in key or \
-                        'showtime' in key or 'time to work' in key or 'spin up' in key:
+            elif [word for word in key.split() if word in wake_up_words]:
+                if late_night(hot_word=key):
+                    speaker.say(f"It is {c_time} sir! You should be sleeping already. Good Night")
+                else:
                     speaker.say(f'{choice(wake_up1)}')
                     initialize()
-                elif 'you there' in key or 'are you there' in key or 'you up' in key:
+            elif 'you there' in key or 'are you there' in key or 'you up' in key:
+                if late_night(hot_word=key):
+                    speaker.say(f"It is {c_time} sir! You should be sleeping already. Good Night")
+                else:
                     speaker.say(f'{choice(wake_up2)}')
                     initialize()
-                elif 'jarvis' in key or 'buddy' in key:
+            elif 'jarvis' in key or 'buddy' in key:
+                if late_night(hot_word=key):
+                    speaker.say(f"It is {c_time} sir! You should be sleeping already. Good Night")
+                else:
                     remove = ['buddy', 'jarvis', 'hey', 'bypass']
                     converted = ' '.join([i for i in key_original.split() if i.lower() not in remove])
                     if converted:
@@ -3221,7 +3232,7 @@ def sentry_mode():
                     else:
                         speaker.say(f'{choice(wake_up3)}')
                         initialize()
-                speaker.runAndWait()
+            speaker.runAndWait()
         except (UnknownValueError, RequestError, WaitTimeoutError):
             continue
         except KeyboardInterrupt:
@@ -3367,7 +3378,7 @@ def host_info(required):
 
 
 def stop_terminal():
-    """Uses pid to kill terminals as terminals await unser confirmation interrupting shutdown/restart"""
+    """Uses pid to kill terminals as terminals await user confirmation interrupting shutdown/restart"""
     pid_check = check_output("ps -ef | grep 'iTerm\\|Terminal'", shell=True)
     pid_list = pid_check.decode('utf-8').split('\n')
     for id_ in pid_list:
@@ -3407,7 +3418,7 @@ def restart(target=None):
         speaker.runAndWait()
     except RuntimeError:
         pass
-    os.system(f'python3 restart.py')
+    os.system('python3 restart.py')
     exit(1)  # Don't call terminator() as, os._exit(1) in that func will kill the background threads running in parallel
 
 
