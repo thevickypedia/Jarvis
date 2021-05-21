@@ -1,16 +1,20 @@
 """Initiates logger to log start time, restart time, results from security mode and offline communicator
 In order to use a common logger across multiple files, a dedicated logger has been created."""
 
+import logging
 from datetime import datetime
-from logging import basicConfig, getLogger
+from importlib import reload
 
-basicConfig(
+reload(logging)
+logging.basicConfig(
     filename=datetime.now().strftime('logs/threshold_%H:%M:%S_%m-%d-%Y.log'), filemode='w',
     format='%(asctime)s - %(levelname)s - %(funcName)s - Line: %(lineno)d - %(message)s',
     datefmt='%b-%d-%Y %H:%M:%S'
 )
 
-logger = getLogger('jarvis.py')
+logger = logging.getLogger('jarvis.py')
+
+
 # noinspection PyUnresolvedReferences,PyProtectedMember
 
 
