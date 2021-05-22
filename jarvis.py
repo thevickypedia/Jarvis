@@ -3192,13 +3192,7 @@ def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action.
     threshold is used to sanity check sentry_mode() so that:
      1. Jarvis doesn't run into Fatal Python error
-     2. Jarvis restarts at least twice a day and gets a new pid
-     3. Maintains mandatory sleep hours 1-3 AM (use bypass in phrase to bypass it)"""
-
-    def late_night(hot_word):
-        return True if int(c_time.split(':')[0]) in range(1, 4) and c_time.split()[-1] == 'AM' \
-                       and 'bypass' not in hot_word else False
-
+     2. Jarvis restarts at least twice a day and gets a new pid"""
     time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'tonight']
     wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
     threshold = 0
@@ -3211,40 +3205,27 @@ def sentry_mode():
             key_original = recognizer.recognize_google(listen).strip()
             sys.stdout.write(f"\r{key_original}")
             key = key_original.lower()
-            c_time = datetime.now().strftime("%I:%M %p") if key else None
             if [word for word in key.split() if word in time_of_day] and 'jarvis' in key:
                 if event:
                     speaker.say(f'Happy {event}!')
                 time_travel()
             elif key == 'jarvis' or key == 'buddy':
-                if late_night(hot_word=key):
-                    speaker.say(f"It is {c_time} sir! You should be sleeping already. Good Night")
+                speaker.say(f'{choice(wake_up3)}')
+                initialize()
+            elif [word for word in key.split() if word in wake_up_words]:
+                speaker.say(f'{choice(wake_up1)}')
+                initialize()
+            elif 'you there' in key or 'are you there' in key or 'you up' in key:
+                speaker.say(f'{choice(wake_up2)}')
+                initialize()
+            elif 'jarvis' in key or 'buddy' in key:
+                remove = ['buddy', 'jarvis', 'hey']
+                converted = ' '.join([i for i in key_original.split() if i.lower() not in remove])
+                if converted:
+                    split(converted.strip())
                 else:
                     speaker.say(f'{choice(wake_up3)}')
                     initialize()
-            elif [word for word in key.split() if word in wake_up_words]:
-                if late_night(hot_word=key):
-                    speaker.say(f"It is {c_time} sir! You should be sleeping already. Good Night")
-                else:
-                    speaker.say(f'{choice(wake_up1)}')
-                    initialize()
-            elif 'you there' in key or 'are you there' in key or 'you up' in key:
-                if late_night(hot_word=key):
-                    speaker.say(f"It is {c_time} sir! You should be sleeping already. Good Night")
-                else:
-                    speaker.say(f'{choice(wake_up2)}')
-                    initialize()
-            elif 'jarvis' in key or 'buddy' in key:
-                if late_night(hot_word=key):
-                    speaker.say(f"It is {c_time} sir! You should be sleeping already. Good Night")
-                else:
-                    remove = ['buddy', 'jarvis', 'hey', 'bypass']
-                    converted = ' '.join([i for i in key_original.split() if i.lower() not in remove])
-                    if converted:
-                        split(converted.strip())
-                    else:
-                        speaker.say(f'{choice(wake_up3)}')
-                        initialize()
             speaker.runAndWait()
         except (UnknownValueError, RequestError, WaitTimeoutError):
             continue
