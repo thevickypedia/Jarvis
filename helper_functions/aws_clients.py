@@ -150,3 +150,9 @@ class AWSClients:
         param = response['Parameter']
         val = param['Value']
         return val
+
+    def router_pass(self):
+        response = self.client.get_parameter(Name='/Jarvis/router_pass', WithDecryption=True)
+        param = response['Parameter']
+        val = param['Value']
+        return val

@@ -68,6 +68,7 @@ from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.emailer import send_mail
 from helper_functions.facial_recognition import Face
+from helper_functions.ip_scanner import LocalIPScan
 from helper_functions.keywords import Keywords
 from helper_functions.lights import MagicHomeApi
 from helper_functions.logger import logger
@@ -2591,6 +2592,17 @@ def lights(converted, connection_status):
     """Controller for smart lights"""
     network_id = '.'.join(connection_status.split('.')[:-1])  # gets network id removing host_id from the IP address
 
+    # host id's for each light bulb stored in env var or aws secret as a string. eg: '19,20,21'
+    if isinstance(hallway_ip, str):
+        hallway = [f'{network_id}.{int(i)}' for i in hallway_ip.split(',') if i.isdigit()]
+    else:
+        hallway = hallway_ip
+
+    if isinstance(kitchen_ip, str):
+        kitchen = [f'{network_id}.{int(i)}' for i in kitchen_ip.split(',') if i.isdigit()]
+    else:
+        kitchen = kitchen_ip
+
     def turn_off(host):
         controller = MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off')
         controller.turn_off()
@@ -2606,10 +2618,6 @@ def lights(converted, connection_status):
     def preset(host, value):
         controller = MagicHomeApi(device_ip=host, device_type=2, operation='Cool Lights')
         controller.send_preset_function(preset_number=value, speed=101)
-
-    # host id's for each light bulb stored in env var or aws secret as a string. eg: '19,20,21'
-    hallway = [f'{network_id}.{int(i)}' for i in hallway_ip.split(',') if i.isdigit()]
-    kitchen = [f'{network_id}.{int(i)}' for i in kitchen_ip.split(',') if i.isdigit()]
 
     if 'hallway' in converted:
         light_host_id = hallway
@@ -3193,7 +3201,7 @@ def sentry_mode():
     time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'tonight']
     wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
     threshold = 0
-    while threshold < 10_000:
+    while threshold < 5_000:
         threshold += 1
         try:
             sys.stdout.write("\rSentry Mode")
@@ -3561,9 +3569,32 @@ if __name__ == '__main__':
     icloud_pass = os.environ.get('icloud_pass') or aws.icloud_pass()
     recovery = os.environ.get('icloud_recovery') or aws.icloud_recovery()
     phone_number = os.environ.get('phone') or aws.phone()
-    hallway_ip = os.environ.get('hallway_ip') or aws.hallway_ip()
-    kitchen_ip = os.environ.get('kitchen_ip') or aws.kitchen_ip()
     think_id = os.environ.get('think_id') or aws.think_id()
+    router_pass = os.environ.get('router_pass') or aws.router_pass()
+
+    if st := internet_checker():
+        sys.stdout.write(f'\rINTERNET::Connected to {get_ssid()}. Scanning localhost for connected devices.')
+    else:
+        sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
+        speaker.say("I was unable to connect to the internet sir! Please check your connection settings and retry.")
+        speaker.runAndWait()
+        terminator()
+
+    local_devices = LocalIPScan(router_pass=router_pass)
+    if not (hallway_ip := [val for val in local_devices.hallway()]):
+        hallway_ip = os.environ.get('hallway_ip') or aws.hallway_ip()
+    else:
+        if hallway_ip != os.environ.get('hallway_ip'):
+            store_hallway_ip = ','.join([each_ip.split('.')[-1] for each_ip in hallway_ip])
+            logger.error(f"Rotate ENV-VAR 'hallway_ip' to {store_hallway_ip}")
+
+    if not (kitchen_ip := [val for val in local_devices.kitchen()]):
+        kitchen_ip = os.environ.get('kitchen_ip') or aws.kitchen_ip()
+    else:
+        if kitchen_ip != os.environ.get('kitchen_ip'):
+            store_hallway_ip = ','.join([each_ip.split('.')[-1] for each_ip in hallway_ip])
+            logger.error(f"Rotate ENV-VAR 'hallway_ip' to {store_hallway_ip}")
+
     if not (root_password := os.environ.get('PASSWORD')):
         sys.stdout.write('\rROOT PASSWORD is not set!')
 
@@ -3573,14 +3604,6 @@ if __name__ == '__main__':
     # suggestion_count is used in google_searchparser to limit the number of times suggestions are used.
     # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
     place_holder, greet_check, tv, suggestion_count = None, None, None, 0
-
-    if st := internet_checker():
-        sys.stdout.write(f'\rINTERNET::Connected to {get_ssid()}')
-    else:
-        sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
-        speaker.say("I was unable to connect to the internet sir! Please check your connection settings and retry.")
-        speaker.runAndWait()
-        terminator()
 
     # stores necessary values for geo location to receive the latitude, longitude and address
     options.default_ssl_context = create_default_context(cafile=where())
