@@ -73,6 +73,7 @@ from helper_functions.keywords import Keywords
 from helper_functions.lights import MagicHomeApi
 from helper_functions.logger import logger
 from helper_functions.preset_values import preset_values
+from helper_functions.put_param import put_parameters
 from helper_functions.reminder import Reminder
 from helper_functions.robinhood import watcher
 from helper_functions.temperature import k2f, c2f
@@ -2202,7 +2203,7 @@ def television(converted):
     # 'tv_status = lambda: os.system(f"ping ....) #noqa' is an alternate but adhering to pep 8 best practice using a def
     def tv_status():
         """Pings the tv and returns the status. 0 if able to ping, 256 if unable to ping."""
-        return os.system(f"ping -c 1 -t 1 {tv_ip_address} >/dev/null")  # pings TV IP and returns 0 if host is reachable
+        return os.system(f"ping -c 1 -t 1 {tv_ip} >/dev/null")  # pings TV IP and returns 0 if host is reachable
 
     if vpn_checker().startswith('VPN'):
         return
@@ -2210,7 +2211,7 @@ def television(converted):
         speaker.say("I wasn't able to connect to your TV sir! I guess your TV is powered off already.")
         return
     elif tv_status() != 0:
-        arp_output = check_output(f"arp {tv_ip_address}", shell=True).decode('utf-8')  # arp on tv ip to get mac address
+        arp_output = check_output(f"arp {tv_ip}", shell=True).decode('utf-8')  # arp on tv ip to get mac address
         tv_mac_address = re.search(' at (.*) on ', arp_output).group().replace(' at ', '').replace(' on ', '')  # format
         if not tv_mac_address or tv_mac_address == '(INCOMPLETE)':
             tv_mac_address = os.environ.get('tv_mac') or aws.tv_mac()
@@ -2222,17 +2223,17 @@ def television(converted):
         speaker.say("I wasn't able to connect to your TV sir! Please make sure you are on the "
                     "same network as your TV, and your TV is connected to a power source.")
         return
-    elif not tv:
-        try:
-            tv = TV()
-            if 'turn on' in phrase or 'connect' in phrase:
-                speaker.say(f"TV features have been integrated sir!")
-                return
-        except OSError:
-            pass
+
+    if not tv:
+        tv = TV(ip_address=tv_ip, client_key=tv_client_key)
+        if 'turn on' in phrase or 'connect' in phrase:
+            speaker.say("TV features have been integrated sir!")
+            return
 
     if tv:
-        if 'increase' in phrase:
+        if 'turn on' in phrase or 'connect' in phrase:
+            speaker.say('Your TV is already powered on sir!')
+        elif 'increase' in phrase:
             tv.increase_volume()
             speaker.say(f'{choice(ack)}!')
         elif 'decrease' in phrase or 'reduce' in phrase:
@@ -3560,7 +3561,7 @@ if __name__ == '__main__':
     robin_user = os.environ.get('robinhood_user') or aws.robinhood_user()
     robin_pass = os.environ.get('robinhood_pass') or aws.robinhood_pass()
     robin_qr = os.environ.get('robinhood_qr') or aws.robinhood_qr()
-    tv_ip_address = os.environ.get('tv_ip') or aws.tv_ip()
+    tv_client_key = os.environ.get('tv_client_key') or aws.tv_client_key()
     birthday = os.environ.get('birthday') or aws.birthday()
     offline_receive_user = os.environ.get('offline_receive_user') or aws.offline_receive_user()
     offline_receive_pass = os.environ.get('offline_receive_pass') or aws.offline_receive_pass()
@@ -3583,17 +3584,36 @@ if __name__ == '__main__':
     local_devices = LocalIPScan(router_pass=router_pass)
     if not (hallway_ip := [val for val in local_devices.hallway()]):
         hallway_ip = os.environ.get('hallway_ip') or aws.hallway_ip()
+        logger.critical('Using hallway_ip from env var.')
     else:
-        if hallway_ip != os.environ.get('hallway_ip'):
-            store_hallway_ip = ','.join([each_ip.split('.')[-1] for each_ip in hallway_ip])
+        logger.critical('Using hallway_ip from local host.')
+        store_hallway_ip = ','.join([each_ip.split('.')[-1] for each_ip in hallway_ip])
+        if store_hallway_ip != os.environ.get('hallway_ip'):
             logger.error(f"Rotate ENV-VAR 'hallway_ip' to {store_hallway_ip}")
+        if store_hallway_ip != aws.hallway_ip():
+            put_parameters(name='/Jarvis/hallway_ip', value=store_hallway_ip)
 
     if not (kitchen_ip := [val for val in local_devices.kitchen()]):
         kitchen_ip = os.environ.get('kitchen_ip') or aws.kitchen_ip()
+        logger.critical('Using kitchen_ip from env var.')
     else:
-        if kitchen_ip != os.environ.get('kitchen_ip'):
-            store_hallway_ip = ','.join([each_ip.split('.')[-1] for each_ip in hallway_ip])
-            logger.error(f"Rotate ENV-VAR 'hallway_ip' to {store_hallway_ip}")
+        logger.critical('Using kitchen_ip from local host.')
+        store_kitchen_ip = ','.join([each_ip.split('.')[-1] for each_ip in kitchen_ip])
+        if store_kitchen_ip != os.environ.get('kitchen_ip'):
+            logger.error(f"Rotate ENV-VAR 'kitchen_ip' to {store_kitchen_ip}")
+        if store_kitchen_ip != aws.kitchen_ip():
+            put_parameters(name='/Jarvis/kitchen_ip', value=store_kitchen_ip)
+
+    if not (tv_ip := [val for val in local_devices.tv()]):
+        tv_ip = os.environ.get('tv_ip') or aws.tv_ip()
+        logger.critical('Using tv_ip from env var.')
+    else:
+        logger.critical('Using tv_ip from local host.')
+        tv_ip = ''.join(tv_ip)
+        if tv_ip != os.environ.get('tv_ip'):
+            logger.error(f"Rotate ENV-VAR 'tv_ip' to {tv_ip}")
+        if tv_ip != aws.tv_ip():
+            put_parameters(name='/Jarvis/tv_ip', value=tv_ip)
 
     if not (root_password := os.environ.get('PASSWORD')):
         sys.stdout.write('\rROOT PASSWORD is not set!')

@@ -1,43 +1,51 @@
-import sys
-from os import environ
 from socket import gaierror
+from sys import stdout
 from time import sleep
 
 from pywebostv.connection import WebOSClient
 from pywebostv.controls import SystemControl, MediaControl, ApplicationControl, SourceControl
-from wakeonlan import send_magic_packet as wake
 
-from helper_functions.aws_clients import AWSClients
+from helper_functions.logger import logger
+from helper_functions.put_param import put_parameters
 
 
 class TV:
     """All the TV controls wrapped in individual functions."""
     _init_status = False
+    reconnect = False
 
-    def __init__(self):
-        """Client key will be displayed on the TV when you accept the connection for the first time.
+    def __init__(self, ip_address=None, client_key=None):
+        """Client key will be logged and stored as SSM param when you accept the connection for the first time.
         Store the dict value as an env variable and use it as below. Using TV's ip makes the initial
-        response much quicker but it looks for the TVs in ip range if an ip is not found."""
-        aws = AWSClients()
-        ip_address = environ.get('tv_ip') or aws.tv_ip()
-        client_key = environ.get('tv_client_key') or aws.tv_client_key()
+        response much quicker but it looks for the TV's ip if an ip is not found."""
 
         store = {'client_key': client_key}
+
         try:
             self.client = WebOSClient(ip_address)
             self.client.connect()
-        except gaierror:
-            sys.stdout.write(f"\rThe TV's IP has either changed or unreachable. Scanning your IP range..")
+        except (gaierror, ConnectionRefusedError):  # this is reached only when the IP address is None or incorrect
+            TV.reconnect = True
+            stdout.write(f"\rThe TV's IP has either changed or unreachable. Scanning your IP range..")
             self.client = WebOSClient.discover()[0]
             self.client.connect()
         except (TimeoutError, BrokenPipeError):
-            sys.stdout.write('\rOperation timed out. The TV might be turned off.')
+            logger.error('\rOperation timed out. The TV might be turned off.')
+
         for status in self.client.register(store):
             if status == WebOSClient.REGISTERED and not TV._init_status:
-                sys.stdout.write('\rConnected to the TV.')
+                stdout.write('\rConnected to the TV.')
             elif status == WebOSClient.PROMPTED:
-                sys.stdout.write('\rPlease accept the connection request on your TV.')
-        # sys.stdout.write(f'\r{store}')  # get the client key dict during the first run and store as in line #18
+                TV.reconnect = True
+                from playsound import playsound
+                stdout.write('\rPlease accept the connection request on your TV.')
+                playsound('mp3/tv_connect.mp3')
+
+        if TV.reconnect:
+            TV.reconnect = False
+            put_parameters(name='/Jarvis/tv_client_key', value=store.get('client_key'))
+            logger.warning(f'Store client key as ENV-VAR:\n{store}')  # store client_key as local env var
+
         self.system = SystemControl(self.client)
         self.system.notify("Jarvis is controlling the TV now.") if not TV._init_status else None
         self.media = MediaControl(self.client)
@@ -95,12 +103,12 @@ class TV:
     def audio_output(self):
         """Returns the currently used audio output source as AudioOutputSource instance"""
         media_output_source = self.media.get_audio_output()
-        sys.stdout.write(f'{media_output_source}')
+        stdout.write(f'{media_output_source}')
 
     def audio_output_source(self):
         """Returns a list of AudioOutputSource instances"""
         audio_outputs = self.media.list_audio_output_sources()
-        sys.stdout.write(f'{audio_outputs}')
+        stdout.write(f'{audio_outputs}')
         return audio_outputs
 
     def set_audio_output_source(self):
@@ -147,11 +155,3 @@ class TV:
         self.system.notify(f'Jarvis::SHUTTING DOWN now')
         sleep(3)
         self.system.power_off()
-
-
-if __name__ == '__main__':
-    aws_ = AWSClients()
-    mac_address = environ.get('tv_mac') or aws_.tv_mac()
-    sys.stdout.write(f"\r{TV().launch_app('Disney')}")
-    sleep(10)
-    wake(mac_address)
