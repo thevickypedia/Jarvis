@@ -3582,7 +3582,7 @@ if __name__ == '__main__':
         terminator()
 
     local_devices = LocalIPScan(router_pass=router_pass)
-    if not (hallway_ip := [val for val in local_devices.hallway()]):
+    if not (hallway_ip := [val for val in local_devices.hallway()]) and len(hallway_ip) < 5:
         hallway_ip = os.environ.get('hallway_ip') or aws.hallway_ip()
         logger.critical('Using hallway_ip from env var.')
     else:
@@ -3593,7 +3593,7 @@ if __name__ == '__main__':
         if store_hallway_ip != aws.hallway_ip():
             put_parameters(name='/Jarvis/hallway_ip', value=store_hallway_ip)
 
-    if not (kitchen_ip := [val for val in local_devices.kitchen()]):
+    if not (kitchen_ip := [val for val in local_devices.kitchen()]) and len(kitchen_ip) < 2:
         kitchen_ip = os.environ.get('kitchen_ip') or aws.kitchen_ip()
         logger.critical('Using kitchen_ip from env var.')
     else:

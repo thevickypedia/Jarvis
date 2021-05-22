@@ -1,5 +1,4 @@
-from logging import disable
-disable()
+from pynetgear import Netgear
 
 
 class LocalIPScan:
@@ -10,10 +9,12 @@ class LocalIPScan:
         kitchen() - Given device names for kitchen lights, yields bulbs' IPs
         tv() - Given device name for TV, yields TV IP
         """
-        from pynetgear import Netgear
         self.attached_devices = Netgear(password=router_pass).get_attached_devices()
 
     def hallway(self):
+        """
+        Host names of light bulbs stored in a list.
+        """
         hallway_1 = 'ZENGGE_35_011853'
         hallway_2 = 'ZENGGE_35_0171D9'
         hallway_3 = 'ZENGGE_35_065576'
@@ -26,6 +27,9 @@ class LocalIPScan:
                     yield device.ip
 
     def kitchen(self):
+        """
+        Host names of light bulbs stored in a list.
+        """
         kitchen_1 = 'ZENGGE_35_239190'
         kitchen_2 = 'ZENGGE_35_22E6FD'
         kitchen_all = [kitchen_1, kitchen_2]
@@ -35,6 +39,9 @@ class LocalIPScan:
                     yield device.ip
 
     def tv(self):
+        """
+        Host name of the TV for string match.
+        """
         if attached_devices := self.attached_devices:
             for device in attached_devices:
                 if device.name == 'LGWEBOSTV':

@@ -5,11 +5,10 @@ IronMan's Jarvis with python
 
 ### Run-Book:
    - Run the following commands in command line/terminal:
-        - `cd lib` - Gets into the installations directory.
-        - `chmod +x installs.sh` - Makes [installation file](lib/installs.sh) as executable.
-        - `python3 -m venv venv` - Creates a virtual env.
+        - `cd lib && chmod +x installs.sh` - Makes [installation file](lib/installs.sh) as executable.
+        - `python3 -m venv venv` - Creates a virtual env named `venv`
         - `source venv/bin/activate` - Activates the virtual env `venv`
-        - `which python` - Validate which python is being used. Should be the one within the virtual env.
+        - `which python` - Validate which python is being used. Should be the one within the virtual env `venv`
         - `bash installs.sh` (`bash installs_windows.sh` for [Windows OS](https://github.com/thevickypedia/Jarvis/wiki#windows-os)) - Installs the required libraries/modules.
         - `python3 jarvis.py` - BOOM, you're all set, go ahead and interact with Jarvis
 

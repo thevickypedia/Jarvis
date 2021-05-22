@@ -39,6 +39,7 @@ then
   pip3 install randfacts==0.2.8
   pip3 install pywin32==300
   pip3 install wolframalpha==4.1.1
+  pip3 install pynetgear==0.7.0
 else
   echo ""
   echo "**********************************************************************************************************"
