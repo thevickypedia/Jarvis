@@ -17,7 +17,7 @@ from socket import socket, gethostname, gethostbyname, AF_INET, SOCK_DGRAM, setd
     timeout as s_timeout
 from ssl import create_default_context
 from string import ascii_letters, digits
-from subprocess import call, check_output, getoutput, PIPE, Popen
+from subprocess import call, check_output, getoutput, PIPE, Popen, CalledProcessError
 from threading import Thread
 from time import time, sleep, perf_counter
 from traceback import format_exc
@@ -73,7 +73,6 @@ from helper_functions.keywords import Keywords
 from helper_functions.lights import MagicHomeApi
 from helper_functions.logger import logger
 from helper_functions.preset_values import preset_values
-from helper_functions.put_param import put_parameters
 from helper_functions.reminder import Reminder
 from helper_functions.robinhood import watcher
 from helper_functions.temperature import k2f, c2f
@@ -457,7 +456,7 @@ def conditions(converted):
     elif any(word in converted_lower for word in keywords.lights()):
         connection_status = vpn_checker()
         if not connection_status.startswith('VPN'):
-            lights(converted=converted_lower, connection_status=connection_status)
+            lights(converted=converted_lower)
 
     elif any(word in converted_lower for word in keywords.guard_enable() or keywords.guard_disable()):
         if any(word in converted_lower for word in keywords.guard_enable()):
@@ -2211,8 +2210,11 @@ def television(converted):
         speaker.say("I wasn't able to connect to your TV sir! I guess your TV is powered off already.")
         return
     elif tv_status() != 0:
-        arp_output = check_output(f"arp {tv_ip}", shell=True).decode('utf-8')  # arp on tv ip to get mac address
-        tv_mac_address = re.search(' at (.*) on ', arp_output).group().replace(' at ', '').replace(' on ', '')  # format
+        try:
+            arp_output = check_output(f"arp {tv_ip}", shell=True).decode('utf-8')  # arp on tv ip to get mac address
+            tv_mac_address = re.search(' at (.*) on ', arp_output).group().replace(' at ', '').replace(' on ', '')
+        except CalledProcessError:
+            tv_mac_address = None
         if not tv_mac_address or tv_mac_address == '(INCOMPLETE)':
             tv_mac_address = os.environ.get('tv_mac') or aws.tv_mac()
         Thread(target=lambda mac_address: wake(mac_address), args=[tv_mac_address]).start()  # turns TV on in a thread
@@ -2589,20 +2591,12 @@ def set_brightness(level):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
 
 
-def lights(converted, connection_status):
+def lights(converted):
     """Controller for smart lights"""
-    network_id = '.'.join(connection_status.split('.')[:-1])  # gets network id removing host_id from the IP address
 
-    # host id's for each light bulb stored in env var or aws secret as a string. eg: '19,20,21'
-    if isinstance(hallway_ip, str):
-        hallway = [f'{network_id}.{int(i)}' for i in hallway_ip.split(',') if i.isdigit()]
-    else:
-        hallway = hallway_ip
-
-    if isinstance(kitchen_ip, str):
-        kitchen = [f'{network_id}.{int(i)}' for i in kitchen_ip.split(',') if i.isdigit()]
-    else:
-        kitchen = kitchen_ip
+    def light_switch():
+        speaker.say("I guess your light switch is turned off sir! I wasn't able to read the device. "
+                    "Try toggling the switch and ask me to restart myself!")
 
     def turn_off(host):
         controller = MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off')
@@ -2621,40 +2615,49 @@ def lights(converted, connection_status):
         controller.send_preset_function(preset_number=value, speed=101)
 
     if 'hallway' in converted:
-        light_host_id = hallway
+        if not (light_host_id := hallway_ip):
+            light_switch()
+            return
     elif 'kitchen' in converted:
-        light_host_id = kitchen
+        if not (light_host_id := kitchen_ip):
+            light_switch()
+            return
+    elif 'bedroom' in converted:
+        if not (light_host_id := bedroom_ip):
+            light_switch()
+            return
     else:
-        light_host_id = hallway + kitchen
+        light_host_id = hallway_ip + kitchen_ip + bedroom_ip
 
     lights_count = len(light_host_id)
+    plural = 'lights!' if lights_count > 1 else 'light!'
     if 'turn on' in converted or 'cool' in converted or 'white' in converted:
-        speaker.say(f'{choice(ack)}! Turning on {lights_count} lights!')
+        speaker.say(f'{choice(ack)}! Turning on {lights_count} {plural}')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(cool, light_host_id)
     elif 'turn off' in converted:
-        speaker.say(f'{choice(ack)}! Turning off {lights_count} lights!')
+        speaker.say(f'{choice(ack)}! Turning off {lights_count} {plural}')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(turn_off, light_host_id)
     elif 'warm' in converted or 'yellow' in converted:
-        speaker.say(f'{choice(ack)}! Setting {lights_count} lights to yellow!') if 'yellow' in converted else \
-            speaker.say(f'Sure sir! Setting {lights_count} lights to warm!')
+        speaker.say(f'{choice(ack)}! Setting {lights_count} {plural} to yellow!') if 'yellow' in converted else \
+            speaker.say(f'Sure sir! Setting {lights_count} {plural} to warm!')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(warm, light_host_id)
     elif 'red' in converted:
-        speaker.say(f"{choice(ack)}! I've changed {lights_count} lights to red!")
+        speaker.say(f"{choice(ack)}! I've changed {lights_count} {plural} to red!")
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(preset, [light_host_id, preset_values['red']])
     elif 'blue' in converted:
-        speaker.say(f"{choice(ack)}! I've changed {lights_count} lights to blue!")
+        speaker.say(f"{choice(ack)}! I've changed {lights_count} {plural} to blue!")
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(preset, [light_host_id, preset_values['blue']])
     elif 'green' in converted:
-        speaker.say(f"{choice(ack)}! I've changed {lights_count} lights to green!")
+        speaker.say(f"{choice(ack)}! I've changed {lights_count} {plural} to green!")
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(preset, [light_host_id, preset_values['green']])
     else:
-        speaker.say("I didn't quite get that sir! What do you want me to do to your lights?")
+        speaker.say(f"I didn't quite get that sir! What do you want me to do to your {plural}?")
 
 
 def vpn_checker():
@@ -3219,7 +3222,7 @@ def sentry_mode():
                 speaker.say(f'{choice(wake_up2)}')
                 initialize()
             elif 'jarvis' in key or 'buddy' in key:
-                remove = ['buddy', 'jarvis', 'hey']
+                remove = ['buddy', 'jarvis']
                 converted = ' '.join([i for i in key_original.split() if i.lower() not in remove])
                 if converted:
                     split(converted.strip())
@@ -3562,39 +3565,14 @@ if __name__ == '__main__':
         speaker.runAndWait()
         terminator()
 
+    # Retrieves devices IP by doing a local IP range scan using Netgear API
+    # Note: This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)
+    # Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted
     local_devices = LocalIPScan(router_pass=router_pass)
-    if not (hallway_ip := [val for val in local_devices.hallway()]) and len(hallway_ip) < 5:
-        hallway_ip = os.environ.get('hallway_ip') or aws.hallway_ip()
-        logger.critical('Using hallway_ip from env var.')
-    else:
-        logger.critical('Using hallway_ip from local host.')
-        store_hallway_ip = ','.join([each_ip.split('.')[-1] for each_ip in hallway_ip])
-        if store_hallway_ip != os.environ.get('hallway_ip'):
-            logger.error(f"Rotate ENV-VAR 'hallway_ip' to {store_hallway_ip}")
-        if store_hallway_ip != aws.hallway_ip():
-            put_parameters(name='/Jarvis/hallway_ip', value=store_hallway_ip)
-
-    if not (kitchen_ip := [val for val in local_devices.kitchen()]) and len(kitchen_ip) < 2:
-        kitchen_ip = os.environ.get('kitchen_ip') or aws.kitchen_ip()
-        logger.critical('Using kitchen_ip from env var.')
-    else:
-        logger.critical('Using kitchen_ip from local host.')
-        store_kitchen_ip = ','.join([each_ip.split('.')[-1] for each_ip in kitchen_ip])
-        if store_kitchen_ip != os.environ.get('kitchen_ip'):
-            logger.error(f"Rotate ENV-VAR 'kitchen_ip' to {store_kitchen_ip}")
-        if store_kitchen_ip != aws.kitchen_ip():
-            put_parameters(name='/Jarvis/kitchen_ip', value=store_kitchen_ip)
-
-    if not (tv_ip := [val for val in local_devices.tv()]):
-        tv_ip = os.environ.get('tv_ip') or aws.tv_ip()
-        logger.critical('Using tv_ip from env var.')
-    else:
-        logger.critical('Using tv_ip from local host.')
-        tv_ip = ''.join(tv_ip)
-        if tv_ip != os.environ.get('tv_ip'):
-            logger.error(f"Rotate ENV-VAR 'tv_ip' to {tv_ip}")
-        if tv_ip != aws.tv_ip():
-            put_parameters(name='/Jarvis/tv_ip', value=tv_ip)
+    hallway_ip = [val for val in local_devices.hallway()]
+    kitchen_ip = [val for val in local_devices.kitchen()]
+    bedroom_ip = [val for val in local_devices.bedroom()]
+    tv_ip = ''.join([val for val in local_devices.tv()])
 
     if not (root_password := os.environ.get('PASSWORD')):
         sys.stdout.write('\rROOT PASSWORD is not set!')

@@ -7,7 +7,8 @@ class LocalIPScan:
         Gets local host devices connected to the same network range
         hallway() - Given device names for hallway lights, yields bulbs' IPs
         kitchen() - Given device names for kitchen lights, yields bulbs' IPs
-        tv() - Given device name for TV, yields TV IP
+        bedroom() - Given device names for bedroom light, yields bulb's IP
+        tv() - Given device name for TV, yields TV's IP
         """
         self.attached_devices = Netgear(password=router_pass).get_attached_devices()
 
@@ -36,6 +37,16 @@ class LocalIPScan:
         if attached_devices := self.attached_devices:
             for device in attached_devices:
                 if device.name in kitchen_all:
+                    yield device.ip
+
+    def bedroom(self):
+        """
+        Host names of light bulb for string match.
+        """
+        bedroom_1 = 'ZENGGE_35_22E43F'
+        if attached_devices := self.attached_devices:
+            for device in attached_devices:
+                if device.name == bedroom_1:
                     yield device.ip
 
     def tv(self):

@@ -97,12 +97,6 @@ class AWSClients:
         val = param['Value']
         return val
 
-    def tv_ip(self):
-        response = self.client.get_parameter(Name='/Jarvis/tv_ip', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
-
     def tv_client_key(self):
         response = self.client.get_parameter(Name='/Jarvis/tv_client_key', WithDecryption=True)
         param = response['Parameter']
@@ -129,18 +123,6 @@ class AWSClients:
 
     def offline_sender(self):
         response = self.client.get_parameter(Name='/Jarvis/offline_sender', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
-
-    def hallway_ip(self):
-        response = self.client.get_parameter(Name='/Jarvis/hallway_ip', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
-
-    def kitchen_ip(self):
-        response = self.client.get_parameter(Name='/Jarvis/kitchen_ip', WithDecryption=True)
         param = response['Parameter']
         val = param['Value']
         return val
