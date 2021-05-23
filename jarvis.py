@@ -2858,11 +2858,10 @@ def offline_communicator():
     * You can also make Jarvis check for emails from your "number@tmomail.net" but the response time will be > 5 min"""
 
     try:
-        setdefaulttimeout(10)  # set default timeout for new socket connections to 10 seconds
+        setdefaulttimeout(30)  # set default timeout for new socket connections to 30 seconds
         mail = IMAP4_SSL('imap.gmail.com')  # connects to imaplib
         mail.login(offline_receive_user, offline_receive_pass)
         mail.list()
-        setdefaulttimeout(None)  # revert default timeout for new socket connections to None
         response = None
         while STATUS:
             mail.select('inbox')  # choose inbox
@@ -2908,6 +2907,7 @@ def offline_communicator():
         mail.close()  # closes imap lib
         mail.logout()
     except (IMAP4.abort, IMAP4.error, s_timeout, gaierror, RuntimeError, ConnectionResetError):
+        setdefaulttimeout(None)  # revert default timeout for new socket connections to None
         imap_error = sys.exc_info()[0]
         logger.error(f'Offline Communicator::{imap_error.__name__}\n{format_exc()}')  # include traceback
         logger.error('Restarting Offline Communicator')
@@ -3523,7 +3523,7 @@ if __name__ == '__main__':
     aws = AWSClients()  # initiates AWSClients object to fetch credentials from AWS secrets
     database = Database()  # initiates Database() for TO-DO items
     limit = sys.getrecursionlimit()  # fetches current recursion limit
-    sys.setrecursionlimit(limit * 100)  # increases the recursion limit by 100 times
+    sys.setrecursionlimit(limit * 10)  # increases the recursion limit by 10 times
     sns = client('sns')  # initiates sns for notification service
     home_dir = os.path.expanduser('~')  # gets the path to current user profile
 
