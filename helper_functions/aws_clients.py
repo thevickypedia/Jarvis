@@ -1,140 +1,102 @@
+import sys
+
 from boto3 import client
+
+
+def gatherer():
+    """Uses the name of the function that called the gatherer as param name and returns the param value."""
+    # noinspection PyUnresolvedReferences,PyProtectedMember
+    return client('ssm').get_parameter(Name=f'/Jarvis/{sys._getframe(1).f_code.co_name}',
+                                       WithDecryption=True)['Parameter']['Value']
 
 
 class AWSClients:
     """All the required oauth and api keys are stored in ssm parameters and are fetched where ever required."""
 
-    def __init__(self):
-        self.client = client('ssm')
+    @staticmethod
+    def weather_api():
+        return gatherer()
 
-    def weather_api(self):
-        response = self.client.get_parameter(Name='/Jarvis/weather_api', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def news_api():
+        return gatherer()
 
-    def news_api(self):
-        response = self.client.get_parameter(Name='/Jarvis/news_api', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def robinhood_user():
+        return gatherer()
 
-    def robinhood_user(self):
-        response = self.client.get_parameter(Name='/Jarvis/robinhood_user', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def robinhood_pass():
+        return gatherer()
 
-    def robinhood_pass(self):
-        response = self.client.get_parameter(Name='/Jarvis/robinhood_pass', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def robinhood_qr():
+        return gatherer()
 
-    def robinhood_qr(self):
-        response = self.client.get_parameter(Name='/Jarvis/robinhood_qr', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def icloud_pass():
+        return gatherer()
 
-    def icloud_pass(self):
-        response = self.client.get_parameter(Name='/Jarvis/icloud_pass', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def icloud_recovery():
+        return gatherer()
 
-    def icloud_recovery(self):
-        response = self.client.get_parameter(Name='/Jarvis/icloud_recovery', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def icloud_user():
+        return gatherer()
 
-    def icloud_user(self):
-        response = self.client.get_parameter(Name='/Jarvis/icloud_user', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def gmail_user():
+        return gatherer()
 
-    def gmail_user(self):
-        response = self.client.get_parameter(Name='/Jarvis/gmail_user', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def gmail_pass():
+        return gatherer()
 
-    def gmail_pass(self):
-        response = self.client.get_parameter(Name='/Jarvis/gmail_pass', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def phone():
+        return gatherer()
 
-    def phone(self):
-        response = self.client.get_parameter(Name='/Jarvis/phone', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def maps_api():
+        return gatherer()
 
-    def maps_api(self):
-        response = self.client.get_parameter(Name='/Jarvis/maps_api', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def git_user():
+        return gatherer()
 
-    def git_user(self):
-        response = self.client.get_parameter(Name='/Jarvis/git_user', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def git_pass():
+        return gatherer()
 
-    def git_pass(self):
-        response = self.client.get_parameter(Name='/Jarvis/git_pass', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def tv_mac():
+        return gatherer()
 
-    def tv_mac(self):
-        response = self.client.get_parameter(Name='/Jarvis/tv_mac', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def tv_client_key():
+        return gatherer()
 
-    def tv_client_key(self):
-        response = self.client.get_parameter(Name='/Jarvis/tv_client_key', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def birthday():
+        return gatherer()
 
-    def birthday(self):
-        response = self.client.get_parameter(Name='/Jarvis/birthday', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def offline_receive_user():
+        return gatherer()
 
-    def offline_receive_user(self):
-        response = self.client.get_parameter(Name='/Jarvis/offline_receive_user', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def offline_receive_pass():
+        return gatherer()
 
-    def offline_receive_pass(self):
-        response = self.client.get_parameter(Name='/Jarvis/offline_receive_pass', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def offline_sender():
+        return gatherer()
 
-    def offline_sender(self):
-        response = self.client.get_parameter(Name='/Jarvis/offline_sender', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def think_id():
+        return gatherer()
 
-    def think_id(self):
-        response = self.client.get_parameter(Name='/Jarvis/think_id', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
-
-    def router_pass(self):
-        response = self.client.get_parameter(Name='/Jarvis/router_pass', WithDecryption=True)
-        param = response['Parameter']
-        val = param['Value']
-        return val
+    @staticmethod
+    def router_pass():
+        return gatherer()
