@@ -2693,7 +2693,7 @@ def celebrate():
 
 def time_travel():
     """Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way"""
-    meeting = ThreadPool(processes=1).apply_async(meetings)
+    meeting = ThreadPool(processes=1).apply_async(func=meetings)
     day = greeting()
     speaker.say(f"Good {day} Vignesh.")
     time_travel.has_been_called = True
@@ -2701,7 +2701,7 @@ def time_travel():
     current_time(None)
     weather(None)
     speaker.runAndWait()
-    speaker.say(meeting.get()) if day == 'Morning' else None
+    speaker.say(meeting.get(timeout=20)) if day == 'Morning' else None
     todo()
     gmail()
     speaker.say('Would you like to hear the latest news?')
@@ -2927,7 +2927,7 @@ def meetings():
     process = Popen(['/usr/bin/osascript', 'meetings.scpt'] + [str(arg) for arg in args], stdout=PIPE, stderr=PIPE)
     out, err = process.communicate()
     if error := process.returncode:  # stores process.returncode in error if process.returncode is not 0
-        logger.error(f"Failed to read outlook with exit code: {error}\n{err}")
+        logger.error(f"Failed to read outlook with exit code: {error}\n{err.decode('UTF-8')}")
         return "I was unable to read your Outlook sir! Please make sure it is in sync."
 
     events = out.decode().strip()
@@ -2943,10 +2943,11 @@ def meetings():
     meeting_status = f'You have {count} meetings for today sir! ' if count > 1 else ''
     events = {}
     for i in range(count):
-        event_time[i] = re.search(' at (.*)', event_time[i]).group(1).strip()
-        dt_string = datetime.strptime(event_time[i], '%I:%M:%S %p')
-        event_time[i] = dt_string.strftime('%I:%M %p')
-        events.update({event_name[i]: event_time[i]})
+        if i < len(event_name):
+            event_time[i] = re.search(' at (.*)', event_time[i]).group(1).strip()
+            dt_string = datetime.strptime(event_time[i], '%I:%M:%S %p')
+            event_time[i] = dt_string.strftime('%I:%M %p')
+            events.update({event_name[i]: event_time[i]})
     ordered_data = sorted(events.items(), key=lambda x: datetime.strptime(x[1], '%I:%M %p'))
     for index, meeting in enumerate(ordered_data):
         if count == 1:
