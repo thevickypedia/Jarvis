@@ -436,7 +436,7 @@ def conditions(converted):
         elif operating_system == 'Windows':
             speaker.say("Bluetooth connectivity on Windows hasn't been developed sir!")
 
-    elif any(word in converted_lower for word in keywords.brightness()):
+    elif any(word in converted_lower for word in keywords.brightness()) and 'lights' not in converted_lower:
         if operating_system == 'Darwin':
             speaker.say(choice(ack))
             if 'set' in converted_lower or re.findall(r'\b\d+\b', converted_lower):
@@ -2593,6 +2593,7 @@ def set_brightness(level):
 
 def lights(converted):
     """Controller for smart lights"""
+    global warm_light
 
     def light_switch():
         speaker.say("I guess your light switch is turned off sir! I wasn't able to read the device. "
@@ -2611,8 +2612,16 @@ def lights(converted):
         controller.update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
 
     def preset(host, value):
-        controller = MagicHomeApi(device_ip=host, device_type=2, operation='Cool Lights')
+        controller = MagicHomeApi(device_ip=host, device_type=2, operation='Preset Values')
         controller.send_preset_function(preset_number=value, speed=101)
+
+    def lumen(host: str, warm_lights: bool, rgb: int = 255):
+        if warm_lights:
+            controller = MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness')
+            controller.update_device(r=255, g=255, b=255, warm_white=rgb)
+        else:
+            controller = MagicHomeApi(device_ip=host, device_type=2, operation='Custom Brightness')
+            controller.update_device(r=255, g=255, b=255, warm_white=rgb, cool_white=rgb)
 
     if 'hallway' in converted:
         if not (light_host_id := hallway_ip):
@@ -2632,7 +2641,9 @@ def lights(converted):
     lights_count = len(light_host_id)
     plural = 'lights!' if lights_count > 1 else 'light!'
     if 'turn on' in converted or 'cool' in converted or 'white' in converted:
-        speaker.say(f'{choice(ack)}! Turning on {lights_count} {plural}')
+        tone = 'white' if 'white' in converted else 'cool'
+        speaker.say(f'{choice(ack)}! Turning on {lights_count} {plural}') if 'turn on' in converted else \
+            speaker.say(f'{choice(ack)}! Setting {lights_count} to {tone}!')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(cool, light_host_id)
     elif 'turn off' in converted:
@@ -2640,22 +2651,38 @@ def lights(converted):
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(turn_off, light_host_id)
     elif 'warm' in converted or 'yellow' in converted:
+        warm_light = True
         speaker.say(f'{choice(ack)}! Setting {lights_count} {plural} to yellow!') if 'yellow' in converted else \
             speaker.say(f'Sure sir! Setting {lights_count} {plural} to warm!')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(warm, light_host_id)
     elif 'red' in converted:
         speaker.say(f"{choice(ack)}! I've changed {lights_count} {plural} to red!")
-        with ThreadPoolExecutor(max_workers=lights_count) as executor:
-            executor.map(preset, [light_host_id, preset_values['red']])
+        for light_ip in light_host_id:
+            preset(host=light_ip, value=preset_values['red'])
     elif 'blue' in converted:
         speaker.say(f"{choice(ack)}! I've changed {lights_count} {plural} to blue!")
-        with ThreadPoolExecutor(max_workers=lights_count) as executor:
-            executor.map(preset, [light_host_id, preset_values['blue']])
+        for light_ip in light_host_id:
+            preset(host=light_ip, value=preset_values['blue'])
     elif 'green' in converted:
         speaker.say(f"{choice(ack)}! I've changed {lights_count} {plural} to green!")
-        with ThreadPoolExecutor(max_workers=lights_count) as executor:
-            executor.map(preset, [light_host_id, preset_values['green']])
+        for light_ip in light_host_id:
+            preset(host=light_ip, value=preset_values['green'])
+    elif 'set' in converted or 'percentage' in converted or '%' in converted or 'dim' in converted \
+            or 'bright' in converted:
+        if 'bright' in converted:
+            level = 100
+        elif 'dim' in converted:
+            level = 50
+        else:
+            if level := re.findall(r'\b\d+\b', converted):
+                level = int(level[0])
+            else:
+                level = 100
+        speaker.say(f"{choice(ack)}! I've set {lights_count} {plural} to {level}%!")
+        level = round((255 * level) / 100)
+        for light_ip in light_host_id:
+            lumen(host=light_ip, warm_lights=warm_light, rgb=level)
     else:
         speaker.say(f"I didn't quite get that sir! What do you want me to do to your {plural}?")
 
@@ -2909,7 +2936,7 @@ def offline_communicator():
         logger.critical('Disabled Offline Communicator')
         mail.close()  # closes imap lib
         mail.logout()
-    except (IMAP4.abort, IMAP4.error, s_timeout, gaierror, RuntimeError, ConnectionResetError):
+    except (IMAP4.abort, IMAP4.error, s_timeout, gaierror, RuntimeError, ConnectionResetError, TimeoutError):
         setdefaulttimeout(None)  # revert default timeout for new socket connections to None
         imap_error = sys.exc_info()[0]
         logger.error(f'Offline Communicator::{imap_error.__name__}\n{format_exc()}')  # include traceback
@@ -3197,7 +3224,7 @@ def sentry_mode():
     threshold is used to sanity check sentry_mode() so that:
      1. Jarvis doesn't run into Fatal Python error
      2. Jarvis restarts at least twice a day and gets a new pid"""
-    time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'tonight']
+    time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']
     wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
     threshold = 0
     while threshold < 5_000:
@@ -3583,7 +3610,7 @@ if __name__ == '__main__':
     # tv is set to None instead of TV() at the start to avoid turning on the TV unnecessarily
     # suggestion_count is used in google_searchparser to limit the number of times suggestions are used.
     # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
-    place_holder, greet_check, tv, suggestion_count = None, None, None, 0
+    warm_light, place_holder, greet_check, tv, suggestion_count = False, None, None, None, 0
 
     # stores necessary values for geo location to receive the latitude, longitude and address
     options.default_ssl_context = create_default_context(cafile=where())
