@@ -9,6 +9,7 @@ from imaplib import IMAP4, IMAP4_SSL
 from json import load as json_load, loads as json_loads
 from math import ceil, log, floor, pow
 from multiprocessing.pool import ThreadPool
+from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from platform import uname, platform, system
 from random import choice, choices, randrange
 from shutil import disk_usage, rmtree
@@ -2643,7 +2644,7 @@ def lights(converted):
     if 'turn on' in converted or 'cool' in converted or 'white' in converted:
         tone = 'white' if 'white' in converted else 'cool'
         speaker.say(f'{choice(ack)}! Turning on {lights_count} {plural}') if 'turn on' in converted else \
-            speaker.say(f'{choice(ack)}! Setting {lights_count} to {tone}!')
+            speaker.say(f'{choice(ack)}! Setting {lights_count} {plural} to {tone}!')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(cool, light_host_id)
     elif 'turn off' in converted:
@@ -2728,7 +2729,10 @@ def time_travel():
     current_time(None)
     weather(None)
     speaker.runAndWait()
-    speaker.say(meeting.get(timeout=20)) if day == 'Morning' else None
+    try:
+        speaker.say(meeting.get(timeout=20)) if day == 'Morning' else None
+    except ThreadTimeoutError:
+        pass
     todo()
     gmail()
     speaker.say('Would you like to hear the latest news?')
@@ -3240,16 +3244,13 @@ def sentry_mode():
                 if event:
                     speaker.say(f'Happy {event}!')
                 time_travel()
-            elif key == 'jarvis' or key == 'buddy':
+            elif key == 'jarvis':
                 speaker.say(f'{choice(wake_up3)}')
                 initialize()
-            elif [word for word in key.split() if word in wake_up_words]:
+            elif [word for word in key.split() if word in wake_up_words] and 'jarvis' in key:
                 speaker.say(f'{choice(wake_up1)}')
                 initialize()
-            elif 'you there' in key or 'are you there' in key or 'you up' in key:
-                speaker.say(f'{choice(wake_up2)}')
-                initialize()
-            elif 'jarvis' in key or 'buddy' in key:
+            elif 'jarvis' in key:
                 remove = ['buddy', 'jarvis']
                 converted = ' '.join([i for i in key_original.split() if i.lower() not in remove])
                 if converted:
