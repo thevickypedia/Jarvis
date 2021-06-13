@@ -2,19 +2,25 @@ from pynetgear import Netgear
 
 
 class LocalIPScan:
+    """Connector to scan devices in the same IP range using Netgear API.
+
+    >>> LocalIPScan
+
+    """
+
     def __init__(self, router_pass):
-        """
-        Gets local host devices connected to the same network range
-        hallway() - Given device names for hallway lights, yields bulbs' IPs
-        kitchen() - Given device names for kitchen lights, yields bulbs' IPs
-        bedroom() - Given device names for bedroom light, yields bulb's IP
-        tv() - Given device name for TV, yields TV's IP
+        """Gets local host devices connected to the same network range.
+
+        Args:
+            router_pass: Password to authenticate the API client.
         """
         self.attached_devices = Netgear(password=router_pass).get_attached_devices()
 
     def hallway(self):
-        """
-        Host names of light bulbs stored in a list.
+        """Host names of hallway light bulbs stored in a list.
+
+        Yields: IP address of the device.
+
         """
         hallway_1 = 'ZENGGE_35_011853'
         hallway_2 = 'ZENGGE_35_0171D9'
@@ -28,8 +34,10 @@ class LocalIPScan:
                     yield device.ip
 
     def kitchen(self):
-        """
-        Host names of light bulbs stored in a list.
+        """Host names of kitchen light bulbs stored in a list.
+
+        Yields: IP address of the device.
+
         """
         kitchen_1 = 'ZENGGE_35_239190'
         kitchen_2 = 'ZENGGE_35_22E6FD'
@@ -40,8 +48,10 @@ class LocalIPScan:
                     yield device.ip
 
     def bedroom(self):
-        """
-        Host names of light bulb for string match.
+        """Host names of bedroom light bulbs stored in a list.
+
+        Yields: IP address of the device.
+
         """
         bedroom_1 = 'ZENGGE_35_22E43F'
         if attached_devices := self.attached_devices:
@@ -50,8 +60,10 @@ class LocalIPScan:
                     yield device.ip
 
     def tv(self):
-        """
-        Host name of the TV for string match.
+        """Host name of TV for string equality comparison.
+
+        Yields: IP address of the TV.
+
         """
         if attached_devices := self.attached_devices:
             for device in attached_devices:

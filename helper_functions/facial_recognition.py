@@ -1,11 +1,19 @@
 import sys
 from os import listdir
 
-from cv2 import VideoCapture, CascadeClassifier, data, cvtColor, COLOR_BGR2GRAY, imwrite
-from face_recognition import load_image_file, face_encodings, face_locations, compare_faces
+from cv2 import (COLOR_BGR2GRAY, CascadeClassifier, VideoCapture, cvtColor,
+                 data, imwrite)
+from face_recognition import (compare_faces, face_encodings, face_locations,
+                              load_image_file)
 
 
 class Face:
+    """Module for face recognition script using defined tolerance level and specific model.
+
+    >>> Face
+
+    """
+
     def __init__(self):
         self.training_dataset = "train"  # main dir within which training images are placed under named directories
         self.learning_rate = 0.6  # tolerance level - keep switching this until you find perfection in recognition
@@ -35,6 +43,7 @@ class Face:
                 pass
 
     def face_recognition(self):
+        """Recognizes faces from the training dataset - images in the 'train' directory."""
         for _ in range(20):
             ret, img = self.validation_video.read()  # reads video from web cam
             identifier = face_locations(img, model=self.model)  # gets image from the video read above
@@ -47,6 +56,7 @@ class Face:
                     return match
 
     def face_detection(self):
+        """Detects faces by converting it to grayscale and neighbor match method."""
         cascade = CascadeClassifier(data.haarcascades + "haarcascade_frontalface_default.xml")
         for _ in range(20):
             ignore, image = self.validation_video.read()  # reads video from web cam

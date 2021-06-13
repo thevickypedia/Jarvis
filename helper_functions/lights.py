@@ -1,7 +1,7 @@
-"""Reference::https://github.com/adamkempenich/magichome-python"""
-
 from datetime import datetime
-from socket import socket, AF_INET, SOCK_STREAM, error as sock_error
+from socket import AF_INET, SOCK_STREAM
+from socket import error as sock_error
+from socket import socket
 from struct import pack
 from sys import stdout
 
@@ -9,10 +9,20 @@ from helper_functions.logger import logger
 
 
 class MagicHomeApi:
-    """Representation of a MagicHome device."""
+    """Controller for MagicHome smart devices.
 
-    def __init__(self, device_ip, device_type, operation):
-        """"Initialize a device."""
+    >>> MagicHomeApi
+
+    """
+
+    def __init__(self, device_ip: str, device_type: int, operation: str):
+        """Initialize a device.
+
+        Args:
+            device_ip: Takes device IP address as argument.
+            device_type: Specific device type. Commonly 1 or 2.
+            operation: Takes the operation that the calling function is trying to perform for logging.
+        """
         self.device_ip = device_ip
         self.device_type = device_type
         self.operation = operation
@@ -38,7 +48,11 @@ class MagicHomeApi:
         self.send_bytes(0x71, 0x24, 0x0F, 0xA4) if self.device_type < 4 else self.send_bytes(0xCC, 0x24, 0x33)
 
     def get_status(self):
-        """Get the current status of a device."""
+        """Get the current status of a device.
+
+        Returns: A signal to socket.
+
+        """
         if self.device_type == 2:
             self.send_bytes(0x81, 0x8A, 0x8B, 0x96)
             return self.s.recv(15)
@@ -48,8 +62,17 @@ class MagicHomeApi:
 
     def update_device(self, r=0, g=0, b=0, warm_white=None, cool_white=None):
         """Updates a device based upon what we're sending to it.
+
         Values are excepted as integers between 0-255.
         Whites can have a value of None.
+
+        Args:
+            r: Values for the color Red. [0-255]
+            g: Values for the color Green. [0-255]
+            b: Values for the color Blue. [0-255]
+            warm_white: RGB values for the warm white color.
+            cool_white: RGB values for the cool white color.
+
         """
         if self.device_type <= 1:
             # Update an RGB or an RGB + WW device
@@ -100,12 +123,19 @@ class MagicHomeApi:
                            0x00, 0xf0, 0xaa]
                 self.send_bytes(*(message + [self.calculate_checksum(message)]))
         else:
-            # Incompatible device received
-            stdout.write("\rIncompatible device type received...")
+            stdout.write("\rIncompatible device type received.")
 
     @staticmethod
-    def check_number_range(number):
-        """Check if the given number is in the allowed range."""
+    def check_number_range(number: int):
+        """Check if the given number is in the allowed range.
+
+        Args:
+            number: Takes integer value for RGB value [0-255] check.
+
+        Returns:
+            An accepted number between 0 and 255.
+
+        """
         if number < 0:
             return 0
         elif number > 255:
@@ -113,8 +143,14 @@ class MagicHomeApi:
         else:
             return number
 
-    def send_preset_function(self, preset_number, speed):
-        """Send a preset command to a device."""
+    def send_preset_function(self, preset_number: int, speed: int):
+        """Send a preset command to a device.
+
+        Args:
+            preset_number: Takes preset value as argument.
+            speed: Rate at which the colors should change.
+
+        """
         # Presets can range from 0x25 (int 37) to 0x38 (int 56)
         if preset_number < 37:
             preset_number = 37
@@ -132,14 +168,25 @@ class MagicHomeApi:
             self.send_bytes(*(message + [self.calculate_checksum(message)]))
 
     @staticmethod
-    def calculate_checksum(bytes_):
-        """Calculate the checksum from an array of bytes."""
+    def calculate_checksum(bytes_: list):
+        """Calculate the checksum from an array of bytes.
+
+        Args:
+            bytes_: Takes a list value as argument.
+
+        Returns: Checksum value for the given list value.
+
+        """
         return sum(bytes_) & 0xFF
 
     def send_bytes(self, *bytes_):
         """Send commands to the device.
-        If the device hasn't been communicated to in 5 minutes, reestablish the
-        connection.
+
+        If the device hasn't been communicated to in 5 minutes, reestablish the connection.
+
+        Args:
+            *bytes_: Takes a tuple value as argument.
+
         """
         check_connection_time = (datetime.now() - self.latest_connection).total_seconds()
         try:

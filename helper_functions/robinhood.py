@@ -1,8 +1,16 @@
 from math import fsum
 
 
-def watcher(rh, result):
-    """Fetches all necessary information about your investment portfolio"""
+def watcher(rh, result: list):
+    """Fetches all necessary information about your investment portfolio.
+
+    Args:
+        rh: Takes the authenticated Robinhood client as argument.
+        result: Takes the current positions for the profile as argument.
+
+    Returns: A string value of total purchased stocks and resultant profit/loss.
+
+    """
     shares_total = []
     loss_total = []
     profit_total = []

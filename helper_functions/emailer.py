@@ -11,6 +11,17 @@ aws = AWSClients()
 
 
 def create_multipart_message(title: str, text: str = None, html: str = None, attachments: list = None) -> MIMEMultipart:
+    """Creates an email message with multiple parts.
+
+    Args:
+        title: Subject line on the email.
+        text: Body of the email.
+        html: HTML format of the email.
+        attachments: Attachment that has to be added to the email.
+
+    Returns: Created multipart message.
+
+    """
     multipart_content_subtype = 'alternative' if text and html else 'mixed'
     msg = MIMEMultipart(multipart_content_subtype)
     msg['Subject'] = title
@@ -32,9 +43,14 @@ def create_multipart_message(title: str, text: str = None, html: str = None, att
 
 
 def send_mail(title: str, text: str = None, html: str = None, attachments: list = None) -> dict:
-    """
-    Send email to recipients. Sends one mail to all recipients.
-    The sender needs to be a verified email in SES.
+    """Sends an mail to all recipients. The sender needs to be a verified email in SES.
+
+    Args:
+        title: Subject line on the email.
+        text: Body of the email.
+        html: HTML format of the email.
+        attachments: Attachment that has to be added to the email.
+
     """
     msg = create_multipart_message(title, text, html, attachments)
     ses_client = client('ses')  # Use your settings here

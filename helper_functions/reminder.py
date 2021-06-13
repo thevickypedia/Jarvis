@@ -1,5 +1,5 @@
 from datetime import datetime
-from os import listdir, environ, system, remove
+from os import environ, listdir, remove, system
 from platform import system as operating_system
 from smtplib import SMTP
 from threading import Thread
@@ -11,7 +11,21 @@ directory = 'reminder'  # dir need not be '../reminder' as the Thread is trigger
 
 
 class Reminder(Thread):
+    """Class to initiate Alarm as a super class to run in background.
+
+    >>> Reminder
+
+    """
+
     def __init__(self, hours, minutes, am_pm, message):
+        """Initiates super class.
+
+        Args:
+            hours: Hour value of current time.
+            minutes: Minutes value of current time.
+            am_pm: Indicates AM or PM of the day.
+            message: Message that has to be reminded with.
+        """
         super(Reminder, self).__init__()
         self.hours = hours
         self.minutes = minutes
@@ -19,6 +33,7 @@ class Reminder(Thread):
         self.message = message
 
     def run(self):
+        """Triggers the Reminder class in a thread."""
         file_name = f'{self.hours}_{self.minutes}_{self.am_pm}|{self.message.replace(" ", "_")}.lock'
         files = listdir(directory)
         while True:

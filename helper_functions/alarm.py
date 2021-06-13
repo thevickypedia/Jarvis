@@ -1,6 +1,6 @@
 from datetime import datetime
-from os import listdir, system, remove, path, getcwd
-from platform import system
+from os import getcwd, listdir, path, remove, system
+from platform import system as os
 from random import choice
 from subprocess import call
 from threading import Thread
@@ -9,14 +9,28 @@ directory = 'alarm'  # dir need not be '../alarm' as the Thread is triggered by 
 
 
 class Alarm(Thread):
+    """Class to initiate Alarm as a super class to run in background.
+
+    >>> Alarm
+
+    """
+
     def __init__(self, hours, minutes, am_pm):
+        """Initiates super class.
+
+        Args:
+            hours: Hour value of current time.
+            minutes: Minutes value of current time.
+            am_pm: Indicates AM or PM of the day.
+        """
         super(Alarm, self).__init__()
         self.hours = hours
         self.minutes = minutes
         self.am_pm = am_pm
 
     def run(self):
-        operating_system = system()
+        """Triggers the Alarm class in a thread."""
+        operating_system = os()
         music_dir = "mp3"
         tone = choice(listdir(music_dir))
         files = listdir(directory)

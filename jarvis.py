@@ -6,21 +6,24 @@ from datetime import datetime, timedelta
 from email import message_from_bytes, message_from_string
 from email.header import decode_header, make_header
 from imaplib import IMAP4, IMAP4_SSL
-from json import load as json_load, loads as json_loads
-from math import ceil, log, floor, pow
-from multiprocessing.pool import ThreadPool
+from json import load as json_load
+from json import loads as json_loads
+from math import ceil, floor, log, pow
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
-from platform import uname, platform, system
+from multiprocessing.pool import ThreadPool
+from platform import platform, system, uname
 from random import choice, choices, randrange
 from shutil import disk_usage, rmtree
 from smtplib import SMTP
-from socket import socket, gethostname, gethostbyname, AF_INET, SOCK_DGRAM, setdefaulttimeout, gaierror, \
-    timeout as s_timeout
+from socket import (AF_INET, SOCK_DGRAM, gaierror, gethostbyname, gethostname,
+                    setdefaulttimeout, socket)
+from socket import timeout as s_timeout
 from ssl import create_default_context
 from string import ascii_letters, digits
-from subprocess import call, check_output, getoutput, PIPE, Popen, CalledProcessError
+from subprocess import (PIPE, CalledProcessError, Popen, call, check_output,
+                        getoutput)
 from threading import Thread
-from time import time, sleep, perf_counter
+from time import perf_counter, sleep, time
 from traceback import format_exc
 from unicodedata import normalize
 from urllib.request import urlopen
@@ -39,29 +42,34 @@ from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
 from holidays import CountryHoliday
 from inflect import engine
-from joke.jokes import geek, icanhazdad, chucknorris, icndb
+from joke.jokes import chucknorris, geek, icanhazdad, icndb
 from newsapi import NewsApiClient, newsapi_exception
 from playsound import playsound
-from psutil import Process, virtual_memory, cpu_count, boot_time
+from psutil import Process, boot_time, cpu_count, virtual_memory
 from pychromecast.error import ChromecastConnectionError
 from pyicloud import PyiCloudService
-from pyicloud.exceptions import PyiCloudAPIResponseException, PyiCloudFailedLoginException
+from pyicloud.exceptions import (PyiCloudAPIResponseException,
+                                 PyiCloudFailedLoginException)
 from pyrh import Robinhood
 from pyttsx3 import init
 from pytz import timezone
 from randfacts import getFact
-from requests import get, exceptions as requests_exceptions
+from requests import exceptions as requests_exceptions
+from requests import get
 from requests.auth import HTTPBasicAuth
 from search_engine_parser.core.engines.google import Search as GoogleSearch
 from search_engine_parser.core.exceptions import NoResultsOrTrafficError
-from speech_recognition import Microphone, Recognizer, UnknownValueError, RequestError, WaitTimeoutError
-from speedtest import Speedtest, ConfigRetrievalError
+from speech_recognition import (Microphone, Recognizer, RequestError,
+                                UnknownValueError, WaitTimeoutError)
+from speedtest import ConfigRetrievalError, Speedtest
 from timezonefinder import TimezoneFinder
 from wakeonlan import send_magic_packet as wake
-from wikipedia import summary, exceptions as wiki_exceptions
+from wikipedia import exceptions as wiki_exceptions
+from wikipedia import summary
 from wolframalpha import Client as Think
 from wordninja import split as splitter
-from yaml import dump as yaml_dump, load as yaml_load
+from yaml import Loader, load as yaml_load
+from yaml import dump as yaml_dump
 
 from helper_functions.alarm import Alarm
 from helper_functions.aws_clients import AWSClients
@@ -76,13 +84,22 @@ from helper_functions.logger import logger
 from helper_functions.preset_values import preset_values
 from helper_functions.reminder import Reminder
 from helper_functions.robinhood import watcher
-from helper_functions.temperature import k2f, c2f
+from helper_functions.temperature import c2f, k2f
 from helper_functions.tv_controls import TV
 
 
-def listener(timeout, phrase_limit):
+def listener(timeout: int, phrase_limit: int):
     """Function to activate listener, this function will be called by most upcoming functions to listen to user input.
-    Returns 'SR_ERROR' as a string which is conditioned to respond appropriately."""
+
+    Args:
+        timeout: Time in seconds for the overall listener to be active.
+        phrase_limit: Time in seconds for the listener to actively listen to a sound.
+
+    Returns:
+         Success: Recognized statement from the microphone.
+         Failure: 'SR_ERROR' as a string which is conditioned to respond appropriately.
+
+    """
     try:
         sys.stdout.write("\rListener activated..") and playsound('indicators/start.mp3')
         listened = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_limit)
@@ -94,8 +111,15 @@ def listener(timeout, phrase_limit):
     return return_val
 
 
-def split(key):
-    """Splits the input at 'and' or 'also' and makes it multiple commands to execute if found in statement."""
+def split(key: str):
+    """Splits the input at 'and' or 'also' and makes it multiple commands to execute if found in statement.
+
+    Args:
+        key: Takes the voice recognized statement as argument.
+
+    Returns: Return value from conditions()
+
+    """
     exit_check = False  # this is specifically to catch the sleep command which should break the while loop in renew()
     if ' and ' in key and not any(word in key.lower() for word in keywords.avoid()):
         for each in key.split(' and '):
@@ -109,7 +133,11 @@ def split(key):
 
 
 def greeting():
-    """Function that returns a greeting based on the current time of the day."""
+    """Checks the current hour to determine the part of day.
+
+    Returns: Morning, Afternoon, Evening or Night based on time of day.
+
+    """
     am_or_pm = datetime.now().strftime("%p")
     current_hour = int(datetime.now().strftime("%I"))
     if current_hour in range(4, 12) and am_or_pm == 'AM':
@@ -135,16 +163,18 @@ def initialize():
 
 
 def renew():
-    """renew() function will keep listening and send the response to conditions()
+    """Keeps listening and sends the response to conditions() function.
+
     This function runs only for a minute and goes to sentry_mode() if nothing is heard.
-    split(converted) is a condition so that, loop breaks when if sleep in conditions() returns True."""
+    split(converted) is a condition so that, loop breaks when if sleep in conditions() returns True.
+    """
     speaker.runAndWait()
     waiter = 0
     while waiter < 12:
         waiter += 1
         try:
-            sys.stdout.write(f"\rListener activated..") and playsound('indicators/start.mp3') if waiter == 1 else \
-                sys.stdout.write(f"\rListener activated..")
+            sys.stdout.write("\rListener activated..") and playsound('indicators/start.mp3') if waiter == 1 else \
+                sys.stdout.write("\rListener activated..")
             listen = recognizer.listen(source, timeout=3, phrase_time_limit=5)
             sys.stdout.write("\r") and playsound('indicators/end.mp3') if waiter == 0 else sys.stdout.write("\r")
             converted = recognizer.recognize_google(listen)
@@ -161,8 +191,15 @@ def renew():
             pass
 
 
-def time_converter(seconds):
-    """Modifies seconds to appropriate days/hours/minutes/seconds"""
+def time_converter(seconds: float):
+    """Modifies seconds to appropriate days/hours/minutes/seconds.
+
+    Args:
+        seconds: Takes number of seconds as argument.
+
+    Returns: Seconds converted to days or hours or minutes or seconds.
+
+    """
     days = round(seconds // 86400)
     seconds = round(seconds % (24 * 3600))
     hours = round(seconds // 3600)
@@ -179,9 +216,17 @@ def time_converter(seconds):
         return f'{seconds} seconds'
 
 
-def conditions(converted):
-    """Conditions function is used to check the message processed, and use the keywords to do a regex match and trigger
-    the appropriate function which has dedicated task"""
+def conditions(converted: str):
+    """Conditions function is used to check the message processed.
+
+    Uses the keywords to do a regex match and trigger the appropriate function which has dedicated task.
+
+    Args:
+        converted: Takes the voice recognized statement as argument.
+
+    Returns: Boolean True only when asked to sleep for conditioned sleep message.
+
+    """
     sys.stdout.write(f'\r{converted}')
     converted_lower = converted.lower()
     if any(word in converted_lower for word in keywords.date()) and \
@@ -199,7 +244,7 @@ def conditions(converted):
         if place:
             current_time(place)
         else:
-            current_time(None)
+            current_time()
 
     elif any(word in converted_lower for word in keywords.weather()) and \
             not any(word in converted_lower for word in keywords.avoid()):
@@ -212,13 +257,13 @@ def conditions(converted):
         weather_cond = ['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']
         if any(match in converted_lower for match in weather_cond):
             if place:
-                weather_condition(place, converted)
+                weather_condition(msg=converted, place=place)
             else:
-                weather_condition(None, converted)
+                weather_condition(msg=converted)
         elif place:
             weather(place)
         else:
-            weather(None)
+            weather()
 
     elif any(word in converted_lower for word in keywords.system_info()):
         system_info()
@@ -288,7 +333,7 @@ def conditions(converted):
 
     elif any(word in converted_lower for word in keywords.distance()) and \
             not any(word in converted_lower for word in keywords.avoid()):
-        """the loop below differentiates between two places and one place with two words 
+        """the loop below differentiates between two places and one place with two words
         eg: New York will be considered as one word and New York and Las Vegas will be considered as two words"""
         check = converted.split()  # str to list
         places = []
@@ -304,7 +349,7 @@ def conditions(converted):
                 except IndexError:  # catches exception on lowercase word after an upper case word
                     if word not in ' '.join(places):
                         places.append(word)
-        """the condition below assumes two different words as two places but not including two words starting upper case 
+        """the condition below assumes two different words as two places but not including two words starting upper case
         right next to each other"""
         if len(places) >= 2:
             start = places[0]
@@ -361,7 +406,7 @@ def conditions(converted):
         alarm(converted_lower)
 
     elif any(word in converted_lower for word in keywords.google_home()):
-        google_home(device=None, file=None)
+        google_home()
 
     elif any(word in converted_lower for word in keywords.jokes()):
         jokes()
@@ -374,7 +419,7 @@ def conditions(converted):
 
     elif any(word in converted_lower for word in keywords.github()):
         auth = HTTPBasicAuth(git_user, git_pass)
-        response = get(f'https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
+        response = get('https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
         result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
         for i in range(len(response)):
             total += 1
@@ -535,7 +580,7 @@ def conditions(converted):
             """)
             speaker.say(choice(ack))
         else:
-            speaker.say(f"Activating sentry mode, enjoy yourself sir!")
+            speaker.say("Activating sentry mode, enjoy yourself sir!")
         return True
 
     elif any(word in converted_lower for word in keywords.restart()):
@@ -574,9 +619,15 @@ def conditions(converted):
                     web_open(unknown_url)
 
 
-def unrecognized_dumper(converted):
+def unrecognized_dumper(converted: str):
     """If none of the conditions are met, converted text is written to a yaml file.
-    Note that Jarvis will still try to get results from google wolfram alpha and google."""
+
+    Note that Jarvis will still try to get results from google wolfram alpha and google.
+
+    Args:
+        converted: Takes the voice recognized statement as argument.
+
+    """
     train_file = {'Uncategorized': converted}
     if os.path.isfile('training_data.yaml'):
         content = open(r'training_data.yaml', 'r').read()
@@ -592,13 +643,21 @@ def unrecognized_dumper(converted):
             yaml_dump(train_file, writer)
 
 
-def location_services(device):
-    """Initiates geo_locator and stores current location info as json so it could be used in couple of other functions
-    device is the argument passed when locating a particular apple device"""
+def location_services(device: str):
+    """Initiates geo_locator and stores current location info as json so it could be used in couple of other functions.
+
+    Args:
+        device: Passed when locating a particular apple device.
+
+    Returns:
+        Success: Current latitude, current longitude and location information as a dict.
+        Failure: Calls the return function or returns None.
+
+    """
     try:
         # tries with icloud api to get your device's location for precise location services
         if not device:
-            device = device_selector(None)
+            device = device_selector()
         raw_location = device.location()
         if not raw_location and place_holder == 'Apple':
             return 'None', 'None', 'None'
@@ -634,12 +693,12 @@ def location_services(device):
 
 
 def report():
-    """Initiates a list of function that I tend to check first thing in the morning"""
+    """Initiates a list of function that I tend to check first thing in the morning."""
     sys.stdout.write("\rStarting today's report")
     report.has_been_called = True
     current_date()
-    current_time(None)
-    weather(None)
+    current_time()
+    weather()
     todo()
     gmail()
     robinhood()
@@ -648,7 +707,7 @@ def report():
 
 
 def current_date():
-    """Says today's date and adds the current time in speaker queue if report or time_travel function was called"""
+    """Says today's date and adds the current time in speaker queue if report or time_travel function was called."""
     dt_string = datetime.now().strftime("%A, %B")
     date_ = engine().ordinal(datetime.now().strftime("%d"))
     year = datetime.now().strftime("%Y")
@@ -662,11 +721,16 @@ def current_date():
     elif event:
         speaker.say(f"It's also {event} sir!")
     if report.has_been_called or time_travel.has_been_called:
-        speaker.say(f'The current time is, ')
+        speaker.say('The current time is, ')
 
 
-def current_time(place):
-    """Says current time at the requested location if any else with respect to the current timezone"""
+def current_time(place: str = None):
+    """Says current time at the requested location if any, else with respect to the current timezone.
+
+    Args:
+        place: Takes name of the place as argument.
+
+    """
     if place:
         tf = TimezoneFinder()
         place_tz = geo_locator.geocode(place)
@@ -693,8 +757,14 @@ def current_time(place):
 
 
 def webpage(target):
-    """opens up a webpage using your default browser to the target host. If no target received, will ask for
-    user confirmation. If no '.' in the phrase heard, phrase will default to .com"""
+    """Opens up a webpage using your default browser to the target host.
+
+    If no target received, will ask for user confirmation. If no '.' in the phrase heard, phrase will default to .com.
+
+    Args:
+        target: Receives the webpage that has to be opened as an argument.
+
+    """
     host = []
     try:
         [host.append(i) for i in target]
@@ -730,9 +800,15 @@ def webpage(target):
         speaker.say(f"I have opened {host}")
 
 
-def weather(place):
-    """Says weather at any location if a specific location is mentioned
-    Says weather at current location by getting IP using reverse geocoding if no place is received"""
+def weather(place: str = None):
+    """Says weather at any location if a specific location is mentioned.
+
+    Says weather at current location by getting IP using reverse geocoding if no place is received.
+
+    Args:
+        place: Takes the location name as an optional argument.
+
+    """
     sys.stdout.write('\rGetting your weather info')
     if place:
         desired_location = geo_locator.geocode(place)
@@ -812,9 +888,16 @@ def weather(place):
     speaker.say(output)
 
 
-def weather_condition(place, msg):
-    """Weather report when your phrase has conditions in it like tomorrow, day after, next week and specific part
-    of the day etc. weather_condition() uses conditional blocks to fetch keywords and determine the output"""
+def weather_condition(msg: str, place: str = None):
+    """Weather report when phrase has conditions like tomorrow, day after, next week and specific part of the day etc.
+
+    weather_condition() uses conditional blocks to fetch keywords and determine the output.
+
+    Args:
+        place: Name of place where the weather information is needed.
+        msg: Takes the voice recognized statement as argument.
+
+    """
     if place:
         desired_location = geo_locator.geocode(place)
         coordinates = desired_location.latitude, desired_location.longitude
@@ -893,7 +976,7 @@ def weather_condition(place, msg):
 
 
 def system_info():
-    """gets your system configuration for both mac and windows"""
+    """Gets your system configuration for both mac and windows."""
     total, used, free = disk_usage("/")
     total = size_converter(total)
     used = size_converter(used)
@@ -916,7 +999,7 @@ def system_info():
 
 
 def wikipedia_():
-    """gets any information from wikipedia using it's API"""
+    """Gets any information from wikipedia using it's API."""
     global place_holder
     speaker.say("Please tell the keyword.")
     speaker.runAndWait()
@@ -962,7 +1045,7 @@ def wikipedia_():
 
 
 def news():
-    """Says news around you"""
+    """Says news around you."""
     news_source = 'fox'
     sys.stdout.write(f'\rGetting news from {news_source} news.')
     news_client = NewsApiClient(api_key=news_api)
@@ -983,7 +1066,12 @@ def news():
 
 
 def apps(keyword):
-    """Launches an application skimmed from your statement and unable to skim asks for the app name"""
+    """Launches an application skimmed from your statement and unable to skim asks for the app name.
+
+    Args:
+        keyword: Gets app name as an argument to launch the application.
+
+    """
     global place_holder
     ignore = ['app', 'application']
     if not keyword or keyword in ignore:
@@ -1034,7 +1122,7 @@ def apps(keyword):
 
 
 def robinhood():
-    """Gets investment from robinhood api"""
+    """Gets investment from robinhood API."""
     sys.stdout.write('\rGetting your investment details.')
     rh = Robinhood()
     rh.login(username=robin_user, password=robin_pass, qr_code=robin_qr)
@@ -1048,7 +1136,7 @@ def robinhood():
 
 
 def repeater():
-    """Repeats what ever you say"""
+    """Repeats what ever you say."""
     global place_holder
     speaker.say("Please tell me what to repeat.")
     speaker.runAndWait()
@@ -1069,7 +1157,7 @@ def repeater():
 
 
 def chatter_bot():
-    """Initiates chat bot"""
+    """Initiates chatter bot."""
     global place_holder
     file1 = 'db.sqlite3'
     if operating_system == 'Darwin':
@@ -1114,9 +1202,15 @@ def chatter_bot():
             chatter_bot()
 
 
-def device_selector(converted):
+def device_selector(converted: str = None):
     """Returns the device name from the user's input after checking the apple devices list.
-    Returns your default device when not able to find it."""
+
+    Returns your default device when not able to find it.
+
+    Args:
+        converted: Takes the voice recognized statement as argument.
+
+    """
     if converted and isinstance(converted, str):
         converted = converted.lower().replace('port', 'pods').replace('10', 'x').strip()
         target = re.search('iphone(.*)|imac(.*)', converted)  # name of the apple device to be tracked (eg: iPhone X)
@@ -1152,13 +1246,18 @@ def device_selector(converted):
 
 
 def location():
-    """Gets your current location"""
+    """Gets your current location."""
     city, state, country = location_info['city'], location_info['state'], location_info['country']
     speaker.say(f"You're at {city} {state}, in {country}")
 
 
-def locate(converted):
-    """Locates your iPhone using icloud api for python"""
+def locate(converted: str):
+    """Locates your iPhone using icloud api for python.
+
+    Args:
+        converted: Takes the voice recognized statement as argument and extracts device name from it.
+
+    """
     global place_holder
     target_device = device_selector(converted)
     sys.stdout.write(f"\rLocating your {target_device}")
@@ -1210,7 +1309,12 @@ def locate(converted):
 
 
 def music(device):
-    """Scans music directory in your profile for .mp3 files and plays using default player"""
+    """Scans music directory in your profile for .mp3 files and plays using default player.
+
+    Args:
+        device: Takes device name as argument.
+
+    """
     sys.stdout.write("\rScanning music files...")
 
     if operating_system == 'Darwin':
@@ -1241,7 +1345,7 @@ def music(device):
 
 
 def gmail():
-    """Reads unread emails from your gmail account for which the creds are stored in env variables"""
+    """Reads unread emails from your gmail account for which the credentials are stored in env variables."""
     global place_holder
     sys.stdout.write("\rFetching new emails..")
 
@@ -1317,8 +1421,13 @@ def gmail():
         speaker.runAndWait()
 
 
-def meaning(keyword):
-    """Gets meaning for a word skimmed from your statement using PyDictionary"""
+def meaning(keyword: str or None):
+    """Gets meaning for a word skimmed from your statement using PyDictionary.
+
+    Args:
+        keyword: Takes a keyword as argument for which the meaning was requested.
+
+    """
     global place_holder
     dictionary = PyDictionary()
     if keyword == 'word':
@@ -1366,7 +1475,7 @@ def meaning(keyword):
 
 
 def create_db():
-    """Creates a database for to-do list by calling the create_db() function in helper_functions/database.py"""
+    """Creates a database for to-do list by calling the create_db function in database module."""
     speaker.say(database.create_db())
     if todo.has_been_called:
         todo.has_been_called = False
@@ -1378,7 +1487,7 @@ def create_db():
 
 
 def todo():
-    """Says the item and category stored in your to-do list"""
+    """Says the item and category stored in your to-do list."""
     global place_holder
     sys.stdout.write("\rLooking for to-do database..")
     if not os.path.isfile(file_name) and (time_travel.has_been_called or report.has_been_called):
@@ -1434,7 +1543,7 @@ def todo():
 
 
 def add_todo():
-    """Adds new items to your to-do list"""
+    """Adds new items to your to-do list."""
     global place_holder
     sys.stdout.write("\rLooking for to-do database..")
     # if database file is not found calls create_db()
@@ -1495,7 +1604,7 @@ def add_todo():
 
 
 def delete_todo():
-    """Deletes items from an existing to-do list"""
+    """Deletes items from an existing to-do list."""
     global place_holder
     sys.stdout.write("\rLooking for to-do database..")
     if not os.path.isfile(file_name):
@@ -1528,10 +1637,10 @@ def delete_todo():
 
 
 def delete_db():
-    """Deletes your database file after getting confirmation"""
+    """Deletes your database file after getting confirmation."""
     global place_holder
     if not os.path.isfile(file_name):
-        speaker.say(f'I did not find any database sir.')
+        speaker.say('I did not find any database sir.')
         return
     else:
         speaker.say(f'{choice(confirmation)} delete your database?')
@@ -1556,10 +1665,18 @@ def delete_db():
         place_holder = None
 
 
-def distance(starting_point, destination):
-    """Calibrates distance between starting point and destination. This function doesn't care about the starting point
+def distance(starting_point: str = None, destination: str = None):
+    """Calibrates distance between starting point and destination.
+
+    This function doesn't care about the starting point.
     If starting point is None, it gets the distance from your current location to destination. If destination is None,
-    it asks for a destination from user"""
+    it asks for a destination from user.
+
+    Args:
+        starting_point: Takes the starting place name as an optional argument.
+        destination: Takes the destination place name as optional argument.
+
+    """
     global place_holder
     if not destination:
         speaker.say("Destination please?")
@@ -1568,7 +1685,7 @@ def distance(starting_point, destination):
         if destination != 'SR_ERROR':
             if len(destination.split()) > 2:
                 speaker.say("I asked for a destination sir, not a sentence. Try again.")
-                distance(starting_point=None, destination=None)
+                distance()
             if 'exit' in destination or 'quit' in destination or 'Xzibit' in destination:
                 return
         else:
@@ -1578,7 +1695,7 @@ def distance(starting_point, destination):
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
-                distance(starting_point=None, destination=None)
+                distance()
         place_holder = None
 
     if starting_point:
@@ -1623,7 +1740,12 @@ def distance(starting_point, destination):
 
 
 def locate_places(place):
-    """Gets location details of a place"""
+    """Gets location details of a place.
+
+    Args:
+        place: Takes a place name as argument.
+
+    """
     global place_holder
     if not place:
         speaker.say("Tell me the name of a place!")
@@ -1678,9 +1800,15 @@ def locate_places(place):
     distance(starting_point=None, destination=place)
 
 
-def directions(place):
+def directions(place: str or None):
     """Opens google maps for a route between starting and destination.
-    Uses reverse geocoding to calculate latitude and longitude for both start and destination."""
+
+    Uses reverse geocoding to calculate latitude and longitude for both start and destination.
+
+    Args:
+        place: Takes a place name as argument.
+
+    """
     global place_holder
     if not place:
         speaker.say("You might want to give a location.")
@@ -1732,7 +1860,12 @@ def directions(place):
 
 
 def alarm(msg):
-    """Passes hour, minute and am/pm to Alarm class which initiates a thread for alarm clock in the background"""
+    """Passes hour, minute and am/pm to Alarm class which initiates a thread for alarm clock in the background.
+
+    Args:
+        msg: Takes the voice recognized statement as argument and extracts time from it.
+
+    """
     global place_holder
     extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', msg) or \
         re.findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', msg)
@@ -1784,8 +1917,11 @@ def alarm(msg):
 
 
 def kill_alarm():
-    """Removes lock file to stop the alarm which rings only when the certain lock file is present
-    alarm_state is the list of lock files currently present"""
+    """Removes lock file to stop the alarm which rings only when the certain lock file is present.
+
+    Note: alarm_state is the list of lock files currently present.
+
+    """
     global place_holder
     alarm_state = []
     [alarm_state.append(file) for file in os.listdir('alarm') if file != '.keep']
@@ -1830,8 +1966,9 @@ def kill_alarm():
     return
 
 
-def google_home(device, file):
+def google_home(device: str = None, file: str = None):
     """Uses socket lib to extract ip address and scans ip range for google home devices and play songs in your local.
+
     Can also play music on multiple devices at once.
     Changes made to google-home-push module:
         * Modified the way local IP is received: https://github.com/deblockt/google-home-push/pull/7
@@ -1842,13 +1979,18 @@ def google_home(device, file):
      Broken Pipe error. This usually happens when you write to a socket that is fully closed.
      Broken Pipe occurs when one end of the connection tries sending data while the other end has closed the connection.
     This can simply be ignored or handled using the below in socket module (NOT PREFERRED).
-    ''' except IOError as error:
-            import errno
-            if error.errno != errno.EPIPE:
-                sys.stdout.write(error)
-                pass'''
-    """
+    '''
+    except IOError as error:
+    ---- import errno
+    ---- if error.errno != errno.EPIPE:
+    -------- sys.stdout.write(error)
+    -------- pass'''
 
+    Args:
+        device: Name of the google home device on which the music has to be played.
+        file: Scanned audio file to be played.
+
+    """
     network_id = vpn_checker()
     if network_id.startswith('VPN'):
         return
@@ -1858,8 +2000,15 @@ def google_home(device, file):
     speaker.runAndWait()
     network_id = '.'.join(network_id.split('.')[0:3])
 
-    def ip_scan(host_id):
-        """Scans the IP range using the received args as host id in an IP address"""
+    def ip_scan(host_id: int):
+        """Scans the IP range using the received args as host id in an IP address.
+
+        Args:
+            host_id: Host ID passed in a multi-threaded fashion to scan for google home devices in IP range.
+
+        Returns: Device name and it's IP address.
+
+        """
         try:
             device_info = GoogleHome(host=f"{network_id}.{host_id}").cc
             device_info = str(device_info)
@@ -1881,7 +2030,14 @@ def google_home(device, file):
         sys.stdout.write("\r")
 
         def comma_separator(list_):
-            """Separates commas using simple .join() function and analysis based on length of the list (args)"""
+            """Separates commas using simple .join() function and analysis based on length of the list (args).
+
+            Args:
+                list_: Take a list of elements as an argument.
+
+            Returns: Comma separated list of elements.
+
+            """
             return ', and '.join([', '.join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
 
         speaker.say(f"You have {len(devices)} devices in your IP range sir! {comma_separator(list(devices.keys()))}. "
@@ -1892,7 +2048,7 @@ def google_home(device, file):
         [chosen.append(value) for key, value in devices.items() if key.lower() in device.lower()]
         if not chosen:
             speaker.say("I don't see any matching devices sir!. Let me help you.")
-            google_home(None, None)
+            google_home()
         for target in chosen:
             file_url = serve_file(file, "audio/mp3")  # serves the file on local host and generates the play url
             sys.stdout.write("\r")
@@ -1906,7 +2062,7 @@ def google_home(device, file):
 
 
 def jokes():
-    """Uses jokes lib to say chucknorris jokes"""
+    """Uses jokes lib to say chucknorris jokes."""
     global place_holder
     speaker.say(choice([geek, icanhazdad, chucknorris, icndb])())
     speaker.runAndWait()
@@ -1920,8 +2076,13 @@ def jokes():
     return
 
 
-def reminder(converted):
-    """Passes hour, minute, am/pm and reminder message to Reminder class which initiates a thread for reminder"""
+def reminder(converted: str):
+    """Passes hour, minute, am/pm and reminder message to Reminder class which initiates a thread for reminder.
+
+    Args:
+        converted: Takes the voice recognized statement as argument and extracts the time and message from it.
+
+    """
     global place_holder
     message = re.search(' to (.*) at ', converted) or re.search(' about (.*) at ', converted)
     if not message:
@@ -1970,9 +2131,18 @@ def reminder(converted):
     return
 
 
-def google_maps(query):
+def google_maps(query: str):
     """Uses google's places api to get places near by or any particular destination.
-    This function is triggered when the words in user's statement doesn't match with any predefined functions."""
+
+    This function is triggered when the words in user's statement doesn't match with any predefined functions.
+
+    Args:
+        query: Takes the voice recognized statement as argument.
+
+    Returns:
+        Boolean True is google's maps API is unable to fetch consumable results.
+
+    """
     global place_holder
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
     response = get(maps_url + 'query=' + query + '&key=' + maps_api)
@@ -2050,7 +2220,7 @@ def google_maps(query):
 
 
 def notes():
-    """Listens to the user and saves everything to a notes.txt file"""
+    """Listens to the user and saves everything to a notes.txt file."""
     global place_holder
     converted = listener(5, 10)
     if converted != 'SR_ERROR':
@@ -2070,8 +2240,14 @@ def notes():
 
 
 def github(target):
-    """Clones the github repository matched with existing repository in conditions()
-    Asks confirmation if the results are more than 1 but less than 3 else asks to be more specific"""
+    """Clones the github repository matched with existing repository in conditions function.
+
+    Asks confirmation if the results are more than 1 but less than 3 else asks to be more specific.
+
+    Args:
+        target: Takes repository name as argument which has to be cloned.
+
+    """
     global place_holder
     if len(target) == 1:
         os.system(f"""cd {home_dir} && git clone -q {target[0]}""")
@@ -2118,7 +2294,15 @@ def github(target):
 
 
 def notify(user, password, number, body):
-    """Send text message through SMS gateway of destination number"""
+    """Send text message through SMS gateway of destination number.
+
+    Args:
+        user: Gmail username to authenticate SMTP lib.
+        password: Gmail password to authenticate SMTP lib.
+        number: Phone number stored as env var.
+        body: Content of the message.
+
+    """
     subject = "Message from Jarvis" if number == phone_number else "Jarvis::Message from Vignesh"
     body = body.encode('ascii', 'ignore').decode('ascii')  # ignore symbols like ° without throwing UnicodeEncodeError
     to = f"{number}@tmomail.net"
@@ -2130,9 +2314,15 @@ def notify(user, password, number, body):
     server.close()
 
 
-def send_sms(number):
-    """Sends a message to the number received. If no number was received, it will ask for a number, looks if it is
-    10 digits and then sends a message."""
+def send_sms(number: int or None):
+    """Sends a message to the number received.
+
+    If no number was received, it will ask for a number, looks if it is 10 digits and then sends a message.
+
+    Args:
+        number: Phone number to which the message has to be sent.
+
+    """
     global place_holder
     if not number:
         speaker.say("Please tell me a number sir!")
@@ -2190,12 +2380,18 @@ def send_sms(number):
                     send_sms(number)
 
 
-def television(converted):
-    """Controls all actions on a TV (LG Web OS). In the main() method tv is set to None. Given a command related to TV,
-       Jarvis will try to ping the TV and then power it on if the host is unreachable. Then executes the said command.
-       Once the tv is turned on, the TV class is also initiated and assigned to tv variable which is set global for
-       other statements to use it."""
+def television(converted: str):
+    """Controls all actions on a TV (LG Web OS).
 
+    In the main() method tv is set to None. Given a command related to TV,
+    Jarvis will try to ping the TV and then power it on if the host is unreachable. Then executes the said command.
+    Once the tv is turned on, the TV class is also initiated and assigned to tv variable which is set global for
+    other statements to use it.
+
+    Args:
+        converted: Takes the voice recognized statement as argument.
+
+    """
     global tv
     phrase_exc = converted.replace('TV', '')
     phrase = phrase_exc.lower()
@@ -2314,7 +2510,16 @@ def television(converted):
         speaker.say(f"I'm sorry sir! I wasn't able to {converted}, as the TV state is unknown!")
 
 
-def alpha(text):
+def alpha(text: str):
+    """Uses wolfram alpha API to fetch results for uncategorized phrases heard.
+
+    Args:
+        text: Takes the voice recognized statement as argument.
+
+    Returns:
+        Boolean True is wolfram alpha API is unable to fetch consumable results.
+
+    """
     alpha_client = Think(app_id=think_id)
     res = alpha_client.query(text)
     if res['@success'] == 'false':
@@ -2331,11 +2536,20 @@ def alpha(text):
             return True
 
 
-def google(query):
+def google(query: str):
     """Uses Google's search engine parser and gets the first result that shows up on a google search.
+
     If it is unable to get the result, Jarvis sends a request to suggestqueries.google.com to rephrase
     the query and then looks up using the search engine parser once again. global suggestion_count is used
-    to make sure the suggestions and parsing don't run on an infinite loop."""
+    to make sure the suggestions and parsing don't run on an infinite loop.
+
+    Args:
+        query: Takes the voice recognized statement as argument.
+
+    Returns:
+        Boolean True is google search engine is unable to fetch consumable results.
+
+    """
     global suggestion_count
     search_engine = GoogleSearch()
     results = []
@@ -2397,8 +2611,13 @@ def google(query):
         return True
 
 
-def google_search(phrase):
-    """Opens up a google search for the phrase received. If nothing was received, gets phrase from user."""
+def google_search(phrase: str or None):
+    """Opens up a google search for the phrase received. If nothing was received, gets phrase from user.
+
+    Args:
+        phrase: Takes the voice recognized statement as argument.
+
+    """
     global place_holder
     if not phrase:
         speaker.say("Please tell me the search phrase.")
@@ -2423,10 +2642,17 @@ def google_search(phrase):
     speaker.say(f"I've opened up a google search for: {phrase}.")
 
 
-def volume_controller(level):
-    """Controls volume from the numbers received. There are no chances for None. If you don't give a volume %
+def volume_controller(level: int):
+    """Controls volume from the numbers received. There are no chances for None.
+
+    If you don't give a volume %
     conditions() is set to assume it as 50% Since Mac(s) run on a volume of 16 bars controlled by 8 digits, I have
-    changed the level to become single digit with respect to 8 (eg: 50% becomes 4) for osX"""
+    changed the level to become single digit with respect to 8 (eg: 50% becomes 4) for osX
+
+    Args:
+        level: Level of volume to which the system has to set.
+
+    """
     sys.stdout.write("\r")
     if operating_system == 'Darwin':
         level = round((8 * level) / 100)
@@ -2512,24 +2738,36 @@ def speed_test():
     speaker.say(F'Upload speed: {upload} per second.')
 
 
-def bluetooth(phrase):
-    """Find and connect to bluetooth devices near by"""
+def bluetooth(phrase: str):
+    """Find and connect to bluetooth devices near by.
+
+    Args: Takes the voice recognized statement as argument.
+
+    """
     if 'turn off' in phrase or 'power off' in phrase:
-        call(f"blueutil --power 0", shell=True)
+        call("blueutil --power 0", shell=True)
         sys.stdout.write('\rBluetooth has been turned off')
-        speaker.say(f"Bluetooth has been turned off sir!")
+        speaker.say("Bluetooth has been turned off sir!")
     elif 'turn on' in phrase or 'power on' in phrase:
-        call(f"blueutil --power 1", shell=True)
+        call("blueutil --power 1", shell=True)
         sys.stdout.write('\rBluetooth has been turned on')
-        speaker.say(f"Bluetooth has been turned on sir!")
+        speaker.say("Bluetooth has been turned on sir!")
     elif 'disconnect' in phrase and ('bluetooth' in phrase or 'devices' in phrase):
-        call(f"blueutil --power 0", shell=True)
+        call("blueutil --power 0", shell=True)
         sleep(2)
-        call(f"blueutil --power 1", shell=True)
+        call("blueutil --power 1", shell=True)
         speaker.say('All bluetooth devices have been disconnected sir!')
     else:
-        def connector(targets):
-            """Scans bluetooth devices in range and establishes connection with the matching device in phrase."""
+        def connector(targets: dict):
+            """Scans bluetooth devices in range and establishes connection with the matching device in phrase.
+
+            Args:
+                targets: Takes a dictionary of scanned devices as argument.
+
+            Returns:
+                Boolean True or False based on connection status.
+
+            """
             connection_attempt = False
             for target in targets:
                 if target['name']:
@@ -2571,20 +2809,27 @@ def bluetooth(phrase):
 
 
 def increase_brightness():
-    """Increases the brightness to maximum in macOS"""
+    """Increases the brightness to maximum in macOS."""
     for _ in range(32):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
 
 
 def decrease_brightness():
-    """Decreases the brightness to bare minimum in macOS"""
+    """Decreases the brightness to bare minimum in macOS."""
     for _ in range(32):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
 
 
-def set_brightness(level):
-    """Set brightness to a custom level. Since I'm using in-built apple script,
-    the only way to achieve this is to: set the brightness to bare minimum and increase {*}% from there or vice-versa"""
+def set_brightness(level: int):
+    """Set brightness to a custom level.
+
+    Since Jarvis uses in-built apple script, the only way to achieve this is to:
+    set the brightness to bare minimum and increase {*}% from there or vice-versa.
+
+    Args:
+        level: Percentage of brightness to be set.
+
+    """
     level = round((32 * int(level)) / 100)
     for _ in range(32):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
@@ -2593,30 +2838,69 @@ def set_brightness(level):
 
 
 def lights(converted):
-    """Controller for smart lights"""
+    """Controller for smart lights.
+
+    Args:
+        converted: Takes the voice recognized statement as argument.
+
+    """
     global warm_light
 
     def light_switch():
+        """Says a message if the physical switch is toggled off."""
         speaker.say("I guess your light switch is turned off sir! I wasn't able to read the device. "
                     "Try toggling the switch and ask me to restart myself!")
 
-    def turn_off(host):
+    def turn_off(host: str):
+        """Turns off the device.
+
+        Args:
+            host: Takes target device IP address as an argument.
+
+        """
         controller = MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off')
         controller.turn_off()
 
-    def warm(host):
+    def warm(host: str):
+        """Sets lights to warm/yellow.
+
+        Args:
+            host: Takes target device IP address as an argument.
+
+        """
         controller = MagicHomeApi(device_ip=host, device_type=1, operation='Warm Lights')
         controller.update_device(r=0, g=0, b=0, warm_white=255)
 
-    def cool(host):
+    def cool(host: str):
+        """Sets lights to cool/white.
+
+        Args:
+            host: Takes target device IP address as an argument.
+
+        """
         controller = MagicHomeApi(device_ip=host, device_type=2, operation='Cool Lights')
         controller.update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
 
-    def preset(host, value):
+    def preset(host: str, value: int):
+        """Changes light colors to preset values.
+
+        Args:
+            host: Takes target device IP address as an argument.
+            value: Preset value extracted from list of verified values.
+
+        """
         controller = MagicHomeApi(device_ip=host, device_type=2, operation='Preset Values')
         controller.send_preset_function(preset_number=value, speed=101)
 
     def lumen(host: str, warm_lights: bool, rgb: int = 255):
+        """Sets lights to custom brighness.
+
+        Args:
+            host: Takes target device IP address as an argument.
+            warm_lights: Boolean value if lights have been set to warm or cool.
+            rgb: Red, Green andBlue values to alter the brightness.
+
+        """
         if warm_lights:
             controller = MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness')
             controller.update_device(r=255, g=255, b=255, warm_white=rgb)
@@ -2689,8 +2973,11 @@ def lights(converted):
 
 
 def vpn_checker():
-    """Uses simple check on network id to see if it is connected to local host or not
-    returns the network id if local host"""
+    """Uses simple check on network id to see if it is connected to local host or not.
+
+    Returns: network id of local host.
+
+    """
     socket_ = socket(AF_INET, SOCK_DGRAM)
     socket_.connect(("8.8.8.8", 80))
     ip_address = socket_.getsockname()[0]
@@ -2720,14 +3007,14 @@ def celebrate():
 
 
 def time_travel():
-    """Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way"""
+    """Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way."""
     meeting = ThreadPool(processes=1).apply_async(func=meetings)
     day = greeting()
     speaker.say(f"Good {day} Vignesh.")
     time_travel.has_been_called = True
     current_date()
-    current_time(None)
-    weather(None)
+    current_time()
+    weather()
     speaker.runAndWait()
     try:
         speaker.say(meeting.get(timeout=20)) if day == 'Morning' else None
@@ -2746,8 +3033,10 @@ def time_travel():
 
 def guard():
     """Security Mode will enable camera and microphone in the background.
+
     If any speech is recognized or a face is detected, there will another thread triggered to send notifications.
-    Notifications will be triggered only after 5 minutes of initial notification."""
+    Notifications will be triggered only after 5 minutes of initial notification.
+    """
     import cv2
     cam_source, cam = None, None
     for i in range(0, 3):
@@ -2820,8 +3109,14 @@ def guard():
             Thread(target=threat_notify, args=(converted, date_extn)).start()
 
 
-def threat_notify(converted, date_extn):
-    """threat notify is triggered by guard which sends an SMS using SNS and email using SES"""
+def threat_notify(converted: str, date_extn: str or None):
+    """Sends an SMS and email notification in case of a threat.
+
+    Args:
+        converted: Takes the voice recognized statement as argument.
+        date_extn: Name of the attachment file which is the picture of the intruder.
+
+    """
     dt_string = f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}"
     title_ = f'Intruder Alert on {dt_string}'
     text_ = None
@@ -2834,7 +3129,7 @@ def threat_notify(converted, date_extn):
     else:
         response = sns.publish(PhoneNumber=phone_number,
                                Message=f"!!INTRUDER ALERT!!\n{dt_string}\nCheck your email for more information.")
-        body_ = f"""<html><head></head><body><h2>No conversation was recorded,
+        body_ = """<html><head></head><body><h2>No conversation was recorded,
                                 but attached is a photo of the intruder.</h2>"""
     if response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
         logger.critical('SNS notification has been sent.')
@@ -2851,13 +3146,14 @@ def threat_notify(converted, date_extn):
 
 
 def offline_communicator_initiate():
-    """Initiates offline communicator in a dedicated thread"""
+    """Initiates offline communicator in a dedicated thread."""
     logger.critical('Enabled Offline Communicator')
     Thread(target=offline_communicator).start()
 
 
 def offline_communicator():
     """The following code will look for emails in a dedicated thread so Jarvis can run simultaneously.
+
     WARNING: Running sockets with a 30 second wait time is brutal, so I login once and keep checking for emails
     in a while STATUS loop. This may cause various exceptions when the login session expires or when google terminates
     the session. So I use exception handlers and circle back to restart the offline_communicator() after 2 minutes.
@@ -2889,8 +3185,8 @@ def offline_communicator():
     ** NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails.
     * I created an iPhone shortcut with frequently used offline commands as suggestions to make it one click
     communication with Jarvis
-    * You can also make Jarvis check for emails from your "number@tmomail.net" but the response time will be > 5 min"""
-
+    * You can also make Jarvis check for emails from your "number@tmomail.net" but the response time will be > 5 min.
+    """
     try:
         setdefaulttimeout(30)  # set default timeout for new socket connections to 30 seconds
         mail = IMAP4_SSL('imap.gmail.com')  # connects to imaplib
@@ -2950,7 +3246,14 @@ def offline_communicator():
 
 
 def meetings():
-    """Uses applescript to fetch calendar events from Microsoft Outlook"""
+    """Uses applescript to fetch calendar events from Microsoft Outlook.
+
+    Returns:
+        Error: Message saying Jarvis was unable to read outlook.
+        No events: Message saying there are no events in the next 12 hours.
+        Success: String saying which meeting is scheduled at what time.
+
+    """
     if operating_system == 'Windows':
         return "Meetings feature on Windows hasn't been developed yet sir!"
     today = datetime.now().strftime("%A")
@@ -2990,8 +3293,7 @@ def meetings():
 
 
 def system_vitals():
-    """Reads system vitals on MacOS"""
-
+    """Reads system vitals on MacOS."""
     if operating_system == 'Windows':
         speaker.say("Reading vitals on Windows hasn't been developed yet sir")
         return
@@ -3004,7 +3306,7 @@ def system_vitals():
     version = host_info('version')
     model = host_info('model')
 
-    boot_time_, cpu_temp, gpu_temp, fan_speed, output = None, None, None, None, ""
+    cpu_temp, gpu_temp, fan_speed, output = None, None, None, ""
     if version >= 12:  # smc information is available only on 12+ versions (tested on 11.3, 12.1 and 16.1 versions)
         critical_info = [each.strip() for each in (os.popen(
             f'echo {root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
@@ -3056,7 +3358,7 @@ def system_vitals():
 
 
 def get_ssid():
-    """Returns the WiFi or Ethernet SSID"""
+    """Returns the WiFi or Ethernet SSID."""
     if operating_system == 'Darwin':
         process = Popen(
             ['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'],
@@ -3074,7 +3376,8 @@ def get_ssid():
 
 
 class PersonalCloud:
-    """Controller for Personal Cloud
+    """Controller for Personal Cloud.
+
     Reference: https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book
 
     Make sure to enable file access for Terminal sessions. Steps:
@@ -3096,6 +3399,7 @@ class PersonalCloud:
             check_output(f"echo {root_password} | sudo -S lsof -PiTCP -sTCP:LISTEN 2>&1;", shell=True).decode('utf-8')
         'remove' should be an actual function as per pep-8 standards, bypassing it using  # noqa
         """
+
         active_sessions = check_output("netstat -anvp tcp | awk 'NR<3 || /LISTEN/' 2>&1;", shell=True).decode('utf-8')
         if not (localhost := gethostbyname('localhost')):  # 'if not' in walrus operator to assign localhost manually
             localhost = '127.0.0.1'
@@ -3117,7 +3421,8 @@ class PersonalCloud:
 
     @staticmethod
     def enable():
-        """
+        """Enables personal cloud.
+
         1. Clones personal_cloud repo in a dedicated Terminal,
         2. Creates a dedicated virtual env and installs the requirements within it (ETA: ~20 seconds),
         3. If personal_cloud_volume env var is provided, Jarvis will mount the drive if it is is connected to the device
@@ -3126,7 +3431,6 @@ class PersonalCloud:
         6. Triggers personal cloud using a dedicated Terminal,
         7. Sends an SMS with endpoint, username and password to your mobile phone.
         """
-
         PersonalCloud().delete_repo()
         initial_script = f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git && " \
                          f"cd personal_cloud && python3 -m venv venv && source venv/bin/activate && " \
@@ -3170,11 +3474,21 @@ class PersonalCloud:
                body=f"URL: {url}\nUsername: {personal_cloud_username}\nPassword: {personal_cloud_passphrase}")
 
     @staticmethod
-    def volume_checker(volume_name, mount=True, unmount=False):
+    def volume_checker(volume_name: str, mount=True, unmount=False):
         """By default, Mounts volume in a thread if it is connected to the device and volume name is set as env var.
-        If unmount is set to True, only then the drive is stopped of its usage and Jarvis unmounts it."""
+
+        If unmount is set to True, only then the drive is stopped of its usage and Jarvis unmounts it.
+
+        Args:
+            volume_name: Name of the volume stored as env var.
+            mount: Boolean value set to True to mount the volume by default.
+            unmount: Boolean value set to False to unmount the volume only when requested.
+
+        Returns: Boolean value indicating whether the volume is connected or not.
+
+        """
         connected = False
-        disk_check = check_output(f"diskutil list 2>&1;", shell=True)
+        disk_check = check_output("diskutil list 2>&1;", shell=True)
         disk_list = disk_check.decode('utf-8').split('\n\n')
         if mount:
             for disk in disk_list:
@@ -3204,8 +3518,10 @@ class PersonalCloud:
 
     @staticmethod
     def disable():
-        """Shuts off the server.py to stop the personal cloud. This eliminates the hassle of passing args
-        and handling threads."""
+        """Shuts off the server.py to stop the personal cloud.
+
+        This eliminates the hassle of passing args and handling threads.
+        """
         pid_check = check_output("ps -ef | grep 'Python server.py\\|Python ngrok.py'", shell=True)
         pid_list = pid_check.decode('utf-8').split('\n')
         for pid_info in pid_list:
@@ -3216,7 +3532,15 @@ class PersonalCloud:
 
 
 def internet_checker():
-    """Uses speed test api to check for internet connection"""
+    """Uses speed test api to check for internet connection.
+
+    >>> Speedtest
+
+    Returns:
+        Success: Speedtest module.
+        Failure: Boolean False.
+
+    """
     try:
         return Speedtest()
     except ConfigRetrievalError:
@@ -3225,9 +3549,11 @@ def internet_checker():
 
 def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action.
-    threshold is used to sanity check sentry_mode() so that:
-     1. Jarvis doesn't run into Fatal Python error
-     2. Jarvis restarts at least twice a day and gets a new pid"""
+
+    Threshold is used to sanity check sentry_mode() so that:
+     1. Jarvis doesn't run into Fatal Python error.
+     2. Jarvis restarts at least twice a day and gets a new pid.
+    """
     time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']
     wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
     threshold = 0
@@ -3275,11 +3601,18 @@ def sentry_mode():
     restart()
 
 
-def size_converter(byte_size):
-    """Gets the current memory consumed and converts it to human friendly format"""
+def size_converter(byte_size: int):
+    """Gets the current memory consumed and converts it to human friendly format.
+
+    Args:
+        byte_size: Receives byte size as argument.
+
+    Returns: Converted understandable size.
+
+    """
     if not byte_size:
         if operating_system == 'Darwin':
-            from resource import getrusage, RUSAGE_SELF
+            from resource import RUSAGE_SELF, getrusage
             byte_size = getrusage(RUSAGE_SELF).ru_maxrss
         elif operating_system == 'Windows':
             byte_size = Process(os.getpid()).memory_info().peak_wset
@@ -3292,7 +3625,7 @@ def size_converter(byte_size):
 
 
 def exit_message():
-    """Variety of exit messages based on day of week and time of day"""
+    """Variety of exit messages based on day of week and time of day."""
     current = datetime.now().strftime("%p")  # current part of day (AM/PM)
     clock = datetime.now().strftime("%I")  # current hour
     today = datetime.now().strftime("%A")  # current day
@@ -3322,14 +3655,18 @@ def exit_message():
 
 def terminator():
     """Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.
-    Using this, eliminates the hassle of forcing multiple threads to stop."""
+
+    Using this, eliminates the hassle of forcing multiple threads to stop.
+    """
     # noinspection PyUnresolvedReferences,PyProtectedMember
     os._exit(0)
 
 
 def remove_files():
     """Function that deletes all .lock files created for alarms and reminders.
-    Also deletes the location data in yaml format, to recreate a new one next time around."""
+
+    Also deletes the location data in yaml format, to recreate a new one next time around.
+    """
     [os.remove(f"alarm/{file}") for file in os.listdir('alarm') if file != '.keep']
     [os.remove(f"reminder/{file}") for file in os.listdir('reminder') if file != '.keep']
     os.remove('location.yaml') if os.path.isfile('location.yaml') else None
@@ -3351,7 +3688,7 @@ def exit_process():
     if reminders:
         logger.critical(f'JARVIS::Deleting Reminders - {reminders}')
         if len(reminders) == 1:
-            speaker.say(f'You have a pending reminder sir!')
+            speaker.say('You have a pending reminder sir!')
         else:
             speaker.say(f'You have {len(reminders)} pending reminders sir!')
         for key, value in reminders.items():
@@ -3376,23 +3713,51 @@ def exit_process():
                      f"\nTotal runtime: {time_converter(perf_counter())}")
 
 
-def extract_nos(input_):
-    """Extracts number part from a string"""
+def extract_nos(input_: str):
+    """Extracts number part from a string.
+
+    Args:
+        input_: Takes string as an argument.
+
+    Returns: Float values.
+
+    """
     return float('.'.join(re.findall(r"\d+", input_)))
 
 
-def format_nos(input_):
-    """Removes .0 float values and returns as int (if found, else returns the received float value)"""
+def format_nos(input_: float):
+    """Removes .0 float values.
+
+    Args:
+        input_: Int if found, else returns the received float value.
+
+    Returns: Formatted integer.
+
+    """
     return int(input_) if isinstance(input_, float) and input_.is_integer() else input_
 
 
-def extract_str(input_):
-    """Extracts strings from the received input"""
+def extract_str(input_: str):
+    """Extracts strings from the received input.
+
+    Args:
+        input_: Takes a string as argument.
+
+    Returns: A string after removing special characters.
+
+    """
     return ''.join([i for i in input_ if not i.isdigit() and i not in [',', '.', '?', '-', ';', '!', ':']])
 
 
-def host_info(required):
-    """Returns required info either model or the version of the PC"""
+def host_info(required: str):
+    """Returns required info either model or the version of the PC.
+
+    Args:
+        required: model or version
+
+    Returns: Model or version of the machine based on the arg received.
+
+    """
     device = (check_output("sysctl hw.model", shell=True)).decode('utf-8').split('\n')  # gets model info
     result = list(filter(None, device))[0]  # removes empty string ('\n')
     model = extract_str(result).replace('hwmodel', '').strip()
@@ -3404,7 +3769,7 @@ def host_info(required):
 
 
 def stop_terminal():
-    """Uses pid to kill terminals as terminals await user confirmation interrupting shutdown/restart"""
+    """Uses pid to kill terminals as terminals await user confirmation interrupting shutdown/restart."""
     pid_check = check_output("ps -ef | grep 'iTerm\\|Terminal'", shell=True)
     pid_list = pid_check.decode('utf-8').split('\n')
     for id_ in pid_list:
@@ -3413,10 +3778,18 @@ def stop_terminal():
 
 
 def restart(target=None):
-    """restart(None) triggers restart.py which in turn starts Jarvis after 5 seconds.
+    """Restart triggers restart.py which in turn starts Jarvis after 5 seconds.
+
     Doing this changes the PID to avoid any Fatal Errors occurred by long running threads.
     restart(PC) will restart the machine after getting confirmation.
-    restart(anything_else) will restart the machine without getting any confirmation."""
+    restart(anything_else) will restart the machine without getting any confirmation.
+
+    Args:
+        target:
+        None - Restarts Jarvis to reset PID
+        PC - Restarts the machine after getting confirmation.
+
+    """
     if target:
         if target == 'PC':
             speaker.say(f'{choice(confirmation)} restart your {host_info("model")}?')
@@ -3449,7 +3822,11 @@ def restart(target=None):
 
 
 def shutdown(proceed=False):
-    """Gets confirmation and turns off the machine"""
+    """Gets confirmation and turns off the machine.
+
+    Args: Boolean value whether or not to get confirmation.
+
+    """
     global place_holder
     if not proceed:
         speaker.say(f"{choice(confirmation)} turn off the machine?")
@@ -3482,8 +3859,13 @@ def shutdown(proceed=False):
 
 def voice_changer(change=None):
     """Alters voice and rate of speech according to the Operating System.
-    Alternatively you can choose from a variety of voices available for your device."""
 
+    Alternatively you can choose from a variety of voices available for your device.
+
+    Args:
+        change: Initiates changing voices with the volume ID given in statement.
+
+    """
     global place_holder
     voices = speaker.getProperty("voices")  # gets the list of voices available
     # noinspection PyTypeChecker,PyUnresolvedReferences
@@ -3491,6 +3873,12 @@ def voice_changer(change=None):
 
     # noinspection PyUnresolvedReferences
     def voice_default(voice_id=(7, 0)):  # default values set as tuple
+        """Sets default voice module number.
+
+        Args:
+            voice_id: Default voice ID for MacOS and Windows.
+
+        """
         if operating_system == 'Darwin':
             speaker.setProperty("voice", voices[voice_id[0]].id)  # voice module #7 for MacOS
         elif operating_system == 'Windows':
@@ -3545,7 +3933,7 @@ if __name__ == '__main__':
     STATUS = True
     logger.critical('JARVIS::Starting Now::Run STATUS has been set')
 
-    sys.stdout.write(f'\rVoice ID::Female: 1/17 Male: 0/7')  # Voice ID::reference
+    sys.stdout.write('\rVoice ID::Female: 1/17 Male: 0/7')  # Voice ID::reference
     speaker = init()  # initiates speaker
     recognizer = Recognizer()  # initiates recognizer that uses google's translation
     keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
@@ -3620,12 +4008,12 @@ if __name__ == '__main__':
     # checks the modified time of location.yaml (if exists) and uses the data only if it was modified 72 hours ago
     if os.path.isfile('location.yaml') and \
             int(datetime.now().timestamp()) - int(os.stat('location.yaml').st_mtime) < 259_200:
-        location_details = yaml_load(open('location.yaml'))
+        location_details = yaml_load(open('location.yaml'), Loader)
         current_lat = location_details['latitude']
         current_lon = location_details['longitude']
         location_info = location_details['address']
     else:
-        current_lat, current_lon, location_info = location_services(device_selector(None))
+        current_lat, current_lon, location_info = location_services(device_selector())
         location_dumper = [{'latitude': current_lat}, {'longitude': current_lon}, {'address': location_info}]
         with open('location.yaml', 'w') as location_writer:
             for dumper in location_dumper:

@@ -1,13 +1,21 @@
-"""Initiates logger to log start time, restart time, results from security mode and offline communicator
-In order to use a common logger across multiple files, a dedicated logger has been created."""
+"""
+Initiates logger to log start time, restart time, results from security mode and offline communicator.
+
+In order to use a common logger across multiple files, a dedicated logger has been created.
+"""
 
 import logging
 from datetime import datetime
 from importlib import reload
+from os import listdir
 
+if 'logs' not in listdir():
+    parent = '../logs'
+else:
+    parent = 'logs'
 reload(logging)
 logging.basicConfig(
-    filename=datetime.now().strftime('logs/threshold_%H:%M:%S_%m-%d-%Y.log'), filemode='w',
+    filename=datetime.now().strftime(f'{parent}/threshold_%H:%M:%S_%m-%d-%Y.log'), filemode='w',
     format='%(asctime)s - %(levelname)s - %(funcName)s - Line: %(lineno)d - %(message)s',
     datefmt='%b-%d-%Y %H:%M:%S'
 )
@@ -18,12 +26,16 @@ logger = logging.getLogger('jarvis.py')
 # noinspection PyUnresolvedReferences,PyProtectedMember
 
 
-class CheckLogger:
-    """Logging works the same way regardless of callable method, static method, function or class"""
+class TestLogger:
+    """Logging works the same way regardless of callable method, static method, function or class.
+
+    >>> TestLogger
+
+    """
 
     @staticmethod
     def function1():
-        """This WILL be logged as it is an error info"""
+        """This WILL be logged as it is an error info."""
         logger.error(sys._getframe(0).f_code.co_name)
         called_func = sys._getframe(1).f_code.co_name.replace("<module>", __name__)
         parent_func = sys._getframe(2).f_code.co_name.replace("<module>", __name__) if not called_func == '__main__' \
@@ -32,40 +44,40 @@ class CheckLogger:
 
     @staticmethod
     def function2():
-        """This WILL be logged as it is a critical info"""
+        """This WILL be logged as it is a critical info."""
         logger.critical(sys._getframe(0).f_code.co_name)
         called_func = sys._getframe(1).f_code.co_name.replace("<module>", __name__)
         parent_func = sys._getframe(2).f_code.co_name.replace("<module>", __name__) if not called_func == '__main__' \
             else None
         logger.critical(f'I was called by {called_func} which was called by {parent_func}')
-        CheckLogger.function1()
+        TestLogger.function1()
 
     @staticmethod
     def function3():
-        """This WILL be logged as it is a fatal info"""
+        """This WILL be logged as it is a fatal info."""
         logger.fatal(sys._getframe(0).f_code.co_name)
         called_func = sys._getframe(1).f_code.co_name.replace("<module>", __name__)
         parent_func = sys._getframe(2).f_code.co_name.replace("<module>", __name__) if not called_func == '__main__' \
             else None
         logger.fatal(f'I was called by {called_func} which was called by {parent_func}')
-        CheckLogger.function2()
+        TestLogger.function2()
 
     @staticmethod
     def function4():
-        """This WILL NOT be logged as no logger level is set"""
+        """This WILL NOT be logged as no logger level is set."""
         logger.info('function 4')
 
     @staticmethod
     def function5():
-        """This WILL NOT be logged as no logger level is set"""
+        """This WILL NOT be logged as no logger level is set."""
         logger.debug('function 5')
 
 
 if __name__ == '__main__':
     import sys
-    CheckLogger.function3()
-    CheckLogger.function4()
-    CheckLogger.function5()
-    for method_name, return_value in CheckLogger.__dict__.items():
+    TestLogger.function3()
+    TestLogger.function4()
+    TestLogger.function5()
+    for method_name, return_value in TestLogger.__dict__.items():
         if type(return_value) == staticmethod:
-            print(return_value.__func__ or return_value.__get__(CheckLogger))
+            print(return_value.__func__ or return_value.__get__(TestLogger))

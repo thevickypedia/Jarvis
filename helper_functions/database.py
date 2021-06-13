@@ -5,16 +5,26 @@ file_name = 'tasks.db'
 
 
 class Database:
-    """create_db - creates a database named 'tasks.db' with table as 'tasks'
-       downloader - gets item and category stored in the table 'tasks'
-       uploader - adds new item and category to the table 'tasks' and groups with existing category if found
-       deleter - removes items from the table 'tasks' when the item or category name is matched."""
+    """Connector for Database to create and modify.
+
+        >>> Database
+
+    create_db - creates a database named 'tasks.db' with table as 'tasks'
+    downloader - gets item and category stored in the table 'tasks'
+    uploader - adds new item and category to the table 'tasks' and groups with existing category if found
+    deleter - removes items from the table 'tasks' when the item or category name is matched.
+    """
 
     def __init__(self):
         self.file_name = file_name
         self.table_name = self.file_name.replace('.db', '')
 
     def create_db(self):
+        """Creates a database with the set filename: tasks.db and a table: tasks.
+
+        Returns: A success message on DB and table creation.
+
+        """
         if isfile(self.file_name):
             return f"A database named, {self.file_name}, already exists."
         else:
@@ -24,6 +34,11 @@ class Database:
             return "A database has been created."
 
     def downloader(self):
+        """Downloads the rows and columns in the table.
+
+        Returns: The downloaded table information.
+
+        """
         connection = connect(self.file_name)
         connector = connection.cursor()
         connector.execute(f"SELECT category, item from {self.table_name}")
@@ -31,7 +46,16 @@ class Database:
         connector.close()
         return response
 
-    def uploader(self, category, item):
+    def uploader(self, category: str, item: str):
+        """Updates the table: tasks with new rows.
+
+        Args:
+            category: Category under which a task falls. (Eg: Groceries)
+            item: Item which has to be added to the category. (Eg: Water can)
+
+        Returns: A string indicating the item and category that it was added to.
+
+        """
         connection = connect(self.file_name)
         response = Database().downloader()
         for c, i in response:  # browses through all categories and items
@@ -41,7 +65,17 @@ class Database:
         connection.commit()
         return f"I've added the item: {item} to the category: {category}."
 
-    def deleter(self, item):
+    def deleter(self, item: str):
+        """Deletes a particular record from the table.
+
+        Args:
+            item: Takes the item that has to be removed as an argument.
+
+        Returns:
+            On success: A string indicating the item has been deleted.
+            On failure: A string indicating the item was not found.
+
+        """
         connection = connect(self.file_name)
         response = Database().downloader()
         check = 0
