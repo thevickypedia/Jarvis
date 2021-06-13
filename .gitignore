@@ -38,3 +38,6 @@ location.yaml
 # .lock files for Alarms and Reminders
 alarm/*.lock
 reminder/*.lock
+
+# sphinx docs builder within doc_generator
+_build

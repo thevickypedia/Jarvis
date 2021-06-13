@@ -17,10 +17,18 @@ Docstring format: `Google`<br>
 Styling conventions: `PEP 8`<br>
 Clean code with pre-commit hooks: `flake8` and `isort`
 
-On commit run: `pre-commit run --all-files`
-
 ### Feature(s) Implementation:
 Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, env variables, features' overview and demo videos.
+
+### Runbook:
+https://thevickypedia.github.io/Jarvis/
+
+Generated using `sphinx-autogen`
+
+#### Usage:
+Manual: `cd doc_generator && make html`
+
+Auto: The autodoc generation will run as part of `pre-commit`
 
 ## License & copyright
 

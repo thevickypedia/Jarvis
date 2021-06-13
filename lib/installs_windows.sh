@@ -41,6 +41,7 @@ then
   pip3 install wolframalpha==4.1.1
   pip3 install pynetgear==0.7.0
   pip3 install pre-commit==2.13.0
+  pip3 install sphinx==4.0.2
 else
   echo ""
   echo "**********************************************************************************************************"

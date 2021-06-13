@@ -53,3 +53,4 @@ python3 -m pip install appscript==1.1.2
 python3 -m pip install wolframalpha==4.1.1
 python3 -m pip install pynetgear==0.7.0
 python3 -m pip install pre-commit==2.13.0
+python3 -m pip install sphinx==4.0.2

@@ -16,3 +16,14 @@ repos:
     hooks:
       -
         id: isort
+
+  -
+    repo: local
+    hooks:
+      -
+        id: build_docs
+        name: build_html
+        entry: /bin/bash gen_docs.sh
+        language: system
+        pass_filenames: false
+        always_run: true
