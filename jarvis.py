@@ -29,7 +29,6 @@ from unicodedata import normalize
 from urllib.request import urlopen
 from webbrowser import open as web_open
 
-from PyDictionary import PyDictionary
 from appscript import app as apple_script
 from boto3 import client
 from certifi import where
@@ -47,6 +46,7 @@ from newsapi import NewsApiClient, newsapi_exception
 from playsound import playsound
 from psutil import Process, boot_time, cpu_count, virtual_memory
 from pychromecast.error import ChromecastConnectionError
+from PyDictionary import PyDictionary
 from pyicloud import PyiCloudService
 from pyicloud.exceptions import (PyiCloudAPIResponseException,
                                  PyiCloudFailedLoginException)
@@ -68,8 +68,9 @@ from wikipedia import exceptions as wiki_exceptions
 from wikipedia import summary
 from wolframalpha import Client as Think
 from wordninja import split as splitter
-from yaml import Loader, load as yaml_load
+from yaml import Loader
 from yaml import dump as yaml_dump
+from yaml import load as yaml_load
 
 from helper_functions.alarm import Alarm
 from helper_functions.aws_clients import AWSClients
@@ -457,7 +458,7 @@ def conditions(converted: str):
         if 'speaker' in converted_lower:
             music(converted)
         else:
-            music(None)
+            music()
 
     elif any(word in converted_lower for word in keywords.volume()):
         if 'mute' in converted_lower:
@@ -1065,7 +1066,7 @@ def news():
         speaker.runAndWait()
 
 
-def apps(keyword):
+def apps(keyword: str or None):
     """Launches an application skimmed from your statement and unable to skim asks for the app name.
 
     Args:
@@ -1308,7 +1309,7 @@ def locate(converted: str):
                 speaker.say("No action taken sir!")
 
 
-def music(device):
+def music(device: str = None):
     """Scans music directory in your profile for .mp3 files and plays using default player.
 
     Args:
@@ -1739,7 +1740,7 @@ def distance(starting_point: str = None, destination: str = None):
     return
 
 
-def locate_places(place):
+def locate_places(place: str or None):
     """Gets location details of a place.
 
     Args:
@@ -1859,7 +1860,7 @@ def directions(place: str or None):
     return
 
 
-def alarm(msg):
+def alarm(msg: str):
     """Passes hour, minute and am/pm to Alarm class which initiates a thread for alarm clock in the background.
 
     Args:
@@ -1971,20 +1972,22 @@ def google_home(device: str = None, file: str = None):
 
     Can also play music on multiple devices at once.
     Changes made to google-home-push module:
-        * Modified the way local IP is received: https://github.com/deblockt/google-home-push/pull/7
-        * Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
-        I have used "sys.stdout = open(os.devnull, 'w')" to suppress any print statements. To enable this again at a
-        later time use "sys.stdout = sys.__stdout__"
+    ---- * Modified the way local IP is received: https://github.com/deblockt/google-home-push/pull/7
+    ---- * Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
+    ---- I have used "sys.stdout = open(os.devnull, 'w')" to suppress any print statements. To enable this again at a
+    ---- later time use "sys.stdout = sys.__stdout__"
     Note: When music is played and immediately stopped/tasked the google home device, it is most likely to except
-     Broken Pipe error. This usually happens when you write to a socket that is fully closed.
-     Broken Pipe occurs when one end of the connection tries sending data while the other end has closed the connection.
+    -Broken Pipe error. This usually happens when you write to a socket that is fully closed.
+    -Broken Pipe occurs when one end of the connection tries sending data while the other end has closed the connection.
     This can simply be ignored or handled using the below in socket module (NOT PREFERRED).
-    '''
+
+    ```
     except IOError as error:
     ---- import errno
     ---- if error.errno != errno.EPIPE:
     -------- sys.stdout.write(error)
-    -------- pass'''
+    -------- pass
+    ```
 
     Args:
         device: Name of the google home device on which the music has to be played.
@@ -2239,7 +2242,7 @@ def notes():
             notes()
 
 
-def github(target):
+def github(target: list):
     """Clones the github repository matched with existing repository in conditions function.
 
     Asks confirmation if the results are more than 1 but less than 3 else asks to be more specific.
@@ -2293,7 +2296,7 @@ def github(target):
         return
 
 
-def notify(user, password, number, body):
+def notify(user: str, password: str, number: int, body: str):
     """Send text message through SMS gateway of destination number.
 
     Args:
@@ -2837,7 +2840,7 @@ def set_brightness(level: int):
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
 
 
-def lights(converted):
+def lights(converted: str):
     """Controller for smart lights.
 
     Args:
@@ -3396,7 +3399,7 @@ class PersonalCloud:
         Registered ports: 1024 to 49151
         Dynamically available: 49152 to 65535
         Alternate to active_sessions ->
-            check_output(f"echo {root_password} | sudo -S lsof -PiTCP -sTCP:LISTEN 2>&1;", shell=True).decode('utf-8')
+        check_output(f"echo {root_password} | sudo -S lsof -PiTCP -sTCP:LISTEN 2>&1;", shell=True).decode('utf-8')
         'remove' should be an actual function as per pep-8 standards, bypassing it using  # noqa
         """
 
@@ -3474,7 +3477,7 @@ class PersonalCloud:
                body=f"URL: {url}\nUsername: {personal_cloud_username}\nPassword: {personal_cloud_passphrase}")
 
     @staticmethod
-    def volume_checker(volume_name: str, mount=True, unmount=False):
+    def volume_checker(volume_name: str, mount: bool = True, unmount: bool = False):
         """By default, Mounts volume in a thread if it is connected to the device and volume name is set as env var.
 
         If unmount is set to True, only then the drive is stopped of its usage and Jarvis unmounts it.
@@ -3777,7 +3780,7 @@ def stop_terminal():
             os.system(f'kill -9 {id_.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
 
 
-def restart(target=None):
+def restart(target: str = None):
     """Restart triggers restart.py which in turn starts Jarvis after 5 seconds.
 
     Doing this changes the PID to avoid any Fatal Errors occurred by long running threads.
@@ -3821,7 +3824,7 @@ def restart(target=None):
     exit(1)  # Don't call terminator() as, os._exit(1) in that func will kill the background threads running in parallel
 
 
-def shutdown(proceed=False):
+def shutdown(proceed: bool = False):
     """Gets confirmation and turns off the machine.
 
     Args: Boolean value whether or not to get confirmation.
@@ -3857,7 +3860,7 @@ def shutdown(proceed=False):
             shutdown()
 
 
-def voice_changer(change=None):
+def voice_changer(change: str = None):
     """Alters voice and rate of speech according to the Operating System.
 
     Alternatively you can choose from a variety of voices available for your device.

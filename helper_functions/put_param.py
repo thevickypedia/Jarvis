@@ -3,7 +3,7 @@ from boto3 import client
 from helper_functions.logger import logger
 
 
-def put_parameters(name, value):
+def put_parameters(name: str, value: str):
     """Uses boto3 to update credentials in AWS and returns 200 if successful.
 
     Args:

@@ -1,5 +1,7 @@
-# python generated
+# system generated
 .idea
+.DS_Store
+__pycache__
 venv
 
 # training directory with images of faces for recognition

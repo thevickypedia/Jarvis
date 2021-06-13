@@ -60,7 +60,7 @@ class MagicHomeApi:
             self.send_bytes(0x81, 0x8A, 0x8B, 0x96)
             return self.s.recv(14)
 
-    def update_device(self, r=0, g=0, b=0, warm_white=None, cool_white=None):
+    def update_device(self, r: int = 0, g: int = 0, b: int = 0, warm_white: int = None, cool_white: int = None):
         """Updates a device based upon what we're sending to it.
 
         Values are excepted as integers between 0-255.

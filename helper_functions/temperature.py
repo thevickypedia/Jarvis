@@ -1,4 +1,4 @@
-def c2f(arg):
+def c2f(arg: float):
     """Converts Celcius to Farenheit.
 
     Args:
@@ -10,7 +10,7 @@ def c2f(arg):
     return round(((arg / 5) * 9) + 32, 2)
 
 
-def f2c(arg):
+def f2c(arg: float):
     """Converts Farenheit to Celcius.
 
     Args:
@@ -22,7 +22,7 @@ def f2c(arg):
     return round(((arg - 32) / 9) * 5, 2)
 
 
-def c2k(arg):
+def c2k(arg: float):
     """Converts Celcius to Kelvin.
 
     Args:
@@ -34,7 +34,7 @@ def c2k(arg):
     return arg + 273.15
 
 
-def k2c(arg):
+def k2c(arg: float):
     """Converts Kelvin to Celcius.
 
     Args:
@@ -46,7 +46,7 @@ def k2c(arg):
     return arg - 273.15
 
 
-def k2f(arg):
+def k2f(arg: float):
     """Converts Kelvin to Celcius.
 
     Args:
@@ -58,7 +58,7 @@ def k2f(arg):
     return round((arg * 1.8) - 459.69, 2)
 
 
-def f2k(arg):
+def f2k(arg: float):
     """Converts Farenheit to Kelvin.
 
     Args:
