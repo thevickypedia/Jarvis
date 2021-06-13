@@ -1970,24 +1970,21 @@ def kill_alarm():
 def google_home(device: str = None, file: str = None):
     """Uses socket lib to extract ip address and scans ip range for google home devices and play songs in your local.
 
-    Can also play music on multiple devices at once.
-    Changes made to google-home-push module:
-    ---- * Modified the way local IP is received: https://github.com/deblockt/google-home-push/pull/7
-    ---- * Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
-    ---- I have used "sys.stdout = open(os.devnull, 'w')" to suppress any print statements. To enable this again at a
-    ---- later time use "sys.stdout = sys.__stdout__"
-    Note: When music is played and immediately stopped/tasked the google home device, it is most likely to except
-    -Broken Pipe error. This usually happens when you write to a socket that is fully closed.
-    -Broken Pipe occurs when one end of the connection tries sending data while the other end has closed the connection.
-    This can simply be ignored or handled using the below in socket module (NOT PREFERRED).
+    - Can also play music on multiple devices at once.
+    - Changes made to google-home-push module:
+    - 1. Modified the way local IP is received: https://github.com/deblockt/google-home-push/pull/7
+    - 2. Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
+    - I have used "sys.stdout = open(os.devnull, 'w')" to suppress any print statements.
+    - To enable this again at a later time use "sys.stdout = sys.__stdout__"
+    - Note: When music is played and immediately stopped/tasked the google home device, it is most likely to except
+    - Broken Pipe error. This usually happens when you write to a socket that is fully closed.
+    - This error occurs when one end of the connection tries sending data while the other end has closed the connection.
+    - This can simply be ignored or handled using the below in socket module (NOT PREFERRED).
 
-    ```
-    except IOError as error:
-    ---- import errno
-    ---- if error.errno != errno.EPIPE:
-    -------- sys.stdout.write(error)
-    -------- pass
-    ```
+    `except IOError as error:`
+        `import errno`
+            `if error.errno != errno.EPIPE:`
+                `sys.stdout.write(error)`
 
     Args:
         device: Name of the google home device on which the music has to be played.
@@ -3162,33 +3159,32 @@ def offline_communicator():
     the session. So I use exception handlers and circle back to restart the offline_communicator() after 2 minutes.
 
     To replicate a working model for offline communicator:
-        1. Set/Create a dedicated email account for offline communication (as it is less secure)
-        2. Send an email from a specific email address to avoid unnecessary response. - ENV VAR: offline_sender
-        3. The body of the email should only have the exact command you want Jarvis to do.
-        4. To "log" the response and send it out as notification, I made some changes to the pyttsx3 module. (below)
-        5. I also stop the response from being spoken.
-        6. voice_changer() is called, because when I stop the speaker, voice property is reset from what I set in main()
+        - Set/Create a dedicated email account for offline communication (as it is less secure)
+        - Send an email from a specific email address to avoid unnecessary response. - ENV VAR: offline_sender
+        - The body of the email should only have the exact command you want Jarvis to do.
+        - To "log" the response and send it out as notification, I made some changes to the pyttsx3 module. (below)
+        - I also stop the response from being spoken.
+        - voice_changer() is called, because when I stop the speaker, voice property is reset from what I set in main()
 
     Changes in "pyttsx3":
-        1. Created a global variable in say() -> pyttsx3/engine.py (before proxy) and store the response.
-        2. Created a new method and return the global variable which I created in say().
-        3. The new method (vig() in this case) is called to get the response which is then sent as an SMS notification.
-        4. Doing so, avoids making changes to all the functions within conditions() to notify the response from Jarvis.
+        - Created a global variable in say() -> pyttsx3/engine.py (before proxy) and store the response.
+        - Created a new method and return the global variable which I created in say().
+        - The new method (vig() in this case) is called to get the response which is then sent as an SMS notification.
+        - Doing so, avoids making changes to all the functions within conditions() to notify the response from Jarvis.
 
     Env Vars:
-    offline_receive_user - email address which is getting checked for a command
-    offline_receive_pass - password for the above email address
-    offline_sender - email from which the command the expected, A.K.A - commander
+        - offline_receive_user - email address which is getting checked for a command
+        - offline_receive_pass - password for the above email address
+        - offline_sender - email from which the command the expected, A.K.A - commander
 
-    ""More cool stuff"":
-    * I created a REST API on AWS API Gateway and linked it to a JavaScript on my webpage. When a request is submitted,
-    the JavaScript makes a POST call to the API which then triggers a lambda job on AWS that sends the email for me.
-    * As Jarvis will be watching for the UNREAD emails, he will process my request and send an SMS using AWS SNS.
-    ** Check it out: https://thevickypedia.com/jarvisoffline
-    ** NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails.
-    * I created an iPhone shortcut with frequently used offline commands as suggestions to make it one click
-    communication with Jarvis
-    * You can also make Jarvis check for emails from your "number@tmomail.net" but the response time will be > 5 min.
+    More cool stuff:
+        - I created a REST API on AWS API Gateway and linked it to a JavaScript on my webpage.
+        - When a request is made, the JavaScript makes a POST call to the API which then triggers a lambda job on AWS.
+        - The lambda function is set to verify the secure key and then send the email to me.
+        - As Jarvis will be watching for the UNREAD emails, he will process my request and send an SMS using AWS SNS.
+        - Check it out: https://thevickypedia.com/jarvisoffline
+        - NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails.
+        - You can also make Jarvis check for emails from your "number@tmomail.net" but response time will be > 5 min.
     """
     try:
         setdefaulttimeout(30)  # set default timeout for new socket connections to 30 seconds
@@ -3385,8 +3381,8 @@ class PersonalCloud:
 
     Make sure to enable file access for Terminal sessions. Steps:
         Step 1:
-            Mac OS 10.14.* and higher - System Preferences -> Security & Privacy -> Privacy -> Full Disk Access
-            Mac OS 10.13.* and lower - System Preferences -> Security & Privacy -> Privacy -> Accessibility
+            - Mac OS 10.14.* and higher - System Preferences -> Security & Privacy -> Privacy -> Full Disk Access
+            - Mac OS 10.13.* and lower - System Preferences -> Security & Privacy -> Privacy -> Accessibility
         Step 2:
             Unlock for admin privileges. Click on the "+" icon. Select Applications -> Utilities -> Terminal
     """
@@ -3394,13 +3390,13 @@ class PersonalCloud:
     @staticmethod
     def get_port():
         """
-        Chooses a TCP PORT number dynamically that is not being used. This is to ensure we don't rely on a single port.
-        Well-Known ports: 0 to 1023
-        Registered ports: 1024 to 49151
-        Dynamically available: 49152 to 65535
-        Alternate to active_sessions ->
-        check_output(f"echo {root_password} | sudo -S lsof -PiTCP -sTCP:LISTEN 2>&1;", shell=True).decode('utf-8')
-        'remove' should be an actual function as per pep-8 standards, bypassing it using  # noqa
+        - Chooses a TCP PORT number dynamically that is not being used. This is to ensure we don't rely on a single port.
+        - Well-Known ports: 0 to 1023
+        - Registered ports: 1024 to 49151
+        - Dynamically available: 49152 to 65535
+        - Alternate to active_sessions ->
+        - check_output(f"echo {root_password} | sudo -S lsof -PiTCP -sTCP:LISTEN 2>&1;", shell=True).decode('utf-8')
+        - 'remove' should be an actual function as per pep-8 standards, bypassing it using  # noqa
         """
 
         active_sessions = check_output("netstat -anvp tcp | awk 'NR<3 || /LISTEN/' 2>&1;", shell=True).decode('utf-8')
@@ -3426,13 +3422,13 @@ class PersonalCloud:
     def enable():
         """Enables personal cloud.
 
-        1. Clones personal_cloud repo in a dedicated Terminal,
-        2. Creates a dedicated virtual env and installs the requirements within it (ETA: ~20 seconds),
-        3. If personal_cloud_volume env var is provided, Jarvis will mount the drive if it is is connected to the device
-        4. Gets and sets env vars required for the personal cloud,
-        5. Generates random username and passphrase for login info,
-        6. Triggers personal cloud using a dedicated Terminal,
-        7. Sends an SMS with endpoint, username and password to your mobile phone.
+        - Clones personal_cloud repo in a dedicated Terminal,
+        - Creates a dedicated virtual env and installs the requirements within it (ETA: ~20 seconds),
+        - If personal_cloud_volume env var is provided, Jarvis will mount the drive if it is is connected to the device
+        - Gets and sets env vars required for the personal cloud,
+        - Generates random username and passphrase for login info,
+        - Triggers personal cloud using a dedicated Terminal,
+        - Sends an SMS with endpoint, username and password to your mobile phone.
         """
         PersonalCloud().delete_repo()
         initial_script = f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git && " \
@@ -3554,8 +3550,8 @@ def sentry_mode():
     """Sentry mode, all it does is to wait for the right keyword to wake up and get into action.
 
     Threshold is used to sanity check sentry_mode() so that:
-     1. Jarvis doesn't run into Fatal Python error.
-     2. Jarvis restarts at least twice a day and gets a new pid.
+        - Jarvis doesn't run into Fatal Python error.
+        - Jarvis restarts at least twice a day and gets a new pid.
     """
     time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']
     wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
