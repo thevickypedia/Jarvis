@@ -10,13 +10,15 @@ Welcome to Jarvis's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+Jarvis - Main Module
+====================
+
 .. automodule:: jarvis
    :members:
    :undoc-members:
 
-.. automodule:: restart
-   :members:
-   :undoc-members:
+Helper Functions
+================
 
 .. automodule:: helper_functions.alarm
    :members:
@@ -79,6 +81,13 @@ Welcome to Jarvis's documentation!
    :undoc-members:
 
 .. automodule:: helper_functions.tv_controls
+   :members:
+   :undoc-members:
+
+Restart
+=======
+
+.. automodule:: restart
    :members:
    :undoc-members:
 

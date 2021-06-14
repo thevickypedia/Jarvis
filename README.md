@@ -17,6 +17,8 @@ Docstring format: `Google`<br>
 Styling conventions: `PEP 8`<br>
 Clean code with pre-commit hooks: `flake8` and `isort`
 
+`pre-commit run --all-files`
+
 ### Feature(s) Implementation:
 Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, env variables, features' overview and demo videos.
 

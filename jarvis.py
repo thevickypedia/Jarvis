@@ -76,7 +76,7 @@ from helper_functions.alarm import Alarm
 from helper_functions.aws_clients import AWSClients
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
-from helper_functions.emailer import send_mail
+from helper_functions.emailer import Emailer
 from helper_functions.facial_recognition import Face
 from helper_functions.ip_scanner import LocalIPScan
 from helper_functions.keywords import Keywords
@@ -84,7 +84,7 @@ from helper_functions.lights import MagicHomeApi
 from helper_functions.logger import logger
 from helper_functions.preset_values import preset_values
 from helper_functions.reminder import Reminder
-from helper_functions.robinhood import watcher
+from helper_functions.robinhood import RobinhoodGatherer
 from helper_functions.temperature import c2f, k2f
 from helper_functions.tv_controls import TV
 
@@ -1129,7 +1129,7 @@ def robinhood():
     rh.login(username=robin_user, password=robin_pass, qr_code=robin_qr)
     raw_result = rh.positions()
     result = raw_result['results']
-    stock_value = watcher(rh, result)
+    stock_value = RobinhoodGatherer().watcher(rh, result)
     sys.stdout.write(f'\r{stock_value}')
     speaker.say(stock_value)
     speaker.runAndWait()
@@ -1667,11 +1667,10 @@ def delete_db():
 
 
 def distance(starting_point: str = None, destination: str = None):
-    """Calibrates distance between starting point and destination.
+    """Calculates distance between two locations.
 
-    This function doesn't care about the starting point.
-    If starting point is None, it gets the distance from your current location to destination. If destination is None,
-    it asks for a destination from user.
+    - If starting point is None, it gets the distance from your current location to destination.
+    - If destination is None, it asks for a destination from the user.
 
     Args:
         starting_point: Takes the starting place name as an optional argument.
@@ -3138,7 +3137,7 @@ def threat_notify(converted: str, date_extn: str or None):
 
     if date_extn:
         attachments_ = [f'threat/{date_extn}.jpg']
-        response_ = send_mail(title_, text_, body_, attachments_)
+        response_ = Emailer(sender=gmail_user, recipient=robin_user).send_mail(title_, text_, body_, attachments_)
         if response_.get('ResponseMetadata').get('HTTPStatusCode') == 200:
             logger.critical('Email has been sent!')
         else:
@@ -3390,7 +3389,7 @@ class PersonalCloud:
     @staticmethod
     def get_port():
         """
-        - Chooses a TCP PORT number dynamically that is not being used. This is to ensure we don't rely on a single port.
+        - Chooses a TCP PORT number dynamically that is not being used to ensure we don't rely on a single port.
         - Well-Known ports: 0 to 1023
         - Registered ports: 1024 to 49151
         - Dynamically available: 49152 to 65535

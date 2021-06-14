@@ -7,7 +7,7 @@ from pywebostv.controls import (ApplicationControl, MediaControl,
                                 SourceControl, SystemControl)
 
 from helper_functions.logger import logger
-from helper_functions.put_param import put_parameters
+from helper_functions.put_param import AWSClient
 
 
 class TV:
@@ -54,7 +54,7 @@ class TV:
 
         if self.reconnect:
             self.reconnect = False
-            put_parameters(name='/Jarvis/tv_client_key', value=store.get('client_key'))
+            AWSClient().put_parameters(name='/Jarvis/tv_client_key', value=store.get('client_key'))
             logger.warning(f'Store client key as ENV-VAR:\n{store}')  # store client_key as local env var
 
         self.system = SystemControl(self.client)
