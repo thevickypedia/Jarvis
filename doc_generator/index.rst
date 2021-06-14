@@ -17,46 +17,59 @@ Jarvis - Main Module
    :members:
    :undoc-members:
 
-Helper Functions
-================
+Alarm
+=====
 
 .. automodule:: helper_functions.alarm
    :members:
    :undoc-members:
 
+AWS Client
+==========
+
 .. automodule:: helper_functions.aws_clients
    :members:
    :undoc-members:
+
+Conversation
+============
 
 .. automodule:: helper_functions.conversation
    :members:
    :undoc-members:
 
+Database
+========
+
 .. automodule:: helper_functions.database
    :members:
    :undoc-members:
+
+Emailer
+=======
 
 .. automodule:: helper_functions.emailer
    :members:
    :undoc-members:
 
+Face Recognition
+================
+
 .. automodule:: helper_functions.facial_recognition
    :members:
    :undoc-members:
 
-.. automodule:: helper_functions.ip_scanner
-   :members:
-   :undoc-members:
+Keywords
+========
 
 .. automodule:: helper_functions.keywords
    :members:
    :undoc-members:
 
-.. automodule:: helper_functions.lights
-   :members:
-   :undoc-members:
+Lights
+======
 
-.. automodule:: helper_functions.logger
+.. automodule:: helper_functions.lights
    :members:
    :undoc-members:
 
@@ -64,21 +77,50 @@ Helper Functions
    :members:
    :undoc-members:
 
+Local IP Scanner
+================
+
+.. automodule:: helper_functions.ip_scanner
+   :members:
+   :undoc-members:
+
+Logger
+======
+
+.. automodule:: helper_functions.logger
+   :members:
+   :undoc-members:
+
+Put Parameter
+=============
+
 .. automodule:: helper_functions.put_param
    :members:
    :undoc-members:
+
+Reminder
+========
 
 .. automodule:: helper_functions.reminder
    :members:
    :undoc-members:
 
+Robinhood Gatherer
+==================
+
 .. automodule:: helper_functions.robinhood
    :members:
    :undoc-members:
 
+Temperature
+===========
+
 .. automodule:: helper_functions.temperature
    :members:
    :undoc-members:
+
+TV Connector
+============
 
 .. automodule:: helper_functions.tv_controls
    :members:

@@ -1012,7 +1012,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 
 </section>
 <section id="module-helper_functions.alarm">
-<span id="helper-functions"></span><h1>Helper Functions<a class="headerlink" href="#module-helper_functions.alarm" title="Permalink to this headline">¶</a></h1>
+<span id="alarm"></span><h1>Alarm<a class="headerlink" href="#module-helper_functions.alarm" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.alarm.Alarm">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.alarm.</span></span><span class="sig-name descname"><span class="pre">Alarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hours</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minutes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">am_pm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.alarm.Alarm" title="Permalink to this definition">¶</a></dt>
@@ -1028,7 +1028,10 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 
 </dd></dl>
 
-<span class="target" id="module-helper_functions.aws_clients"></span><dl class="py class">
+</section>
+<section id="module-helper_functions.aws_clients">
+<span id="aws-client"></span><h1>AWS Client<a class="headerlink" href="#module-helper_functions.aws_clients" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.aws_clients.</span></span><span class="sig-name descname"><span class="pre">AWSClients</span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients" title="Permalink to this definition">¶</a></dt>
 <dd><p>All the required oauth and api keys are stored in ssm parameters and are fetched where ever required.</p>
@@ -1197,7 +1200,10 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dd><p>Uses the name of the function that called the gatherer as param name and returns the param value.</p>
 </dd></dl>
 
-<span class="target" id="module-helper_functions.conversation"></span><dl class="py class">
+</section>
+<section id="module-helper_functions.conversation">
+<span id="conversation"></span><h1>Conversation<a class="headerlink" href="#module-helper_functions.conversation" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.conversation.</span></span><span class="sig-name descname"><span class="pre">Conversation</span></span><a class="headerlink" href="#helper_functions.conversation.Conversation" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of conversational keywords for each function which is condition matched in main module.</p>
@@ -1262,7 +1268,10 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 
 </dd></dl>
 
-<span class="target" id="module-helper_functions.database"></span><dl class="py class">
+</section>
+<section id="module-helper_functions.database">
+<span id="database"></span><h1>Database<a class="headerlink" href="#module-helper_functions.database" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.database.Database">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><a class="headerlink" href="#helper_functions.database.Database" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connector for Database to create and modify.</p>
@@ -1322,7 +1331,10 @@ On failure: A string indicating the item was not found.</p>
 
 </dd></dl>
 
-<span class="target" id="module-helper_functions.emailer"></span><dl class="py class">
+</section>
+<section id="module-helper_functions.emailer">
+<span id="emailer"></span><h1>Emailer<a class="headerlink" href="#module-helper_functions.emailer" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.emailer.Emailer">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.emailer.</span></span><span class="sig-name descname"><span class="pre">Emailer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recipient</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.emailer.Emailer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates Emailer object to send an email to defined recipient from a defined sender with or without attachments.</p>
@@ -1364,7 +1376,10 @@ On failure: A string indicating the item was not found.</p>
 
 </dd></dl>
 
-<span class="target" id="module-helper_functions.facial_recognition"></span><dl class="py class">
+</section>
+<section id="module-helper_functions.facial_recognition">
+<span id="face-recognition"></span><h1>Face Recognition<a class="headerlink" href="#module-helper_functions.facial_recognition" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.facial_recognition.Face">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.facial_recognition.</span></span><span class="sig-name descname"><span class="pre">Face</span></span><a class="headerlink" href="#helper_functions.facial_recognition.Face" title="Permalink to this definition">¶</a></dt>
 <dd><p>Module for face recognition script using defined tolerance level and specific model.</p>
@@ -1461,44 +1476,10 @@ On failure: A string indicating the item was not found.</p>
 .   &#64;param params Format-specific parameters encoded as pairs (paramId_1, paramValue_1, paramId_2, paramValue_2, … .) see cv::ImwriteFlags</p>
 </dd></dl>
 
-<span class="target" id="module-helper_functions.ip_scanner"></span><dl class="py class">
-<dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.ip_scanner.</span></span><span class="sig-name descname"><span class="pre">LocalIPScan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">router_pass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connector to scan devices in the same IP range using Netgear API.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LocalIPScan</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.bedroom">
-<span class="sig-name descname"><span class="pre">bedroom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.bedroom" title="Permalink to this definition">¶</a></dt>
-<dd><p>Host names of bedroom light bulbs stored in a list.</p>
-<p>Yields: IP address of the device.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.hallway">
-<span class="sig-name descname"><span class="pre">hallway</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.hallway" title="Permalink to this definition">¶</a></dt>
-<dd><p>Host names of hallway light bulbs stored in a list.</p>
-<p>Yields: IP address of the device.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.kitchen">
-<span class="sig-name descname"><span class="pre">kitchen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.kitchen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Host names of kitchen light bulbs stored in a list.</p>
-<p>Yields: IP address of the device.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.tv">
-<span class="sig-name descname"><span class="pre">tv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.tv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Host name of TV for string equality comparison.</p>
-<p>Yields: IP address of the TV.</p>
-</dd></dl>
-
-</dd></dl>
-
-<span class="target" id="module-helper_functions.keywords"></span><dl class="py class">
+</section>
+<section id="module-helper_functions.keywords">
+<span id="keywords"></span><h1>Keywords<a class="headerlink" href="#module-helper_functions.keywords" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.keywords.</span></span><span class="sig-name descname"><span class="pre">Keywords</span></span><a class="headerlink" href="#helper_functions.keywords.Keywords" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of keywords for each function which is condition matched in the main module.</p>
@@ -1906,7 +1887,10 @@ On failure: A string indicating the item was not found.</p>
 
 </dd></dl>
 
-<span class="target" id="module-helper_functions.lights"></span><dl class="py class">
+</section>
+<section id="module-helper_functions.lights">
+<span id="lights"></span><h1>Lights<a class="headerlink" href="#module-helper_functions.lights" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.lights.MagicHomeApi">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.lights.</span></span><span class="sig-name descname"><span class="pre">MagicHomeApi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_ip</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.lights.MagicHomeApi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controller for MagicHome smart devices.</p>
@@ -2005,12 +1989,56 @@ Whites can have a value of None.</p>
 
 </dd></dl>
 
-<span class="target" id="module-helper_functions.logger"></span><p>Initiates logger to log start time, restart time, results from security mode and offline communicator.</p>
+<span class="target" id="module-helper_functions.preset_values"></span></section>
+<section id="module-helper_functions.ip_scanner">
+<span id="local-ip-scanner"></span><h1>Local IP Scanner<a class="headerlink" href="#module-helper_functions.ip_scanner" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.ip_scanner.</span></span><span class="sig-name descname"><span class="pre">LocalIPScan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">router_pass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connector to scan devices in the same IP range using Netgear API.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LocalIPScan</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.bedroom">
+<span class="sig-name descname"><span class="pre">bedroom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.bedroom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Host names of bedroom light bulbs stored in a list.</p>
+<p>Yields: IP address of the device.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.hallway">
+<span class="sig-name descname"><span class="pre">hallway</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.hallway" title="Permalink to this definition">¶</a></dt>
+<dd><p>Host names of hallway light bulbs stored in a list.</p>
+<p>Yields: IP address of the device.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.kitchen">
+<span class="sig-name descname"><span class="pre">kitchen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.kitchen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Host names of kitchen light bulbs stored in a list.</p>
+<p>Yields: IP address of the device.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.tv">
+<span class="sig-name descname"><span class="pre">tv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.tv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Host name of TV for string equality comparison.</p>
+<p>Yields: IP address of the TV.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-helper_functions.logger">
+<span id="logger"></span><h1>Logger<a class="headerlink" href="#module-helper_functions.logger" title="Permalink to this headline">¶</a></h1>
+<p>Initiates logger to log start time, restart time, results from security mode and offline communicator.</p>
 <p>In order to use a common logger across multiple files, a dedicated logger has been created.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.logger.TestLogger">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.logger.</span></span><span class="sig-name descname"><span class="pre">TestLogger</span></span><a class="headerlink" href="#helper_functions.logger.TestLogger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Logging works the same way regardless of callable method, static method, function or class.</p>
+<dd><p>This is a class to test logger to verify logging using module references and different logging levels.</p>
+<p>Logging works the same way regardless of callable method, static method, function or class.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TestLogger</span>
 </pre></div>
 </div>
@@ -2046,7 +2074,10 @@ Whites can have a value of None.</p>
 
 </dd></dl>
 
-<span class="target" id="module-helper_functions.preset_values"></span><span class="target" id="module-helper_functions.put_param"></span><dl class="py class">
+</section>
+<section id="module-helper_functions.put_param">
+<span id="put-parameter"></span><h1>Put Parameter<a class="headerlink" href="#module-helper_functions.put_param" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.put_param.AWSClient">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.put_param.</span></span><span class="sig-name descname"><span class="pre">AWSClient</span></span><a class="headerlink" href="#helper_functions.put_param.AWSClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to initiate AWS ssm client.</p>
@@ -2069,7 +2100,10 @@ Whites can have a value of None.</p>
 
 </dd></dl>
 
-<span class="target" id="module-helper_functions.reminder"></span><dl class="py class">
+</section>
+<section id="module-helper_functions.reminder">
+<span id="reminder"></span><h1>Reminder<a class="headerlink" href="#module-helper_functions.reminder" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.reminder.Reminder">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.reminder.</span></span><span class="sig-name descname"><span class="pre">Reminder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hours</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minutes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">am_pm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.reminder.Reminder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to initiate Alarm as a super class to run in background.</p>
@@ -2084,7 +2118,10 @@ Whites can have a value of None.</p>
 
 </dd></dl>
 
-<span class="target" id="module-helper_functions.robinhood"></span><dl class="py class">
+</section>
+<section id="module-helper_functions.robinhood">
+<span id="robinhood-gatherer"></span><h1>Robinhood Gatherer<a class="headerlink" href="#module-helper_functions.robinhood" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.robinhood.RobinhoodGatherer">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.robinhood.</span></span><span class="sig-name descname"><span class="pre">RobinhoodGatherer</span></span><a class="headerlink" href="#helper_functions.robinhood.RobinhoodGatherer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to initiate robinhood client to get the portfolio details.</p>
@@ -2100,7 +2137,10 @@ Whites can have a value of None.</p>
 
 </dd></dl>
 
-<span class="target" id="module-helper_functions.temperature"></span><dl class="py function">
+</section>
+<section id="module-helper_functions.temperature">
+<span id="temperature"></span><h1>Temperature<a class="headerlink" href="#module-helper_functions.temperature" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
 <dt class="sig sig-object py" id="helper_functions.temperature.c2f">
 <span class="sig-prename descclassname"><span class="pre">helper_functions.temperature.</span></span><span class="sig-name descname"><span class="pre">c2f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.temperature.c2f" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts Celcius to Farenheit.</p>
@@ -2172,7 +2212,10 @@ Whites can have a value of None.</p>
 <p>Returns: Converted Farenheit value.</p>
 </dd></dl>
 
-<span class="target" id="module-helper_functions.tv_controls"></span><dl class="py class">
+</section>
+<section id="module-helper_functions.tv_controls">
+<span id="tv-connector"></span><h1>TV Connector<a class="headerlink" href="#module-helper_functions.tv_controls" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.tv_controls.TV">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.tv_controls.</span></span><span class="sig-name descname"><span class="pre">TV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_address</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.tv_controls.TV" title="Permalink to this definition">¶</a></dt>
 <dd><p>All the TV controls wrapped in individual functions.</p>
@@ -2354,7 +2397,21 @@ Whites can have a value of None.</p>
   <ul>
 <li><a class="reference internal" href="#">Welcome to Jarvis’s documentation!</a></li>
 <li><a class="reference internal" href="#module-jarvis">Jarvis - Main Module</a></li>
-<li><a class="reference internal" href="#module-helper_functions.alarm">Helper Functions</a></li>
+<li><a class="reference internal" href="#module-helper_functions.alarm">Alarm</a></li>
+<li><a class="reference internal" href="#module-helper_functions.aws_clients">AWS Client</a></li>
+<li><a class="reference internal" href="#module-helper_functions.conversation">Conversation</a></li>
+<li><a class="reference internal" href="#module-helper_functions.database">Database</a></li>
+<li><a class="reference internal" href="#module-helper_functions.emailer">Emailer</a></li>
+<li><a class="reference internal" href="#module-helper_functions.facial_recognition">Face Recognition</a></li>
+<li><a class="reference internal" href="#module-helper_functions.keywords">Keywords</a></li>
+<li><a class="reference internal" href="#module-helper_functions.lights">Lights</a></li>
+<li><a class="reference internal" href="#module-helper_functions.ip_scanner">Local IP Scanner</a></li>
+<li><a class="reference internal" href="#module-helper_functions.logger">Logger</a></li>
+<li><a class="reference internal" href="#module-helper_functions.put_param">Put Parameter</a></li>
+<li><a class="reference internal" href="#module-helper_functions.reminder">Reminder</a></li>
+<li><a class="reference internal" href="#module-helper_functions.robinhood">Robinhood Gatherer</a></li>
+<li><a class="reference internal" href="#module-helper_functions.temperature">Temperature</a></li>
+<li><a class="reference internal" href="#module-helper_functions.tv_controls">TV Connector</a></li>
 <li><a class="reference internal" href="#module-restart">Restart</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>

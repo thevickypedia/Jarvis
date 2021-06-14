@@ -27,7 +27,9 @@ logger = logging.getLogger('jarvis.py')
 
 
 class TestLogger:
-    """Logging works the same way regardless of callable method, static method, function or class.
+    """This is a class to test logger to verify logging using module references and different logging levels.
+
+    Logging works the same way regardless of callable method, static method, function or class.
 
     >>> TestLogger
 
