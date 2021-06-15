@@ -85,7 +85,7 @@ from helper_functions.logger import logger
 from helper_functions.preset_values import preset_values
 from helper_functions.reminder import Reminder
 from helper_functions.robinhood import RobinhoodGatherer
-from helper_functions.temperature import c2f, k2f
+from helper_functions.temperature import Temperature
 from helper_functions.tv_controls import TV
 
 
@@ -835,11 +835,11 @@ def weather(place: str = None):
     condition = response['current']['weather'][0]['description']
     feels_like = response['current']['feels_like']
     maxi = response['daily'][0]['temp']['max']
-    high = int(round(k2f(maxi), 2))
+    high = int(round(Temperature().k2f(maxi), 2))
     mini = response['daily'][0]['temp']['min']
-    low = int(round(k2f(mini), 2))
-    temp_f = int(round(k2f(temperature), 2))
-    temp_feel_f = int(round(k2f(feels_like), 2))
+    low = int(round(Temperature().k2f(mini), 2))
+    temp_f = int(round(Temperature().k2f(temperature), 2))
+    temp_feel_f = int(round(Temperature().k2f(feels_like), 2))
     sunrise = datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p")
     if time_travel.has_been_called:
@@ -961,10 +961,10 @@ def weather_condition(msg: str, place: str = None):
     sunset = response['daily'][key]['sunset']
     maxi = response['daily'][key]['temp']['max']
     mini = response['daily'][1]['temp']['min']
-    high = int(round(k2f(maxi), 2))
-    low = int(round(k2f(mini), 2))
-    temp_f = int(round(k2f(temperature), 2))
-    temp_feel_f = int(round(k2f(feels_like), 2))
+    high = int(round(Temperature().k2f(maxi), 2))
+    low = int(round(Temperature().k2f(mini), 2))
+    temp_f = int(round(Temperature().k2f(temperature), 2))
+    temp_feel_f = int(round(Temperature().k2f(feels_like), 2))
     sunrise = datetime.fromtimestamp(sunrise).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(sunset).strftime("%I:%M %p")
     output = f'The weather in {weather_location} {tell} would be {temp_f}°F, with a high ' \
@@ -3324,11 +3324,11 @@ def system_vitals():
             '/tmp/spindump.txt;sudo rm /tmp/spindump.txt', shell=True).decode('utf-8')
 
     if cpu_temp:
-        cpu = f'Your current average CPU temperature is {format_nos(c2f(extract_nos(cpu_temp)))}°F. '
+        cpu = f'Your current average CPU temperature is {format_nos(Temperature().c2f(extract_nos(cpu_temp)))}°F. '
         output += cpu
         speaker.say(cpu)
     if gpu_temp:
-        gpu = f'GPU temperature is {format_nos(c2f(extract_nos(gpu_temp)))}°F. '
+        gpu = f'GPU temperature is {format_nos(Temperature().c2f(extract_nos(gpu_temp)))}°F. '
         output += gpu
         speaker.say(gpu)
     if fan_speed:

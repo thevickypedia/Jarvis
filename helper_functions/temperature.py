@@ -1,70 +1,78 @@
-def c2f(arg: float):
-    """Converts Celcius to Farenheit.
+class Temperature:
+    """Class to convert common temperature values used in the main module.
 
-    Args:
-        arg: Takes Celcius value as argument.
-
-    Returns: Converted Farenheit value.
+    >>> Temperature
 
     """
-    return round(((arg / 5) * 9) + 32, 2)
 
+    @staticmethod
+    def c2f(arg: float):
+        """Converts Celcius to Farenheit.
 
-def f2c(arg: float):
-    """Converts Farenheit to Celcius.
+        Args:
+            arg: Takes Celcius value as argument.
 
-    Args:
-        arg: Takes Farenheit value as argument.
+        Returns: Converted Farenheit value.
 
-    Returns: Converted Celcius value.
+        """
+        return round(((arg / 5) * 9) + 32, 2)
 
-    """
-    return round(((arg - 32) / 9) * 5, 2)
+    @staticmethod
+    def f2c(arg: float):
+        """Converts Farenheit to Celcius.
 
+        Args:
+            arg: Takes Farenheit value as argument.
 
-def c2k(arg: float):
-    """Converts Celcius to Kelvin.
+        Returns: Converted Celcius value.
 
-    Args:
-        arg: Takes Celcius value as argument.
+        """
+        return round(((arg - 32) / 9) * 5, 2)
 
-    Returns: Converted Kelvin value.
+    @staticmethod
+    def c2k(arg: float):
+        """Converts Celcius to Kelvin.
 
-    """
-    return arg + 273.15
+        Args:
+            arg: Takes Celcius value as argument.
 
+        Returns: Converted Kelvin value.
 
-def k2c(arg: float):
-    """Converts Kelvin to Celcius.
+        """
+        return arg + 273.15
 
-    Args:
-        arg: Takes Kelvin value as argument.
+    @staticmethod
+    def k2c(arg: float):
+        """Converts Kelvin to Celcius.
 
-    Returns: Converted Celcius value.
+        Args:
+            arg: Takes Kelvin value as argument.
 
-    """
-    return arg - 273.15
+        Returns: Converted Celcius value.
 
+        """
+        return arg - 273.15
 
-def k2f(arg: float):
-    """Converts Kelvin to Celcius.
+    @staticmethod
+    def k2f(arg: float):
+        """Converts Kelvin to Celcius.
 
-    Args:
-        arg: Takes Kelvin value as argument.
+        Args:
+            arg: Takes Kelvin value as argument.
 
-    Returns: Converted Farenheit value.
+        Returns: Converted Farenheit value.
 
-    """
-    return round((arg * 1.8) - 459.69, 2)
+        """
+        return round((arg * 1.8) - 459.69, 2)
 
+    @staticmethod
+    def f2k(arg: float):
+        """Converts Farenheit to Kelvin.
 
-def f2k(arg: float):
-    """Converts Farenheit to Kelvin.
+        Args:
+            arg: Taken Farenheit value as argument.
 
-    Args:
-        arg: Taken Farenheit value as argument.
+        Returns: Converted Kelvin value.
 
-    Returns: Converted Kelvin value.
-
-    """
-    return round((arg + 459.67) / 1.8, 2)
+        """
+        return round((arg + 459.67) / 1.8, 2)
