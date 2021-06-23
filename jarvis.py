@@ -536,11 +536,11 @@ def conditions(converted: str):
             return
         elif 'enable' in converted_lower or 'initiate' in converted_lower or 'kick off' in converted_lower or \
                 'start' in converted_lower:
-            Thread(target=PersonalCloud.enable).start()
+            Thread(target=personal_cloud.enable).start()
             speaker.say("Personal Cloud has been triggered sir! I will send the login details to your phone number "
                         "once the server is up and running.")
         elif 'disable' in converted_lower or 'stop' in converted_lower:
-            Thread(target=PersonalCloud.disable).start()
+            Thread(target=personal_cloud.disable).start()
             speaker.say(choice(ack))
         else:
             speaker.say("I didn't quite get that sir! Please tell me if I should enable or disable your server.")
@@ -831,15 +831,15 @@ def weather(place: str = None):
     response = json_loads(r.read())  # loads the response in a json
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
-    temperature = response['current']['temp']
+    temp = response['current']['temp']
     condition = response['current']['weather'][0]['description']
     feels_like = response['current']['feels_like']
     maxi = response['daily'][0]['temp']['max']
-    high = int(round(Temperature().k2f(maxi), 2))
+    high = int(round(temperature.k2f(maxi), 2))
     mini = response['daily'][0]['temp']['min']
-    low = int(round(Temperature().k2f(mini), 2))
-    temp_f = int(round(Temperature().k2f(temperature), 2))
-    temp_feel_f = int(round(Temperature().k2f(feels_like), 2))
+    low = int(round(temperature.k2f(mini), 2))
+    temp_f = int(round(temperature.k2f(temp), 2))
+    temp_feel_f = int(round(temperature.k2f(feels_like), 2))
     sunrise = datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p")
     if time_travel.has_been_called:
@@ -954,17 +954,17 @@ def weather_condition(msg: str, place: str = None):
         end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
     else:
         alerts, start_alert, end_alert = None, None, None
-    temperature = response['daily'][key]['temp'][when]
+    temp = response['daily'][key]['temp'][when]
     feels_like = response['daily'][key]['feels_like'][when]
     condition = response['daily'][key]['weather'][0]['description']
     sunrise = response['daily'][key]['sunrise']
     sunset = response['daily'][key]['sunset']
     maxi = response['daily'][key]['temp']['max']
     mini = response['daily'][1]['temp']['min']
-    high = int(round(Temperature().k2f(maxi), 2))
-    low = int(round(Temperature().k2f(mini), 2))
-    temp_f = int(round(Temperature().k2f(temperature), 2))
-    temp_feel_f = int(round(Temperature().k2f(feels_like), 2))
+    high = int(round(temperature.k2f(maxi), 2))
+    low = int(round(temperature.k2f(mini), 2))
+    temp_f = int(round(temperature.k2f(temp), 2))
+    temp_feel_f = int(round(temperature.k2f(feels_like), 2))
     sunrise = datetime.fromtimestamp(sunrise).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(sunset).strftime("%I:%M %p")
     output = f'The weather in {weather_location} {tell} would be {temp_f}°F, with a high ' \
@@ -3324,11 +3324,11 @@ def system_vitals():
             '/tmp/spindump.txt;sudo rm /tmp/spindump.txt', shell=True).decode('utf-8')
 
     if cpu_temp:
-        cpu = f'Your current average CPU temperature is {format_nos(Temperature().c2f(extract_nos(cpu_temp)))}°F. '
+        cpu = f'Your current average CPU temperature is {format_nos(temperature.c2f(extract_nos(cpu_temp)))}°F. '
         output += cpu
         speaker.say(cpu)
     if gpu_temp:
-        gpu = f'GPU temperature is {format_nos(Temperature().c2f(extract_nos(gpu_temp)))}°F. '
+        gpu = f'GPU temperature is {format_nos(temperature.c2f(extract_nos(gpu_temp)))}°F. '
         output += gpu
         speaker.say(gpu)
     if fan_speed:
@@ -3429,19 +3429,19 @@ class PersonalCloud:
         - Triggers personal cloud using a dedicated Terminal,
         - Sends an SMS with endpoint, username and password to your mobile phone.
         """
-        PersonalCloud().delete_repo()
+        personal_cloud.delete_repo()
         initial_script = f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git && " \
                          f"cd personal_cloud && python3 -m venv venv && source venv/bin/activate && " \
                          f"pip3 install -r requirements.txt"
 
         apple_script('Terminal').do_script(initial_script)
 
-        personal_cloud_port = PersonalCloud.get_port()
+        personal_cloud_port = personal_cloud.get_port()
         personal_cloud_username = ''.join(choices(ascii_letters, k=10))
         personal_cloud_passphrase = ''.join(choices(ascii_letters + digits, k=10))
         personal_cloud_volume = os.environ.get('personal_cloud_volume')
 
-        if not PersonalCloud.volume_checker(volume_name=personal_cloud_volume) if personal_cloud_volume else None:
+        if not personal_cloud.volume_checker(volume_name=personal_cloud_volume) if personal_cloud_volume else None:
             logger.critical(f"Volume: {personal_cloud_volume} was not connected to your {host_info('model')}")
             personal_cloud_volume = None
 
@@ -3525,8 +3525,8 @@ class PersonalCloud:
         for pid_info in pid_list:
             if pid_info and 'Library' in pid_info and ('/bin/sh' not in pid_info or 'grep' not in pid_info):
                 os.system(f'kill -9 {pid_info.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
-        PersonalCloud().delete_repo()
-        PersonalCloud.volume_checker(volume_name=os.environ.get('personal_cloud_volume'), mount=False, unmount=True)
+        personal_cloud.delete_repo()
+        personal_cloud.volume_checker(volume_name=os.environ.get('personal_cloud_volume'), mount=False, unmount=True)
 
 
 def internet_checker():
@@ -3940,6 +3940,8 @@ if __name__ == '__main__':
     current_dir = os.listdir()  # stores the list of files in current directory
     aws = AWSClients()  # initiates AWSClients object to fetch credentials from AWS secrets
     database = Database()  # initiates Database() for TO-DO items
+    temperature = Temperature()  # initiates Temperature() for temperature conversions
+    personal_cloud = PersonalCloud()  # initiates PersonalCloud() to enable or disable HDD hosting
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 10)  # increases the recursion limit by 10 times
     sns = client('sns')  # initiates sns for notification service
