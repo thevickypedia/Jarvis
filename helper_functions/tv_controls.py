@@ -2,6 +2,7 @@ from socket import gaierror
 from sys import stdout
 from time import sleep
 
+from playsound import playsound
 from pywebostv.connection import WebOSClient
 from pywebostv.controls import (ApplicationControl, MediaControl,
                                 SourceControl, SystemControl)
@@ -35,9 +36,10 @@ class TV:
         try:
             self.client = WebOSClient(ip_address)
             self.client.connect()
-        except (gaierror, ConnectionRefusedError):  # this is reached only when the IP address is None or incorrect
+        except (gaierror, ConnectionRefusedError, ConnectionResetError):  # when IP or client key is None or incorrect
             self.reconnect = True
-            stdout.write("\rThe TV's IP has either changed or unreachable. Scanning your IP range..")
+            playsound('mp3/tv_scan.mp3')
+            stdout.write("\rThe TV's IP has either changed or unreachable. Scanning your IP range.")
             self.client = WebOSClient.discover()[0]
             self.client.connect()
         except (TimeoutError, BrokenPipeError):
@@ -48,14 +50,12 @@ class TV:
                 stdout.write('\rConnected to the TV.')
             elif status == WebOSClient.PROMPTED:
                 self.reconnect = True
-                from playsound import playsound
                 stdout.write('\rPlease accept the connection request on your TV.')
                 playsound('mp3/tv_connect.mp3')
 
         if self.reconnect:
             self.reconnect = False
-            AWSClient().put_parameters(name='/Jarvis/tv_client_key', value=store.get('client_key'))
-            logger.warning(f'Store client key as ENV-VAR:\n{store}')  # store client_key as local env var
+            AWSClient().put_parameters(name='tv_client_key', value=store.get('client_key'))
 
         self.system = SystemControl(self.client)
         self.system.notify("Jarvis is controlling the TV now.") if not self._init_status else None

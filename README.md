@@ -1,4 +1,8 @@
-![GitHub](https://img.shields.io/github/license/thevickypedia/Jarvis) ![GitHub repo size](https://img.shields.io/github/repo-size/thevickypedia/Jarvis) ![GitHub Repo stars](https://img.shields.io/github/stars/thevickypedia/Jarvis) ![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/Jarvis) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/thevickypedia/Jarvis)
+![GitHub](https://img.shields.io/github/license/thevickypedia/Jarvis) 
+![GitHub repo size](https://img.shields.io/github/repo-size/thevickypedia/Jarvis) 
+![GitHub Repo stars](https://img.shields.io/github/stars/thevickypedia/Jarvis) 
+![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/Jarvis) 
+![GitHub commit activity](https://img.shields.io/github/commit-activity/y/thevickypedia/Jarvis)
 
 # Jarvis
 IronMan's Jarvis with python
@@ -10,7 +14,8 @@ IronMan's Jarvis with python
         - `source venv/bin/activate` - Activates the virtual env `venv`
         - `which python` - Validate which python is being used. Should be the one within the virtual env `venv`
         - [`bash installs.sh`](lib/installs.sh) ([`bash installs_windows.sh`](lib/installs_windows.sh) for 
-          [Windows OS](https://github.com/thevickypedia/Jarvis/wiki#windows-os)) - Installs the required libraries/modules.
+          [Windows OS](https://github.com/thevickypedia/Jarvis/wiki#windows-os)) - 
+          Installs the required libraries/modules.
         - [`python3 jarvis.py`](jarvis.py) - BOOM, you're all set, go ahead and interact with Jarvis
 
 ### Coding Standards:

@@ -1,3 +1,5 @@
+from os import system
+
 from boto3 import client
 
 from helper_functions.logger import logger
@@ -21,8 +23,10 @@ class AWSClient:
             value: Value of the parameter that has to dropped in AWS as SecureString.
 
         """
-        response_put = self.client.put_parameter(Name=name, Value=value, Type='SecureString', Overwrite=True)
-        if response_put['ResponseMetadata']['HTTPStatusCode'] == 200:
+        response = self.client.put_parameter(Name=f'/Jarvis/{name}', Value=value, Type='SecureString', Overwrite=True)
+        if response['ResponseMetadata']['HTTPStatusCode'] == 200:
             logger.critical(f'Parameter {name} has been updated on SSM parameter store.')
+            logger.warning(f'Update your ENV VAR:{name}={value}')
+            system(f"""osascript -e 'display notification "Update your ENV VAR:{name}={value}" with title "Jarvis"'""")
         else:
             logger.error(f'Parameter {name} WAS NOT added to SSM parameter store.')

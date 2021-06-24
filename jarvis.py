@@ -573,13 +573,9 @@ def conditions(converted: str):
         speaker.say("I can seamlessly take care of your daily tasks, and also help with most of your work!")
 
     elif any(word in converted_lower for word in keywords.sleep()):
-        if 'pc' in converted_lower or 'computer' in converted_lower or 'imac' in converted_lower or \
-                'screen' in converted_lower:
-            # os.system("""osascript -e 'tell app "System Events" to sleep'""")  # requires restarting Jarvis manually
-            os.system("""
-            osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'
-            """)
-            speaker.say(choice(ack))
+        if ('pc' in converted_lower or 'computer' in converted_lower or 'imac' in converted_lower or 'screen' in
+                converted_lower) and operating_system == 'Darwin':
+            pc_sleep()
         else:
             speaker.say("Activating sentry mode, enjoy yourself sir!")
         return True
@@ -1412,14 +1408,14 @@ def gmail():
         else:
             if place_holder == 0:
                 place_holder = None
+            elif report.has_been_called or time_travel.has_been_called:
+                pass
             else:
                 speaker.say("I didn't quite get that. Try again.")
                 place_holder = 0
                 gmail()
 
         place_holder = None
-    if report.has_been_called or time_travel.has_been_called:
-        speaker.runAndWait()
 
 
 def meaning(keyword: str or None):
@@ -3010,7 +3006,6 @@ def time_travel():
     meeting = ThreadPool(processes=1).apply_async(func=meetings)
     day = greeting()
     speaker.say(f"Good {day} Vignesh.")
-    time_travel.has_been_called = True
     current_date()
     current_time()
     weather()
@@ -3555,7 +3550,7 @@ def sentry_mode():
     time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']
     wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
     threshold = 0
-    while threshold < 5_000:
+    while threshold < 10_000:
         threshold += 1
         try:
             sys.stdout.write("\rSentry Mode")
@@ -3564,14 +3559,18 @@ def sentry_mode():
             key_original = recognizer.recognize_google(listen).strip()
             sys.stdout.write(f"\r{key_original}")
             key = key_original.lower()
-            if [word for word in key.split() if word in time_of_day] and 'jarvis' in key:
+            key_split = key.split()
+            if [word for word in key_split if word in time_of_day] and 'jarvis' in key:
+                time_travel.has_been_called = True
                 if event:
                     speaker.say(f'Happy {event}!')
+                if 'night' in key_split or 'goodnight' in key_split:
+                    Thread(target=pc_sleep).start()
                 time_travel()
             elif key == 'jarvis':
                 speaker.say(f'{choice(wake_up3)}')
                 initialize()
-            elif [word for word in key.split() if word in wake_up_words] and 'jarvis' in key:
+            elif any(word in key for word in wake_up_words) and 'jarvis' in key:
                 speaker.say(f'{choice(wake_up1)}')
                 initialize()
             elif 'jarvis' in key:
@@ -3764,6 +3763,15 @@ def host_info(required: str):
         return model
     elif required == 'version':
         return version
+
+
+def pc_sleep():
+    """Locks the host device using osascript and reduces brightness to bare minimum."""
+    Thread(target=decrease_brightness).start()
+    # os.system("""osascript -e 'tell app "System Events" to sleep'""")  # requires restarting Jarvis manually
+    os.system("""osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'""")
+    if not (report.has_been_called or time_travel.has_been_called):
+        speaker.say(choice(ack))
 
 
 def stop_terminal():
