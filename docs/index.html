@@ -602,20 +602,34 @@ Failure: Calls the return function or returns None.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.meeting_gatherer">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meeting_gatherer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.meeting_gatherer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets return value from meetings() and writes it to file named ‘meetings’.</p>
+<p>This function runs in a dedicated thread every 15 minutes to avoid wait time when meetings information is requested.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.meeting_reader">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meeting_reader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.meeting_reader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speaks meeting information that meeting_gatherer() stored in a file named ‘meeting’.</p>
+<p>If the file is not available, meeting information is directly fetched from the meetings() function.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meetings">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meeting_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'calendar.scpt'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.meetings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses applescript to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>meeting_file</strong> – defaults to calendar.scpt unless an alternate is passed.</p>
+<dd class="field-odd"><p><strong>meeting_file</strong> – Takes applescript filename as argument. Defaults to calendar.scpt unless an alternate is passed.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Message saying Jarvis was unable to read outlook.
+<dd class="field-even"><p>Message saying which meeting is scheduled at what time.
 No events: Message saying there are no events in the next 12 hours.
-Success: String saying which meeting is scheduled at what time.</p>
+Error: Message saying Jarvis was unable to read calendar/outlook.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Error</p>
+<dd class="field-odd"><p>Success</p>
 </dd>
 </dl>
 </dd></dl>
@@ -728,8 +742,15 @@ the session. So I use exception handlers and circle back to restart the offline_
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.remove_files">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">remove_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.remove_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function that deletes all .lock files created for alarms and reminders.</p>
-<p>Also deletes the location data in yaml format, to recreate a new one next time around.</p>
+<dd><p>Function that deletes multiple files when called during exit operation.</p>
+<dl class="simple">
+<dt>Deletes:</dt><dd><ul class="simple">
+<li><p>all .lock files created for alarms and reminders.</p></li>
+<li><p>location data in yaml format, to recreate a new one next time around.</p></li>
+<li><p>meetings, file to recreate a new one next time around.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

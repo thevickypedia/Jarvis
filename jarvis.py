@@ -522,14 +522,17 @@ def conditions(converted: str):
         speaker.say(getFact(False))
 
     elif any(word in converted_lower for word in keywords.meetings()):
-        meeting = ThreadPool(processes=1).apply_async(func=meetings)
-        speaker.say("Please give me a moment sir! Let me check your calendar.")
-        speaker.runAndWait()
-        try:
-            speaker.say(meeting.get(timeout=60))
-        except ThreadTimeoutError:
-            speaker.say("I wasn't able to read your calendar within the set time limit sir!")
-        speaker.runAndWait()
+        if not os.path.isfile('meetings'):
+            meeting = ThreadPool(processes=1).apply_async(func=meetings)
+            speaker.say("Please give me a moment sir! Let me check your calendar.")
+            speaker.runAndWait()
+            try:
+                speaker.say(meeting.get(timeout=60))
+            except ThreadTimeoutError:
+                speaker.say("I wasn't able to read your calendar within the set time limit sir!")
+            speaker.runAndWait()
+        else:
+            meeting_reader()
 
     elif any(word in converted_lower for word in keywords.voice_changer()):
         voice_changer(converted)
@@ -2660,7 +2663,7 @@ def volume_controller(level: int):
         level = round((8 * level) / 100)
         os.system(f'osascript -e "set Volume {level}"')
     elif operating_system == 'Windows':
-        if 'SetVol.exe' not in current_dir:
+        if not os.path.isfile('SetVol.exe'):
             # Courtesy: https://rlatour.com/setvol/
             sys.stdout.write("\rPLEASE WAIT::Downloading volume controller for Windows")
             os.system("""curl https://thevickypedia.com/Jarvis/SetVol.exe --output SetVol.exe --silent""")
@@ -2673,7 +2676,7 @@ def face_recognition_detection():
     if operating_system == 'Darwin':
         sys.stdout.write("\r")
         train_dir = 'train'
-        os.mkdir(train_dir) if train_dir not in current_dir else None
+        os.mkdir(train_dir) if not os.path.isdir(train_dir) else None
         speaker.say('Initializing facial recognition. Please smile at the camera for me.')
         speaker.runAndWait()
         sys.stdout.write('\rLooking for faces to recognize.')
@@ -3010,17 +3013,22 @@ def celebrate():
 
 def time_travel():
     """Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way."""
-    meeting = ThreadPool(processes=1).apply_async(func=meetings)
+    meeting = None
+    if not os.path.isfile('meetings'):
+        meeting = ThreadPool(processes=1).apply_async(func=meetings)
     day = greeting()
     speaker.say(f"Good {day} Vignesh.")
     current_date()
     current_time()
     weather()
     speaker.runAndWait()
-    try:
-        speaker.say(meeting.get(timeout=60)) if day == 'Morning' else None
-    except ThreadTimeoutError:
-        pass
+    if meeting and day == 'Morning':
+        try:
+            speaker.say(meeting.get(timeout=60))
+        except ThreadTimeoutError:
+            pass
+    elif day == 'Morning':
+        meeting_reader()
     todo()
     gmail()
     speaker.say('Would you like to hear the latest news?')
@@ -3245,40 +3253,71 @@ def offline_communicator():
         offline_communicator_initiate()  # return used here will terminate the current function
 
 
+def meeting_reader():
+    """Speaks meeting information that meeting_gatherer() stored in a file named 'meeting'.
+
+    If the file is not available, meeting information is directly fetched from the meetings() function.
+    """
+    with open('meetings', 'r') as meeting:
+        meeting_info = meeting.read()
+        sys.stdout.write(f'\r{meeting_info}')
+        speaker.say(meeting_info)
+        meeting.close()
+    speaker.runAndWait()
+
+
+def meeting_gatherer():
+    """Gets return value from meetings() and writes it to file named 'meetings'.
+
+    This function runs in a dedicated thread every 15 minutes to avoid wait time when meetings information is requested.
+    """
+    while STATUS:
+        if os.path.isfile('meetings') and int(datetime.now().timestamp()) - int(os.stat('meetings').st_mtime) < 1_800:
+            os.remove('meetings')  # removes the file if it is older than 30 minutes
+        data = meetings()
+        if data.startswith('You'):
+            with open('meetings', 'w') as gatherer:
+                gatherer.write(data)
+            gatherer.close()
+        sleep(900)
+
+
 def meetings(meeting_file: str = 'calendar.scpt'):
     """Uses applescript to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.
 
     Args:
-        meeting_file: defaults to calendar.scpt unless an alternate is passed.
+        meeting_file: Takes applescript filename as argument. Defaults to calendar.scpt unless an alternate is passed.
 
     Returns:
-        Error: Message saying Jarvis was unable to read outlook.
+        Success: Message saying which meeting is scheduled at what time.
         No events: Message saying there are no events in the next 12 hours.
-        Success: String saying which meeting is scheduled at what time.
+        Error: Message saying Jarvis was unable to read calendar/outlook.
 
     """
     if operating_system == 'Windows':
         return "Meetings feature on Windows hasn't been developed yet sir!"
-    # todo: fix long wait time. currently ~40 seconds
-    today = datetime.now().strftime("%A")
+
     args = [1, 3]
     process = Popen(['/usr/bin/osascript', meeting_file] + [str(arg) for arg in args], stdout=PIPE, stderr=PIPE)
     out, err = process.communicate()
     if error := process.returncode:  # stores process.returncode in error if process.returncode is not 0
-        logger.error(f"Failed to read outlook with exit code: {error}\n{err.decode('UTF-8')}")
-        return "I was unable to read your Outlook sir! Please make sure it is in sync."
+        logger.error(f"Failed to read {meeting_file.replace('.scpt', '')} with exit code: "
+                     f"{error}\n{err.decode('UTF-8')}")
+        failure = f"Unable to read {meeting_file.replace('.scpt', '')}\n{err.decode('UTF-8')}"
+        os.system(f"""osascript -e 'display notification "{failure}" with title "Jarvis"'""")
+        return f"I was unable to read your {meeting_file.replace('.scpt', '')} sir! Please make sure it is in sync."
 
     events = out.decode().strip()
     if not events or events == ',':
         return "You don't have any meetings in the next 12 hours sir!"
 
-    events = events.replace(f', date {today}, ', ' rEpLaCInG ')
+    events = events.replace(', date ', ' rEpLaCInG ')
     event_time = events.split('rEpLaCInG')[1:]
     event_name = events.split('rEpLaCInG')[0].split(', ')
     event_name = [i.strip() for n, i in enumerate(event_name) if i not in event_name[n + 1:]]  # remove duplicates
     count = len(event_time)
     [event_name.remove(e) for e in event_name if len(e) <= 5] if count != len(event_name) else None
-    meeting_status = f'You have {count} meetings for today sir! ' if count > 1 else ''
+    meeting_status = f'You have {count} meetings in the next 12 hours sir! ' if count > 1 else ''
     events = {}
     for i in range(count):
         if i < len(event_name):
@@ -3671,13 +3710,17 @@ def terminator():
 
 
 def remove_files():
-    """Function that deletes all .lock files created for alarms and reminders.
+    """Function that deletes multiple files when called during exit operation.
 
-    Also deletes the location data in yaml format, to recreate a new one next time around.
+    Deletes:
+        - all .lock files created for alarms and reminders.
+        - location data in yaml format, to recreate a new one next time around.
+        - meetings, file to recreate a new one next time around.
     """
     [os.remove(f"alarm/{file}") for file in os.listdir('alarm') if file != '.keep']
     [os.remove(f"reminder/{file}") for file in os.listdir('reminder') if file != '.keep']
     os.remove('location.yaml') if os.path.isfile('location.yaml') else None
+    os.remove('meetings') if os.path.isfile('meetings') else None
 
 
 def exit_process():
@@ -3956,7 +3999,6 @@ if __name__ == '__main__':
     keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
     conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
     operating_system = system()  # detects current operating system
-    current_dir = os.listdir()  # stores the list of files in current directory
     aws = AWSClients()  # initiates AWSClients object to fetch credentials from AWS secrets
     database = Database()  # initiates Database() for TO-DO items
     temperature = Temperature()  # initiates Temperature() for temperature conversions
@@ -4061,6 +4103,9 @@ if __name__ == '__main__':
     sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
 
     offline_communicator_initiate()  # dedicated function to initiate offline communicator to ease restart
+
+    logger.critical('Meeting gather has been initiated.')
+    Thread(target=meeting_gatherer).start()  # triggers meeting_gathere to run in the background
 
     # starts sentry mode
     Thread(target=playsound, args=['indicators/initialize.mp3']).start()
