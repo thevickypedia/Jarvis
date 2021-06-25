@@ -4009,6 +4009,12 @@ def voice_changer(change: str = None):
         voice_default()
 
 
+def clear_logs():
+    """Deletes log files that were updated before 48 hours."""
+    [os.remove(f"logs/{file}") for file in os.listdir('logs') if file != '.keep' and
+     int(datetime.now().timestamp()) - int(os.stat(f'logs/{file}').st_mtime) > 172_800]
+
+
 if __name__ == '__main__':
     STATUS = True
     logger.critical('JARVIS::Starting Now::Run STATUS has been set')
@@ -4030,6 +4036,8 @@ if __name__ == '__main__':
 
     volume_controller(50)  # defaults to volume 50%
     voice_changer()  # changes voice to default values given
+
+    clear_logs()  # deletes old log files
 
     # Get all necessary credentials and api keys from env vars or aws client
     sys.stdout.write("\rFetching credentials and API keys.")
@@ -4086,7 +4094,7 @@ if __name__ == '__main__':
     options.default_ssl_context = create_default_context(cafile=where())
     geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
 
-    # checks the modified time of location.yaml (if exists) and uses the data only if it was modified 72 hours ago
+    # checks modified time of location.yaml (if exists) and uses the data only if it was modified less than 72 hours ago
     if os.path.isfile('location.yaml') and \
             int(datetime.now().timestamp()) - int(os.stat('location.yaml').st_mtime) < 259_200:
         location_details = yaml_load(open('location.yaml'), Loader)
@@ -4125,7 +4133,7 @@ if __name__ == '__main__':
     offline_communicator_initiate()  # dedicated function to initiate offline communicator to ease restart
 
     logger.critical('Meeting gather has been initiated.')
-    Thread(target=meeting_gatherer).start()  # triggers meeting_gathere to run in the background
+    Thread(target=meeting_gatherer).start()  # triggers meeting_gatherer to run in the background
 
     # starts sentry mode
     Thread(target=playsound, args=['indicators/initialize.mp3']).start()
