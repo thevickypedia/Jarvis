@@ -522,7 +522,14 @@ def conditions(converted: str):
         speaker.say(getFact(False))
 
     elif any(word in converted_lower for word in keywords.meetings()):
-        speaker.say(meetings())
+        meeting = ThreadPool(processes=1).apply_async(func=meetings)
+        speaker.say("Please give me a moment sir! Let me check your calendar.")
+        speaker.runAndWait()
+        try:
+            speaker.say(meeting.get(timeout=60))
+        except ThreadTimeoutError:
+            speaker.say("I wasn't able to read your calendar within the set time limit sir!")
+        speaker.runAndWait()
 
     elif any(word in converted_lower for word in keywords.voice_changer()):
         voice_changer(converted)
@@ -856,7 +863,7 @@ def weather(place: str = None):
             weather_suggest = 'It is a perfect weather for some outdoor entertainment.'
         elif temp_feel_f > 85:
             feeling = 'hot'
-            weather_suggest = "I would not consider thick clothes today."
+            weather_suggest = "I would not recommend thick clothes today."
         else:
             feeling, weather_suggest = '', ''
         wind_speed = response['current']['wind_speed']
@@ -3011,7 +3018,7 @@ def time_travel():
     weather()
     speaker.runAndWait()
     try:
-        speaker.say(meeting.get(timeout=20)) if day == 'Morning' else None
+        speaker.say(meeting.get(timeout=60)) if day == 'Morning' else None
     except ThreadTimeoutError:
         pass
     todo()
@@ -3238,8 +3245,11 @@ def offline_communicator():
         offline_communicator_initiate()  # return used here will terminate the current function
 
 
-def meetings():
-    """Uses applescript to fetch calendar events from Microsoft Outlook.
+def meetings(meeting_file: str = 'calendar.scpt'):
+    """Uses applescript to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.
+
+    Args:
+        meeting_file: defaults to calendar.scpt unless an alternate is passed.
 
     Returns:
         Error: Message saying Jarvis was unable to read outlook.
@@ -3249,9 +3259,10 @@ def meetings():
     """
     if operating_system == 'Windows':
         return "Meetings feature on Windows hasn't been developed yet sir!"
+    # todo: fix long wait time. currently ~40 seconds
     today = datetime.now().strftime("%A")
     args = [1, 3]
-    process = Popen(['/usr/bin/osascript', 'meetings.scpt'] + [str(arg) for arg in args], stdout=PIPE, stderr=PIPE)
+    process = Popen(['/usr/bin/osascript', meeting_file] + [str(arg) for arg in args], stdout=PIPE, stderr=PIPE)
     out, err = process.communicate()
     if error := process.returncode:  # stores process.returncode in error if process.returncode is not 0
         logger.error(f"Failed to read outlook with exit code: {error}\n{err.decode('UTF-8')}")

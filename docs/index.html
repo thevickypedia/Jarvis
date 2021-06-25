@@ -603,16 +603,19 @@ Failure: Calls the return function or returns None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meetings">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.meetings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses applescript to fetch calendar events from Microsoft Outlook.</p>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meeting_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'calendar.scpt'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.meetings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses applescript to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Message saying Jarvis was unable to read outlook.
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>meeting_file</strong> – defaults to calendar.scpt unless an alternate is passed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Message saying Jarvis was unable to read outlook.
 No events: Message saying there are no events in the next 12 hours.
 Success: String saying which meeting is scheduled at what time.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Error</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Error</p>
 </dd>
 </dl>
 </dd></dl>
