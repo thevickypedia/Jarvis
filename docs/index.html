@@ -116,8 +116,10 @@
 <li><p><strong>unmount</strong> – Boolean value set to False to unmount the volume only when requested.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean value indicating whether the volume is connected or not.</p>
+</dd>
 </dl>
-<p>Returns: Boolean value indicating whether the volume is connected or not.</p>
 </dd></dl>
 
 </dd></dl>
@@ -192,8 +194,10 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean True only when asked to sleep for conditioned sleep message.</p>
+</dd>
 </dl>
-<p>Returns: Boolean True only when asked to sleep for conditioned sleep message.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -240,11 +244,14 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.device_selector">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">device_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.device_selector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the device name from the user’s input after checking the apple devices list.</p>
-<p>Returns your default device when not able to find it.</p>
+<dd><p>Selects a device using the received input string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the device name from the user’s input after checking the apple devices list.
+Returns your default device when not able to find it.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -299,8 +306,10 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>input</strong> – Takes string as an argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Float values.</p>
+</dd>
 </dl>
-<p>Returns: Float values.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -311,8 +320,10 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>input</strong> – Takes a string as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A string after removing special characters.</p>
+</dd>
 </dl>
-<p>Returns: A string after removing special characters.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -329,14 +340,21 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>input</strong> – Int if found, else returns the received float value.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Formatted integer.</p>
+</dd>
 </dl>
-<p>Returns: Formatted integer.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.get_ssid">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">get_ssid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.get_ssid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the WiFi or Ethernet SSID.</p>
+<dd><p>Gets SSID of the network connected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>WiFi or Ethernet SSID.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -446,7 +464,11 @@ to make sure the suggestions and parsing don’t run on an infinite loop.</p>
 <dt class="sig sig-object py" id="jarvis.greeting">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">greeting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.greeting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the current hour to determine the part of day.</p>
-<p>Returns: Morning, Afternoon, Evening or Night based on time of day.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Morning, Afternoon, Evening or Night based on time of day.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -460,13 +482,15 @@ Notifications will be triggered only after 5 minutes of initial notification.</p
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.host_info">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">host_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.host_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns required info either model or the version of the PC.</p>
+<dd><p>Gets both the model and version of the hosted device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>required</strong> – model or version</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Model or version of the machine based on the arg received.</p>
+</dd>
 </dl>
-<p>Returns: Model or version of the machine based on the arg received.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -490,11 +514,8 @@ Notifications will be triggered only after 5 minutes of initial notification.</p
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Speedtest module.
-Failure: Boolean False.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Success</p>
+<dd class="field-odd"><p>On success, returns Speedtest module.
+On failure, returns boolean False.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -535,11 +556,8 @@ Failure: Boolean False.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Recognized statement from the microphone.
-Failure: ‘SR_ERROR’ as a string which is conditioned to respond appropriately.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Success</p>
+<dd class="field-even"><p>On success, returns recognized statement from the microphone.
+On failure, returns ‘SR_ERROR’ as a string which is conditioned to respond appropriately.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -581,11 +599,8 @@ Failure: ‘SR_ERROR’ as a string which is conditioned to respond appropriatel
 <dd class="field-odd"><p><strong>device</strong> – Passed when locating a particular apple device.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Current latitude, current longitude and location information as a dict.
-Failure: Calls the return function or returns None.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Success</p>
+<dd class="field-even"><p>On success, returns current latitude, current longitude and location information as a dict.
+On failure, calls the return function or returns None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -611,7 +626,7 @@ Failure: Calls the return function or returns None.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meeting_reader">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meeting_reader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.meeting_reader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Speaks meeting information that meeting_gatherer() stored in a file named ‘meeting’.</p>
+<dd><p>Speaks meeting information that meeting_gatherer() stored in a file named ‘meetings’.</p>
 <p>If the file is not available, meeting information is directly fetched from the meetings() function.</p>
 </dd></dl>
 
@@ -624,12 +639,9 @@ Failure: Calls the return function or returns None.</p>
 <dd class="field-odd"><p><strong>meeting_file</strong> – Takes applescript filename as argument. Defaults to calendar.scpt unless an alternate is passed.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Message saying which meeting is scheduled at what time.
-No events: Message saying there are no events in the next 12 hours.
-Error: Message saying Jarvis was unable to read calendar/outlook.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Success</p>
+<dd class="field-even"><p>On success, returns a message saying which meeting is scheduled at what time.
+If no events, returns a message saying there are no events in the next 12 hours.
+On failure, returns a message saying Jarvis was unable to read calendar/outlook.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -850,8 +862,10 @@ set the brightness to bare minimum and increase {*}% from there or vice-versa.</
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>byte_size</strong> – Receives byte size as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Converted understandable size.</p>
+</dd>
 </dl>
-<p>Returns: Converted understandable size.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -868,8 +882,10 @@ set the brightness to bare minimum and increase {*}% from there or vice-versa.</
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>key</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return value from conditions()</p>
+</dd>
 </dl>
-<p>Returns: Return value from conditions()</p>
 </dd></dl>
 
 <dl class="py function">
@@ -934,8 +950,10 @@ other statements to use it.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>seconds</strong> – Takes number of seconds as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Seconds converted to days or hours or minutes or seconds.</p>
+</dd>
 </dl>
-<p>Returns: Seconds converted to days or hours or minutes or seconds.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -992,7 +1010,11 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dt class="sig sig-object py" id="jarvis.vpn_checker">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">vpn_checker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.vpn_checker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses simple check on network id to see if it is connected to local host or not.</p>
-<p>Returns: network id of local host.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Private IP address of host machine.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1072,154 +1094,242 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.birthday">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">birthday</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.birthday" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.git_pass">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">git_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.git_pass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.git_user">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">git_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.git_user" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.gmail_pass">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">gmail_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.gmail_pass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.gmail_user">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">gmail_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.gmail_user" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.icloud_pass">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">icloud_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.icloud_pass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.icloud_recovery">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">icloud_recovery</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.icloud_recovery" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.icloud_user">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">icloud_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.icloud_user" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.maps_api">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">maps_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.maps_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.news_api">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">news_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.news_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.offline_receive_pass">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">offline_receive_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.offline_receive_pass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.offline_receive_user">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">offline_receive_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.offline_receive_user" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.offline_sender">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">offline_sender</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.offline_sender" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.phone">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">phone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.phone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.robinhood_pass">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">robinhood_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.robinhood_pass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.robinhood_qr">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">robinhood_qr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.robinhood_qr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.robinhood_user">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">robinhood_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.robinhood_user" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.router_pass">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">router_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.router_pass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.think_id">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">think_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.think_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.tv_client_key">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">tv_client_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.tv_client_key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.tv_mac">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">tv_mac</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.tv_mac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.weather_api">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">weather_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.weather_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
-<p>Returns: Parameter value received from gatherer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parameter value received from gatherer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1244,56 +1354,88 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.about_me">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">about_me</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.conversation.Conversation.about_me" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match and initiate a conversation.</p>
-<p>Returns: List of words for conversation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for conversation.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.capabilities">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">capabilities</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.conversation.Conversation.capabilities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match and initiate a conversation.</p>
-<p>Returns: List of words for conversation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for conversation.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.form">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">form</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.conversation.Conversation.form" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match and initiate a conversation.</p>
-<p>Returns: List of words for conversation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for conversation.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.greeting">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">greeting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.conversation.Conversation.greeting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match and initiate a conversation.</p>
-<p>Returns: List of words for conversation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for conversation.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.languages">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">languages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.conversation.Conversation.languages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match and initiate a conversation.</p>
-<p>Returns: List of words for conversation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for conversation.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.what">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">what</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.conversation.Conversation.what" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match and initiate a conversation.</p>
-<p>Returns: List of words for conversation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for conversation.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.whats_up">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">whats_up</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.conversation.Conversation.whats_up" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match and initiate a conversation.</p>
-<p>Returns: List of words for conversation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for conversation.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.who">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">who</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.conversation.Conversation.who" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match and initiate a conversation.</p>
-<p>Returns: List of words for conversation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for conversation.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1316,7 +1458,11 @@ deleter - removes items from the table ‘tasks’ when the item or category nam
 <dt class="sig sig-object py" id="helper_functions.database.Database.create_db">
 <span class="sig-name descname"><span class="pre">create_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.database.Database.create_db" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a database with the set filename: tasks.db and a table: tasks.</p>
-<p>Returns: A success message on DB and table creation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A success message on DB and table creation.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1328,11 +1474,8 @@ deleter - removes items from the table ‘tasks’ when the item or category nam
 <dd class="field-odd"><p><strong>item</strong> – Takes the item that has to be removed as an argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A string indicating the item has been deleted.
-On failure: A string indicating the item was not found.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>On success</p>
+<dd class="field-even"><p>On success, returns a string indicating the item has been deleted.
+On failure, returns a string indicating the item was not found.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1341,7 +1484,11 @@ On failure: A string indicating the item was not found.</p>
 <dt class="sig sig-object py" id="helper_functions.database.Database.downloader">
 <span class="sig-name descname"><span class="pre">downloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.database.Database.downloader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Downloads the rows and columns in the table.</p>
-<p>Returns: The downloaded table information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The downloaded table information.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1355,8 +1502,10 @@ On failure: A string indicating the item was not found.</p>
 <li><p><strong>item</strong> – Item which has to be added to the category. (Eg: Water can)</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A string indicating the item and category that it was added to.</p>
+</dd>
 </dl>
-<p>Returns: A string indicating the item and category that it was added to.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1384,8 +1533,10 @@ On failure: A string indicating the item was not found.</p>
 <li><p><strong>attachments</strong> – Attachment that has to be added to the email.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Created multipart message.</p>
+</dd>
 </dl>
-<p>Returns: Created multipart message.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1520,399 +1671,627 @@ On failure: A string indicating the item was not found.</p>
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.add_todo">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">add_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.add_todo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.alarm">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">alarm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.alarm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.apps">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">apps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.apps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.avoid">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">avoid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.avoid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.bluetooth">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">bluetooth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.bluetooth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.brightness">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">brightness</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.brightness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.chatbot">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">chatbot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.chatbot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.create_db">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">create_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.create_db" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.date">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">date</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.delete_db">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">delete_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.delete_db" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.delete_todo">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">delete_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.delete_todo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.directions">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">directions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.directions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.distance">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.exit">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">exit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.exit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.face_detection">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">face_detection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.face_detection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.facts">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">facts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.facts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.flip_a_coin">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">flip_a_coin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.flip_a_coin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.geopy">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">geopy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.geopy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.github">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">github</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.github" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.gmail">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">gmail</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.gmail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.google_home">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">google_home</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.google_home" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.google_search">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">google_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.google_search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.guard_disable">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">guard_disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.guard_disable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.guard_enable">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">guard_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.guard_enable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.ip_info">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">ip_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.ip_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.jokes">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">jokes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.jokes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.kill">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">kill</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.kill" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.kill_alarm">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">kill_alarm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.kill_alarm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.lights">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">lights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.lights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.list_todo">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">list_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.list_todo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.locate">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">locate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.locate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.location">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.location" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.meaning">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">meaning</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.meaning" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.meetings">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.meetings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.music">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">music</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.music" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.news">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">news</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.news" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.notes">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">notes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.notes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.ok">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">ok</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.ok" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.personal_cloud">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">personal_cloud</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.personal_cloud" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.reminder">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">reminder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.reminder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.repeat">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.repeat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.report">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.report" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.restart">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.restart" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.robinhood">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.shutdown">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.shutdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.sleep">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">sleep</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.sleep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.speed_test">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">speed_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.speed_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.system_info">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">system_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.system_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.system_vitals">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">system_vitals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.system_vitals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.time">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.tv">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">tv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.tv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.txt_message">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">txt_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.txt_message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.voice_changer">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">voice_changer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.voice_changer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.volume">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.weather">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">weather</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.weather" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.webpage">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">webpage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.webpage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.wikipedia">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">wikipedia</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.keywords.Keywords.wikipedia" title="Permalink to this definition">¶</a></dt>
 <dd><p>Words to match the given statement.</p>
-<p>Returns: List of words for the function name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of words for the function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1935,8 +2314,10 @@ On failure: A string indicating the item was not found.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>bytes</strong> – Takes a list value as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Checksum value for the given list value.</p>
+</dd>
 </dl>
-<p>Returns: Checksum value for the given list value.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1957,7 +2338,11 @@ On failure: A string indicating the item was not found.</p>
 <dt class="sig sig-object py" id="helper_functions.lights.MagicHomeApi.get_status">
 <span class="sig-name descname"><span class="pre">get_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.lights.MagicHomeApi.get_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the current status of a device.</p>
-<p>Returns: A signal to socket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A signal to socket.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2033,28 +2418,44 @@ Whites can have a value of None.</p>
 <dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.bedroom">
 <span class="sig-name descname"><span class="pre">bedroom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.bedroom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Host names of bedroom light bulbs stored in a list.</p>
-<p>Yields: IP address of the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields</dt>
+<dd class="field-odd"><p>IP address of the device.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.hallway">
 <span class="sig-name descname"><span class="pre">hallway</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.hallway" title="Permalink to this definition">¶</a></dt>
 <dd><p>Host names of hallway light bulbs stored in a list.</p>
-<p>Yields: IP address of the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields</dt>
+<dd class="field-odd"><p>IP address of the device.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.kitchen">
 <span class="sig-name descname"><span class="pre">kitchen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.kitchen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Host names of kitchen light bulbs stored in a list.</p>
-<p>Yields: IP address of the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields</dt>
+<dd class="field-odd"><p>IP address of the device.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.tv">
 <span class="sig-name descname"><span class="pre">tv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.tv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Host name of TV for string equality comparison.</p>
-<p>Yields: IP address of the TV.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields</dt>
+<dd class="field-odd"><p>IP address of the TV.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -2162,7 +2563,11 @@ Whites can have a value of None.</p>
 <dt class="sig sig-object py" id="helper_functions.robinhood.RobinhoodGatherer.watcher">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">watcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.robinhood.RobinhoodGatherer.watcher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches all necessary information about your investment portfolio.</p>
-<p>Returns: A string value of total purchased stocks and resultant profit/loss.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A string value of total purchased stocks and resultant profit/loss.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -2185,8 +2590,10 @@ Whites can have a value of None.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>arg</strong> – Takes Celcius value as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Converted Farenheit value.</p>
+</dd>
 </dl>
-<p>Returns: Converted Farenheit value.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2197,8 +2604,10 @@ Whites can have a value of None.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>arg</strong> – Takes Celcius value as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Converted Kelvin value.</p>
+</dd>
 </dl>
-<p>Returns: Converted Kelvin value.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2209,8 +2618,10 @@ Whites can have a value of None.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>arg</strong> – Takes Farenheit value as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Converted Celcius value.</p>
+</dd>
 </dl>
-<p>Returns: Converted Celcius value.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2221,8 +2632,10 @@ Whites can have a value of None.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>arg</strong> – Taken Farenheit value as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Converted Kelvin value.</p>
+</dd>
 </dl>
-<p>Returns: Converted Kelvin value.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2233,8 +2646,10 @@ Whites can have a value of None.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>arg</strong> – Takes Kelvin value as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Converted Celcius value.</p>
+</dd>
 </dl>
-<p>Returns: Converted Celcius value.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2245,8 +2660,10 @@ Whites can have a value of None.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>arg</strong> – Takes Kelvin value as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Converted Farenheit value.</p>
+</dd>
 </dl>
-<p>Returns: Converted Farenheit value.</p>
 </dd></dl>
 
 </dd></dl>
@@ -2271,7 +2688,11 @@ Whites can have a value of None.</p>
 <dt class="sig sig-object py" id="helper_functions.tv_controls.TV.audio_output_source">
 <span class="sig-name descname"><span class="pre">audio_output_source</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.tv_controls.TV.audio_output_source" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the list of audio output sources available.</p>
-<p>Returns: List of AudioOutputSource instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of AudioOutputSource instances.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2284,7 +2705,11 @@ Whites can have a value of None.</p>
 <dt class="sig sig-object py" id="helper_functions.tv_controls.TV.current_app">
 <span class="sig-name descname"><span class="pre">current_app</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.tv_controls.TV.current_app" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scans the current application running in foreground.</p>
-<p>Returns: Title of te current app that is running</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Title of te current app that is running</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2303,7 +2728,14 @@ Whites can have a value of None.</p>
 <dt class="sig sig-object py" id="helper_functions.tv_controls.TV.get_volume">
 <span class="sig-name descname"><span class="pre">get_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.tv_controls.TV.get_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get volume status.</p>
-<p>Returns: {‘scenario’: ‘mastervolume_tv_speaker’, ‘volume’: 9, ‘muted’: False}</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>‘mastervolume_tv_speaker’, ‘volume’: 9, ‘muted’: False}</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>{‘scenario’</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2320,15 +2752,21 @@ Whites can have a value of None.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>app_name</strong> – Takes the application name as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A call to the launch module.</p>
+</dd>
 </dl>
-<p>Returns: A call to the launch module.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.tv_controls.TV.list_apps">
 <span class="sig-name descname"><span class="pre">list_apps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.tv_controls.TV.list_apps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the applications installed on the TV.</p>
-<p>Returns: List of available apps on the TV.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of available apps on the TV.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2375,8 +2813,10 @@ Whites can have a value of None.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>val</strong> – Takes the input source instance value as argument.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of sources.</p>
+</dd>
 </dl>
-<p>Returns: List of sources.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2400,7 +2840,11 @@ Whites can have a value of None.</p>
 <dt class="sig sig-object py" id="helper_functions.tv_controls.TV.source">
 <span class="sig-name descname"><span class="pre">source</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.tv_controls.TV.source" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for the input sources on the TV.</p>
-<p>Returns: List of InputSource instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of InputSource instances.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

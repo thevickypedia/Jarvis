@@ -33,7 +33,8 @@ class Emailer:
             html: HTML format of the email.
             attachments: Attachment that has to be added to the email.
 
-        Returns: Created multipart message.
+        Returns:
+            Created multipart message.
 
         """
         multipart_content_subtype = 'alternative' if text and html else 'mixed'

@@ -22,7 +22,8 @@ class Database:
     def create_db(self):
         """Creates a database with the set filename: tasks.db and a table: tasks.
 
-        Returns: A success message on DB and table creation.
+        Returns:
+            A success message on DB and table creation.
 
         """
         if isfile(self.file_name):
@@ -36,7 +37,8 @@ class Database:
     def downloader(self):
         """Downloads the rows and columns in the table.
 
-        Returns: The downloaded table information.
+        Returns:
+            The downloaded table information.
 
         """
         connection = connect(self.file_name)
@@ -53,7 +55,8 @@ class Database:
             category: Category under which a task falls. (Eg: Groceries)
             item: Item which has to be added to the category. (Eg: Water can)
 
-        Returns: A string indicating the item and category that it was added to.
+        Returns:
+            A string indicating the item and category that it was added to.
 
         """
         connection = connect(self.file_name)
@@ -72,8 +75,8 @@ class Database:
             item: Takes the item that has to be removed as an argument.
 
         Returns:
-            On success: A string indicating the item has been deleted.
-            On failure: A string indicating the item was not found.
+            On success, returns a string indicating the item has been deleted.
+            On failure, returns a string indicating the item was not found.
 
         """
         connection = connect(self.file_name)

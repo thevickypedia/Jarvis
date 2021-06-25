@@ -9,7 +9,8 @@ class Conversation:
     def greeting():
         """Words to match and initiate a conversation.
 
-        Returns: List of words for conversation.
+        Returns:
+            List of words for conversation.
 
         """
         return ['how are you', 'how are you doing', 'how have you been', 'how do you do']
@@ -18,7 +19,8 @@ class Conversation:
     def capabilities():
         """Words to match and initiate a conversation.
 
-        Returns: List of words for conversation.
+        Returns:
+            List of words for conversation.
 
         """
         return ['what can you do', 'what all can you do', 'what are your capabilities', "what's your capacity",
@@ -28,7 +30,8 @@ class Conversation:
     def languages():
         """Words to match and initiate a conversation.
 
-        Returns: List of words for conversation.
+        Returns:
+            List of words for conversation.
 
         """
         return ['what languages do you speak', 'what are all the languages you can speak', 'what languages do you know',
@@ -39,7 +42,8 @@ class Conversation:
     def what():
         """Words to match and initiate a conversation.
 
-        Returns: List of words for conversation.
+        Returns:
+            List of words for conversation.
 
         """
         return ['what are you']
@@ -48,7 +52,8 @@ class Conversation:
     def who():
         """Words to match and initiate a conversation.
 
-        Returns: List of words for conversation.
+        Returns:
+            List of words for conversation.
 
         """
         return ['who are you', 'what do I call you', "what's your name", 'what is your name']
@@ -57,7 +62,8 @@ class Conversation:
     def form():
         """Words to match and initiate a conversation.
 
-        Returns: List of words for conversation.
+        Returns:
+            List of words for conversation.
 
         """
         return ['where is your body', "where's your body"]
@@ -66,7 +72,8 @@ class Conversation:
     def whats_up():
         """Words to match and initiate a conversation.
 
-        Returns: List of words for conversation.
+        Returns:
+            List of words for conversation.
 
         """
         return ["what's up", 'what is up', "what's going on", 'sup']
@@ -75,7 +82,8 @@ class Conversation:
     def about_me():
         """Words to match and initiate a conversation.
 
-        Returns: List of words for conversation.
+        Returns:
+            List of words for conversation.
 
         """
         return ['tell me about you', 'tell me something about you', 'i would like to get you know you',

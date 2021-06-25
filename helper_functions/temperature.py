@@ -12,7 +12,8 @@ class Temperature:
         Args:
             arg: Takes Celcius value as argument.
 
-        Returns: Converted Farenheit value.
+        Returns:
+            Converted Farenheit value.
 
         """
         return round(((arg / 5) * 9) + 32, 2)
@@ -24,7 +25,8 @@ class Temperature:
         Args:
             arg: Takes Farenheit value as argument.
 
-        Returns: Converted Celcius value.
+        Returns:
+            Converted Celcius value.
 
         """
         return round(((arg - 32) / 9) * 5, 2)
@@ -36,7 +38,8 @@ class Temperature:
         Args:
             arg: Takes Celcius value as argument.
 
-        Returns: Converted Kelvin value.
+        Returns:
+            Converted Kelvin value.
 
         """
         return arg + 273.15
@@ -48,7 +51,8 @@ class Temperature:
         Args:
             arg: Takes Kelvin value as argument.
 
-        Returns: Converted Celcius value.
+        Returns:
+            Converted Celcius value.
 
         """
         return arg - 273.15
@@ -60,7 +64,8 @@ class Temperature:
         Args:
             arg: Takes Kelvin value as argument.
 
-        Returns: Converted Farenheit value.
+        Returns:
+            Converted Farenheit value.
 
         """
         return round((arg * 1.8) - 459.69, 2)
@@ -72,7 +77,8 @@ class Temperature:
         Args:
             arg: Taken Farenheit value as argument.
 
-        Returns: Converted Kelvin value.
+        Returns:
+            Converted Kelvin value.
 
         """
         return round((arg + 459.67) / 1.8, 2)

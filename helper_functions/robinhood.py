@@ -12,7 +12,8 @@ class RobinhoodGatherer:
     def watcher(rh, result: list):
         """Fetches all necessary information about your investment portfolio.
 
-        Returns: A string value of total purchased stocks and resultant profit/loss.
+        Returns:
+            A string value of total purchased stocks and resultant profit/loss.
 
         """
         shares_total = []

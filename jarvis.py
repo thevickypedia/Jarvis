@@ -97,8 +97,8 @@ def listener(timeout: int, phrase_limit: int):
         phrase_limit: Time in seconds for the listener to actively listen to a sound.
 
     Returns:
-         Success: Recognized statement from the microphone.
-         Failure: 'SR_ERROR' as a string which is conditioned to respond appropriately.
+         On success, returns recognized statement from the microphone.
+         On failure, returns 'SR_ERROR' as a string which is conditioned to respond appropriately.
 
     """
     try:
@@ -118,7 +118,8 @@ def split(key: str):
     Args:
         key: Takes the voice recognized statement as argument.
 
-    Returns: Return value from conditions()
+    Returns:
+        Return value from conditions()
 
     """
     exit_check = False  # this is specifically to catch the sleep command which should break the while loop in renew()
@@ -136,7 +137,8 @@ def split(key: str):
 def greeting():
     """Checks the current hour to determine the part of day.
 
-    Returns: Morning, Afternoon, Evening or Night based on time of day.
+    Returns:
+        Morning, Afternoon, Evening or Night based on time of day.
 
     """
     am_or_pm = datetime.now().strftime("%p")
@@ -198,7 +200,8 @@ def time_converter(seconds: float):
     Args:
         seconds: Takes number of seconds as argument.
 
-    Returns: Seconds converted to days or hours or minutes or seconds.
+    Returns:
+        Seconds converted to days or hours or minutes or seconds.
 
     """
     days = round(seconds // 86400)
@@ -225,7 +228,8 @@ def conditions(converted: str):
     Args:
         converted: Takes the voice recognized statement as argument.
 
-    Returns: Boolean True only when asked to sleep for conditioned sleep message.
+    Returns:
+        Boolean True only when asked to sleep for conditioned sleep message.
 
     """
     sys.stdout.write(f'\r{converted}')
@@ -657,8 +661,8 @@ def location_services(device: str):
         device: Passed when locating a particular apple device.
 
     Returns:
-        Success: Current latitude, current longitude and location information as a dict.
-        Failure: Calls the return function or returns None.
+        On success, returns current latitude, current longitude and location information as a dict.
+        On failure, calls the return function or returns None.
 
     """
     try:
@@ -1210,12 +1214,14 @@ def chatter_bot():
 
 
 def device_selector(converted: str = None):
-    """Returns the device name from the user's input after checking the apple devices list.
-
-    Returns your default device when not able to find it.
+    """Selects a device using the received input string.
 
     Args:
         converted: Takes the voice recognized statement as argument.
+
+    Returns:
+        Returns the device name from the user's input after checking the apple devices list.
+        Returns your default device when not able to find it.
 
     """
     if converted and isinstance(converted, str):
@@ -2011,7 +2017,8 @@ def google_home(device: str = None, file: str = None):
         Args:
             host_id: Host ID passed in a multi-threaded fashion to scan for google home devices in IP range.
 
-        Returns: Device name and it's IP address.
+        Returns:
+            Device name and it's IP address.
 
         """
         try:
@@ -2040,7 +2047,8 @@ def google_home(device: str = None, file: str = None):
             Args:
                 list_: Take a list of elements as an argument.
 
-            Returns: Comma separated list of elements.
+            Returns:
+                Comma separated list of elements.
 
             """
             return ', and '.join([', '.join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
@@ -2980,7 +2988,8 @@ def lights(converted: str):
 def vpn_checker():
     """Uses simple check on network id to see if it is connected to local host or not.
 
-    Returns: network id of local host.
+    Returns:
+        Private IP address of host machine.
 
     """
     socket_ = socket(AF_INET, SOCK_DGRAM)
@@ -3254,7 +3263,7 @@ def offline_communicator():
 
 
 def meeting_reader():
-    """Speaks meeting information that meeting_gatherer() stored in a file named 'meeting'.
+    """Speaks meeting information that meeting_gatherer() stored in a file named 'meetings'.
 
     If the file is not available, meeting information is directly fetched from the meetings() function.
     """
@@ -3289,9 +3298,9 @@ def meetings(meeting_file: str = 'calendar.scpt'):
         meeting_file: Takes applescript filename as argument. Defaults to calendar.scpt unless an alternate is passed.
 
     Returns:
-        Success: Message saying which meeting is scheduled at what time.
-        No events: Message saying there are no events in the next 12 hours.
-        Error: Message saying Jarvis was unable to read calendar/outlook.
+        On success, returns a message saying which meeting is scheduled at what time.
+        If no events, returns a message saying there are no events in the next 12 hours.
+        On failure, returns a message saying Jarvis was unable to read calendar/outlook.
 
     """
     if operating_system == 'Windows':
@@ -3401,7 +3410,12 @@ def system_vitals():
 
 
 def get_ssid():
-    """Returns the WiFi or Ethernet SSID."""
+    """Gets SSID of the network connected.
+
+    Returns:
+        WiFi or Ethernet SSID.
+
+    """
     if operating_system == 'Darwin':
         process = Popen(
             ['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'],
@@ -3527,7 +3541,8 @@ class PersonalCloud:
             mount: Boolean value set to True to mount the volume by default.
             unmount: Boolean value set to False to unmount the volume only when requested.
 
-        Returns: Boolean value indicating whether the volume is connected or not.
+        Returns:
+            Boolean value indicating whether the volume is connected or not.
 
         """
         connected = False
@@ -3580,8 +3595,8 @@ def internet_checker():
     >>> Speedtest
 
     Returns:
-        Success: Speedtest module.
-        Failure: Boolean False.
+        On success, returns Speedtest module.
+        On failure, returns boolean False.
 
     """
     try:
@@ -3654,7 +3669,8 @@ def size_converter(byte_size: int):
     Args:
         byte_size: Receives byte size as argument.
 
-    Returns: Converted understandable size.
+    Returns:
+        Converted understandable size.
 
     """
     if not byte_size:
@@ -3770,7 +3786,8 @@ def extract_nos(input_: str):
     Args:
         input_: Takes string as an argument.
 
-    Returns: Float values.
+    Returns:
+        Float values.
 
     """
     return float('.'.join(re.findall(r"\d+", input_)))
@@ -3782,7 +3799,8 @@ def format_nos(input_: float):
     Args:
         input_: Int if found, else returns the received float value.
 
-    Returns: Formatted integer.
+    Returns:
+        Formatted integer.
 
     """
     return int(input_) if isinstance(input_, float) and input_.is_integer() else input_
@@ -3794,19 +3812,21 @@ def extract_str(input_: str):
     Args:
         input_: Takes a string as argument.
 
-    Returns: A string after removing special characters.
+    Returns:
+        A string after removing special characters.
 
     """
     return ''.join([i for i in input_ if not i.isdigit() and i not in [',', '.', '?', '-', ';', '!', ':']])
 
 
 def host_info(required: str):
-    """Returns required info either model or the version of the PC.
+    """Gets both the model and version of the hosted device.
 
     Args:
         required: model or version
 
-    Returns: Model or version of the machine based on the arg received.
+    Returns:
+        Model or version of the machine based on the arg received.
 
     """
     device = (check_output("sysctl hw.model", shell=True)).decode('utf-8').split('\n')  # gets model info

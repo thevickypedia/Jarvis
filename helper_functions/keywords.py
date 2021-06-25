@@ -9,7 +9,8 @@ class Keywords:
     def date():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['date']
@@ -18,7 +19,8 @@ class Keywords:
     def time():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['time']
@@ -27,7 +29,8 @@ class Keywords:
     def weather():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['weather', 'temperature']
@@ -36,7 +39,8 @@ class Keywords:
     def system_info():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['configuration']
@@ -45,7 +49,8 @@ class Keywords:
     def ip_info():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['address']
@@ -54,7 +59,8 @@ class Keywords:
     def webpage():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['website', 'webpage', 'web page', '.']
@@ -63,7 +69,8 @@ class Keywords:
     def wikipedia():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['wikipedia', 'info', 'information']
@@ -72,7 +79,8 @@ class Keywords:
     def news():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['news']
@@ -81,7 +89,8 @@ class Keywords:
     def report():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['report']
@@ -90,7 +99,8 @@ class Keywords:
     def robinhood():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['robinhood', 'investment', 'portfolio', 'summary']
@@ -99,7 +109,8 @@ class Keywords:
     def apps():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['launch']
@@ -108,7 +119,8 @@ class Keywords:
     def repeat():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['repeat', 'train']
@@ -117,7 +129,8 @@ class Keywords:
     def chatbot():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['chat', 'chatbot', 'chatter']
@@ -126,7 +139,8 @@ class Keywords:
     def location():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['location', 'where am i']
@@ -135,7 +149,8 @@ class Keywords:
     def locate():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['locate', 'where is my', "where's my"]
@@ -144,7 +159,8 @@ class Keywords:
     def music():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['music', 'songs', 'play']
@@ -153,7 +169,8 @@ class Keywords:
     def gmail():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['email', 'mail', 'emails', 'mails']
@@ -162,7 +179,8 @@ class Keywords:
     def meaning():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['meaning', 'meanings', 'dictionary', 'definition']
@@ -171,7 +189,8 @@ class Keywords:
     def create_db():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['create a new database', 'create a new data base', 'create a database', 'create a data base']
@@ -180,7 +199,8 @@ class Keywords:
     def add_todo():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['update my to do list', 'add tasks', 'add items to my to do list', 'new task', 'add new task',
@@ -190,7 +210,8 @@ class Keywords:
     def delete_todo():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['remove items', 'delete items', 'remove some items']
@@ -199,7 +220,8 @@ class Keywords:
     def delete_db():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['delete database', 'delete data base', 'delete my database', 'delete my data base']
@@ -208,7 +230,8 @@ class Keywords:
     def list_todo():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['plan']
@@ -217,7 +240,8 @@ class Keywords:
     def distance():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['far', 'distance', 'miles']
@@ -226,7 +250,8 @@ class Keywords:
     def avoid():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
@@ -237,7 +262,8 @@ class Keywords:
     def geopy():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['where is', "where's", 'which city', 'which state', 'which country', 'which county']
@@ -246,7 +272,8 @@ class Keywords:
     def directions():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['take me', 'get directions']
@@ -255,7 +282,8 @@ class Keywords:
     def alarm():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['alarm', 'wake me']
@@ -264,7 +292,8 @@ class Keywords:
     def kill_alarm():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off', 'stop another alarm']
@@ -273,7 +302,8 @@ class Keywords:
     def reminder():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['remind', 'reminder']
@@ -282,7 +312,8 @@ class Keywords:
     def google_home():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['google home', 'googlehome']
@@ -291,7 +322,8 @@ class Keywords:
     def jokes():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['joke', 'jokes', 'make me laugh']
@@ -300,7 +332,8 @@ class Keywords:
     def notes():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['notes', 'note']
@@ -309,7 +342,8 @@ class Keywords:
     def github():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['git', 'github', 'clone', 'GitHub']
@@ -318,7 +352,8 @@ class Keywords:
     def txt_message():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['message', 'text', 'messages']
@@ -327,7 +362,8 @@ class Keywords:
     def google_search():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['google search']
@@ -336,7 +372,8 @@ class Keywords:
     def tv():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['tv', 'television']
@@ -345,7 +382,8 @@ class Keywords:
     def volume():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['volume', 'mute']
@@ -354,7 +392,8 @@ class Keywords:
     def face_detection():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['face', 'recognize', 'who am i', 'detect', 'facial', 'recognition', 'detection']
@@ -363,7 +402,8 @@ class Keywords:
     def speed_test():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['speed', 'fast']
@@ -372,7 +412,8 @@ class Keywords:
     def bluetooth():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['connect', 'disconnect', 'bluetooth']
@@ -381,7 +422,8 @@ class Keywords:
     def brightness():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['brightness', 'bright', 'dim']
@@ -390,7 +432,8 @@ class Keywords:
     def lights():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['lights', 'hallway', 'kitchen', 'living room', 'bedroom']
@@ -399,7 +442,8 @@ class Keywords:
     def guard_enable():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['take care', 'heading out', 'keep an eye', 'turn on security mode', 'enable security mode']
@@ -408,7 +452,8 @@ class Keywords:
     def guard_disable():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ["I'm back", 'I am back', 'turn off security mode', 'disable security mode']
@@ -417,7 +462,8 @@ class Keywords:
     def flip_a_coin():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['head', 'tail', 'flip']
@@ -426,7 +472,8 @@ class Keywords:
     def facts():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['fact', 'facts']
@@ -435,7 +482,8 @@ class Keywords:
     def meetings():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['meeting', 'appointment', 'schedule']
@@ -444,7 +492,8 @@ class Keywords:
     def voice_changer():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['voice', 'module', 'audio']
@@ -453,7 +502,8 @@ class Keywords:
     def system_vitals():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['vitals', 'statistics', 'readings', 'stats']
@@ -462,7 +512,8 @@ class Keywords:
     def personal_cloud():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['personal cloud', 'private cloud', 'personal server', 'private server']
@@ -471,7 +522,8 @@ class Keywords:
     def ok():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
@@ -480,7 +532,8 @@ class Keywords:
     def restart():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['restart', 'reboot']
@@ -489,7 +542,8 @@ class Keywords:
     def exit():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['exit', 'quit', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
@@ -499,7 +553,8 @@ class Keywords:
     def sleep():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['exit', 'quit', 'lock', 'sleep', 'Xzibit', 'activate sentry mode']
@@ -508,7 +563,8 @@ class Keywords:
     def kill():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['kill', 'terminate yourself', 'stop running', 'stop']
@@ -517,7 +573,8 @@ class Keywords:
     def shutdown():
         """Words to match the given statement.
 
-        Returns: List of words for the function name.
+        Returns:
+            List of words for the function name.
 
         """
         return ['shutdown', 'shut down', 'terminate']

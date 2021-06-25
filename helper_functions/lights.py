@@ -50,7 +50,8 @@ class MagicHomeApi:
     def get_status(self):
         """Get the current status of a device.
 
-        Returns: A signal to socket.
+        Returns:
+            A signal to socket.
 
         """
         if self.device_type == 2:
@@ -174,7 +175,8 @@ class MagicHomeApi:
         Args:
             bytes_: Takes a list value as argument.
 
-        Returns: Checksum value for the given list value.
+        Returns:
+            Checksum value for the given list value.
 
         """
         return sum(bytes_) & 0xFF

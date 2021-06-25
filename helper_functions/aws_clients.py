@@ -21,7 +21,8 @@ class AWSClients:
     def weather_api():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -30,7 +31,8 @@ class AWSClients:
     def news_api():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -39,7 +41,8 @@ class AWSClients:
     def robinhood_user():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -48,7 +51,8 @@ class AWSClients:
     def robinhood_pass():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -57,7 +61,8 @@ class AWSClients:
     def robinhood_qr():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -66,7 +71,8 @@ class AWSClients:
     def icloud_pass():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -75,7 +81,8 @@ class AWSClients:
     def icloud_recovery():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -84,7 +91,8 @@ class AWSClients:
     def icloud_user():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -93,7 +101,8 @@ class AWSClients:
     def gmail_user():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -102,7 +111,8 @@ class AWSClients:
     def gmail_pass():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -111,7 +121,8 @@ class AWSClients:
     def phone():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -120,7 +131,8 @@ class AWSClients:
     def maps_api():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -129,7 +141,8 @@ class AWSClients:
     def git_user():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -138,7 +151,8 @@ class AWSClients:
     def git_pass():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -147,7 +161,8 @@ class AWSClients:
     def tv_mac():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -156,7 +171,8 @@ class AWSClients:
     def tv_client_key():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -165,7 +181,8 @@ class AWSClients:
     def birthday():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -174,7 +191,8 @@ class AWSClients:
     def offline_receive_user():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -183,7 +201,8 @@ class AWSClients:
     def offline_receive_pass():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -192,7 +211,8 @@ class AWSClients:
     def offline_sender():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -201,7 +221,8 @@ class AWSClients:
     def think_id():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()
@@ -210,7 +231,8 @@ class AWSClients:
     def router_pass():
         """Calls gatherer which uses the caller func name to return the param value.
 
-        Returns: Parameter value received from gatherer.
+        Returns:
+            Parameter value received from gatherer.
 
         """
         return gatherer()

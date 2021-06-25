@@ -19,7 +19,8 @@ class LocalIPScan:
     def hallway(self):
         """Host names of hallway light bulbs stored in a list.
 
-        Yields: IP address of the device.
+        Yields:
+            IP address of the device.
 
         """
         hallway_1 = 'ZENGGE_35_011853'
@@ -36,7 +37,8 @@ class LocalIPScan:
     def kitchen(self):
         """Host names of kitchen light bulbs stored in a list.
 
-        Yields: IP address of the device.
+        Yields:
+            IP address of the device.
 
         """
         kitchen_1 = 'ZENGGE_35_239190'
@@ -50,7 +52,8 @@ class LocalIPScan:
     def bedroom(self):
         """Host names of bedroom light bulbs stored in a list.
 
-        Yields: IP address of the device.
+        Yields:
+            IP address of the device.
 
         """
         bedroom_1 = 'ZENGGE_35_22E43F'
@@ -62,7 +65,8 @@ class LocalIPScan:
     def tv(self):
         """Host name of TV for string equality comparison.
 
-        Yields: IP address of the TV.
+        Yields:
+            IP address of the TV.
 
         """
         if attached_devices := self.attached_devices:

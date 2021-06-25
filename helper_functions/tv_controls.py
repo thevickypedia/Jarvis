@@ -79,7 +79,8 @@ class TV:
     def get_volume(self):
         """Get volume status.
 
-        Returns: {'scenario': 'mastervolume_tv_speaker', 'volume': 9, 'muted': False}
+        Returns:
+            {'scenario': 'mastervolume_tv_speaker', 'volume': 9, 'muted': False}
 
         """
         self.system.notify(f"Jarvis::Current Volume: {self.media.get_volume()['volume']}%")
@@ -136,7 +137,8 @@ class TV:
     def audio_output_source(self):
         """Checks the list of audio output sources available.
 
-        Returns: List of AudioOutputSource instances.
+        Returns:
+            List of AudioOutputSource instances.
 
         """
         audio_outputs = self.media.list_audio_output_sources()
@@ -151,7 +153,8 @@ class TV:
     def list_apps(self):
         """Checks the applications installed on the TV.
 
-        Returns: List of available apps on the TV.
+        Returns:
+            List of available apps on the TV.
 
         """
         apps = self.app.list_apps()
@@ -164,7 +167,8 @@ class TV:
         Args:
             app_name: Takes the application name as argument.
 
-        Returns: A call to the launch module.
+        Returns:
+            A call to the launch module.
 
         """
         app_launcher = [x for x in self.app.list_apps() if app_name.lower() in x["title"].lower()][0]
@@ -177,7 +181,8 @@ class TV:
     def source(self):
         """Checks for the input sources on the TV.
 
-        Returns: List of InputSource instances.
+        Returns:
+            List of InputSource instances.
 
         """
         sources = self.source_control.list_sources()
@@ -190,7 +195,8 @@ class TV:
         Args:
             val: Takes the input source instance value as argument.
 
-        Returns: List of sources.
+        Returns:
+            List of sources.
 
         """
         sources = self.source_control.list_sources()
@@ -201,7 +207,8 @@ class TV:
     def current_app(self):
         """Scans the current application running in foreground.
 
-        Returns: Title of te current app that is running
+        Returns:
+            Title of te current app that is running
 
         """
         app_id = self.app.get_current()  # Returns the application ID (string) of the
