@@ -234,6 +234,7 @@ def conditions(converted: str):
     """
     sys.stdout.write(f'\r{converted}')
     converted_lower = converted.lower()
+    todo_checks = ['to do', 'to-do', 'todo']
     if any(word in converted_lower for word in keywords.date()) and \
             not any(word in converted_lower for word in keywords.avoid()):
         current_date()
@@ -321,13 +322,15 @@ def conditions(converted: str):
     elif any(word in converted_lower for word in keywords.meaning()):
         meaning(converted.split()[-1])
 
-    elif any(word in converted_lower for word in keywords.delete_todo()):
+    elif any(word in converted_lower for word in keywords.delete_todo()) and \
+            any(word in converted_lower for word in todo_checks):
         delete_todo()
 
     elif any(word in converted_lower for word in keywords.list_todo()):
         todo()
 
-    elif any(word in converted_lower for word in keywords.add_todo()):
+    elif any(word in converted_lower for word in keywords.add_todo()) and \
+            any(word in converted_lower for word in todo_checks):
         add_todo()
 
     elif any(word in converted_lower for word in keywords.delete_db()):
@@ -3642,13 +3645,16 @@ def sentry_mode():
                 if 'night' in key_split or 'goodnight' in key_split:
                     Thread(target=pc_sleep).start()
                 time_travel()
+            elif 'you there' in key and 'jarvis' in key:
+                speaker.say(f'{choice(wake_up1)}')
+                initialize()
+            elif any(word in key for word in wake_up_words) and 'jarvis' in key:
+                speaker.say(f'{choice(wake_up2)}')
+                initialize()
             elif key == 'jarvis':
                 speaker.say(f'{choice(wake_up3)}')
                 initialize()
-            elif any(word in key for word in wake_up_words) and 'jarvis' in key:
-                speaker.say(f'{choice(wake_up1)}')
-                initialize()
-            elif 'jarvis' in key:
+            elif 'jarvis' in key or 'buddy' in key:
                 remove = ['buddy', 'jarvis']
                 converted = ' '.join([i for i in key_original.split() if i.lower() not in remove])
                 if converted:
@@ -4121,9 +4127,9 @@ if __name__ == '__main__':
                 yaml_dump(dumper, location_writer, default_flow_style=False)
 
     # different responses for different conditions in sentry mode
-    wake_up1 = ['Up and running sir!', "We are online and ready sir!", "I have indeed been uploaded sir!",
+    wake_up1 = ['For you sir - Always!', 'At your service sir!']
+    wake_up2 = ['Up and running sir!', "We are online and ready sir!", "I have indeed been uploaded sir!",
                 'My listeners have been activated sir!']
-    wake_up2 = ['For you sir - Always!', 'At your service sir!']
     wake_up3 = ["I'm here sir!"]
 
     confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']

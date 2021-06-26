@@ -203,8 +203,7 @@ class Keywords:
             List of words for the function name.
 
         """
-        return ['update my to do list', 'add tasks', 'add items to my to do list', 'new task', 'add new task',
-                'add a new task']
+        return ['add', 'update']
 
     @staticmethod
     def delete_todo():
@@ -214,7 +213,7 @@ class Keywords:
             List of words for the function name.
 
         """
-        return ['remove items', 'delete items', 'remove some items']
+        return ['remove', 'delete']
 
     @staticmethod
     def delete_db():
