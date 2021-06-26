@@ -526,7 +526,9 @@ def conditions(converted: str):
         speaker.say(getFact(False))
 
     elif any(word in converted_lower for word in keywords.meetings()):
-        if not os.path.isfile('meetings'):
+        if os.path.isfile('meetings'):
+            meeting_reader()
+        else:
             meeting = ThreadPool(processes=1).apply_async(func=meetings)
             speaker.say("Please give me a moment sir! Let me check your calendar.")
             speaker.runAndWait()
@@ -535,8 +537,6 @@ def conditions(converted: str):
             except ThreadTimeoutError:
                 speaker.say("I wasn't able to read your calendar within the set time limit sir!")
             speaker.runAndWait()
-        else:
-            meeting_reader()
 
     elif any(word in converted_lower for word in keywords.voice_changer()):
         voice_changer(converted)
@@ -3031,7 +3031,7 @@ def time_travel():
     current_time()
     weather()
     speaker.runAndWait()
-    if meeting and day == 'Morning':
+    if os.path.isfile('meetings') and day == 'Morning':
         try:
             speaker.say(meeting.get(timeout=60))
         except ThreadTimeoutError:
@@ -3307,14 +3307,24 @@ def meetings(meeting_file: str = 'calendar.scpt'):
         return "Meetings feature on Windows hasn't been developed yet sir!"
 
     args = [1, 3]
+    source_app = meeting_file.replace('.scpt', '')
+    failure = None
     process = Popen(['/usr/bin/osascript', meeting_file] + [str(arg) for arg in args], stdout=PIPE, stderr=PIPE)
     out, err = process.communicate()
     if error := process.returncode:  # stores process.returncode in error if process.returncode is not 0
-        logger.error(f"Failed to read {meeting_file.replace('.scpt', '')} with exit code: "
-                     f"{error}\n{err.decode('UTF-8')}")
-        failure = f"Unable to read {meeting_file.replace('.scpt', '')}\n{err.decode('UTF-8')}"
+        err_msg = err.decode('UTF-8')
+        err_code = err_msg.split()[-1].strip()
+        if err_code in ['(-10810)', '(-609)', '(-600)']:  # If the script is unable to launch the app or app terminates.
+            apps(f'Launch {meeting_file}')
+        elif err_code == '(-1712)':  # If an event takes 2+ minutes, the Apple Event Manager reports a time-out error.
+            failure = f"{source_app}/event took an unusually long time to respond/complete.\nInclude, " \
+                      f"'with timeout of 300 seconds' to your {meeting_file} right after the " \
+                      f"'tell application {source_app}' step and 'end timeout' before the 'end tell' step."
+        if not failure:
+            failure = f"Unable to read {source_app} - [{error}]\n{err_msg}"
+        logger.error(failure)
         os.system(f"""osascript -e 'display notification "{failure}" with title "Jarvis"'""")
-        return f"I was unable to read your {meeting_file.replace('.scpt', '')} sir! Please make sure it is in sync."
+        return f"I was unable to read your {source_app} sir! Please make sure it is in sync."
 
     events = out.decode().strip()
     if not events or events == ',':
@@ -4040,6 +4050,8 @@ if __name__ == '__main__':
     clear_logs()  # deletes old log files
 
     # Get all necessary credentials and api keys from env vars or aws client
+    # todo 1: change env vars to .env or json setup, that way it will be easy to update the credentials programmatically
+    # todo 2: create .env or json file using vars from aws, if credentials file is not available locally
     sys.stdout.write("\rFetching credentials and API keys.")
     git_user = os.environ.get('git_user') or aws.git_user()
     git_pass = os.environ.get('git_pass') or aws.git_pass()
