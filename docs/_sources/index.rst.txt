@@ -17,6 +17,13 @@ Jarvis - Main Module
    :members:
    :undoc-members:
 
+Credentials
+===========
+
+.. automodule:: creds
+   :members:
+   :undoc-members:
+
 Alarm
 =====
 

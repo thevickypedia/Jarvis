@@ -1069,6 +1069,40 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 </dd></dl>
 
 </section>
+<section id="module-creds">
+<span id="credentials"></span><h1>Credentials<a class="headerlink" href="#module-creds" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="creds.Credentials">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">creds.</span></span><span class="sig-name descname"><span class="pre">Credentials</span></span><a class="headerlink" href="#creds.Credentials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads all the required oauth and api keys stored in params.json file.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Credentials</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="creds.Credentials.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#creds.Credentials.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads credentials stored in params.json file and returns a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of parameters stored key-value pairs present in params.json.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="creds.Credentials.put">
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#creds.Credentials.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps the parameters into params.json file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> – Takes the credentials key-value pair as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-helper_functions.alarm">
 <span id="alarm"></span><h1>Alarm<a class="headerlink" href="#module-helper_functions.alarm" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -2886,6 +2920,7 @@ Whites can have a value of None.</p>
   <ul>
 <li><a class="reference internal" href="#">Welcome to Jarvis’s documentation!</a></li>
 <li><a class="reference internal" href="#module-jarvis">Jarvis - Main Module</a></li>
+<li><a class="reference internal" href="#module-creds">Credentials</a></li>
 <li><a class="reference internal" href="#module-helper_functions.alarm">Alarm</a></li>
 <li><a class="reference internal" href="#module-helper_functions.aws_clients">AWS Client</a></li>
 <li><a class="reference internal" href="#module-helper_functions.conversation">Conversation</a></li>

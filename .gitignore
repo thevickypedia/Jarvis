@@ -44,3 +44,6 @@ _build
 
 # file where meetings() data is written every 15 minutes
 meetings
+
+# credentials stored locally
+params.json

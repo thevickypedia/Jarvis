@@ -72,6 +72,7 @@ from yaml import Loader
 from yaml import dump as yaml_dump
 from yaml import load as yaml_load
 
+from creds import Credentials
 from helper_functions.alarm import Alarm
 from helper_functions.aws_clients import AWSClients
 from helper_functions.conversation import Conversation
@@ -2429,7 +2430,7 @@ def television(converted: str):
         except CalledProcessError:
             tv_mac_address = None
         if not tv_mac_address or tv_mac_address == '(INCOMPLETE)':
-            tv_mac_address = os.environ.get('tv_mac') or aws.tv_mac()
+            tv_mac_address = tv_mac
         Thread(target=lambda mac_address: wake(mac_address), args=[tv_mac_address]).start()  # turns TV on in a thread
         speaker.say("Looks like your TV is powered off sir! Let me try to turn it back on!")
         speaker.runAndWait()  # speaks the message to buy some time while the TV is connecting to network
@@ -3207,6 +3208,7 @@ def offline_communicator():
         - NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails.
         - You can also make Jarvis check for emails from your "number@tmomail.net" but response time will be > 5 min.
     """
+    # todo: Do not pass functions that require user interaction/approval/confirmation
     try:
         setdefaulttimeout(30)  # set default timeout for new socket connections to 30 seconds
         mail = IMAP4_SSL('imap.gmail.com')  # connects to imaplib
@@ -3306,6 +3308,8 @@ def meetings(meeting_file: str = 'calendar.scpt'):
         On failure, returns a message saying Jarvis was unable to read calendar/outlook.
 
     """
+    # todo: update calendar.scpt and outlook.scpt to use args for number of hours and default to 12
+    # todo: this change will make it easy to get event information on past and future as well
     if operating_system == 'Windows':
         return "Meetings feature on Windows hasn't been developed yet sir!"
 
@@ -3511,7 +3515,7 @@ class PersonalCloud:
         personal_cloud_port = personal_cloud.get_port()
         personal_cloud_username = ''.join(choices(ascii_letters, k=10))
         personal_cloud_passphrase = ''.join(choices(ascii_letters + digits, k=10))
-        personal_cloud_volume = os.environ.get('personal_cloud_volume')
+        personal_cloud_volume = cred.get('personal_cloud_volume') or os.environ.get('personal_cloud_volume')
 
         if not personal_cloud.volume_checker(volume_name=personal_cloud_volume) if personal_cloud_volume else None:
             logger.critical(f"Volume: {personal_cloud_volume} was not connected to your {host_info('model')}")
@@ -3599,7 +3603,8 @@ class PersonalCloud:
             if pid_info and 'Library' in pid_info and ('/bin/sh' not in pid_info or 'grep' not in pid_info):
                 os.system(f'kill -9 {pid_info.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
         personal_cloud.delete_repo()
-        personal_cloud.volume_checker(volume_name=os.environ.get('personal_cloud_volume'), mount=False, unmount=True)
+        personal_cloud_volume = cred.get('personal_cloud_volume') or os.environ.get('personal_cloud_volume')
+        personal_cloud.volume_checker(volume_name=personal_cloud_volume, mount=False, unmount=True)
 
 
 def internet_checker():
@@ -4055,31 +4060,64 @@ if __name__ == '__main__':
 
     clear_logs()  # deletes old log files
 
-    # Get all necessary credentials and api keys from env vars or aws client
-    # todo 1: change env vars to .env or json setup, that way it will be easy to update the credentials programmatically
-    # todo 2: create .env or json file using vars from aws, if credentials file is not available locally
+    # Get all necessary credentials and api keys from local json file or env vars or aws client
+    if 'params.json' in os.listdir():
+        cred = Credentials().get()
+    else:
+        cred = os.environ
     sys.stdout.write("\rFetching credentials and API keys.")
-    git_user = os.environ.get('git_user') or aws.git_user()
-    git_pass = os.environ.get('git_pass') or aws.git_pass()
-    weather_api = os.environ.get('weather_api') or aws.weather_api()
-    news_api = os.environ.get('news_api') or aws.news_api()
-    maps_api = os.environ.get('maps_api') or aws.maps_api()
-    gmail_user = os.environ.get('gmail_user') or aws.gmail_user()
-    gmail_pass = os.environ.get('gmail_pass') or aws.gmail_pass()
-    robin_user = os.environ.get('robinhood_user') or aws.robinhood_user()
-    robin_pass = os.environ.get('robinhood_pass') or aws.robinhood_pass()
-    robin_qr = os.environ.get('robinhood_qr') or aws.robinhood_qr()
-    tv_client_key = os.environ.get('tv_client_key') or aws.tv_client_key()
-    birthday = os.environ.get('birthday') or aws.birthday()
-    offline_receive_user = os.environ.get('offline_receive_user') or aws.offline_receive_user()
-    offline_receive_pass = os.environ.get('offline_receive_pass') or aws.offline_receive_pass()
-    offline_sender = os.environ.get('offline_sender') or aws.offline_sender()
-    icloud_user = os.environ.get('icloud_user') or aws.icloud_user()
-    icloud_pass = os.environ.get('icloud_pass') or aws.icloud_pass()
-    recovery = os.environ.get('icloud_recovery') or aws.icloud_recovery()
-    phone_number = os.environ.get('phone') or aws.phone()
-    think_id = os.environ.get('think_id') or aws.think_id()
-    router_pass = os.environ.get('router_pass') or aws.router_pass()
+    git_user = cred.get('git_user') or aws.git_user()
+    git_pass = cred.get('git_pass') or aws.git_pass()
+    weather_api = cred.get('weather_api') or aws.weather_api()
+    news_api = cred.get('news_api') or aws.news_api()
+    maps_api = cred.get('maps_api') or aws.maps_api()
+    gmail_user = cred.get('gmail_user') or aws.gmail_user()
+    gmail_pass = cred.get('gmail_pass') or aws.gmail_pass()
+    robin_user = cred.get('robinhood_user') or aws.robinhood_user()
+    robin_pass = cred.get('robinhood_pass') or aws.robinhood_pass()
+    robin_qr = cred.get('robinhood_qr') or aws.robinhood_qr()
+    birthday = cred.get('birthday') or aws.birthday()
+    offline_receive_user = cred.get('offline_receive_user') or aws.offline_receive_user()
+    offline_receive_pass = cred.get('offline_receive_pass') or aws.offline_receive_pass()
+    offline_sender = cred.get('offline_sender') or aws.offline_sender()
+    icloud_user = cred.get('icloud_user') or aws.icloud_user()
+    icloud_pass = cred.get('icloud_pass') or aws.icloud_pass()
+    recovery = cred.get('icloud_recovery') or aws.icloud_recovery()
+    phone_number = cred.get('phone') or aws.phone()
+    think_id = cred.get('think_id') or aws.think_id()
+    router_pass = cred.get('router_pass') or aws.router_pass()
+    tv_client_key = cred.get('tv_client_key') or aws.tv_client_key()
+    tv_mac = cred.get('tv_mac') or aws.tv_mac()
+    root_password = cred.get('root_password')
+
+    # noinspection PyUnresolvedReferences,PyProtectedMember
+    if isinstance(cred, os._Environ):
+        write_data = {
+            "git_user": git_user,
+            "git_pass": git_pass,
+            "weather_api": weather_api,
+            "news_api": news_api,
+            "maps_api": maps_api,
+            "gmail_user": gmail_user,
+            "gmail_pass": gmail_pass,
+            "robin_user": robin_user,
+            "robin_pass": robin_pass,
+            "robin_qr": robin_qr,
+            "tv_mac": tv_mac,
+            "tv_client_key": tv_client_key,
+            "birthday": birthday,
+            "offline_receive_user": offline_receive_user,
+            "offline_receive_pass": offline_receive_pass,
+            "offline_sender": offline_sender,
+            "icloud_user": icloud_user,
+            "icloud_pass": icloud_pass,
+            "recovery": recovery,
+            "phone_number": phone_number,
+            "think_id": think_id,
+            "router_pass": router_pass,
+            "root_password": root_password
+        }
+        Credentials().put(params=write_data)
 
     if st := internet_checker():
         sys.stdout.write(f'\rINTERNET::Connected to {get_ssid()}. Scanning localhost for connected devices.')
@@ -4098,7 +4136,7 @@ if __name__ == '__main__':
     bedroom_ip = [val for val in local_devices.bedroom()]
     tv_ip = ''.join([val for val in local_devices.tv()])
 
-    if not (root_password := os.environ.get('PASSWORD')):
+    if not root_password:
         sys.stdout.write('\rROOT PASSWORD is not set!')
 
     # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once

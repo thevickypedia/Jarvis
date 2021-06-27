@@ -1,12 +1,12 @@
 from datetime import datetime
-from os import environ, listdir, remove, system
+from os import listdir, remove, system
 from platform import system as operating_system
 from smtplib import SMTP
 from threading import Thread
 
-from helper_functions.aws_clients import AWSClients
+from creds import Credentials
 
-aws = AWSClients()
+cred = Credentials().get()
 directory = 'reminder'  # dir need not be '../reminder' as the Thread is triggered by jarvis.py which is in root dir
 
 
@@ -45,9 +45,9 @@ class Reminder(Thread):
                 # Establish a secure session with gmail's outgoing SMTP server using your gmail account
                 server = SMTP("smtp.gmail.com", 587)
                 server.starttls()
-                gmail_user = environ.get('gmail_user') or aws.gmail_user()
-                gmail_pass = environ.get('gmail_pass') or aws.gmail_pass()
-                remind = environ.get('phone') or aws.phone()
+                gmail_user = cred.get('gmail_user')
+                gmail_pass = cred.get('gmail_pass')
+                remind = cred.get('phone')
                 server.login(user=gmail_user, password=gmail_pass)
                 from_ = gmail_user
                 to = f"{remind}@tmomail.net"
@@ -60,6 +60,7 @@ class Reminder(Thread):
                 if operating_system() == 'Darwin':
                     system(f"""osascript -e 'display notification "{body}" with title "{subject}"'""")
                 elif operating_system() == 'Windows':
+                    # noinspection PyUnresolvedReferences
                     from win10toast import ToastNotifier
                     ToastNotifier().show_toast(subject, body)
                 remove(f"{directory}/{file_name}")
