@@ -17,7 +17,7 @@ class AWSClient:
         self.client = client('ssm')
         self.cred = Credentials()
 
-    def put_parameters(self, name: str, value: str):
+    def put_parameters(self, name: str, value: str) -> None:
         """Uses boto3 to update credentials in AWS and returns 200 if successful.
 
         Args:

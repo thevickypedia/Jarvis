@@ -64,7 +64,7 @@ Face Recognition
 
 .. automodule:: helper_functions.facial_recognition
    :members:
-   :undoc-members:
+   :exclude-members: cvtColor, imwrite
 
 Keywords
 ========

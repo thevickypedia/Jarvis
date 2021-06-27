@@ -19,10 +19,11 @@ class Database:
         self.file_name = file_name
         self.table_name = self.file_name.replace('.db', '')
 
-    def create_db(self):
+    def create_db(self) -> str:
         """Creates a database with the set filename: tasks.db and a table: tasks.
 
         Returns:
+            str:
             A success message on DB and table creation.
 
         """
@@ -34,10 +35,11 @@ class Database:
             connection.commit()
             return "A database has been created."
 
-    def downloader(self):
+    def downloader(self) -> list:
         """Downloads the rows and columns in the table.
 
         Returns:
+            list:
             The downloaded table information.
 
         """
@@ -48,7 +50,7 @@ class Database:
         connector.close()
         return response
 
-    def uploader(self, category: str, item: str):
+    def uploader(self, category: str, item: str) -> str:
         """Updates the table: tasks with new rows.
 
         Args:
@@ -56,6 +58,7 @@ class Database:
             item: Item which has to be added to the category. (Eg: Water can)
 
         Returns:
+            str:
             A string indicating the item and category that it was added to.
 
         """
@@ -68,13 +71,14 @@ class Database:
         connection.commit()
         return f"I've added the item: {item} to the category: {category}."
 
-    def deleter(self, item: str):
+    def deleter(self, item: str) -> str:
         """Deletes a particular record from the table.
 
         Args:
             item: Takes the item that has to be removed as an argument.
 
         Returns:
+            str:
             On success, returns a string indicating the item has been deleted.
             On failure, returns a string indicating the item was not found.
 

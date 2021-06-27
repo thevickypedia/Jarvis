@@ -4,6 +4,7 @@ from platform import system as os
 from random import choice
 from subprocess import call
 from threading import Thread
+from time import sleep
 
 directory = 'alarm'  # dir need not be '../alarm' as the Thread is triggered by jarvis.py which is in root dir
 
@@ -28,7 +29,7 @@ class Alarm(Thread):
         self.minutes = minutes
         self.am_pm = am_pm
 
-    def run(self):
+    def run(self) -> None:
         """Triggers the Alarm class in a thread."""
         operating_system = os()
         music_dir = "mp3"
@@ -42,9 +43,15 @@ class Alarm(Thread):
             hour = now.strftime("%I")
             if hour == self.hours and minute == self.minutes and am_pm == self.am_pm and file_name in files:
                 if operating_system == 'Darwin':
+                    system(f'osascript -e "set Volume {round((8 * 100) / 100)}"')
                     call(["open", f"{music_dir}/{tone}"])
+                    sleep(60)
+                    system(f'osascript -e "set Volume {round((8 * 50) / 100)}"')
                 elif operating_system == 'Windows':
+                    system('SetVol.exe 100')
                     location = path.abspath(getcwd())
                     system(f'start wmplayer "{location}\\{music_dir}\\{tone}"')
+                    sleep(60)
+                    system('SetVol.exe 50')
                 remove(f"{directory}/{file_name}")
                 return

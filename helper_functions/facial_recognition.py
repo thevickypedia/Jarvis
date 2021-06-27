@@ -1,5 +1,6 @@
 import sys
 from os import listdir
+from typing import Union
 
 from cv2 import (COLOR_BGR2GRAY, CascadeClassifier, VideoCapture, cvtColor,
                  data, imwrite)
@@ -42,8 +43,15 @@ class Face:
             except (IndexError, NotADirectoryError):
                 pass
 
-    def face_recognition(self):
-        """Recognizes faces from the training dataset - images in the 'train' directory."""
+    def face_recognition(self) -> Union[None, str]:
+        """Recognizes faces from the training dataset - images in the 'train' directory.
+
+        Returns:
+            None or str:
+            str - Name of the person in case of a recognized face.
+            None - NoneType if no face was recognized.
+
+        """
         for _ in range(20):
             ret, img = self.validation_video.read()  # reads video from web cam
             identifier = face_locations(img, model=self.model)  # gets image from the video read above
@@ -55,8 +63,14 @@ class Face:
                     match = self.train_names[results.index(True)]
                     return match
 
-    def face_detection(self):
-        """Detects faces by converting it to grayscale and neighbor match method."""
+    def face_detection(self) -> bool:
+        """Detects faces by converting it to grayscale and neighbor match method.
+
+        Returns:
+            bool:
+            A boolean value if not a face was detected.
+
+        """
         cascade = CascadeClassifier(data.haarcascades + "haarcascade_frontalface_default.xml")
         for _ in range(20):
             ignore, image = self.validation_video.read()  # reads video from web cam

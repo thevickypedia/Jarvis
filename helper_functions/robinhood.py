@@ -9,10 +9,11 @@ class RobinhoodGatherer:
     """
 
     @staticmethod
-    def watcher(rh, result: list):
+    def watcher(rh, result: list) -> str:
         """Fetches all necessary information about your investment portfolio.
 
         Returns:
+            str:
             A string value of total purchased stocks and resultant profit/loss.
 
         """

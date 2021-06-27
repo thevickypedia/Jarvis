@@ -39,18 +39,19 @@ class MagicHomeApi:
             stdout.write(error_msg)
             logger.fatal(f'{error_msg} while performing "{self.operation}"')
 
-    def turn_on(self):
+    def turn_on(self) -> None:
         """Turn a device on."""
         self.send_bytes(0x71, 0x23, 0x0F, 0xA3) if self.device_type < 4 else self.send_bytes(0xCC, 0x23, 0x33)
 
-    def turn_off(self):
+    def turn_off(self) -> None:
         """Turn a device off."""
         self.send_bytes(0x71, 0x24, 0x0F, 0xA4) if self.device_type < 4 else self.send_bytes(0xCC, 0x24, 0x33)
 
-    def get_status(self):
+    def get_status(self) -> bytes:
         """Get the current status of a device.
 
         Returns:
+            bytes:
             A signal to socket.
 
         """
@@ -61,7 +62,7 @@ class MagicHomeApi:
             self.send_bytes(0x81, 0x8A, 0x8B, 0x96)
             return self.s.recv(14)
 
-    def update_device(self, r: int = 0, g: int = 0, b: int = 0, warm_white: int = None, cool_white: int = None):
+    def update_device(self, r: int = 0, g: int = 0, b: int = 0, warm_white: int = None, cool_white: int = None) -> None:
         """Updates a device based upon what we're sending to it.
 
         Values are excepted as integers between 0-255.
@@ -127,13 +128,14 @@ class MagicHomeApi:
             stdout.write("\rIncompatible device type received.")
 
     @staticmethod
-    def check_number_range(number: int):
+    def check_number_range(number: int) -> int:
         """Check if the given number is in the allowed range.
 
         Args:
             number: Takes integer value for RGB value [0-255] check.
 
         Returns:
+            int:
             An accepted number between 0 and 255.
 
         """
@@ -144,7 +146,7 @@ class MagicHomeApi:
         else:
             return number
 
-    def send_preset_function(self, preset_number: int, speed: int):
+    def send_preset_function(self, preset_number: int, speed: int) -> None:
         """Send a preset command to a device.
 
         Args:
@@ -169,19 +171,20 @@ class MagicHomeApi:
             self.send_bytes(*(message + [self.calculate_checksum(message)]))
 
     @staticmethod
-    def calculate_checksum(bytes_: list):
+    def calculate_checksum(bytes_: list) -> int:
         """Calculate the checksum from an array of bytes.
 
         Args:
             bytes_: Takes a list value as argument.
 
         Returns:
+            int:
             Checksum value for the given list value.
 
         """
         return sum(bytes_) & 0xFF
 
-    def send_bytes(self, *bytes_):
+    def send_bytes(self, *bytes_) -> None:
         """Send commands to the device.
 
         If the device hasn't been communicated to in 5 minutes, reestablish the connection.

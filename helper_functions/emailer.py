@@ -34,6 +34,7 @@ class Emailer:
             attachments: Attachment that has to be added to the email.
 
         Returns:
+            MIMEMultipart:
             Created multipart message.
 
         """
@@ -64,6 +65,11 @@ class Emailer:
             text: Body of the email.
             html: HTML format of the email.
             attachments: Attachment that has to be added to the email.
+
+        Returns:
+            dict:
+            Makes a call to ses_client to send an email with parameters attached.
+
         """
         msg = self.create_multipart_message(title, text, html, attachments)
         ses_client = client('ses')  # Use your settings here

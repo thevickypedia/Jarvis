@@ -6,20 +6,22 @@ class Conversation:
     """
 
     @staticmethod
-    def greeting():
+    def greeting() -> list:
         """Words to match and initiate a conversation.
 
         Returns:
+            list:
             List of words for conversation.
 
         """
         return ['how are you', 'how are you doing', 'how have you been', 'how do you do']
 
     @staticmethod
-    def capabilities():
+    def capabilities() -> list:
         """Words to match and initiate a conversation.
 
         Returns:
+            list:
             List of words for conversation.
 
         """
@@ -27,10 +29,11 @@ class Conversation:
                 'what are you capable of']
 
     @staticmethod
-    def languages():
+    def languages() -> list:
         """Words to match and initiate a conversation.
 
         Returns:
+            list:
             List of words for conversation.
 
         """
@@ -39,50 +42,55 @@ class Conversation:
                 'what languages can you speak', 'what languages do you speak', 'what are the languages you can speak']
 
     @staticmethod
-    def what():
+    def what() -> list:
         """Words to match and initiate a conversation.
 
         Returns:
+            list:
             List of words for conversation.
 
         """
         return ['what are you']
 
     @staticmethod
-    def who():
+    def who() -> list:
         """Words to match and initiate a conversation.
 
         Returns:
+            list:
             List of words for conversation.
 
         """
         return ['who are you', 'what do I call you', "what's your name", 'what is your name']
 
     @staticmethod
-    def form():
+    def form() -> list:
         """Words to match and initiate a conversation.
 
         Returns:
+            list:
             List of words for conversation.
 
         """
         return ['where is your body', "where's your body"]
 
     @staticmethod
-    def whats_up():
+    def whats_up() -> list:
         """Words to match and initiate a conversation.
 
         Returns:
+            list:
             List of words for conversation.
 
         """
         return ["what's up", 'what is up', "what's going on", 'sup']
 
     @staticmethod
-    def about_me():
+    def about_me() -> list:
         """Words to match and initiate a conversation.
 
         Returns:
+            list:
             List of words for conversation.
 
         """

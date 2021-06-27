@@ -1,5 +1,5 @@
-from os import path
-from json import load, dump
+from json import dump, load
+from os import path, remove
 
 
 class Credentials:
@@ -13,20 +13,23 @@ class Credentials:
         self.file = 'params.json'
         self.directory = path.dirname(__file__)
 
-    def get(self):
+    def get(self) -> dict:
         """Reads credentials stored in params.json file and returns a dictionary.
 
         Returns:
+            dict:
             A dictionary of parameters stored key-value pairs present in params.json.
 
         """
         return load(open(path.join(self.directory, self.file)))
 
-    def put(self, params: dict):
+    def put(self, params: dict) -> None:
         """Dumps the parameters into params.json file.
 
         Args:
             params: Takes the credentials key-value pair as an argument.
+
         """
+        remove(self.file)
         with open(path.join(self.directory, self.file), 'w') as write_file:
             dump(params, write_file, indent=2, allow_nan=False)

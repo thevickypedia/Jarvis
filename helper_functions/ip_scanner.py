@@ -16,10 +16,11 @@ class LocalIPScan:
         """
         self.attached_devices = Netgear(password=router_pass).get_attached_devices()
 
-    def hallway(self):
+    def hallway(self) -> str:
         """Host names of hallway light bulbs stored in a list.
 
         Yields:
+            str:
             IP address of the device.
 
         """
@@ -34,10 +35,11 @@ class LocalIPScan:
                 if device.name in hallway_all:
                     yield device.ip
 
-    def kitchen(self):
+    def kitchen(self) -> str:
         """Host names of kitchen light bulbs stored in a list.
 
         Yields:
+            str:
             IP address of the device.
 
         """
@@ -49,10 +51,11 @@ class LocalIPScan:
                 if device.name in kitchen_all:
                     yield device.ip
 
-    def bedroom(self):
+    def bedroom(self) -> str:
         """Host names of bedroom light bulbs stored in a list.
 
         Yields:
+            str:
             IP address of the device.
 
         """
@@ -62,10 +65,11 @@ class LocalIPScan:
                 if device.name == bedroom_1:
                     yield device.ip
 
-    def tv(self):
+    def tv(self) -> str:
         """Host name of TV for string equality comparison.
 
         Yields:
+            str:
             IP address of the TV.
 
         """

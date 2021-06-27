@@ -7,15 +7,13 @@ In order to use a common logger across multiple files, a dedicated logger has be
 import logging
 from datetime import datetime
 from importlib import reload
-from os import listdir
+from os import path
 
-if 'logs' not in listdir():
-    parent = '../logs'
-else:
-    parent = 'logs'
+directory = path.dirname(__file__)
+
 reload(logging)
 logging.basicConfig(
-    filename=datetime.now().strftime(f'{parent}/threshold_%H:%M:%S_%m-%d-%Y.log'), filemode='w',
+    filename=datetime.now().strftime(path.join(directory, '../logs/threshold_%d-%m-%Y_%H:%M:%S.log')), filemode='w',
     format='%(asctime)s - %(levelname)s - %(funcName)s - Line: %(lineno)d - %(message)s',
     datefmt='%b-%d-%Y %H:%M:%S'
 )
@@ -36,7 +34,7 @@ class TestLogger:
     """
 
     @staticmethod
-    def function1():
+    def function1() -> None:
         """This WILL be logged as it is an error info."""
         logger.error(sys._getframe(0).f_code.co_name)
         called_func = sys._getframe(1).f_code.co_name.replace("<module>", __name__)
@@ -45,7 +43,7 @@ class TestLogger:
         logger.error(f'I was called by {called_func} which was called by {parent_func}')
 
     @staticmethod
-    def function2():
+    def function2() -> None:
         """This WILL be logged as it is a critical info."""
         logger.critical(sys._getframe(0).f_code.co_name)
         called_func = sys._getframe(1).f_code.co_name.replace("<module>", __name__)
@@ -55,7 +53,7 @@ class TestLogger:
         TestLogger.function1()
 
     @staticmethod
-    def function3():
+    def function3() -> None:
         """This WILL be logged as it is a fatal info."""
         logger.fatal(sys._getframe(0).f_code.co_name)
         called_func = sys._getframe(1).f_code.co_name.replace("<module>", __name__)
@@ -65,12 +63,12 @@ class TestLogger:
         TestLogger.function2()
 
     @staticmethod
-    def function4():
+    def function4() -> None:
         """This WILL NOT be logged as no logger level is set."""
         logger.info('function 4')
 
     @staticmethod
-    def function5():
+    def function5() -> None:
         """This WILL NOT be logged as no logger level is set."""
         logger.debug('function 5')
 

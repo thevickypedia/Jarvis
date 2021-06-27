@@ -32,7 +32,7 @@ class Reminder(Thread):
         self.am_pm = am_pm
         self.message = message
 
-    def run(self):
+    def run(self) -> None:
         """Triggers the Reminder class in a thread."""
         file_name = f'{self.hours}_{self.minutes}_{self.am_pm}|{self.message.replace(" ", "_")}.lock'
         files = listdir(directory)
