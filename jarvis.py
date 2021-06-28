@@ -4107,7 +4107,7 @@ if __name__ == '__main__':
     # Get all necessary credentials and api keys from local json file or env vars or aws client
     sys.stdout.write("\rFetching credentials and API keys.")
 
-    if 'params.json' in os.listdir():
+    if 'credentials.json' in os.listdir():
         cred = Credentials().get()
     else:
         cred = os.environ

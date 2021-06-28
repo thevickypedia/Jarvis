@@ -1165,17 +1165,17 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py class">
 <dt class="sig sig-object py" id="creds.Credentials">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">creds.</span></span><span class="sig-name descname"><span class="pre">Credentials</span></span><a class="headerlink" href="#creds.Credentials" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads all the required oauth and api keys stored in params.json file.</p>
+<dd><p>Reads all the required oauth and api keys stored in credentials.json file.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Credentials</span>
 </pre></div>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="creds.Credentials.get">
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="headerlink" href="#creds.Credentials.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads credentials stored in params.json file and returns a dictionary.</p>
+<dd><p>Reads credentials stored in credentials.json file and returns a dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A dictionary of parameters stored key-value pairs present in params.json.</p>
+<dd class="field-odd"><p>A dictionary of parameters stored key-value pairs present in credentials.json.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>dict</p>
@@ -1186,7 +1186,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="creds.Credentials.put">
 <span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#creds.Credentials.put" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dumps the parameters into params.json file.</p>
+<dd><p>Dumps the parameters into credentials.json file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>params</strong> – Takes the credentials key-value pair as an argument.</p>

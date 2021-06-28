@@ -35,4 +35,4 @@ class AWSClient:
         data = self.cred.get()
         data[name] = value
         self.cred.put(data)
-        logger.critical(f'Parameter {name} has been updated in params.json.')
+        logger.critical(f'Parameter {name} has been updated in credentials.json.')

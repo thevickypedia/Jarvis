@@ -46,7 +46,4 @@ _build
 meetings
 
 # credentials stored locally
-params.json
-
-# AppleScript files tend to show up as modified when they run, since the time is set to now in these scripts
-*.scpt
+credentials.json

@@ -1,5 +1,6 @@
 from socket import gaierror
 from sys import stdout
+from threading import Thread
 from time import sleep
 
 from playsound import playsound
@@ -31,14 +32,14 @@ class TV:
             ip_address: IP address of the TV.
             client_key: Client Key to authenticate connection.
         """
-        store = {'client_key': client_key}
+        store = {'client_key': client_key} if client_key else {}
 
         try:
             self.client = WebOSClient(ip_address)
             self.client.connect()
         except (gaierror, ConnectionRefusedError, ConnectionResetError):  # when IP or client key is None or incorrect
             self.reconnect = True
-            playsound('indicators/tv_scan.mp3')
+            Thread(target=playsound, args=['indicators/tv_scan.mp3']).start()
             stdout.write("\rThe TV's IP has either changed or unreachable. Scanning your IP range.")
             self.client = WebOSClient.discover()[0]
             self.client.connect()
@@ -49,9 +50,9 @@ class TV:
             if status == WebOSClient.REGISTERED and not self._init_status:
                 stdout.write('\rConnected to the TV.')
             elif status == WebOSClient.PROMPTED:
+                Thread(target=playsound, args=['indicators/tv_connect.mp3']).start()
                 self.reconnect = True
                 stdout.write('\rPlease accept the connection request on your TV.')
-                playsound('indicators/tv_connect.mp3')
 
         if self.reconnect:
             self.reconnect = False
