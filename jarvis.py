@@ -3058,12 +3058,12 @@ def time_travel() -> None:
     weather()
     speaker.runAndWait()
     if os.path.isfile('meetings') and day == 'Morning':
+        meeting_reader()
+    elif day == 'Morning':
         try:
             speaker.say(meeting.get(timeout=60))
         except ThreadTimeoutError:
             pass
-    elif day == 'Morning':
-        meeting_reader()
     todo()
     gmail()
     speaker.say('Would you like to hear the latest news?')
