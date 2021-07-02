@@ -51,9 +51,11 @@
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PersonalCloud</span>
 </pre></div>
 </div>
-<p>Reference: <a class="reference external" href="https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book">https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book</a></p>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book">https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book</a></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
 <dl class="simple">
-<dt>Make sure to enable file access for Terminal sessions. Steps:</dt><dd><dl class="simple">
 <dt>Step 1:</dt><dd><ul class="simple">
 <li><p>Mac OS 10.14.* and higher - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Full Disk Access</p></li>
 <li><p>Mac OS 10.13.* and lower - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Accessibility</p></li>
@@ -62,8 +64,7 @@
 <dt>Step 2:</dt><dd><p>Unlock for admin privileges. Click on the “+” icon. Select Applications -&gt; Utilities -&gt; Terminal</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.PersonalCloud.delete_repo">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">delete_repo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.PersonalCloud.delete_repo" title="Permalink to this definition">¶</a></dt>
@@ -73,7 +74,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.PersonalCloud.disable">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.PersonalCloud.disable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shuts off the server.py to stop the personal cloud.</p>
+<dd><p>Shuts off <cite>server.py</cite> to stop the personal cloud.</p>
 <p>This eliminates the hassle of passing args and handling threads.</p>
 </dd></dl>
 
@@ -81,13 +82,14 @@
 <dt class="sig sig-object py" id="jarvis.PersonalCloud.enable">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.PersonalCloud.enable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enables personal cloud.</p>
+<p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>Clones personal_cloud repo in a dedicated Terminal,</p></li>
-<li><p>Creates a dedicated virtual env and installs the requirements within it (ETA: ~20 seconds),</p></li>
-<li><p>If personal_cloud_volume env var is provided, Jarvis will mount the drive if it is is connected to the device</p></li>
-<li><p>Gets and sets env vars required for the personal cloud,</p></li>
-<li><p>Generates random username and passphrase for login info,</p></li>
-<li><p>Triggers personal cloud using a dedicated Terminal,</p></li>
+<li><p>Clones <cite>personal_cloud</cite> repo in a dedicated Terminal.</p></li>
+<li><p>Creates a dedicated virtual env and installs the requirements within it (ETA: ~20 seconds)</p></li>
+<li><p>If <cite>personal_cloud_volume</cite> env var is provided, Jarvis will mount the drive if connected to the device.</p></li>
+<li><p>Gets and sets env vars required for the personal cloud.</p></li>
+<li><p>Generates random username and passphrase for login info.</p></li>
+<li><p>Triggers personal cloud using a dedicated Terminal.</p></li>
 <li><p>Sends an SMS with endpoint, username and password to your mobile phone.</p></li>
 </ul>
 </dd></dl>
@@ -100,9 +102,14 @@
 <li><p>Well-Known ports: 0 to 1023</p></li>
 <li><p>Registered ports: 1024 to 49151</p></li>
 <li><p>Dynamically available: 49152 to 65535</p></li>
-<li><p>Alternate to active_sessions -&gt;</p></li>
-<li><p>check_output(f”echo {root_password} | sudo -S lsof -PiTCP -sTCP:LISTEN 2&gt;&amp;1;”, shell=True).decode(‘utf-8’)</p></li>
-<li><p>‘remove’ should be an actual function as per pep-8 standards, bypassing it using  # noqa</p></li>
+<li><dl class="simple">
+<dt>Alternate to active_sessions -&gt;</dt><dd><ul>
+<li><p><cite>check_output(f”echo {root_password} | sudo -S lsof -PiTCP -sTCP:LISTEN 2&gt;&amp;1;”, shell=True).decode(‘utf-8’)</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><cite>remove</cite> variable should be an actual function as per pep-8 standards, bypassing it using  # noqa</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -164,7 +171,7 @@
 <dd class="field-odd"><p><strong>text</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean True is wolfram alpha API is unable to fetch consumable results.</p>
+<dd class="field-even"><p>Boolean True if wolfram alpha API is unable to fetch consumable results.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
@@ -241,7 +248,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.create_db">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">create_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.create_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a database for to-do list by calling the create_db function in database module.</p>
+<dd><p>Creates a database for to-do list by calling the <cite>create_db</cite> function in database module.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -283,13 +290,13 @@
 <dt class="sig sig-object py" id="jarvis.device_selector">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">device_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">pyicloud.services.findmyiphone.AppleDevice</span><a class="headerlink" href="#jarvis.device_selector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selects a device using the received input string.</p>
+<p>Uses <cite>pick</cite> module to show up options on the screen when a device is requested to locate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns the device name from the user’s input after checking the apple devices list.
-Returns your default device when not able to find it.</p>
+<dd class="field-even"><p>Returns the selected device from the class <cite>AppleDevice</cite></p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>AppleDevice</p>
@@ -384,13 +391,13 @@ Returns your default device when not able to find it.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.face_recognition_detection">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">face_recognition_detection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.face_recognition_detection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates face recognition script and looks for images stored in named directories within ‘train’ directory.</p>
+<dd><p>Initiates face recognition script and looks for images stored in named directories within <cite>train</cite> directory.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.format_nos">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">format_nos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">int</span><a class="headerlink" href="#jarvis.format_nos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes .0 float values.</p>
+<dd><p>Removes <cite>.0</cite> float values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>input_</strong> – Int if found, else returns the received float value.</p>
@@ -440,15 +447,18 @@ Returns your default device when not able to find it.</p>
 <dt class="sig sig-object py" id="jarvis.google">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">google</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="headerlink" href="#jarvis.google" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses Google’s search engine parser and gets the first result that shows up on a google search.</p>
-<p>If it is unable to get the result, Jarvis sends a request to suggestqueries.google.com to rephrase
-the query and then looks up using the search engine parser once again. global suggestion_count is used
-to make sure the suggestions and parsing don’t run on an infinite loop.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>If it is unable to get the result, Jarvis sends a request to <cite>suggestqueries.google.com</cite></p></li>
+<li><p>This is to rephrase the query and then looks up using the search engine parser once again.</p></li>
+<li><p>global <cite>suggestion_count</cite> is used to make sure the suggestions and parsing don’t run on an infinite loop.</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>query</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean True is google search engine is unable to fetch consumable results.</p>
+<dd class="field-even"><p>Boolean <cite>True</cite> if google search engine is unable to fetch consumable results.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
@@ -460,8 +470,13 @@ to make sure the suggestions and parsing don’t run on an infinite loop.</p>
 <dt class="sig sig-object py" id="jarvis.google_home">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">google_home</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.google_home" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses socket lib to extract ip address and scans ip range for google home devices and play songs in your local.</p>
+<p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>Can also play music on multiple devices at once.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
 <li><p>Changes made to google-home-push module:</p></li>
 <li><ol class="arabic simple">
 <li><p>Modified the way local IP is received: <a class="reference external" href="https://github.com/deblockt/google-home-push/pull/7">https://github.com/deblockt/google-home-push/pull/7</a></p></li>
@@ -473,9 +488,9 @@ to make sure the suggestions and parsing don’t run on an infinite loop.</p>
 </li>
 <li><p>I have used “sys.stdout = open(os.devnull, ‘w’)” to suppress any print statements.</p></li>
 <li><p>To enable this again at a later time use “sys.stdout = sys.__stdout__”</p></li>
-<li><p>Note: When music is played and immediately stopped/tasked the google home device, it is most likely to except</p></li>
+<li><p>Note: When music is played and immediately stopped/tasked the google home device, it is most likely to except.</p></li>
 <li><p>Broken Pipe error. This usually happens when you write to a socket that is fully closed.</p></li>
-<li><p>This error occurs when one end of the connection tries sending data while the other end has closed the connection.</p></li>
+<li><p>This error occurs when one end of the connection tries sending data while the other has closed the connection.</p></li>
 <li><p>This can simply be ignored or handled using the below in socket module (NOT PREFERRED).</p></li>
 </ul>
 <dl class="simple">
@@ -488,6 +503,7 @@ to make sure the suggestions and parsing don’t run on an infinite loop.</p>
 </dl>
 </dd>
 </dl>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -508,7 +524,7 @@ to make sure the suggestions and parsing don’t run on an infinite loop.</p>
 <dd class="field-odd"><p><strong>query</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean True is google’s maps API is unable to fetch consumable results.</p>
+<dd class="field-even"><p>Boolean True if google’s maps API is unable to fetch consumable results.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
@@ -545,8 +561,11 @@ to make sure the suggestions and parsing don’t run on an infinite loop.</p>
 <dt class="sig sig-object py" id="jarvis.guard">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">guard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.guard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Security Mode will enable camera and microphone in the background.</p>
-<p>If any speech is recognized or a face is detected, there will another thread triggered to send notifications.
-Notifications will be triggered only after 5 minutes of initial notification.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>If any speech is recognized or a face is detected, there will another thread triggered to send notifications.</p></li>
+<li><p>Notifications will be triggered only after 5 minutes of previous notification.</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py function">
@@ -575,23 +594,23 @@ Notifications will be triggered only after 5 minutes of initial notification.</p
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.initialize">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.initialize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Awakens from sleep mode. greet_check is to ensure greeting is given only for the first function call.</p>
+<dd><p>Awakens from sleep mode. <cite>greet_check</cite> is to ensure greeting is given only for the first function call.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.internet_checker">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">internet_checker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">speedtest.Speedtest</span><span class="p"><span class="pre">,</span> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#jarvis.internet_checker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses speed test api to check for internet connection.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Speedtest</span>
-</pre></div>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>On success, returns Speedtest module.
-On failure, returns boolean False.</p>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>On success, returns Speedtest module.</p></li>
+<li><p>On failure, returns boolean False.</p></li>
+</ul>
+</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Speedtest or bool</p>
+<dd class="field-even"><p><cite>Speedtest</cite> or bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -606,7 +625,10 @@ On failure, returns boolean False.</p>
 <dt class="sig sig-object py" id="jarvis.kill_alarm">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">kill_alarm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.kill_alarm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes lock file to stop the alarm which rings only when the certain lock file is present.</p>
-<p>Note: alarm_state is the list of lock files currently present.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p><cite>alarm_state</cite> is the list of lock files currently present.</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py function">
@@ -632,8 +654,11 @@ On failure, returns boolean False.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>On success, returns recognized statement from the microphone.
-On failure, returns ‘SR_ERROR’ as a string which is conditioned to respond appropriately.</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p>On success, returns recognized statement from the microphone.</p></li>
+<li><p>On failure, returns <cite>SR_ERROR</cite> as a string which is conditioned to respond appropriately.</p></li>
+</ul>
+</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
@@ -672,14 +697,17 @@ On failure, returns ‘SR_ERROR’ as a string which is conditioned to respond a
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.location_services">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">location_services</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#jarvis.location_services" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates geo_locator and stores current location info as json so it could be used in couple of other functions.</p>
+<dd><p>Initiates <cite>geo_locator</cite> and stores current location info as a <cite>json</cite> file so it can be used in other functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>device</strong> – Passed when locating a particular apple device.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>On success, returns current latitude, current longitude and location information as a dict.
-On failure, calls the return function or returns None.</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p>On success, returns <cite>current latitude</cite>, <cite>current longitude</cite> and <cite>location</cite> information as a <cite>dict</cite>.</p></li>
+<li><p>On failure, calls the <cite>restart()</cite> or <cite>terminator()</cite> function depending on the error.</p></li>
+</ul>
+</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None or Tuple[str, str, str]</p>
@@ -701,29 +729,32 @@ On failure, calls the return function or returns None.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meeting_gatherer">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meeting_gatherer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.meeting_gatherer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets return value from meetings() and writes it to file named ‘meetings’.</p>
+<dd><p>Gets return value from <cite>meetings()</cite> and writes it to file named <cite>meetings</cite>.</p>
 <p>This function runs in a dedicated thread every 15 minutes to avoid wait time when meetings information is requested.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meeting_reader">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meeting_reader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.meeting_reader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Speaks meeting information that meeting_gatherer() stored in a file named ‘meetings’.</p>
-<p>If the file is not available, meeting information is directly fetched from the meetings() function.</p>
+<dd><p>Speaks meeting information that <cite>meeting_gatherer()</cite> stored in a file named ‘meetings’.</p>
+<p>If the file is not available, meeting information is directly fetched from the <cite>meetings()</cite> function.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meetings">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meeting_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'calendar.scpt'</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#jarvis.meetings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses applescript to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.</p>
+<dd><p>Uses <cite>applescript</cite> to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>meeting_file</strong> – Takes applescript filename as argument. Defaults to calendar.scpt unless an alternate is passed.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>On success, returns a message saying which meeting is scheduled at what time.
-If no events, returns a message saying there are no events in the next 12 hours.
-On failure, returns a message saying Jarvis was unable to read calendar/outlook.</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p>On success, returns a message saying which meeting is scheduled at what time.</p></li>
+<li><p>If no events, returns a message saying there are no events in the next 12 hours.</p></li>
+<li><p>On failure, returns a message saying Jarvis was unable to read calendar/outlook.</p></li>
+</ul>
+</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
@@ -734,7 +765,7 @@ On failure, returns a message saying Jarvis was unable to read calendar/outlook.
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.music">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">music</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.music" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scans music directory in your profile for .mp3 files and plays using default player.</p>
+<dd><p>Scans music directory in your profile for <cite>.mp3</cite> files and plays using default player.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>device</strong> – Takes device name as argument.</p>
@@ -751,7 +782,7 @@ On failure, returns a message saying Jarvis was unable to read calendar/outlook.
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.notes">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">notes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.notes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listens to the user and saves everything to a notes.txt file.</p>
+<dd><p>Listens to the user and saves everything to a <cite>notes.txt</cite> file.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -774,40 +805,51 @@ On failure, returns a message saying Jarvis was unable to read calendar/outlook.
 <dt class="sig sig-object py" id="jarvis.offline_communicator">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.offline_communicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>The following code will look for emails in a dedicated thread so Jarvis can run simultaneously.</p>
-<p>WARNING: Running sockets with a 30 second wait time is brutal, so I login once and keep checking for emails
-in a while STATUS loop. This may cause various exceptions when the login session expires or when google terminates
-the session. So I use exception handlers and circle back to restart the offline_communicator() after 2 minutes.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>Running sockets with a 30 second wait time is brutal.</p></li>
+<li><p>To cheat this, I login once and keep checking for emails in a <cite>while STATUS</cite> loop.</p></li>
+<li><p>This may cause various exceptions when the login session expires or when google terminates the session.</p></li>
+<li><p>So I use exception handlers and circle back to restart the <cite>offline_communicator()</cite> after 2 minutes.</p></li>
+</ul>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
 <dl class="simple">
 <dt>To replicate a working model for offline communicator:</dt><dd><ul class="simple">
 <li><p>Set/Create a dedicated email account for offline communication (as it is less secure)</p></li>
-<li><p>Send an email from a specific email address to avoid unnecessary response. - ENV VAR: offline_sender</p></li>
+<li><p>Send an email from a specific email address to avoid unnecessary response. - ENV VAR: <cite>offline_sender</cite></p></li>
 <li><p>The body of the email should only have the exact command you want Jarvis to do.</p></li>
 <li><p>To “log” the response and send it out as notification, I made some changes to the pyttsx3 module. (below)</p></li>
 <li><p>I also stop the response from being spoken.</p></li>
-<li><p>voice_changer() is called, because when I stop the speaker, voice property is reset from what I set in main()</p></li>
+<li><p><cite>voice_changer()</cite> is called as the voice property is reset when speaker.stop() is used.</p></li>
 </ul>
 </dd>
-<dt>Changes in “pyttsx3”:</dt><dd><ul class="simple">
-<li><p>Created a global variable in say() -&gt; pyttsx3/engine.py (before proxy) and store the response.</p></li>
-<li><p>Created a new method and return the global variable which I created in say().</p></li>
-<li><p>The new method (vig() in this case) is called to get the response which is then sent as an SMS notification.</p></li>
-<li><p>Doing so, avoids making changes to all the functions within conditions() to notify the response from Jarvis.</p></li>
+<dt>Changes in <cite>pyttsx3</cite>:</dt><dd><ul class="simple">
+<li><p>Created a global variable in <cite>say()</cite> -&gt; pyttsx3/engine.py (before proxy) and store the response.</p></li>
+<li><p>Created a new method and return the global variable which I created in <cite>say()</cite></p></li>
+<li><p>The new method (<cite>vig()</cite> in this case) is called to get the response which is sent as an SMS notification.</p></li>
+<li><p>Doing so, avoids making changes to all functions within <cite>conditions()</cite> to notify the response from Jarvis.</p></li>
 </ul>
 </dd>
 <dt>Env Vars:</dt><dd><ul class="simple">
-<li><p>offline_receive_user - email address which is getting checked for a command</p></li>
-<li><p>offline_receive_pass - password for the above email address</p></li>
-<li><p>offline_sender - email from which the command the expected, A.K.A - commander</p></li>
+<li><p><cite>offline_receive_user</cite> - email address which is getting checked for a command</p></li>
+<li><p><cite>offline_receive_pass</cite> - password for the above email address</p></li>
+<li><p><cite>offline_sender</cite> - email from which the command the expected, A.K.A - commander</p></li>
 </ul>
 </dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<dl class="simple">
 <dt>More cool stuff:</dt><dd><ul class="simple">
 <li><p>I created a REST API on AWS API Gateway and linked it to a JavaScript on my webpage.</p></li>
-<li><p>When a request is made, the JavaScript makes a POST call to the API which then triggers a lambda job on AWS.</p></li>
+<li><p>When a request is made, the JavaScript makes a POST call to the API which triggers a lambda job in AWS.</p></li>
 <li><p>The lambda function is set to verify the secure key and then send the email to me.</p></li>
-<li><p>As Jarvis will be watching for the UNREAD emails, he will process my request and send an SMS using AWS SNS.</p></li>
 <li><p>Check it out: <a class="reference external" href="https://thevickypedia.com/jarvisoffline">https://thevickypedia.com/jarvisoffline</a></p></li>
 <li><p>NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails.</p></li>
-<li><p>You can also make Jarvis check for emails from your “<a class="reference external" href="mailto:number&#37;&#52;&#48;tmomail&#46;net">number<span>&#64;</span>tmomail<span>&#46;</span>net</a>” but response time will be &gt; 5 min.</p></li>
+<li><p>You can also make Jarvis check for emails from your “<a class="reference external" href="mailto:number&#37;&#52;&#48;tmomail&#46;net">number<span>&#64;</span>tmomail<span>&#46;</span>net</a>” but response time is &gt; 5 min.</p></li>
 </ul>
 </dd>
 </dl>
@@ -816,7 +858,7 @@ the session. So I use exception handlers and circle back to restart the offline_
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.offline_communicator_initiate">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">offline_communicator_initiate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.offline_communicator_initiate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates offline communicator in a dedicated thread.</p>
+<dd><p>Initiates <cite>offline_communicator()</cite> in a dedicated thread.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -844,7 +886,7 @@ the session. So I use exception handlers and circle back to restart the offline_
 <dt>Deletes:</dt><dd><ul class="simple">
 <li><p>all .lock files created for alarms and reminders.</p></li>
 <li><p>location data in yaml format, to recreate a new one next time around.</p></li>
-<li><p>meetings, file to recreate a new one next time around.</p></li>
+<li><p><cite>meetings</cite> file to recreate a new one next time around.</p></li>
 </ul>
 </dd>
 </dl>
@@ -853,9 +895,12 @@ the session. So I use exception handlers and circle back to restart the offline_
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.renew">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">renew</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.renew" title="Permalink to this definition">¶</a></dt>
-<dd><p>Keeps listening and sends the response to conditions() function.</p>
-<p>This function runs only for a minute and goes to sentry_mode() if nothing is heard.
-split(converted) is a condition so that, loop breaks when if sleep in conditions() returns True.</p>
+<dd><p>Keeps listening and sends the response to <cite>conditions()</cite> function.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>This function runs only for a minute and goes to <cite>sentry_mode()</cite> if nothing is heard.</p></li>
+<li><p>split(converted) is a condition so that, loop breaks when if sleep in <cite>conditions()</cite> returns True.</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py function">
@@ -867,16 +912,19 @@ split(converted) is a condition so that, loop breaks when if sleep in conditions
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.report">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.report" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates a list of function that I tend to check first thing in the morning.</p>
+<dd><p>Initiates a list of functions, that I tend to check first thing in the morning.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.restart">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.restart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Restart triggers restart.py which in turn starts Jarvis after 5 seconds.</p>
-<p>Doing this changes the PID to avoid any Fatal Errors occurred by long running threads.
-restart(PC) will restart the machine after getting confirmation.
-restart(anything_else) will restart the machine without getting any confirmation.</p>
+<dd><p>Restart triggers <cite>restart.py</cite> which in turn starts Jarvis after 5 seconds.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Doing this changes the PID to avoid any Fatal Errors occurred by long running threads.</p></li>
+<li><p>restart(PC) will restart the machine after getting confirmation.</p></li>
+<li><p>restart(anything_else) will restart the machine without getting any confirmation.</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -909,11 +957,13 @@ restart(anything_else) will restart the machine without getting any confirmation
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.sentry_mode">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">sentry_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.sentry_mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sentry mode, all it does is to wait for the right keyword to wake up and get into action.</p>
+<dd><p>All it does is to wait for the right keyword to wake up and get into action.</p>
+<p class="rubric">Notes</p>
 <dl class="simple">
-<dt>Threshold is used to sanity check sentry_mode() so that:</dt><dd><ul class="simple">
+<dt>Threshold is used to sanity check <cite>sentry_mode()</cite> so that:</dt><dd><ul class="simple">
 <li><p>Jarvis doesn’t run into Fatal Python error.</p></li>
 <li><p>Jarvis restarts at least twice a day and gets a new pid.</p></li>
+<li><p>Jarvis doesn’t go into a frozen state with nothing on screen.</p></li>
 </ul>
 </dd>
 </dl>
@@ -923,8 +973,15 @@ restart(anything_else) will restart the machine without getting any confirmation
 <dt class="sig sig-object py" id="jarvis.set_brightness">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">set_brightness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.set_brightness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set brightness to a custom level.</p>
-<p>Since Jarvis uses in-built apple script, the only way to achieve this is to:
-set the brightness to bare minimum and increase {*}% from there or vice-versa.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Since Jarvis uses in-built apple script, the only way to achieve this is to:</dt><dd><ul>
+<li><p>set the brightness to bare minimum and increase [*]% from there or vice-versa.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>level</strong> – Percentage of brightness to be set.</p>
@@ -936,7 +993,11 @@ set the brightness to bare minimum and increase {*}% from there or vice-versa.</
 <dt class="sig sig-object py" id="jarvis.shutdown">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proceed</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.shutdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets confirmation and turns off the machine.</p>
-<p>Args: Boolean value whether or not to get confirmation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>proceed</strong> – Boolean value whether or not to get confirmation.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -971,7 +1032,7 @@ set the brightness to bare minimum and increase {*}% from there or vice-versa.</
 <dd class="field-odd"><p><strong>key</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Return value from conditions()</p>
+<dd class="field-even"><p>Return value from <cite>conditions()</cite></p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
@@ -1001,10 +1062,12 @@ set the brightness to bare minimum and increase {*}% from there or vice-versa.</
 <dt class="sig sig-object py" id="jarvis.television">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">television</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.television" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controls all actions on a TV (LG Web OS).</p>
-<p>In the main() method tv is set to None. Given a command related to TV,
-Jarvis will try to ping the TV and then power it on if the host is unreachable. Then executes the said command.
-Once the tv is turned on, the TV class is also initiated and assigned to tv variable which is set global for
-other statements to use it.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>In the <cite>__main__</cite> method tv is set to None.</p></li>
+<li><p>Jarvis will try to ping the TV and then power it on if the host is unreachable initially.</p></li>
+<li><p>Once the tv is turned on, the TV class is also initiated and assigned to tv variable.</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p>
@@ -1053,7 +1116,7 @@ other statements to use it.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.time_travel">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">time_travel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.time_travel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way.</p>
+<dd><p>Triggered only from <cite>sentry_mode()</cite> to give a quick update on your day.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1066,7 +1129,6 @@ other statements to use it.</p>
 <dt class="sig sig-object py" id="jarvis.unrecognized_dumper">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">unrecognized_dumper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.unrecognized_dumper" title="Permalink to this definition">¶</a></dt>
 <dd><p>If none of the conditions are met, converted text is written to a yaml file.</p>
-<p>Note that Jarvis will still try to get results from google wolfram alpha and google.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p>
@@ -1090,9 +1152,14 @@ other statements to use it.</p>
 <dt class="sig sig-object py" id="jarvis.volume_controller">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">volume_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.volume_controller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controls volume from the numbers received. There are no chances for None.</p>
-<p>If you don’t give a volume %
-conditions() is set to assume it as 50% Since Mac(s) run on a volume of 16 bars controlled by 8 digits, I have
-changed the level to become single digit with respect to 8 (eg: 50% becomes 4) for osX</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>If you don’t specify a volume level, it defaults to 50%</p></li>
+<li><p>Mac(s) run on a volume of 16 bars controlled by 8 digits</p></li>
+<li><p>I have changed the level to become single digit with respect to 8 (eg: 50% becomes 4) for osX</p></li>
+</ul>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>level</strong> – Level of volume to which the system has to set.</p>
@@ -1130,7 +1197,10 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dt class="sig sig-object py" id="jarvis.weather_condition">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">weather_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">place</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.weather_condition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Weather report when phrase has conditions like tomorrow, day after, next week and specific part of the day etc.</p>
-<p>weather_condition() uses conditional blocks to fetch keywords and determine the output.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p><cite>weather_condition()</cite> uses conditional blocks to fetch keywords and determine the output.</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1165,17 +1235,17 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py class">
 <dt class="sig sig-object py" id="creds.Credentials">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">creds.</span></span><span class="sig-name descname"><span class="pre">Credentials</span></span><a class="headerlink" href="#creds.Credentials" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads all the required oauth and api keys stored in credentials.json file.</p>
+<dd><p>Reads all the required oauth and api keys stored in <cite>credentials.json</cite> file.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Credentials</span>
 </pre></div>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="creds.Credentials.get">
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="headerlink" href="#creds.Credentials.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads credentials stored in credentials.json file and returns a dictionary.</p>
+<dd><p>Reads credentials stored in <cite>credentials.json</cite> file and returns a dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A dictionary of parameters stored key-value pairs present in credentials.json.</p>
+<dd class="field-odd"><p>A dictionary of parameters stored key-value pairs present in <cite>credentials.json</cite></p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>dict</p>
@@ -1186,7 +1256,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="creds.Credentials.put">
 <span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#creds.Credentials.put" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dumps the parameters into credentials.json file.</p>
+<dd><p>Dumps the parameters into <cite>credentials.json</cite> file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>params</strong> – Takes the credentials key-value pair as an argument.</p>
@@ -1227,7 +1297,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.birthday">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">birthday</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.birthday" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1241,7 +1311,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.git_pass">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">git_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.git_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1255,7 +1325,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.git_user">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">git_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.git_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1269,7 +1339,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.gmail_pass">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">gmail_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.gmail_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1283,7 +1353,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.gmail_user">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">gmail_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.gmail_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1297,7 +1367,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.icloud_pass">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">icloud_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.icloud_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1311,7 +1381,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.icloud_recovery">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">icloud_recovery</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.icloud_recovery" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1325,7 +1395,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.icloud_user">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">icloud_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.icloud_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1339,7 +1409,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.maps_api">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">maps_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.maps_api" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1353,7 +1423,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.news_api">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">news_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.news_api" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1367,7 +1437,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.offline_receive_pass">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">offline_receive_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.offline_receive_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1381,7 +1451,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.offline_receive_user">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">offline_receive_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.offline_receive_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1395,7 +1465,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.offline_sender">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">offline_sender</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.offline_sender" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1409,7 +1479,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.phone_number">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">phone_number</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.phone_number" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1423,7 +1493,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.robinhood_pass">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">robinhood_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.robinhood_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1437,7 +1507,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.robinhood_qr">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">robinhood_qr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.robinhood_qr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1451,7 +1521,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.robinhood_user">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">robinhood_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.robinhood_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1465,7 +1535,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.router_pass">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">router_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.router_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1479,7 +1549,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.think_id">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">think_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.think_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1493,7 +1563,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.tv_client_key">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">tv_client_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.tv_client_key" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1507,7 +1577,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.tv_mac">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">tv_mac</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.tv_mac" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>
@@ -1521,7 +1591,7 @@ changed the level to become single digit with respect to 8 (eg: 50% becomes 4) f
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.weather_api">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">weather_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.weather_api" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls gatherer which uses the caller func name to return the param value.</p>
+<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Parameter value received from gatherer.</p>

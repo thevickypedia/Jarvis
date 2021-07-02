@@ -25,7 +25,7 @@ class AWSClients:
 
     @staticmethod
     def weather_api() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -36,7 +36,7 @@ class AWSClients:
 
     @staticmethod
     def news_api() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -47,7 +47,7 @@ class AWSClients:
 
     @staticmethod
     def robinhood_user() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -58,7 +58,7 @@ class AWSClients:
 
     @staticmethod
     def robinhood_pass() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -69,7 +69,7 @@ class AWSClients:
 
     @staticmethod
     def robinhood_qr() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -80,7 +80,7 @@ class AWSClients:
 
     @staticmethod
     def icloud_pass() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -91,7 +91,7 @@ class AWSClients:
 
     @staticmethod
     def icloud_recovery() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -102,7 +102,7 @@ class AWSClients:
 
     @staticmethod
     def icloud_user() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -113,7 +113,7 @@ class AWSClients:
 
     @staticmethod
     def gmail_user() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -124,7 +124,7 @@ class AWSClients:
 
     @staticmethod
     def gmail_pass() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -135,7 +135,7 @@ class AWSClients:
 
     @staticmethod
     def phone_number() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -146,7 +146,7 @@ class AWSClients:
 
     @staticmethod
     def maps_api() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -157,7 +157,7 @@ class AWSClients:
 
     @staticmethod
     def git_user() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -168,7 +168,7 @@ class AWSClients:
 
     @staticmethod
     def git_pass() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -179,7 +179,7 @@ class AWSClients:
 
     @staticmethod
     def tv_mac() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -190,7 +190,7 @@ class AWSClients:
 
     @staticmethod
     def tv_client_key() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -201,7 +201,7 @@ class AWSClients:
 
     @staticmethod
     def birthday() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -212,7 +212,7 @@ class AWSClients:
 
     @staticmethod
     def offline_receive_user() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -223,7 +223,7 @@ class AWSClients:
 
     @staticmethod
     def offline_receive_pass() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -234,7 +234,7 @@ class AWSClients:
 
     @staticmethod
     def offline_sender() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -245,7 +245,7 @@ class AWSClients:
 
     @staticmethod
     def think_id() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:
@@ -256,7 +256,7 @@ class AWSClients:
 
     @staticmethod
     def router_pass() -> str:
-        """Calls gatherer which uses the caller func name to return the param value.
+        """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:
             str:

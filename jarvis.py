@@ -44,6 +44,7 @@ from holidays import CountryHoliday
 from inflect import engine
 from joke.jokes import chucknorris, geek, icanhazdad, icndb
 from newsapi import NewsApiClient, newsapi_exception
+from pick import pick
 from playsound import playsound
 from psutil import Process, boot_time, cpu_count, virtual_memory
 from pychromecast.error import ChromecastConnectionError
@@ -101,8 +102,8 @@ def listener(timeout: int, phrase_limit: int) -> str:
 
     Returns:
         str:
-         On success, returns recognized statement from the microphone.
-         On failure, returns 'SR_ERROR' as a string which is conditioned to respond appropriately.
+         - On success, returns recognized statement from the microphone.
+         - On failure, returns `SR_ERROR` as a string which is conditioned to respond appropriately.
 
     """
     try:
@@ -124,7 +125,7 @@ def split(key: str) -> bool:
 
     Returns:
         bool:
-        Return value from conditions()
+        Return value from `conditions()`
 
     """
     exit_check = False  # this is specifically to catch the sleep command which should break the while loop in renew()
@@ -161,7 +162,7 @@ def greeting() -> str:
 
 
 def initialize() -> None:
-    """Awakens from sleep mode. greet_check is to ensure greeting is given only for the first function call."""
+    """Awakens from sleep mode. `greet_check` is to ensure greeting is given only for the first function call."""
     global greet_check
     if greet_check:
         speaker.say("What can I do for you?")
@@ -172,10 +173,11 @@ def initialize() -> None:
 
 
 def renew() -> None:
-    """Keeps listening and sends the response to conditions() function.
+    """Keeps listening and sends the response to `conditions()` function.
 
-    This function runs only for a minute and goes to sentry_mode() if nothing is heard.
-    split(converted) is a condition so that, loop breaks when if sleep in conditions() returns True.
+    Notes:
+        - This function runs only for a minute and goes to `sentry_mode()` if nothing is heard.
+        - split(converted) is a condition so that, loop breaks when if sleep in `conditions()` returns True.
     """
     speaker.runAndWait()
     waiter = 0
@@ -644,8 +646,6 @@ def conditions(converted: str) -> bool:
 def unrecognized_dumper(converted: str) -> None:
     """If none of the conditions are met, converted text is written to a yaml file.
 
-    Note that Jarvis will still try to get results from google wolfram alpha and google.
-
     Args:
         converted: Takes the voice recognized statement as argument.
 
@@ -666,15 +666,15 @@ def unrecognized_dumper(converted: str) -> None:
 
 
 def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
-    """Initiates geo_locator and stores current location info as json so it could be used in couple of other functions.
+    """Initiates `geo_locator` and stores current location info as a `json` file so it can be used in other functions.
 
     Args:
         device: Passed when locating a particular apple device.
 
     Returns:
         None or Tuple[str, str, str]:
-        On success, returns current latitude, current longitude and location information as a dict.
-        On failure, calls the return function or returns None.
+        - On success, returns `current latitude`, `current longitude` and `location` information as a `dict`.
+        - On failure, calls the `restart()` or `terminator()` function depending on the error.
 
     """
     try:
@@ -702,7 +702,9 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
         speaker.say("I was unable to connect to the internet. Please check your connection settings and retry.")
         speaker.runAndWait()
-        return exit(1)
+        sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
+                         f"\nTotal runtime: {time_converter(perf_counter())}")
+        return terminator()
 
     try:
         # Uses the latitude and longitude information and converts to the required address.
@@ -716,7 +718,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
 
 
 def report() -> None:
-    """Initiates a list of function that I tend to check first thing in the morning."""
+    """Initiates a list of functions, that I tend to check first thing in the morning."""
     sys.stdout.write("\rStarting today's report")
     report.has_been_called = True
     current_date()
@@ -914,7 +916,8 @@ def weather(place: str = None) -> None:
 def weather_condition(msg: str, place: str = None) -> None:
     """Weather report when phrase has conditions like tomorrow, day after, next week and specific part of the day etc.
 
-    weather_condition() uses conditional blocks to fetch keywords and determine the output.
+    Notes:
+        - `weather_condition()` uses conditional blocks to fetch keywords and determine the output.
 
     Args:
         place: Name of place where the weather information is needed.
@@ -1228,47 +1231,23 @@ def chatter_bot() -> None:
 def device_selector(converted: str = None) -> AppleDevice:
     """Selects a device using the received input string.
 
+    Uses `pick` module to show up options on the screen when a device is requested to locate.
+
     Args:
         converted: Takes the voice recognized statement as argument.
 
     Returns:
         AppleDevice:
-        Returns the device name from the user's input after checking the apple devices list.
-        Returns your default device when not able to find it.
+        Returns the selected device from the class `AppleDevice`
 
     """
-    if converted and isinstance(converted, str):
-        converted = converted.lower().replace('port', 'pods').replace('10', 'x').strip()
-        target = re.search('iphone(.*)|imac(.*)', converted)  # name of the apple device to be tracked (eg: iPhone X)
-        if target:
-            lookup = target.group()
-        elif 'macbook' in converted:
-            lookup = 'MacBook Pro'
-        elif 'airpods' in converted:
-            lookup = 'AirPods'
-        elif 'airpods pro' in converted:
-            lookup = 'AirPods Pro'
-        elif 'watch' in converted:
-            lookup = 'Apple Watch'
-        else:
-            lookup = 'iPhone 11 Pro Max'  # defaults to my iPhone model
-    elif isinstance(converted, dict):
-        lookup = converted
-    elif not converted:
-        lookup = gethostname()
-    else:
-        lookup = 'iPhone 11 Pro Max'
-    index, target_device = -1, None
     icloud_api = PyiCloudService(icloud_user, icloud_pass)
-    for device in icloud_api.devices:
-        index += 1
-        # todo: use regex or close_matches to find the precise device and remove the abuse of converted
-        if lookup.lower() in str(device).lower():
-            target_device = icloud_api.devices[index]
-            break
-    if not target_device:
-        target_device = icloud_api.iphone
-    return target_device
+    devices = [device for device in icloud_api.devices]
+    if converted:
+        chosen, index = pick(devices, 'Choose a device', indicator='=>', default_index=0)
+        return icloud_api.devices[index]
+    else:
+        return [device for device in devices if device.get('name') == gethostname()][0]
 
 
 def location() -> None:
@@ -1335,7 +1314,7 @@ def locate(converted: str) -> None:
 
 
 def music(device: str = None) -> None:
-    """Scans music directory in your profile for .mp3 files and plays using default player.
+    """Scans music directory in your profile for `.mp3` files and plays using default player.
 
     Args:
         device: Takes device name as argument.
@@ -1501,7 +1480,7 @@ def meaning(keyword: str or None) -> None:
 
 
 def create_db() -> None:
-    """Creates a database for to-do list by calling the create_db function in database module."""
+    """Creates a database for to-do list by calling the `create_db` function in database module."""
     speaker.say(database.create_db())
     if todo.has_been_called:
         todo.has_been_called = False
@@ -1943,7 +1922,8 @@ def alarm(msg: str) -> None:
 def kill_alarm() -> None:
     """Removes lock file to stop the alarm which rings only when the certain lock file is present.
 
-    Note: alarm_state is the list of lock files currently present.
+    Notes:
+        - `alarm_state` is the list of lock files currently present.
 
     """
     global place_holder
@@ -1993,21 +1973,24 @@ def kill_alarm() -> None:
 def google_home(device: str = None, file: str = None) -> None:
     """Uses socket lib to extract ip address and scans ip range for google home devices and play songs in your local.
 
-    - Can also play music on multiple devices at once.
-    - Changes made to google-home-push module:
-    - 1. Modified the way local IP is received: https://github.com/deblockt/google-home-push/pull/7
-    - 2. Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
-    - I have used "sys.stdout = open(os.devnull, 'w')" to suppress any print statements.
-    - To enable this again at a later time use "sys.stdout = sys.__stdout__"
-    - Note: When music is played and immediately stopped/tasked the google home device, it is most likely to except
-    - Broken Pipe error. This usually happens when you write to a socket that is fully closed.
-    - This error occurs when one end of the connection tries sending data while the other end has closed the connection.
-    - This can simply be ignored or handled using the below in socket module (NOT PREFERRED).
+    Notes:
+        - Can also play music on multiple devices at once.
 
-    `except IOError as error:`
-        `import errno`
-            `if error.errno != errno.EPIPE:`
-                `sys.stdout.write(error)`
+    See Also:
+        - Changes made to google-home-push module:
+        - 1. Modified the way local IP is received: https://github.com/deblockt/google-home-push/pull/7
+        - 2. Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
+        - I have used "sys.stdout = open(os.devnull, 'w')" to suppress any print statements.
+        - To enable this again at a later time use "sys.stdout = sys.__stdout__"
+        - Note: When music is played and immediately stopped/tasked the google home device, it is most likely to except.
+        - Broken Pipe error. This usually happens when you write to a socket that is fully closed.
+        - This error occurs when one end of the connection tries sending data while the other has closed the connection.
+        - This can simply be ignored or handled using the below in socket module (NOT PREFERRED).
+
+        `except IOError as error:`
+            `import errno`
+                `if error.errno != errno.EPIPE:`
+                    `sys.stdout.write(error)`
 
     Args:
         device: Name of the google home device on which the music has to be played.
@@ -2168,7 +2151,7 @@ def google_maps(query: str) -> bool:
 
     Returns:
         bool:
-        Boolean True is google's maps API is unable to fetch consumable results.
+        Boolean True if google's maps API is unable to fetch consumable results.
 
     """
     global place_holder
@@ -2248,7 +2231,7 @@ def google_maps(query: str) -> bool:
 
 
 def notes() -> None:
-    """Listens to the user and saves everything to a notes.txt file."""
+    """Listens to the user and saves everything to a `notes.txt` file."""
     global place_holder
     converted = listener(5, 10)
     if converted != 'SR_ERROR':
@@ -2411,10 +2394,10 @@ def send_sms(number: int or None) -> None:
 def television(converted: str) -> None:
     """Controls all actions on a TV (LG Web OS).
 
-    In the main() method tv is set to None. Given a command related to TV,
-    Jarvis will try to ping the TV and then power it on if the host is unreachable. Then executes the said command.
-    Once the tv is turned on, the TV class is also initiated and assigned to tv variable which is set global for
-    other statements to use it.
+    Notes:
+        - In the `__main__` method tv is set to None.
+        - Jarvis will try to ping the TV and then power it on if the host is unreachable initially.
+        - Once the tv is turned on, the TV class is also initiated and assigned to tv variable.
 
     Args:
         converted: Takes the voice recognized statement as argument.
@@ -2546,7 +2529,7 @@ def alpha(text: str) -> bool:
 
     Returns:
         bool:
-        Boolean True is wolfram alpha API is unable to fetch consumable results.
+        Boolean True if wolfram alpha API is unable to fetch consumable results.
 
     """
     alpha_client = Think(app_id=think_id)
@@ -2568,16 +2551,17 @@ def alpha(text: str) -> bool:
 def google(query: str) -> bool:
     """Uses Google's search engine parser and gets the first result that shows up on a google search.
 
-    If it is unable to get the result, Jarvis sends a request to suggestqueries.google.com to rephrase
-    the query and then looks up using the search engine parser once again. global suggestion_count is used
-    to make sure the suggestions and parsing don't run on an infinite loop.
+    Notes:
+        - If it is unable to get the result, Jarvis sends a request to `suggestqueries.google.com`
+        - This is to rephrase the query and then looks up using the search engine parser once again.
+        - global `suggestion_count` is used to make sure the suggestions and parsing don't run on an infinite loop.
 
     Args:
         query: Takes the voice recognized statement as argument.
 
     Returns:
         bool:
-        Boolean True is google search engine is unable to fetch consumable results.
+        Boolean `True` if google search engine is unable to fetch consumable results.
 
     """
     global suggestion_count
@@ -2675,9 +2659,10 @@ def google_search(phrase: str or None) -> None:
 def volume_controller(level: int) -> None:
     """Controls volume from the numbers received. There are no chances for None.
 
-    If you don't give a volume %
-    conditions() is set to assume it as 50% Since Mac(s) run on a volume of 16 bars controlled by 8 digits, I have
-    changed the level to become single digit with respect to 8 (eg: 50% becomes 4) for osX
+    See Also:
+        - If you don't specify a volume level, it defaults to 50%
+        - Mac(s) run on a volume of 16 bars controlled by 8 digits
+        - I have changed the level to become single digit with respect to 8 (eg: 50% becomes 4) for osX
 
     Args:
         level: Level of volume to which the system has to set.
@@ -2697,7 +2682,7 @@ def volume_controller(level: int) -> None:
 
 
 def face_recognition_detection() -> None:
-    """Initiates face recognition script and looks for images stored in named directories within 'train' directory."""
+    """Initiates face recognition script and looks for images stored in named directories within `train` directory."""
     if operating_system == 'Darwin':
         sys.stdout.write("\r")
         train_dir = 'train'
@@ -2855,8 +2840,8 @@ def decrease_brightness() -> None:
 def set_brightness(level: int) -> None:
     """Set brightness to a custom level.
 
-    Since Jarvis uses in-built apple script, the only way to achieve this is to:
-    set the brightness to bare minimum and increase {*}% from there or vice-versa.
+    - Since Jarvis uses in-built apple script, the only way to achieve this is to:
+        - set the brightness to bare minimum and increase [*]% from there or vice-versa.
 
     Args:
         level: Percentage of brightness to be set.
@@ -3047,7 +3032,7 @@ def celebrate() -> str:
 
 
 def time_travel() -> None:
-    """Triggered only from sentry_mode() to give a quick update on your day. Starts the report() in personalized way."""
+    """Triggered only from `sentry_mode()` to give a quick update on your day."""
     meeting = None
     if not os.path.isfile('meetings'):
         meeting = ThreadPool(processes=1).apply_async(func=meetings)
@@ -3078,8 +3063,9 @@ def time_travel() -> None:
 def guard() -> None:
     """Security Mode will enable camera and microphone in the background.
 
-    If any speech is recognized or a face is detected, there will another thread triggered to send notifications.
-    Notifications will be triggered only after 5 minutes of initial notification.
+    Notes:
+        - If any speech is recognized or a face is detected, there will another thread triggered to send notifications.
+        - Notifications will be triggered only after 5 minutes of previous notification.
     """
     import cv2
     cam_source, cam = None, None
@@ -3190,7 +3176,7 @@ def threat_notify(converted: str, date_extn: str or None) -> None:
 
 
 def offline_communicator_initiate() -> None:
-    """Initiates offline communicator in a dedicated thread."""
+    """Initiates `offline_communicator()` in a dedicated thread."""
     logger.critical('Enabled Offline Communicator')
     Thread(target=offline_communicator).start()
 
@@ -3198,37 +3184,40 @@ def offline_communicator_initiate() -> None:
 def offline_communicator() -> None:
     """The following code will look for emails in a dedicated thread so Jarvis can run simultaneously.
 
-    WARNING: Running sockets with a 30 second wait time is brutal, so I login once and keep checking for emails
-    in a while STATUS loop. This may cause various exceptions when the login session expires or when google terminates
-    the session. So I use exception handlers and circle back to restart the offline_communicator() after 2 minutes.
+    Warnings:
+        - Running sockets with a 30 second wait time is brutal.
+        - To cheat this, I login once and keep checking for emails in a `while STATUS` loop.
+        - This may cause various exceptions when the login session expires or when google terminates the session.
+        - So I use exception handlers and circle back to restart the `offline_communicator()` after 2 minutes.
 
-    To replicate a working model for offline communicator:
-        - Set/Create a dedicated email account for offline communication (as it is less secure)
-        - Send an email from a specific email address to avoid unnecessary response. - ENV VAR: offline_sender
-        - The body of the email should only have the exact command you want Jarvis to do.
-        - To "log" the response and send it out as notification, I made some changes to the pyttsx3 module. (below)
-        - I also stop the response from being spoken.
-        - voice_changer() is called, because when I stop the speaker, voice property is reset from what I set in main()
+    See Also:
+        To replicate a working model for offline communicator:
+            - Set/Create a dedicated email account for offline communication (as it is less secure)
+            - Send an email from a specific email address to avoid unnecessary response. - ENV VAR: `offline_sender`
+            - The body of the email should only have the exact command you want Jarvis to do.
+            - To "log" the response and send it out as notification, I made some changes to the pyttsx3 module. (below)
+            - I also stop the response from being spoken.
+            - `voice_changer()` is called as the voice property is reset when speaker.stop() is used.
 
-    Changes in "pyttsx3":
-        - Created a global variable in say() -> pyttsx3/engine.py (before proxy) and store the response.
-        - Created a new method and return the global variable which I created in say().
-        - The new method (vig() in this case) is called to get the response which is then sent as an SMS notification.
-        - Doing so, avoids making changes to all the functions within conditions() to notify the response from Jarvis.
+        Changes in `pyttsx3`:
+            - Created a global variable in `say()` -> pyttsx3/engine.py (before proxy) and store the response.
+            - Created a new method and return the global variable which I created in `say()`
+            - The new method (`vig()` in this case) is called to get the response which is sent as an SMS notification.
+            - Doing so, avoids making changes to all functions within `conditions()` to notify the response from Jarvis.
 
-    Env Vars:
-        - offline_receive_user - email address which is getting checked for a command
-        - offline_receive_pass - password for the above email address
-        - offline_sender - email from which the command the expected, A.K.A - commander
+        Env Vars:
+            - `offline_receive_user` - email address which is getting checked for a command
+            - `offline_receive_pass` - password for the above email address
+            - `offline_sender` - email from which the command the expected, A.K.A - commander
 
-    More cool stuff:
-        - I created a REST API on AWS API Gateway and linked it to a JavaScript on my webpage.
-        - When a request is made, the JavaScript makes a POST call to the API which then triggers a lambda job on AWS.
-        - The lambda function is set to verify the secure key and then send the email to me.
-        - As Jarvis will be watching for the UNREAD emails, he will process my request and send an SMS using AWS SNS.
-        - Check it out: https://thevickypedia.com/jarvisoffline
-        - NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails.
-        - You can also make Jarvis check for emails from your "number@tmomail.net" but response time will be > 5 min.
+    Notes:
+        More cool stuff:
+            - I created a REST API on AWS API Gateway and linked it to a JavaScript on my webpage.
+            - When a request is made, the JavaScript makes a POST call to the API which triggers a lambda job in AWS.
+            - The lambda function is set to verify the secure key and then send the email to me.
+            - Check it out: https://thevickypedia.com/jarvisoffline
+            - NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails.
+            - You can also make Jarvis check for emails from your "number@tmomail.net" but response time is > 5 min.
     """
     # todo: Do not pass functions that require user interaction/approval/confirmation
     try:
@@ -3290,9 +3279,9 @@ def offline_communicator() -> None:
 
 
 def meeting_reader() -> None:
-    """Speaks meeting information that meeting_gatherer() stored in a file named 'meetings'.
+    """Speaks meeting information that `meeting_gatherer()` stored in a file named 'meetings'.
 
-    If the file is not available, meeting information is directly fetched from the meetings() function.
+    If the file is not available, meeting information is directly fetched from the `meetings()` function.
     """
     with open('meetings', 'r') as meeting:
         meeting_info = meeting.read()
@@ -3303,7 +3292,7 @@ def meeting_reader() -> None:
 
 
 def meeting_gatherer() -> None:
-    """Gets return value from meetings() and writes it to file named 'meetings'.
+    """Gets return value from `meetings()` and writes it to file named `meetings`.
 
     This function runs in a dedicated thread every 15 minutes to avoid wait time when meetings information is requested.
     """
@@ -3319,16 +3308,16 @@ def meeting_gatherer() -> None:
 
 
 def meetings(meeting_file: str = 'calendar.scpt') -> str:
-    """Uses applescript to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.
+    """Uses `applescript` to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.
 
     Args:
         meeting_file: Takes applescript filename as argument. Defaults to calendar.scpt unless an alternate is passed.
 
     Returns:
         str:
-        On success, returns a message saying which meeting is scheduled at what time.
-        If no events, returns a message saying there are no events in the next 12 hours.
-        On failure, returns a message saying Jarvis was unable to read calendar/outlook.
+        - On success, returns a message saying which meeting is scheduled at what time.
+        - If no events, returns a message saying there are no events in the next 12 hours.
+        - On failure, returns a message saying Jarvis was unable to read calendar/outlook.
 
     """
     # todo: update calendar.scpt and outlook.scpt to use args for number of hours and default to 12
@@ -3478,9 +3467,10 @@ class PersonalCloud:
 
     >>> PersonalCloud
 
-    Reference: https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book
+    References:
+        https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book
 
-    Make sure to enable file access for Terminal sessions. Steps:
+    See Also:
         Step 1:
             - Mac OS 10.14.* and higher - System Preferences -> Security & Privacy -> Privacy -> Full Disk Access
             - Mac OS 10.13.* and lower - System Preferences -> Security & Privacy -> Privacy -> Accessibility
@@ -3496,8 +3486,8 @@ class PersonalCloud:
         - Registered ports: 1024 to 49151
         - Dynamically available: 49152 to 65535
         - Alternate to active_sessions ->
-        - check_output(f"echo {root_password} | sudo -S lsof -PiTCP -sTCP:LISTEN 2>&1;", shell=True).decode('utf-8')
-        - 'remove' should be an actual function as per pep-8 standards, bypassing it using  # noqa
+            - `check_output(f"echo {root_password} | sudo -S lsof -PiTCP -sTCP:LISTEN 2>&1;", shell=True).decode('utf-8')`
+        - `remove` variable should be an actual function as per pep-8 standards, bypassing it using  # noqa
 
         Returns:
             int:
@@ -3528,13 +3518,14 @@ class PersonalCloud:
     def enable() -> None:
         """Enables personal cloud.
 
-        - Clones personal_cloud repo in a dedicated Terminal,
-        - Creates a dedicated virtual env and installs the requirements within it (ETA: ~20 seconds),
-        - If personal_cloud_volume env var is provided, Jarvis will mount the drive if it is is connected to the device
-        - Gets and sets env vars required for the personal cloud,
-        - Generates random username and passphrase for login info,
-        - Triggers personal cloud using a dedicated Terminal,
-        - Sends an SMS with endpoint, username and password to your mobile phone.
+        Notes:
+            - Clones `personal_cloud` repo in a dedicated Terminal.
+            - Creates a dedicated virtual env and installs the requirements within it (ETA: ~20 seconds)
+            - If `personal_cloud_volume` env var is provided, Jarvis will mount the drive if connected to the device.
+            - Gets and sets env vars required for the personal cloud.
+            - Generates random username and passphrase for login info.
+            - Triggers personal cloud using a dedicated Terminal.
+            - Sends an SMS with endpoint, username and password to your mobile phone.
         """
         personal_cloud.delete_repo()
         initial_script = f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git && " \
@@ -3625,7 +3616,7 @@ class PersonalCloud:
 
     @staticmethod
     def disable() -> None:
-        """Shuts off the server.py to stop the personal cloud.
+        """Shuts off `server.py` to stop the personal cloud.
 
         This eliminates the hassle of passing args and handling threads.
         """
@@ -3642,12 +3633,10 @@ class PersonalCloud:
 def internet_checker() -> Union[Speedtest, bool]:
     """Uses speed test api to check for internet connection.
 
-    >>> Speedtest
-
     Returns:
-        Speedtest or bool:
-        On success, returns Speedtest module.
-        On failure, returns boolean False.
+        `Speedtest` or bool:
+        - On success, returns Speedtest module.
+        - On failure, returns boolean False.
 
     """
     try:
@@ -3657,16 +3646,18 @@ def internet_checker() -> Union[Speedtest, bool]:
 
 
 def sentry_mode() -> None:
-    """Sentry mode, all it does is to wait for the right keyword to wake up and get into action.
+    """All it does is to wait for the right keyword to wake up and get into action.
 
-    Threshold is used to sanity check sentry_mode() so that:
-        - Jarvis doesn't run into Fatal Python error.
-        - Jarvis restarts at least twice a day and gets a new pid.
+    Notes:
+        Threshold is used to sanity check `sentry_mode()` so that:
+            - Jarvis doesn't run into Fatal Python error.
+            - Jarvis restarts at least twice a day and gets a new pid.
+            - Jarvis doesn't go into a frozen state with nothing on screen.
     """
     time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']
     wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
     threshold = 0
-    while threshold < 10_000:
+    while threshold < 5_000:
         threshold += 1
         try:
             sys.stdout.write("\rSentry Mode")
@@ -3738,8 +3729,7 @@ def size_converter(byte_size: int) -> str:
     integer = int(floor(log(byte_size, 1024)))
     power = pow(1024, integer)
     size = round(byte_size / power, 2)
-    response = str(size) + ' ' + size_name[integer]
-    return response
+    return f'{size} {size_name[integer]}'
 
 
 def exit_message() -> str:
@@ -3792,7 +3782,7 @@ def remove_files() -> None:
     Deletes:
         - all .lock files created for alarms and reminders.
         - location data in yaml format, to recreate a new one next time around.
-        - meetings, file to recreate a new one next time around.
+        - `meetings` file to recreate a new one next time around.
     """
     [os.remove(f"alarm/{file}") for file in os.listdir('alarm') if file != '.keep']
     [os.remove(f"reminder/{file}") for file in os.listdir('reminder') if file != '.keep']
@@ -3856,7 +3846,7 @@ def extract_nos(input_: str) -> float:
 
 
 def format_nos(input_: float) -> int:
-    """Removes .0 float values.
+    """Removes `.0` float values.
 
     Args:
         input_: Int if found, else returns the received float value.
@@ -3923,11 +3913,12 @@ def stop_terminal() -> None:
 
 
 def restart(target: str = None) -> None:
-    """Restart triggers restart.py which in turn starts Jarvis after 5 seconds.
+    """Restart triggers `restart.py` which in turn starts Jarvis after 5 seconds.
 
-    Doing this changes the PID to avoid any Fatal Errors occurred by long running threads.
-    restart(PC) will restart the machine after getting confirmation.
-    restart(anything_else) will restart the machine without getting any confirmation.
+    Notes:
+        - Doing this changes the PID to avoid any Fatal Errors occurred by long running threads.
+        - restart(PC) will restart the machine after getting confirmation.
+        - restart(anything_else) will restart the machine without getting any confirmation.
 
     Args:
         target:
@@ -3969,7 +3960,8 @@ def restart(target: str = None) -> None:
 def shutdown(proceed: bool = False) -> None:
     """Gets confirmation and turns off the machine.
 
-    Args: Boolean value whether or not to get confirmation.
+    Args:
+        proceed: Boolean value whether or not to get confirmation.
 
     """
     global place_holder
@@ -4171,6 +4163,8 @@ if __name__ == '__main__':
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
         speaker.say("I was unable to connect to the internet sir! Please check your connection settings and retry.")
         speaker.runAndWait()
+        sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
+                         f"\nTotal runtime: {time_converter(perf_counter())}")
         terminator()
 
     # Retrieves devices IP by doing a local IP range scan using Netgear API

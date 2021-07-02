@@ -49,6 +49,9 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # a list of builtin themes.
 # https://www.sphinx-doc.org/en/master/usage/theming.html#builtin-themes
 html_theme = 'classic'
+html_theme_options = {
+    "body_max_width": "80%"
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
