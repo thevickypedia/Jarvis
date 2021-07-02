@@ -293,9 +293,8 @@
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>Uses <cite>pick</cite> module to show up options on the screen when a device is requested to locate.</p></li>
-<li><p>If you’re running Jarvis in PyCharm or similar IDE, then make sure to check the option:</p></li>
-<li><p>Edit Configurations -&gt; Execution -&gt; Emulate terminal in output console</p></li>
+<li><p>Opens an html table with the index value and name of device.</p></li>
+<li><p>When chosen an index value, the device name will be returned.</p></li>
 </ul>
 </div>
 <dl class="field-list simple">
@@ -477,14 +476,14 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.google_home">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">google_home</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.google_home" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses socket lib to extract ip address and scans ip range for google home devices and play songs in your local.</p>
+<dd><p>Uses socket lib to extract ip address and scan ip range for google home devices and play songs in your local.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>Can also play music on multiple devices at once.</p></li>
 </ul>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<ul class="simple">
+<ul>
 <li><p>Changes made to google-home-push module:</p></li>
 <li><ol class="arabic simple">
 <li><p>Modified the way local IP is received: <a class="reference external" href="https://github.com/deblockt/google-home-push/pull/7">https://github.com/deblockt/google-home-push/pull/7</a></p></li>
@@ -493,10 +492,14 @@
 <li><ol class="arabic simple" start="2">
 <li><p>Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py</p></li>
 </ol>
-</li>
+<blockquote>
+<div><ul class="simple">
 <li><p>I have used “sys.stdout = open(os.devnull, ‘w’)” to suppress any print statements.</p></li>
 <li><p>To enable this again at a later time use “sys.stdout = sys.__stdout__”</p></li>
-<li><p>Note: When music is played and immediately stopped/tasked the google home device, it is most likely to except.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>When music is played and immediately stopped/tasked the google home device, it is most likely to except.</p></li>
 <li><p>Broken Pipe error. This usually happens when you write to a socket that is fully closed.</p></li>
 <li><p>This error occurs when one end of the connection tries sending data while the other has closed the connection.</p></li>
 <li><p>This can simply be ignored or handled using the below in socket module (NOT PREFERRED).</p></li>

@@ -6,7 +6,6 @@ from threading import Thread
 
 from creds import Credentials
 
-cred = Credentials().get()
 directory = 'reminder'  # dir need not be '../reminder' as the Thread is triggered by jarvis.py which is in root dir
 
 
@@ -42,6 +41,7 @@ class Reminder(Thread):
             minute = now.strftime("%M")
             hour = now.strftime("%I")
             if hour == self.hours and minute == self.minutes and am_pm == self.am_pm and file_name in files:
+                cred = Credentials().get()
                 # Establish a secure session with gmail's outgoing SMTP server using your gmail account
                 server = SMTP("smtp.gmail.com", 587)
                 server.starttls()

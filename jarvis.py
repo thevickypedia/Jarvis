@@ -44,7 +44,6 @@ from holidays import CountryHoliday
 from inflect import engine
 from joke.jokes import chucknorris, geek, icanhazdad, icndb
 from newsapi import NewsApiClient, newsapi_exception
-from pick import pick
 from playsound import playsound
 from psutil import Process, boot_time, cpu_count, virtual_memory
 from pychromecast.error import ChromecastConnectionError
@@ -1232,9 +1231,8 @@ def device_selector(converted: str = None) -> AppleDevice:
     """Selects a device using the received input string.
 
     See Also:
-        - Uses `pick` module to show up options on the screen when a device is requested to locate.
-        - If you're running Jarvis in PyCharm or similar IDE, then make sure to check the option:
-        - Edit Configurations -> Execution -> Emulate terminal in output console
+        - Opens an html table with the index value and name of device.
+        - When chosen an index value, the device name will be returned.
 
     Args:
         converted: Takes the voice recognized statement as argument.
@@ -1246,14 +1244,34 @@ def device_selector(converted: str = None) -> AppleDevice:
     """
     icloud_api = PyiCloudService(icloud_user, icloud_pass)
     devices = [device for device in icloud_api.devices]
+    # todo: remove complex html and replace with tkinter popup input
+    target_device = None
     if converted:
-        # todo: remove pick as it emulates the terminal while writing, use voice-command options instead.
-        speaker.say('Choose a device on your screen sir!')
+        nth = {"first": 1, "second": 2, "third": 3, "fourth": 4, "fifth": 5, "sixth": 6, "seventh": 7, "eighth": 8,
+               "ninth": 9, "tenth": 10}
+        inject_data = ''
+        for index, device in enumerate(devices):
+            inject_data += f"""<tr>\n\t<td>{index + 1}</th>\n\t<td>{device}</th>\n</tr>\n"""
+        inject_data += """</table>\n</body>\n</html>"""
+        styling = """<head>\n<style>table {\n\tfont-family: arial, sans-serif;\n\tborder-collapse: collapse;
+                width: 100%;\n}\n\ntd, th {\n\tborder: 1px solid #dddddd;\n\ttext-align: left;\n\tpadding: 8px;\n}\n\n
+                tr:nth-child(even) {\n\tbackground-color: #dddddd;\n}\n</style>\n</head>"""
+        html_data = f"""<!DOCTYPE html>\n<html>\n{styling}\n<body>\n<h2>Choose an index for me:</h2>\n<table>\n\t
+                <tr>\n\t<th>Index</th>\n\t<th>Device Info</th>\n\t</tr>\n\t{inject_data}"""
+        with open('devices.html', 'w') as file:
+            file.write(html_data)
+            file.close()
+        web_open('file:///' + os.getcwd() + '/' + 'devices.html')
+        speaker.say('Choose an option from your screen sir!')
         speaker.runAndWait()
-        chosen, index = pick(devices, 'Choose a device', indicator='=>', default_index=0)
-        return icloud_api.devices[index]
+        converted = listener(5, 5)
+        if converted != 'SR_ERROR':
+            for key, value in nth.items():
+                if key in converted:
+                    target_device = icloud_api.devices[value]
     else:
-        return [device for device in devices if device.get('name') == gethostname()][0]
+        target_device = [device for device in devices if device.get('name') == gethostname()][0]
+    return target_device if target_device else icloud_api.iphone
 
 
 def location() -> None:
@@ -1978,7 +1996,7 @@ def kill_alarm() -> None:
 
 
 def google_home(device: str = None, file: str = None) -> None:
-    """Uses socket lib to extract ip address and scans ip range for google home devices and play songs in your local.
+    """Uses socket lib to extract ip address and scan ip range for google home devices and play songs in your local.
 
     Notes:
         - Can also play music on multiple devices at once.
@@ -1987,9 +2005,9 @@ def google_home(device: str = None, file: str = None) -> None:
         - Changes made to google-home-push module:
         - 1. Modified the way local IP is received: https://github.com/deblockt/google-home-push/pull/7
         - 2. Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
-        - I have used "sys.stdout = open(os.devnull, 'w')" to suppress any print statements.
-        - To enable this again at a later time use "sys.stdout = sys.__stdout__"
-        - Note: When music is played and immediately stopped/tasked the google home device, it is most likely to except.
+            - I have used "sys.stdout = open(os.devnull, 'w')" to suppress any print statements.
+            - To enable this again at a later time use "sys.stdout = sys.__stdout__"
+        - When music is played and immediately stopped/tasked the google home device, it is most likely to except.
         - Broken Pipe error. This usually happens when you write to a socket that is fully closed.
         - This error occurs when one end of the connection tries sending data while the other has closed the connection.
         - This can simply be ignored or handled using the below in socket module (NOT PREFERRED).

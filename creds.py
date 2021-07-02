@@ -1,5 +1,5 @@
 from json import dump, load
-from os import path, remove
+from os import listdir, path, remove
 
 
 class Credentials:
@@ -30,6 +30,6 @@ class Credentials:
             params: Takes the credentials key-value pair as an argument.
 
         """
-        remove(self.file)
+        remove(self.file) if self.file in listdir() else None
         with open(path.join(self.directory, self.file), 'w') as write_file:
             dump(params, write_file, indent=2, allow_nan=False)
