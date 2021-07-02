@@ -1244,11 +1244,13 @@ def device_selector(converted: str = None) -> AppleDevice:
     """
     icloud_api = PyiCloudService(icloud_user, icloud_pass)
     devices = [device for device in icloud_api.devices]
-    # todo: remove complex html and replace with tkinter popup input
     target_device = None
     if converted:
-        nth = {"first": 1, "second": 2, "third": 3, "fourth": 4, "fifth": 5, "sixth": 6, "seventh": 7, "eighth": 8,
-               "ninth": 9, "tenth": 10}
+        nth = {"first or 1st or number one or 1": 1, "second or 2nd or two or 2": 2, "third or 3rd or three or 3": 3,
+               "fourth or 4th or four or 4": 4, "fifth or 4th or five or 5": 5, "sixth or 6th or six or 6": 6,
+               "seventh or 7th or seven or 7": 7, "eighth or 8th or eight or 8": 8, "ninth or 9th or nine or 9": 9,
+               "tenth or 10th or ten or 10": 10, "eleventh or 11th or eleven or 11": 11,
+               "twelfth or 12th or twelve or 12": 12}
         inject_data = ''
         for index, device in enumerate(devices):
             inject_data += f"""<tr>\n\t<td>{index + 1}</th>\n\t<td>{device}</th>\n</tr>\n"""
@@ -1256,19 +1258,22 @@ def device_selector(converted: str = None) -> AppleDevice:
         styling = """<head>\n<style>table {\n\tfont-family: arial, sans-serif;\n\tborder-collapse: collapse;
                 width: 100%;\n}\n\ntd, th {\n\tborder: 1px solid #dddddd;\n\ttext-align: left;\n\tpadding: 8px;\n}\n\n
                 tr:nth-child(even) {\n\tbackground-color: #dddddd;\n}\n</style>\n</head>"""
-        html_data = f"""<!DOCTYPE html>\n<html>\n{styling}\n<body>\n<h2>Choose an index for me:</h2>\n<table>\n\t
+        html_data = f"""<!DOCTYPE html>\n<html>\n{styling}\n<body>\n<h2>Choose an index value:</h2>\n<table>\n\t
                 <tr>\n\t<th>Index</th>\n\t<th>Device Info</th>\n\t</tr>\n\t{inject_data}"""
-        with open('devices.html', 'w') as file:
+        devices_file = 'devices.html'
+        with open(devices_file, 'w') as file:
             file.write(html_data)
             file.close()
-        web_open('file:///' + os.getcwd() + '/' + 'devices.html')
+        web_open('file:///' + os.getcwd() + '/' + devices_file)
         speaker.say('Choose an option from your screen sir!')
         speaker.runAndWait()
         converted = listener(5, 5)
+        os.remove(devices_file) if devices_file in os.listdir() else None
         if converted != 'SR_ERROR':
             for key, value in nth.items():
-                if key in converted:
-                    target_device = icloud_api.devices[value]
+                for k in key.split(' or '):
+                    if k in converted:
+                        target_device = icloud_api.devices[value - 1]  # index in html and nth dict are incremented by 1
     else:
         target_device = [device for device in devices if device.get('name') == gethostname() or
                          gethostname() == device.get('name') + '.local'][0]
