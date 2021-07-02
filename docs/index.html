@@ -290,7 +290,14 @@
 <dt class="sig sig-object py" id="jarvis.device_selector">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">device_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">pyicloud.services.findmyiphone.AppleDevice</span><a class="headerlink" href="#jarvis.device_selector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selects a device using the received input string.</p>
-<p>Uses <cite>pick</cite> module to show up options on the screen when a device is requested to locate.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Uses <cite>pick</cite> module to show up options on the screen when a device is requested to locate.</p></li>
+<li><p>If you’re running Jarvis in PyCharm or similar IDE, then make sure to check the option:</p></li>
+<li><p>Edit Configurations -&gt; Execution -&gt; Emulate terminal in output console</p></li>
+</ul>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p>
@@ -320,6 +327,7 @@
 <dt class="sig sig-object py" id="jarvis.distance">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">starting_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates distance between two locations.</p>
+<p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>If starting point is None, it gets the distance from your current location to destination.</p></li>
 <li><p>If destination is None, it asks for a destination from the user.</p></li>
@@ -882,14 +890,17 @@
 <dt class="sig sig-object py" id="jarvis.remove_files">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">remove_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.remove_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function that deletes multiple files when called during exit operation.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
 <dl class="simple">
 <dt>Deletes:</dt><dd><ul class="simple">
-<li><p>all .lock files created for alarms and reminders.</p></li>
-<li><p>location data in yaml format, to recreate a new one next time around.</p></li>
+<li><p>all <cite>.lock</cite> files created for alarms and reminders.</p></li>
+<li><p><cite>location.yaml</cite> format, to recreate a new one next time around.</p></li>
 <li><p><cite>meetings</cite> file to recreate a new one next time around.</p></li>
 </ul>
 </dd>
 </dl>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -923,8 +934,13 @@
 <ul class="simple">
 <li><p>Doing this changes the PID to avoid any Fatal Errors occurred by long running threads.</p></li>
 <li><p>restart(PC) will restart the machine after getting confirmation.</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
 <li><p>restart(anything_else) will restart the machine without getting any confirmation.</p></li>
 </ul>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

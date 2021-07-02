@@ -1231,7 +1231,10 @@ def chatter_bot() -> None:
 def device_selector(converted: str = None) -> AppleDevice:
     """Selects a device using the received input string.
 
-    Uses `pick` module to show up options on the screen when a device is requested to locate.
+    See Also:
+        - Uses `pick` module to show up options on the screen when a device is requested to locate.
+        - If you're running Jarvis in PyCharm or similar IDE, then make sure to check the option:
+        - Edit Configurations -> Execution -> Emulate terminal in output console
 
     Args:
         converted: Takes the voice recognized statement as argument.
@@ -1244,6 +1247,9 @@ def device_selector(converted: str = None) -> AppleDevice:
     icloud_api = PyiCloudService(icloud_user, icloud_pass)
     devices = [device for device in icloud_api.devices]
     if converted:
+        # todo: remove pick as it emulates the terminal while writing, use voice-command options instead.
+        speaker.say('Choose a device on your screen sir!')
+        speaker.runAndWait()
         chosen, index = pick(devices, 'Choose a device', indicator='=>', default_index=0)
         return icloud_api.devices[index]
     else:
@@ -1672,8 +1678,9 @@ def delete_db() -> None:
 def distance(starting_point: str = None, destination: str = None) -> None:
     """Calculates distance between two locations.
 
-    - If starting point is None, it gets the distance from your current location to destination.
-    - If destination is None, it asks for a destination from the user.
+    Notes:
+        - If starting point is None, it gets the distance from your current location to destination.
+        - If destination is None, it asks for a destination from the user.
 
     Args:
         starting_point: Takes the starting place name as an optional argument.
@@ -3779,10 +3786,11 @@ def terminator() -> None:
 def remove_files() -> None:
     """Function that deletes multiple files when called during exit operation.
 
-    Deletes:
-        - all .lock files created for alarms and reminders.
-        - location data in yaml format, to recreate a new one next time around.
-        - `meetings` file to recreate a new one next time around.
+    Warnings:
+        Deletes:
+            - all `.lock` files created for alarms and reminders.
+            - `location.yaml` format, to recreate a new one next time around.
+            - `meetings` file to recreate a new one next time around.
     """
     [os.remove(f"alarm/{file}") for file in os.listdir('alarm') if file != '.keep']
     [os.remove(f"reminder/{file}") for file in os.listdir('reminder') if file != '.keep']
@@ -3918,6 +3926,8 @@ def restart(target: str = None) -> None:
     Notes:
         - Doing this changes the PID to avoid any Fatal Errors occurred by long running threads.
         - restart(PC) will restart the machine after getting confirmation.
+
+    Warnings:
         - restart(anything_else) will restart the machine without getting any confirmation.
 
     Args:
