@@ -1270,7 +1270,8 @@ def device_selector(converted: str = None) -> AppleDevice:
                 if key in converted:
                     target_device = icloud_api.devices[value]
     else:
-        target_device = [device for device in devices if device.get('name') == gethostname()][0]
+        target_device = [device for device in devices if device.get('name') == gethostname() or
+                         gethostname() == device.get('name') + '.local'][0]
     return target_device if target_device else icloud_api.iphone
 
 
