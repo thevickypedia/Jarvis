@@ -77,3 +77,19 @@ class LocalIPScan:
             for device in attached_devices:
                 if device.name == 'LGWEBOSTV':
                     yield device.ip.strip("'")
+
+
+if __name__ == '__main__':
+    from os import environ, listdir
+    from pprint import pprint
+    from aws_clients import AWSClients
+
+    aws = AWSClients()
+    if 'credentials.json' in listdir():
+        from creds import Credentials
+
+        cred = Credentials().get()
+    else:
+        cred = environ
+
+    pprint(LocalIPScan(router_pass=cred.get('router_pass') or aws.router_pass()).attached_devices)
