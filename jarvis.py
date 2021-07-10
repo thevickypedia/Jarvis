@@ -2009,18 +2009,24 @@ def google_home(device: str = None, file: str = None) -> None:
 
     See Also:
         - Changes made to google-home-push module:
-        - 1. Modified the way local IP is received: https://github.com/deblockt/google-home-push/pull/7
-        - 2. Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
-            - I have used "sys.stdout = open(os.devnull, 'w')" to suppress any print statements.
-            - To enable this again at a later time use "sys.stdout = sys.__stdout__"
+
+            1. Modified the way local IP is received: https://github.com/deblockt/google-home-push/pull/7
+            2. Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
+
+                - I have used "sys.stdout = open(os.devnull, 'w')" to suppress any print statements.
+                - To enable this again at a later time use `sys.stdout = sys.__stdout__`
+
         - When music is played and immediately stopped/tasked the google home device, it is most likely to except.
         - Broken Pipe error. This usually happens when you write to a socket that is fully closed.
         - This error occurs when one end of the connection tries sending data while the other has closed the connection.
-        - This can simply be ignored or handled using the below in socket module (NOT PREFERRED).
+        - This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).
 
-        `except IOError as error:`
-            `import errno`
-                `if error.errno != errno.EPIPE:`
+                `except IOError as error:`
+
+                    `import errno`
+
+                    `if error.errno != errno.EPIPE:`
+
                     `sys.stdout.write(error)`
 
     Args:
@@ -3517,7 +3523,7 @@ class PersonalCloud:
         - Registered ports: 1024 to 49151
         - Dynamically available: 49152 to 65535
         - Alternate to active_sessions ->
-            - `check_output(f"echo {root_password} | sudo -S lsof -PiTCP -sTCP:LISTEN 2>&1;", shell=True).decode('utf-8')`
+            - `check_output(f"echo {PASSWORD} | sudo -S lsof -PiTCP -sTCP:LISTEN 2>&1;", shell=True).decode('utf-8')`
         - `remove` variable should be an actual function as per pep-8 standards, bypassing it using  # noqa
 
         Returns:

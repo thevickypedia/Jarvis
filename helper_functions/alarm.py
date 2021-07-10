@@ -1,7 +1,6 @@
 from datetime import datetime
 from os import getcwd, listdir, path, remove, system
 from platform import system as os
-from random import choice
 from subprocess import call
 from threading import Thread
 from time import sleep
@@ -30,10 +29,13 @@ class Alarm(Thread):
         self.am_pm = am_pm
 
     def run(self) -> None:
-        """Triggers the Alarm class in a thread."""
+        """Triggers the Alarm class in a thread.
+
+        Opens the alarm.mp3 within mp3 directory, and plays the tone when the hours and minutes match the current time.
+        """
         operating_system = os()
         music_dir = "mp3"
-        tone = choice(listdir(music_dir))
+        tone = "alarm.mp3"
         files = listdir(directory)
         file_name = f"{self.hours}_{self.minutes}_{self.am_pm}.lock"
         while True:
@@ -45,7 +47,7 @@ class Alarm(Thread):
                 if operating_system == 'Darwin':
                     system(f'osascript -e "set Volume {round((8 * 100) / 100)}"')
                     call(["open", f"{music_dir}/{tone}"])
-                    sleep(60)
+                    sleep(200)
                     system(f'osascript -e "set Volume {round((8 * 50) / 100)}"')
                 elif operating_system == 'Windows':
                     system('SetVol.exe 100')

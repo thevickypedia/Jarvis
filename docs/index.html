@@ -104,7 +104,7 @@
 <li><p>Dynamically available: 49152 to 65535</p></li>
 <li><dl class="simple">
 <dt>Alternate to active_sessions -&gt;</dt><dd><ul>
-<li><p><cite>check_output(f”echo {root_password} | sudo -S lsof -PiTCP -sTCP:LISTEN 2&gt;&amp;1;”, shell=True).decode(‘utf-8’)</cite></p></li>
+<li><p><cite>check_output(f”echo {PASSWORD} | sudo -S lsof -PiTCP -sTCP:LISTEN 2&gt;&amp;1;”, shell=True).decode(‘utf-8’)</cite></p></li>
 </ul>
 </dd>
 </dl>
@@ -484,36 +484,35 @@
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul>
-<li><p>Changes made to google-home-push module:</p></li>
-<li><ol class="arabic simple">
+<li><p>Changes made to google-home-push module:</p>
+<blockquote>
+<div><ol class="arabic">
 <li><p>Modified the way local IP is received: <a class="reference external" href="https://github.com/deblockt/google-home-push/pull/7">https://github.com/deblockt/google-home-push/pull/7</a></p></li>
-</ol>
-</li>
-<li><ol class="arabic simple" start="2">
-<li><p>Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py</p></li>
-</ol>
+<li><p>Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>I have used “sys.stdout = open(os.devnull, ‘w’)” to suppress any print statements.</p></li>
-<li><p>To enable this again at a later time use “sys.stdout = sys.__stdout__”</p></li>
+<li><p>To enable this again at a later time use <cite>sys.stdout = sys.__stdout__</cite></p></li>
 </ul>
+</div></blockquote>
+</li>
+</ol>
 </div></blockquote>
 </li>
 <li><p>When music is played and immediately stopped/tasked the google home device, it is most likely to except.</p></li>
 <li><p>Broken Pipe error. This usually happens when you write to a socket that is fully closed.</p></li>
 <li><p>This error occurs when one end of the connection tries sending data while the other has closed the connection.</p></li>
-<li><p>This can simply be ignored or handled using the below in socket module (NOT PREFERRED).</p></li>
+<li><p>This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).</p>
+<blockquote>
+<div><p><cite>except IOError as error:</cite></p>
+<blockquote>
+<div><p><cite>import errno</cite></p>
+<p><cite>if error.errno != errno.EPIPE:</cite></p>
+<p><cite>sys.stdout.write(error)</cite></p>
+</div></blockquote>
+</div></blockquote>
+</li>
 </ul>
-<dl class="simple">
-<dt><cite>except IOError as error:</cite></dt><dd><dl class="simple">
-<dt><cite>import errno</cite></dt><dd><dl class="simple">
-<dt><cite>if error.errno != errno.EPIPE:</cite></dt><dd><p><cite>sys.stdout.write(error)</cite></p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1299,6 +1298,7 @@
 <dt class="sig sig-object py" id="helper_functions.alarm.Alarm.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#helper_functions.alarm.Alarm.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Triggers the Alarm class in a thread.</p>
+<p>Opens the alarm.mp3 within mp3 directory, and plays the tone when the hours and minutes match the current time.</p>
 </dd></dl>
 
 </dd></dl>
