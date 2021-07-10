@@ -1,8 +1,46 @@
-![GitHub](https://img.shields.io/github/license/thevickypedia/Jarvis) 
-![GitHub repo size](https://img.shields.io/github/repo-size/thevickypedia/Jarvis) 
-![GitHub Repo stars](https://img.shields.io/github/stars/thevickypedia/Jarvis) 
-![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/Jarvis) 
-![GitHub commit activity](https://img.shields.io/github/commit-activity/y/thevickypedia/Jarvis)
+###### Versions Supported
+[![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-385/)
+[![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-391/)
+
+###### Language Stats
+![Language count](https://img.shields.io/github/languages/count/thevickypedia/Jarvis)
+![Code coverage](https://img.shields.io/github/languages/top/thevickypedia/Jarvis)
+
+###### Repo Stats
+[![GitHub Repo stars](https://img.shields.io/github/stars/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+[![GitHub Repo forks](https://img.shields.io/github/forks/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+[![GitHub Repo watchers](https://img.shields.io/github/watchers/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+
+[![GitHub](https://img.shields.io/github/license/thevickypedia/Jarvis)](LICENSE)
+[![GitHub repo size](https://img.shields.io/github/repo-size/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+[![GitHub code size](https://img.shields.io/github/languages/code-size/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+[![LOC](https://img.shields.io/tokei/lines/github/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+
+[![GitHub Repo issues](https://img.shields.io/github/issues-closed-raw/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+[![GitHub Repo issues](https://img.shields.io/github/issues-raw/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+[![GitHub Repo pr](https://img.shields.io/github/issues-pr-closed-raw/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+[![GitHub Repo pr](https://img.shields.io/github/issues-pr-raw/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+
+###### Code Stats
+![Modules](https://img.shields.io/github/search/thevickypedia/Jarvis/module)
+![Python](https://img.shields.io/github/search/thevickypedia/Jarvis/.py)
+![Threads](https://img.shields.io/github/search/thevickypedia/Jarvis/thread)
+![Listener](https://img.shields.io/github/search/thevickypedia/Jarvis/listener)
+![Speaker](https://img.shields.io/github/search/thevickypedia/Jarvis/speaker)
+![Bash](https://img.shields.io/github/search/thevickypedia/Jarvis/.sh)
+![AppleScript](https://img.shields.io/github/search/thevickypedia/Jarvis/.scpt)
+![Make](https://img.shields.io/github/search/thevickypedia/Jarvis/Makefile)
+
+###### Deployments
+[![Docs](https://img.shields.io/docsrs/docs/latest)](https://thevickypedia.github.io/Jarvis/)
+
+###### Activity
+![Maintained](https://img.shields.io/maintenance/yes/2021)
+[![GitHub Repo created](https://img.shields.io/date/1599432310)](https://api.github.com/repos/thevickypedia/Jarvis)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/y/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+[![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+
+[comment]: <> (![Stackoverflow reputation]&#40;https://img.shields.io/stackexchange/stackoverflow/r/13691532&#41;)
 
 # Jarvis
 IronMan's Jarvis with python
