@@ -1360,11 +1360,8 @@ def music(device: str = None) -> None:
         path = None
 
     get_all_files = (os.path.join(root, f) for root, _, files in path for f in files)
-    get_music_files = (f for f in get_all_files if os.path.splitext(f)[1] == '.mp3')
-    file = []
-    for music_file in get_music_files:
-        file.append(music_file)
-    chosen = choice(file)
+    music_files = [file for file in get_all_files if os.path.splitext(file)[1] == '.mp3']
+    chosen = choice(music_files)
 
     if device:
         google_home(device, chosen)
@@ -2091,8 +2088,7 @@ def google_home(device: str = None, file: str = None) -> None:
                     f"You can choose one and ask me to play some music on any of these.")
         return
     else:
-        chosen = []
-        [chosen.append(value) for key, value in devices.items() if key.lower() in device.lower()]
+        chosen = [value for key, value in devices.items() if key.lower() in device.lower()]
         if not chosen:
             speaker.say("I don't see any matching devices sir!. Let me help you.")
             google_home()
@@ -2303,8 +2299,7 @@ def github(target: list) -> None:
         speaker.say(f"I've cloned {cloned} on your home directory sir!")
         return
     elif len(target) <= 3:
-        newest = []
-        [newest.append(new.split('/')[-1]) for new in target]
+        newest = [new.split('/')[-1] for new in target]
         sys.stdout.write(f"\r{', '.join(newest)}")
         speaker.say(f"I found {len(target)} results. On your screen sir! Which one shall I clone?")
         speaker.runAndWait()
@@ -2607,10 +2602,7 @@ def google(query: str) -> bool:
     try:
         google_results = search_engine.search(query, cache=False)
         a = {"Google": google_results}
-        for k, v in a.items():
-            for result in v:
-                response = result['titles']
-                results.append(response)
+        results = [result['titles'] for k, v in a.items() for result in v]
     except NoResultsOrTrafficError:
         suggest_url = "http://suggestqueries.google.com/complete/search"
         params = {
@@ -3536,14 +3528,11 @@ class PersonalCloud:
         if not (localhost := gethostbyname('localhost')):  # 'if not' in walrus operator to assign localhost manually
             localhost = '127.0.0.1'
         remove = lambda item: item.replace(localhost, '').replace(':', '').replace('.', '').replace('*', '')  # noqa
-        active_ports = []
-        for index, row in enumerate(active_sessions.split('\n')):
-            if row and index > 1:  # First row - Description of the netstat command, Second row - Headers for columns
-                active_ports.append(remove(row.split()[3]))
-        while True:
-            port = randrange(49152, 65535)
-            if port not in active_ports:
-                return port
+        active_ports = [remove(row.split()[3]) for index, row in enumerate(active_sessions.split('\n')) if
+                        row and index > 1]
+        port = randrange(49152, 65535)
+        if port not in active_ports:
+            return port
 
     @staticmethod
     def delete_repo() -> None:
@@ -3833,10 +3822,8 @@ def exit_process() -> None:
     global STATUS
     STATUS = False
     logger.critical('JARVIS::Stopping Now::Run STATUS has been unset')
-    alarms, reminders = [], {}
-    for file in os.listdir('alarm'):
-        if file != '.keep' and file != '.DS_Store':
-            alarms.append(file)
+    reminders = {}
+    alarms = [file for file in os.listdir('alarm') if file != '.keep' and file != '.DS_Store']
     for file in os.listdir('reminder'):
         if file != '.keep' and file != '.DS_Store':
             split_val = file.replace('.lock', '').split('|')
