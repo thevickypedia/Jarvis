@@ -80,13 +80,13 @@ class LocalIPScan:
 
 
 if __name__ == '__main__':
-    from os import environ, listdir
+    from os import environ, listdir, path
     from pprint import pprint
 
     from aws_clients import AWSClients
 
     aws = AWSClients()
-    if 'credentials.json' in listdir():
+    if 'credentials.json' in listdir('..' + path.sep):
         from creds import Credentials
 
         cred = Credentials().get()

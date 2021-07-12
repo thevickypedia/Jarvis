@@ -13,7 +13,7 @@ directory = path.dirname(__file__)
 
 reload(logging)
 logging.basicConfig(
-    filename=datetime.now().strftime(path.join(directory, '../logs/threshold_%d-%m-%Y_%H:%M:%S.log')), filemode='w',
+    filename=datetime.now().strftime(path.join(directory, '../logs/jarvis_%d-%m-%Y_%H:%M:%S.log')), filemode='w',
     format='%(asctime)s - %(levelname)s - %(funcName)s - Line: %(lineno)d - %(message)s',
     datefmt='%b-%d-%Y %H:%M:%S'
 )

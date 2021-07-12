@@ -11,6 +11,7 @@ from json import loads as json_loads
 from math import ceil, floor, log, pow
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
+from pathlib import Path
 from platform import platform, system, uname
 from random import choice, choices, randrange
 from shutil import disk_usage, rmtree
@@ -30,7 +31,9 @@ from unicodedata import normalize
 from urllib.request import urlopen
 from webbrowser import open as web_open
 
+from aeosa.aem.aemsend import EventError
 from appscript import app as apple_script
+from appscript.reference import CommandError
 from boto3 import client
 from certifi import where
 from chatterbot import ChatBot
@@ -70,7 +73,7 @@ from wikipedia import exceptions as wiki_exceptions
 from wikipedia import summary
 from wolframalpha import Client as Think
 from wordninja import split as splitter
-from yaml import Loader
+from yaml import FullLoader
 from yaml import dump as yaml_dump
 from yaml import load as yaml_load
 
@@ -3244,7 +3247,7 @@ def offline_communicator() -> None:
             - I created a REST API on AWS API Gateway and linked it to a JavaScript on my webpage.
             - When a request is made, the JavaScript makes a POST call to the API which triggers a lambda job in AWS.
             - The lambda function is set to verify the secure key and then send the email to me.
-            - Check it out: https://thevickypedia.com/jarvisoffline
+            - Check it out: `JarvisOffline <https://thevickypedia.com/jarvisoffline>`__
             - NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails.
             - You can also make Jarvis check for emails from your "number@tmomail.net" but response time is > 5 min.
     """
@@ -3492,12 +3495,12 @@ def get_ssid() -> str:
 
 
 class PersonalCloud:
-    """Controller for Personal Cloud.
+    """Controller for `Personal Cloud <https://github.com/thevickypedia/personal_cloud>`__.
 
     >>> PersonalCloud
 
     References:
-        https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book
+        `PersonalCloud README.md <https://github.com/thevickypedia/personal_cloud/blob/main/README.md>`__
 
     See Also:
         Step 1:
@@ -3542,7 +3545,7 @@ class PersonalCloud:
 
     @staticmethod
     def enable() -> None:
-        """Enables personal cloud.
+        """Enables `personal cloud <https://github.com/thevickypedia/personal_cloud>`__.
 
         Notes:
             - Clones `personal_cloud` repo in a dedicated Terminal.
@@ -3550,7 +3553,7 @@ class PersonalCloud:
             - If `personal_cloud_volume` env var is provided, Jarvis will mount the drive if connected to the device.
             - Gets and sets env vars required for the personal cloud.
             - Generates random username and passphrase for login info.
-            - Triggers personal cloud using a dedicated Terminal.
+            - Triggers personal cloud using another Terminal session.
             - Sends an SMS with endpoint, username and password to your mobile phone.
         """
         personal_cloud.delete_repo()
@@ -3558,42 +3561,62 @@ class PersonalCloud:
                          f"cd personal_cloud && python3 -m venv venv && source venv/bin/activate && " \
                          f"pip3 install -r requirements.txt"
 
-        apple_script('Terminal').do_script(initial_script)
+        try:
+            apple_script('Terminal').do_script(initial_script)
+        except (CommandError, EventError) as ps_error:
+            logger.error(ps_error)
+            notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
+                   body="Sir! I was unable to trigger your personal cloud due to lack of permissions. "
+                        "Please check the log file.")
+            return
 
         personal_cloud_port = personal_cloud.get_port()
         personal_cloud_username = ''.join(choices(ascii_letters, k=10))
-        personal_cloud_passphrase = ''.join(choices(ascii_letters + digits, k=10))
+        personal_cloud_password = ''.join(choices(ascii_letters + digits, k=10))
         personal_cloud_volume = cred.get('personal_cloud_volume') or os.environ.get('personal_cloud_volume')
 
-        if not personal_cloud.volume_checker(volume_name=personal_cloud_volume) if personal_cloud_volume else None:
+        if personal_cloud_volume and not personal_cloud.volume_checker(volume_name=personal_cloud_volume):
             logger.critical(f"Volume: {personal_cloud_volume} was not connected to your {host_info('model')}")
             personal_cloud_volume = None
 
         # export PORT for both ngrok and exec scripts as they will be running in different Terminal sessions
-        ngrok_script = f"cd {home_dir}/personal_cloud && export PORT={personal_cloud_port} && " \
-                       f"source venv/bin/activate && python3 ngrok.py"
+        ngrok_script = f"cd {home_dir}/personal_cloud && export port={personal_cloud_port} && " \
+                       f"source venv/bin/activate && cd helper_functions && python3 ngrok.py"
 
-        exec_script = f"export PORT={personal_cloud_port} && " \
-                      f"export USERNAME={personal_cloud_username} && " \
-                      f"export PASSWORD={personal_cloud_passphrase} && " \
-                      f"export volume_name='{personal_cloud_volume}' && " \
-                      f"cd {home_dir}/personal_cloud && source venv/bin/activate && python3 server.py"
+        exec_script = ''
+        if personal_cloud_volume and personal_cloud_volume in os.listdir('/Volumes'):
+            exec_script = f"export host_path='{personal_cloud_volume}'"
+        exec_script += f"export port={personal_cloud_port} && " \
+                       f"export username={personal_cloud_username} && " \
+                       f"export password={personal_cloud_password} && " \
+                       f"export gmail_user={gmail_user} && " \
+                       f"export gmail_pass={gmail_pass} && " \
+                       f"export recipient={icloud_user} && " \
+                       f"cd {home_dir}/personal_cloud && source venv/bin/activate && python3 authserver.py"
 
         cloned_path = f'{home_dir}/personal_cloud'
         while True:  # wait for the requirements to be installed after the repo was cloned
-            if 'personal_cloud' in os.listdir(home_dir) and 'venv' in os.listdir(cloned_path) and \
-                    'bin' in os.listdir(f'{cloned_path}/venv') and 'pyngrok' in os.listdir(f'{cloned_path}/venv/bin'):
+            packages = [path.stem.split('-')[0] for path in Path(cloned_path).glob('**/site-packages/*')]
+            if packages and not [req for req in [pkg.partition('==')[0] for pkg in
+                                                 Path(f'{cloned_path}/requirements.txt').read_text().splitlines()] if
+                                 req not in packages]:
+                sleep(5)  # give some breathing time for indexing
                 apple_script('Terminal').do_script(exec_script)
                 apple_script('Terminal').do_script(ngrok_script)
                 break
 
         while True:  # wait for the endpoint url (as file) to get generated within personal_cloud
-            if 'url' in os.listdir(cloned_path):
-                url = open(f'{cloned_path}/url', 'r').read()  # commit #d564dfa... on personal_cloud
+            if 'url' in os.listdir(f'{cloned_path}/helper_functions'):
+                with open(f'{cloned_path}/helper_functions/url', 'r') as file:
+                    url = file.read()  # commit # dfc37853dfe232e268843cbe53719bd9a09903c4 on personal_cloud
+                if url.startswith('http'):
+                    url = url.replace('http', 'https')
+                    notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
+                           body=f"URL: {url}\nUsername: {personal_cloud_username}\nPassword: {personal_cloud_password}")
+                else:
+                    notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
+                           body="Unable to start ngrok! Please check the logs for more information.")
                 break
-
-        notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
-               body=f"URL: {url}\nUsername: {personal_cloud_username}\nPassword: {personal_cloud_passphrase}")
 
     @staticmethod
     def volume_checker(volume_name: str, mount: bool = True, unmount: bool = False) -> bool:
@@ -3642,18 +3665,19 @@ class PersonalCloud:
 
     @staticmethod
     def disable() -> None:
-        """Shuts off `server.py` to stop the personal cloud.
+        """Kills `authserver.py <https://git.io/JchR5>`__ and `ngrok.py <https://git.io/JchBu>`__ to stop hosting.
 
         This eliminates the hassle of passing args and handling threads.
         """
-        pid_check = check_output("ps -ef | grep 'Python server.py\\|Python ngrok.py'", shell=True)
+        pid_check = check_output("ps -ef | grep 'Python authserver.py\\|Python ngrok.py'", shell=True)
         pid_list = pid_check.decode('utf-8').split('\n')
         for pid_info in pid_list:
             if pid_info and 'Library' in pid_info and ('/bin/sh' not in pid_info or 'grep' not in pid_info):
                 os.system(f'kill -9 {pid_info.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
         personal_cloud.delete_repo()
-        personal_cloud_volume = cred.get('personal_cloud_volume') or os.environ.get('personal_cloud_volume')
-        personal_cloud.volume_checker(volume_name=personal_cloud_volume, mount=False, unmount=True)
+        if (personal_cloud_volume := cred.get('personal_cloud_volume') or os.environ.get('personal_cloud_volume')) \
+                and personal_cloud_volume in os.listdir('/Volumes'):
+            personal_cloud.volume_checker(volume_name=personal_cloud_volume, mount=False, unmount=True)
 
 
 def internet_checker() -> Union[Speedtest, bool]:
@@ -4220,7 +4244,7 @@ if __name__ == '__main__':
     # checks modified time of location.yaml (if exists) and uses the data only if it was modified less than 72 hours ago
     if os.path.isfile('location.yaml') and \
             int(datetime.now().timestamp()) - int(os.stat('location.yaml').st_mtime) < 259_200:
-        location_details = yaml_load(open('location.yaml'), Loader)
+        location_details = yaml_load(open('location.yaml'), Loader=FullLoader)
         current_lat = location_details['latitude']
         current_lon = location_details['longitude']
         location_info = location_details['address']

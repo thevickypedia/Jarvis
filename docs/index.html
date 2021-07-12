@@ -47,12 +47,12 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.PersonalCloud">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">PersonalCloud</span></span><a class="headerlink" href="#jarvis.PersonalCloud" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controller for Personal Cloud.</p>
+<dd><p>Controller for <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">Personal Cloud</a>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PersonalCloud</span>
 </pre></div>
 </div>
 <p class="rubric">References</p>
-<p><a class="reference external" href="https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book">https://github.com/thevickypedia/personal_cloud/blob/main/README.md#run-book</a></p>
+<p><a class="reference external" href="https://github.com/thevickypedia/personal_cloud/blob/main/README.md">PersonalCloud README.md</a></p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
@@ -74,14 +74,14 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.PersonalCloud.disable">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.PersonalCloud.disable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shuts off <cite>server.py</cite> to stop the personal cloud.</p>
+<dd><p>Kills <a class="reference external" href="https://git.io/JchR5">authserver.py</a> and <a class="reference external" href="https://git.io/JchBu">ngrok.py</a> to stop hosting.</p>
 <p>This eliminates the hassle of passing args and handling threads.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.PersonalCloud.enable">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.PersonalCloud.enable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enables personal cloud.</p>
+<dd><p>Enables <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">personal cloud</a>.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>Clones <cite>personal_cloud</cite> repo in a dedicated Terminal.</p></li>
@@ -89,7 +89,7 @@
 <li><p>If <cite>personal_cloud_volume</cite> env var is provided, Jarvis will mount the drive if connected to the device.</p></li>
 <li><p>Gets and sets env vars required for the personal cloud.</p></li>
 <li><p>Generates random username and passphrase for login info.</p></li>
-<li><p>Triggers personal cloud using a dedicated Terminal.</p></li>
+<li><p>Triggers personal cloud using another Terminal session.</p></li>
 <li><p>Sends an SMS with endpoint, username and password to your mobile phone.</p></li>
 </ul>
 </dd></dl>
@@ -857,7 +857,7 @@
 <li><p>I created a REST API on AWS API Gateway and linked it to a JavaScript on my webpage.</p></li>
 <li><p>When a request is made, the JavaScript makes a POST call to the API which triggers a lambda job in AWS.</p></li>
 <li><p>The lambda function is set to verify the secure key and then send the email to me.</p></li>
-<li><p>Check it out: <a class="reference external" href="https://thevickypedia.com/jarvisoffline">https://thevickypedia.com/jarvisoffline</a></p></li>
+<li><p>Check it out: <a class="reference external" href="https://thevickypedia.com/jarvisoffline">JarvisOffline</a></p></li>
 <li><p>NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails.</p></li>
 <li><p>You can also make Jarvis check for emails from your “<a class="reference external" href="mailto:number&#37;&#52;&#48;tmomail&#46;net">number<span>&#64;</span>tmomail<span>&#46;</span>net</a>” but response time is &gt; 5 min.</p></li>
 </ul>
