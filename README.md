@@ -65,7 +65,7 @@ Clean code with pre-commit hooks: [`flake8`](https://flake8.pycqa.org/en/latest/
 ### Pre-Commit
 `pre-commit` will run `flake8` and `isort` to ensure proper coding standards along with [docs_generator](gen_docs.sh) 
 to update the [runbook](#Runbook)
-> Command: `pre-commit run --all-files`
+> `pre-commit run --all-files`
 
 ### Feature(s) Implementation:
 Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, env variables, 
@@ -75,10 +75,6 @@ features' overview and demo videos.
 https://thevickypedia.github.io/Jarvis/
 
 > Generated using [`sphinx-autogen`](https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html)
-
-#### Usage:
-<h6>Manual: <code>cd doc_generator && make html</code><h6>
-<h6>Auto: The autodoc generation will run as part of <code>pre-commit</code></h6>
 
 ## License & copyright
 

@@ -3573,19 +3573,14 @@ class PersonalCloud:
         personal_cloud_port = personal_cloud.get_port()
         personal_cloud_username = ''.join(choices(ascii_letters, k=10))
         personal_cloud_password = ''.join(choices(ascii_letters + digits, k=10))
-        personal_cloud_volume = cred.get('personal_cloud_volume') or os.environ.get('personal_cloud_volume')
-
-        if personal_cloud_volume and not personal_cloud.volume_checker(volume_name=personal_cloud_volume):
-            logger.critical(f"Volume: {personal_cloud_volume} was not connected to your {host_info('model')}")
-            personal_cloud_volume = None
+        personal_cloud_host = cred.get('personal_cloud_host') or os.environ.get('personal_cloud_host')
 
         # export PORT for both ngrok and exec scripts as they will be running in different Terminal sessions
         ngrok_script = f"cd {home_dir}/personal_cloud && export port={personal_cloud_port} && " \
                        f"source venv/bin/activate && cd helper_functions && python3 ngrok.py"
 
-        exec_script = ''
-        if personal_cloud_volume and personal_cloud_volume in os.listdir('/Volumes'):
-            exec_script = f"export host_path='{personal_cloud_volume}'"
+        exec_script = f"export host_path='{personal_cloud_host}'" if personal_cloud_host and \
+            os.path.isdir(personal_cloud_host) else ''
         exec_script += f"export port={personal_cloud_port} && " \
                        f"export username={personal_cloud_username} && " \
                        f"export password={personal_cloud_password} && " \
@@ -3610,58 +3605,12 @@ class PersonalCloud:
                 with open(f'{cloned_path}/helper_functions/url', 'r') as file:
                     url = file.read()  # commit # dfc37853dfe232e268843cbe53719bd9a09903c4 on personal_cloud
                 if url.startswith('http'):
-                    url = url.replace('http', 'https')
                     notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
                            body=f"URL: {url}\nUsername: {personal_cloud_username}\nPassword: {personal_cloud_password}")
                 else:
                     notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
                            body="Unable to start ngrok! Please check the logs for more information.")
                 break
-
-    @staticmethod
-    def volume_checker(volume_name: str, mount: bool = True, unmount: bool = False) -> bool:
-        """By default, Mounts volume in a thread if it is connected to the device and volume name is set as env var.
-
-        If unmount is set to True, only then the drive is stopped of its usage and Jarvis unmounts it.
-
-        Args:
-            volume_name: Name of the volume stored as env var.
-            mount: Boolean value set to True to mount the volume by default.
-            unmount: Boolean value set to False to unmount the volume only when requested.
-
-        Returns:
-            bool:
-            Boolean value indicating whether the volume is connected or not.
-
-        """
-        connected = False
-        disk_check = check_output("diskutil list 2>&1;", shell=True)
-        disk_list = disk_check.decode('utf-8').split('\n\n')
-        if mount:
-            for disk in disk_list:
-                if disk and '(external, physical):' in disk and volume_name in disk.split('\n')[-1]:
-                    connected = True
-                    break
-            if connected:
-                Thread(target=lambda: os.system(f'diskutil mount "{volume_name}" > /dev/null 2>&1;')).start()
-                logger.critical(f'Volume: {volume_name} has been mounted.')
-                return True
-            else:
-                return False
-        elif unmount:
-            pid_check = check_output(f"echo {root_password} | sudo -S lsof '/Volumes/{volume_name}' 2>&1;", shell=True)
-            pid_list = pid_check.decode('utf-8').split('\n')
-            for id_ in pid_list:
-                os.system(f'kill -9 {id_.split()[1]} >/dev/null 2>&1') if id_ else None
-            logger.critical(f'{len(pid_list) - 1} active processes have been terminated.')
-            for disk in disk_list:
-                if disk and '(external, physical):' in disk:
-                    unmount_uuid = disk.split('\n')[0].strip('(external, physical):')
-                    disk_info = disk.split('\n')[-1]
-                    if volume_name in disk_info:
-                        os.system(f'diskutil unmountDisk {unmount_uuid} > /dev/null 2>&1;')
-                        logger.critical(f"Disk {unmount_uuid} with Name {volume_name} has been unmounted from your "
-                                        f"{host_info('model')}")
 
     @staticmethod
     def disable() -> None:
@@ -3675,9 +3624,6 @@ class PersonalCloud:
             if pid_info and 'Library' in pid_info and ('/bin/sh' not in pid_info or 'grep' not in pid_info):
                 os.system(f'kill -9 {pid_info.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
         personal_cloud.delete_repo()
-        if (personal_cloud_volume := cred.get('personal_cloud_volume') or os.environ.get('personal_cloud_volume')) \
-                and personal_cloud_volume in os.listdir('/Volumes'):
-            personal_cloud.volume_checker(volume_name=personal_cloud_volume, mount=False, unmount=True)
 
 
 def internet_checker() -> Union[Speedtest, bool]:
