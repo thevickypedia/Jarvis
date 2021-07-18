@@ -3550,7 +3550,7 @@ class PersonalCloud:
         Notes:
             - Clones `personal_cloud` repo in a dedicated Terminal.
             - Creates a dedicated virtual env and installs the requirements within it (ETA: ~20 seconds)
-            - If `personal_cloud_volume` env var is provided, Jarvis will mount the drive if connected to the device.
+            - If `personal_cloud_host` env var is provided, Jarvis will mount the drive if connected to the device.
             - Gets and sets env vars required for the personal cloud.
             - Generates random username and passphrase for login info.
             - Triggers personal cloud using another Terminal session.
@@ -3573,7 +3573,7 @@ class PersonalCloud:
         personal_cloud_port = personal_cloud.get_port()
         personal_cloud_username = ''.join(choices(ascii_letters, k=10))
         personal_cloud_password = ''.join(choices(ascii_letters + digits, k=10))
-        personal_cloud_host = cred.get('personal_cloud_host') or os.environ.get('personal_cloud_host')
+        personal_cloud_host = f"'{cred.get('personal_cloud_host')}'" or f"'{os.environ.get('personal_cloud_host')}'"
 
         # export PORT for both ngrok and exec scripts as they will be running in different Terminal sessions
         ngrok_script = f"cd {home_dir}/personal_cloud && export port={personal_cloud_port} && " \
@@ -3618,7 +3618,7 @@ class PersonalCloud:
 
         This eliminates the hassle of passing args and handling threads.
         """
-        pid_check = check_output("ps -ef | grep 'Python authserver.py\\|Python ngrok.py'", shell=True)
+        pid_check = check_output("ps -ef | grep 'authserver.py\\|ngrok.py'", shell=True)
         pid_list = pid_check.decode('utf-8').split('\n')
         for pid_info in pid_list:
             if pid_info and 'Library' in pid_info and ('/bin/sh' not in pid_info or 'grep' not in pid_info):
