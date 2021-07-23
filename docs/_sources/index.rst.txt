@@ -52,13 +52,6 @@ Database
    :members:
    :undoc-members:
 
-Emailer
-=======
-
-.. automodule:: helper_functions.emailer
-   :members:
-   :undoc-members:
-
 Face Recognition
 ================
 

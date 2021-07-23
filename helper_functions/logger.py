@@ -7,7 +7,16 @@ In order to use a common logger across multiple files, a dedicated logger has be
 import logging
 from datetime import datetime
 from importlib import reload
+from logging.config import dictConfig
 from os import path
+
+# Disable loggers from imported modules, while using the root logger without having to load an external file.
+# Refer: https://git.io/J8Ejd
+
+dictConfig({
+    'version': 1,
+    'disable_existing_loggers': True,
+})
 
 directory = path.dirname(__file__)
 

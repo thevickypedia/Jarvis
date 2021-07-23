@@ -777,6 +777,8 @@
 <dt class="sig sig-object py" id="jarvis.notify">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.notify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send text message through SMS gateway of destination number.</p>
+<p class="rubric">References</p>
+<p>Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> to send the SMS.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1082,6 +1084,8 @@
 <dt class="sig sig-object py" id="jarvis.threat_notify">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">threat_notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_extn</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#jarvis.threat_notify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends an SMS and email notification in case of a threat.</p>
+<p class="rubric">References</p>
+<p>Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> to send the SMS and email.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1815,62 +1819,6 @@ On failure, returns a string indicating the item was not found.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-helper_functions.emailer">
-<span id="emailer"></span><h1>Emailer<a class="headerlink" href="#module-helper_functions.emailer" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="helper_functions.emailer.Emailer">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.emailer.</span></span><span class="sig-name descname"><span class="pre">Emailer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recipient</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.emailer.Emailer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Emailer object to send an email to defined recipient from a defined sender with or without attachments.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Emailer</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.emailer.Emailer.create_multipart_message">
-<span class="sig-name descname"><span class="pre">create_multipart_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachments</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">email.mime.multipart.MIMEMultipart</span><a class="headerlink" href="#helper_functions.emailer.Emailer.create_multipart_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates an email message with multiple parts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>title</strong> – Subject line on the email.</p></li>
-<li><p><strong>text</strong> – Body of the email.</p></li>
-<li><p><strong>html</strong> – HTML format of the email.</p></li>
-<li><p><strong>attachments</strong> – Attachment that has to be added to the email.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Created multipart message.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>MIMEMultipart</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.emailer.Emailer.send_mail">
-<span class="sig-name descname"><span class="pre">send_mail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachments</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="headerlink" href="#helper_functions.emailer.Emailer.send_mail" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sends an mail to all recipients. The sender needs to be a verified email in SES.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>title</strong> – Subject line on the email.</p></li>
-<li><p><strong>text</strong> – Body of the email.</p></li>
-<li><p><strong>html</strong> – HTML format of the email.</p></li>
-<li><p><strong>attachments</strong> – Attachment that has to be added to the email.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Makes a call to ses_client to send an email with parameters attached.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3370,7 +3318,6 @@ Whites can have a value of None.</p>
 <li><a class="reference internal" href="#module-helper_functions.aws_clients">AWS Client</a></li>
 <li><a class="reference internal" href="#module-helper_functions.conversation">Conversation</a></li>
 <li><a class="reference internal" href="#module-helper_functions.database">Database</a></li>
-<li><a class="reference internal" href="#module-helper_functions.emailer">Emailer</a></li>
 <li><a class="reference internal" href="#module-helper_functions.facial_recognition">Face Recognition</a></li>
 <li><a class="reference internal" href="#module-helper_functions.keywords">Keywords</a></li>
 <li><a class="reference internal" href="#module-helper_functions.lights">Lights</a></li>

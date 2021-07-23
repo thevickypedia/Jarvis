@@ -15,7 +15,6 @@ from pathlib import Path
 from platform import platform, system, uname
 from random import choice, choices, randrange
 from shutil import disk_usage, rmtree
-from smtplib import SMTP
 from socket import (AF_INET, SOCK_DGRAM, gaierror, gethostbyname, gethostname,
                     setdefaulttimeout, socket)
 from socket import timeout as s_timeout
@@ -38,6 +37,8 @@ from chatterbot.trainers import ChatterBotCorpusTrainer
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
 from geopy.geocoders import Nominatim, options
+from gmailconnector.send_email import SendEmail
+from gmailconnector.send_sms import Messenger
 from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
 from holidays import CountryHoliday
@@ -79,7 +80,6 @@ from helper_functions.alarm import Alarm
 from helper_functions.aws_clients import AWSClients
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
-from helper_functions.emailer import Emailer
 from helper_functions.facial_recognition import Face
 from helper_functions.ip_scanner import LocalIPScan
 from helper_functions.keywords import Keywords
@@ -2339,6 +2339,9 @@ def github(target: list) -> None:
 def notify(user: str, password: str, number: str, body: str) -> None:
     """Send text message through SMS gateway of destination number.
 
+    References:
+        Uses `gmail-connector <https://pypi.org/project/gmail-connector/>`__ to send the SMS.
+
     Args:
         user: Gmail username to authenticate SMTP lib.
         password: Gmail password to authenticate SMTP lib.
@@ -2347,14 +2350,7 @@ def notify(user: str, password: str, number: str, body: str) -> None:
 
     """
     subject = "Message from Jarvis" if number == phone_number else "Jarvis::Message from Vignesh"
-    body = body.encode('ascii', 'ignore').decode('ascii')  # ignore symbols like ° without throwing UnicodeEncodeError
-    to = f"{number}@tmomail.net"
-    message = (f"From: {user}\n" + f"To: {to}\n" + f"Subject: {subject}\n" + "\n\n" + body)
-    server = SMTP("smtp.gmail.com", 587)
-    server.starttls()
-    server.login(user=user, password=password)
-    server.sendmail(user, to, message)
-    server.close()
+    Messenger(gmail_user=user, gmail_pass=password, phone_number=number, subject=subject, message=body).send_sms()
 
 
 def send_sms(number: int or None) -> None:
@@ -3167,6 +3163,9 @@ def guard() -> None:
 def threat_notify(converted: str, date_extn: str or None) -> None:
     """Sends an SMS and email notification in case of a threat.
 
+    References:
+        Uses `gmail-connector <https://pypi.org/project/gmail-connector/>`__ to send the SMS and email.
+
     Args:
         converted: Takes the voice recognized statement as argument.
         date_extn: Name of the attachment file which is the picture of the intruder.
@@ -3174,7 +3173,6 @@ def threat_notify(converted: str, date_extn: str or None) -> None:
     """
     dt_string = f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}"
     title_ = f'Intruder Alert on {dt_string}'
-    text_ = None
 
     if converted:
         response = sns.publish(PhoneNumber=phone_number,
@@ -3192,12 +3190,13 @@ def threat_notify(converted: str, date_extn: str or None) -> None:
         logger.error(f'Unable to send SNS notification.\n{response}')
 
     if date_extn:
-        attachments_ = [f'threat/{date_extn}.jpg']
-        response_ = Emailer(sender=gmail_user, recipient=robinhood_user).send_mail(title_, text_, body_, attachments_)
-        if response_.get('ResponseMetadata').get('HTTPStatusCode') == 200:
+        attachment_ = f'threat/{date_extn}.jpg'
+        response_ = SendEmail(gmail_user=gmail_user, gmail_pass=gmail_pass,
+                              recipient=robinhood_user, subject=title_, body=body_, attachment=attachment_).send_email()
+        if response_.get('ok'):
             logger.critical('Email has been sent!')
         else:
-            logger.error(f'Email dispatch was failed with response: {response_}\n')
+            logger.error(f"Email dispatch failed with response: {response_.get('body')}\n")
 
 
 def offline_communicator_initiate() -> None:
@@ -3345,8 +3344,6 @@ def meetings(meeting_file: str = 'calendar.scpt') -> str:
         - On failure, returns a message saying Jarvis was unable to read calendar/outlook.
 
     """
-    # todo: update calendar.scpt and outlook.scpt to use args for number of hours and default to 12
-    # todo: this change will make it easy to get event information on past and future as well
     if operating_system == 'Windows':
         return "Meetings feature on Windows hasn't been developed yet sir!"
 

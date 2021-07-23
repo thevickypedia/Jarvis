@@ -32,7 +32,7 @@
 ![Make](https://img.shields.io/github/search/thevickypedia/Jarvis/Makefile)
 
 ###### Deployments
-[![Docs](https://img.shields.io/docsrs/docs/latest)](https://thevickypedia.github.io/Jarvis/)
+[![docs](https://github.com/thevickypedia/Jarvis/actions/workflows/docs.yml/badge.svg)](https://thevickypedia.github.io/Jarvis/)
 
 ###### Activity
 ![Maintained](https://img.shields.io/maintenance/yes/2021)
