@@ -1,10 +1,18 @@
-echo "**********************************************************************************************************"
-echo "Make sure Anaconda is installed, the commands 'conda' and 'pip3' work before proceeding."
+clear
+echo "*****************************************************************************************************************"
+echo "*****************************************************************************************************************"
+echo ""
+echo "Make sure Anaconda (or Miniconda) and VS C++ BuildTools are installed."
+echo "The commands 'conda' and 'pip3' should be operational before proceeding."
 echo ""
 echo "Refer the below links for:"
 echo "Anaconda installation: https://docs.conda.io/projects/conda/en/latest/user-guide/install/"
+echo "Miniconda installation: https://docs.conda.io/en/latest/miniconda.html#windows-installers"
 echo "pip3 setup guide: https://stackoverflow.com/questions/41501636/how-to-install-pip3-on-windows"
-echo "**********************************************************************************************************"
+echo "VisualStudio C++ BuildTools: https://visualstudio.microsoft.com/visual-cpp-build-tools/"
+echo ""
+echo "*****************************************************************************************************************"
+echo "*****************************************************************************************************************"
 read -p "Are you sure you want to continue? <Y/N> " prompt
 if [[ $prompt =~ [yY](es)* ]]
 then
@@ -29,8 +37,11 @@ then
   pip3 install timezonefinder==4.4.1
   pip3 install inflect==4.1.0
   pip3 install wordninja==2.0.0
-  pip3 install search_engine_parser==0.6.2
   pip3 install boto3==1.16.12
+  pip3 install cmake==3.18.2.post1
+  pip3 install dlib==19.21.0
+  pip3 install opencv-python=4.5.3.56
+  pip3 install face-recognition==1.3.0
   pip3 install playsound==1.2.2
   pip3 install pywebostv==0.8.4
   pip3 install wakeonlan==1.1.6
@@ -42,9 +53,10 @@ then
   pip3 install pynetgear==0.7.0
   pip3 install pre-commit==2.13.0
   pip3 install sphinx==4.0.2
+  pip install git+https://github.com/bisoncorps/search-engine-parser
 else
   echo ""
-  echo "**********************************************************************************************************"
+  echo "***************************************************************************************************************"
   echo "Bye. Hope to see you soon."
-  echo "**********************************************************************************************************"
+  echo "***************************************************************************************************************"
 fi

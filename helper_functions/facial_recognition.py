@@ -35,6 +35,8 @@ class Face:
         for character_dir in listdir(self.training_dataset):  # loads the training dataset
             try:
                 for file_name in listdir(f'{self.training_dataset}/{character_dir}'):
+                    if file_name.startswith('.'):
+                        continue
                     # loads all the files within the named repo
                     img = load_image_file(f'{self.training_dataset}/{character_dir}/{file_name}')
                     encoded = face_encodings(img)[0]  # generates face encoding matrix

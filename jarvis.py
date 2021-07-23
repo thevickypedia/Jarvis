@@ -31,9 +31,6 @@ from unicodedata import normalize
 from urllib.request import urlopen
 from webbrowser import open as web_open
 
-from aeosa.aem.aemsend import EventError
-from appscript import app as apple_script
-from appscript.reference import CommandError
 from boto3 import client
 from certifi import where
 from chatterbot import ChatBot
@@ -2715,55 +2712,51 @@ def volume_controller(level: int) -> None:
 
 def face_recognition_detection() -> None:
     """Initiates face recognition script and looks for images stored in named directories within `train` directory."""
-    if operating_system == 'Darwin':
-        sys.stdout.write("\r")
-        train_dir = 'train'
-        os.mkdir(train_dir) if not os.path.isdir(train_dir) else None
-        speaker.say('Initializing facial recognition. Please smile at the camera for me.')
+    sys.stdout.write("\r")
+    train_dir = 'train'
+    os.mkdir(train_dir) if not os.path.isdir(train_dir) else None
+    speaker.say('Initializing facial recognition. Please smile at the camera for me.')
+    speaker.runAndWait()
+    sys.stdout.write('\rLooking for faces to recognize.')
+    try:
+        result = Face().face_recognition()
+    except BlockingIOError:
+        speaker.say("I was unable to access the camera. Facial recognition can work only when cameras are "
+                    "present and accessible.")
+        return
+    if not result:
+        sys.stdout.write('\rLooking for faces to detect.')
+        speaker.say("No faces were recognized. Switching on to face detection.")
         speaker.runAndWait()
-        sys.stdout.write('\rLooking for faces to recognize.')
-        try:
-            result = Face().face_recognition()
-        except BlockingIOError:
-            speaker.say("I was unable to access the camera. Facial recognition can work only when cameras are "
-                        "present and accessible.")
-            return
+        result = Face().face_detection()
         if not result:
-            sys.stdout.write('\rLooking for faces to detect.')
-            speaker.say("No faces were recognized. Switching on to face detection.")
-            speaker.runAndWait()
-            result = Face().face_detection()
-            if not result:
-                sys.stdout.write('\rNo faces were recognized nor detected.')
-                speaker.say('No faces were recognized. nor detected. Please check if your camera is working, '
-                            'and look at the camera when you retry.')
-                return
-            sys.stdout.write('\rNew face has been detected. Like to give it a name?')
-            speaker.say('I was able to detect a face, but was unable to recognize it.')
-            os.system('open cv2_open.jpg')
-            speaker.say("I've taken a photo of you. Preview on your screen. Would you like to give it a name, "
-                        "so that I can add it to my database of known list? If you're ready, please tell me a name, "
-                        "or simply say exit.")
-            speaker.runAndWait()
-            phrase = listener(3, 5)
-            if any(word in phrase.lower() for word in keywords.ok()):
-                sys.stdout.write(f"\r{phrase}")
-                phrase = phrase.replace(' ', '_')
-                # creates a named directory if it is not found already else simply ignores
-                os.system(f'cd {train_dir} && mkdir {phrase}') if phrase not in os.listdir(train_dir) else None
-                c_time = datetime.now().strftime("%I_%M_%p")
-                img_name = f"{phrase}_{c_time}.jpg"  # adds current time to image name to avoid overwrite
-                os.rename('cv2_open.jpg', img_name)  # renames the files
-                os.system(f"mv {img_name} {train_dir}/{phrase}")  # move files into named directory within train_dir
-                speaker.say(f"Image has been saved as {img_name}. I will be able to recognize {phrase} in the future.")
-            else:
-                os.remove('cv2_open.jpg')
-                speaker.say("I've deleted the image.")
+            sys.stdout.write('\rNo faces were recognized nor detected.')
+            speaker.say('No faces were recognized. nor detected. Please check if your camera is working, '
+                        'and look at the camera when you retry.')
+            return
+        sys.stdout.write('\rNew face has been detected. Like to give it a name?')
+        speaker.say('I was able to detect a face, but was unable to recognize it.')
+        os.system('open cv2_open.jpg')
+        speaker.say("I've taken a photo of you. Preview on your screen. Would you like to give it a name, "
+                    "so that I can add it to my database of known list? If you're ready, please tell me a name, "
+                    "or simply say exit.")
+        speaker.runAndWait()
+        phrase = listener(3, 5)
+        if any(word in phrase.lower() for word in keywords.ok()):
+            sys.stdout.write(f"\r{phrase}")
+            phrase = phrase.replace(' ', '_')
+            # creates a named directory if it is not found already else simply ignores
+            os.system(f'cd {train_dir} && mkdir {phrase}') if phrase not in os.listdir(train_dir) else None
+            c_time = datetime.now().strftime("%I_%M_%p")
+            img_name = f"{phrase}_{c_time}.jpg"  # adds current time to image name to avoid overwrite
+            os.rename('cv2_open.jpg', img_name)  # renames the files
+            os.system(f"mv {img_name} {train_dir}/{phrase}")  # move files into named directory within train_dir
+            speaker.say(f"Image has been saved as {img_name}. I will be able to recognize {phrase} in the future.")
         else:
-            speaker.say(f'Hi {result}! How can I be of service to you?')
-    elif operating_system == 'Windows':
-        speaker.say("I am sorry, currently facial recognition and detection is not supported on Windows, due to the "
-                    "package installation issues.")
+            os.remove('cv2_open.jpg')
+            speaker.say("I've deleted the image.")
+    else:
+        speaker.say(f'Hi {result}! How can I be of service to you?')
 
 
 def speed_test() -> None:
@@ -3543,6 +3536,7 @@ class PersonalCloud:
         if 'personal_cloud' in os.listdir(home_dir):
             rmtree(f'{home_dir}/personal_cloud')  # delete repo for a fresh start
 
+    # noinspection PyUnresolvedReferences
     @staticmethod
     def enable() -> None:
         """Enables `personal cloud <https://github.com/thevickypedia/personal_cloud>`__.
@@ -3556,6 +3550,10 @@ class PersonalCloud:
             - Triggers personal cloud using another Terminal session.
             - Sends an SMS with endpoint, username and password to your mobile phone.
         """
+        from aeosa.aem.aemsend import EventError
+        from appscript import app as apple_script
+        from appscript.reference import CommandError
+
         personal_cloud.delete_repo()
         initial_script = f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git && " \
                          f"cd personal_cloud && python3 -m venv venv && source venv/bin/activate && " \
