@@ -1,0 +1,44 @@
+# This is the workflow to generate docs
+
+name: docs
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest]
+        python: [3.9]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    # Docs generation steps have been commented as they run as part of pre-commit
+    # this only echo's a message
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install sphinx
+
+#       - name: Documentation Generator
+#         run: /bin/bash gen_docs.sh
+
+      - name: Echo Statement
+        run: echo "Documentation generated using sphix"
