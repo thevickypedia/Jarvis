@@ -55,3 +55,4 @@ python3 -m pip install pynetgear==0.7.0
 python3 -m pip install pre-commit==2.13.0
 python3 -m pip install sphinx==4.0.2
 python3 -m pip install gmail-connector  # Don't specify version since I anticipate to make further changes to the module
+python3 -m pip install --upgrade recommonmark

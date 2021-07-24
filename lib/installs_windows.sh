@@ -51,8 +51,6 @@ then
   pip3 install pywin32==300
   pip3 install wolframalpha==4.1.1
   pip3 install pynetgear==0.7.0
-  pip3 install pre-commit==2.13.0
-  pip3 install sphinx==4.0.2
   pip3 install gmail-connector  # Don't specify version since I anticipate to make further changes to the module
   pip install git+https://github.com/bisoncorps/search-engine-parser
 else

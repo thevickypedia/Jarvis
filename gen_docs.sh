@@ -4,5 +4,5 @@
 set -e
 rm -rf docs
 mkdir docs
-cd doc_generator && make html && mv _build/html/* ../docs
+cp README.md doc_generator && cd doc_generator && make clean html && mv _build/html/* ../docs && rm README.md
 touch ../docs/.nojekyll
