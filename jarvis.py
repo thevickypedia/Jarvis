@@ -795,7 +795,6 @@ def webpage(target: str or list) -> None:
     except TypeError:
         host = None
     if not host:
-        global place_holder
         speaker.say("Which website shall I open sir?")
         speaker.runAndWait()
         converted = listener(3, 4)
@@ -809,14 +808,6 @@ def webpage(target: str or list) -> None:
                 converted = converted.lower().replace(' ', '')
                 target_ = [f"{converted}" if '.' in converted else f"{converted}.com"]
                 webpage(target_)
-        else:
-            if place_holder == 0:
-                place_holder = None
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                webpage(None)
-        place_holder = None
     else:
         for web in host:
             web_url = f"https://{web}"
@@ -1025,19 +1016,10 @@ def system_info() -> None:
 
 def wikipedia_() -> None:
     """Gets any information from wikipedia using it's API."""
-    global place_holder
     speaker.say("Please tell the keyword.")
     speaker.runAndWait()
     keyword = listener(3, 5)
-    if keyword == 'SR_ERROR':
-        if place_holder == 0:
-            place_holder = None
-        else:
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            wikipedia_()
-    else:
-        place_holder = None
+    if keyword != 'SR_ERROR':
         if any(word in keyword.lower() for word in keywords.exit()):
             return
         else:
@@ -1061,7 +1043,6 @@ def wikipedia_() -> None:
             speaker.runAndWait()
             response = listener(3, 3)
             if response != 'SR_ERROR':
-                place_holder = None
                 if any(word in response.lower() for word in keywords.ok()):
                     speaker.say('. '.join(result.split('. ')[3:-1]))
             else:
@@ -1097,7 +1078,6 @@ def apps(keyword: str or None) -> None:
         keyword: Gets app name as an argument to launch the application.
 
     """
-    global place_holder
     ignore = ['app', 'application']
     if not keyword or keyword in ignore:
         speaker.say("Which app shall I open sir?")
@@ -1107,13 +1087,8 @@ def apps(keyword: str or None) -> None:
             if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
                 return
         else:
-            if place_holder == 0:
-                place_holder = None
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                apps(None)
-        place_holder = None
+            speaker.say("I didn't quite get that. Try again.")
+            apps(None)
 
     if operating_system == 'Windows':
         status = os.system(f'start {keyword}')
@@ -1162,7 +1137,6 @@ def robinhood() -> None:
 
 def repeater() -> None:
     """Repeats what ever you say."""
-    global place_holder
     speaker.say("Please tell me what to repeat.")
     speaker.runAndWait()
     keyword = listener(3, 10)
@@ -1172,18 +1146,10 @@ def repeater() -> None:
             pass
         else:
             speaker.say(f"I heard {keyword}")
-    else:
-        if place_holder == 0:
-            place_holder = None
-        else:
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            repeater()
 
 
 def chatter_bot() -> None:
     """Initiates chatter bot."""
-    global place_holder
     file1 = 'db.sqlite3'
     if operating_system == 'Darwin':
         file2 = f"/Users/{os.environ.get('USER')}/nltk_data"
@@ -1203,7 +1169,6 @@ def chatter_bot() -> None:
         speaker.runAndWait()
     keyword = listener(3, 5)
     if keyword != 'SR_ERROR':
-        place_holder = None
         if any(word in keyword.lower() for word in keywords.exit()):
             speaker.say('Let me remove the training modules.')
             os.system('rm db* > /dev/null 2>&1')
@@ -1215,15 +1180,6 @@ def chatter_bot() -> None:
             else:
                 speaker.say(f'{response}')
             speaker.runAndWait()
-            chatter_bot()
-    else:
-        if place_holder == 0:
-            place_holder = None
-            os.system('rm db* > /dev/null 2>&1')
-            os.system(f'rm -rf {file2}')
-        else:
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
             chatter_bot()
 
 
@@ -1378,7 +1334,6 @@ def music(device: str = None) -> None:
 
 def gmail() -> None:
     """Reads unread emails from your gmail account for which the credentials are stored in env variables."""
-    global place_holder
     sys.stdout.write("\rFetching new emails..")
 
     try:
@@ -1440,17 +1395,6 @@ def gmail() -> None:
                             sys.stdout.write(f'\rReceived:{receive}\tSender: {sender}\tSubject: {subject}')
                             speaker.say(f"You have an email from, {sender}, with subject, {subject}, {receive}")
                             speaker.runAndWait()
-        else:
-            if place_holder == 0:
-                place_holder = None
-            elif report.has_been_called or time_travel.has_been_called:
-                pass
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                gmail()
-
-        place_holder = None
 
 
 def meaning(keyword: str or None) -> None:
@@ -1460,7 +1404,6 @@ def meaning(keyword: str or None) -> None:
         keyword: Takes a keyword as argument for which the meaning was requested.
 
     """
-    global place_holder
     dictionary = PyDictionary()
     if keyword == 'word':
         keyword = None
@@ -1473,15 +1416,6 @@ def meaning(keyword: str or None) -> None:
                 return
             else:
                 meaning(response)
-        else:
-            if place_holder == 0:
-                place_holder = None
-                return
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                meaning(None)
-        place_holder = None
     else:
         definition = dictionary.meaning(keyword)
         if definition:
@@ -1575,7 +1509,6 @@ def todo() -> None:
 
 def add_todo() -> None:
     """Adds new items to your to-do list."""
-    global place_holder
     sys.stdout.write("\rLooking for to-do database..")
     # if database file is not found calls create_db()
     if not os.path.isfile(file_name):
@@ -1591,16 +1524,6 @@ def add_todo() -> None:
                 create_db()
             else:
                 return
-        else:
-            if place_holder == 0:
-                place_holder = None
-                return
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                add_todo()
-        place_holder = None
-    place_holder = None
     speaker.say("What's your plan sir?")
     speaker.runAndWait()
     item = listener(3, 5)
@@ -1628,15 +1551,10 @@ def add_todo() -> None:
                     add_todo()
                 else:
                     speaker.say('Alright')
-    else:
-        sys.stdout.write("\r")
-        speaker.say("I didn't quite get that.")
-    place_holder = None
 
 
 def delete_todo() -> None:
     """Deletes items from an existing to-do list."""
-    global place_holder
     sys.stdout.write("\rLooking for to-do database..")
     if not os.path.isfile(file_name):
         speaker.say("You don't have a database created for your to-do list sir.")
@@ -1656,20 +1574,10 @@ def delete_todo() -> None:
             delete_todo()
         else:
             speaker.say(response)
-    else:
-        if place_holder == 0:
-            place_holder = None
-            return
-        else:
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            delete_todo()
-    place_holder = None
 
 
 def delete_db() -> None:
     """Deletes your database file after getting confirmation."""
-    global place_holder
     if not os.path.isfile(file_name):
         speaker.say('I did not find any database sir.')
         return
@@ -1684,16 +1592,6 @@ def delete_db() -> None:
             else:
                 speaker.say("Your database has been left intact sir.")
             return
-        else:
-            if place_holder == 0:
-                place_holder = None
-                return
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                speaker.runAndWait()
-                place_holder = 0
-                delete_db()
-        place_holder = None
 
 
 def distance(starting_point: str = None, destination: str = None) -> None:
@@ -1708,7 +1606,6 @@ def distance(starting_point: str = None, destination: str = None) -> None:
         destination: Takes the destination place name as optional argument.
 
     """
-    global place_holder
     if not destination:
         speaker.say("Destination please?")
         speaker.runAndWait()
@@ -1719,15 +1616,6 @@ def distance(starting_point: str = None, destination: str = None) -> None:
                 distance()
             if 'exit' in destination or 'quit' in destination or 'Xzibit' in destination:
                 return
-        else:
-            if place_holder == 0:
-                place_holder = None
-                return
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                distance()
-        place_holder = None
 
     if starting_point:
         # if starting_point is received gets latitude and longitude of that location
@@ -1777,14 +1665,12 @@ def locate_places(place: str or None) -> None:
         place: Takes a place name as argument.
 
     """
-    global place_holder
     if not place:
         speaker.say("Tell me the name of a place!")
         speaker.runAndWait()
         converted = listener(3, 4)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-                place_holder = None
                 return
             for word in converted.split():
                 if word[0].isupper():
@@ -1795,15 +1681,6 @@ def locate_places(place: str or None) -> None:
                 keyword = 'is'
                 before_keyword, keyword, after_keyword = converted.partition(keyword)
                 place = after_keyword.replace(' in', '').strip()
-        else:
-            if place_holder == 0:
-                place_holder = None
-                return
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                locate_places(place=None)
-        place_holder = None
     try:
         destination_location = geo_locator.geocode(place)
         coordinates = destination_location.latitude, destination_location.longitude
@@ -1840,7 +1717,6 @@ def directions(place: str or None) -> None:
         place: Takes a place name as argument.
 
     """
-    global place_holder
     if not place:
         speaker.say("You might want to give a location.")
         speaker.runAndWait()
@@ -1857,17 +1733,7 @@ def directions(place: str or None) -> None:
                 speaker.say("I can't take you to anywhere without a location sir!")
                 directions(place=None)
             if 'exit' in place or 'quit' in place or 'Xzibit' in place:
-                place_holder = None
                 return
-        else:
-            if place_holder == 0:
-                place_holder = None
-                return
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                directions(place=None)
-        place_holder = None
     destination_location = geo_locator.geocode(place)
     coordinates = destination_location.latitude, destination_location.longitude
     located = geo_locator.reverse(coordinates, language='en')
@@ -1897,7 +1763,6 @@ def alarm(msg: str) -> None:
         msg: Takes the voice recognized statement as argument and extracts time from it.
 
     """
-    global place_holder
     extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', msg) or \
         re.findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', msg)
     if extracted_time:
@@ -1931,20 +1796,9 @@ def alarm(msg: str) -> None:
         converted = listener(3, 4)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-                place_holder = None
                 return
             else:
                 alarm(converted)
-        else:
-            if place_holder == 0:
-                place_holder = None
-                return
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                alarm(msg='')
-        place_holder = None
-    return
 
 
 def kill_alarm() -> None:
@@ -1954,7 +1808,6 @@ def kill_alarm() -> None:
         - `alarm_state` is the list of lock files currently present.
 
     """
-    global place_holder
     alarm_state = []
     [alarm_state.append(file) for file in os.listdir('alarm') if file != '.keep']
     alarm_state.remove('.DS_Store') if '.DS_Store' in alarm_state else None
@@ -1970,7 +1823,6 @@ def kill_alarm() -> None:
         speaker.runAndWait()
         converted = listener(3, 4)
         if converted != 'SR_ERROR':
-            place_holder = None
             alarm_time = converted.split()[0]
             am_pm = converted.split()[-1]
             if ":" in converted:
@@ -1987,15 +1839,6 @@ def kill_alarm() -> None:
             else:
                 speaker.say(f"I wasn't able to find an alarm at {hour}:{minute} {am_pm}. Try again.")
                 kill_alarm()
-        else:
-            if place_holder == 0:
-                place_holder = None
-                return
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                kill_alarm()
-    return
 
 
 def google_home(device: str = None, file: str = None) -> None:
@@ -2106,14 +1949,12 @@ def google_home(device: str = None, file: str = None) -> None:
 
 def jokes() -> None:
     """Uses jokes lib to say chucknorris jokes."""
-    global place_holder
     speaker.say(choice([geek, icanhazdad, chucknorris, icndb])())
     speaker.runAndWait()
     speaker.say("Do you want to hear another one sir?")
     speaker.runAndWait()
     converted = listener(3, 3)
     if converted != 'SR_ERROR':
-        place_holder = None
         if any(word in converted.lower() for word in keywords.ok()):
             jokes()
     return
@@ -2126,7 +1967,6 @@ def reminder(converted: str) -> None:
         converted: Takes the voice recognized statement as argument and extracts the time and message from it.
 
     """
-    global place_holder
     message = re.search(' to (.*) at ', converted) or re.search(' about (.*) at ', converted)
     if not message:
         message = re.search(' to (.*)', converted) or re.search(' about (.*)', converted)
@@ -2187,7 +2027,6 @@ def google_maps(query: str) -> bool:
         Boolean True if google's maps API is unable to fetch consumable results.
 
     """
-    global place_holder
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
     response = get(maps_url + 'query=' + query + '&key=' + maps_api)
     collection = response.json()['results']
@@ -2246,7 +2085,6 @@ def google_maps(query: str) -> bool:
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 break
             elif any(word in converted.lower() for word in keywords.ok()):
-                place_holder = None
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                 web_open(maps_url)
                 speaker.say("Directions on your screen sir!")
@@ -2265,7 +2103,6 @@ def google_maps(query: str) -> bool:
 
 def notes() -> None:
     """Listens to the user and saves everything to a `notes.txt` file."""
-    global place_holder
     converted = listener(5, 10)
     if converted != 'SR_ERROR':
         if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
@@ -2274,13 +2111,6 @@ def notes() -> None:
             with open(r'notes.txt', 'a') as writer:
                 writer.write(f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"
                              f"{converted}\n")
-    else:
-        if place_holder == 0:
-            place_holder = None
-            return
-        else:
-            place_holder = 0
-            notes()
 
 
 def github(target: list) -> None:
@@ -2292,7 +2122,6 @@ def github(target: list) -> None:
         target: Takes repository name as argument which has to be cloned.
 
     """
-    global place_holder
     if len(target) == 1:
         os.system(f"""cd {home_dir} && git clone -q {target[0]}""")
         cloned = target[0].split('/')[-1].replace('.git', '')
@@ -2306,9 +2135,7 @@ def github(target: list) -> None:
         converted = listener(3, 5)
         if converted != 'SR_ERROR':
             if any(word in converted.lower() for word in keywords.exit()):
-                place_holder = None
                 return
-            place_holder = None
             if 'first' in converted.lower():
                 item = 1
             elif 'second' in converted.lower():
@@ -2322,18 +2149,8 @@ def github(target: list) -> None:
             os.system(f"""cd {home_dir} && git clone -q {target[item]}""")
             cloned = target[item].split('/')[-1].replace('.git', '')
             speaker.say(f"I've cloned {cloned} on your home directory sir!")
-            return
-        else:
-            if place_holder == 0:
-                place_holder = None
-                return
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                github(target)
     else:
         speaker.say(f"I found {len(target)} repositories sir! You may want to be more specific.")
-        return
 
 
 def notify(user: str, password: str, number: str, body: str) -> None:
@@ -2362,7 +2179,6 @@ def send_sms(number: int or None) -> None:
         number: Phone number to which the message has to be sent.
 
     """
-    global place_holder
     if not number:
         speaker.say("Please tell me a number sir!")
         speaker.runAndWait()
@@ -2372,15 +2188,6 @@ def send_sms(number: int or None) -> None:
                 return
             else:
                 sys.stdout.write(f'\rNumber: {number}')
-                place_holder = None
-        else:
-            if place_holder == 0:
-                place_holder = None
-                return
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                send_sms(number=None)
     elif len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) != 10:
         sys.stdout.write(f'\r{number}')
         speaker.say("I don't think that's a right number sir! Phone numbers are 10 digits. Try again!")
@@ -2389,15 +2196,7 @@ def send_sms(number: int or None) -> None:
         speaker.say("What would you like to send sir?")
         speaker.runAndWait()
         body = listener(3, 5)
-        if body == 'SR_ERROR':
-            if place_holder == 0:
-                place_holder = None
-                return
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                send_sms(number)
-        else:
+        if body != 'SR_ERROR':
             sys.stdout.write(f'\r{body}::to::{number}')
             speaker.say(f'{body} to {number}. Do you want me to proceed?')
             speaker.runAndWait()
@@ -2409,14 +2208,6 @@ def send_sms(number: int or None) -> None:
                     notify(user=gmail_user, password=gmail_pass, number=number, body=body)
                     speaker.say("Message has been sent sir!")
                 return
-            else:
-                if place_holder == 0:
-                    place_holder = None
-                    return
-                else:
-                    speaker.say("I didn't quite get that. Try again.")
-                    place_holder = 0
-                    send_sms(number)
 
 
 def television(converted: str) -> None:
@@ -2657,7 +2448,6 @@ def google_search(phrase: str or None) -> None:
         phrase: Takes the voice recognized statement as argument.
 
     """
-    global place_holder
     if not phrase:
         speaker.say("Please tell me the search phrase.")
         speaker.runAndWait()
@@ -2667,14 +2457,6 @@ def google_search(phrase: str or None) -> None:
                 return
             else:
                 phrase = converted.lower()
-        else:
-            if place_holder == 0:
-                place_holder = None
-                return
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                google_search(None)
     search = str(phrase).replace(' ', '+')
     unknown_url = f"https://www.google.com/search?q={search}"
     web_open(unknown_url)
@@ -3956,7 +3738,6 @@ def shutdown(proceed: bool = False) -> None:
         proceed: Boolean value whether or not to get confirmation.
 
     """
-    global place_holder
     if not proceed:
         speaker.say(f"{choice(confirmation)} turn off the machine?")
         speaker.runAndWait()
@@ -3964,7 +3745,6 @@ def shutdown(proceed: bool = False) -> None:
     else:
         converted = 'yes'
     if converted != 'SR_ERROR':
-        place_holder = None
         if any(word in converted.lower() for word in keywords.ok()):
             exit_process()
             if operating_system == 'Darwin':
@@ -3976,14 +3756,6 @@ def shutdown(proceed: bool = False) -> None:
         else:
             speaker.say("Machine state is left intact sir!")
             return
-    else:
-        if place_holder == 0:
-            place_holder = None
-            return
-        else:
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            shutdown()
 
 
 def voice_changer(change: str = None) -> None:
@@ -4059,7 +3831,7 @@ def voice_changer(change: str = None) -> None:
 
 
 def clear_logs() -> None:
-    """Deletes log files that were modified before 48 hours."""
+    """Deletes log files that were updated before 48 hours."""
     [os.remove(f"logs/{file}") for file in os.listdir('logs') if file != '.keep' and
      int(datetime.now().timestamp()) - int(os.stat(f'logs/{file}').st_mtime) > 172_800]
 
@@ -4171,7 +3943,7 @@ if __name__ == '__main__':
     if not root_password:
         sys.stdout.write('\rROOT PASSWORD is not set!')
 
-    # place_holder is used in all the functions so that the "I didn't quite get that..." part runs only once
+    # place_holder is used in many functions for recursion
     # greet_check is used in initialize() to greet only for the first run
     # tv is set to None instead of TV() at the start to avoid turning on the TV unnecessarily
     # suggestion_count is used in google_searchparser to limit the number of times suggestions are used.

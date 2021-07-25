@@ -18,7 +18,7 @@ fi
 #python3 -m venv venv
 brew install portaudio
 git clone https://github.com/toy/blueutil.git && cd blueutil && make && make install && cd ../ && rm -rf blueutil
-pip install --upgrade pip
+python3 -m pip install --upgrade pip
 python3 -m pip install SpeechRecognition==3.8.1
 python3 -m pip install PyAudio==0.2.11
 python3 -m pip install pyttsx3==2.90
@@ -54,5 +54,5 @@ python3 -m pip install wolframalpha==4.1.1
 python3 -m pip install pynetgear==0.7.0
 python3 -m pip install pre-commit==2.13.0
 python3 -m pip install sphinx==4.0.2
-python3 -m pip install gmail-connector  # Don't specify version since I anticipate to make further changes to the module
+python3 -m pip install --upgrade --no-cache gmail-connector
 python3 -m pip install --upgrade recommonmark

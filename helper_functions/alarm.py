@@ -51,8 +51,7 @@ class Alarm(Thread):
                     system(f'osascript -e "set Volume {round((8 * 50) / 100)}"')
                 elif operating_system == 'Windows':
                     system('SetVol.exe 100')
-                    location = path.abspath(getcwd())
-                    system(f'start wmplayer "{location}\\{music_dir}\\{tone}"')
+                    system(f'start wmplayer "{path.abspath(getcwd())}\\{music_dir}\\{tone}"')
                     sleep(60)
                     system('SetVol.exe 50')
                 remove(f"{directory}/{file_name}")
