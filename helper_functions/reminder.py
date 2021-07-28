@@ -1,6 +1,5 @@
 from datetime import datetime
 from os import listdir, remove, system
-from platform import system as operating_system
 from smtplib import SMTP
 from threading import Thread
 
@@ -57,11 +56,6 @@ class Reminder(Thread):
                 message = (f"From: {from_}\n" + f"To: {to}\n" + f"Subject: {subject}\n" + "\n\n" + body)
                 server.sendmail(from_, to, message)
                 server.close()
-                if operating_system() == 'Darwin':
-                    system(f"""osascript -e 'display notification "{body}" with title "{subject}"'""")
-                elif operating_system() == 'Windows':
-                    # noinspection PyUnresolvedReferences
-                    from win10toast import ToastNotifier
-                    ToastNotifier().show_toast(subject, body)
+                system(f"""osascript -e 'display notification "{body}" with title "{subject}"'""")
                 remove(f"{directory}/{file_name}")
                 return

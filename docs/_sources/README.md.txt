@@ -1,13 +1,10 @@
+[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 
----
-> **⚠ &nbsp; NOTE &nbsp; -  &nbsp; Windows Support Deprecation Notice**
-> 
-> By the end of July 2021, Jarvis will no longer be supported on Windows Operating Systems.
----
-
-###### Versions Supported
 [![Python 3.8](https://img.shields.io/badge/python-3.8-orange.svg)](https://www.python.org/downloads/release/python-385/)
 [![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-391/)
+
+###### Platform Supported
+![Generic badge](https://img.shields.io/badge/Platform-MacOS-1f425f.svg)
 
 ###### Language Stats
 ![Language count](https://img.shields.io/github/languages/count/thevickypedia/Jarvis)
@@ -60,14 +57,12 @@ IronMan's Jarvis with python
 
 ### Setup:
    - Run the following commands in command line/terminal:
-        - `cd lib && chmod +x installs.sh` - Makes [installation file](lib/installs.sh) as executable.
+        - `cd lib && chmod +x installs.sh` - Makes [installation file](https://git.io/JBnPq) as executable.
         - `python3 -m venv venv` - Creates a virtual env named `venv`
         - `source venv/bin/activate` - Activates the virtual env `venv`
         - `which python` - Validate which python is being used. Should be the one within the virtual env `venv`
-        - [`bash installs.sh`](lib/installs.sh) ([`bash installs_windows.sh`](lib/installs_windows.sh) for 
-          [Windows OS](https://github.com/thevickypedia/Jarvis/wiki#windows-os)) - 
-          Installs the required libraries/modules.
-        - [`python3 jarvis.py`](jarvis.py) - BOOM, you're all set, go ahead and interact with Jarvis
+        - [`bash installs.sh`](https://git.io/JBnPq) - Installs the required libraries/modules.
+        - [`python3 jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis
 
 ### Coding Standards:
 Docstring format: [`Google`](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) <br>
@@ -85,9 +80,9 @@ Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage,
 features' overview and demo videos.
 
 ### Runbook:
-https://thevickypedia.github.io/Jarvis/
+[![made-with-sphinx-doc](https://img.shields.io/badge/Made%20with-Sphinx-1f425f.svg)](https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html)
 
-> Generated using [`sphinx-autogen`](https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html)
+https://thevickypedia.github.io/Jarvis/
 
 ## License & copyright
 

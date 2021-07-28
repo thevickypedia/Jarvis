@@ -12,7 +12,7 @@ from math import ceil, floor, log, pow
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
-from platform import platform, system, uname
+from platform import platform, system
 from random import choice, choices, randrange
 from shutil import disk_usage, rmtree
 from socket import (AF_INET, SOCK_DGRAM, gaierror, gethostbyname, gethostname,
@@ -494,27 +494,21 @@ def conditions(converted: str) -> bool:
         speed_test()
 
     elif any(word in converted_lower for word in keywords.bluetooth()):
-        if operating_system == 'Darwin':
-            bluetooth(phrase=converted_lower)
-        elif operating_system == 'Windows':
-            speaker.say("Bluetooth connectivity on Windows hasn't been developed sir!")
+        bluetooth(phrase=converted_lower)
 
     elif any(word in converted_lower for word in keywords.brightness()) and 'lights' not in converted_lower:
-        if operating_system == 'Darwin':
-            speaker.say(choice(ack))
-            if 'set' in converted_lower or re.findall(r'\b\d+\b', converted_lower):
-                level = re.findall(r'\b\d+\b', converted_lower)  # gets integers from string as a list
-                if not level:
-                    level = ['50']  # pass as list for brightness, as args must be iterable
-                Thread(target=set_brightness, args=level).start()
-            elif 'decrease' in converted_lower or 'reduce' in converted_lower or 'lower' in converted_lower or \
-                    'dark' in converted_lower or 'dim' in converted_lower:
-                Thread(target=decrease_brightness).start()
-            elif 'increase' in converted_lower or 'bright' in converted_lower or 'max' in converted_lower or \
-                    'brighten' in converted_lower or 'light up' in converted_lower:
-                Thread(target=increase_brightness).start()
-        elif operating_system == 'Windows':
-            speaker.say("Modifying screen brightness on Windows hasn't been developed sir!")
+        speaker.say(choice(ack))
+        if 'set' in converted_lower or re.findall(r'\b\d+\b', converted_lower):
+            level = re.findall(r'\b\d+\b', converted_lower)  # gets integers from string as a list
+            if not level:
+                level = ['50']  # pass as list for brightness, as args must be iterable
+            Thread(target=set_brightness, args=level).start()
+        elif 'decrease' in converted_lower or 'reduce' in converted_lower or 'lower' in converted_lower or \
+                'dark' in converted_lower or 'dim' in converted_lower:
+            Thread(target=decrease_brightness).start()
+        elif 'increase' in converted_lower or 'bright' in converted_lower or 'max' in converted_lower or \
+                'brighten' in converted_lower or 'light up' in converted_lower:
+            Thread(target=increase_brightness).start()
 
     elif any(word in converted_lower for word in keywords.lights()):
         connection_status = vpn_checker()
@@ -557,10 +551,7 @@ def conditions(converted: str) -> bool:
         system_vitals()
 
     elif any(word in converted_lower for word in keywords.personal_cloud()):
-        if operating_system == 'Windows':
-            speaker.say("Personal cloud integration on Windows hasn't been developed yet sir!")
-            return False
-        elif 'enable' in converted_lower or 'initiate' in converted_lower or 'kick off' in converted_lower or \
+        if 'enable' in converted_lower or 'initiate' in converted_lower or 'kick off' in converted_lower or \
                 'start' in converted_lower:
             Thread(target=personal_cloud.enable).start()
             speaker.say("Personal Cloud has been triggered sir! I will send the login details to your phone number "
@@ -599,8 +590,8 @@ def conditions(converted: str) -> bool:
         speaker.say("I can seamlessly take care of your daily tasks, and also help with most of your work!")
 
     elif any(word in converted_lower for word in keywords.sleep()):
-        if ('pc' in converted_lower or 'computer' in converted_lower or 'imac' in converted_lower or 'screen' in
-                converted_lower) and operating_system == 'Darwin':
+        if 'pc' in converted_lower or 'computer' in converted_lower or 'imac' in converted_lower or \
+                'screen' in converted_lower:
             pc_sleep()
         else:
             speaker.say("Activating sentry mode, enjoy yourself sir!")
@@ -992,7 +983,7 @@ def weather_condition(msg: str, place: str = None) -> None:
 
 
 def system_info() -> None:
-    """Gets your system configuration for both mac and windows."""
+    """Gets your system configuration."""
     total, used, free = disk_usage("/")
     total = size_converter(total)
     used = size_converter(used)
@@ -1001,12 +992,7 @@ def system_info() -> None:
     ram_used = size_converter(virtual_memory().percent).replace(' B', ' %')
     physical = cpu_count(logical=False)
     logical = cpu_count(logical=True)
-    if operating_system == 'Windows':
-        o_system = uname()[0] + uname()[2]
-    elif operating_system == 'Darwin':
-        o_system = (platform()).split('.')[0]
-    else:
-        o_system = None
+    o_system = platform().split('.')[0]
     sys_config = f"You're running {o_system}, with {physical} physical cores and {logical} logical cores. " \
                  f"Your physical drive capacity is {total}. You have used up {used} of space. Your free space is " \
                  f"{free}. Your RAM capacity is {ram}. You are currently utilizing {ram_used} of your memory."
@@ -1090,35 +1076,27 @@ def apps(keyword: str or None) -> None:
             speaker.say("I didn't quite get that. Try again.")
             apps(None)
 
-    if operating_system == 'Windows':
-        status = os.system(f'start {keyword}')
-        if status == 0:
-            speaker.say(f'I have opened {keyword}')
-        else:
-            speaker.say(f"I did not find the app {keyword}. Try again.")
-            apps(None)
-    elif operating_system == 'Darwin':
-        v = (check_output("ls /Applications/", shell=True))
-        apps_ = (v.decode('utf-8').split('\n'))
+    v = (check_output("ls /Applications/", shell=True))
+    apps_ = (v.decode('utf-8').split('\n'))
 
-        app_check = False
-        for app in apps_:
-            if re.search(keyword, app, flags=re.IGNORECASE) is not None:
-                keyword = app
-                app_check = True
-                break
+    app_check = False
+    for app in apps_:
+        if re.search(keyword, app, flags=re.IGNORECASE) is not None:
+            keyword = app
+            app_check = True
+            break
 
-        if not app_check:
-            speaker.say(f"I did not find the app {keyword}. Try again.")
-            apps(None)
+    if not app_check:
+        speaker.say(f"I did not find the app {keyword}. Try again.")
+        apps(None)
+    else:
+        app_status = os.system(f"open /Applications/'{keyword}' > /dev/null 2>&1")
+        keyword = keyword.replace('.app', '')
+        if app_status == 256:
+            speaker.say(f"I'm sorry sir! I wasn't able to launch {keyword}. "
+                        f"You might need to check its permissions.")
         else:
-            app_status = os.system(f"open /Applications/'{keyword}' > /dev/null 2>&1")
-            keyword = keyword.replace('.app', '')
-            if app_status == 256:
-                speaker.say(f"I'm sorry sir! I wasn't able to launch {keyword}. "
-                            f"You might need to check its permissions.")
-            else:
-                speaker.say(f"I have opened {keyword}")
+            speaker.say(f"I have opened {keyword}")
 
 
 def robinhood() -> None:
@@ -1151,12 +1129,7 @@ def repeater() -> None:
 def chatter_bot() -> None:
     """Initiates chatter bot."""
     file1 = 'db.sqlite3'
-    if operating_system == 'Darwin':
-        file2 = f"/Users/{os.environ.get('USER')}/nltk_data"
-    elif operating_system == 'Windows':
-        file2 = f"{os.environ.get('APPDATA')}\\nltk_data"
-    else:
-        file2 = None
+    file2 = f"/Users/{os.environ.get('USER')}/nltk_data"
     if os.path.isfile(file1) and os.path.isdir(file2):
         bot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
     else:
@@ -1308,12 +1281,7 @@ def music(device: str = None) -> None:
     """
     sys.stdout.write("\rScanning music files...")
 
-    if operating_system == 'Darwin':
-        path = os.walk(f"{home_dir}/Music")
-    elif operating_system == 'Windows':
-        path = os.walk(f"{home_dir}\\Music")
-    else:
-        path = None
+    path = os.walk(f"{home_dir}/Music")
 
     get_all_files = (os.path.join(root, f) for root, _, files in path for f in files)
     music_files = [file for file in get_all_files if os.path.splitext(file)[1] == '.mp3']
@@ -1322,10 +1290,7 @@ def music(device: str = None) -> None:
     if device:
         google_home(device, chosen)
     else:
-        if operating_system == 'Darwin':
-            call(["open", chosen])
-        elif operating_system == 'Windows':
-            os.system(f'start wmplayer "{chosen}"')
+        call(["open", chosen])
         sys.stdout.write("\r")
         speaker.say("Enjoy your music sir!")
         speaker.runAndWait()
@@ -2476,16 +2441,8 @@ def volume_controller(level: int) -> None:
 
     """
     sys.stdout.write("\r")
-    if operating_system == 'Darwin':
-        level = round((8 * level) / 100)
-        os.system(f'osascript -e "set Volume {level}"')
-    elif operating_system == 'Windows':
-        if not os.path.isfile('SetVol.exe'):
-            # Courtesy: https://rlatour.com/setvol/
-            sys.stdout.write("\rPLEASE WAIT::Downloading volume controller for Windows")
-            os.system("""curl https://thevickypedia.com/Jarvis/SetVol.exe --output SetVol.exe --silent""")
-            sys.stdout.write("\r")
-        os.system(f'SetVol.exe {level}')
+    level = round((8 * level) / 100)
+    os.system(f'osascript -e "set Volume {level}"')
 
 
 def face_recognition_detection() -> None:
@@ -3126,9 +3083,6 @@ def meetings(meeting_file: str = 'calendar.scpt') -> str:
         - On failure, returns a message saying Jarvis was unable to read calendar/outlook.
 
     """
-    if operating_system == 'Windows':
-        return "Meetings feature on Windows hasn't been developed yet sir!"
-
     args = [1, 3]
     source_app = meeting_file.replace('.scpt', '')
     failure = None
@@ -3179,10 +3133,6 @@ def meetings(meeting_file: str = 'calendar.scpt') -> str:
 
 def system_vitals() -> None:
     """Reads system vitals on MacOS."""
-    if operating_system == 'Windows':
-        speaker.say("Reading vitals on Windows hasn't been developed yet sir")
-        return
-
     if not root_password:
         speaker.say("You haven't provided a root password for me to read system vitals sir! "
                     "Add the root password as an environment variable for me to read.")
@@ -3250,20 +3200,14 @@ def get_ssid() -> str:
         WiFi or Ethernet SSID.
 
     """
-    if operating_system == 'Darwin':
-        process = Popen(
-            ['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'],
-            stdout=PIPE)
-        out, err = process.communicate()
-        if error := process.returncode:
-            logger.error(f"Failed to fetch SSID with exit code: {error}\n{err}")
-        # noinspection PyTypeChecker
-        return dict(map(str.strip, info.split(': ')) for info in out.decode('utf-8').split('\n')[:-1]).get('SSID')
-    elif operating_system == 'Windows':
-        netsh = check_output("netsh wlan show interfaces", shell=True)
-        for info in netsh.decode('utf-8').split('\n')[:-1]:
-            if 'SSID' in info:
-                return info.strip('SSID').replace('SSID', '').replace(':', '').strip()
+    process = Popen(
+        ['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'],
+        stdout=PIPE)
+    out, err = process.communicate()
+    if error := process.returncode:
+        logger.error(f"Failed to fetch SSID with exit code: {error}\n{err}")
+    # noinspection PyTypeChecker
+    return dict(map(str.strip, info.split(': ')) for info in out.decode('utf-8').split('\n')[:-1]).get('SSID')
 
 
 class PersonalCloud:
@@ -3493,11 +3437,8 @@ def size_converter(byte_size: int) -> str:
 
     """
     if not byte_size:
-        if operating_system == 'Darwin':
-            from resource import RUSAGE_SELF, getrusage
-            byte_size = getrusage(RUSAGE_SELF).ru_maxrss
-        elif operating_system == 'Windows':
-            byte_size = Process(os.getpid()).memory_info().peak_wset
+        from resource import RUSAGE_SELF, getrusage
+        byte_size = getrusage(RUSAGE_SELF).ru_maxrss
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
     integer = int(floor(log(byte_size, 1024)))
     power = pow(1024, integer)
@@ -3709,11 +3650,8 @@ def restart(target: str = None) -> None:
             converted = 'yes'
         if any(word in converted.lower() for word in keywords.ok()):
             exit_process()
-            if operating_system == 'Darwin':
-                stop_terminal()
-                call(['osascript', '-e', 'tell app "System Events" to restart'])
-            elif operating_system == 'Windows':
-                os.system("shutdown /r /t 1")
+            stop_terminal()
+            call(['osascript', '-e', 'tell app "System Events" to restart'])
             terminator()
         else:
             speaker.say("Machine state is left intact sir!")
@@ -3747,11 +3685,8 @@ def shutdown(proceed: bool = False) -> None:
     if converted != 'SR_ERROR':
         if any(word in converted.lower() for word in keywords.ok()):
             exit_process()
-            if operating_system == 'Darwin':
-                stop_terminal()
-                call(['osascript', '-e', 'tell app "System Events" to shut down'])
-            elif operating_system == 'Windows':
-                os.system("shutdown /s /t 1")
+            stop_terminal()
+            call(['osascript', '-e', 'tell app "System Events" to shut down'])
             terminator()
         else:
             speaker.say("Machine state is left intact sir!")
@@ -3777,17 +3712,10 @@ def voice_changer(change: str = None) -> None:
         """Sets default voice module number.
 
         Args:
-            voice_id: Default voice ID for MacOS and Windows.
+            voice_id: Default voice ID.
 
         """
-        if operating_system == 'Darwin':
-            speaker.setProperty("voice", voices[voice_id[0]].id)  # voice module #7 for MacOS
-        elif operating_system == 'Windows':
-            speaker.setProperty("voice", voices[voice_id[-1]].id)  # voice module #0 for Windows
-            speaker.setProperty('rate', 190)  # speech rate is slowed down in Windows for optimal experience
-        else:
-            logger.error(f'Unsupported Operating System::{operating_system}.')
-            terminator()
+        speaker.setProperty("voice", voices[voice_id[0]].id)  # voice module #7 for MacOS
 
     if change:
         if not (distribution := [int(s) for s in re.findall(r'\b\d+\b', change)]):  # walrus on if not distribution
@@ -3837,6 +3765,9 @@ def clear_logs() -> None:
 
 
 if __name__ == '__main__':
+    if system() != 'Darwin':
+        exit('Unsupported Operating System.')
+
     STATUS = True
     logger.critical('JARVIS::Starting Now::Run STATUS has been set')
 
@@ -3845,7 +3776,6 @@ if __name__ == '__main__':
     recognizer = Recognizer()  # initiates recognizer that uses google's translation
     keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
     conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
-    operating_system = system()  # detects current operating system
     aws = AWSClients()  # initiates AWSClients object to fetch credentials from AWS secrets
     database = Database()  # initiates Database() for TO-DO items
     temperature = Temperature()  # initiates Temperature() for temperature conversions
