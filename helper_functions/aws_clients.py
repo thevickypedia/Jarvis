@@ -233,7 +233,7 @@ class AWSClients:
         return gatherer()
 
     @staticmethod
-    def offline_sender() -> str:
+    def offline_phrase() -> str:
         """Calls `gatherer` which uses the caller func name to return the param value.
 
         Returns:

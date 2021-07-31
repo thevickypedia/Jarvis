@@ -3,9 +3,9 @@ import re
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
-from email import message_from_bytes, message_from_string
+from email import message_from_bytes
 from email.header import decode_header, make_header
-from imaplib import IMAP4, IMAP4_SSL
+from imaplib import IMAP4_SSL
 from json import load as json_load
 from json import loads as json_loads
 from math import ceil, floor, log, pow
@@ -15,9 +15,7 @@ from pathlib import Path
 from platform import platform, system
 from random import choice, choices, randrange
 from shutil import disk_usage, rmtree
-from socket import (AF_INET, SOCK_DGRAM, gaierror, gethostbyname, gethostname,
-                    setdefaulttimeout, socket)
-from socket import timeout as s_timeout
+from socket import AF_INET, SOCK_DGRAM, gethostbyname, gethostname, socket
 from ssl import create_default_context
 from string import ascii_letters, digits
 from subprocess import (PIPE, CalledProcessError, Popen, call, check_output,
@@ -30,6 +28,9 @@ from unicodedata import normalize
 from urllib.request import urlopen
 from webbrowser import open as web_open
 
+from aeosa.aem.aemsend import EventError
+from appscript import app as apple_script
+from appscript.reference import CommandError
 from boto3 import client
 from certifi import where
 from chatterbot import ChatBot
@@ -1871,8 +1872,8 @@ def google_home(device: str = None, file: str = None) -> None:
 
     # scan time after MultiThread: < 10 seconds (usual bs: 3 minutes)
     devices = []
-    with ThreadPoolExecutor(max_workers=5000) as executor:  # max workers set to 5K (to scan 255 IPs) for less wait time
-        for info in executor.map(ip_scan, range(1, 256)):  # scans host IDs 1 to 255 (eg: 192.168.1.1 to 192.168.1.255)
+    with ThreadPoolExecutor(max_workers=100) as executor:  # max workers set to 5K (to scan 255 IPs) for less wait time
+        for info in executor.map(ip_scan, range(1, 101)):  # scans host IDs 1 to 255 (eg: 192.168.1.1 to 192.168.1.255)
             devices.append(info)  # this includes all the NoneType values returned by unassigned host IDs
     devices = dict([i for i in devices if i])  # removes None values and converts list to dictionary of name and ip pair
 
@@ -2938,26 +2939,48 @@ def threat_notify(converted: str, date_extn: str or None) -> None:
             logger.error(f"Email dispatch failed with response: {response_.get('body')}\n")
 
 
-def offline_communicator_initiate() -> None:
-    """Initiates `offline_communicator()` in a dedicated thread."""
-    logger.critical('Enabled Offline Communicator')
-    Thread(target=offline_communicator).start()
+def offline_communicator_initiate():
+    """Initiates Jarvis API and Ngrok for requests from external sources if they aren't running already.
+
+    Notes:
+        - `forever_ngrok.py` is a simple script that triggers ngrok connection in the port `4483`.
+        - The connection is tunneled through a public facing URL which is used to make `POST` requests to Jarvis API.
+        - `uvicorn` command launches JarvisAPI `fast.py` using the same port `4483`
+    """
+    ngrok_status, uvicorn_status = False, False
+    target_scripts = ['forever_ngrok.py', 'uvicorn']
+    for target_script in target_scripts:
+        pid_check = check_output(f"ps -ef | grep {target_script}", shell=True)
+        pid_list = pid_check.decode('utf-8').split('\n')
+        for id_ in pid_list:
+            if id_ and 'grep' not in id_ and '/bin/sh' not in id_:
+                if target_script == 'forever_ngrok.py':
+                    ngrok_status = True
+                    logger.critical('An instance of ngrok connection for offline communicator is running already.')
+                elif target_script == 'uvicorn':
+                    uvicorn_status = True
+                    logger.critical('An instance of uvicorn application for offline communicator is running already.')
+
+    if not ngrok_status:
+        logger.critical('Initiating ngrok connection for offline communicator.')
+        initiator = f'cd $HOME/JarvisHelper && source venv/bin/activate && export ENV=1 && python3 {target_scripts[0]}'
+        apple_script('Terminal').do_script(initiator)
+
+    if not uvicorn_status:
+        logger.critical('Initiating FastAPI for offline listener.')
+        offline_script = f'cd {os.getcwd()} && source venv/bin/activate && cd api && ' \
+                         f'export offline_phrase={offline_phrase} && ' \
+                         f'uvicorn fast:app --reload --port=4483'
+        apple_script('Terminal').do_script(offline_script)
 
 
 def offline_communicator() -> None:
-    """The following code will look for emails in a dedicated thread so Jarvis can run simultaneously.
-
-    Warnings:
-        - Running sockets with a 30 second wait time is brutal.
-        - To cheat this, I login once and keep checking for emails in a `while STATUS` loop.
-        - This may cause various exceptions when the login session expires or when google terminates the session.
-        - So I use exception handlers and circle back to restart the `offline_communicator()` after 2 minutes.
+    """Reads `offline_request` file generated by `fast.py` which has the request sent via Jarvis API.
 
     See Also:
         To replicate a working model for offline communicator:
-            - Set/Create a dedicated email account for offline communication (as it is less secure)
-            - Send an email from a specific email address to avoid unnecessary response. - ENV VAR: `offline_sender`
-            - The body of the email should only have the exact command you want Jarvis to do.
+            - Run `ngrok` on port 4483 or any desired port.
+            - The port number should match with the one in `api/fast.py`
             - To "log" the response and send it out as notification, I made some changes to the pyttsx3 module. (below)
             - I also stop the response from being spoken.
             - `voice_changer()` is called as the voice property is reset when speaker.stop() is used.
@@ -2965,80 +2988,31 @@ def offline_communicator() -> None:
         Changes in `pyttsx3`:
             - Created a global variable in `say()` -> pyttsx3/engine.py (before proxy) and store the response.
             - Created a new method and return the global variable which I created in `say()`
-            - The new method (`vig()` in this case) is called to get the response which is sent as an SMS notification.
+            - The new method (vig() in this case) is called to get the response which is sent as an SMS notification.
             - Doing so, avoids making changes to all functions within `conditions()` to notify the response from Jarvis.
 
         Env Vars:
-            - `offline_receive_user` - email address which is getting checked for a command
-            - `offline_receive_pass` - password for the above email address
-            - `offline_sender` - email from which the command the expected, A.K.A - commander
+            - `offline_phrase` - unique phrase to authenticate the requests coming from an external source
 
     Notes:
         More cool stuff:
-            - I created a REST API on AWS API Gateway and linked it to a JavaScript on my webpage.
-            - When a request is made, the JavaScript makes a POST call to the API which triggers a lambda job in AWS.
-            - The lambda function is set to verify the secure key and then send the email to me.
+            - I have linked the ngrok `public_url` tunnelling the FastAPI to a JavaScript on my webpage.
+            - When a request is submitted, the JavaScript makes a POST call to the API.
+            - The API does the authentication and creates the `offline_request` file if authenticated.
             - Check it out: `JarvisOffline <https://thevickypedia.com/jarvisoffline>`__
-            - NOTE::I have used a secret phrase that is validated by the lambda job to avoid spam API calls and emails.
-            - You can also make Jarvis check for emails from your "number@tmomail.net" but response time is > 5 min.
     """
-    # todo: Do not pass functions that require user interaction/approval/confirmation
-    try:
-        setdefaulttimeout(30)  # set default timeout for new socket connections to 30 seconds
-        mail = IMAP4_SSL('imap.gmail.com')  # connects to imaplib
-        mail.login(offline_receive_user, offline_receive_pass)
-        mail.list()
-        response = None
-        while STATUS:
-            mail.select('inbox')  # choose inbox
-            return_code, messages = mail.search(None, 'UNSEEN')
-            if return_code == 'OK':
-                n = len(messages[0].split())
-            else:
-                logger.error(f"Offline Communicator::Search Error.\n{return_code}")
-                raise RuntimeError
-            if not n:
-                pass
-            else:
-                for bytecode in messages[0].split():
-                    ignore, mail_data = mail.fetch(bytecode, '(RFC822)')
-                    for response_part in mail_data:
-                        if isinstance(response_part, tuple):
-                            original_email = message_from_bytes(response_part[1])
-                            sender = (original_email['From']).split('<')[-1].split('>')[0].strip()
-                            if sender == offline_sender:
-                                # noinspection PyUnresolvedReferences
-                                email_message = message_from_string(mail_data[0][1].decode('utf-8'))
-                                for part in email_message.walk():
-                                    required_type = ["text/html", "text/plain"]
-                                    if part.get_content_type() in required_type:
-                                        body = part.get_payload(decode=True).decode('utf-8').strip()
-                                        logger.critical(f'Received offline input::{body}')
-                                        mail.store(bytecode, "+FLAGS", "\\Deleted")  # marks email as deleted
-                                        mail.expunge()  # DELETES (not send to Trash) the email permanently
-                                        if body:
-                                            split(body)
-                                            response = f'Request:\n{body}\n\nResponse:\n{speaker.vig()}'
-                                            speaker.stop()
-                                            voice_changer()
-                                            break
-                            else:
-                                mail.store(bytecode, "-FLAGS", "\\Seen")  # set "-FLAGS" to un-see/mark as unread
-            if response:
-                notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
-                logger.critical('Response from Jarvis has been sent!')
-                response = None  # reset response to None to avoid receiving same message endlessly
-            sleep(30)  # waits for 30 seconds before attempting next search
-        logger.critical('Disabled Offline Communicator')
-        mail.close()  # closes imap lib
-        mail.logout()
-    except (IMAP4.abort, IMAP4.error, s_timeout, gaierror, RuntimeError, ConnectionResetError, TimeoutError):
-        setdefaulttimeout(None)  # revert default timeout for new socket connections to None
-        imap_error = sys.exc_info()[0]
-        logger.error(f'Offline Communicator::{imap_error.__name__}\n{format_exc()}')  # include traceback
-        logger.error('Restarting Offline Communicator')
-        sleep(120)  # restart the session after 2 minutes in case of any of the above exceptions
-        offline_communicator_initiate()  # return used here will terminate the current function
+    while STATUS:
+        if 'offline_request' in os.listdir():
+            with open('offline_request', 'r') as off_file:
+                command = off_file.read()
+            os.remove('offline_request')
+            logger.critical(f'Received offline input::{command}')
+            split(command)
+            response = f'Request:\n{command}\n\nResponse:\n{speaker.vig()}'
+            speaker.stop()
+            voice_changer()
+            notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
+            logger.critical('Response from Jarvis has been sent!')
 
 
 def meeting_reader() -> None:
@@ -3273,10 +3247,6 @@ class PersonalCloud:
             - Triggers personal cloud using another Terminal session.
             - Sends an SMS with endpoint, username and password to your mobile phone.
         """
-        from aeosa.aem.aemsend import EventError
-        from appscript import app as apple_script
-        from appscript.reference import CommandError
-
         personal_cloud.delete_repo()
         initial_script = f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git && " \
                          f"cd personal_cloud && python3 -m venv venv && source venv/bin/activate && " \
@@ -3811,7 +3781,7 @@ if __name__ == '__main__':
     birthday = cred.get('birthday') or aws.birthday()
     offline_receive_user = cred.get('offline_receive_user') or aws.offline_receive_user()
     offline_receive_pass = cred.get('offline_receive_pass') or aws.offline_receive_pass()
-    offline_sender = cred.get('offline_sender') or aws.offline_sender()
+    offline_phrase = cred.get('offline_phrase') or aws.offline_phrase()
     icloud_user = cred.get('icloud_user') or aws.icloud_user()
     icloud_pass = cred.get('icloud_pass') or aws.icloud_pass()
     icloud_recovery = cred.get('icloud_recovery') or aws.icloud_recovery()
@@ -3840,7 +3810,6 @@ if __name__ == '__main__':
             "birthday": birthday,
             "offline_receive_user": offline_receive_user,
             "offline_receive_pass": offline_receive_pass,
-            "offline_sender": offline_sender,
             "icloud_user": icloud_user,
             "icloud_pass": icloud_pass,
             "icloud_recovery": icloud_recovery,
@@ -3920,7 +3889,8 @@ if __name__ == '__main__':
 
     sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
 
-    offline_communicator_initiate()  # dedicated function to initiate offline communicator to ease restart
+    Thread(target=offline_communicator_initiate).start()
+    Thread(target=offline_communicator).start()
 
     logger.critical('Meeting gather has been initiated.')
     Thread(target=meeting_gatherer).start()  # triggers meeting_gatherer to run in the background

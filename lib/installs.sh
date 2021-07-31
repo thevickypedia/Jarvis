@@ -15,7 +15,6 @@ if [[ "$git_check" == "$git_condition_1" || "$git_check" == "$git_condition_2" ]
   else echo "Installing Git CLI"
   brew install git
 fi
-#python3 -m venv venv
 brew install portaudio
 git clone https://github.com/toy/blueutil.git && cd blueutil && make && make install && cd ../ && rm -rf blueutil
 python3 -m pip install --upgrade pip
@@ -52,7 +51,9 @@ python3 -m pip install randfacts==0.2.8
 python3 -m pip install appscript==1.1.2
 python3 -m pip install wolframalpha==4.1.1
 python3 -m pip install pynetgear==0.7.0
-python3 -m pip install pre-commit==2.13.0
-python3 -m pip install sphinx==4.0.2
+python3 -m pip install fastapi==0.68.0
+python3 -m pip install uvicorn==0.14.0
 python3 -m pip install --upgrade --no-cache gmail-connector
-python3 -m pip install --upgrade recommonmark
+python3 -m pip install --upgrade --no-cache sphinx
+python3 -m pip install --upgrade --no-cache pre-commit
+python3 -m pip install --upgrade --no-cache recommonmark
