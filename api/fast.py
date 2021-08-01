@@ -3,9 +3,7 @@ from os import environ
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
-
 from models import GetData
-
 
 app = FastAPI(
     title="Jarvis API",
@@ -28,7 +26,7 @@ def status():
 
 @app.post("/offline-communicator")
 def read_root(input_data: GetData):
-    """# Offline Communicator for Jarvis
+    """# Offline Communicator for Jarvis.
 
     ## Args:
     - **input_data:** - Takes the following arguments as data instead of a QueryString.
