@@ -55,6 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html#development-and-maintenance">Development and Maintenance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#jarvis">Jarvis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="README.html#setup">Setup:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#env-variables">ENV Variables:</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#coding-standards">Coding Standards:</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#pre-commit">Pre-Commit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#feature-s-implementation">Feature(s) Implementation:</a></li>
@@ -1239,43 +1240,6 @@
 </dd></dl>
 
 </section>
-<section id="module-creds">
-<span id="credentials"></span><h1>Credentials<a class="headerlink" href="#module-creds" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="creds.Credentials">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">creds.</span></span><span class="sig-name descname"><span class="pre">Credentials</span></span><a class="headerlink" href="#creds.Credentials" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads all the required oauth and api keys stored in <cite>credentials.json</cite> file.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Credentials</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="creds.Credentials.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#creds.Credentials.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads credentials stored in <cite>credentials.json</cite> file and returns a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A dictionary of parameters stored key-value pairs present in <cite>credentials.json</cite></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="creds.Credentials.put">
-<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#creds.Credentials.put" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dumps the parameters into <cite>credentials.json</cite> file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>params</strong> – Takes the credentials key-value pair as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
 <section id="module-helper_functions.alarm">
 <span id="alarm"></span><h1>Alarm<a class="headerlink" href="#module-helper_functions.alarm" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -1288,344 +1252,9 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.alarm.Alarm.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.alarm.Alarm.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Triggers the Alarm class in a thread.</p>
-<p>Opens the alarm.mp3 within mp3 directory, and plays the tone when the hours and minutes match the current time.</p>
+<dd><p>Plays mp3/alarm.mp3 tone when the hours and minutes match the current time.</p>
 </dd></dl>
 
-</dd></dl>
-
-</section>
-<section id="module-helper_functions.aws_clients">
-<span id="aws-client"></span><h1>AWS Client<a class="headerlink" href="#module-helper_functions.aws_clients" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.aws_clients.</span></span><span class="sig-name descname"><span class="pre">AWSClients</span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients" title="Permalink to this definition">¶</a></dt>
-<dd><p>All the required oauth and api keys are stored in ssm parameters and are fetched where ever required.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AWSClients</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.birthday">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">birthday</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.birthday" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.git_pass">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">git_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.git_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.git_user">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">git_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.git_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.gmail_pass">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">gmail_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.gmail_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.gmail_user">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">gmail_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.gmail_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.icloud_pass">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">icloud_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.icloud_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.icloud_recovery">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">icloud_recovery</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.icloud_recovery" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.icloud_user">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">icloud_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.icloud_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.maps_api">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">maps_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.maps_api" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.news_api">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">news_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.news_api" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.offline_phrase">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">offline_phrase</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.offline_phrase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.offline_receive_pass">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">offline_receive_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.offline_receive_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.offline_receive_user">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">offline_receive_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.offline_receive_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.phone_number">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">phone_number</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.phone_number" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.robinhood_pass">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">robinhood_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.robinhood_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.robinhood_qr">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">robinhood_qr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.robinhood_qr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.robinhood_user">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">robinhood_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.robinhood_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.router_pass">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">router_pass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.router_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.think_id">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">think_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.think_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.tv_client_key">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">tv_client_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.tv_client_key" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.tv_mac">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">tv_mac</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.tv_mac" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.AWSClients.weather_api">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">weather_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.AWSClients.weather_api" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <cite>gatherer</cite> which uses the caller func name to return the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parameter value received from gatherer.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="helper_functions.aws_clients.gatherer">
-<span class="sig-prename descclassname"><span class="pre">helper_functions.aws_clients.</span></span><span class="sig-name descname"><span class="pre">gatherer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.aws_clients.gatherer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses the name of the function that called the gatherer as param name and returns the param value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A a decrypted secure string of the caller function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
@@ -2904,32 +2533,6 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
-<section id="module-helper_functions.put_param">
-<span id="put-parameter"></span><h1>Put Parameter<a class="headerlink" href="#module-helper_functions.put_param" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="helper_functions.put_param.AWSClient">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.put_param.</span></span><span class="sig-name descname"><span class="pre">AWSClient</span></span><a class="headerlink" href="#helper_functions.put_param.AWSClient" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to initiate AWS ssm client.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AWSClient</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.put_param.AWSClient.put_parameters">
-<span class="sig-name descname"><span class="pre">put_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.put_param.AWSClient.put_parameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses boto3 to update credentials in AWS and returns 200 if successful.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – Name of the parameter that has to dropped in AWS.</p></li>
-<li><p><strong>value</strong> – Value of the parameter that has to dropped in AWS as SecureString.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
 <section id="module-helper_functions.reminder">
 <span id="reminder"></span><h1>Reminder<a class="headerlink" href="#module-helper_functions.reminder" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -2942,7 +2545,7 @@ Whites can have a value of None.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.reminder.Reminder.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.reminder.Reminder.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Triggers the Reminder class in a thread.</p>
+<dd><p>Triggers the reminder notification when the hours and minutes match the current time.</p>
 </dd></dl>
 
 </dd></dl>
@@ -3322,9 +2925,7 @@ Whites can have a value of None.</p>
   <ul>
 <li><a class="reference internal" href="#">Welcome to Jarvis’s documentation!</a></li>
 <li><a class="reference internal" href="#module-jarvis">Jarvis - Main Module</a></li>
-<li><a class="reference internal" href="#module-creds">Credentials</a></li>
 <li><a class="reference internal" href="#module-helper_functions.alarm">Alarm</a></li>
-<li><a class="reference internal" href="#module-helper_functions.aws_clients">AWS Client</a></li>
 <li><a class="reference internal" href="#module-helper_functions.conversation">Conversation</a></li>
 <li><a class="reference internal" href="#module-helper_functions.database">Database</a></li>
 <li><a class="reference internal" href="#module-helper_functions.facial_recognition">Face Recognition</a></li>
@@ -3332,7 +2933,6 @@ Whites can have a value of None.</p>
 <li><a class="reference internal" href="#module-helper_functions.lights">Lights</a></li>
 <li><a class="reference internal" href="#module-helper_functions.ip_scanner">Local IP Scanner</a></li>
 <li><a class="reference internal" href="#module-helper_functions.logger">Logger</a></li>
-<li><a class="reference internal" href="#module-helper_functions.put_param">Put Parameter</a></li>
 <li><a class="reference internal" href="#module-helper_functions.reminder">Reminder</a></li>
 <li><a class="reference internal" href="#module-helper_functions.robinhood">Robinhood Gatherer</a></li>
 <li><a class="reference internal" href="#module-helper_functions.temperature">Temperature</a></li>

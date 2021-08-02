@@ -1,9 +1,8 @@
 from datetime import datetime
-from os import listdir, remove, system
-from smtplib import SMTP
+from os import environ, listdir, remove, system
 from threading import Thread
 
-from creds import Credentials
+from gmailconnector.send_sms import Messenger
 
 directory = 'reminder'  # dir need not be '../reminder' as the Thread is triggered by jarvis.py which is in root dir
 
@@ -31,7 +30,7 @@ class Reminder(Thread):
         self.message = message
 
     def run(self) -> None:
-        """Triggers the Reminder class in a thread."""
+        """Triggers the reminder notification when the hours and minutes match the current time."""
         file_name = f'{self.hours}_{self.minutes}_{self.am_pm}|{self.message.replace(" ", "_")}.lock'
         files = listdir(directory)
         while True:
@@ -40,22 +39,10 @@ class Reminder(Thread):
             minute = now.strftime("%M")
             hour = now.strftime("%I")
             if hour == self.hours and minute == self.minutes and am_pm == self.am_pm and file_name in files:
-                cred = Credentials().get()
-                # Establish a secure session with gmail's outgoing SMTP server using your gmail account
-                server = SMTP("smtp.gmail.com", 587)
-                server.starttls()
-                gmail_user = cred.get('gmail_user')
-                gmail_pass = cred.get('gmail_pass')
-                remind = cred.get('phone')
-                server.login(user=gmail_user, password=gmail_pass)
-                from_ = gmail_user
-                to = f"{remind}@tmomail.net"
                 body = self.message
                 subject = "REMINDER from Jarvis"
-                # Send text message through SMS gateway of destination number
-                message = (f"From: {from_}\n" + f"To: {to}\n" + f"Subject: {subject}\n" + "\n\n" + body)
-                server.sendmail(from_, to, message)
-                server.close()
+                Messenger(gmail_user=environ.get('gmail_user'), gmail_pass=environ.get('gmail_pass'),
+                          phone_number=environ.get('phone'), subject=subject, message=body).send_sms()
                 system(f"""osascript -e 'display notification "{body}" with title "{subject}"'""")
                 remove(f"{directory}/{file_name}")
                 return

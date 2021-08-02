@@ -37,7 +37,6 @@ python3 -m pip install timezonefinder==4.4.1
 python3 -m pip install inflect==4.1.0
 python3 -m pip install wordninja==2.0.0
 python3 -m pip install search_engine_parser==0.6.2
-python3 -m pip install boto3==1.16.12
 python3 -m pip install playsound==1.2.2
 python3 -m pip install pywebostv==0.8.4
 python3 -m pip install wakeonlan==1.1.6
@@ -53,6 +52,7 @@ python3 -m pip install wolframalpha==4.1.1
 python3 -m pip install pynetgear==0.7.0
 python3 -m pip install fastapi==0.68.0
 python3 -m pip install uvicorn==0.14.0
+python3 -m pip install python_dotenv==0.19.0
 python3 -m pip install --upgrade --no-cache gmail-connector
 python3 -m pip install --upgrade --no-cache sphinx
 python3 -m pip install --upgrade --no-cache pre-commit

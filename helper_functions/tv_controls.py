@@ -3,13 +3,13 @@ from sys import stdout
 from threading import Thread
 from time import sleep
 
+from dotenv import set_key
 from playsound import playsound
 from pywebostv.connection import WebOSClient
 from pywebostv.controls import (ApplicationControl, MediaControl,
                                 SourceControl, SystemControl)
 
 from helper_functions.logger import logger
-from helper_functions.put_param import AWSClient
 
 
 class TV:
@@ -56,7 +56,7 @@ class TV:
 
         if self.reconnect:
             self.reconnect = False
-            AWSClient().put_parameters(name='tv_client_key', value=store.get('client_key'))
+            set_key(dotenv_path='.env', key_to_set='tv_client_key', value_to_set=store.get('client_key'))
 
         self.system = SystemControl(self.client)
         self.system.notify("Jarvis is controlling the TV now.") if not self._init_status else None

@@ -80,17 +80,6 @@ class LocalIPScan:
 
 
 if __name__ == '__main__':
-    from os import environ, listdir, path
+    from os import environ
     from pprint import pprint
-
-    from aws_clients import AWSClients
-
-    aws = AWSClients()
-    if 'credentials.json' in listdir('..' + path.sep):
-        from creds import Credentials
-
-        cred = Credentials().get()
-    else:
-        cred = environ
-
-    pprint(LocalIPScan(router_pass=cred.get('router_pass') or aws.router_pass()).attached_devices)
+    pprint(LocalIPScan(router_pass=environ.get('router_pass')).attached_devices)

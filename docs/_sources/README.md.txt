@@ -64,6 +64,54 @@ IronMan's Jarvis with python
         - [`bash installs.sh`](https://git.io/JBnPq) - Installs the required libraries/modules.
         - [`python3 jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis
 
+### ENV Variables:
+Environment variables are loaded from a `.env` file using the `python_dotenv` module.
+
+<details>
+<summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary>
+
+###### Default args:
+     Used to retrieve the current location.
+- **icloud_user** - iCloud account username.
+- **icloud_pass** - iCloud account password.
+
+###### Additional args:
+- **git_user** - GitHub Username
+- **git_pass** - GitHub Token
+- **weather_api** - API Key from [openweathermap](https://openweathermap.org/) 
+- **news_api** - API Key from [newsapi](https://newsapi.org/docs/client-libraries/python)
+- **maps_api** - API Key for maps from [google](https://developers.google.com/maps/documentation/maps-static/get-api-key)
+- **gmail_user** - Gmail account username to send and read emails.
+- **gmail_pass** - Gmail account password to send and read emails.
+- **robinhood_user** - Robinhood account username.
+- **robinhood_pass** - Robinhood account password.
+- **robinhood_qr** - Robinhood login [QR code](https://robinhood.com/account/settings)
+- **birthday** - Birth date in the format DD-MM - Example: `24-April`
+- **icloud_recovery** - Recovery phone number to activate lost mode on a target device - Example: `+11234567890`
+- **phone_number** - To send SMS from Jarvis - Example: `+11234567890`
+- **think_id** - API Key from wolfram alpha.
+- **root_password** - System password for your `mac` to get the system vitals.
+
+###### Args for [PersonalCloud](https://github.com/thevickypedia/personal_cloud) integration:
+- **personal_cloud_host** - Directory path which has to shared through the internet.
+
+###### Args to control TV - Applies only for [LGWebOS](https://en.wikipedia.org/wiki/WebOS)
+- **tv_client_key** - Client key to [control the TV](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/tv_controls.py) using `pywebostv` module.
+- **tv_mac** - Mac address of the TV which will be retrieved by the `arp` command but just in case.
+
+###### Args for [ip_scanner](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/ip_scanner.py) - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers):
+- **router_pass** - Router's admin password to get the available devices using `pynetgear` module.
+     > Note that this may be done even without the module by simply scanning the whole network.
+  > Using the module makes it easier since the devices are already connected to the router.
+
+###### Args for [offline-communicator](https://thevickypedia.com/jarvisoffline):
+> Built for a personalized usage.
+- **offline_receive_user** - Alternate gmail account username to send response from Jarvis as SMS. (`gmail_user` can be re-used)
+- **offline_receive_pass** - Alternate gmail account password to send response from Jarvis as SMS. (`gmail_pass` can be re-used)
+- **offline_phrase** - Secure phrase to be used for authentication purpose.
+- **ngrok_auth_key** - Auth token from [ngrok](https://dashboard.ngrok.com/) - Only used for `offline_communicator`
+</details>
+
 ### Coding Standards:
 Docstring format: [`Google`](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) <br>
 Styling conventions: [`PEP 8`](https://www.python.org/dev/peps/pep-0008/) <br>

@@ -43,8 +43,7 @@ _build
 meetings
 
 # credentials stored locally
-credentials.json
-credentials.py
+.env
 
 # devices information temporarily stored to open as webpage
 devices.html

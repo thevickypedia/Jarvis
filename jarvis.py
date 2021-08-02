@@ -31,10 +31,10 @@ from webbrowser import open as web_open
 from aeosa.aem.aemsend import EventError
 from appscript import app as apple_script
 from appscript.reference import CommandError
-from boto3 import client
 from certifi import where
 from chatterbot import ChatBot
 from chatterbot.trainers import ChatterBotCorpusTrainer
+from dotenv import load_dotenv
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
 from geopy.geocoders import Nominatim, options
@@ -76,9 +76,7 @@ from yaml import FullLoader
 from yaml import dump as yaml_dump
 from yaml import load as yaml_load
 
-from creds import Credentials
 from helper_functions.alarm import Alarm
-from helper_functions.aws_clients import AWSClients
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.facial_recognition import Face
@@ -1267,7 +1265,7 @@ def locate(converted: str) -> None:
             phrase = listener(3, 3)
             if any(word in phrase.lower() for word in keywords.ok()):
                 message = 'Return my phone immediately.'
-                target_device.lost_device(icloud_recovery, message)
+                target_device.lost_device(number=icloud_recovery, text=message)
                 speaker.say("I've enabled lost mode on your phone.")
             else:
                 speaker.say("No action taken sir!")
@@ -2840,8 +2838,9 @@ def guard() -> None:
     if cam_source is None:
         cam_error = 'Guarding mode disabled as I was unable to access any of the cameras.'
         logger.error(cam_error)
-        response = sns.publish(PhoneNumber=phone_number, Message=cam_error)
-        if response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
+        response = Messenger(gmail_user=gmail_user, gmail_pass=gmail_pass, phone_number=phone_number,
+                             subject="IMPORTANT::Guardian mode faced an exception.", message=cam_error).send_sms()
+        if response.get('ok') and response.get('status') == 200:
             logger.critical('SNS notification has been sent.')
         else:
             logger.error(f'Unable to send SNS notification.\n{response}')
@@ -2914,13 +2913,14 @@ def threat_notify(converted: str, date_extn: str or None) -> None:
     title_ = f'Intruder Alert on {dt_string}'
 
     if converted:
-        response = sns.publish(PhoneNumber=phone_number,
-                               Message=f"!!INTRUDER ALERT!!\n{dt_string}\n{converted}")
+        response = Messenger(gmail_user=gmail_user, gmail_pass=gmail_pass, phone_number=phone_number,
+                             subject="!!INTRUDER ALERT!!", message=f"{dt_string}\n{converted}").send_sms()
         body_ = f"""<html><head></head><body><h2>Conversation of Intruder:</h2><br>{converted}<br><br>
                                     <h2>Attached is a photo of the intruder.</h2>"""
     else:
-        response = sns.publish(PhoneNumber=phone_number,
-                               Message=f"!!INTRUDER ALERT!!\n{dt_string}\nCheck your email for more information.")
+        response = Messenger(gmail_user=gmail_user, gmail_pass=gmail_pass, phone_number=phone_number,
+                             subject="!!INTRUDER ALERT!!",
+                             message=f"{dt_string}\nCheck your email for more information.").send_sms()
         body_ = """<html><head></head><body><h2>No conversation was recorded,
                                 but attached is a photo of the intruder.</h2>"""
     if response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
@@ -3035,6 +3035,7 @@ def meeting_gatherer() -> None:
 
     This function runs in a dedicated thread every 30 minutes to avoid wait time when meetings information is requested.
     """
+    logger.critical('Meeting gather has been initiated.')
     while STATUS:
         if os.path.isfile('meetings') and int(datetime.now().timestamp()) - int(os.stat('meetings').st_mtime) < 1_800:
             os.remove('meetings')  # removes the file if it is older than 30 minutes
@@ -3267,7 +3268,7 @@ class PersonalCloud:
         personal_cloud_port = personal_cloud.get_port()
         personal_cloud_username = ''.join(choices(ascii_letters, k=10))
         personal_cloud_password = ''.join(choices(ascii_letters + digits, k=10))
-        personal_cloud_host = f"'{cred.get('personal_cloud_host')}'" or f"'{os.environ.get('personal_cloud_host')}'"
+        personal_cloud_host = f"'{os.environ.get('personal_cloud_host')}'"
 
         # export PORT for both ngrok and exec scripts as they will be running in different Terminal sessions
         ngrok_script = f"cd {home_dir}/personal_cloud && export port={personal_cloud_port} && " \
@@ -3738,8 +3739,9 @@ def clear_logs() -> None:
 
 
 if __name__ == '__main__':
-    if system() != 'Darwin':
-        exit('Unsupported Operating System.')
+    if system() != 'Darwian':
+        exit('Unsupported Operating System.\nWindows support was recently deprecated. '
+             'Refer https://github.com/thevickypedia/Jarvis/commit/cf54b69363440d20e21ba406e4972eb058af98fc')
 
     STATUS = True
     logger.critical('JARVIS::Starting Now::Run STATUS has been set')
@@ -3749,13 +3751,11 @@ if __name__ == '__main__':
     recognizer = Recognizer()  # initiates recognizer that uses google's translation
     keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
     conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
-    aws = AWSClients()  # initiates AWSClients object to fetch credentials from AWS secrets
     database = Database()  # initiates Database() for TO-DO items
     temperature = Temperature()  # initiates Temperature() for temperature conversions
     personal_cloud = PersonalCloud()  # initiates PersonalCloud() to enable or disable HDD hosting
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 10)  # increases the recursion limit by 10 times
-    sns = client('sns')  # initiates sns for notification service
     home_dir = os.path.expanduser('~')  # gets the path to current user profile
 
     volume_controller(50)  # defaults to volume 50%
@@ -3763,65 +3763,33 @@ if __name__ == '__main__':
 
     clear_logs()  # deletes old log files
 
-    # Get all necessary credentials and api keys from local json file or env vars or aws client
-    sys.stdout.write("\rFetching credentials and API keys.")
-
-    if 'credentials.json' in os.listdir():
-        cred = Credentials().get()
-    else:
-        cred = os.environ
-
-    git_user = cred.get('git_user') or aws.git_user()
-    git_pass = cred.get('git_pass') or aws.git_pass()
-    weather_api = cred.get('weather_api') or aws.weather_api()
-    news_api = cred.get('news_api') or aws.news_api()
-    maps_api = cred.get('maps_api') or aws.maps_api()
-    gmail_user = cred.get('gmail_user') or aws.gmail_user()
-    gmail_pass = cred.get('gmail_pass') or aws.gmail_pass()
-    robinhood_user = cred.get('robinhood_user') or aws.robinhood_user()
-    robinhood_pass = cred.get('robinhood_pass') or aws.robinhood_pass()
-    robinhood_qr = cred.get('robinhood_qr') or aws.robinhood_qr()
-    birthday = cred.get('birthday') or aws.birthday()
-    offline_receive_user = cred.get('offline_receive_user') or aws.offline_receive_user()
-    offline_receive_pass = cred.get('offline_receive_pass') or aws.offline_receive_pass()
-    offline_phrase = cred.get('offline_phrase') or aws.offline_phrase()
-    icloud_user = cred.get('icloud_user') or aws.icloud_user()
-    icloud_pass = cred.get('icloud_pass') or aws.icloud_pass()
-    icloud_recovery = cred.get('icloud_recovery') or aws.icloud_recovery()
-    phone_number = cred.get('phone_number') or aws.phone_number()
-    think_id = cred.get('think_id') or aws.think_id()
-    router_pass = cred.get('router_pass') or aws.router_pass()
-    tv_client_key = cred.get('tv_client_key') or aws.tv_client_key()
-    tv_mac = cred.get('tv_mac') or aws.tv_mac()
-    root_password = cred.get('root_password')
-
-    # noinspection PyUnresolvedReferences,PyProtectedMember
-    if isinstance(cred, os._Environ):
-        write_data = {
-            "git_user": git_user,
-            "git_pass": git_pass,
-            "weather_api": weather_api,
-            "news_api": news_api,
-            "maps_api": maps_api,
-            "gmail_user": gmail_user,
-            "gmail_pass": gmail_pass,
-            "robinhood_user": robinhood_user,
-            "robinhood_pass": robinhood_pass,
-            "robinhood_qr": robinhood_qr,
-            "tv_mac": tv_mac,
-            "tv_client_key": tv_client_key,
-            "birthday": birthday,
-            "offline_receive_user": offline_receive_user,
-            "offline_receive_pass": offline_receive_pass,
-            "icloud_user": icloud_user,
-            "icloud_pass": icloud_pass,
-            "icloud_recovery": icloud_recovery,
-            "phone_number": phone_number,
-            "think_id": think_id,
-            "router_pass": router_pass,
-            "root_password": root_password
-        }
-        Credentials().put(params=write_data)
+    # Get all necessary credentials and api keys from .env file
+    if '.env' in os.listdir():
+        logger.critical('Loading .env file.')
+        load_dotenv(dotenv_path='.env', verbose=True, override=True)  # loads the .env file
+    git_user = os.environ.get('git_user')
+    git_pass = os.environ.get('git_pass')
+    weather_api = os.environ.get('weather_api')
+    news_api = os.environ.get('news_api')
+    maps_api = os.environ.get('maps_api')
+    gmail_user = os.environ.get('gmail_user')
+    gmail_pass = os.environ.get('gmail_pass')
+    robinhood_user = os.environ.get('robinhood_user')
+    robinhood_pass = os.environ.get('robinhood_pass')
+    robinhood_qr = os.environ.get('robinhood_qr')
+    birthday = os.environ.get('birthday')
+    offline_receive_user = os.environ.get('offline_receive_user')
+    offline_receive_pass = os.environ.get('offline_receive_pass')
+    offline_phrase = os.environ.get('offline_phrase')
+    icloud_user = os.environ.get('icloud_user')
+    icloud_pass = os.environ.get('icloud_pass')
+    icloud_recovery = os.environ.get('icloud_recovery')
+    phone_number = os.environ.get('phone_number')
+    think_id = os.environ.get('think_id')
+    router_pass = os.environ.get('router_pass')
+    tv_client_key = os.environ.get('tv_client_key')
+    tv_mac = os.environ.get('tv_mac')
+    root_password = os.environ.get('root_password')
 
     if st := internet_checker():
         sys.stdout.write(f'\rINTERNET::Connected to {get_ssid()}. Scanning localhost for connected devices.')
@@ -3894,9 +3862,7 @@ if __name__ == '__main__':
 
     Thread(target=offline_communicator_initiate).start()
     Thread(target=offline_communicator).start()
-
-    logger.critical('Meeting gather has been initiated.')
-    Thread(target=meeting_gatherer).start()  # triggers meeting_gatherer to run in the background
+    Thread(target=meeting_gatherer).start()
 
     # starts sentry mode
     Thread(target=playsound, args=['indicators/initialize.mp3']).start()

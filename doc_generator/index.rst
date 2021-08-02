@@ -19,24 +19,10 @@ Jarvis - Main Module
    :members:
    :undoc-members:
 
-Credentials
-===========
-
-.. automodule:: creds
-   :members:
-   :undoc-members:
-
 Alarm
 =====
 
 .. automodule:: helper_functions.alarm
-   :members:
-   :undoc-members:
-
-AWS Client
-==========
-
-.. automodule:: helper_functions.aws_clients
    :members:
    :undoc-members:
 
@@ -90,13 +76,6 @@ Logger
 ======
 
 .. automodule:: helper_functions.logger
-   :members:
-   :undoc-members:
-
-Put Parameter
-=============
-
-.. automodule:: helper_functions.put_param
    :members:
    :undoc-members:
 

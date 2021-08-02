@@ -28,10 +28,7 @@ class Alarm(Thread):
         self.am_pm = am_pm
 
     def run(self) -> None:
-        """Triggers the Alarm class in a thread.
-
-        Opens the alarm.mp3 within mp3 directory, and plays the tone when the hours and minutes match the current time.
-        """
+        """Plays mp3/alarm.mp3 tone when the hours and minutes match the current time."""
         music_dir = "mp3"
         tone = "alarm.mp3"
         files = listdir(directory)

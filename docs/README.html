@@ -113,6 +113,77 @@
 </li>
 </ul>
 </section>
+<section id="env-variables">
+<h2>ENV Variables:<a class="headerlink" href="#env-variables" title="Permalink to this headline">¶</a></h2>
+<p>Environment variables are loaded from a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file using the <code class="docutils literal notranslate"><span class="pre">python_dotenv</span></code> module.</p>
+<details>
+<summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary><section id="default-args">
+<h3>Default args:<a class="headerlink" href="#default-args" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">Used</span> <span class="n">to</span> <span class="n">retrieve</span> <span class="n">the</span> <span class="n">current</span> <span class="n">location</span><span class="o">.</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>icloud_user</strong> - iCloud account username.</p></li>
+<li><p><strong>icloud_pass</strong> - iCloud account password.</p></li>
+</ul>
+</section>
+<section id="additional-args">
+<h3>Additional args:<a class="headerlink" href="#additional-args" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><strong>git_user</strong> - GitHub Username</p></li>
+<li><p><strong>git_pass</strong> - GitHub Token</p></li>
+<li><p><strong>weather_api</strong> - API Key from <a class="reference external" href="https://openweathermap.org/">openweathermap</a></p></li>
+<li><p><strong>news_api</strong> - API Key from <a class="reference external" href="https://newsapi.org/docs/client-libraries/python">newsapi</a></p></li>
+<li><p><strong>maps_api</strong> - API Key for maps from <a class="reference external" href="https://developers.google.com/maps/documentation/maps-static/get-api-key">google</a></p></li>
+<li><p><strong>gmail_user</strong> - Gmail account username to send and read emails.</p></li>
+<li><p><strong>gmail_pass</strong> - Gmail account password to send and read emails.</p></li>
+<li><p><strong>robinhood_user</strong> - Robinhood account username.</p></li>
+<li><p><strong>robinhood_pass</strong> - Robinhood account password.</p></li>
+<li><p><strong>robinhood_qr</strong> - Robinhood login <a class="reference external" href="https://robinhood.com/account/settings">QR code</a></p></li>
+<li><p><strong>birthday</strong> - Birth date in the format DD-MM - Example: <code class="docutils literal notranslate"><span class="pre">24-April</span></code></p></li>
+<li><p><strong>icloud_recovery</strong> - Recovery phone number to activate lost mode on a target device - Example: <code class="docutils literal notranslate"><span class="pre">+11234567890</span></code></p></li>
+<li><p><strong>phone_number</strong> - To send SMS from Jarvis - Example: <code class="docutils literal notranslate"><span class="pre">+11234567890</span></code></p></li>
+<li><p><strong>think_id</strong> - API Key from wolfram alpha.</p></li>
+<li><p><strong>root_password</strong> - System password for your <code class="docutils literal notranslate"><span class="pre">mac</span></code> to get the system vitals.</p></li>
+</ul>
+</section>
+<section id="args-for-personalcloud-integration">
+<h3>Args for <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">PersonalCloud</a> integration:<a class="headerlink" href="#args-for-personalcloud-integration" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><strong>personal_cloud_host</strong> - Directory path which has to shared through the internet.</p></li>
+</ul>
+</section>
+<section id="args-to-control-tv-applies-only-for-lgwebos">
+<h3>Args to control TV - Applies only for <a class="reference external" href="https://en.wikipedia.org/wiki/WebOS">LGWebOS</a><a class="headerlink" href="#args-to-control-tv-applies-only-for-lgwebos" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><strong>tv_client_key</strong> - Client key to <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/tv_controls.py">control the TV</a> using <code class="docutils literal notranslate"><span class="pre">pywebostv</span></code> module.</p></li>
+<li><p><strong>tv_mac</strong> - Mac address of the TV which will be retrieved by the <code class="docutils literal notranslate"><span class="pre">arp</span></code> command but just in case.</p></li>
+</ul>
+</section>
+<section id="args-for-ip-scanner-applies-only-for-netgear-routers">
+<h3>Args for <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/ip_scanner.py">ip_scanner</a> - Applies only for <a class="reference external" href="https://github.com/MatMaul/pynetgear#supported-routers">Netgear routers</a>:<a class="headerlink" href="#args-for-ip-scanner-applies-only-for-netgear-routers" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p><strong>router_pass</strong> - Router’s admin password to get the available devices using <code class="docutils literal notranslate"><span class="pre">pynetgear</span></code> module.</p>
+<blockquote>
+<div><p>Note that this may be done even without the module by simply scanning the whole network.
+Using the module makes it easier since the devices are already connected to the router.</p>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="args-for-offline-communicator">
+<h3>Args for <a class="reference external" href="https://thevickypedia.com/jarvisoffline">offline-communicator</a>:<a class="headerlink" href="#args-for-offline-communicator" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Built for a personalized usage.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>offline_receive_user</strong> - Alternate gmail account username to send response from Jarvis as SMS. (<code class="docutils literal notranslate"><span class="pre">gmail_user</span></code> can be re-used)</p></li>
+<li><p><strong>offline_receive_pass</strong> - Alternate gmail account password to send response from Jarvis as SMS. (<code class="docutils literal notranslate"><span class="pre">gmail_pass</span></code> can be re-used)</p></li>
+<li><p><strong>offline_phrase</strong> - Secure phrase to be used for authentication purpose.</p></li>
+<li><p><strong>ngrok_auth_key</strong> - Auth token from <a class="reference external" href="https://dashboard.ngrok.com/">ngrok</a> - Only used for <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code></p></li>
+</ul>
+</details></section>
+</section>
 <section id="coding-standards">
 <h2>Coding Standards:<a class="headerlink" href="#coding-standards" title="Permalink to this headline">¶</a></h2>
 <p>Docstring format: <a class="reference external" href="https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings"><code class="docutils literal notranslate"><span class="pre">Google</span></code></a> <br>
@@ -163,6 +234,15 @@ features’ overview and demo videos.</p>
 <li><a class="reference internal" href="#development-and-maintenance">Development and Maintenance</a></li>
 <li><a class="reference internal" href="#jarvis">Jarvis</a><ul>
 <li><a class="reference internal" href="#setup">Setup:</a></li>
+<li><a class="reference internal" href="#env-variables">ENV Variables:</a><ul>
+<li><a class="reference internal" href="#default-args">Default args:</a></li>
+<li><a class="reference internal" href="#additional-args">Additional args:</a></li>
+<li><a class="reference internal" href="#args-for-personalcloud-integration">Args for PersonalCloud integration:</a></li>
+<li><a class="reference internal" href="#args-to-control-tv-applies-only-for-lgwebos">Args to control TV - Applies only for LGWebOS</a></li>
+<li><a class="reference internal" href="#args-for-ip-scanner-applies-only-for-netgear-routers">Args for ip_scanner - Applies only for Netgear routers:</a></li>
+<li><a class="reference internal" href="#args-for-offline-communicator">Args for offline-communicator:</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#coding-standards">Coding Standards:</a></li>
 <li><a class="reference internal" href="#pre-commit">Pre-Commit</a></li>
 <li><a class="reference internal" href="#feature-s-implementation">Feature(s) Implementation:</a></li>
