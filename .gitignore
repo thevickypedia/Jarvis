@@ -44,6 +44,7 @@ meetings
 
 # credentials stored locally
 credentials.json
+credentials.py
 
 # devices information temporarily stored to open as webpage
 devices.html

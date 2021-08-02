@@ -2131,7 +2131,8 @@ def notify(user: str, password: str, number: str, body: str) -> None:
 
     """
     subject = "Message from Jarvis" if number == phone_number else "Jarvis::Message from Vignesh"
-    Messenger(gmail_user=user, gmail_pass=password, phone_number=number, subject=subject, message=body).send_sms()
+    Messenger(gmail_user=user, gmail_pass=password, phone_number=number, subject=subject,
+              message=f'\n\n{body}').send_sms()
 
 
 def send_sms(number: int or None) -> None:
@@ -2968,7 +2969,7 @@ def offline_communicator_initiate():
         logger.critical('Initiating FastAPI for offline listener.')
         offline_script = f'cd {os.getcwd()} && source venv/bin/activate && cd api && ' \
                          f'export offline_phrase={offline_phrase} && ' \
-                         f'uvicorn fast:app --reload --port=4483'
+                         'uvicorn fast:app --reload --port=4483'
         apple_script('Terminal').do_script(offline_script)
 
 
@@ -3005,10 +3006,13 @@ def offline_communicator() -> None:
                 command = off_file.read()
             os.remove('offline_request')
             logger.critical(f'Received offline input::{command}')
-            split(command)
-            response = f'Request:\n{command}\n\nResponse:\n{speaker.vig()}'
-            speaker.stop()
-            voice_changer()
+            try:
+                split(command)
+                response = f'Request:\n{command}\nResponse:\n{speaker.vig()}'
+                speaker.stop()
+                voice_changer()
+            except RuntimeError:
+                response = f'I ran into a RuntimeError. So you might need to resend your request\n\n{command}'
             notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
             logger.critical('Response from Jarvis has been sent!')
 
@@ -3256,7 +3260,7 @@ class PersonalCloud:
         except (CommandError, EventError) as ps_error:
             logger.error(ps_error)
             notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
-                   body="Sir! I was unable to trigger your personal cloud due to lack of permissions. "
+                   body="Sir! I was unable to trigger your personal cloud due to lack of permissions.\n"
                         "Please check the log file.")
             return
 

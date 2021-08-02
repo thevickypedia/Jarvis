@@ -43,6 +43,8 @@ def read_root(input_data: GetData):
     """
     passphrase = input_data.phrase
     command = input_data.command
+    if passphrase.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
+        passphrase = bytes(passphrase, "utf-8").decode(encoding="unicode_escape")
     if passphrase == environ.get('offline_phrase'):
         with open('../offline_request', 'w') as off_file:
             off_file.write(command)
@@ -70,5 +72,4 @@ app.add_middleware(
 if __name__ == '__main__':
     from uvicorn import run
 
-    # noinspection PyTypeChecker
-    run(app=app, port=4483)
+    run("fast:app", port=4483, reload=True)
