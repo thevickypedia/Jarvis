@@ -9,7 +9,7 @@ from helper_functions.logger import logger
 
 
 class MagicHomeApi:
-    """Controller for MagicHome smart devices.
+    """Controller for ``MagicHome`` smart devices.
 
     >>> MagicHomeApi
 

@@ -2,7 +2,7 @@ from pynetgear import Netgear
 
 
 class LocalIPScan:
-    """Connector to scan devices in the same IP range using Netgear API.
+    """Connector to scan devices in the same IP range using ``Netgear API``.
 
     >>> LocalIPScan
 

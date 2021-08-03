@@ -101,7 +101,7 @@ def listener(timeout: int, phrase_limit: int) -> str:
     Returns:
         str:
          - On success, returns recognized statement from the microphone.
-         - On failure, returns `SR_ERROR` as a string which is conditioned to respond appropriately.
+         - On failure, returns ``SR_ERROR`` as a string which is conditioned to respond appropriately.
 
     """
     try:
@@ -123,7 +123,7 @@ def split(key: str) -> bool:
 
     Returns:
         bool:
-        Return value from `conditions()`
+        Return value from ``conditions()``
 
     """
     exit_check = False  # this is specifically to catch the sleep command which should break the while loop in renew()
@@ -160,7 +160,7 @@ def greeting() -> str:
 
 
 def initialize() -> None:
-    """Awakens from sleep mode. `greet_check` is to ensure greeting is given only for the first function call."""
+    """Awakens from sleep mode. ``greet_check`` is to ensure greeting is given only for the first function call."""
     global greet_check
     if greet_check:
         speaker.say("What can I do for you?")
@@ -171,11 +171,11 @@ def initialize() -> None:
 
 
 def renew() -> None:
-    """Keeps listening and sends the response to `conditions()` function.
+    """Keeps listening and sends the response to ``conditions()`` function.
 
     Notes:
         - This function runs only for a minute.
-        - split(converted) is a condition so that, loop breaks when if sleep in `conditions()` returns True.
+        - split(converted) is a condition so that, loop breaks when if sleep in ``conditions()`` returns True.
     """
     speaker.runAndWait()
     waiter = 0
@@ -656,15 +656,15 @@ def unrecognized_dumper(converted: str) -> None:
 
 
 def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
-    """Initiates `geo_locator` and stores current location info as a `json` file so it can be used in other functions.
+    """Gets the current location of an apple device.
 
     Args:
         device: Passed when locating a particular apple device.
 
     Returns:
         None or Tuple[str, str, str]:
-        - On success, returns `current latitude`, `current longitude` and `location` information as a `dict`.
-        - On failure, calls the `restart()` or `terminator()` function depending on the error.
+        - On success, returns ``current latitude``, ``current longitude`` and ``location`` information as a ``dict``.
+        - On failure, calls the ``restart()`` or ``terminator()`` function depending on the error.
 
     """
     try:
@@ -772,7 +772,7 @@ def current_time(place: str = None) -> None:
 
 
 def webpage(target: str or list) -> None:
-    """Opens up a webpage using your default browser to the target host.
+    """Opens up a webpage using the default browser to the target host.
 
     If no target received, will ask for user confirmation. If no '.' in the phrase heard, phrase will default to .com.
 
@@ -898,7 +898,7 @@ def weather_condition(msg: str, place: str = None) -> None:
     """Weather report when phrase has conditions like tomorrow, day after, next week and specific part of the day etc.
 
     Notes:
-        - `weather_condition()` uses conditional blocks to fetch keywords and determine the output.
+        - ``weather_condition()`` uses conditional blocks to fetch keywords and determine the output.
 
     Args:
         place: Name of place where the weather information is needed.
@@ -983,7 +983,7 @@ def weather_condition(msg: str, place: str = None) -> None:
 
 
 def system_info() -> None:
-    """Gets your system configuration."""
+    """Gets the system configuration."""
     total, used, free = disk_usage("/")
     total = size_converter(total)
     used = size_converter(used)
@@ -1036,9 +1036,13 @@ def wikipedia_() -> None:
                 speaker.say("I'm sorry sir, I didn't get your response.")
 
 
-def news() -> None:
-    """Says news around you."""
-    news_source = 'fox'
+def news(news_source: str = 'fox') -> None:
+    """Says news around the user's location.
+
+    Args:
+        news_source: Source from where the news has to be fetched. Defaults to ``fox``.
+
+    """
     sys.stdout.write(f'\rGetting news from {news_source} news.')
     news_client = NewsApiClient(api_key=news_api)
     try:
@@ -1058,7 +1062,7 @@ def news() -> None:
 
 
 def apps(keyword: str or None) -> None:
-    """Launches an application skimmed from your statement and unable to skim asks for the app name.
+    """Launches the requested application and if Jarvis is unable to find the app, asks for the app name from the user.
 
     Args:
         keyword: Gets app name as an argument to launch the application.
@@ -1100,7 +1104,7 @@ def apps(keyword: str or None) -> None:
 
 
 def robinhood() -> None:
-    """Gets investment from robinhood API."""
+    """Gets investment details from robinhood API."""
     sys.stdout.write('\rGetting your investment details.')
     rh = Robinhood()
     rh.login(username=robinhood_user, password=robinhood_pass, qr_code=robinhood_qr)
@@ -1114,7 +1118,7 @@ def robinhood() -> None:
 
 
 def repeater() -> None:
-    """Repeats what ever you say."""
+    """Repeats whatever is heard."""
     speaker.say("Please tell me what to repeat.")
     speaker.runAndWait()
     keyword = listener(3, 10)
@@ -1168,7 +1172,7 @@ def device_selector(converted: str = None) -> AppleDevice:
 
     Returns:
         AppleDevice:
-        Returns the selected device from the class `AppleDevice`
+        Returns the selected device from the class ``AppleDevice``
 
     """
     icloud_api = PyiCloudService(icloud_user, icloud_pass)
@@ -1210,13 +1214,13 @@ def device_selector(converted: str = None) -> AppleDevice:
 
 
 def location() -> None:
-    """Gets your current location."""
+    """Gets the user's current location."""
     city, state, country = location_info['city'], location_info['state'], location_info['country']
     speaker.say(f"You're at {city} {state}, in {country}")
 
 
 def locate(converted: str) -> None:
-    """Locates your iPhone using icloud api for python.
+    """Locates an apple device using icloud api for python.
 
     Args:
         converted: Takes the voice recognized statement as argument and extracts device name from it.
@@ -1273,7 +1277,7 @@ def locate(converted: str) -> None:
 
 
 def music(device: str = None) -> None:
-    """Scans music directory in your profile for `.mp3` files and plays using default player.
+    """Scans music directory in the user profile for ``.mp3`` files and plays using default player.
 
     Args:
         device: Takes device name as argument.
@@ -1298,7 +1302,7 @@ def music(device: str = None) -> None:
 
 
 def gmail() -> None:
-    """Reads unread emails from your gmail account for which the credentials are stored in env variables."""
+    """Reads unread emails from the gmail account for which the credentials are stored in env variables."""
     sys.stdout.write("\rFetching new emails..")
 
     try:
@@ -1363,7 +1367,7 @@ def gmail() -> None:
 
 
 def meaning(keyword: str or None) -> None:
-    """Gets meaning for a word skimmed from your statement using PyDictionary.
+    """Gets meaning for a word skimmed from the user statement using PyDictionary.
 
     Args:
         keyword: Takes a keyword as argument for which the meaning was requested.
@@ -1406,7 +1410,7 @@ def meaning(keyword: str or None) -> None:
 
 
 def create_db() -> None:
-    """Creates a database for to-do list by calling the `create_db` function in database module."""
+    """Creates a database for to-do list by calling the ``create_db`` function in ``database`` module."""
     speaker.say(database.create_db())
     if todo.has_been_called:
         todo.has_been_called = False
@@ -1417,7 +1421,7 @@ def create_db() -> None:
 
 
 def todo() -> None:
-    """Says the item and category stored in your to-do list."""
+    """Says the item and category stored in the to-do list."""
     global place_holder
     sys.stdout.write("\rLooking for to-do database..")
     if not os.path.isfile(file_name) and (time_travel.has_been_called or report.has_been_called):
@@ -1473,7 +1477,7 @@ def todo() -> None:
 
 
 def add_todo() -> None:
-    """Adds new items to your to-do list."""
+    """Adds new items to the to-do list."""
     sys.stdout.write("\rLooking for to-do database..")
     # if database file is not found calls create_db()
     if not os.path.isfile(file_name):
@@ -1542,7 +1546,7 @@ def delete_todo() -> None:
 
 
 def delete_db() -> None:
-    """Deletes your database file after getting confirmation."""
+    """Deletes the ``tasks.db`` database file after getting confirmation."""
     if not os.path.isfile(file_name):
         speaker.say('I did not find any database sir.')
         return
@@ -1563,8 +1567,8 @@ def distance(starting_point: str = None, destination: str = None) -> None:
     """Calculates distance between two locations.
 
     Notes:
-        - If starting point is None, it gets the distance from your current location to destination.
-        - If destination is None, it asks for a destination from the user.
+        - If starting point is None, Jarvis takes the current location as starting point.
+        - If destination is None, Jarvis will ask for a destination from the user.
 
     Args:
         starting_point: Takes the starting place name as an optional argument.
@@ -1722,7 +1726,7 @@ def directions(place: str or None) -> None:
 
 
 def alarm(msg: str) -> None:
-    """Passes hour, minute and am/pm to Alarm class which initiates a thread for alarm clock in the background.
+    """Passes hour, minute and am/pm to ``Alarm`` class which initiates a thread for alarm clock in the background.
 
     Args:
         msg: Takes the voice recognized statement as argument and extracts time from it.
@@ -1770,7 +1774,7 @@ def kill_alarm() -> None:
     """Removes lock file to stop the alarm which rings only when the certain lock file is present.
 
     Notes:
-        - `alarm_state` is the list of lock files currently present.
+        - ``alarm_state`` is the list of lock files currently present.
 
     """
     alarm_state = []
@@ -1807,7 +1811,7 @@ def kill_alarm() -> None:
 
 
 def google_home(device: str = None, file: str = None) -> None:
-    """Uses socket lib to extract ip address and scan ip range for google home devices and play songs in your local.
+    """Uses ``socket lib`` to extract ip address and scan ip range for google home devices.
 
     Notes:
         - Can also play music on multiple devices at once.
@@ -1817,11 +1821,11 @@ def google_home(device: str = None, file: str = None) -> None:
             1. Modified the way local IP is received: https://github.com/deblockt/google-home-push/pull/7
             2. Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
 
-            - I have used `sys.stdout = open(os.devnull, 'w')` to suppress any print statements.
-            - To enable this again at a later time use `sys.stdout = sys.__stdout__`
+            - I have used ``sys.stdout = open(os.devnull, 'w')`` to suppress any print statements.
+            - To enable this again at a later time use ``sys.stdout = sys.__stdout__``
 
         - When music is played and immediately stopped/tasked the google home device, it is most likely to except.
-        - Broken Pipe error. This usually happens when you write to a socket that is fully closed.
+        - Broken Pipe error. This usually happens when a socket is written after it is fully closed.
         - This error occurs when one end of the connection tries sending data while the other has closed the connection.
         - This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).
 
@@ -2065,7 +2069,7 @@ def google_maps(query: str) -> bool:
 
 
 def notes() -> None:
-    """Listens to the user and saves everything to a `notes.txt` file."""
+    """Listens to the user and saves everything to a ``notes.txt`` file."""
     converted = listener(5, 10)
     if converted != 'SR_ERROR':
         if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
@@ -2178,7 +2182,7 @@ def television(converted: str) -> None:
     """Controls all actions on a TV (LG Web OS).
 
     Notes:
-        - In the `__main__` method tv is set to None.
+        - In the ``__main__`` method tv is set to None.
         - Jarvis will try to ping the TV and then power it on if the host is unreachable initially.
         - Once the tv is turned on, the TV class is also initiated and assigned to tv variable.
 
@@ -2341,16 +2345,16 @@ def google(query: str) -> bool:
     """Uses Google's search engine parser and gets the first result that shows up on a google search.
 
     Notes:
-        - If it is unable to get the result, Jarvis sends a request to `suggestqueries.google.com`
+        - If it is unable to get the result, Jarvis sends a request to ``suggestqueries.google.com``
         - This is to rephrase the query and then looks up using the search engine parser once again.
-        - global `suggestion_count` is used to make sure the suggestions and parsing don't run on an infinite loop.
+        - global ``suggestion_count`` is used to make sure the suggestions and parsing don't run on an infinite loop.
 
     Args:
         query: Takes the voice recognized statement as argument.
 
     Returns:
         bool:
-        Boolean `True` if google search engine is unable to fetch consumable results.
+        Boolean ``True`` if google search engine is unable to fetch consumable results.
 
     """
     global suggestion_count
@@ -2434,12 +2438,7 @@ def google_search(phrase: str or None) -> None:
 
 
 def volume_controller(level: int) -> None:
-    """Controls volume from the numbers received. There are no chances for None.
-
-    See Also:
-        - If you don't specify a volume level, it defaults to 50%
-        - Mac(s) run on a volume of 16 bars controlled by 8 digits
-        - I have changed the level to become single digit with respect to 8 (eg: 50% becomes 4) for osX
+    """Controls volume from the numbers received. Defaults to 50%.
 
     Args:
         level: Level of volume to which the system has to set.
@@ -2451,7 +2450,7 @@ def volume_controller(level: int) -> None:
 
 
 def face_recognition_detection() -> None:
-    """Initiates face recognition script and looks for images stored in named directories within `train` directory."""
+    """Initiates face recognition script and looks for images stored in named directories within ``train`` directory."""
     sys.stdout.write("\r")
     train_dir = 'train'
     os.mkdir(train_dir) if not os.path.isdir(train_dir) else None
@@ -2523,7 +2522,7 @@ def bluetooth(phrase: str) -> None:
     """Find and connect to bluetooth devices near by.
 
     Args:
-        Takes the voice recognized statement as argument.
+        phrase: Takes the voice recognized statement as argument.
 
     """
     if 'turn off' in phrase or 'power off' in phrase:
@@ -2798,7 +2797,7 @@ def celebrate() -> str:
 
 
 def time_travel() -> None:
-    """Triggered only from `activator()` to give a quick update on your day."""
+    """Triggered only from ``activator()`` to give a quick update on the user's daily routine."""
     meeting = None
     if not os.path.isfile('meetings'):
         meeting = ThreadPool(processes=1).apply_async(func=meetings)
@@ -2950,9 +2949,9 @@ def offline_communicator_initiate():
     """Initiates Jarvis API and Ngrok for requests from external sources if they aren't running already.
 
     Notes:
-        - `forever_ngrok.py` is a simple script that triggers ngrok connection in the port `4483`.
-        - The connection is tunneled through a public facing URL which is used to make `POST` requests to Jarvis API.
-        - `uvicorn` command launches JarvisAPI `fast.py` using the same port `4483`
+        - ``forever_ngrok.py`` is a simple script that triggers ngrok connection in the port ``4483``.
+        - The connection is tunneled through a public facing URL which is used to make ``POST`` requests to Jarvis API.
+        - ``uvicorn`` command launches JarvisAPI ``fast.py`` using the same port ``4483``
     """
     ngrok_status, uvicorn_status = False, False
     target_scripts = ['forever_ngrok.py', 'uvicorn']
@@ -2982,30 +2981,30 @@ def offline_communicator_initiate():
 
 
 def offline_communicator() -> None:
-    """Reads `offline_request` file generated by `fast.py <https://git.io/JBPFQ>`__ which contains request sent via API.
+    """Reads ``offline_request`` file generated by `fast.py <https://git.io/JBPFQ>`__ containing request sent via API.
 
     See Also:
         To replicate a working model for offline communicator:
-            - Run `ngrok` on port 4483 or any desired port.
+            - Run ``ngrok`` on port 4483 or any desired port.
             - The port number should match with the one in `fast.py <https://git.io/JBPFQ>`__
             - To "log" the response and send it out as notification, I made some changes to the pyttsx3 module. (below)
             - I also stop the response from being spoken.
-            - `voice_changer()` is called as the voice property is reset when speaker.stop() is used.
+            - ``voice_changer()`` is called as the voice property is reset when ``speaker.stop()`` is used.
 
         Changes in `pyttsx3`:
-            - Created a global variable in `say()` -> pyttsx3/engine.py (before proxy) and store the response.
-            - Created a new method and return the global variable which I created in `say()`
-            - The new method (vig() in this case) is called to get the response which is sent as an SMS notification.
-            - Doing so, avoids making changes to all functions within `conditions()` to notify the response from Jarvis.
+            - Created a global variable in ``say()`` -> ``pyttsx3/engine.py`` (before proxy) and store the response.
+            - Created a new method and return the global variable which I created in ``say()``
+            - The new method (``vig()`` in this case) is called to get the response which is sent as SMS notification.
+            - Doing so, avoids changes to all functions within ``conditions()`` to notify the response from Jarvis.
 
         Env Vars:
-            - `offline_phrase` - unique phrase to authenticate the requests coming from an external source
+            - ``offline_phrase`` - unique phrase to authenticate the requests coming from an external source
 
     Notes:
         More cool stuff:
-            - I have linked the ngrok `public_url` tunnelling the FastAPI to a JavaScript on my webpage.
+            - I have linked the ngrok ``public_url`` tunnelling the FastAPI to a JavaScript on my webpage.
             - When a request is submitted, the JavaScript makes a POST call to the API.
-            - The API does the authentication and creates the `offline_request` file if authenticated.
+            - The API does the authentication and creates the ``offline_request`` file if authenticated.
             - Check it out: `JarvisOffline <https://thevickypedia.com/jarvisoffline>`__
     """
     while STATUS:
@@ -3026,9 +3025,9 @@ def offline_communicator() -> None:
 
 
 def meeting_reader() -> None:
-    """Speaks meeting information that `meeting_gatherer()` stored in a file named 'meetings'.
+    """Speaks meeting information that ``meeting_gatherer()`` stored in a file named 'meetings'.
 
-    If the file is not available, meeting information is directly fetched from the `meetings()` function.
+    If the file is not available, meeting information is directly fetched from the ``meetings()`` function.
     """
     with open('meetings', 'r') as meeting:
         meeting_info = meeting.read()
@@ -3039,7 +3038,7 @@ def meeting_reader() -> None:
 
 
 def meeting_gatherer() -> None:
-    """Gets return value from `meetings()` and writes it to file named `meetings`.
+    """Gets return value from ``meetings()`` and writes it to file named ``meetings``.
 
     This function runs in a dedicated thread every 30 minutes to avoid wait time when meetings information is requested.
     """
@@ -3056,7 +3055,7 @@ def meeting_gatherer() -> None:
 
 
 def meetings(meeting_file: str = 'calendar.scpt') -> str:
-    """Uses `applescript` to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.
+    """Uses ``applescript`` to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.
 
     Args:
         meeting_file: Takes applescript filename as argument. Defaults to calendar.scpt unless an alternate is passed.
@@ -3205,6 +3204,7 @@ class PersonalCloud:
         `PersonalCloud README.md <https://github.com/thevickypedia/personal_cloud/blob/main/README.md>`__
 
     See Also:
+        PersonalCloud integration requires Admin previleages for the default ``Terminal``.
         Step 1:
             - Mac OS 10.14.* and higher - System Preferences -> Security & Privacy -> Privacy -> Full Disk Access
             - Mac OS 10.13.* and lower - System Preferences -> Security & Privacy -> Privacy -> Accessibility
@@ -3214,14 +3214,14 @@ class PersonalCloud:
 
     @staticmethod
     def get_port() -> int:
-        """
-        - Chooses a TCP PORT number dynamically that is not being used to ensure we don't rely on a single port.
+        """Chooses a TCP PORT number dynamically that is not being used to ensure we don't rely on a single port.
+
         - Well-Known ports: 0 to 1023
         - Registered ports: 1024 to 49151
         - Dynamically available: 49152 to 65535
         - Alternate to active_sessions ->
-            - `check_output(f"echo {PASSWORD} | sudo -S lsof -PiTCP -sTCP:LISTEN 2>&1;", shell=True).decode('utf-8')`
-        - `remove` variable should be an actual function as per pep-8 standards, bypassing it using  # noqa
+            - ``check_output(f"echo {PASSWORD} | sudo -S lsof -PiTCP -sTCP:LISTEN 2>&1;", shell=True).decode('utf-8')``
+        - ``remove`` variable should be an actual function as per pep-8 standards, bypassing it using  # noqa
 
         Returns:
             int:
@@ -3251,13 +3251,13 @@ class PersonalCloud:
         """Enables `personal cloud <https://github.com/thevickypedia/personal_cloud>`__.
 
         Notes:
-            - Clones `personal_cloud` repo in a dedicated Terminal.
-            - Creates a dedicated virtual env and installs the requirements within it (ETA: ~20 seconds)
-            - If `personal_cloud_host` env var is provided, Jarvis will mount the drive if connected to the device.
-            - Gets and sets env vars required for the personal cloud.
+            - Clones ``personal_cloud`` repo in a dedicated Terminal.
+            - Creates a virtual env and installs the requirements within it (ETA: ~20 seconds)
+            - If ``personal_cloud_host`` env var is provided, Jarvis will mount the drive if connected to the device.
+            - Sets env vars required for the personal cloud.
             - Generates random username and passphrase for login info.
             - Triggers personal cloud using another Terminal session.
-            - Sends an SMS with endpoint, username and password to your mobile phone.
+            - Sends an SMS with ``endpoint``, ``username`` and ``password`` to the ``phone_number``.
         """
         personal_cloud.delete_repo()
         initial_script = f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git && " \
@@ -3333,7 +3333,7 @@ def internet_checker() -> Union[Speedtest, bool]:
     """Uses speed test api to check for internet connection.
 
     Returns:
-        `Speedtest` or bool:
+        ``Speedtest`` or bool:
         - On success, returns Speedtest module.
         - On failure, returns boolean False.
 
@@ -3345,7 +3345,7 @@ def internet_checker() -> Union[Speedtest, bool]:
 
 
 def sentry_mode() -> None:
-    """Listens until `STATUS` is `True` and invokes `activator()` when heard something."""
+    """Listens until ``STATUS`` is ``True`` and invokes ``activator()`` when heard something."""
     while STATUS:
         sys.stdout.write("\rSentry Mode")
         try:
@@ -3368,10 +3368,10 @@ def sentry_mode() -> None:
 
 
 def activator(key_original: str) -> None:
-    """When invoked by `sentry_mode()`, checks for the right keyword to wake up and get into action.
+    """When invoked by ``sentry_mode()``, checks for the right keyword to wake up and gets into action.
 
     Args:
-        key_original: Takes the processed string from `sentry_mode()` as input.
+        key_original: Takes the processed string from ``sentry_mode()`` as input.
 
     """
     sys.stdout.write("\r")
@@ -3476,9 +3476,9 @@ def remove_files() -> None:
 
     Warnings:
         Deletes:
-            - all `.lock` files created for alarms and reminders.
-            - `location.yaml` format, to recreate a new one next time around.
-            - `meetings` file to recreate a new one next time around.
+            - all ``.lock`` files created for alarms and reminders.
+            - ``location.yaml`` format, to recreate a new one next time around.
+            - ``meetings`` file to recreate a new one next time around.
     """
     [os.remove(f"alarm/{file}") for file in os.listdir('alarm') if file != '.keep']
     [os.remove(f"reminder/{file}") for file in os.listdir('reminder') if file != '.keep']
@@ -3540,7 +3540,7 @@ def extract_nos(input_: str) -> float:
 
 
 def format_nos(input_: float) -> int:
-    """Removes `.0` float values.
+    """Removes ``.0`` float values.
 
     Args:
         input_: Int if found, else returns the received float value.
@@ -3607,7 +3607,7 @@ def stop_terminal() -> None:
 
 
 def restart(target: str = None) -> None:
-    """Restart triggers `restart.py` which in turn starts Jarvis after 5 seconds.
+    """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
 
     Notes:
         - Doing this changes the PID to avoid any Fatal Errors occurred by long running threads.
@@ -3675,9 +3675,9 @@ def shutdown(proceed: bool = False) -> None:
 
 
 def voice_changer(change: str = None) -> None:
-    """Alters voice and rate of speech according to the Operating System.
+    """Defaults to a particular voice module..
 
-    Alternatively you can choose from a variety of voices available for your device.
+    Alternatively the user can choose from a variety of voices available for that particular device.
 
     Args:
         change: Initiates changing voices with the volume ID given in statement.

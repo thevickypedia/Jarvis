@@ -13,7 +13,7 @@ from helper_functions.logger import logger
 
 
 class TV:
-    """All the TV controls wrapped in individual functions.
+    """All the TV controls wrapped in dedicated functions.
 
     >>> TV
 
@@ -68,13 +68,13 @@ class TV:
         self._init_status = True
 
     def increase_volume(self) -> None:
-        """Increases the volume by 10 units."""
+        """Increases the volume by ``10`` units."""
         for _ in range(10):
             self.media.volume_up()
         self.system.notify(f"Jarvis::Increased Volume: {self.media.get_volume()['volume']}%")
 
     def decrease_volume(self) -> None:
-        """Decreases the volume by 10 units. Doesn't return anything."""
+        """Decreases the volume by ``10`` units."""
         for _ in range(10):
             self.media.volume_down()
         self.system.notify(f"Jarvis::Decreased Volume: {self.media.get_volume()['volume']}%")
@@ -84,11 +84,7 @@ class TV:
 
         Returns:
             dict:
-            {
-            'scenario': 'mastervolume_tv_speaker',
-            'volume': 9,
-            'muted': False
-            }
+            A dictionary with key value pairs of scenario, volume and mute status.
 
         """
         self.system.notify(f"Jarvis::Current Volume: {self.media.get_volume()['volume']}%")
@@ -172,7 +168,7 @@ class TV:
 
         Returns:
             list:
-            List of InputSource instances.
+            List of ``InputSource`` instances.
 
         """
         sources = self.source_control.list_sources()
@@ -180,7 +176,7 @@ class TV:
         return sources_list
 
     def set_source(self, val: str) -> list:
-        """Sets an InputSource instance.
+        """Sets an ``InputSource`` instance.
 
         Args:
             val: Takes the input source instance value as argument.
@@ -217,7 +213,7 @@ class TV:
 
         Returns:
             list:
-            List of AudioOutputSource instances.
+            List of ``AudioOutputSource`` instances.
 
         """
         audio_outputs = self.media.list_audio_output_sources()

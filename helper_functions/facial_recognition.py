@@ -9,7 +9,7 @@ from face_recognition import (compare_faces, face_encodings, face_locations,
 
 
 class Face:
-    """Module for face recognition script using defined tolerance level and specific model.
+    """Module for ``face recognition`` script using defined tolerance level and specific model.
 
     >>> Face
 
@@ -46,7 +46,7 @@ class Face:
                 pass
 
     def face_recognition(self) -> Union[None, str]:
-        """Recognizes faces from the training dataset - images in the 'train' directory.
+        """Recognizes faces from the training dataset - images in the ``train`` directory.
 
         Returns:
             None or str:

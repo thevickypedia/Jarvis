@@ -8,7 +8,7 @@ directory = 'alarm'  # dir need not be '../alarm' as the Thread is triggered by 
 
 
 class Alarm(Thread):
-    """Class to initiate Alarm as a super class to run in background.
+    """Class to initiate ``Alarm`` as a super class to run in background.
 
     >>> Alarm
 
@@ -28,7 +28,7 @@ class Alarm(Thread):
         self.am_pm = am_pm
 
     def run(self) -> None:
-        """Plays mp3/alarm.mp3 tone when the hours and minutes match the current time."""
+        """Plays ``mp3/alarm.mp3`` tone when the hours and minutes match the current time."""
         music_dir = "mp3"
         tone = "alarm.mp3"
         files = listdir(directory)

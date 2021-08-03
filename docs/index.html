@@ -79,12 +79,15 @@
 <p><a class="reference external" href="https://github.com/thevickypedia/personal_cloud/blob/main/README.md">PersonalCloud README.md</a></p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<dl class="simple">
-<dt>Step 1:</dt><dd><ul class="simple">
+<p>PersonalCloud integration requires Admin previleages for the default <code class="docutils literal notranslate"><span class="pre">Terminal</span></code>.
+Step 1:</p>
+<blockquote>
+<div><ul class="simple">
 <li><p>Mac OS 10.14.* and higher - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Full Disk Access</p></li>
 <li><p>Mac OS 10.13.* and lower - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Accessibility</p></li>
 </ul>
-</dd>
+</div></blockquote>
+<dl class="simple">
 <dt>Step 2:</dt><dd><p>Unlock for admin privileges. Click on the “+” icon. Select Applications -&gt; Utilities -&gt; Terminal</p>
 </dd>
 </dl>
@@ -108,32 +111,32 @@
 <dd><p>Enables <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">personal cloud</a>.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>Clones <cite>personal_cloud</cite> repo in a dedicated Terminal.</p></li>
-<li><p>Creates a dedicated virtual env and installs the requirements within it (ETA: ~20 seconds)</p></li>
-<li><p>If <cite>personal_cloud_host</cite> env var is provided, Jarvis will mount the drive if connected to the device.</p></li>
-<li><p>Gets and sets env vars required for the personal cloud.</p></li>
+<li><p>Clones <code class="docutils literal notranslate"><span class="pre">personal_cloud</span></code> repo in a dedicated Terminal.</p></li>
+<li><p>Creates a virtual env and installs the requirements within it (ETA: ~20 seconds)</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">personal_cloud_host</span></code> env var is provided, Jarvis will mount the drive if connected to the device.</p></li>
+<li><p>Sets env vars required for the personal cloud.</p></li>
 <li><p>Generates random username and passphrase for login info.</p></li>
 <li><p>Triggers personal cloud using another Terminal session.</p></li>
-<li><p>Sends an SMS with endpoint, username and password to your mobile phone.</p></li>
+<li><p>Sends an SMS with <code class="docutils literal notranslate"><span class="pre">endpoint</span></code>, <code class="docutils literal notranslate"><span class="pre">username</span></code> and <code class="docutils literal notranslate"><span class="pre">password</span></code> to the <code class="docutils literal notranslate"><span class="pre">phone_number</span></code>.</p></li>
 </ul>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.PersonalCloud.get_port">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.PersonalCloud.get_port" title="Permalink to this definition">¶</a></dt>
-<dd><ul class="simple">
-<li><p>Chooses a TCP PORT number dynamically that is not being used to ensure we don’t rely on a single port.</p></li>
+<dd><p>Chooses a TCP PORT number dynamically that is not being used to ensure we don’t rely on a single port.</p>
+<ul class="simple">
 <li><p>Well-Known ports: 0 to 1023</p></li>
 <li><p>Registered ports: 1024 to 49151</p></li>
 <li><p>Dynamically available: 49152 to 65535</p></li>
 <li><dl class="simple">
 <dt>Alternate to active_sessions -&gt;</dt><dd><ul>
-<li><p><cite>check_output(f”echo {PASSWORD} | sudo -S lsof -PiTCP -sTCP:LISTEN 2&gt;&amp;1;”, shell=True).decode(‘utf-8’)</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">check_output(f&quot;echo</span> <span class="pre">{PASSWORD}</span> <span class="pre">|</span> <span class="pre">sudo</span> <span class="pre">-S</span> <span class="pre">lsof</span> <span class="pre">-PiTCP</span> <span class="pre">-sTCP:LISTEN</span> <span class="pre">2&gt;&amp;1;&quot;,</span> <span class="pre">shell=True).decode('utf-8')</span></code></p></li>
 </ul>
 </dd>
 </dl>
 </li>
-<li><p><cite>remove</cite> variable should be an actual function as per pep-8 standards, bypassing it using  # noqa</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">remove</span></code> variable should be an actual function as per pep-8 standards, bypassing it using  # noqa</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -150,10 +153,10 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.activator">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">activator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_original</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.activator" title="Permalink to this definition">¶</a></dt>
-<dd><p>When invoked by <cite>sentry_mode()</cite>, checks for the right keyword to wake up and get into action.</p>
+<dd><p>When invoked by <code class="docutils literal notranslate"><span class="pre">sentry_mode()</span></code>, checks for the right keyword to wake up and gets into action.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key_original</strong> – Takes the processed string from <cite>sentry_mode()</cite> as input.</p>
+<dd class="field-odd"><p><strong>key_original</strong> – Takes the processed string from <code class="docutils literal notranslate"><span class="pre">sentry_mode()</span></code> as input.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -161,13 +164,13 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.add_todo">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">add_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.add_todo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds new items to your to-do list.</p>
+<dd><p>Adds new items to the to-do list.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.alarm">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">alarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.alarm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Passes hour, minute and am/pm to Alarm class which initiates a thread for alarm clock in the background.</p>
+<dd><p>Passes hour, minute and am/pm to <code class="docutils literal notranslate"><span class="pre">Alarm</span></code> class which initiates a thread for alarm clock in the background.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>msg</strong> – Takes the voice recognized statement as argument and extracts time from it.</p>
@@ -195,7 +198,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.apps">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">apps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.apps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Launches an application skimmed from your statement and unable to skim asks for the app name.</p>
+<dd><p>Launches the requested application and if Jarvis is unable to find the app, asks for the app name from the user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>keyword</strong> – Gets app name as an argument to launch the application.</p>
@@ -209,7 +212,7 @@
 <dd><p>Find and connect to bluetooth devices near by.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>Takes the voice recognized statement as argument.</strong></p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -261,7 +264,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.create_db">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">create_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.create_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a database for to-do list by calling the <cite>create_db</cite> function in database module.</p>
+<dd><p>Creates a database for to-do list by calling the <code class="docutils literal notranslate"><span class="pre">create_db</span></code> function in <code class="docutils literal notranslate"><span class="pre">database</span></code> module.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -290,7 +293,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.delete_db">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">delete_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.delete_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deletes your database file after getting confirmation.</p>
+<dd><p>Deletes the <code class="docutils literal notranslate"><span class="pre">tasks.db</span></code> database file after getting confirmation.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -315,7 +318,7 @@
 <dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns the selected device from the class <cite>AppleDevice</cite></p>
+<dd class="field-even"><p>Returns the selected device from the class <code class="docutils literal notranslate"><span class="pre">AppleDevice</span></code></p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>AppleDevice</p>
@@ -341,8 +344,8 @@
 <dd><p>Calculates distance between two locations.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>If starting point is None, it gets the distance from your current location to destination.</p></li>
-<li><p>If destination is None, it asks for a destination from the user.</p></li>
+<li><p>If starting point is None, Jarvis takes the current location as starting point.</p></li>
+<li><p>If destination is None, Jarvis will ask for a destination from the user.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -411,13 +414,13 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.face_recognition_detection">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">face_recognition_detection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.face_recognition_detection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates face recognition script and looks for images stored in named directories within <cite>train</cite> directory.</p>
+<dd><p>Initiates face recognition script and looks for images stored in named directories within <code class="docutils literal notranslate"><span class="pre">train</span></code> directory.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.format_nos">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">format_nos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.format_nos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes <cite>.0</cite> float values.</p>
+<dd><p>Removes <code class="docutils literal notranslate"><span class="pre">.0</span></code> float values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>input_</strong> – Int if found, else returns the received float value.</p>
@@ -460,7 +463,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.gmail">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">gmail</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.gmail" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads unread emails from your gmail account for which the credentials are stored in env variables.</p>
+<dd><p>Reads unread emails from the gmail account for which the credentials are stored in env variables.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -469,16 +472,16 @@
 <dd><p>Uses Google’s search engine parser and gets the first result that shows up on a google search.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>If it is unable to get the result, Jarvis sends a request to <cite>suggestqueries.google.com</cite></p></li>
+<li><p>If it is unable to get the result, Jarvis sends a request to <code class="docutils literal notranslate"><span class="pre">suggestqueries.google.com</span></code></p></li>
 <li><p>This is to rephrase the query and then looks up using the search engine parser once again.</p></li>
-<li><p>global <cite>suggestion_count</cite> is used to make sure the suggestions and parsing don’t run on an infinite loop.</p></li>
+<li><p>global <code class="docutils literal notranslate"><span class="pre">suggestion_count</span></code> is used to make sure the suggestions and parsing don’t run on an infinite loop.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>query</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean <cite>True</cite> if google search engine is unable to fetch consumable results.</p>
+<dd class="field-even"><p>Boolean <code class="docutils literal notranslate"><span class="pre">True</span></code> if google search engine is unable to fetch consumable results.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
@@ -489,7 +492,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.google_home">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">google_home</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.google_home" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses socket lib to extract ip address and scan ip range for google home devices and play songs in your local.</p>
+<dd><p>Uses <code class="docutils literal notranslate"><span class="pre">socket</span> <span class="pre">lib</span></code> to extract ip address and scan ip range for google home devices.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>Can also play music on multiple devices at once.</p></li>
@@ -503,14 +506,14 @@
 <li><p>Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py</p></li>
 </ol>
 <ul class="simple">
-<li><p>I have used <cite>sys.stdout = open(os.devnull, ‘w’)</cite> to suppress any print statements.</p></li>
-<li><p>To enable this again at a later time use <cite>sys.stdout = sys.__stdout__</cite></p></li>
+<li><p>I have used <code class="docutils literal notranslate"><span class="pre">sys.stdout</span> <span class="pre">=</span> <span class="pre">open(os.devnull,</span> <span class="pre">'w')</span></code> to suppress any print statements.</p></li>
+<li><p>To enable this again at a later time use <code class="docutils literal notranslate"><span class="pre">sys.stdout</span> <span class="pre">=</span> <span class="pre">sys.__stdout__</span></code></p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><p>When music is played and immediately stopped/tasked the google home device, it is most likely to except.</p></li>
-<li><p>Broken Pipe error. This usually happens when you write to a socket that is fully closed.</p></li>
+<li><p>Broken Pipe error. This usually happens when a socket is written after it is fully closed.</p></li>
 <li><p>This error occurs when one end of the connection tries sending data while the other has closed the connection.</p></li>
 <li><p>This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).</p></li>
 </ul>
@@ -611,7 +614,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.initialize">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.initialize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Awakens from sleep mode. <cite>greet_check</cite> is to ensure greeting is given only for the first function call.</p>
+<dd><p>Awakens from sleep mode. <code class="docutils literal notranslate"><span class="pre">greet_check</span></code> is to ensure greeting is given only for the first function call.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -627,7 +630,7 @@
 </p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><cite>Speedtest</cite> or bool</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">Speedtest</span></code> or bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -644,7 +647,7 @@
 <dd><p>Removes lock file to stop the alarm which rings only when the certain lock file is present.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p><cite>alarm_state</cite> is the list of lock files currently present.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alarm_state</span></code> is the list of lock files currently present.</p></li>
 </ul>
 </dd></dl>
 
@@ -673,7 +676,7 @@
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p>On success, returns recognized statement from the microphone.</p></li>
-<li><p>On failure, returns <cite>SR_ERROR</cite> as a string which is conditioned to respond appropriately.</p></li>
+<li><p>On failure, returns <code class="docutils literal notranslate"><span class="pre">SR_ERROR</span></code> as a string which is conditioned to respond appropriately.</p></li>
 </ul>
 </p>
 </dd>
@@ -686,7 +689,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.locate">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">locate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.locate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Locates your iPhone using icloud api for python.</p>
+<dd><p>Locates an apple device using icloud api for python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument and extracts device name from it.</p>
@@ -708,21 +711,21 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.location">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.location" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets your current location.</p>
+<dd><p>Gets the user’s current location.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.location_services">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">location_services</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.location_services" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates <cite>geo_locator</cite> and stores current location info as a <cite>json</cite> file so it can be used in other functions.</p>
+<dd><p>Gets the current location of an apple device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>device</strong> – Passed when locating a particular apple device.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p>On success, returns <cite>current latitude</cite>, <cite>current longitude</cite> and <cite>location</cite> information as a <cite>dict</cite>.</p></li>
-<li><p>On failure, calls the <cite>restart()</cite> or <cite>terminator()</cite> function depending on the error.</p></li>
+<li><p>On success, returns <code class="docutils literal notranslate"><span class="pre">current</span> <span class="pre">latitude</span></code>, <code class="docutils literal notranslate"><span class="pre">current</span> <span class="pre">longitude</span></code> and <code class="docutils literal notranslate"><span class="pre">location</span></code> information as a <code class="docutils literal notranslate"><span class="pre">dict</span></code>.</p></li>
+<li><p>On failure, calls the <code class="docutils literal notranslate"><span class="pre">restart()</span></code> or <code class="docutils literal notranslate"><span class="pre">terminator()</span></code> function depending on the error.</p></li>
 </ul>
 </p>
 </dd>
@@ -735,7 +738,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meaning">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meaning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.meaning" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets meaning for a word skimmed from your statement using PyDictionary.</p>
+<dd><p>Gets meaning for a word skimmed from the user statement using PyDictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>keyword</strong> – Takes a keyword as argument for which the meaning was requested.</p>
@@ -746,21 +749,21 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meeting_gatherer">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meeting_gatherer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.meeting_gatherer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets return value from <cite>meetings()</cite> and writes it to file named <cite>meetings</cite>.</p>
+<dd><p>Gets return value from <code class="docutils literal notranslate"><span class="pre">meetings()</span></code> and writes it to file named <code class="docutils literal notranslate"><span class="pre">meetings</span></code>.</p>
 <p>This function runs in a dedicated thread every 30 minutes to avoid wait time when meetings information is requested.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meeting_reader">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meeting_reader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.meeting_reader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Speaks meeting information that <cite>meeting_gatherer()</cite> stored in a file named ‘meetings’.</p>
-<p>If the file is not available, meeting information is directly fetched from the <cite>meetings()</cite> function.</p>
+<dd><p>Speaks meeting information that <code class="docutils literal notranslate"><span class="pre">meeting_gatherer()</span></code> stored in a file named ‘meetings’.</p>
+<p>If the file is not available, meeting information is directly fetched from the <code class="docutils literal notranslate"><span class="pre">meetings()</span></code> function.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meetings">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meeting_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'calendar.scpt'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.meetings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses <cite>applescript</cite> to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.</p>
+<dd><p>Uses <code class="docutils literal notranslate"><span class="pre">applescript</span></code> to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>meeting_file</strong> – Takes applescript filename as argument. Defaults to calendar.scpt unless an alternate is passed.</p>
@@ -782,7 +785,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.music">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">music</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.music" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scans music directory in your profile for <cite>.mp3</cite> files and plays using default player.</p>
+<dd><p>Scans music directory in the user profile for <code class="docutils literal notranslate"><span class="pre">.mp3</span></code> files and plays using default player.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>device</strong> – Takes device name as argument.</p>
@@ -792,14 +795,19 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.news">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">news</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.news" title="Permalink to this definition">¶</a></dt>
-<dd><p>Says news around you.</p>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">news</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">news_source</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'fox'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.news" title="Permalink to this definition">¶</a></dt>
+<dd><p>Says news around the user’s location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>news_source</strong> – Source from where the news has to be fetched. Defaults to <code class="docutils literal notranslate"><span class="pre">fox</span></code>.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.notes">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">notes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.notes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listens to the user and saves everything to a <cite>notes.txt</cite> file.</p>
+<dd><p>Listens to the user and saves everything to a <code class="docutils literal notranslate"><span class="pre">notes.txt</span></code> file.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -823,27 +831,27 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.offline_communicator">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.offline_communicator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads <cite>offline_request</cite> file generated by <a class="reference external" href="https://git.io/JBPFQ">fast.py</a> which contains request sent via API.</p>
+<dd><p>Reads <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file generated by <a class="reference external" href="https://git.io/JBPFQ">fast.py</a> containing request sent via API.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
 <dt>To replicate a working model for offline communicator:</dt><dd><ul class="simple">
-<li><p>Run <cite>ngrok</cite> on port 4483 or any desired port.</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">ngrok</span></code> on port 4483 or any desired port.</p></li>
 <li><p>The port number should match with the one in <a class="reference external" href="https://git.io/JBPFQ">fast.py</a></p></li>
 <li><p>To “log” the response and send it out as notification, I made some changes to the pyttsx3 module. (below)</p></li>
 <li><p>I also stop the response from being spoken.</p></li>
-<li><p><cite>voice_changer()</cite> is called as the voice property is reset when speaker.stop() is used.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">voice_changer()</span></code> is called as the voice property is reset when <code class="docutils literal notranslate"><span class="pre">speaker.stop()</span></code> is used.</p></li>
 </ul>
 </dd>
 <dt>Changes in <cite>pyttsx3</cite>:</dt><dd><ul class="simple">
-<li><p>Created a global variable in <cite>say()</cite> -&gt; pyttsx3/engine.py (before proxy) and store the response.</p></li>
-<li><p>Created a new method and return the global variable which I created in <cite>say()</cite></p></li>
-<li><p>The new method (vig() in this case) is called to get the response which is sent as an SMS notification.</p></li>
-<li><p>Doing so, avoids making changes to all functions within <cite>conditions()</cite> to notify the response from Jarvis.</p></li>
+<li><p>Created a global variable in <code class="docutils literal notranslate"><span class="pre">say()</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">pyttsx3/engine.py</span></code> (before proxy) and store the response.</p></li>
+<li><p>Created a new method and return the global variable which I created in <code class="docutils literal notranslate"><span class="pre">say()</span></code></p></li>
+<li><p>The new method (<code class="docutils literal notranslate"><span class="pre">vig()</span></code> in this case) is called to get the response which is sent as SMS notification.</p></li>
+<li><p>Doing so, avoids changes to all functions within <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> to notify the response from Jarvis.</p></li>
 </ul>
 </dd>
 <dt>Env Vars:</dt><dd><ul class="simple">
-<li><p><cite>offline_phrase</cite> - unique phrase to authenticate the requests coming from an external source</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">offline_phrase</span></code> - unique phrase to authenticate the requests coming from an external source</p></li>
 </ul>
 </dd>
 </dl>
@@ -851,9 +859,9 @@
 <p class="rubric">Notes</p>
 <dl class="simple">
 <dt>More cool stuff:</dt><dd><ul class="simple">
-<li><p>I have linked the ngrok <cite>public_url</cite> tunnelling the FastAPI to a JavaScript on my webpage.</p></li>
+<li><p>I have linked the ngrok <code class="docutils literal notranslate"><span class="pre">public_url</span></code> tunnelling the FastAPI to a JavaScript on my webpage.</p></li>
 <li><p>When a request is submitted, the JavaScript makes a POST call to the API.</p></li>
-<li><p>The API does the authentication and creates the <cite>offline_request</cite> file if authenticated.</p></li>
+<li><p>The API does the authentication and creates the <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file if authenticated.</p></li>
 <li><p>Check it out: <a class="reference external" href="https://thevickypedia.com/jarvisoffline">JarvisOffline</a></p></li>
 </ul>
 </dd>
@@ -866,9 +874,9 @@
 <dd><p>Initiates Jarvis API and Ngrok for requests from external sources if they aren’t running already.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p><cite>forever_ngrok.py</cite> is a simple script that triggers ngrok connection in the port <cite>4483</cite>.</p></li>
-<li><p>The connection is tunneled through a public facing URL which is used to make <cite>POST</cite> requests to Jarvis API.</p></li>
-<li><p><cite>uvicorn</cite> command launches JarvisAPI <cite>fast.py</cite> using the same port <cite>4483</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">forever_ngrok.py</span></code> is a simple script that triggers ngrok connection in the port <code class="docutils literal notranslate"><span class="pre">4483</span></code>.</p></li>
+<li><p>The connection is tunneled through a public facing URL which is used to make <code class="docutils literal notranslate"><span class="pre">POST</span></code> requests to Jarvis API.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uvicorn</span></code> command launches JarvisAPI <code class="docutils literal notranslate"><span class="pre">fast.py</span></code> using the same port <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>
 </ul>
 </dd></dl>
 
@@ -897,9 +905,9 @@
 <p class="admonition-title">Warning</p>
 <dl class="simple">
 <dt>Deletes:</dt><dd><ul class="simple">
-<li><p>all <cite>.lock</cite> files created for alarms and reminders.</p></li>
-<li><p><cite>location.yaml</cite> format, to recreate a new one next time around.</p></li>
-<li><p><cite>meetings</cite> file to recreate a new one next time around.</p></li>
+<li><p>all <code class="docutils literal notranslate"><span class="pre">.lock</span></code> files created for alarms and reminders.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">location.yaml</span></code> format, to recreate a new one next time around.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">meetings</span></code> file to recreate a new one next time around.</p></li>
 </ul>
 </dd>
 </dl>
@@ -909,18 +917,18 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.renew">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">renew</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.renew" title="Permalink to this definition">¶</a></dt>
-<dd><p>Keeps listening and sends the response to <cite>conditions()</cite> function.</p>
+<dd><p>Keeps listening and sends the response to <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> function.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>This function runs only for a minute.</p></li>
-<li><p>split(converted) is a condition so that, loop breaks when if sleep in <cite>conditions()</cite> returns True.</p></li>
+<li><p>split(converted) is a condition so that, loop breaks when if sleep in <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> returns True.</p></li>
 </ul>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.repeater">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">repeater</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.repeater" title="Permalink to this definition">¶</a></dt>
-<dd><p>Repeats what ever you say.</p>
+<dd><p>Repeats whatever is heard.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -932,7 +940,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.restart">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.restart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Restart triggers <cite>restart.py</cite> which in turn starts Jarvis after 5 seconds.</p>
+<dd><p>Restart triggers <code class="docutils literal notranslate"><span class="pre">restart.py</span></code> which in turn starts Jarvis after 5 seconds.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>Doing this changes the PID to avoid any Fatal Errors occurred by long running threads.</p></li>
@@ -958,7 +966,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.robinhood">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.robinhood" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets investment from robinhood API.</p>
+<dd><p>Gets investment details from robinhood API.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -976,7 +984,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.sentry_mode">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">sentry_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.sentry_mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listens until <cite>STATUS</cite> is <cite>True</cite> and invokes <cite>activator()</cite> when heard something.</p>
+<dd><p>Listens until <code class="docutils literal notranslate"><span class="pre">STATUS</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> and invokes <code class="docutils literal notranslate"><span class="pre">activator()</span></code> when heard something.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1042,7 +1050,7 @@
 <dd class="field-odd"><p><strong>key</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Return value from <cite>conditions()</cite></p>
+<dd class="field-even"><p>Return value from <code class="docutils literal notranslate"><span class="pre">conditions()</span></code></p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
@@ -1059,7 +1067,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.system_info">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">system_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.system_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets your system configuration.</p>
+<dd><p>Gets the system configuration.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1074,7 +1082,7 @@
 <dd><p>Controls all actions on a TV (LG Web OS).</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>In the <cite>__main__</cite> method tv is set to None.</p></li>
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">__main__</span></code> method tv is set to None.</p></li>
 <li><p>Jarvis will try to ping the TV and then power it on if the host is unreachable initially.</p></li>
 <li><p>Once the tv is turned on, the TV class is also initiated and assigned to tv variable.</p></li>
 </ul>
@@ -1128,13 +1136,13 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.time_travel">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">time_travel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.time_travel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Triggered only from <cite>activator()</cite> to give a quick update on your day.</p>
+<dd><p>Triggered only from <code class="docutils literal notranslate"><span class="pre">activator()</span></code> to give a quick update on the user’s daily routine.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.todo">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.todo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Says the item and category stored in your to-do list.</p>
+<dd><p>Says the item and category stored in the to-do list.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1151,8 +1159,8 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.voice_changer">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">voice_changer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.voice_changer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alters voice and rate of speech according to the Operating System.</p>
-<p>Alternatively you can choose from a variety of voices available for your device.</p>
+<dd><p>Defaults to a particular voice module..</p>
+<p>Alternatively the user can choose from a variety of voices available for that particular device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>change</strong> – Initiates changing voices with the volume ID given in statement.</p>
@@ -1163,15 +1171,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.volume_controller">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">volume_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.volume_controller" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controls volume from the numbers received. There are no chances for None.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>If you don’t specify a volume level, it defaults to 50%</p></li>
-<li><p>Mac(s) run on a volume of 16 bars controlled by 8 digits</p></li>
-<li><p>I have changed the level to become single digit with respect to 8 (eg: 50% becomes 4) for osX</p></li>
-</ul>
-</div>
+<dd><p>Controls volume from the numbers received. Defaults to 50%.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>level</strong> – Level of volume to which the system has to set.</p>
@@ -1211,7 +1211,7 @@
 <dd><p>Weather report when phrase has conditions like tomorrow, day after, next week and specific part of the day etc.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p><cite>weather_condition()</cite> uses conditional blocks to fetch keywords and determine the output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weather_condition()</span></code> uses conditional blocks to fetch keywords and determine the output.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1226,7 +1226,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.webpage">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">webpage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.webpage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Opens up a webpage using your default browser to the target host.</p>
+<dd><p>Opens up a webpage using the default browser to the target host.</p>
 <p>If no target received, will ask for user confirmation. If no ‘.’ in the phrase heard, phrase will default to .com.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1247,14 +1247,14 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.alarm.Alarm">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.alarm.</span></span><span class="sig-name descname"><span class="pre">Alarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hours</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minutes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">am_pm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.alarm.Alarm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to initiate Alarm as a super class to run in background.</p>
+<dd><p>Class to initiate <code class="docutils literal notranslate"><span class="pre">Alarm</span></code> as a super class to run in background.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Alarm</span>
 </pre></div>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.alarm.Alarm.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.alarm.Alarm.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plays mp3/alarm.mp3 tone when the hours and minutes match the current time.</p>
+<dd><p>Plays <code class="docutils literal notranslate"><span class="pre">mp3/alarm.mp3</span></code> tone when the hours and minutes match the current time.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1389,18 +1389,18 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.database.Database">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><a class="headerlink" href="#helper_functions.database.Database" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connector for Database to create and modify.</p>
+<dd><p>Connector for <code class="docutils literal notranslate"><span class="pre">Database</span></code> to create and modify.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Database</span>
 </pre></div>
 </div>
-<p>create_db - creates a database named ‘tasks.db’ with table as ‘tasks’
-downloader - gets item and category stored in the table ‘tasks’
-uploader - adds new item and category to the table ‘tasks’ and groups with existing category if found
-deleter - removes items from the table ‘tasks’ when the item or category name is matched.</p>
+<p><code class="docutils literal notranslate"><span class="pre">create_db</span></code> - creates a database named ‘tasks.db’ with table as ‘tasks’
+<code class="docutils literal notranslate"><span class="pre">downloader</span></code> - gets item and category stored in the table ‘tasks’
+<code class="docutils literal notranslate"><span class="pre">uploader</span></code> - adds new item and category to the table ‘tasks’ and groups with existing category if found
+<code class="docutils literal notranslate"><span class="pre">deleter</span></code> - removes items from the table ‘tasks’ when the item or category name is matched.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.database.Database.create_db">
 <span class="sig-name descname"><span class="pre">create_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.database.Database.create_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a database with the set filename: tasks.db and a table: tasks.</p>
+<dd><p>Creates a database with the set <code class="docutils literal notranslate"><span class="pre">filename:</span> <span class="pre">tasks.db</span></code> and a <code class="docutils literal notranslate"><span class="pre">table:</span> <span class="pre">tasks</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A success message on DB and table creation.</p>
@@ -1471,7 +1471,7 @@ On failure, returns a string indicating the item was not found.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.facial_recognition.Face">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.facial_recognition.</span></span><span class="sig-name descname"><span class="pre">Face</span></span><a class="headerlink" href="#helper_functions.facial_recognition.Face" title="Permalink to this definition">¶</a></dt>
-<dd><p>Module for face recognition script using defined tolerance level and specific model.</p>
+<dd><p>Module for <code class="docutils literal notranslate"><span class="pre">face</span> <span class="pre">recognition</span></code> script using defined tolerance level and specific model.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Face</span>
 </pre></div>
 </div>
@@ -1492,7 +1492,7 @@ On failure, returns a string indicating the item was not found.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.facial_recognition.Face.face_recognition">
 <span class="sig-name descname"><span class="pre">face_recognition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#helper_functions.facial_recognition.Face.face_recognition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Recognizes faces from the training dataset - images in the ‘train’ directory.</p>
+<dd><p>Recognizes faces from the training dataset - images in the <code class="docutils literal notranslate"><span class="pre">train</span></code> directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>str - Name of the person in case of a recognized face.
@@ -2322,7 +2322,7 @@ None - NoneType if no face was recognized.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.lights.MagicHomeApi">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.lights.</span></span><span class="sig-name descname"><span class="pre">MagicHomeApi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_ip</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.lights.MagicHomeApi" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controller for MagicHome smart devices.</p>
+<dd><p>Controller for <code class="docutils literal notranslate"><span class="pre">MagicHome</span></code> smart devices.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MagicHomeApi</span>
 </pre></div>
 </div>
@@ -2439,7 +2439,7 @@ Whites can have a value of None.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.ip_scanner.</span></span><span class="sig-name descname"><span class="pre">LocalIPScan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">router_pass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connector to scan devices in the same IP range using Netgear API.</p>
+<dd><p>Connector to scan devices in the same IP range using <code class="docutils literal notranslate"><span class="pre">Netgear</span> <span class="pre">API</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LocalIPScan</span>
 </pre></div>
 </div>
@@ -2540,7 +2540,7 @@ Whites can have a value of None.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.reminder.Reminder">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.reminder.</span></span><span class="sig-name descname"><span class="pre">Reminder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hours</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minutes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">am_pm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.reminder.Reminder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to initiate Alarm as a super class to run in background.</p>
+<dd><p>Class to initiate <code class="docutils literal notranslate"><span class="pre">Reminder</span></code> as a super class to run in background.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Reminder</span>
 </pre></div>
 </div>
@@ -2565,7 +2565,7 @@ Whites can have a value of None.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.robinhood.RobinhoodGatherer.watcher">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">watcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.robinhood.RobinhoodGatherer.watcher" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches all necessary information about your investment portfolio.</p>
+<dd><p>Fetches all necessary information about the user’s investment portfolio.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A string value of total purchased stocks and resultant profit/loss.</p>
@@ -2591,13 +2591,13 @@ Whites can have a value of None.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.temperature.Temperature.c2f">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">c2f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#helper_functions.temperature.Temperature.c2f" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts Celcius to Farenheit.</p>
+<dd><p>Converts <code class="docutils literal notranslate"><span class="pre">Celcius</span></code> to <code class="docutils literal notranslate"><span class="pre">Farenheit</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>arg</strong> – Takes Celcius value as argument.</p>
+<dd class="field-odd"><p><strong>arg</strong> – Takes <code class="docutils literal notranslate"><span class="pre">Celcius</span></code> value as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Converted Farenheit value.</p>
+<dd class="field-even"><p>Converted <code class="docutils literal notranslate"><span class="pre">Farenheit</span></code> value.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -2608,13 +2608,13 @@ Whites can have a value of None.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.temperature.Temperature.c2k">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">c2k</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#helper_functions.temperature.Temperature.c2k" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts Celcius to Kelvin.</p>
+<dd><p>Converts <code class="docutils literal notranslate"><span class="pre">Celcius</span></code> to <code class="docutils literal notranslate"><span class="pre">Kelvin</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>arg</strong> – Takes Celcius value as argument.</p>
+<dd class="field-odd"><p><strong>arg</strong> – Takes <code class="docutils literal notranslate"><span class="pre">Celcius</span></code> value as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Converted Kelvin value.</p>
+<dd class="field-even"><p>Converted <code class="docutils literal notranslate"><span class="pre">Kelvin</span></code> value.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -2625,13 +2625,13 @@ Whites can have a value of None.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.temperature.Temperature.f2c">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">f2c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#helper_functions.temperature.Temperature.f2c" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts Farenheit to Celcius.</p>
+<dd><p>Converts <code class="docutils literal notranslate"><span class="pre">Farenheit</span></code> to <code class="docutils literal notranslate"><span class="pre">Celcius</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>arg</strong> – Takes Farenheit value as argument.</p>
+<dd class="field-odd"><p><strong>arg</strong> – Takes <code class="docutils literal notranslate"><span class="pre">Farenheit</span></code> value as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Converted Celcius value.</p>
+<dd class="field-even"><p>Converted <code class="docutils literal notranslate"><span class="pre">Celcius</span></code> value.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -2642,13 +2642,13 @@ Whites can have a value of None.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.temperature.Temperature.f2k">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">f2k</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#helper_functions.temperature.Temperature.f2k" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts Farenheit to Kelvin.</p>
+<dd><p>Converts <code class="docutils literal notranslate"><span class="pre">Farenheit</span></code> to <code class="docutils literal notranslate"><span class="pre">Kelvin</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>arg</strong> – Taken Farenheit value as argument.</p>
+<dd class="field-odd"><p><strong>arg</strong> – Taken <code class="docutils literal notranslate"><span class="pre">Farenheit</span></code> value as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Converted Kelvin value.</p>
+<dd class="field-even"><p>Converted <code class="docutils literal notranslate"><span class="pre">Kelvin</span></code> value.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -2659,13 +2659,13 @@ Whites can have a value of None.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.temperature.Temperature.k2c">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">k2c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#helper_functions.temperature.Temperature.k2c" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts Kelvin to Celcius.</p>
+<dd><p>Converts <code class="docutils literal notranslate"><span class="pre">Kelvin</span></code> to <code class="docutils literal notranslate"><span class="pre">Celcius</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>arg</strong> – Takes Kelvin value as argument.</p>
+<dd class="field-odd"><p><strong>arg</strong> – Takes <code class="docutils literal notranslate"><span class="pre">Kelvin</span></code> value as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Converted Celcius value.</p>
+<dd class="field-even"><p>Converted <code class="docutils literal notranslate"><span class="pre">Celcius</span></code> value.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -2676,13 +2676,13 @@ Whites can have a value of None.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.temperature.Temperature.k2f">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">k2f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#helper_functions.temperature.Temperature.k2f" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts Kelvin to Celcius.</p>
+<dd><p>Converts <code class="docutils literal notranslate"><span class="pre">Kelvin</span></code> to <code class="docutils literal notranslate"><span class="pre">Celcius</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>arg</strong> – Takes Kelvin value as argument.</p>
+<dd class="field-odd"><p><strong>arg</strong> – Takes <code class="docutils literal notranslate"><span class="pre">Kelvin</span></code> value as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Converted Farenheit value.</p>
+<dd class="field-even"><p>Converted <code class="docutils literal notranslate"><span class="pre">Farenheit</span></code> value.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -2698,7 +2698,7 @@ Whites can have a value of None.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.tv_controls.TV">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.tv_controls.</span></span><span class="sig-name descname"><span class="pre">TV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_address</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.tv_controls.TV" title="Permalink to this definition">¶</a></dt>
-<dd><p>All the TV controls wrapped in individual functions.</p>
+<dd><p>All the TV controls wrapped in dedicated functions.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TV</span>
 </pre></div>
 </div>
@@ -2714,7 +2714,7 @@ Whites can have a value of None.</p>
 <dd><p>Checks the list of audio output sources available.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of AudioOutputSource instances.</p>
+<dd class="field-odd"><p>List of <code class="docutils literal notranslate"><span class="pre">AudioOutputSource</span></code> instances.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>list</p>
@@ -2745,7 +2745,7 @@ Whites can have a value of None.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.tv_controls.TV.decrease_volume">
 <span class="sig-name descname"><span class="pre">decrease_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.tv_controls.TV.decrease_volume" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decreases the volume by 10 units. Doesn’t return anything.</p>
+<dd><p>Decreases the volume by <code class="docutils literal notranslate"><span class="pre">10</span></code> units.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2760,12 +2760,7 @@ Whites can have a value of None.</p>
 <dd><p>Get volume status.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p>{
-‘scenario’: ‘mastervolume_tv_speaker’,
-‘volume’: 9,
-‘muted’: False
-}</p>
-</p>
+<dd class="field-odd"><p>A dictionary with key value pairs of scenario, volume and mute status.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>dict</p>
@@ -2776,7 +2771,7 @@ Whites can have a value of None.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.tv_controls.TV.increase_volume">
 <span class="sig-name descname"><span class="pre">increase_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.tv_controls.TV.increase_volume" title="Permalink to this definition">¶</a></dt>
-<dd><p>Increases the volume by 10 units.</p>
+<dd><p>Increases the volume by <code class="docutils literal notranslate"><span class="pre">10</span></code> units.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2849,7 +2844,7 @@ Whites can have a value of None.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.tv_controls.TV.set_source">
 <span class="sig-name descname"><span class="pre">set_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.tv_controls.TV.set_source" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets an InputSource instance.</p>
+<dd><p>Sets an <code class="docutils literal notranslate"><span class="pre">InputSource</span></code> instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>val</strong> – Takes the input source instance value as argument.</p>
@@ -2886,7 +2881,7 @@ Whites can have a value of None.</p>
 <dd><p>Checks for the input sources on the TV.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of InputSource instances.</p>
+<dd class="field-odd"><p>List of <code class="docutils literal notranslate"><span class="pre">InputSource</span></code> instances.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>list</p>
@@ -2905,7 +2900,7 @@ Whites can have a value of None.</p>
 </section>
 <section id="module-restart">
 <span id="restart"></span><h1>Restart<a class="headerlink" href="#module-restart" title="Permalink to this headline">¶</a></h1>
-<p>This is a basic query to start Jarvis after 5 seconds triggered by the restart() function in main module.</p>
+<p>This is a basic query to start Jarvis after 5 seconds triggered by the <code class="docutils literal notranslate"><span class="pre">restart()</span></code> function in main module.</p>
 </section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>

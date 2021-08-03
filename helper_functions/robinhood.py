@@ -10,7 +10,7 @@ class RobinhoodGatherer:
 
     @staticmethod
     def watcher(rh, result: list) -> str:
-        """Fetches all necessary information about your investment portfolio.
+        """Fetches all necessary information about the user's investment portfolio.
 
         Returns:
             str:

@@ -8,7 +8,7 @@ directory = 'reminder'  # dir need not be '../reminder' as the Thread is trigger
 
 
 class Reminder(Thread):
-    """Class to initiate Alarm as a super class to run in background.
+    """Class to initiate ``Reminder`` as a super class to run in background.
 
     >>> Reminder
 
