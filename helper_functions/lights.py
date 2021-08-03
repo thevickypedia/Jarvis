@@ -37,7 +37,7 @@ class MagicHomeApi:
             self.s.close()
             error_msg = f"\rSocket error on {device_ip}: {error}"
             stdout.write(error_msg)
-            logger.fatal(f'{error_msg} while performing "{self.operation}"')
+            logger.error(f'{error_msg} while performing "{self.operation}"')
 
     def turn_on(self) -> None:
         """Turn a device on."""
@@ -203,5 +203,5 @@ class MagicHomeApi:
         except sock_error as error:
             error_msg = f"\rSocket error on {self.device_ip}: {error}"
             stdout.write(error_msg)
-            logger.fatal(f'{error_msg} while performing "{self.operation}"')
+            logger.error(f'{error_msg} while performing "{self.operation}"')
         self.s.close()

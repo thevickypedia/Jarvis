@@ -540,6 +540,7 @@ def conditions(converted: str) -> bool:
             try:
                 speaker.say(meeting.get(timeout=60))
             except ThreadTimeoutError:
+                logger.error('Unable to read the calendar within 60 seconds.')
                 speaker.say("I wasn't able to read your calendar within the set time limit sir!")
             speaker.runAndWait()
 
@@ -701,6 +702,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
         locator = geo_locator.reverse(f'{current_lat_}, {current_lon_}', language='en')
         return current_lat_, current_lon_, locator.raw['address']
     except (GeocoderUnavailable, GeopyError):
+        logger.error('Error retrieving address from latitude and longitude information.')
         speaker.say('Received an error while retrieving your address sir! I think a restart should fix this.')
         restart()
 
@@ -2216,7 +2218,13 @@ def television(converted: str) -> None:
         return
 
     if not tv:
-        tv = TV(ip_address=tv_ip, client_key=tv_client_key)
+        try:
+            tv = TV(ip_address=tv_ip, client_key=tv_client_key)
+        except ConnectionResetError as error:
+            logger.error(f"Failed to connect to the TV. {error}")
+            speaker.say("I was unable to connect to the TV sir! It appears to be a connection issue. "
+                        "You might want to try again later.")
+            return
         if 'turn on' in phrase or 'connect' in phrase:
             speaker.say("TV features have been integrated sir!")
             return
@@ -2453,6 +2461,7 @@ def face_recognition_detection() -> None:
     try:
         result = Face().face_recognition()
     except BlockingIOError:
+        logger.error('Unable to access the camera.')
         speaker.say("I was unable to access the camera. Facial recognition can work only when cameras are "
                     "present and accessible.")
         return
@@ -3351,8 +3360,7 @@ def sentry_mode() -> None:
         #  RecursionError - Recursion is increased in main module,
         #  TimeoutError - Timeout errors are mostly raised only by sockets,
         #  RuntimeError - Runtime error occurs only when there is a conflict with offline communicator which is handled,
-        #  ConnectionResetError - Connection is not reset and couldn't replicate this in logs.
-        # except (RecursionError, TimeoutError, RuntimeError, ConnectionResetError):
+        # except (RecursionError, TimeoutError, RuntimeError):
         #     unknown_error = sys.exc_info()[0]
         #     logger.error(f'Unknown exception::{unknown_error.__name__}\n{format_exc()}')  # include traceback
         #     speaker.say('I faced an unknown exception.')

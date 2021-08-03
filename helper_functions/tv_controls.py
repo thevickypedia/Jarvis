@@ -40,11 +40,13 @@ class TV:
         except (gaierror, ConnectionRefusedError, ConnectionResetError):  # when IP or client key is None or incorrect
             self.reconnect = True
             Thread(target=playsound, args=['indicators/tv_scan.mp3']).start()
-            stdout.write("\rThe TV's IP has either changed or unreachable. Scanning your IP range.")
+            scan_msg = "The TV's IP has either changed or unreachable. Scanning your IP range."
+            stdout.write(f"\r{scan_msg}")
+            logger.error(scan_msg)
             self.client = WebOSClient.discover()[0]
             self.client.connect()
         except (TimeoutError, BrokenPipeError):
-            logger.error('\rOperation timed out. The TV might be turned off.')
+            logger.error('Operation timed out. The TV might be turned off.')
 
         for status in self.client.register(store):
             if status == WebOSClient.REGISTERED and not self._init_status:

@@ -23,7 +23,7 @@ directory = path.dirname(__file__)
 reload(logging)
 logging.basicConfig(
     filename=datetime.now().strftime(path.join(directory, '../logs/jarvis_%d-%m-%Y_%H_%M_%S.log')), filemode='w',
-    format='%(asctime)s - %(levelname)s - %(funcName)s - Line: %(lineno)d - %(message)s',
+    format='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s',
     datefmt='%b-%d-%Y %H:%M:%S'
 )
 
