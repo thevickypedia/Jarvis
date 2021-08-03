@@ -148,6 +148,17 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.activator">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">activator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_original</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.activator" title="Permalink to this definition">¶</a></dt>
+<dd><p>When invoked by <cite>sentry_mode()</cite>, checks for the right keyword to wake up and get into action.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key_original</strong> – Takes the processed string from <cite>sentry_mode()</cite> as input.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.add_todo">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">add_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.add_todo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds new items to your to-do list.</p>
@@ -901,7 +912,7 @@
 <dd><p>Keeps listening and sends the response to <cite>conditions()</cite> function.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>This function runs only for a minute and goes to <cite>sentry_mode()</cite> if nothing is heard.</p></li>
+<li><p>This function runs only for a minute.</p></li>
 <li><p>split(converted) is a condition so that, loop breaks when if sleep in <cite>conditions()</cite> returns True.</p></li>
 </ul>
 </dd></dl>
@@ -965,16 +976,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.sentry_mode">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">sentry_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.sentry_mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>All it does is to wait for the right keyword to wake up and get into action.</p>
-<p class="rubric">Notes</p>
-<dl class="simple">
-<dt>Threshold is used to sanity check <cite>sentry_mode()</cite> so that:</dt><dd><ul class="simple">
-<li><p>Jarvis doesn’t run into Fatal Python error.</p></li>
-<li><p>Jarvis restarts at least twice a day and gets a new pid.</p></li>
-<li><p>Jarvis doesn’t go into a frozen state with nothing on screen.</p></li>
-</ul>
-</dd>
-</dl>
+<dd><p>Listens until <cite>STATUS</cite> is <cite>True</cite> and invokes <cite>activator()</cite> when heard something.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1126,7 +1128,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.time_travel">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">time_travel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.time_travel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Triggered only from <cite>sentry_mode()</cite> to give a quick update on your day.</p>
+<dd><p>Triggered only from <cite>activator()</cite> to give a quick update on your day.</p>
 </dd></dl>
 
 <dl class="py function">

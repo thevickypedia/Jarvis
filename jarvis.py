@@ -174,7 +174,7 @@ def renew() -> None:
     """Keeps listening and sends the response to `conditions()` function.
 
     Notes:
-        - This function runs only for a minute and goes to `sentry_mode()` if nothing is heard.
+        - This function runs only for a minute.
         - split(converted) is a condition so that, loop breaks when if sleep in `conditions()` returns True.
     """
     speaker.runAndWait()
@@ -688,22 +688,21 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
                     "Please note that this may not be accurate enough for location services.")
         speaker.runAndWait()
     except requests_exceptions.ConnectionError:
+        current_lat_, current_lon_ = None, None
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
         speaker.say("I was unable to connect to the internet. Please check your connection settings and retry.")
         speaker.runAndWait()
         sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
                          f"\nTotal runtime: {time_converter(perf_counter())}")
-        return terminator()
+        terminator()
 
     try:
         # Uses the latitude and longitude information and converts to the required address.
         locator = geo_locator.reverse(f'{current_lat_}, {current_lon_}', language='en')
-        location_info_ = locator.raw['address']
+        return current_lat_, current_lon_, locator.raw['address']
     except (GeocoderUnavailable, GeopyError):
         speaker.say('Received an error while retrieving your address sir! I think a restart should fix this.')
-        return restart()
-
-    return current_lat_, current_lon_, location_info_
+        restart()
 
 
 def report() -> None:
@@ -2790,7 +2789,7 @@ def celebrate() -> str:
 
 
 def time_travel() -> None:
-    """Triggered only from `sentry_mode()` to give a quick update on your day."""
+    """Triggered only from `activator()` to give a quick update on your day."""
     meeting = None
     if not os.path.isfile('meetings'):
         meeting = ThreadPool(processes=1).apply_async(func=meetings)
@@ -3337,66 +3336,66 @@ def internet_checker() -> Union[Speedtest, bool]:
 
 
 def sentry_mode() -> None:
-    """All it does is to wait for the right keyword to wake up and get into action.
-
-    Notes:
-        Threshold is used to sanity check `sentry_mode()` so that:
-            - Jarvis doesn't run into Fatal Python error.
-            - Jarvis restarts at least twice a day and gets a new pid.
-            - Jarvis doesn't go into a frozen state with nothing on screen.
-    """
-    time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']
-    wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
-    threshold = 0
-    while threshold < 5_000:
-        threshold += 1
+    """Listens until `STATUS` is `True` and invokes `activator()` when heard something."""
+    while STATUS:
+        sys.stdout.write("\rSentry Mode")
         try:
-            sys.stdout.write("\rSentry Mode")
-            listen = recognizer.listen(source, timeout=5, phrase_time_limit=7)
-            sys.stdout.write("\r")
-            key_original = recognizer.recognize_google(listen).strip()
-            sys.stdout.write(f"\r{key_original}")
-            key = key_original.lower()
-            key_split = key.split()
-            if [word for word in key_split if word in time_of_day] and 'jarvis' in key:
-                time_travel.has_been_called = True
-                if event:
-                    speaker.say(f'Happy {event}!')
-                if 'night' in key_split or 'goodnight' in key_split:
-                    Thread(target=pc_sleep).start()
-                time_travel()
-            elif 'you there' in key and 'jarvis' in key:
-                speaker.say(f'{choice(wake_up1)}')
-                initialize()
-            elif any(word in key for word in wake_up_words) and 'jarvis' in key:
-                speaker.say(f'{choice(wake_up2)}')
-                initialize()
-            elif key == 'jarvis':
-                speaker.say(f'{choice(wake_up3)}')
-                initialize()
-            elif 'jarvis' in key or 'buddy' in key:
-                remove = ['buddy', 'jarvis']
-                converted = ' '.join([i for i in key_original.split() if i.lower() not in remove])
-                if converted:
-                    split(converted.strip())
-                else:
-                    speaker.say(f'{choice(wake_up3)}')
-                    initialize()
-            speaker.runAndWait()
-        except (UnknownValueError, RequestError, WaitTimeoutError):
+            activator(recognizer.recognize_google(recognizer.listen(source=source, phrase_time_limit=5)).strip())
+        except (UnknownValueError, WaitTimeoutError, RequestError):
             continue
         except KeyboardInterrupt:
             exit_process()
             terminator()
-        except (RecursionError, TimeoutError, RuntimeError, ConnectionResetError):
-            unknown_error = sys.exc_info()[0]
-            logger.error(f'Unknown exception::{unknown_error.__name__}\n{format_exc()}')  # include traceback
-            speaker.say('I faced an unknown exception.')
-            restart()
-    speaker.stop()  # stops before starting a new speaker loop to avoid conflict with offline communicator
-    speaker.say("My run time has reached the threshold!")
-    volume_controller(5)
-    restart()
+
+        # todo: Check and remove or revert. The below exception handler might not be needed since,
+        #  RecursionError - Recursion is increased in main module,
+        #  TimeoutError - Timeout errors are mostly raised only by sockets,
+        #  RuntimeError - Runtime error occurs only when there is a conflict with offline communicator which is handled,
+        #  ConnectionResetError - Connection is not reset and couldn't replicate this in logs.
+        # except (RecursionError, TimeoutError, RuntimeError, ConnectionResetError):
+        #     unknown_error = sys.exc_info()[0]
+        #     logger.error(f'Unknown exception::{unknown_error.__name__}\n{format_exc()}')  # include traceback
+        #     speaker.say('I faced an unknown exception.')
+        #     restart()
+
+
+def activator(key_original: str) -> None:
+    """When invoked by `sentry_mode()`, checks for the right keyword to wake up and get into action.
+
+    Args:
+        key_original: Takes the processed string from `sentry_mode()` as input.
+
+    """
+    sys.stdout.write("\r")
+    time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']
+    wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
+    key = key_original.lower()
+    key_split = key.split()
+    if [word for word in key_split if word in time_of_day] and ('jarvis' in key or 'buddy' in key):
+        time_travel.has_been_called = True
+        if event:
+            speaker.say(f'Happy {event}!')
+        if 'night' in key_split or 'goodnight' in key_split:
+            Thread(target=pc_sleep).start()
+        time_travel()
+    elif 'you there' in key and ('jarvis' in key or 'buddy' in key):
+        speaker.say(f'{choice(wake_up1)}')
+        initialize()
+    elif any(word in key for word in wake_up_words) and ('jarvis' in key or 'buddy' in key):
+        speaker.say(f'{choice(wake_up2)}')
+        initialize()
+    elif key == 'jarvis':
+        speaker.say(f'{choice(wake_up3)}')
+        initialize()
+    elif 'jarvis' in key or 'buddy' in key:
+        remove = ['buddy', 'jarvis']
+        converted = ' '.join([i for i in key_original.split() if i.lower() not in remove])
+        if converted:
+            split(converted.strip())
+        else:
+            speaker.say(f'{choice(wake_up3)}')
+            initialize()
+    speaker.runAndWait()
 
 
 def size_converter(byte_size: int) -> str:
@@ -3739,7 +3738,7 @@ def clear_logs() -> None:
 
 
 if __name__ == '__main__':
-    if system() != 'Darwian':
+    if system() != 'Darwin':
         exit('Unsupported Operating System.\nWindows support was recently deprecated. '
              'Refer https://github.com/thevickypedia/Jarvis/commit/cf54b69363440d20e21ba406e4972eb058af98fc')
 
@@ -3813,11 +3812,12 @@ if __name__ == '__main__':
     if not root_password:
         sys.stdout.write('\rROOT PASSWORD is not set!')
 
+    # warm_light is initiated with a False and set to True only when requested to switch to yellow
     # place_holder is used in many functions for recursion
     # greet_check is used in initialize() to greet only for the first run
     # tv is set to None instead of TV() at the start to avoid turning on the TV unnecessarily
     # suggestion_count is used in google_searchparser to limit the number of times suggestions are used.
-    # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
+        # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
     warm_light, place_holder, greet_check, tv, suggestion_count = False, None, None, None, 0
 
     # stores necessary values for geo location to receive the latitude, longitude and address
@@ -3863,9 +3863,8 @@ if __name__ == '__main__':
     Thread(target=offline_communicator_initiate).start()
     Thread(target=offline_communicator).start()
     Thread(target=meeting_gatherer).start()
-
-    # starts sentry mode
     Thread(target=playsound, args=['indicators/initialize.mp3']).start()
+
     with Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
         sentry_mode()
