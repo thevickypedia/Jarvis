@@ -599,8 +599,10 @@ def conditions(converted: str) -> bool:
 
     elif any(word in converted_lower for word in keywords.restart()):
         if 'pc' in converted_lower or 'computer' in converted_lower or 'imac' in converted_lower:
+            logger.critical(f'JARVIS::Restart for {host_info("model")} has been requested.')
             restart(target='PC')
         else:
+            logger.critical('JARVIS::Self reboot has been requested.')
             restart()
 
     elif any(word in converted_lower for word in keywords.kill()) and \
@@ -702,7 +704,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
         locator = geo_locator.reverse(f'{current_lat_}, {current_lon_}', language='en')
         return current_lat_, current_lon_, locator.raw['address']
     except (GeocoderUnavailable, GeopyError):
-        logger.error('Error retrieving address from latitude and longitude information.')
+        logger.error('Error retrieving address from latitude and longitude information. Initiating self reboot.')
         speaker.say('Received an error while retrieving your address sir! I think a restart should fix this.')
         restart()
 
@@ -3174,6 +3176,7 @@ def system_vitals() -> None:
             speaker.runAndWait()
             response = listener(3, 3)
             if any(word in response.lower() for word in keywords.ok()):
+                logger.critical(f'JARVIS::Restarting {host_info("model")}')
                 restart(target='PC_Proceed')
 
 

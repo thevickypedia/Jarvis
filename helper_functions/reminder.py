@@ -1,5 +1,5 @@
 from datetime import datetime
-from os import environ, listdir, remove, system
+from os import listdir, remove, system
 from threading import Thread
 
 from gmailconnector.send_sms import Messenger
@@ -46,3 +46,13 @@ class Reminder(Thread):
                 system(f"""osascript -e 'display notification "{body}" with title "{subject}"'""")
                 remove(f"{directory}/{file_name}")
                 return
+
+
+if __name__ == '__main__':
+    from os import environ
+    from dotenv import load_dotenv
+
+    env_file_path = '../.env'
+    load_dotenv(dotenv_path=env_file_path)
+
+    Reminder(hours=10, minutes=30, am_pm='AM', message='JARVIS::Test reminder from Reminder module.')
