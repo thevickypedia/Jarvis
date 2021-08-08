@@ -1,9 +1,35 @@
+from logging import Filter, LogRecord, getLogger
 from os import environ
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from models import GetData
+
+
+class EndpointFilter(Filter):
+    """Class to initiate endpoint filter in logs while preserving other access logs.
+
+    >>> EndpointFilter
+
+    """
+
+    def filter(self, record: LogRecord) -> bool:
+        """Filter out the mentioned `/endpoint` from log streams.
+
+        Args:
+            record: LogRecord represents an event which is created every time something is logged.
+
+        Returns:
+            bool:
+            False flag for the endpoint that needs to be filtered.
+
+        """
+        return record.getMessage().find("/docs") == -1
+
+
+getLogger("uvicorn.access").addFilter(EndpointFilter())
+
 
 app = FastAPI(
     title="Jarvis API",
