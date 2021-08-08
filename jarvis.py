@@ -138,7 +138,7 @@ def split(key: str) -> bool:
     return exit_check
 
 
-def greeting() -> str:
+def part_of_day() -> str:
     """Checks the current hour to determine the part of day.
 
     Returns:
@@ -146,13 +146,13 @@ def greeting() -> str:
         Morning, Afternoon, Evening or Night based on time of day.
 
     """
-    am_or_pm = datetime.now().strftime("%p")
+    am_pm = datetime.now().strftime("%p")
     current_hour = int(datetime.now().strftime("%I"))
-    if current_hour in range(4, 12) and am_or_pm == 'AM':
+    if current_hour in range(4, 12) and am_pm == 'AM':
         greet = 'Morning'
-    elif am_or_pm == 'PM' and (current_hour == 12 or current_hour in range(1, 4)):
+    elif am_pm == 'PM' and (current_hour == 12 or current_hour in range(1, 4)):
         greet = 'Afternoon'
-    elif current_hour in range(4, 8) and am_or_pm == 'PM':
+    elif current_hour in range(4, 8) and am_pm == 'PM':
         greet = 'Evening'
     else:
         greet = 'Night'
@@ -165,7 +165,7 @@ def initialize() -> None:
     if greet_check:
         speaker.say("What can I do for you?")
     else:
-        speaker.say(f'Good {greeting()}.')
+        speaker.say(f'Good {part_of_day()}.')
         greet_check = 'initialized'
     renew()
 
@@ -517,7 +517,7 @@ def conditions(converted: str) -> bool:
         if any(word in converted_lower for word in keywords.guard_enable()):
             logger.critical('Enabled Security Mode')
             speaker.say(f"Enabled security mode sir! I will look out for potential threats and keep you posted. "
-                        f"Have a nice {greeting()}, and enjoy yourself sir!")
+                        f"Have a nice {part_of_day()}, and enjoy yourself sir!")
             speaker.runAndWait()
             guard()
 
@@ -2799,22 +2799,24 @@ def celebrate() -> str:
 
 def time_travel() -> None:
     """Triggered only from ``activator()`` to give a quick update on the user's daily routine."""
+    part_day = part_of_day()
     meeting = None
-    if not os.path.isfile('meetings'):
+    if not os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
+            ['Saturday', 'Sunday']:
         meeting = ThreadPool(processes=1).apply_async(func=meetings)
-    day = greeting()
-    speaker.say(f"Good {day} Vignesh.")
+    speaker.say(f"Good {part_day} Vignesh.")
     current_date()
     current_time()
     weather()
     speaker.runAndWait()
-    if os.path.isfile('meetings') and day == 'Morning':
+    if os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
+            ['Saturday', 'Sunday']:
         meeting_reader()
-    elif day == 'Morning':
+    elif meeting:
         try:
-            speaker.say(meeting.get(timeout=60))
+            speaker.say(meeting.get(timeout=30))
         except ThreadTimeoutError:
-            pass
+            pass  # skip terminate, close and join thread since the motive is to skip meetings info in case of a timeout
     todo()
     gmail()
     speaker.say('Would you like to hear the latest news?')
@@ -2872,7 +2874,7 @@ def guard() -> None:
 
         if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable()):
             logger.critical('Disabled security mode')
-            speaker.say(f'Welcome back sir! Good {greeting()}.')
+            speaker.say(f'Welcome back sir! Good {part_of_day()}.')
             if f'{date_extn}.jpg' in os.listdir('threat'):
                 speaker.say("We had a potential threat sir! Please check your email to confirm.")
             speaker.runAndWait()
@@ -3452,23 +3454,23 @@ def exit_message() -> str:
         A greeting bye message.
 
     """
-    current = datetime.now().strftime("%p")  # current part of day (AM/PM)
-    clock = datetime.now().strftime("%I")  # current hour
-    today = datetime.now().strftime("%A")  # current day
+    am_pm = datetime.now().strftime("%p")  # current part of day (AM/PM)
+    hour = datetime.now().strftime("%I")  # current hour
+    day = datetime.now().strftime("%A")  # current day
 
-    if current == 'AM' and int(clock) < 10:
-        exit_msg = f"Have a nice day, and happy {today}."
-    elif current == 'AM' and int(clock) >= 10:
-        exit_msg = f"Enjoy your {today}."
-    elif current == 'PM' and (int(clock) == 12 or int(clock) < 3) and today in weekend:
+    if am_pm == 'AM' and int(hour) < 10:
+        exit_msg = f"Have a nice day, and happy {day}."
+    elif am_pm == 'AM' and int(hour) >= 10:
+        exit_msg = f"Enjoy your {day}."
+    elif am_pm == 'PM' and (int(hour) == 12 or int(hour) < 3) and day in weekend:
         exit_msg = "Have a nice afternoon, and enjoy your weekend."
-    elif current == 'PM' and (int(clock) == 12 or int(clock) < 3):
+    elif am_pm == 'PM' and (int(hour) == 12 or int(hour) < 3):
         exit_msg = "Have a nice afternoon."
-    elif current == 'PM' and int(clock) < 6 and today in weekend:
+    elif am_pm == 'PM' and int(hour) < 6 and day in weekend:
         exit_msg = "Have a nice evening, and enjoy your weekend."
-    elif current == 'PM' and int(clock) < 6:
+    elif am_pm == 'PM' and int(hour) < 6:
         exit_msg = "Have a nice evening."
-    elif today in weekend:
+    elif day in weekend:
         exit_msg = "Have a nice night, and enjoy your weekend."
     else:
         exit_msg = "Have a nice night."
