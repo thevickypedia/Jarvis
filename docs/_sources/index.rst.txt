@@ -19,6 +19,13 @@ Jarvis - Main Module
    :members:
    :undoc-members:
 
+Jarvis - API Models
+===================
+
+.. automodule:: api.models
+   :members:
+   :undoc-members:
+
 Alarm
 =====
 

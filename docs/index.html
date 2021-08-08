@@ -53,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html#deployments">Deployments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#activity">Activity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#development-and-maintenance">Development and Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#reach-out">Reach Out</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#jarvis">Jarvis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="README.html#setup">Setup:</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#env-variables">ENV Variables:</a></li>
@@ -783,6 +784,12 @@ Step 1:</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.morning">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">morning</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.morning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for the current time of the day and day of the week to trigger a series of morning messages.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.music">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">music</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.music" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scans music directory in the user profile for <code class="docutils literal notranslate"><span class="pre">.mp3</span></code> files and plays using default player.</p>
@@ -985,6 +992,11 @@ Step 1:</p>
 <dt class="sig sig-object py" id="jarvis.sentry_mode">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">sentry_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.sentry_mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Listens until <code class="docutils literal notranslate"><span class="pre">STATUS</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> and invokes <code class="docutils literal notranslate"><span class="pre">activator()</span></code> when heard something.</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">Invokes</span> <span class="pre">``morning()``</span> <span class="pre">at</span> <span class="pre">7</span> <span class="pre">AM.</span></span></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -1239,6 +1251,32 @@ Step 1:</p>
 <dt class="sig sig-object py" id="jarvis.wikipedia_">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">wikipedia_</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.wikipedia_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets any information from wikipedia using it’s API.</p>
+</dd></dl>
+
+</section>
+<section id="module-api.models">
+<span id="jarvis-api-models"></span><h1>Jarvis - API Models<a class="headerlink" href="#module-api.models" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="api.models.GetData">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">GetData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.GetData" title="Permalink to this definition">¶</a></dt>
+<dd><p>BaseModel that handles input data for the API which is treated as members for the class <code class="docutils literal notranslate"><span class="pre">GetData</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">command</span></code>: Offline command sent via API which <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> has to perform.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">phrase</span></code>: Secret phrase to authenticate the request sent to the API.</p></li>
+</ul>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.models.GetData.command">
+<span class="sig-name descname"><span class="pre">command</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#api.models.GetData.command" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.models.GetData.phrase">
+<span class="sig-name descname"><span class="pre">phrase</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#api.models.GetData.phrase" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>
@@ -2922,6 +2960,7 @@ Whites can have a value of None.</p>
   <ul>
 <li><a class="reference internal" href="#">Welcome to Jarvis’s documentation!</a></li>
 <li><a class="reference internal" href="#module-jarvis">Jarvis - Main Module</a></li>
+<li><a class="reference internal" href="#module-api.models">Jarvis - API Models</a></li>
 <li><a class="reference internal" href="#module-helper_functions.alarm">Alarm</a></li>
 <li><a class="reference internal" href="#module-helper_functions.conversation">Conversation</a></li>
 <li><a class="reference internal" href="#module-helper_functions.database">Database</a></li>

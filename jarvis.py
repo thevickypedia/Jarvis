@@ -15,7 +15,7 @@ from pathlib import Path
 from platform import platform, system
 from random import choice, choices, randrange
 from shutil import disk_usage, rmtree
-from socket import AF_INET, SOCK_DGRAM, gethostbyname, gethostname, socket
+from socket import AF_INET, SOCK_DGRAM, gethostname, socket
 from ssl import create_default_context
 from string import ascii_letters, digits
 from subprocess import (PIPE, CalledProcessError, Popen, call, check_output,
@@ -298,7 +298,7 @@ def conditions(converted: str) -> bool:
             else:
                 output = 'I was unable to fetch the public IP sir!'
         else:
-            ip_address = vpn_checker().replace('VPN::', '')
+            ip_address = vpn_checker().split(':')[-1]
             output = f"My local IP address for {gethostname()} is {ip_address}"
         sys.stdout.write(f'\r{output}')
         speaker.say(output)
@@ -510,8 +510,7 @@ def conditions(converted: str) -> bool:
             Thread(target=increase_brightness).start()
 
     elif any(word in converted_lower for word in keywords.lights()):
-        connection_status = vpn_checker()
-        if not connection_status.startswith('VPN'):
+        if not vpn_checker().startswith('VPN'):
             lights(converted=converted_lower)
 
     elif any(word in converted_lower for word in keywords.guard_enable() or keywords.guard_disable()):
@@ -873,10 +872,10 @@ def weather(place: str = None) -> None:
         wind_speed = response['current']['wind_speed']
         if wind_speed > 10:
             output = f'The weather in {city} is a {feeling} {temp_f}°, but due to the current wind conditions ' \
-                     f'(which is {wind_speed} miles per hour), it feels like {temp_feel_f}°. {weather_suggest}.'
+                     f'(which is {wind_speed} miles per hour), it feels like {temp_feel_f}°. {weather_suggest}'
         else:
             output = f'The weather in {city} is a {feeling} {temp_f}°, and it currently feels like {temp_feel_f}°. ' \
-                     f'{weather_suggest}.'
+                     f'{weather_suggest}'
     elif place or not report.has_been_called:
         output = f'The weather in {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \
                  f'It currently feels like {temp_feel_f}°F, and the current condition is {condition}.'
@@ -1305,7 +1304,7 @@ def music(device: str = None) -> None:
 
 def gmail() -> None:
     """Reads unread emails from the gmail account for which the credentials are stored in env variables."""
-    sys.stdout.write("\rFetching new emails..")
+    sys.stdout.write("\rFetching unread emails..")
 
     try:
         mail = IMAP4_SSL('imap.gmail.com')  # connects to imaplib
@@ -2769,7 +2768,7 @@ def vpn_checker() -> str:
     ip_address = socket_.getsockname()[0]
     socket_.close()
     if not (ip_address.startswith('192') | ip_address.startswith('127')):
-        ip_address = 'VPN::' + ip_address
+        ip_address = 'VPN:' + ip_address
         info = json_load(urlopen('http://ipinfo.io/json'))
         sys.stdout.write(f"\rVPN connection is detected to {info.get('ip')} at {info.get('city')}, "
                          f"{info.get('region')} maintained by {info.get('org')}")
@@ -3233,10 +3232,7 @@ class PersonalCloud:
         """
 
         active_sessions = check_output("netstat -anvp tcp | awk 'NR<3 || /LISTEN/' 2>&1;", shell=True).decode('utf-8')
-        if not (localhost := gethostbyname('localhost')):  # 'if not' in walrus operator to assign localhost manually
-            localhost = '127.0.0.1'
-        remove = lambda item: item.replace(localhost, '').replace(':', '').replace('.', '').replace('*', '')  # noqa
-        active_ports = [remove(row.split()[3]) for index, row in enumerate(active_sessions.split('\n')) if
+        active_ports = [row.split()[3].split('.')[-1] for index, row in enumerate(active_sessions.split('\n')) if
                         row and index > 1]
         port = randrange(49152, 65535)
         if port not in active_ports:
@@ -3347,12 +3343,31 @@ def internet_checker() -> Union[Speedtest, bool]:
         return False
 
 
+def morning():
+    """Checks for the current time of the day and day of the week to trigger a series of morning messages."""
+    clock = datetime.now()
+    if clock.strftime('%A') not in ['Saturday', 'Sunday'] and int(clock.strftime('%S')) < 5:
+        speaker.say("Good Morning. It's 7 AM.")
+        time_travel.has_been_called = True
+        weather()
+        time_travel.has_been_called = False
+        speaker.runAndWait()
+
+
 def sentry_mode() -> None:
-    """Listens until ``STATUS`` is ``True`` and invokes ``activator()`` when heard something."""
+    """Listens until ``STATUS`` is ``True`` and invokes ``activator()`` when heard something.
+
+    Methods:
+        Invokes ``morning()`` at 7 AM.
+
+    """
     while STATUS:
+        sys.stdout.write("\r")
+        if datetime.now().strftime("%I:%M %p") == '07:00 AM':
+            morning()
         sys.stdout.write("\rSentry Mode")
         try:
-            activator(recognizer.recognize_google(recognizer.listen(source=source, phrase_time_limit=5)).strip())
+            activator(recognizer.recognize_google(recognizer.listen(source=source, phrase_time_limit=5)))
         except (UnknownValueError, WaitTimeoutError, RequestError):
             continue
         except KeyboardInterrupt:
@@ -3399,8 +3414,7 @@ def activator(key_original: str) -> None:
         speaker.say(f'{choice(wake_up3)}')
         initialize()
     elif 'jarvis' in key or 'buddy' in key:
-        remove = ['buddy', 'jarvis']
-        converted = ' '.join([i for i in key_original.split() if i.lower() not in remove])
+        converted = ' '.join([i for i in key_original.split() if i.lower() not in ['buddy', 'jarvis']])
         if converted:
             split(converted.strip())
         else:
@@ -3583,7 +3597,7 @@ def host_info(required: str) -> Union[str, float]:
     """
     device = (check_output("sysctl hw.model", shell=True)).decode('utf-8').split('\n')  # gets model info
     result = list(filter(None, device))[0]  # removes empty string ('\n')
-    model = extract_str(result).replace('hwmodel', '').strip()
+    model = extract_str(result).strip('hwmodel ')
     version = extract_nos(''.join(device))
     if required == 'model':
         return model

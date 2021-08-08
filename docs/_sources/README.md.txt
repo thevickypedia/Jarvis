@@ -1,4 +1,5 @@
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
+[![ForTheBadge built-with-swag](http://ForTheBadge.com/images/badges/built-with-swag.svg)](https://github.com/thevickypedia/Jarvis)
 
 [![Python 3.8](https://img.shields.io/badge/python-3.8-orange.svg)](https://www.python.org/downloads/release/python-385/)
 [![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-391/)
@@ -43,14 +44,19 @@
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/y/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
 [![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
 
-[comment]: <> (![Stackoverflow reputation]&#40;https://img.shields.io/stackexchange/stackoverflow/r/13691532&#41;)
-
 ###### Development and Maintenance
 [![Active Development](https://img.shields.io/badge/Development%20Level-Actively%20Developed-success.svg)](https://github.com/thevickypedia/Jarvis)
 [![Actively Maintained](https://img.shields.io/badge/Maintenance%20Level-Actively%20Maintained-success.svg)](https://github.com/thevickypedia/Jarvis)
 
 [![Maintained](https://img.shields.io/maintenance/yes/2021)](https://api.github.com/repos/thevickypedia/Jarvis)
 [![Maintainer](https://img.shields.io/badge/Maintained%20By-Vignesh%20Sivanandha%20Rao-blue.svg)](https://vigneshrao.com/)
+
+###### Reach Out
+[![Ask Me | Anything ](https://img.shields.io/badge/Ask%20me-Anything-1abc9c.svg)](https://vigneshrao.com/contact)
+
+[comment]: <> ([![Stargazers over time]&#40;https://starchart.cc/thevickypedia/Jarvis.svg&#41;]&#40;https://starchart.cc/thevickypedia/Jarvis&#41;)
+[comment]: <> (![Stackoverflow reputation]&#40;https://img.shields.io/stackexchange/stackoverflow/r/13691532&#41;)
+[comment]: <> (![Profile views]&#40;https://gpvc.arturio.dev/thevickypedia&#41;)
 
 # Jarvis
 IronMan's Jarvis with python

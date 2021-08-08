@@ -50,6 +50,7 @@ class Reminder(Thread):
 
 if __name__ == '__main__':
     from os import environ
+
     from dotenv import load_dotenv
 
     env_file_path = '../.env'

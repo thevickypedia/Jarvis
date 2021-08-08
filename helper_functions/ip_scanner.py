@@ -81,8 +81,9 @@ class LocalIPScan:
 
 if __name__ == '__main__':
     from os import environ
-    from dotenv import load_dotenv
     from pprint import pprint
+
+    from dotenv import load_dotenv
 
     env_file_path = '../.env'
     load_dotenv(dotenv_path=env_file_path)
