@@ -565,20 +565,6 @@ Step 1:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.greeting">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">greeting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.greeting" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the current hour to determine the part of day.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Morning, Afternoon, Evening or Night based on time of day.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.guard">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">guard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.guard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Security Mode will enable camera and microphone in the background.</p>
@@ -665,13 +651,14 @@ Step 1:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.listener">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase_limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.listener" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase_limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.listener" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to activate listener, this function will be called by most upcoming functions to listen to user input.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>timeout</strong> – Time in seconds for the overall listener to be active.</p></li>
 <li><p><strong>phrase_limit</strong> – Time in seconds for the listener to actively listen to a sound.</p></li>
+<li><p><strong>timeout</strong> – Time in seconds for the overall listener to be active.</p></li>
+<li><p><strong>sound</strong> – Flag whether or not to play the listener indicator sound. Defaults to True unless set to False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -785,7 +772,7 @@ Step 1:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.morning">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">morning</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.morning" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">morning</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.morning" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for the current time of the day and day of the week to trigger a series of morning messages.</p>
 </dd></dl>
 
@@ -885,6 +872,20 @@ Step 1:</p>
 <li><p>The connection is tunneled through a public facing URL which is used to make <code class="docutils literal notranslate"><span class="pre">POST</span></code> requests to Jarvis API.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">uvicorn</span></code> command launches JarvisAPI <code class="docutils literal notranslate"><span class="pre">fast.py</span></code> using the same port <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>
 </ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.part_of_day">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">part_of_day</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.part_of_day" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the current hour to determine the part of day.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Morning, Afternoon, Evening or Night based on time of day.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1171,7 +1172,7 @@ Step 1:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.voice_changer">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">voice_changer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.voice_changer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defaults to a particular voice module..</p>
+<dd><p>Defaults to a particular voice module.</p>
 <p>Alternatively the user can choose from a variety of voices available for that particular device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

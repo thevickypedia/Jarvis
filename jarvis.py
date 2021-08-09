@@ -91,12 +91,13 @@ from helper_functions.temperature import Temperature
 from helper_functions.tv_controls import TV
 
 
-def listener(timeout: int, phrase_limit: int) -> str:
+def listener(phrase_limit: int, timeout: int = None, sound: bool = True) -> str:
     """Function to activate listener, this function will be called by most upcoming functions to listen to user input.
 
     Args:
-        timeout: Time in seconds for the overall listener to be active.
         phrase_limit: Time in seconds for the listener to actively listen to a sound.
+        timeout: Time in seconds for the overall listener to be active.
+        sound: Flag whether or not to play the listener indicator sound. Defaults to True unless set to False.
 
     Returns:
         str:
@@ -105,9 +106,13 @@ def listener(timeout: int, phrase_limit: int) -> str:
 
     """
     try:
-        sys.stdout.write("\rListener activated..") and playsound('indicators/start.mp3')
-        listened = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_limit)
-        sys.stdout.write("\r") and playsound('indicators/end.mp3')
+        sys.stdout.write("\rListener activated..") and playsound('indicators/start.mp3') if sound else \
+            sys.stdout.write("\rListener activated..")
+        if timeout and phrase_limit:
+            listened = recognizer.listen(source, phrase_time_limit=phrase_limit, timeout=timeout)
+        else:
+            listened = recognizer.listen(source, phrase_time_limit=phrase_limit)
+        sys.stdout.write("\r") and playsound('indicators/end.mp3') if sound else sys.stdout.write("\r")
         return_val = recognizer.recognize_google(listened)
         sys.stdout.write(f'\r{return_val}')
     except (UnknownValueError, RequestError, WaitTimeoutError):
@@ -176,18 +181,18 @@ def renew() -> None:
     Notes:
         - This function runs only for a minute.
         - split(converted) is a condition so that, loop breaks when if sleep in ``conditions()`` returns True.
+
     """
     speaker.runAndWait()
     waiter = 0
     while waiter < 12:
         waiter += 1
         try:
-            sys.stdout.write("\rListener activated..") and playsound('indicators/start.mp3') if waiter == 1 else \
-                sys.stdout.write("\rListener activated..")
-            listen = recognizer.listen(source, timeout=3, phrase_time_limit=5)
-            sys.stdout.write("\r") and playsound('indicators/end.mp3') if waiter == 0 else sys.stdout.write("\r")
-            converted = recognizer.recognize_google(listen)
-            remove = ['buddy', 'jarvis', 'hey', 'hello']
+            if waiter == 1:
+                converted = listener(timeout=3, phrase_limit=5)
+            else:
+                converted = listener(timeout=3, phrase_limit=5, sound=False)
+            remove = ['buddy', 'jarvis', 'hey', 'hello', 'sr_error']
             converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
             if not converted or 'you there' in converted:
                 speaker.say(choice(wake_up3))
@@ -606,8 +611,7 @@ def conditions(converted: str) -> bool:
 
     elif any(word in converted_lower for word in keywords.kill()) and \
             not any(word in converted_lower for word in keywords.avoid()):
-        exit_process()
-        terminator()
+        raise KeyboardInterrupt
 
     elif any(word in converted_lower for word in keywords.shutdown()):
         shutdown()
@@ -2676,7 +2680,7 @@ def lights(converted: str) -> None:
         controller.send_preset_function(preset_number=value, speed=101)
 
     def lumen(host: str, warm_lights: bool, rgb: int = 255):
-        """Sets lights to custom brighness.
+        """Sets lights to custom brightness.
 
         Args:
             host: Takes target device IP address as an argument.
@@ -2834,6 +2838,7 @@ def guard() -> None:
     Notes:
         - If any speech is recognized or a face is detected, there will another thread triggered to send notifications.
         - Notifications will be triggered only after 5 minutes of previous notification.
+
     """
     import cv2
     cam_source, cam = None, None
@@ -2863,12 +2868,10 @@ def guard() -> None:
         # Listens for any recognizable speech and saves it to a notes file
         try:
             sys.stdout.write("\rSECURITY MODE")
-            with Microphone() as source_:
-                recognizer.adjust_for_ambient_noise(source_)
-                listened = recognizer.listen(source_, timeout=3, phrase_time_limit=10)
-                converted = recognizer.recognize_google(listened)
-                converted = converted.replace('Jarvis', '').strip()
-                sys.stdout.write(f"\r{converted}")
+            listened = recognizer.listen(source, timeout=3, phrase_time_limit=10)
+            converted = recognizer.recognize_google(listened)
+            converted = converted.replace('Jarvis', '').strip()
+            sys.stdout.write(f"\r{converted}")
         except (UnknownValueError, RequestError, WaitTimeoutError):
             pass
 
@@ -2955,6 +2958,7 @@ def offline_communicator_initiate():
         - ``forever_ngrok.py`` is a simple script that triggers ngrok connection in the port ``4483``.
         - The connection is tunneled through a public facing URL which is used to make ``POST`` requests to Jarvis API.
         - ``uvicorn`` command launches JarvisAPI ``fast.py`` using the same port ``4483``
+
     """
     ngrok_status, uvicorn_status = False, False
     target_scripts = ['forever_ngrok.py', 'uvicorn']
@@ -3009,6 +3013,7 @@ def offline_communicator() -> None:
             - When a request is submitted, the JavaScript makes a POST call to the API.
             - The API does the authentication and creates the ``offline_request`` file if authenticated.
             - Check it out: `JarvisOffline <https://thevickypedia.com/jarvisoffline>`__
+
     """
     while STATUS:
         if 'offline_request' in os.listdir():
@@ -3214,6 +3219,7 @@ class PersonalCloud:
             - Mac OS 10.13.* and lower - System Preferences -> Security & Privacy -> Privacy -> Accessibility
         Step 2:
             Unlock for admin privileges. Click on the "+" icon. Select Applications -> Utilities -> Terminal
+
     """
 
     @staticmethod
@@ -3232,7 +3238,6 @@ class PersonalCloud:
             Randomly chosen port number that is not in use.
 
         """
-
         active_sessions = check_output("netstat -anvp tcp | awk 'NR<3 || /LISTEN/' 2>&1;", shell=True).decode('utf-8')
         active_ports = [row.split()[3].split('.')[-1] for index, row in enumerate(active_sessions.split('\n')) if
                         row and index > 1]
@@ -3259,6 +3264,7 @@ class PersonalCloud:
             - Generates random username and passphrase for login info.
             - Triggers personal cloud using another Terminal session.
             - Sends an SMS with ``endpoint``, ``username`` and ``password`` to the ``phone_number``.
+
         """
         personal_cloud.delete_repo()
         initial_script = f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git && " \
@@ -3345,7 +3351,7 @@ def internet_checker() -> Union[Speedtest, bool]:
         return False
 
 
-def morning():
+def morning() -> None:
     """Checks for the current time of the day and day of the week to trigger a series of morning messages."""
     clock = datetime.now()
     if clock.strftime('%A') not in ['Saturday', 'Sunday'] and int(clock.strftime('%S')) < 5:
@@ -3498,6 +3504,7 @@ def remove_files() -> None:
             - all ``.lock`` files created for alarms and reminders.
             - ``location.yaml`` format, to recreate a new one next time around.
             - ``meetings`` file to recreate a new one next time around.
+
     """
     [os.remove(f"alarm/{file}") for file in os.listdir('alarm') if file != '.keep']
     [os.remove(f"reminder/{file}") for file in os.listdir('reminder') if file != '.keep']
@@ -3649,10 +3656,9 @@ def restart(target: str = None) -> None:
         else:
             converted = 'yes'
         if any(word in converted.lower() for word in keywords.ok()):
-            exit_process()
             stop_terminal()
             call(['osascript', '-e', 'tell app "System Events" to restart'])
-            terminator()
+            raise KeyboardInterrupt
         else:
             speaker.say("Machine state is left intact sir!")
             return
@@ -3684,17 +3690,16 @@ def shutdown(proceed: bool = False) -> None:
         converted = 'yes'
     if converted != 'SR_ERROR':
         if any(word in converted.lower() for word in keywords.ok()):
-            exit_process()
             stop_terminal()
             call(['osascript', '-e', 'tell app "System Events" to shut down'])
-            terminator()
+            raise KeyboardInterrupt
         else:
             speaker.say("Machine state is left intact sir!")
             return
 
 
 def voice_changer(change: str = None) -> None:
-    """Defaults to a particular voice module..
+    """Defaults to a particular voice module.
 
     Alternatively the user can choose from a variety of voices available for that particular device.
 
