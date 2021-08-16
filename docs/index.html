@@ -992,7 +992,7 @@ Step 1:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.sentry_mode">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">sentry_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.sentry_mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listens until <code class="docutils literal notranslate"><span class="pre">STATUS</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> and invokes <code class="docutils literal notranslate"><span class="pre">activator()</span></code> when heard something.</p>
+<dd><p>Listens forever and invokes <code class="docutils literal notranslate"><span class="pre">activator()</span></code> when heard something. Stops when <code class="docutils literal notranslate"><span class="pre">STOPPER</span></code> flag is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Invokes</span> <span class="pre">``morning()``</span> <span class="pre">at</span> <span class="pre">7</span> <span class="pre">AM.</span></span></dt>
@@ -1069,6 +1069,34 @@ Step 1:</p>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.starter">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">starter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.starter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates crucial functions which needs to be called during start up.</p>
+<ul class="simple">
+<li><p>Sets <code class="docutils literal notranslate"><span class="pre">STOPPER</span></code> <cite>(global variable)</cite> to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p>Loads the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file so that all the necessary credentials and api keys can be accessed as <code class="docutils literal notranslate"><span class="pre">ENV</span> <span class="pre">vars</span></code></p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.volume_controller">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">volume_controller</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.volume_controller" title="Permalink to this definition">¶</a></dt>
+<dd><p>To default the master volume 50%.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.voice_changer">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">voice_changer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.voice_changer" title="Permalink to this definition">¶</a></dt>
+<dd><p>To change the voice to default value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">clear_logs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd><p>To purge log files older than 48 hours.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -1170,8 +1198,8 @@ Step 1:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.voice_changer">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">voice_changer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.voice_changer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id1">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">voice_changer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defaults to a particular voice module.</p>
 <p>Alternatively the user can choose from a variety of voices available for that particular device.</p>
 <dl class="field-list simple">
@@ -1182,8 +1210,8 @@ Step 1:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.volume_controller">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">volume_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.volume_controller" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id2">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">volume_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controls volume from the numbers received. Defaults to 50%.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

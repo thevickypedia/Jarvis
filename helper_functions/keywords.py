@@ -622,7 +622,7 @@ class Keywords:
             List of words for the function name.
 
         """
-        return ['kill', 'terminate yourself', 'stop running', 'stop']
+        return ['kill', 'terminate yourself', 'stop running']
 
     @staticmethod
     def shutdown() -> list:

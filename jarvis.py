@@ -731,6 +731,7 @@ def current_date() -> None:
     dt_string = datetime.now().strftime("%A, %B")
     date_ = engine().ordinal(datetime.now().strftime("%d"))
     year = datetime.now().strftime("%Y")
+    event = celebrate()
     if time_travel.has_been_called:
         dt_string = dt_string + date_
     else:
@@ -2809,6 +2810,10 @@ def time_travel() -> None:
             ['Saturday', 'Sunday']:
         meeting = ThreadPool(processes=1).apply_async(func=meetings)
     speaker.say(f"Good {part_day} Vignesh.")
+    if part_day == 'Night':
+        if event := celebrate():
+            speaker.say(f'Happy {event}!')
+        return
     current_date()
     current_time()
     weather()
@@ -2829,7 +2834,6 @@ def time_travel() -> None:
     if any(word in phrase.lower() for word in keywords.ok()):
         news()
     time_travel.has_been_called = False
-    return
 
 
 def guard() -> None:
@@ -3015,7 +3019,9 @@ def offline_communicator() -> None:
             - Check it out: `JarvisOffline <https://thevickypedia.com/jarvisoffline>`__
 
     """
-    while STATUS:
+    # noinspection PyGlobalUndefined
+    global STOPPER
+    while True:
         if 'offline_request' in os.listdir():
             with open('offline_request', 'r') as off_file:
                 command = off_file.read()
@@ -3026,10 +3032,15 @@ def offline_communicator() -> None:
                 response = f'Request:\n{command}\nResponse:\n{speaker.vig()}'
                 speaker.stop()
                 voice_changer()
+                notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
+                logger.critical('Response from Jarvis has been sent!')
             except RuntimeError:
                 response = f'I ran into a RuntimeError. So you might need to resend your request\n\n{command}'
-            notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
-            logger.critical('Response from Jarvis has been sent!')
+                notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
+                logger.critical('Response from Jarvis has been sent!')
+                restart()
+        if STOPPER:
+            break
 
 
 def meeting_reader() -> None:
@@ -3051,7 +3062,7 @@ def meeting_gatherer() -> None:
     This function runs in a dedicated thread every 30 minutes to avoid wait time when meetings information is requested.
     """
     logger.critical('Meeting gather has been initiated.')
-    while STATUS:
+    while True:
         if os.path.isfile('meetings') and int(datetime.now().timestamp()) - int(os.stat('meetings').st_mtime) < 1_800:
             os.remove('meetings')  # removes the file if it is older than 30 minutes
         data = meetings()
@@ -3059,6 +3070,8 @@ def meeting_gatherer() -> None:
             with open('meetings', 'w') as gatherer:
                 gatherer.write(data)
             gatherer.close()
+        if STOPPER:
+            break
         sleep(900)
 
 
@@ -3354,25 +3367,29 @@ def internet_checker() -> Union[Speedtest, bool]:
 def morning() -> None:
     """Checks for the current time of the day and day of the week to trigger a series of morning messages."""
     clock = datetime.now()
-    if clock.strftime('%A') not in ['Saturday', 'Sunday'] and int(clock.strftime('%S')) < 5:
+    if clock.strftime('%A') not in ['Saturday', 'Sunday'] and int(clock.strftime('%S')) < 10:
         speaker.say("Good Morning. It's 7 AM.")
         time_travel.has_been_called = True
         weather()
         time_travel.has_been_called = False
+        volume_controller(level=100)
         speaker.runAndWait()
+        volume_controller(level=50)
 
 
 def sentry_mode() -> None:
-    """Listens until ``STATUS`` is ``True`` and invokes ``activator()`` when heard something.
+    """Listens forever and invokes ``activator()`` when heard something. Stops when ``STOPPER`` flag is set to ``True``.
 
     Methods:
         Invokes ``morning()`` at 7 AM.
 
     """
-    while STATUS:
+    while True:
         sys.stdout.write("\r")
         if datetime.now().strftime("%I:%M %p") == '07:00 AM':
             morning()
+        if STOPPER:
+            break
         sys.stdout.write("\rSentry Mode")
         try:
             activator(recognizer.recognize_google(recognizer.listen(source=source, phrase_time_limit=5)))
@@ -3407,8 +3424,6 @@ def activator(key_original: str) -> None:
     key_split = key.split()
     if [word for word in key_split if word in time_of_day] and ('jarvis' in key or 'buddy' in key):
         time_travel.has_been_called = True
-        if event:
-            speaker.say(f'Happy {event}!')
         if 'night' in key_split or 'goodnight' in key_split:
             Thread(target=pc_sleep).start()
         time_travel()
@@ -3481,7 +3496,7 @@ def exit_message() -> str:
     else:
         exit_msg = "Have a nice night."
 
-    if event:
+    if event := celebrate():
         exit_msg += f'\nAnd by the way, happy {event}'
 
     return exit_msg
@@ -3514,9 +3529,10 @@ def remove_files() -> None:
 
 def exit_process() -> None:
     """Function that holds the list of operations done upon exit."""
-    global STATUS
-    STATUS = False
-    logger.critical('JARVIS::Stopping Now::Run STATUS has been unset')
+    # noinspection PyGlobalUndefined
+    global STOPPER
+    STOPPER = True
+    logger.critical('JARVIS::Stopping Now::STOPPER flag has been set to True')
     reminders = {}
     alarms = [file for file in os.listdir('alarm') if file != '.keep' and file != '.DS_Store']
     for file in os.listdir('reminder'):
@@ -3662,9 +3678,10 @@ def restart(target: str = None) -> None:
         else:
             speaker.say("Machine state is left intact sir!")
             return
-    global STATUS
-    STATUS = False
-    logger.critical('JARVIS::Restarting Now::Run STATUS has been unset')
+    # noinspection PyGlobalUndefined
+    global STOPPER
+    STOPPER = True
+    logger.critical('JARVIS::Restarting Now::STOPPER flag has been set.')
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(perf_counter())}")
     speaker.say('Restarting now sir! I will be up and running momentarily.')
     try:
@@ -3769,13 +3786,36 @@ def clear_logs() -> None:
      int(datetime.now().timestamp()) - int(os.stat(f'logs/{file}').st_mtime) > 172_800]
 
 
+def starter() -> None:
+    """Initiates crucial functions which needs to be called during start up.
+
+    - Sets ``STOPPER`` `(global variable)` to ``False``
+    - Loads the ``.env`` file so that all the necessary credentials and api keys can be accessed as ``ENV vars``
+
+    Methods:
+        volume_controller(): To default the master volume 50%.
+        voice_changer(): To change the voice to default value.
+        clear_logs(): To purge log files older than 48 hours.
+    """
+    # noinspection PyGlobalUndefined
+    global STOPPER
+    STOPPER = False
+
+    volume_controller(level=50)
+    voice_changer()
+    clear_logs()
+
+    if '.env' in os.listdir():
+        logger.critical('Loading .env file.')
+        load_dotenv(dotenv_path='.env', verbose=True, override=True)  # loads the .env file
+
+
 if __name__ == '__main__':
     if system() != 'Darwin':
         exit('Unsupported Operating System.\nWindows support was recently deprecated. '
              'Refer https://github.com/thevickypedia/Jarvis/commit/cf54b69363440d20e21ba406e4972eb058af98fc')
 
-    STATUS = True
-    logger.critical('JARVIS::Starting Now::Run STATUS has been set')
+    logger.critical('JARVIS::Starting Now')
 
     sys.stdout.write('\rVoice ID::Female: 1/17 Male: 0/7')  # Voice ID::reference
     speaker = init()  # initiates speaker
@@ -3789,15 +3829,8 @@ if __name__ == '__main__':
     sys.setrecursionlimit(limit * 10)  # increases the recursion limit by 10 times
     home_dir = os.path.expanduser('~')  # gets the path to current user profile
 
-    volume_controller(50)  # defaults to volume 50%
-    voice_changer()  # changes voice to default values given
+    starter()  # initiates crucial functions which needs to be called during start up
 
-    clear_logs()  # deletes old log files
-
-    # Get all necessary credentials and api keys from .env file
-    if '.env' in os.listdir():
-        logger.critical('Loading .env file.')
-        load_dotenv(dotenv_path='.env', verbose=True, override=True)  # loads the .env file
     git_user = os.environ.get('git_user')
     git_pass = os.environ.get('git_pass')
     weather_api = os.environ.get('weather_api')
@@ -3887,8 +3920,6 @@ if __name__ == '__main__':
         time_travel.has_been_called = False, False, False, False, False
     for functions in [delete_todo, todo, add_todo]:
         functions.has_been_called = False
-
-    event = celebrate()  # triggers celebrate function and wishes for a event if found.
 
     sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
 
