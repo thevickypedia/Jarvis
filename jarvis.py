@@ -34,6 +34,9 @@ from appscript.reference import CommandError
 from certifi import where
 from chatterbot import ChatBot
 from chatterbot.trainers import ChatterBotCorpusTrainer
+from cv2 import COLOR_BGR2GRAY, CascadeClassifier, VideoCapture, cvtColor
+from cv2 import data as cv2_data
+from cv2 import imwrite
 from dotenv import load_dotenv
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
@@ -103,7 +106,6 @@ def listener(phrase_limit: int, timeout: int = None, sound: bool = True) -> str:
         str:
          - On success, returns recognized statement from the microphone.
          - On failure, returns ``SR_ERROR`` as a string which is conditioned to respond appropriately.
-
     """
     try:
         sys.stdout.write("\rListener activated..") and playsound('indicators/start.mp3') if sound else \
@@ -129,7 +131,6 @@ def split(key: str) -> bool:
     Returns:
         bool:
         Return value from ``conditions()``
-
     """
     exit_check = False  # this is specifically to catch the sleep command which should break the while loop in renew()
     if ' and ' in key and not any(word in key.lower() for word in keywords.avoid()):
@@ -149,7 +150,6 @@ def part_of_day() -> str:
     Returns:
         str:
         Morning, Afternoon, Evening or Night based on time of day.
-
     """
     am_pm = datetime.now().strftime("%p")
     current_hour = int(datetime.now().strftime("%I"))
@@ -181,7 +181,6 @@ def renew() -> None:
     Notes:
         - This function runs only for a minute.
         - split(converted) is a condition so that, loop breaks when if sleep in ``conditions()`` returns True.
-
     """
     speaker.runAndWait()
     waiter = 0
@@ -194,13 +193,10 @@ def renew() -> None:
                 converted = listener(timeout=3, phrase_limit=5, sound=False)
             remove = ['buddy', 'jarvis', 'hey', 'hello', 'sr_error']
             converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
-            if not converted or 'you there' in converted:
-                speaker.say(choice(wake_up3))
-            else:
+            if converted:
                 if split(converted):
                     break  # split() returns what conditions function returns. Condition() returns True only for sleep.
             speaker.runAndWait()
-            waiter = 0
         except (UnknownValueError, RequestError, WaitTimeoutError):
             pass
 
@@ -214,7 +210,6 @@ def time_converter(seconds: float) -> str:
     Returns:
         str:
         Seconds converted to days or hours or minutes or seconds.
-
     """
     days = round(seconds // 86400)
     seconds = round(seconds % (24 * 3600))
@@ -243,7 +238,6 @@ def conditions(converted: str) -> bool:
     Returns:
         bool:
         Boolean True only when asked to sleep for conditioned sleep message.
-
     """
     sys.stdout.write(f'\r{converted}')
     converted_lower = converted.lower()
@@ -643,7 +637,6 @@ def unrecognized_dumper(converted: str) -> None:
 
     Args:
         converted: Takes the voice recognized statement as argument.
-
     """
     train_file = {'Uncategorized': converted}
     if os.path.isfile('training_data.yaml'):
@@ -670,7 +663,6 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
         None or Tuple[str, str, str]:
         - On success, returns ``current latitude``, ``current longitude`` and ``location`` information as a ``dict``.
         - On failure, calls the ``restart()`` or ``terminator()`` function depending on the error.
-
     """
     try:
         # tries with icloud api to get your device's location for precise location services
@@ -750,7 +742,6 @@ def current_time(place: str = None) -> None:
 
     Args:
         place: Takes name of the place as argument.
-
     """
     if place:
         tf = TimezoneFinder()
@@ -784,7 +775,6 @@ def webpage(target: str or list) -> None:
 
     Args:
         target: Receives the webpage that has to be opened as an argument.
-
     """
     host = []
     try:
@@ -819,7 +809,6 @@ def weather(place: str = None) -> None:
 
     Args:
         place: Takes the location name as an optional argument.
-
     """
     sys.stdout.write('\rGetting your weather info')
     if place:
@@ -909,7 +898,6 @@ def weather_condition(msg: str, place: str = None) -> None:
     Args:
         place: Name of place where the weather information is needed.
         msg: Takes the voice recognized statement as argument.
-
     """
     if place:
         desired_location = geo_locator.geocode(place)
@@ -1047,7 +1035,6 @@ def news(news_source: str = 'fox') -> None:
 
     Args:
         news_source: Source from where the news has to be fetched. Defaults to ``fox``.
-
     """
     sys.stdout.write(f'\rGetting news from {news_source} news.')
     news_client = NewsApiClient(api_key=news_api)
@@ -1072,7 +1059,6 @@ def apps(keyword: str or None) -> None:
 
     Args:
         keyword: Gets app name as an argument to launch the application.
-
     """
     ignore = ['app', 'application']
     if not keyword or keyword in ignore:
@@ -1179,7 +1165,6 @@ def device_selector(converted: str = None) -> AppleDevice:
     Returns:
         AppleDevice:
         Returns the selected device from the class ``AppleDevice``
-
     """
     icloud_api = PyiCloudService(icloud_user, icloud_pass)
     devices = [device for device in icloud_api.devices]
@@ -1230,7 +1215,6 @@ def locate(converted: str) -> None:
 
     Args:
         converted: Takes the voice recognized statement as argument and extracts device name from it.
-
     """
     global place_holder
     target_device = device_selector(converted)
@@ -1287,7 +1271,6 @@ def music(device: str = None) -> None:
 
     Args:
         device: Takes device name as argument.
-
     """
     sys.stdout.write("\rScanning music files...")
 
@@ -1377,7 +1360,6 @@ def meaning(keyword: str or None) -> None:
 
     Args:
         keyword: Takes a keyword as argument for which the meaning was requested.
-
     """
     dictionary = PyDictionary()
     if keyword == 'word':
@@ -1579,7 +1561,6 @@ def distance(starting_point: str = None, destination: str = None) -> None:
     Args:
         starting_point: Takes the starting place name as an optional argument.
         destination: Takes the destination place name as optional argument.
-
     """
     if not destination:
         speaker.say("Destination please?")
@@ -1638,7 +1619,6 @@ def locate_places(place: str or None) -> None:
 
     Args:
         place: Takes a place name as argument.
-
     """
     if not place:
         speaker.say("Tell me the name of a place!")
@@ -1690,7 +1670,6 @@ def directions(place: str or None) -> None:
 
     Args:
         place: Takes a place name as argument.
-
     """
     if not place:
         speaker.say("You might want to give a location.")
@@ -1736,7 +1715,6 @@ def alarm(msg: str) -> None:
 
     Args:
         msg: Takes the voice recognized statement as argument and extracts time from it.
-
     """
     extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', msg) or \
         re.findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', msg)
@@ -1781,7 +1759,6 @@ def kill_alarm() -> None:
 
     Notes:
         - ``alarm_state`` is the list of lock files currently present.
-
     """
     alarm_state = []
     [alarm_state.append(file) for file in os.listdir('alarm') if file != '.keep']
@@ -1816,6 +1793,19 @@ def kill_alarm() -> None:
                 kill_alarm()
 
 
+def comma_separator(list_: list) -> str:
+    """Separates commas using simple ``.join()`` function and analysis based on length of the list taken as argument.
+
+    Args:
+        list_: Takes a list of elements as an argument.
+
+    Returns:
+        str:
+        Comma separated list of elements.
+    """
+    return ', and '.join([', '.join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
+
+
 def google_home(device: str = None, file: str = None) -> None:
     """Uses ``socket lib`` to extract ip address and scan ip range for google home devices.
 
@@ -1845,7 +1835,6 @@ def google_home(device: str = None, file: str = None) -> None:
     Args:
         device: Name of the google home device on which the music has to be played.
         file: Scanned audio file to be played.
-
     """
     network_id = vpn_checker()
     if network_id.startswith('VPN'):
@@ -1865,7 +1854,6 @@ def google_home(device: str = None, file: str = None) -> None:
         Returns:
             Tuple(str, str):
             Device name and it's IP address.
-
         """
         try:
             device_info = GoogleHome(host=f"{network_id}.{host_id}").cc
@@ -1886,20 +1874,6 @@ def google_home(device: str = None, file: str = None) -> None:
 
     if not device or not file:
         sys.stdout.write("\r")
-
-        def comma_separator(list_: list) -> str:
-            """Separates commas using simple .join() function and analysis based on length of the list (args).
-
-            Args:
-                list_: Take a list of elements as an argument.
-
-            Returns:
-                str:
-                Comma separated list of elements.
-
-            """
-            return ', and '.join([', '.join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
-
         speaker.say(f"You have {len(devices)} devices in your IP range sir! {comma_separator(list(devices.keys()))}. "
                     f"You can choose one and ask me to play some music on any of these.")
         return
@@ -1938,7 +1912,6 @@ def reminder(converted: str) -> None:
 
     Args:
         converted: Takes the voice recognized statement as argument and extracts the time and message from it.
-
     """
     message = re.search(' to (.*) at ', converted) or re.search(' about (.*) at ', converted)
     if not message:
@@ -1998,7 +1971,6 @@ def google_maps(query: str) -> bool:
     Returns:
         bool:
         Boolean True if google's maps API is unable to fetch consumable results.
-
     """
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
     response = get(maps_url + 'query=' + query + '&key=' + maps_api)
@@ -2093,7 +2065,6 @@ def github(target: list) -> None:
 
     Args:
         target: Takes repository name as argument which has to be cloned.
-
     """
     if len(target) == 1:
         os.system(f"""cd {home_dir} && git clone -q {target[0]}""")
@@ -2137,7 +2108,6 @@ def notify(user: str, password: str, number: str, body: str) -> None:
         password: Gmail password to authenticate SMTP lib.
         number: Phone number stored as env var.
         body: Content of the message.
-
     """
     subject = "Message from Jarvis" if number == phone_number else "Jarvis::Message from Vignesh"
     Messenger(gmail_user=user, gmail_pass=password, phone_number=number, subject=subject,
@@ -2151,7 +2121,6 @@ def send_sms(number: int or None) -> None:
 
     Args:
         number: Phone number to which the message has to be sent.
-
     """
     if not number:
         speaker.say("Please tell me a number sir!")
@@ -2194,7 +2163,6 @@ def television(converted: str) -> None:
 
     Args:
         converted: Takes the voice recognized statement as argument.
-
     """
     global tv
     phrase_exc = converted.replace('TV', '')
@@ -2329,7 +2297,6 @@ def alpha(text: str) -> bool:
     Returns:
         bool:
         Boolean True if wolfram alpha API is unable to fetch consumable results.
-
     """
     alpha_client = Think(app_id=think_id)
     res = alpha_client.query(text)
@@ -2361,7 +2328,6 @@ def google(query: str) -> bool:
     Returns:
         bool:
         Boolean ``True`` if google search engine is unable to fetch consumable results.
-
     """
     global suggestion_count
     search_engine = GoogleSearch()
@@ -2426,7 +2392,6 @@ def google_search(phrase: str or None) -> None:
 
     Args:
         phrase: Takes the voice recognized statement as argument.
-
     """
     if not phrase:
         speaker.say("Please tell me the search phrase.")
@@ -2448,7 +2413,6 @@ def volume_controller(level: int) -> None:
 
     Args:
         level: Level of volume to which the system has to set.
-
     """
     sys.stdout.write("\r")
     level = round((8 * level) / 100)
@@ -2524,12 +2488,50 @@ def speed_test() -> None:
     speaker.say(F'Upload speed: {upload} per second.')
 
 
+def connector(phrase: str, targets: dict) -> bool:
+    """Scans bluetooth devices in range and establishes connection with the matching device in phrase.
+
+    Args:
+        phrase: Takes the spoken phrase as an argument.
+        targets: Takes a dictionary of scanned devices as argument.
+
+    Returns:
+        bool:
+        Boolean True or False based on connection status.
+    """
+    connection_attempt = False
+    for target in targets:
+        if target['name']:
+            target['name'] = normalize("NFKD", target['name'])
+            if any(re.search(line, target['name'], flags=re.IGNORECASE) for line in phrase.split()):
+                connection_attempt = True
+                if 'disconnect' in phrase:
+                    output = getoutput(f"blueutil --disconnect {target['address']}")
+                    if not output:
+                        sys.stdout.write(f"\rDisconnected from {target['name']}")
+                        sleep(2)  # included a sleep here, so it avoids voice swapping between devices
+                        speaker.say(f"Disconnected from {target['name']} sir!")
+                    else:
+                        speaker.say(f"I was unable to disconnect {target['name']} sir!. "
+                                    f"Perhaps it was never connected.")
+                elif 'connect' in phrase:
+                    output = getoutput(f"blueutil --connect {target['address']}")
+                    if not output:
+                        sys.stdout.write(f"\rConnected to {target['name']}")
+                        sleep(2)  # included a sleep here, so it avoids voice swapping between devices
+                        speaker.say(f"Connected to {target['name']} sir!")
+                    else:
+                        speaker.say(f"Unable to connect {target['name']} sir!, please make sure the device is "
+                                    f"turned on and ready to pair.")
+                break
+    return connection_attempt
+
+
 def bluetooth(phrase: str) -> None:
     """Find and connect to bluetooth devices near by.
 
     Args:
         phrase: Takes the voice recognized statement as argument.
-
     """
     if 'turn off' in phrase or 'power off' in phrase:
         call("blueutil --power 0", shell=True)
@@ -2545,55 +2547,17 @@ def bluetooth(phrase: str) -> None:
         call("blueutil --power 1", shell=True)
         speaker.say('All bluetooth devices have been disconnected sir!')
     else:
-        def connector(targets: dict) -> bool:
-            """Scans bluetooth devices in range and establishes connection with the matching device in phrase.
-
-            Args:
-                targets: Takes a dictionary of scanned devices as argument.
-
-            Returns:
-                bool:
-                Boolean True or False based on connection status.
-
-            """
-            connection_attempt = False
-            for target in targets:
-                if target['name']:
-                    target['name'] = normalize("NFKD", target['name'])
-                    if any(re.search(line, target['name'], flags=re.IGNORECASE) for line in phrase.split()):
-                        connection_attempt = True
-                        if 'disconnect' in phrase:
-                            output = getoutput(f"blueutil --disconnect {target['address']}")
-                            if not output:
-                                sys.stdout.write(f"\rDisconnected from {target['name']}")
-                                sleep(2)  # included a sleep here, so it avoids voice swapping between devices
-                                speaker.say(f"Disconnected from {target['name']} sir!")
-                            else:
-                                speaker.say(f"I was unable to disconnect {target['name']} sir!. "
-                                            f"Perhaps it was never connected.")
-                        elif 'connect' in phrase:
-                            output = getoutput(f"blueutil --connect {target['address']}")
-                            if not output:
-                                sys.stdout.write(f"\rConnected to {target['name']}")
-                                sleep(2)  # included a sleep here, so it avoids voice swapping between devices
-                                speaker.say(f"Connected to {target['name']} sir!")
-                            else:
-                                speaker.say(f"Unable to connect {target['name']} sir!, please make sure the device is "
-                                            f"turned on and ready to pair.")
-                        break
-            return connection_attempt
-
         sys.stdout.write('\rScanning paired Bluetooth devices')
         paired = getoutput("blueutil --paired --format json")
         paired = json_loads(paired)
-        if not connector(targets=paired):
+        if not connector(phrase=phrase, targets=paired):
             sys.stdout.write('\rScanning UN-paired Bluetooth devices')
             speaker.say('No connections were established sir, looking for un-paired devices.')
             speaker.runAndWait()
             unpaired = getoutput("blueutil --inquiry --format json")
             unpaired = json_loads(unpaired)
-            connector(targets=unpaired) if unpaired else speaker.say('No un-paired devices found sir! '
-                                                                     'You may want to be more precise.')
+            connector(phrase=phrase, targets=unpaired) if unpaired else speaker.say('No un-paired devices found sir! '
+                                                                                    'You may want to be more precise.')
 
 
 def increase_brightness() -> None:
@@ -2616,7 +2580,6 @@ def set_brightness(level: int) -> None:
 
     Args:
         level: Percentage of brightness to be set.
-
     """
     level = round((32 * int(level)) / 100)
     for _ in range(32):
@@ -2630,7 +2593,6 @@ def lights(converted: str) -> None:
 
     Args:
         converted: Takes the voice recognized statement as argument.
-
     """
     global warm_light
 
@@ -2644,7 +2606,6 @@ def lights(converted: str) -> None:
 
         Args:
             host: Takes target device IP address as an argument.
-
         """
         controller = MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off')
         controller.turn_off()
@@ -2654,7 +2615,6 @@ def lights(converted: str) -> None:
 
         Args:
             host: Takes target device IP address as an argument.
-
         """
         controller = MagicHomeApi(device_ip=host, device_type=1, operation='Warm Lights')
         controller.update_device(r=0, g=0, b=0, warm_white=255)
@@ -2664,7 +2624,6 @@ def lights(converted: str) -> None:
 
         Args:
             host: Takes target device IP address as an argument.
-
         """
         controller = MagicHomeApi(device_ip=host, device_type=2, operation='Cool Lights')
         controller.update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
@@ -2675,7 +2634,6 @@ def lights(converted: str) -> None:
         Args:
             host: Takes target device IP address as an argument.
             value: Preset value extracted from list of verified values.
-
         """
         controller = MagicHomeApi(device_ip=host, device_type=2, operation='Preset Values')
         controller.send_preset_function(preset_number=value, speed=101)
@@ -2687,7 +2645,6 @@ def lights(converted: str) -> None:
             host: Takes target device IP address as an argument.
             warm_lights: Boolean value if lights have been set to warm or cool.
             rgb: Red, Green andBlue values to alter the brightness.
-
         """
         if warm_lights:
             controller = MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness')
@@ -2766,7 +2723,6 @@ def vpn_checker() -> str:
     Returns:
         str:
         Private IP address of host machine.
-
     """
     socket_ = socket(AF_INET, SOCK_DGRAM)
     socket_.connect(("8.8.8.8", 80))
@@ -2788,7 +2744,6 @@ def celebrate() -> str:
     Returns:
         str:
         A string of the event observed today.
-
     """
     day = datetime.today().date()
     today = datetime.now().strftime("%d-%B")
@@ -2842,12 +2797,10 @@ def guard() -> None:
     Notes:
         - If any speech is recognized or a face is detected, there will another thread triggered to send notifications.
         - Notifications will be triggered only after 5 minutes of previous notification.
-
     """
-    import cv2
     cam_source, cam = None, None
     for i in range(0, 3):
-        cam = cv2.VideoCapture(i)  # tries thrice to choose the camera for which Jarvis has access
+        cam = VideoCapture(i)  # tries thrice to choose the camera for which Jarvis has access
         if cam is None or not cam.isOpened() or cam.read() == (False, None):
             pass
         else:
@@ -2892,10 +2845,10 @@ def guard() -> None:
 
         if cam_source is not None:
             # captures images and keeps storing it to a folder
-            validation_video = cv2.VideoCapture(cam_source)
-            cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+            validation_video = VideoCapture(cam_source)
+            cascade = CascadeClassifier(cv2_data.haarcascades + "haarcascade_frontalface_default.xml")
             ignore, image = validation_video.read()
-            scale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            scale = cvtColor(image, COLOR_BGR2GRAY)
             faces = cascade.detectMultiScale(scale, scale_factor, min_neighbors)
             date_extn = f"{datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p')}"
             try:
@@ -2903,7 +2856,7 @@ def guard() -> None:
                     pass
             except ValueError:
                 # log level set to critical because this is a known exception when try check 'if faces'
-                cv2.imwrite(f'threat/{date_extn}.jpg', image)
+                imwrite(f'threat/{date_extn}.jpg', image)
                 logger.critical(f'Image of detected face stored as {date_extn}.jpg')
 
         if f'{date_extn}.jpg' not in os.listdir('threat'):
@@ -2924,7 +2877,6 @@ def threat_notify(converted: str, date_extn: str or None) -> None:
     Args:
         converted: Takes the voice recognized statement as argument.
         date_extn: Name of the attachment file which is the picture of the intruder.
-
     """
     dt_string = f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}"
     title_ = f'Intruder Alert on {dt_string}'
@@ -2962,7 +2914,6 @@ def offline_communicator_initiate():
         - ``forever_ngrok.py`` is a simple script that triggers ngrok connection in the port ``4483``.
         - The connection is tunneled through a public facing URL which is used to make ``POST`` requests to Jarvis API.
         - ``uvicorn`` command launches JarvisAPI ``fast.py`` using the same port ``4483``
-
     """
     ngrok_status, uvicorn_status = False, False
     target_scripts = ['forever_ngrok.py', 'uvicorn']
@@ -3017,7 +2968,6 @@ def offline_communicator() -> None:
             - When a request is submitted, the JavaScript makes a POST call to the API.
             - The API does the authentication and creates the ``offline_request`` file if authenticated.
             - Check it out: `JarvisOffline <https://thevickypedia.com/jarvisoffline>`__
-
     """
     # noinspection PyGlobalUndefined
     global STOPPER
@@ -3086,7 +3036,6 @@ def meetings(meeting_file: str = 'calendar.scpt') -> str:
         - On success, returns a message saying which meeting is scheduled at what time.
         - If no events, returns a message saying there are no events in the next 12 hours.
         - On failure, returns a message saying Jarvis was unable to read calendar/outlook.
-
     """
     args = [1, 3]
     source_app = meeting_file.replace('.scpt', '')
@@ -3205,7 +3154,6 @@ def get_ssid() -> str:
     Returns:
         str:
         WiFi or Ethernet SSID.
-
     """
     process = Popen(
         ['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'],
@@ -3232,7 +3180,6 @@ class PersonalCloud:
             - Mac OS 10.13.* and lower - System Preferences -> Security & Privacy -> Privacy -> Accessibility
         Step 2:
             Unlock for admin privileges. Click on the "+" icon. Select Applications -> Utilities -> Terminal
-
     """
 
     @staticmethod
@@ -3249,7 +3196,6 @@ class PersonalCloud:
         Returns:
             int:
             Randomly chosen port number that is not in use.
-
         """
         active_sessions = check_output("netstat -anvp tcp | awk 'NR<3 || /LISTEN/' 2>&1;", shell=True).decode('utf-8')
         active_ports = [row.split()[3].split('.')[-1] for index, row in enumerate(active_sessions.split('\n')) if
@@ -3277,7 +3223,6 @@ class PersonalCloud:
             - Generates random username and passphrase for login info.
             - Triggers personal cloud using another Terminal session.
             - Sends an SMS with ``endpoint``, ``username`` and ``password`` to the ``phone_number``.
-
         """
         personal_cloud.delete_repo()
         initial_script = f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git && " \
@@ -3356,7 +3301,6 @@ def internet_checker() -> Union[Speedtest, bool]:
         ``Speedtest`` or bool:
         - On success, returns Speedtest module.
         - On failure, returns boolean False.
-
     """
     try:
         return Speedtest()
@@ -3382,7 +3326,6 @@ def sentry_mode() -> None:
 
     Methods:
         Invokes ``morning()`` at 7 AM.
-
     """
     while True:
         sys.stdout.write("\r")
@@ -3415,7 +3358,6 @@ def activator(key_original: str) -> None:
 
     Args:
         key_original: Takes the processed string from ``sentry_mode()`` as input.
-
     """
     sys.stdout.write("\r")
     time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']
@@ -3455,7 +3397,6 @@ def size_converter(byte_size: int) -> str:
     Returns:
         str:
         Converted understandable size.
-
     """
     if not byte_size:
         from resource import RUSAGE_SELF, getrusage
@@ -3473,7 +3414,6 @@ def exit_message() -> str:
     Returns:
         str:
         A greeting bye message.
-
     """
     am_pm = datetime.now().strftime("%p")  # current part of day (AM/PM)
     hour = datetime.now().strftime("%I")  # current hour
@@ -3519,7 +3459,6 @@ def remove_files() -> None:
             - all ``.lock`` files created for alarms and reminders.
             - ``location.yaml`` format, to recreate a new one next time around.
             - ``meetings`` file to recreate a new one next time around.
-
     """
     [os.remove(f"alarm/{file}") for file in os.listdir('alarm') if file != '.keep']
     [os.remove(f"reminder/{file}") for file in os.listdir('reminder') if file != '.keep']
@@ -3576,7 +3515,6 @@ def extract_nos(input_: str) -> float:
     Returns:
         float:
         Float values.
-
     """
     return float('.'.join(re.findall(r"\d+", input_)))
 
@@ -3590,7 +3528,6 @@ def format_nos(input_: float) -> int:
     Returns:
         int:
         Formatted integer.
-
     """
     return int(input_) if isinstance(input_, float) and input_.is_integer() else input_
 
@@ -3604,7 +3541,6 @@ def extract_str(input_: str) -> str:
     Returns:
         str:
         A string after removing special characters.
-
     """
     return ''.join([i for i in input_ if not i.isdigit() and i not in [',', '.', '?', '-', ';', '!', ':']])
 
@@ -3618,7 +3554,6 @@ def host_info(required: str) -> Union[str, float]:
     Returns:
         str or float:
         Model or version of the machine based on the arg received.
-
     """
     device = (check_output("sysctl hw.model", shell=True)).decode('utf-8').split('\n')  # gets model info
     result = list(filter(None, device))[0]  # removes empty string ('\n')
@@ -3662,7 +3597,6 @@ def restart(target: str = None) -> None:
         target:
         None - Restarts Jarvis to reset PID
         PC - Restarts the machine after getting confirmation.
-
     """
     if target:
         if target == 'PC':
@@ -3697,7 +3631,6 @@ def shutdown(proceed: bool = False) -> None:
 
     Args:
         proceed: Boolean value whether or not to get confirmation.
-
     """
     if not proceed:
         speaker.say(f"{choice(confirmation)} turn off the machine?")
@@ -3722,7 +3655,6 @@ def voice_changer(change: str = None) -> None:
 
     Args:
         change: Initiates changing voices with the volume ID given in statement.
-
     """
     global place_holder
     voices = speaker.getProperty("voices")  # gets the list of voices available
@@ -3735,7 +3667,6 @@ def voice_changer(change: str = None) -> None:
 
         Args:
             voice_id: Default voice ID.
-
         """
         speaker.setProperty("voice", voices[voice_id[0]].id)  # voice module #7 for MacOS
 
