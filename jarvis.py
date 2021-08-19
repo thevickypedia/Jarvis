@@ -34,9 +34,6 @@ from appscript.reference import CommandError
 from certifi import where
 from chatterbot import ChatBot
 from chatterbot.trainers import ChatterBotCorpusTrainer
-from cv2 import COLOR_BGR2GRAY, CascadeClassifier, VideoCapture, cvtColor
-from cv2 import data as cv2_data
-from cv2 import imwrite
 from dotenv import load_dotenv
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
@@ -2798,9 +2795,10 @@ def guard() -> None:
         - If any speech is recognized or a face is detected, there will another thread triggered to send notifications.
         - Notifications will be triggered only after 5 minutes of previous notification.
     """
+    import cv2
     cam_source, cam = None, None
     for i in range(0, 3):
-        cam = VideoCapture(i)  # tries thrice to choose the camera for which Jarvis has access
+        cam = cv2.VideoCapture(i)  # tries thrice to choose the camera for which Jarvis has access
         if cam is None or not cam.isOpened() or cam.read() == (False, None):
             pass
         else:
@@ -2845,10 +2843,10 @@ def guard() -> None:
 
         if cam_source is not None:
             # captures images and keeps storing it to a folder
-            validation_video = VideoCapture(cam_source)
-            cascade = CascadeClassifier(cv2_data.haarcascades + "haarcascade_frontalface_default.xml")
+            validation_video = cv2.VideoCapture(cam_source)
+            cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
             ignore, image = validation_video.read()
-            scale = cvtColor(image, COLOR_BGR2GRAY)
+            scale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             faces = cascade.detectMultiScale(scale, scale_factor, min_neighbors)
             date_extn = f"{datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p')}"
             try:
@@ -2856,7 +2854,7 @@ def guard() -> None:
                     pass
             except ValueError:
                 # log level set to critical because this is a known exception when try check 'if faces'
-                imwrite(f'threat/{date_extn}.jpg', image)
+                cv2.imwrite(f'threat/{date_extn}.jpg', image)
                 logger.critical(f'Image of detected face stored as {date_extn}.jpg')
 
         if f'{date_extn}.jpg' not in os.listdir('threat'):
