@@ -28,8 +28,12 @@ log_file = datetime.now().strftime(path.join(directory, '../logs/jarvis_%d-%m-%Y
 write = ''.join(['*' for _ in range(120)])
 
 if not environ.get('COMMIT'):
-    with open(log_file, 'a') as file:
-        file.write(f"\n{write}\n")
+    with open(log_file, 'a+') as file:
+        file.seek(0)
+        if not file.read():
+            file.write(f"{write}\n")
+        else:
+            file.write(f"\n{write}\n")
 
 reload(logging)
 logging.basicConfig(
