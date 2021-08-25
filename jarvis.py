@@ -1189,7 +1189,7 @@ def device_selector(converted: str = None) -> AppleDevice:
         speaker.say('Choose an option from your screen sir!')
         speaker.runAndWait()
         converted = listener(5, 5)
-        os.remove(devices_file) if devices_file in os.listdir() else None
+        os.remove(devices_file) if os.path.isfile(devices_file) else None
         if converted != 'SR_ERROR':
             for key, value in nth.items():
                 for k in key.split(' or '):
@@ -2291,12 +2291,22 @@ def alpha(text: str) -> bool:
     Args:
         text: Takes the voice recognized statement as argument.
 
+    Raises:
+        Broad ``Exception`` clause indicating that the Full Results API did not find an input parameter while parsing.
+
     Returns:
         bool:
         Boolean True if wolfram alpha API is unable to fetch consumable results.
+
+    References:
+        `Error 1000 <https://products.wolframalpha.com/show-steps-api/documentation/#:~:text=(Error%201000)>`__
     """
     alpha_client = Think(app_id=think_id)
-    res = alpha_client.query(text)
+    # noinspection PyBroadException
+    try:
+        res = alpha_client.query(text)
+    except Exception:
+        return True
     if res['@success'] == 'false':
         return True
     else:
@@ -2970,13 +2980,14 @@ def offline_communicator() -> None:
     # noinspection PyGlobalUndefined
     global STOPPER
     while True:
-        if 'offline_request' in os.listdir():
+        if os.path.isfile('offline_request'):
             with open('offline_request', 'r') as off_file:
                 command = off_file.read()
             os.remove('offline_request')
             logger.critical(f'Received offline input::{command}')
             try:
                 split(command)
+                sys.stdout.write('\r')
                 response = f'Request:\n{command}\nResponse:\n{speaker.vig()}'
                 speaker.stop()
                 voice_changer()
@@ -3173,6 +3184,7 @@ class PersonalCloud:
 
     See Also:
         PersonalCloud integration requires Admin previleages for the default ``Terminal``.
+
         Step 1:
             - Mac OS 10.14.* and higher - System Preferences -> Security & Privacy -> Privacy -> Full Disk Access
             - Mac OS 10.13.* and lower - System Preferences -> Security & Privacy -> Privacy -> Accessibility
@@ -3734,7 +3746,7 @@ def starter() -> None:
     voice_changer()
     clear_logs()
 
-    if '.env' in os.listdir():
+    if os.path.isfile('.env'):
         logger.critical('Loading .env file.')
         load_dotenv(dotenv_path='.env', verbose=True, override=True)  # loads the .env file
 

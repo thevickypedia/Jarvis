@@ -2,13 +2,17 @@
 Initiates logger to log start time, restart time, results from security mode and offline communicator.
 
 In order to use a common logger across multiple files, a dedicated logger has been created.
+
+Writes ``*`` sign 120 times in a row to differentiate start up events in the log file within the same day.
+
+A condition check is in place to see if ``logger.py`` was triggered as part of ``pre-commit`` to avoid doing this.
 """
 
 import logging
 from datetime import datetime
 from importlib import reload
 from logging.config import dictConfig
-from os import path
+from os import environ, path
 
 # Disable loggers from imported modules, while using the root logger without having to load an external file.
 # Refer: https://git.io/J8Ejd
@@ -20,9 +24,16 @@ dictConfig({
 
 directory = path.dirname(__file__)
 
+log_file = datetime.now().strftime(path.join(directory, '../logs/jarvis_%d-%m-%Y.log'))
+write = ''.join(['*' for _ in range(120)])
+
+if not environ.get('COMMIT'):
+    with open(log_file, 'a') as file:
+        file.write(f"\n{write}\n")
+
 reload(logging)
 logging.basicConfig(
-    filename=datetime.now().strftime(path.join(directory, '../logs/jarvis_%d-%m-%Y_%H_%M_%S.log')), filemode='w',
+    filename=log_file, filemode='a',
     format='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s',
     datefmt='%b-%d-%Y %H:%M:%S'
 )

@@ -80,15 +80,13 @@
 <p><a class="reference external" href="https://github.com/thevickypedia/personal_cloud/blob/main/README.md">PersonalCloud README.md</a></p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>PersonalCloud integration requires Admin previleages for the default <code class="docutils literal notranslate"><span class="pre">Terminal</span></code>.
-Step 1:</p>
-<blockquote>
-<div><ul class="simple">
+<p>PersonalCloud integration requires Admin previleages for the default <code class="docutils literal notranslate"><span class="pre">Terminal</span></code>.</p>
+<dl class="simple">
+<dt>Step 1:</dt><dd><ul class="simple">
 <li><p>Mac OS 10.14.* and higher - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Full Disk Access</p></li>
 <li><p>Mac OS 10.13.* and lower - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Accessibility</p></li>
 </ul>
-</div></blockquote>
-<dl class="simple">
+</dd>
 <dt>Step 2:</dt><dd><p>Unlock for admin privileges. Click on the “+” icon. Select Applications -&gt; Utilities -&gt; Terminal</p>
 </dd>
 </dl>
@@ -187,13 +185,18 @@ Step 1:</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>text</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean True if wolfram alpha API is unable to fetch consumable results.</p>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Broad Exception clause indicating that the Full Results API did not find an input parameter while parsing.</strong> – </p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Boolean True if wolfram alpha API is unable to fetch consumable results.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://products.wolframalpha.com/show-steps-api/documentation/#:~:text=(Error%201000)">Error 1000</a></p>
 </dd></dl>
 
 <dl class="py function">
@@ -2598,6 +2601,8 @@ Whites can have a value of None.</p>
 <span id="logger"></span><h1>Logger<a class="headerlink" href="#module-helper_functions.logger" title="Permalink to this headline">¶</a></h1>
 <p>Initiates logger to log start time, restart time, results from security mode and offline communicator.</p>
 <p>In order to use a common logger across multiple files, a dedicated logger has been created.</p>
+<p>Writes <code class="docutils literal notranslate"><span class="pre">*</span></code> sign 120 times in a row to differentiate start up events in the log file within the same day.</p>
+<p>A condition check is in place to see if <code class="docutils literal notranslate"><span class="pre">logger.py</span></code> was triggered as part of <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code> to avoid doing this.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.logger.TestLogger">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.logger.</span></span><span class="sig-name descname"><span class="pre">TestLogger</span></span><a class="headerlink" href="#helper_functions.logger.TestLogger" title="Permalink to this definition">¶</a></dt>
