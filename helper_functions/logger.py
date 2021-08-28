@@ -3,9 +3,14 @@ Initiates logger to log start time, restart time, results from security mode and
 
 In order to use a common logger across multiple files, a dedicated logger has been created.
 
+Disables loggers from imported modules, while using the root logger without having to load an external file.
+
 Writes ``*`` sign 120 times in a row to differentiate start up events in the log file within the same day.
 
 A condition check is in place to see if ``logger.py`` was triggered as part of ``pre-commit`` to avoid doing this.
+
+References:
+    https://git.io/J8Ejd
 """
 
 import logging
@@ -13,9 +18,9 @@ from datetime import datetime
 from importlib import reload
 from logging.config import dictConfig
 from os import environ, path
+from time import struct_time, time
 
-# Disable loggers from imported modules, while using the root logger without having to load an external file.
-# Refer: https://git.io/J8Ejd
+from pytz import timezone, utc
 
 dictConfig({
     'version': 1,
@@ -39,7 +44,7 @@ reload(logging)
 logging.basicConfig(
     filename=log_file, filemode='a',
     format='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s',
-    datefmt='%b-%d-%Y %H:%M:%S'
+    datefmt='%b-%d-%Y %I:%M:%S %p'
 )
 
 logger = logging.getLogger('jarvis.py')
@@ -57,51 +62,73 @@ class TestLogger:
 
     """
 
-    @staticmethod
-    def function1() -> None:
+    def __init__(self):
+        """Instantiates logger to self.logger which is used by the function methods."""
+        self.logger = logger
+
+    def function1(self) -> None:
         """This WILL be logged as it is an error info."""
-        logger.error(sys._getframe(0).f_code.co_name)
+        self.logger.error(sys._getframe(0).f_code.co_name)
         called_func = sys._getframe(1).f_code.co_name.replace("<module>", __name__)
         parent_func = sys._getframe(2).f_code.co_name.replace("<module>", __name__) if not called_func == '__main__' \
             else None
-        logger.error(f'I was called by {called_func} which was called by {parent_func}')
+        self.logger.error(f'I was called by {called_func} which was called by {parent_func}')
 
-    @staticmethod
-    def function2() -> None:
+    def function2(self) -> None:
         """This WILL be logged as it is a critical info."""
-        logger.critical(sys._getframe(0).f_code.co_name)
+        logging.Formatter.converter = self.custom_time
+        self.logger.error(sys._getframe(0).f_code.co_name)
         called_func = sys._getframe(1).f_code.co_name.replace("<module>", __name__)
         parent_func = sys._getframe(2).f_code.co_name.replace("<module>", __name__) if not called_func == '__main__' \
             else None
-        logger.critical(f'I was called by {called_func} which was called by {parent_func}')
-        TestLogger.function1()
+        self.logger.critical(f'I was called by {called_func} which was called by {parent_func}')
+        self.logger.critical("I'm a special function as I use custom timezone, overriding logging.formatTime() method.")
+        self.function1()
 
-    @staticmethod
-    def function3() -> None:
+    def function3(self) -> None:
         """This WILL be logged as it is a fatal info."""
-        logger.fatal(sys._getframe(0).f_code.co_name)
+        self.logger.fatal(sys._getframe(0).f_code.co_name)
         called_func = sys._getframe(1).f_code.co_name.replace("<module>", __name__)
         parent_func = sys._getframe(2).f_code.co_name.replace("<module>", __name__) if not called_func == '__main__' \
             else None
-        logger.fatal(f'I was called by {called_func} which was called by {parent_func}')
-        TestLogger.function2()
+        self.logger.fatal(f'I was called by {called_func} which was called by {parent_func}')
+        self.function2()
 
-    @staticmethod
-    def function4() -> None:
+    def function4(self) -> None:
         """This WILL NOT be logged as no logger level is set."""
-        logger.info('function 4')
+        self.logger.info('function 4')
 
-    @staticmethod
-    def function5() -> None:
+    def function5(self) -> None:
         """This WILL NOT be logged as no logger level is set."""
-        logger.debug('function 5')
+        self.logger.debug('function 5')
+
+    # noinspection PyUnusedLocal
+    @staticmethod
+    def custom_time(*args: logging.Formatter and time) -> struct_time:
+        """Creates custom timezone for ``logging`` which gets used only when invoked by ``Docker``.
+
+        This is used only when triggered within a ``docker container`` as it uses UTC timezone.
+
+        Args:
+            *args: Takes ``Formatter`` object and current epoch as arguments passed by ``formatTime`` from ``logging``.
+
+        Returns:
+            struct_time:
+            A struct_time object which is a tuple of:
+            **current year, month, day, hour, minute, second, weekday, year day and dst** *(Daylight Saving Time)*
+        """
+        utc_dt = utc.localize(datetime.utcnow())
+        my_tz = timezone("US/Eastern")
+        converted = utc_dt.astimezone(my_tz)
+        return converted.timetuple()
 
 
 if __name__ == '__main__':
     import sys
-    TestLogger.function3()
-    TestLogger.function4()
-    TestLogger.function5()
+    test_logger = TestLogger()
+    test_logger.function3()
+    test_logger.function4()
+    test_logger.function5()
     for method_name, return_value in TestLogger.__dict__.items():
         if type(return_value) == staticmethod:
             print(return_value.__func__ or return_value.__get__(TestLogger))

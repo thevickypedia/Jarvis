@@ -611,6 +611,7 @@ def conditions(converted: str) -> bool:
         chatter_bot()
 
     else:
+        logger.critical(f'Received the unrecognized lookup parameter: {converted}')
         Thread(target=unrecognized_dumper, args=[converted]).start()  # writes to training_data.yaml in a thread
         if alpha(converted):
             if google_maps(converted):
@@ -2976,6 +2977,10 @@ def offline_communicator() -> None:
             - When a request is submitted, the JavaScript makes a POST call to the API.
             - The API does the authentication and creates the ``offline_request`` file if authenticated.
             - Check it out: `JarvisOffline <https://thevickypedia.com/jarvisoffline>`__
+
+    Warnings:
+        - Restarts quietly in case of a ``RuntimeError`` however, the offline request will still be be executed.
+        - This happens when ``speaker`` is stopped while another loop of speaker is in progress by regular interaction.
     """
     # noinspection PyGlobalUndefined
     global STOPPER
@@ -2985,6 +2990,7 @@ def offline_communicator() -> None:
                 command = off_file.read()
             os.remove('offline_request')
             logger.critical(f'Received offline input::{command}')
+            response = None
             try:
                 split(command)
                 sys.stdout.write('\r')
@@ -2994,10 +3000,11 @@ def offline_communicator() -> None:
                 notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
                 logger.critical('Response from Jarvis has been sent!')
             except RuntimeError:
-                response = f'I ran into a RuntimeError. So you might need to resend your request\n\n{command}'
-                notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
-                logger.critical('Response from Jarvis has been sent!')
-                restart()
+                logger.error(f'Received a RuntimeError while executing offline request.\n{format_exc()}')
+                if not response:
+                    with open('offline_request', 'w') as off_file:
+                        off_file.write(command)
+                restart(quiet=True)
         if STOPPER:
             break
 
@@ -3096,7 +3103,12 @@ def meetings(meeting_file: str = 'calendar.scpt') -> str:
 
 
 def system_vitals() -> None:
-    """Reads system vitals on MacOS."""
+    """Reads system vitals on MacOS.
+
+    See Also:
+        - Jarvis will suggest a reboot if the system uptime is more than 2 days.
+        - If confirmed, invokes `restart <https://thevickypedia.github.io/Jarvis/#jarvis.restart>`__ function.
+    """
     if not root_password:
         speaker.say("You haven't provided a root password for me to read system vitals sir! "
                     "Add the root password as an environment variable for me to read.")
@@ -3334,8 +3346,8 @@ def morning() -> None:
 def sentry_mode() -> None:
     """Listens forever and invokes ``activator()`` when heard something. Stops when ``STOPPER`` flag is set to ``True``.
 
-    Methods:
-        Invokes ``morning()`` at 7 AM.
+    References:
+        Invokes `morning <https://thevickypedia.github.io/Jarvis/#jarvis.morning>`__ function at 7 AM.
     """
     while True:
         sys.stdout.write("\r")
@@ -3395,7 +3407,10 @@ def activator(key_original: str) -> None:
         else:
             speaker.say(f'{choice(wake_up3)}')
             initialize()
-    speaker.runAndWait()
+    try:
+        speaker.runAndWait()
+    except RuntimeError:
+        restart(quiet=True)
 
 
 def size_converter(byte_size: int) -> str:
@@ -3467,8 +3482,8 @@ def remove_files() -> None:
     Warnings:
         Deletes:
             - all ``.lock`` files created for alarms and reminders.
-            - ``location.yaml`` format, to recreate a new one next time around.
-            - ``meetings`` file to recreate a new one next time around.
+            - ``location.yaml`` file, to recreate a new one next time around.
+            - ``meetings`` file, to recreate a new one next time around.
     """
     [os.remove(f"alarm/{file}") for file in os.listdir('alarm') if file != '.keep']
     [os.remove(f"reminder/{file}") for file in os.listdir('reminder') if file != '.keep']
@@ -3510,7 +3525,7 @@ def exit_process() -> None:
     try:
         speaker.runAndWait()
     except RuntimeError:
-        pass
+        logger.error(f'Received a RuntimeError while self terminating.\n{format_exc()}')
     remove_files()
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
                      f"\nTotal runtime: {time_converter(perf_counter())}")
@@ -3593,7 +3608,7 @@ def stop_terminal() -> None:
             os.system(f'kill -9 {id_.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
 
 
-def restart(target: str = None) -> None:
+def restart(target: str = None, quiet: bool = False) -> None:
     """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
 
     Notes:
@@ -3601,12 +3616,15 @@ def restart(target: str = None) -> None:
         - restart(PC) will restart the machine after getting confirmation.
 
     Warnings:
-        - restart(anything_else) will restart the machine without getting any confirmation.
+        - ``restart(target=!PC)`` will restart the machine without getting any approval as the confirmation is requested
+            - in `system_vitals <https://thevickypedia.github.io/Jarvis/#jarvis.system_vitals>`__.
+        - This is done only when the system vitals are read, and the uptime is more than 2 days.
 
     Args:
         target:
-        None - Restarts Jarvis to reset PID
-        PC - Restarts the machine after getting confirmation.
+            - ``None``: Restarts Jarvis to reset PID
+            - ``PC``: Restarts the machine after getting confirmation.
+        quiet: If a boolean ``True`` is passed, a silent restart will be performed.
     """
     if target:
         if target == 'PC':
@@ -3627,11 +3645,12 @@ def restart(target: str = None) -> None:
     STOPPER = True
     logger.critical('JARVIS::Restarting Now::STOPPER flag has been set.')
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(perf_counter())}")
-    speaker.say('Restarting now sir! I will be up and running momentarily.')
-    try:
-        speaker.runAndWait()
-    except RuntimeError:
-        pass
+    if not quiet:
+        try:
+            speaker.say('Restarting now sir! I will be up and running momentarily.')
+            speaker.runAndWait()
+        except RuntimeError:
+            logger.error(f'Received a RuntimeError while restarting.\n{format_exc()}')
     os.system('python3 restart.py')
     exit(1)  # Don't call terminator() as, os._exit(1) in that func will kill the background threads running in parallel
 
