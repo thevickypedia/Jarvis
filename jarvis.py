@@ -1103,7 +1103,6 @@ def robinhood() -> None:
     stock_value = RobinhoodGatherer().watcher(rh, result)
     sys.stdout.write(f'\r{stock_value}')
     speaker.say(stock_value)
-    speaker.runAndWait()
     sys.stdout.write("\r")
 
 
@@ -1284,8 +1283,6 @@ def music(device: str = None) -> None:
         call(["open", chosen])
         sys.stdout.write("\r")
         speaker.say("Enjoy your music sir!")
-        speaker.runAndWait()
-        return
 
 
 def gmail() -> None:
@@ -1300,7 +1297,6 @@ def gmail() -> None:
     except TimeoutError as TimeOut:
         logger.error(TimeOut)
         speaker.say("I wasn't able to check your emails sir. You might need to check to logs.")
-        speaker.runAndWait()
         return
 
     n = 0
@@ -1311,7 +1307,7 @@ def gmail() -> None:
         speaker.say("I'm unable access your email sir.")
     if n == 0:
         speaker.say("You don't have any emails to catch up sir")
-        speaker.runAndWait()
+        return
     else:
         speaker.say(f'You have {n} unread emails sir. Do you want me to check it?')  # user check before reading subject
         speaker.runAndWait()
@@ -1895,14 +1891,6 @@ def google_home(device: str = None, file: str = None) -> None:
 def jokes() -> None:
     """Uses jokes lib to say chucknorris jokes."""
     speaker.say(choice([geek, icanhazdad, chucknorris, icndb])())
-    speaker.runAndWait()
-    speaker.say("Do you want to hear another one sir?")
-    speaker.runAndWait()
-    converted = listener(3, 3)
-    if converted != 'SR_ERROR':
-        if any(word in converted.lower() for word in keywords.ok()):
-            jokes()
-    return
 
 
 def reminder(converted: str) -> None:
@@ -2969,7 +2957,7 @@ def offline_communicator() -> None:
             - Doing so, avoids changes to all functions within ``conditions()`` to notify the response from Jarvis.
 
         Env Vars:
-            - ``offline_phrase`` - unique phrase to authenticate the requests coming from an external source
+            - ``offline_phrase`` - Unique phrase to authenticate the requests coming from an external source.
 
     Notes:
         More cool stuff:
@@ -2986,24 +2974,24 @@ def offline_communicator() -> None:
     global STOPPER
     while True:
         if os.path.isfile('offline_request'):
-            with open('offline_request', 'r') as off_file:
-                command = off_file.read()
+            with open('offline_request', 'r') as off_request:
+                command = off_request.read()
             os.remove('offline_request')
             logger.critical(f'Received offline input::{command}')
             response = None
             try:
                 split(command)
                 sys.stdout.write('\r')
-                response = f'Request:\n{command}\nResponse:\n{speaker.vig()}'
+                response = speaker.vig()
+                with open('offline_response', 'w') as off_response:
+                    off_response.write(response)
                 speaker.stop()
                 voice_changer()
-                notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=response)
-                logger.critical('Response from Jarvis has been sent!')
             except RuntimeError:
+                if command and not response:
+                    with open('offline_request', 'w') as off_request:
+                        off_request.write(command)
                 logger.error(f'Received a RuntimeError while executing offline request.\n{format_exc()}')
-                if not response:
-                    with open('offline_request', 'w') as off_file:
-                        off_file.write(command)
                 restart(quiet=True)
         if STOPPER:
             break
@@ -3360,6 +3348,9 @@ def sentry_mode() -> None:
             activator(recognizer.recognize_google(recognizer.listen(source=source, phrase_time_limit=5)))
         except (UnknownValueError, WaitTimeoutError, RequestError):
             continue
+        except RuntimeError:
+            logger.error(f'Received a RuntimeError while executing regular interaction.\n{format_exc()}')
+            restart(quiet=True)
         except KeyboardInterrupt:
             exit_process()
             terminator()
