@@ -2,7 +2,7 @@ from logging import getLogger
 from os import environ, path
 from threading import Thread
 
-from controller import EndpointFilter, delete_file
+from controller import EndpointFilter, delete_offline_response
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
@@ -75,7 +75,7 @@ def read_root(input_data: GetData):
                     if path.isfile('../offline_response'):
                         with open('../offline_response', 'r') as off_response:
                             if response := off_response.read():
-                                Thread(target=delete_file, args=[True]).start()
+                                Thread(target=delete_offline_response, args=[True]).start()
                                 raise HTTPException(status_code=200, detail=response)
             else:
                 raise HTTPException(status_code=422,

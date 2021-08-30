@@ -1,4 +1,4 @@
-# system generated
+# python generated
 .idea
 .DS_Store
 __pycache__
@@ -48,5 +48,6 @@ meetings
 # devices information temporarily stored to open as webpage
 devices.html
 
-# temporary file that will created when an offline request is received
+# temporary files that will created when an offline request is received
 offline_request
+offline_response

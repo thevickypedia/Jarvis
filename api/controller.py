@@ -76,7 +76,7 @@ def startup():
     return [i.strip() for n, i in enumerate(matrix_to_list) if i not in matrix_to_list[n + 1:]]
 
 
-def delete_file(flag: bool = False) -> None:
+def delete_offline_response(flag: bool = False) -> None:
     """Delete the ``offline_response`` file created by Jarvis after 2 seconds.
 
     Args:
@@ -84,5 +84,4 @@ def delete_file(flag: bool = False) -> None:
     """
     if flag:
         sleep(2)
-        print('deleted')
         remove('../offline_response')

@@ -529,6 +529,9 @@ def conditions(converted: str) -> bool:
         if os.path.isfile('meetings'):
             meeting_reader()
         else:
+            if os.environ.get('called_by_offline'):
+                speaker.say("Meetings file is not ready yet. Please try again in a minute or two.")
+                return False
             meeting = ThreadPool(processes=1).apply_async(func=meetings)
             speaker.say("Please give me a moment sir! Let me check your calendar.")
             speaker.runAndWait()
@@ -2699,7 +2702,7 @@ def lights(converted: str) -> None:
     lights_count = len(light_host_id)
     plural = 'lights!' if lights_count > 1 else 'light!'
     if 'turn on' in converted or 'cool' in converted or 'white' in converted:
-        warm_light.pop('status')
+        warm_light.pop('status') if warm_light.get('status') else None
         tone = 'white' if 'white' in converted else 'cool'
         speaker.say(f'{choice(ack)}! Turning on {lights_count} {plural}') if 'turn on' in converted else \
             speaker.say(f'{choice(ack)}! Setting {lights_count} {plural} to {tone}!')
@@ -3007,15 +3010,18 @@ def offline_communicator() -> None:
         if os.path.isfile('offline_request'):
             with open('offline_request', 'r') as off_request:
                 command = off_request.read()
-            os.remove('offline_request')
             logger.critical(f'Received offline input::{command}')
             response = None
             try:
-                os.environ['called_by_offline'] = '1'  # Write env var so some function can use it
-                split(command)
-                del os.environ['called_by_offline']  # deletes the env var
-                sys.stdout.write('\r')
-                response = speaker.vig()
+                if command:
+                    os.remove('offline_request')
+                    os.environ['called_by_offline'] = '1'  # Write env var so some function can use it
+                    split(command)
+                    del os.environ['called_by_offline']  # deletes the env var
+                    sys.stdout.write('\r')
+                    response = speaker.vig()
+                else:
+                    response = 'Received a null request. Please try to resend it'
                 current_time_ = datetime.now(timezone('US/Central'))
                 dt_string = current_time_.strftime("%A, %B %d, %Y %I:%M:%S %p")
                 with open('offline_response', 'w') as off_response:
@@ -3120,7 +3126,6 @@ def meetings(meeting_file: str = 'calendar.scpt') -> str:
         else:
             meeting_status += f"{meeting[0]} at {meeting[1]}, " if index + 1 < len(ordered_data) else \
                 f"{meeting[0]} at {meeting[1]}."
-    speaker.say(meeting_status) if os.environ.get('called_by_offline') else None
     return meeting_status
 
 
@@ -3176,12 +3181,12 @@ def system_vitals() -> None:
     restart_time = datetime.strftime(restart_time, "%A, %B %d, at %I:%M %p")
     restart_duration = time_converter(seconds=second)
     output += f'Restarted on: {restart_time} - {restart_duration} ago from now.'
-    sys.stdout.write(f'\r{output}')
-    speaker.say(f'Your {model} was last booted on {restart_time}. '
-                f'Current boot time is: {restart_duration}.')
     if os.environ.get('called_by_offline'):
         speaker.say(output)
         return
+    sys.stdout.write(f'\r{output}')
+    speaker.say(f'Your {model} was last booted on {restart_time}. '
+                f'Current boot time is: {restart_duration}.')
     if second >= 172_800:
         if boot_extreme := re.search('(.*) days', restart_duration):
             warn = int(boot_extreme.group().replace(' days', '').strip())
