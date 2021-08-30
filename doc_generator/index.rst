@@ -19,6 +19,13 @@ Jarvis - Main Module
    :members:
    :undoc-members:
 
+Jarvis - API Controller
+=======================
+
+.. automodule:: api.controller
+   :members:
+   :undoc-members:
+
 Jarvis - API Models
 ===================
 

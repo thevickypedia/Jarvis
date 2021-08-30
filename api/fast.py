@@ -1,34 +1,12 @@
-from logging import Filter, LogRecord, getLogger
-from os import environ, path, remove
+from logging import getLogger
+from os import environ, path
 from threading import Thread
-from time import sleep
 
+from controller import EndpointFilter, delete_file
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from models import GetData
-
-
-class EndpointFilter(Filter):
-    """Class to initiate endpoint filter in logs while preserving other access logs.
-
-    >>> EndpointFilter
-
-    """
-
-    def filter(self, record: LogRecord) -> bool:
-        """Filter out the mentioned `/endpoint` from log streams.
-
-        Args:
-            record: LogRecord represents an event which is created every time something is logged.
-
-        Returns:
-            bool:
-            False flag for the endpoint that needs to be filtered.
-
-        """
-        return record.getMessage().find("/docs") == -1
-
 
 getLogger("uvicorn.access").addFilter(EndpointFilter())
 
@@ -38,6 +16,15 @@ app = FastAPI(
     description="Jarvis API and webhooks",
     version="v1.0"
 )
+
+offline_compatible = []
+
+
+@app.on_event(event_type='startup')
+async def get_compatible():
+    """Calls startup method to add the list of acceptable keywords for offline_compatible."""
+    from controller import startup
+    offline_compatible.extend(startup())
 
 
 @app.get('/', response_class=RedirectResponse, include_in_schema=False)
@@ -67,6 +54,8 @@ def read_root(input_data: GetData):
     ## See Also:
         - Include response_model only when the response should have same keys as arguments
             - @app.post("/offline-communicator", response_model=GetData)
+        - Keeps waiting until Jarvis sends a response back by creating the offline_response file.
+        - This response will be sent as raising a HTTPException with status code 200.
     """
     passphrase = input_data.phrase
     command = input_data.command
@@ -76,22 +65,21 @@ def read_root(input_data: GetData):
         if command.lower() == 'test':
             raise HTTPException(status_code=200, detail='Test message has been received.')
         else:
-            with open('../offline_request', 'w') as off_request:
-                off_request.write(command)
-            while True:
-                if path.isfile('../offline_response'):
-                    with open('../offline_response', 'r') as off_response:
-                        if response := off_response.read():
-                            Thread(target=delete_file).start()
-                            raise HTTPException(status_code=200, detail=response)
+            if any(word in command.lower() for word in offline_compatible):
+                with open('../offline_request', 'w') as off_request:
+                    off_request.write(command)
+                while True:
+                    if path.isfile('../offline_response'):
+                        with open('../offline_response', 'r') as off_response:
+                            if response := off_response.read():
+                                Thread(target=delete_file, args=[True]).start()
+                                raise HTTPException(status_code=200, detail=response)
+            else:
+                raise HTTPException(status_code=422,
+                                    detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
+                                           f'Please try an instruction that does not require an user interaction.')
     else:
         raise HTTPException(status_code=401, detail='Request not authorized.')
-
-
-def delete_file() -> None:
-    """Delete the ``offline_response`` file created by ``Jarvis`` after 2 seconds."""
-    sleep(2)
-    remove('../offline_response')
 
 
 website = environ.get('website', 'thevickypedia.com')

@@ -509,17 +509,22 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.google">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">google</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.google" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">google</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suggestion_count</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.google" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses Google’s search engine parser and gets the first result that shows up on a google search.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>If it is unable to get the result, Jarvis sends a request to <code class="docutils literal notranslate"><span class="pre">suggestqueries.google.com</span></code></p></li>
 <li><p>This is to rephrase the query and then looks up using the search engine parser once again.</p></li>
-<li><p>global <code class="docutils literal notranslate"><span class="pre">suggestion_count</span></code> is used to make sure the suggestions and parsing don’t run on an infinite loop.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">suggestion_count</span></code> is used to limit the number of times suggestions are used.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">suggestion_count</span></code> is also used to make sure the suggestions and parsing don’t run on an infinite loop.</p></li>
+<li><p>This happens when <code class="docutils literal notranslate"><span class="pre">google</span></code> gets the exact search as suggested ones which failed to fetch results earlier.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>query</strong> – Takes the voice recognized statement as argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>suggestion_count</strong> – Integer value that keeps incrementing when <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> looks up for suggestions.</p></li>
+<li><p><strong>query</strong> – Takes the voice recognized statement as argument.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Boolean <code class="docutils literal notranslate"><span class="pre">True</span></code> if google search engine is unable to fetch consumable results.</p>
@@ -716,11 +721,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.locate">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">locate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.locate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">locate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_repeat</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.locate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Locates an apple device using icloud api for python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument and extracts device name from it.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>no_repeat</strong> – A place holder flag switched during <code class="docutils literal notranslate"><span class="pre">recursion</span></code> so that, <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> doesn’t repeat himself.</p></li>
+<li><p><strong>converted</strong> – Takes the voice recognized statement as argument and extracts device name from it.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1131,7 +1139,6 @@
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">starter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.starter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates crucial functions which needs to be called during start up.</p>
 <ul class="simple">
-<li><p>Sets <code class="docutils literal notranslate"><span class="pre">STOPPER</span></code> <cite>(global variable)</cite> to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p>Loads the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file so that all the necessary credentials and api keys can be accessed as <code class="docutils literal notranslate"><span class="pre">ENV</span> <span class="pre">vars</span></code></p></li>
 </ul>
 <dl class="py method">
@@ -1244,8 +1251,13 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.todo">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.todo" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">todo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_repeat</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.todo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Says the item and category stored in the to-do list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>no_repeat</strong> – A place holder flag switched during <code class="docutils literal notranslate"><span class="pre">recursion</span></code> so that, <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> doesn’t repeat himself.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1342,6 +1354,68 @@
 <dt class="sig sig-object py" id="jarvis.wikipedia_">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">wikipedia_</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.wikipedia_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets any information from wikipedia using it’s API.</p>
+</dd></dl>
+
+</section>
+<section id="module-api.controller">
+<span id="jarvis-api-controller"></span><h1>Jarvis - API Controller<a class="headerlink" href="#module-api.controller" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="api.controller.EndpointFilter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.controller.</span></span><span class="sig-name descname"><span class="pre">EndpointFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.controller.EndpointFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to initiate endpoint filter in logs while preserving other access logs.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">EndpointFilter</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="api.controller.EndpointFilter.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">logging.LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.controller.EndpointFilter.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter out the mentioned <code class="docutils literal notranslate"><span class="pre">/endpoint</span></code> from log streams.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>record</strong> – <code class="docutils literal notranslate"><span class="pre">LogRecord</span></code> represents an event which is created every time something is logged.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False flag for the endpoint that needs to be filtered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.controller.delete_file">
+<span class="sig-prename descclassname"><span class="pre">api.controller.</span></span><span class="sig-name descname"><span class="pre">delete_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.controller.delete_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the <code class="docutils literal notranslate"><span class="pre">offline_response</span></code> file created by Jarvis after 2 seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>flag</strong> – Flag set to False by default. Decides whether or not to delete the <code class="docutils literal notranslate"><span class="pre">offline_response</span></code> file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.controller.startup">
+<span class="sig-prename descclassname"><span class="pre">api.controller.</span></span><span class="sig-name descname"><span class="pre">startup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.controller.startup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">Keywords</span></code> class to get the return values of methods that are compatible with <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code> cannot process commands that require an interaction with the user.</p></li>
+<li><p>This is because <code class="docutils literal notranslate"><span class="pre">speaker.stop()</span></code> will stop the <code class="docutils literal notranslate"><span class="pre">speaker.runAndWait()</span></code> in an interaction.</p></li>
+<li><p>This action will raise a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> since the <code class="docutils literal notranslate"><span class="pre">speaker.endLoop()</span></code> would have already started.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Flat list from a matrix (list of lists) after removing the duplicates.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -3075,6 +3149,7 @@ Whites can have a value of None.</p>
   <ul>
 <li><a class="reference internal" href="#">Welcome to Jarvis’s documentation!</a></li>
 <li><a class="reference internal" href="#module-jarvis">Jarvis - Main Module</a></li>
+<li><a class="reference internal" href="#module-api.controller">Jarvis - API Controller</a></li>
 <li><a class="reference internal" href="#module-api.models">Jarvis - API Models</a></li>
 <li><a class="reference internal" href="#module-helper_functions.alarm">Alarm</a></li>
 <li><a class="reference internal" href="#module-helper_functions.conversation">Conversation</a></li>

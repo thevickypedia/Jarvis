@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from email import message_from_bytes
 from email.header import decode_header, make_header
 from imaplib import IMAP4_SSL
+from json import dumps as json_dumps
 from json import load as json_load
 from json import loads as json_loads
 from math import ceil, floor, log, pow
@@ -163,12 +164,11 @@ def part_of_day() -> str:
 
 def initialize() -> None:
     """Awakens from sleep mode. ``greet_check`` is to ensure greeting is given only for the first function call."""
-    global greet_check
-    if greet_check:
+    if greet_check.get('status'):
         speaker.say("What can I do for you?")
     else:
         speaker.say(f'Good {part_of_day()}.')
-        greet_check = 'initialized'
+        greet_check['status'] = True
     renew()
 
 
@@ -590,6 +590,7 @@ def conditions(converted: str) -> bool:
             pc_sleep()
         else:
             speaker.say("Activating sentry mode, enjoy yourself sir!")
+            greet_check.pop('status')
         return True
 
     elif any(word in converted_lower for word in keywords.restart()):
@@ -667,7 +668,8 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
         if not device:
             device = device_selector()
         raw_location = device.location()
-        if not raw_location and place_holder == 'Apple':
+        # noinspection PyUnresolvedReferences,PyProtectedMember
+        if not raw_location and sys._getframe(1).f_code.co_name == 'locate':
             return 'None', 'None', 'None'
         elif not raw_location:
             raise PyiCloudAPIResponseException(reason=f'Unable to retrieve location for {device}')
@@ -1046,6 +1048,8 @@ def news(news_source: str = 'fox') -> None:
         speaker.say("News around you!")
         for article in all_articles['articles']:
             speaker.say(article['title'])
+        if os.environ.get('called_by_offline'):
+            return
         speaker.say("That's the end of news around you.")
 
     if report.has_been_called or time_travel.has_been_called:
@@ -1058,9 +1062,12 @@ def apps(keyword: str or None) -> None:
     Args:
         keyword: Gets app name as an argument to launch the application.
     """
+    offline = os.environ.get('called_by_offline')
     ignore = ['app', 'application']
     if not keyword or keyword in ignore:
         speaker.say("Which app shall I open sir?")
+        if offline:
+            return
         speaker.runAndWait()
         keyword = listener(3, 4)
         if keyword != 'SR_ERROR':
@@ -1082,6 +1089,8 @@ def apps(keyword: str or None) -> None:
 
     if not app_check:
         speaker.say(f"I did not find the app {keyword}. Try again.")
+        if offline:
+            return
         apps(None)
     else:
         app_status = os.system(f"open /Applications/'{keyword}' > /dev/null 2>&1")
@@ -1207,16 +1216,16 @@ def location() -> None:
     speaker.say(f"You're at {city} {state}, in {country}")
 
 
-def locate(converted: str) -> None:
+def locate(converted: str, no_repeat: bool = False) -> None:
     """Locates an apple device using icloud api for python.
 
     Args:
+        no_repeat: A place holder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
         converted: Takes the voice recognized statement as argument and extracts device name from it.
     """
-    global place_holder
     target_device = device_selector(converted)
     sys.stdout.write(f"\rLocating your {target_device}")
-    if place_holder == 0:
+    if no_repeat:
         speaker.say("Would you like to get the location details?")
     else:
         target_device.play_sound()
@@ -1227,18 +1236,13 @@ def locate(converted: str) -> None:
     speaker.runAndWait()
     phrase = listener(3, 3)
     if phrase == 'SR_ERROR':
-        if place_holder == 0:
-            place_holder = None
-        else:
-            speaker.say("I didn't quite get that. Try again.")
-            place_holder = 0
-            locate(converted)
+        if no_repeat:
+            return
+        speaker.say("I didn't quite get that. Try again.")
+        locate(converted=converted, no_repeat=True)
     else:
-        place_holder = None
         if any(word in phrase.lower() for word in keywords.ok()):
-            place_holder = 'Apple'
             ignore_lat, ignore_lon, location_info_ = location_services(target_device)
-            place_holder = None
             lookup = str(target_device).split(':')[0].strip()
             if location_info_ == 'None':
                 speaker.say(f"I wasn't able to locate your {lookup} sir! It is probably offline.")
@@ -1288,7 +1292,7 @@ def music(device: str = None) -> None:
 def gmail() -> None:
     """Reads unread emails from the gmail account for which the credentials are stored in env variables."""
     sys.stdout.write("\rFetching unread emails..")
-
+    offline = os.environ.get('called_by_offline')
     try:
         mail = IMAP4_SSL('imap.gmail.com')  # connects to imaplib
         mail.login(gmail_user, gmail_pass)
@@ -1299,18 +1303,19 @@ def gmail() -> None:
         speaker.say("I wasn't able to check your emails sir. You might need to check to logs.")
         return
 
-    n = 0
     return_code, messages = mail.search(None, 'UNSEEN')  # looks for unread emails
     if return_code == 'OK':
         n = len(messages[0].split())
     else:
         speaker.say("I'm unable access your email sir.")
+        return
     if n == 0:
         speaker.say("You don't have any emails to catch up sir")
         return
     else:
-        speaker.say(f'You have {n} unread emails sir. Do you want me to check it?')  # user check before reading subject
-        speaker.runAndWait()
+        if not offline:
+            speaker.say(f'You have {n} unread emails sir. Do you want me to check it?')
+            speaker.runAndWait()
         response = listener(3, 3)
         if response != 'SR_ERROR':
             if any(word in response.lower() for word in keywords.ok()):
@@ -1346,7 +1351,7 @@ def gmail() -> None:
                                 receive = datetime_obj.strftime("on %A, %B %d, at %I:%M %p")
                             sys.stdout.write(f'\rReceived:{receive}\tSender: {sender}\tSubject: {subject}')
                             speaker.say(f"You have an email from, {sender}, with subject, {subject}, {receive}")
-                            speaker.runAndWait()
+                            speaker.runAndWait() if not offline else None
 
 
 def meaning(keyword: str or None) -> None:
@@ -1355,6 +1360,7 @@ def meaning(keyword: str or None) -> None:
     Args:
         keyword: Takes a keyword as argument for which the meaning was requested.
     """
+    offline = os.environ.get('called_by_offline')
     dictionary = PyDictionary()
     if keyword == 'word':
         keyword = None
@@ -1366,7 +1372,7 @@ def meaning(keyword: str or None) -> None:
             if any(word in response.lower() for word in keywords.exit()):
                 return
             else:
-                meaning(response)
+                meaning(keyword=response)
     else:
         definition = dictionary.meaning(keyword)
         if definition:
@@ -1378,6 +1384,8 @@ def meaning(keyword: str or None) -> None:
                 n += 1
                 mean = ', '.join(value[0:2])
                 speaker.say(f'{keyword} is {repeat} {insert} {key}, which means {mean}.')
+            if offline:
+                return
             speaker.say(f'Do you wanna know how {keyword} is spelled?')
             speaker.runAndWait()
             response = listener(3, 3)
@@ -1385,6 +1393,8 @@ def meaning(keyword: str or None) -> None:
                 for letter in list(keyword.lower()):
                     speaker.say(letter)
                 speaker.runAndWait()
+        elif offline:
+            return
         else:
             speaker.say("Keyword should be a single word sir! Try again")
             meaning(None)
@@ -1402,14 +1412,20 @@ def create_db() -> None:
         add_todo()
 
 
-def todo() -> None:
-    """Says the item and category stored in the to-do list."""
-    global place_holder
+def todo(no_repeat: bool = False) -> None:
+    """Says the item and category stored in the to-do list.
+
+    Args:
+        no_repeat: A place holder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
+    """
     sys.stdout.write("\rLooking for to-do database..")
     if not os.path.isfile(file_name) and (time_travel.has_been_called or report.has_been_called):
         pass
     elif not os.path.isfile(file_name):
-        if place_holder == 0:
+        if os.environ.get('called_by_offline'):
+            speaker.say("Your don't have any items in your to-do list sir!")
+            return
+        if no_repeat:
             speaker.say("Would you like to create a database for your to-do list?")
         else:
             speaker.say("You don't have a database created for your to-do list sir. Would you like to spin up one now?")
@@ -1423,14 +1439,10 @@ def todo() -> None:
             else:
                 return
         else:
-            if place_holder == 0:
-                place_holder = None
+            if no_repeat:
                 return
-            else:
-                speaker.say("I didn't quite get that. Try again.")
-                place_holder = 0
-                todo()
-        place_holder = None
+            speaker.say("I didn't quite get that. Try again.")
+            todo(no_repeat=True)
     else:
         sys.stdout.write("\rQuerying DB for to-do list..")
         result = {}
@@ -1442,6 +1454,9 @@ def todo() -> None:
                 result[category] = result[category] + ', ' + item  # updates category if already found in result
         sys.stdout.write("\r")
         if result:
+            if os.environ.get('called_by_offline'):
+                speaker.say(json_dumps(result))
+                return
             speaker.say('Your to-do items are')
             for category, item in result.items():  # browses dictionary and stores result in response and says it
                 response = f"{item}, in {category} category."
@@ -1558,6 +1573,8 @@ def distance(starting_point: str = None, destination: str = None) -> None:
     """
     if not destination:
         speaker.say("Destination please?")
+        if os.environ.get('called_by_offline'):
+            return
         speaker.runAndWait()
         destination = listener(3, 4)
         if destination != 'SR_ERROR':
@@ -1614,7 +1631,11 @@ def locate_places(place: str or None) -> None:
     Args:
         place: Takes a place name as argument.
     """
+    offline = os.environ.get('called_by_offline')
     if not place:
+        if offline:
+            speaker.say('I need a location to get you the details sir!')
+            return
         speaker.say("Tell me the name of a place!")
         speaker.runAndWait()
         converted = listener(3, 4)
@@ -1650,9 +1671,13 @@ def locate_places(place: str or None) -> None:
         elif (city or county) and state and country:
             speaker.say(f"{place} is in {city or county}, {state}" if country == location_info['country']
                         else f"{place} is in {city or county}, {state}, in {country}")
+        if offline:
+            return
         locate_places.has_been_called = True
     except (TypeError, AttributeError):
         speaker.say(f"{place} is not a real place on Earth sir! Try again.")
+        if offline:
+            return
         locate_places(place=None)
     distance(starting_point=None, destination=place)
 
@@ -1711,7 +1736,7 @@ def alarm(msg: str) -> None:
         msg: Takes the voice recognized statement as argument and extracts time from it.
     """
     extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', msg) or \
-        re.findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', msg)
+        re.findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', msg) or re.findall(r'([0-9]+\s?(?:am|pm:?))', msg)
     if extracted_time:
         extracted_time = extracted_time[0]
         am_pm = extracted_time.split()[-1]
@@ -1739,6 +1764,8 @@ def alarm(msg: str) -> None:
                         f"I don't think a time like that exists on Earth.")
     else:
         speaker.say('Please tell me a time sir!')
+        if os.environ.get('called_by_offline'):
+            return
         speaker.runAndWait()
         converted = listener(3, 4)
         if converted != 'SR_ERROR':
@@ -1834,9 +1861,10 @@ def google_home(device: str = None, file: str = None) -> None:
     if network_id.startswith('VPN'):
         return
 
-    speaker.say('Scanning your IP range for Google Home devices sir!')
-    sys.stdout.write('\rScanning your IP range for Google Home devices..')
-    speaker.runAndWait()
+    if not os.environ.get('called_by_offline'):
+        speaker.say('Scanning your IP range for Google Home devices sir!')
+        sys.stdout.write('\rScanning your IP range for Google Home devices..')
+        speaker.runAndWait()
     network_id = '.'.join(network_id.split('.')[0:3])
 
     def ip_scan(host_id: int) -> Tuple[str, str]:
@@ -1909,6 +1937,9 @@ def reminder(converted: str) -> None:
     extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
         r'([0-9]+\s?(?:a.m.|p.m.:?))', converted)
     if not extracted_time:
+        if os.environ.get('called_by_offline'):
+            speaker.say('Reminder format should be::Remind me to do something, at some time.')
+            return
         speaker.say("When do you want to be reminded sir?")
         speaker.runAndWait()
         converted = listener(3, 4)
@@ -2139,6 +2170,7 @@ def send_sms(number: int or None) -> None:
                 return
 
 
+# noinspection PyUnboundLocalVariable
 def television(converted: str) -> None:
     """Controls all actions on a TV (LG Web OS).
 
@@ -2150,7 +2182,6 @@ def television(converted: str) -> None:
     Args:
         converted: Takes the voice recognized statement as argument.
     """
-    global tv
     phrase_exc = converted.replace('TV', '')
     phrase = phrase_exc.lower()
 
@@ -2181,7 +2212,7 @@ def television(converted: str) -> None:
                     "same network as your TV, and your TV is connected to a power source.")
         return
 
-    if not tv:
+    if not tv_state.get('status'):
         try:
             tv = TV(ip_address=tv_ip, client_key=tv_client_key)
         except ConnectionResetError as error:
@@ -2189,11 +2220,12 @@ def television(converted: str) -> None:
             speaker.say("I was unable to connect to the TV sir! It appears to be a connection issue. "
                         "You might want to try again later.")
             return
+        tv_state['status'] = True
         if 'turn on' in phrase or 'connect' in phrase:
             speaker.say("TV features have been integrated sir!")
             return
 
-    if tv:
+    if tv_state.get('status'):
         if 'turn on' in phrase or 'connect' in phrase:
             speaker.say('Your TV is already powered on sir!')
         elif 'increase' in phrase:
@@ -2266,7 +2298,7 @@ def television(converted: str) -> None:
         elif 'shutdown' in phrase or 'shut down' in phrase or 'turn off' in phrase:
             Thread(target=tv.shutdown).start()
             speaker.say(f'{choice(ack)}! Turning your TV off.')
-            tv = None
+            tv_state.pop('status')
         else:
             speaker.say("I didn't quite get that.")
     else:
@@ -2310,22 +2342,24 @@ def alpha(text: str) -> bool:
             return True
 
 
-def google(query: str) -> bool:
+def google(query: str, suggestion_count: int = 0) -> bool:
     """Uses Google's search engine parser and gets the first result that shows up on a google search.
 
     Notes:
         - If it is unable to get the result, Jarvis sends a request to ``suggestqueries.google.com``
         - This is to rephrase the query and then looks up using the search engine parser once again.
-        - global ``suggestion_count`` is used to make sure the suggestions and parsing don't run on an infinite loop.
+        - ``suggestion_count`` is used to limit the number of times suggestions are used.
+        - ``suggestion_count`` is also used to make sure the suggestions and parsing don't run on an infinite loop.
+        - This happens when ``google`` gets the exact search as suggested ones which failed to fetch results earlier.
 
     Args:
+        suggestion_count: Integer value that keeps incrementing when ``Jarvis`` looks up for suggestions.
         query: Takes the voice recognized statement as argument.
 
     Returns:
         bool:
         Boolean ``True`` if google search engine is unable to fetch consumable results.
     """
-    global suggestion_count
     search_engine = GoogleSearch()
     results = []
     try:
@@ -2345,12 +2379,11 @@ def google(query: str) -> bool:
             suggestion = r.json()[1][1]
             suggestion_count += 1
             if suggestion_count >= 3:  # avoids infinite suggestions over the same suggestion
-                suggestion_count = 0
                 speaker.say(r.json()[1][0].replace('=', ''))  # picks the closest match and opens a google search
                 speaker.runAndWait()
                 return False
             else:
-                google(suggestion)
+                google(suggestion, suggestion_count)
         except IndexError:
             return True
     if results:
@@ -2590,7 +2623,6 @@ def lights(converted: str) -> None:
     Args:
         converted: Takes the voice recognized statement as argument.
     """
-    global warm_light
 
     def light_switch():
         """Says a message if the physical switch is toggled off."""
@@ -2667,6 +2699,7 @@ def lights(converted: str) -> None:
     lights_count = len(light_host_id)
     plural = 'lights!' if lights_count > 1 else 'light!'
     if 'turn on' in converted or 'cool' in converted or 'white' in converted:
+        warm_light.pop('status')
         tone = 'white' if 'white' in converted else 'cool'
         speaker.say(f'{choice(ack)}! Turning on {lights_count} {plural}') if 'turn on' in converted else \
             speaker.say(f'{choice(ack)}! Setting {lights_count} {plural} to {tone}!')
@@ -2677,7 +2710,7 @@ def lights(converted: str) -> None:
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
             executor.map(turn_off, light_host_id)
     elif 'warm' in converted or 'yellow' in converted:
-        warm_light = True
+        warm_light['status'] = True
         speaker.say(f'{choice(ack)}! Setting {lights_count} {plural} to yellow!') if 'yellow' in converted else \
             speaker.say(f'Sure sir! Setting {lights_count} {plural} to warm!')
         with ThreadPoolExecutor(max_workers=lights_count) as executor:
@@ -2708,7 +2741,7 @@ def lights(converted: str) -> None:
         speaker.say(f"{choice(ack)}! I've set {lights_count} {plural} to {level}%!")
         level = round((255 * level) / 100)
         for light_ip in light_host_id:
-            lumen(host=light_ip, warm_lights=warm_light, rgb=level)
+            lumen(host=light_ip, warm_lights=warm_light.get('status'), rgb=level)
     else:
         speaker.say(f"I didn't quite get that sir! What do you want me to do to your {plural}?")
 
@@ -2970,8 +3003,6 @@ def offline_communicator() -> None:
         - Restarts quietly in case of a ``RuntimeError`` however, the offline request will still be be executed.
         - This happens when ``speaker`` is stopped while another loop of speaker is in progress by regular interaction.
     """
-    # noinspection PyGlobalUndefined
-    global STOPPER
     while True:
         if os.path.isfile('offline_request'):
             with open('offline_request', 'r') as off_request:
@@ -2980,11 +3011,15 @@ def offline_communicator() -> None:
             logger.critical(f'Received offline input::{command}')
             response = None
             try:
+                os.environ['called_by_offline'] = '1'  # Write env var so some function can use it
                 split(command)
+                del os.environ['called_by_offline']  # deletes the env var
                 sys.stdout.write('\r')
                 response = speaker.vig()
+                current_time_ = datetime.now(timezone('US/Central'))
+                dt_string = current_time_.strftime("%A, %B %d, %Y %I:%M:%S %p")
                 with open('offline_response', 'w') as off_response:
-                    off_response.write(response)
+                    off_response.write(dt_string + '\n\n' + response)
                 speaker.stop()
                 voice_changer()
             except RuntimeError:
@@ -2993,7 +3028,7 @@ def offline_communicator() -> None:
                         off_request.write(command)
                 logger.error(f'Received a RuntimeError while executing offline request.\n{format_exc()}')
                 restart(quiet=True)
-        if STOPPER:
+        if STOPPER.get('status'):
             break
 
 
@@ -3006,8 +3041,6 @@ def meeting_reader() -> None:
         meeting_info = meeting.read()
         sys.stdout.write(f'\r{meeting_info}')
         speaker.say(meeting_info)
-        meeting.close()
-    speaker.runAndWait()
 
 
 def meeting_gatherer() -> None:
@@ -3024,7 +3057,7 @@ def meeting_gatherer() -> None:
             with open('meetings', 'w') as gatherer:
                 gatherer.write(data)
             gatherer.close()
-        if STOPPER:
+        if STOPPER.get('status'):
             break
         sleep(900)
 
@@ -3087,6 +3120,7 @@ def meetings(meeting_file: str = 'calendar.scpt') -> str:
         else:
             meeting_status += f"{meeting[0]} at {meeting[1]}, " if index + 1 < len(ordered_data) else \
                 f"{meeting[0]} at {meeting[1]}."
+    speaker.say(meeting_status) if os.environ.get('called_by_offline') else None
     return meeting_status
 
 
@@ -3102,8 +3136,8 @@ def system_vitals() -> None:
                     "Add the root password as an environment variable for me to read.")
         return
 
-    version = host_info('version')
-    model = host_info('model')
+    version = host_info(required='version')
+    model = host_info(required='model')
 
     cpu_temp, gpu_temp, fan_speed, output = None, None, None, ""
     if version >= 12:  # smc information is available only on 12+ versions (tested on 11.3, 12.1 and 16.1 versions)
@@ -3145,6 +3179,9 @@ def system_vitals() -> None:
     sys.stdout.write(f'\r{output}')
     speaker.say(f'Your {model} was last booted on {restart_time}. '
                 f'Current boot time is: {restart_duration}.')
+    if os.environ.get('called_by_offline'):
+        speaker.say(output)
+        return
     if second >= 172_800:
         if boot_extreme := re.search('(.*) days', restart_duration):
             warn = int(boot_extreme.group().replace(' days', '').strip())
@@ -3341,7 +3378,7 @@ def sentry_mode() -> None:
         sys.stdout.write("\r")
         if datetime.now().strftime("%I:%M %p") == '07:00 AM':
             morning()
-        if STOPPER:
+        if STOPPER.get('status'):
             break
         sys.stdout.write("\rSentry Mode")
         try:
@@ -3484,9 +3521,7 @@ def remove_files() -> None:
 
 def exit_process() -> None:
     """Function that holds the list of operations done upon exit."""
-    # noinspection PyGlobalUndefined
-    global STOPPER
-    STOPPER = True
+    STOPPER['status'] = True
     logger.critical('JARVIS::Stopping Now::STOPPER flag has been set to True')
     reminders = {}
     alarms = [file for file in os.listdir('alarm') if file != '.keep' and file != '.DS_Store']
@@ -3599,6 +3634,7 @@ def stop_terminal() -> None:
             os.system(f'kill -9 {id_.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
 
 
+# noinspection PyUnresolvedReferences,PyProtectedMember
 def restart(target: str = None, quiet: bool = False) -> None:
     """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
 
@@ -3617,7 +3653,11 @@ def restart(target: str = None, quiet: bool = False) -> None:
             - ``PC``: Restarts the machine after getting confirmation.
         quiet: If a boolean ``True`` is passed, a silent restart will be performed.
     """
+    offline = os.environ.get('called_by_offline')
     if target:
+        if offline:
+            speaker.say(f"ERROR::Cannot restart {host_info(required='model')} via offline communicator.")
+            return
         if target == 'PC':
             speaker.say(f'{choice(confirmation)} restart your {host_info("model")}?')
             speaker.runAndWait()
@@ -3631,15 +3671,14 @@ def restart(target: str = None, quiet: bool = False) -> None:
         else:
             speaker.say("Machine state is left intact sir!")
             return
-    # noinspection PyGlobalUndefined
-    global STOPPER
-    STOPPER = True
+    STOPPER['status'] = True
     logger.critical('JARVIS::Restarting Now::STOPPER flag has been set.')
+    logger.critical(f'Called by {sys._getframe(1).f_code.co_name}')
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(perf_counter())}")
     if not quiet:
         try:
             speaker.say('Restarting now sir! I will be up and running momentarily.')
-            speaker.runAndWait()
+            speaker.runAndWait() if not offline else None
         except RuntimeError:
             logger.error(f'Received a RuntimeError while restarting.\n{format_exc()}')
     os.system('python3 restart.py')
@@ -3676,7 +3715,7 @@ def voice_changer(change: str = None) -> None:
     Args:
         change: Initiates changing voices with the volume ID given in statement.
     """
-    global place_holder
+    alter_msg = 0
     voices = speaker.getProperty("voices")  # gets the list of voices available
     # noinspection PyTypeChecker,PyUnresolvedReferences
     avail_voices = len(voices)
@@ -3697,12 +3736,12 @@ def voice_changer(change: str = None) -> None:
             if module_id < avail_voices:
                 voice_default([module_id])  # passing a list as default is tuple and index values are used to reference
                 sys.stdout.write(f'\rVoice module has been re-configured to {module_id}')
-                if not place_holder:
+                if not alter_msg:
                     speaker.say('Voice module has been re-configured sir! Would you like me to retain this?')
-                    place_holder = 1
-                elif place_holder == 1:
+                    alter_msg = 1
+                elif alter_msg == 1:
                     speaker.say("Here's an example of one of my other voices sir!. Would you like me to use this one?")
-                    place_holder = 2
+                    alter_msg = 2
                 else:
                     speaker.say('How about this one sir?')
             else:
@@ -3713,16 +3752,13 @@ def voice_changer(change: str = None) -> None:
             if keyword == 'SR_ERROR':
                 voice_default()
                 speaker.say("Sorry sir! I had trouble understanding. I'm back to my default voice.")
-                place_holder = 0
                 return
             elif 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
                 voice_default()
                 speaker.say('Reverting the changes to default voice module sir!')
-                place_holder = 0
                 return
             elif any(word in keyword.lower() for word in keywords.ok()):
                 speaker.say(choice(ack))
-                place_holder = 0
                 return
             elif custom_id := [int(id_) for id_ in re.findall(r'\b\d+\b', keyword)]:
                 voice_changer(str(custom_id))
@@ -3740,7 +3776,6 @@ def clear_logs() -> None:
 def starter() -> None:
     """Initiates crucial functions which needs to be called during start up.
 
-    - Sets ``STOPPER`` `(global variable)` to ``False``
     - Loads the ``.env`` file so that all the necessary credentials and api keys can be accessed as ``ENV vars``
 
     Methods:
@@ -3748,10 +3783,6 @@ def starter() -> None:
         voice_changer(): To change the voice to default value.
         clear_logs(): To purge log files older than 48 hours.
     """
-    # noinspection PyGlobalUndefined
-    global STOPPER
-    STOPPER = False
-
     volume_controller(level=50)
     voice_changer()
     clear_logs()
@@ -3828,13 +3859,10 @@ if __name__ == '__main__':
     if not root_password:
         sys.stdout.write('\rROOT PASSWORD is not set!')
 
-    # warm_light is initiated with a False and set to True only when requested to switch to yellow
-    # place_holder is used in many functions for recursion
+    # warm_light is initiated with an empty dict and the key status is set to True when requested to switch to yellow
     # greet_check is used in initialize() to greet only for the first run
-    # tv is set to None instead of TV() at the start to avoid turning on the TV unnecessarily
-    # suggestion_count is used in google_searchparser to limit the number of times suggestions are used.
-        # This is just a safety check so that Jarvis doesn't run into infinite loops while looking for suggestions.
-    warm_light, place_holder, greet_check, tv, suggestion_count = False, None, None, None, 0
+    # tv is set to an empty dict instead of TV() at the start to avoid turning on the TV unnecessarily
+    tv_state, warm_light, greet_check, STOPPER = {}, {}, {}, {}
 
     # stores necessary values for geo location to receive the latitude, longitude and address
     options.default_ssl_context = create_default_context(cafile=where())
