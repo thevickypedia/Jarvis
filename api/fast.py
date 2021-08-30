@@ -68,6 +68,9 @@ def read_root(input_data: GetData):
             if any(word in command.lower() for word in offline_compatible):
                 with open('../offline_request', 'w') as off_request:
                     off_request.write(command)
+                if 'restart' in command:
+                    raise HTTPException(status_code=200,
+                                        detail='Restarting now sir! I will be up and running momentarily.')
                 while True:
                     if path.isfile('../offline_response'):
                         with open('../offline_response', 'r') as off_response:

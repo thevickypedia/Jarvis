@@ -1366,6 +1366,10 @@
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">EndpointFilter</span>
 </pre></div>
 </div>
+<p>Initialize a filter.</p>
+<p>Initialize with the name of the logger which, together with its
+children, will have its events allowed through the filter. If no
+name is specified, allow every event.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="api.controller.EndpointFilter.filter">
 <span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">logging.LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.controller.EndpointFilter.filter" title="Permalink to this definition">¶</a></dt>
@@ -1432,6 +1436,8 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">phrase</span></code>: Secret phrase to authenticate the request sent to the API.</p></li>
 </ul>
 </div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="api.models.GetData.command">
 <span class="sig-name descname"><span class="pre">command</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#api.models.GetData.command" title="Permalink to this definition">¶</a></dt>
@@ -1454,6 +1460,16 @@
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Alarm</span>
 </pre></div>
 </div>
+<p>Initiates super class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hours</strong> – Hour value of current time.</p></li>
+<li><p><strong>minutes</strong> – Minutes value of current time.</p></li>
+<li><p><strong>am_pm</strong> – Indicates AM or PM of the day.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.alarm.Alarm.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.alarm.Alarm.run" title="Permalink to this definition">¶</a></dt>
@@ -2529,6 +2545,16 @@ None - NoneType if no face was recognized.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MagicHomeApi</span>
 </pre></div>
 </div>
+<p>Initialize a device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device_ip</strong> – Takes device IP address as argument.</p></li>
+<li><p><strong>device_type</strong> – Specific device type. Commonly 1 or 2.</p></li>
+<li><p><strong>operation</strong> – Takes the operation that the calling function is trying to perform for logging.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.lights.MagicHomeApi.calculate_checksum">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">calculate_checksum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bytes_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#helper_functions.lights.MagicHomeApi.calculate_checksum" title="Permalink to this definition">¶</a></dt>
@@ -2646,6 +2672,12 @@ Whites can have a value of None.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LocalIPScan</span>
 </pre></div>
 </div>
+<p>Gets local host devices connected to the same network range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>router_pass</strong> – Password to authenticate the API client.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.bedroom">
 <span class="sig-name descname"><span class="pre">bedroom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.bedroom" title="Permalink to this definition">¶</a></dt>
@@ -2710,6 +2742,7 @@ Whites can have a value of None.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TestLogger</span>
 </pre></div>
 </div>
+<p>Instantiates logger to self.logger which is used by the function methods.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.logger.TestLogger.custom_time">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">custom_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">time.time</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">time.struct_time</span></span></span><a class="headerlink" href="#helper_functions.logger.TestLogger.custom_time" title="Permalink to this definition">¶</a></dt>
@@ -2771,6 +2804,17 @@ Whites can have a value of None.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Reminder</span>
 </pre></div>
 </div>
+<p>Initiates super class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hours</strong> – Hour value of current time.</p></li>
+<li><p><strong>minutes</strong> – Minutes value of current time.</p></li>
+<li><p><strong>am_pm</strong> – Indicates AM or PM of the day.</p></li>
+<li><p><strong>message</strong> – Message that has to be reminded with.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.reminder.Reminder.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.reminder.Reminder.run" title="Permalink to this definition">¶</a></dt>
@@ -2929,6 +2973,17 @@ Whites can have a value of None.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TV</span>
 </pre></div>
 </div>
+<p>Client key will be logged and stored as SSM param when you accept the connection for the first time.</p>
+<p>Store the dict value as an env variable and use it as below. Using TV’s ip makes the initial
+response much quicker but it looks for the TV’s ip if an ip is not found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ip_address</strong> – IP address of the TV.</p></li>
+<li><p><strong>client_key</strong> – Client Key to authenticate connection.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.tv_controls.TV.audio_output">
 <span class="sig-name descname"><span class="pre">audio_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.tv_controls.TV.audio_output" title="Permalink to this definition">¶</a></dt>
