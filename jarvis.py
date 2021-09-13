@@ -511,7 +511,7 @@ def conditions(converted: str) -> bool:
 
     elif any(word in converted_lower for word in keywords.guard_enable() or keywords.guard_disable()):
         if any(word in converted_lower for word in keywords.guard_enable()):
-            logger.critical('Enabled Security Mode')
+            logger.info('Enabled Security Mode')
             speaker.say(f"Enabled security mode sir! I will look out for potential threats and keep you posted. "
                         f"Have a nice {part_of_day()}, and enjoy yourself sir!")
             speaker.runAndWait()
@@ -598,10 +598,10 @@ def conditions(converted: str) -> bool:
 
     elif any(word in converted_lower for word in keywords.restart()):
         if 'pc' in converted_lower or 'computer' in converted_lower or 'imac' in converted_lower:
-            logger.critical(f'JARVIS::Restart for {host_info("model")} has been requested.')
+            logger.info(f'JARVIS::Restart for {host_info("model")} has been requested.')
             restart(target='PC')
         else:
-            logger.critical('JARVIS::Self reboot has been requested.')
+            logger.info('JARVIS::Self reboot has been requested.')
             if 'quick' in converted_lower or 'fast' in converted_lower:
                 restart(quick=True)
             else:
@@ -618,7 +618,7 @@ def conditions(converted: str) -> bool:
         chatter_bot()
 
     else:
-        logger.critical(f'Received the unrecognized lookup parameter: {converted}')
+        logger.info(f'Received the unrecognized lookup parameter: {converted}')
         Thread(target=unrecognized_dumper, args=[converted]).start()  # writes to training_data.yaml in a thread
         if alpha(converted):
             if google_maps(converted):
@@ -2850,7 +2850,7 @@ def guard() -> None:
         response = Messenger(gmail_user=gmail_user, gmail_pass=gmail_pass, phone_number=phone_number,
                              subject="IMPORTANT::Guardian mode faced an exception.", message=cam_error).send_sms()
         if response.get('ok') and response.get('status') == 200:
-            logger.critical('SMS notification has been sent.')
+            logger.info('SMS notification has been sent.')
         else:
             logger.error(f'Unable to send SMS notification.\n{response}')
 
@@ -2870,7 +2870,7 @@ def guard() -> None:
             pass
 
         if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable()):
-            logger.critical('Disabled security mode')
+            logger.info('Disabled security mode')
             speaker.say(f'Welcome back sir! Good {part_of_day()}.')
             if os.path.exists(f'threat/{date_extn}.jpg'):
                 speaker.say("We had a potential threat sir! Please check your email to confirm.")
@@ -2878,7 +2878,7 @@ def guard() -> None:
             sys.stdout.write('\rDisabled Security Mode')
             break
         elif converted:
-            logger.critical(f'Conversation::{converted}')
+            logger.info(f'Conversation::{converted}')
 
         if cam_source is not None:
             # captures images and keeps storing it to a folder
@@ -2894,7 +2894,7 @@ def guard() -> None:
             except ValueError:
                 # log level set to critical because this is a known exception when try check 'if faces'
                 cv2.imwrite(f'threat/{date_extn}.jpg', image)
-                logger.critical(f'Image of detected face stored as {date_extn}.jpg')
+                logger.info(f'Image of detected face stored as {date_extn}.jpg')
 
         if not os.path.exists(f'threat/{date_extn}.jpg'):
             date_extn = None
@@ -2930,7 +2930,7 @@ def threat_notify(converted: str, date_extn: str or None) -> None:
         body_ = """<html><head></head><body><h2>No conversation was recorded,
                                 but attached is a photo of the intruder.</h2>"""
     if response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
-        logger.critical('SMS notification has been sent.')
+        logger.info('SMS notification has been sent.')
     else:
         logger.error(f'Unable to send SMS notification.\n{response}')
 
@@ -2939,7 +2939,7 @@ def threat_notify(converted: str, date_extn: str or None) -> None:
         response_ = SendEmail(gmail_user=gmail_user, gmail_pass=gmail_pass,
                               recipient=robinhood_user, subject=title_, body=body_, attachment=attachment_).send_email()
         if response_.get('ok'):
-            logger.critical('Email has been sent!')
+            logger.info('Email has been sent!')
         else:
             logger.error(f"Email dispatch failed with response: {response_.get('body')}\n")
 
@@ -2961,18 +2961,18 @@ def offline_communicator_initiate() -> None:
             if id_ and 'grep' not in id_ and '/bin/sh' not in id_:
                 if target_script == 'forever_ngrok.py':
                     ngrok_status = True
-                    logger.critical('An instance of ngrok connection for offline communicator is running already.')
+                    logger.info('An instance of ngrok connection for offline communicator is running already.')
                 elif target_script == 'uvicorn':
                     uvicorn_status = True
-                    logger.critical('An instance of uvicorn application for offline communicator is running already.')
+                    logger.info('An instance of uvicorn application for offline communicator is running already.')
 
     if not ngrok_status:
-        logger.critical('Initiating ngrok connection for offline communicator.')
+        logger.info('Initiating ngrok connection for offline communicator.')
         initiator = f'cd {home}/JarvisHelper && source venv/bin/activate && export ENV=1 && python3 {target_scripts[0]}'
         apple_script('Terminal').do_script(initiator)
 
     if not uvicorn_status:
-        logger.critical('Initiating FastAPI for offline listener.')
+        logger.info('Initiating FastAPI for offline listener.')
         offline_script = f'cd {os.getcwd()} && source venv/bin/activate && cd api && ' \
                          f'export offline_phrase={offline_phrase} && ' \
                          'uvicorn fast:app --reload --port=4483'
@@ -3014,7 +3014,7 @@ def offline_communicator() -> None:
         if os.path.isfile('offline_request'):
             with open('offline_request', 'r') as off_request:
                 command = off_request.read()
-            logger.critical(f'Received offline input::{command}')
+            logger.info(f'Received offline input::{command}')
             response = None
             try:
                 if command:
@@ -3058,7 +3058,7 @@ def meeting_gatherer() -> None:
 
     This function runs in a dedicated thread every 30 minutes to avoid wait time when meetings information is requested.
     """
-    logger.critical('Meeting gather has been initiated.')
+    logger.info('Meeting gather has been initiated.')
     while True:
         if os.path.isfile('meetings') and int(datetime.now().timestamp()) - int(os.stat('meetings').st_mtime) < 1_800:
             os.remove('meetings')  # removes the file if it is older than 30 minutes
@@ -3205,7 +3205,7 @@ def system_vitals() -> None:
             speaker.runAndWait()
             response = listener(3, 3)
             if any(word in response.lower() for word in keywords.ok()):
-                logger.critical(f'JARVIS::Restarting {host_info("model")}')
+                logger.info(f'JARVIS::Restarting {host_info("model")}')
                 restart(target='PC_Proceed')
 
 
@@ -3529,7 +3529,7 @@ def remove_files() -> None:
 def exit_process() -> None:
     """Function that holds the list of operations done upon exit."""
     STOPPER['status'] = True
-    logger.critical('JARVIS::Stopping Now::STOPPER flag has been set to True')
+    logger.info('JARVIS::Stopping Now::STOPPER flag has been set to True')
     reminders = {}
     alarms = [file for file in os.listdir('alarm') if file != '.keep' and file != '.DS_Store']
     for file in os.listdir('reminder'):
@@ -3537,7 +3537,7 @@ def exit_process() -> None:
             split_val = file.replace('.lock', '').split('|')
             reminders.update({split_val[0]: split_val[-1]})
     if reminders:
-        logger.critical(f'JARVIS::Deleting Reminders - {reminders}')
+        logger.info(f'JARVIS::Deleting Reminders - {reminders}')
         if len(reminders) == 1:
             speaker.say('You have a pending reminder sir!')
         else:
@@ -3546,7 +3546,7 @@ def exit_process() -> None:
             speaker.say(f"{value.replace('_', ' ')} at "
                         f"{key.replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')}")
     if alarms:
-        logger.critical(f'JARVIS::Deleting Alarms - {alarms}')
+        logger.info(f'JARVIS::Deleting Alarms - {alarms}')
         alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
         alarms = alarms.replace('.lock', '').replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')
         sys.stdout.write(f"\r{alarms}")
@@ -3683,8 +3683,8 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
             speaker.say("Machine state is left intact sir!")
             return
     STOPPER['status'] = True
-    logger.critical('JARVIS::Restarting Now::STOPPER flag has been set.')
-    logger.critical(f'Called by {sys._getframe(1).f_code.co_name}')
+    logger.info('JARVIS::Restarting Now::STOPPER flag has been set.')
+    logger.info(f'Called by {sys._getframe(1).f_code.co_name}')
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(perf_counter())}")
     if not quiet:
         try:
@@ -3804,7 +3804,7 @@ def starter() -> None:
     clear_logs()
 
     if os.path.isfile('.env'):
-        logger.critical('Loading .env file.')
+        logger.info('Loading .env file.')
         load_dotenv(dotenv_path='.env', verbose=True, override=True)  # loads the .env file
 
 
@@ -3813,7 +3813,7 @@ if __name__ == '__main__':
         exit('Unsupported Operating System.\nWindows support was recently deprecated. '
              'Refer https://github.com/thevickypedia/Jarvis/commit/cf54b69363440d20e21ba406e4972eb058af98fc')
 
-    logger.critical('JARVIS::Starting Now')
+    logger.info('JARVIS::Starting Now')
 
     sys.stdout.write('\rVoice ID::Female: 1/17 Male: 0/7')  # Voice ID::reference
     speaker = init()  # initiates speaker

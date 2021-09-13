@@ -42,7 +42,7 @@ if not environ.get('COMMIT'):
 
 reload(logging)
 logging.basicConfig(
-    filename=log_file, filemode='a',
+    filename=log_file, filemode='a', level=logging.INFO,
     format='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s',
     datefmt='%b-%d-%Y %I:%M:%S %p'
 )
