@@ -15,7 +15,7 @@ from multiprocessing.pool import ThreadPool
 from pathlib import Path
 from platform import platform, system
 from random import choice, choices, randrange
-from shutil import disk_usage, rmtree
+from shutil import disk_usage
 from socket import AF_INET, SOCK_DGRAM, gethostname, socket
 from ssl import create_default_context
 from string import ascii_letters, digits
@@ -602,7 +602,10 @@ def conditions(converted: str) -> bool:
             restart(target='PC')
         else:
             logger.critical('JARVIS::Self reboot has been requested.')
-            restart()
+            if 'quick' in converted_lower or 'fast' in converted_lower:
+                restart(quick=True)
+            else:
+                restart()
 
     elif any(word in converted_lower for word in keywords.kill()) and \
             not any(word in converted_lower for word in keywords.avoid()):
@@ -1279,7 +1282,7 @@ def music(device: str = None) -> None:
     """
     sys.stdout.write("\rScanning music files...")
 
-    path = os.walk(f"{home_dir}/Music")
+    path = os.walk(f"{home}/Music")
 
     get_all_files = (os.path.join(root, f) for root, _, files in path for f in files)
     music_files = [file for file in get_all_files if os.path.splitext(file)[1] == '.mp3']
@@ -1810,7 +1813,7 @@ def kill_alarm() -> None:
                 minute = 0
             hour, minute = f"{hour:02}", f"{minute:02}"
             am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
-            if f'{hour}_{minute}_{am_pm}.lock' in os.listdir('alarm'):
+            if os.path.exists(f'alarm/{hour}_{minute}_{am_pm}.lock'):
                 os.remove(f"alarm/{hour}_{minute}_{am_pm}.lock")
                 speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
             else:
@@ -2088,7 +2091,7 @@ def github(target: list) -> None:
         target: Takes repository name as argument which has to be cloned.
     """
     if len(target) == 1:
-        os.system(f"""cd {home_dir} && git clone -q {target[0]}""")
+        os.system(f"cd {home} && git clone -q {target[0]}")
         cloned = target[0].split('/')[-1].replace('.git', '')
         speaker.say(f"I've cloned {cloned} on your home directory sir!")
         return
@@ -2111,7 +2114,7 @@ def github(target: list) -> None:
                 item = None
                 speaker.say("Only first second or third can be accepted sir! Try again!")
                 github(target)
-            os.system(f"""cd {home_dir} && git clone -q {target[item]}""")
+            os.system(f"cd {home} && git clone -q {target[item]}")
             cloned = target[item].split('/')[-1].replace('.git', '')
             speaker.say(f"I've cloned {cloned} on your home directory sir!")
     else:
@@ -2489,7 +2492,7 @@ def face_recognition_detection() -> None:
             sys.stdout.write(f"\r{phrase}")
             phrase = phrase.replace(' ', '_')
             # creates a named directory if it is not found already else simply ignores
-            os.system(f'cd {train_dir} && mkdir {phrase}') if phrase not in os.listdir(train_dir) else None
+            os.system(f'cd {train_dir} && mkdir {phrase}') if not os.path.exists(f'{train_dir}/{phrase}') else None
             c_time = datetime.now().strftime("%I_%M_%p")
             img_name = f"{phrase}_{c_time}.jpg"  # adds current time to image name to avoid overwrite
             os.rename('cv2_open.jpg', img_name)  # renames the files
@@ -2847,9 +2850,9 @@ def guard() -> None:
         response = Messenger(gmail_user=gmail_user, gmail_pass=gmail_pass, phone_number=phone_number,
                              subject="IMPORTANT::Guardian mode faced an exception.", message=cam_error).send_sms()
         if response.get('ok') and response.get('status') == 200:
-            logger.critical('SNS notification has been sent.')
+            logger.critical('SMS notification has been sent.')
         else:
-            logger.error(f'Unable to send SNS notification.\n{response}')
+            logger.error(f'Unable to send SMS notification.\n{response}')
 
     scale_factor = 1.1  # Parameter specifying how much the image size is reduced at each image scale.
     min_neighbors = 5  # Parameter specifying how many neighbors each candidate rectangle should have, to retain it.
@@ -2869,7 +2872,7 @@ def guard() -> None:
         if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable()):
             logger.critical('Disabled security mode')
             speaker.say(f'Welcome back sir! Good {part_of_day()}.')
-            if f'{date_extn}.jpg' in os.listdir('threat'):
+            if os.path.exists(f'threat/{date_extn}.jpg'):
                 speaker.say("We had a potential threat sir! Please check your email to confirm.")
             speaker.runAndWait()
             sys.stdout.write('\rDisabled Security Mode')
@@ -2893,7 +2896,7 @@ def guard() -> None:
                 cv2.imwrite(f'threat/{date_extn}.jpg', image)
                 logger.critical(f'Image of detected face stored as {date_extn}.jpg')
 
-        if f'{date_extn}.jpg' not in os.listdir('threat'):
+        if not os.path.exists(f'threat/{date_extn}.jpg'):
             date_extn = None
 
         # if no notification was sent yet or if a phrase or face is detected notification thread will be triggered
@@ -2927,9 +2930,9 @@ def threat_notify(converted: str, date_extn: str or None) -> None:
         body_ = """<html><head></head><body><h2>No conversation was recorded,
                                 but attached is a photo of the intruder.</h2>"""
     if response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
-        logger.critical('SNS notification has been sent.')
+        logger.critical('SMS notification has been sent.')
     else:
-        logger.error(f'Unable to send SNS notification.\n{response}')
+        logger.error(f'Unable to send SMS notification.\n{response}')
 
     if date_extn:
         attachment_ = f'threat/{date_extn}.jpg'
@@ -2941,7 +2944,7 @@ def threat_notify(converted: str, date_extn: str or None) -> None:
             logger.error(f"Email dispatch failed with response: {response_.get('body')}\n")
 
 
-def offline_communicator_initiate():
+def offline_communicator_initiate() -> None:
     """Initiates Jarvis API and Ngrok for requests from external sources if they aren't running already.
 
     Notes:
@@ -2965,21 +2968,15 @@ def offline_communicator_initiate():
 
     if not ngrok_status:
         logger.critical('Initiating ngrok connection for offline communicator.')
-        initiator = f'cd $HOME/JarvisHelper && source venv/bin/activate && export ENV=1 && python3 {target_scripts[0]}'
-        try:
-            apple_script('Terminal').do_script(initiator)
-        except CommandError as err:
-            logger.error(f'Unable to initiate OfflineCommunicator.\n{err}')
+        initiator = f'cd {home}/JarvisHelper && source venv/bin/activate && export ENV=1 && python3 {target_scripts[0]}'
+        apple_script('Terminal').do_script(initiator)
 
     if not uvicorn_status:
         logger.critical('Initiating FastAPI for offline listener.')
         offline_script = f'cd {os.getcwd()} && source venv/bin/activate && cd api && ' \
                          f'export offline_phrase={offline_phrase} && ' \
                          'uvicorn fast:app --reload --port=4483'
-        try:
-            apple_script('Terminal').do_script(offline_script)
-        except CommandError as err:
-            logger.error(f'Unable to initiate OfflineCommunicator.\n{err}')
+        apple_script('Terminal').do_script(offline_script)
 
 
 def offline_communicator() -> None:
@@ -3070,6 +3067,8 @@ def meeting_gatherer() -> None:
             with open('meetings', 'w') as gatherer:
                 gatherer.write(data)
             gatherer.close()
+        elif data == "The calendar Office is unavailable sir!":
+            break
         if STOPPER.get('status'):
             break
         sleep(900)
@@ -3096,15 +3095,19 @@ def meetings(meeting_file: str = 'calendar.scpt') -> str:
     if error := process.returncode:  # stores process.returncode in error if process.returncode is not 0
         err_msg = err.decode('UTF-8')
         err_code = err_msg.split()[-1].strip()
-        if err_code in ['(-10810)', '(-609)', '(-600)']:  # If the script is unable to launch the app or app terminates.
-            apps(f'Launch {meeting_file}')
+        if err_code == '(-1728)':  # If the calendar named 'Office' in unavailable in the calendar application
+            logger.error("Calendar, 'Office' is unavailable.")
+            return "The calendar Office is unavailable sir!"
         elif err_code == '(-1712)':  # If an event takes 2+ minutes, the Apple Event Manager reports a time-out error.
             failure = f"{source_app}/event took an unusually long time to respond/complete.\nInclude, " \
                       f"'with timeout of 300 seconds' to your {meeting_file} right after the " \
                       f"'tell application {source_app}' step and 'end timeout' before the 'end tell' step."
+        elif err_code in ['(-10810)', '(-609)', '(-600)']:  # If unable to launch the app or app terminates.
+            apps(f'Launch {meeting_file}')
         if not failure:
             failure = f"Unable to read {source_app} - [{error}]\n{err_msg}"
         logger.error(failure)
+        failure = failure.replace('"', '')  # An identifier can’t go after this “"”
         os.system(f"""osascript -e 'display notification "{failure}" with title "Jarvis"'""")
         return f"I was unable to read your {source_app} sir! Please make sure it is in sync."
 
@@ -3266,8 +3269,7 @@ class PersonalCloud:
     @staticmethod
     def delete_repo() -> None:
         """Called during enable and disable to delete any existing bits for a clean start next time."""
-        if 'personal_cloud' in os.listdir(home_dir):
-            rmtree(f'{home_dir}/personal_cloud')  # delete repo for a fresh start
+        os.system(f'rm -rf {home}/personal_cloud')  # delete repo for a fresh start
 
     # noinspection PyUnresolvedReferences
     @staticmethod
@@ -3284,7 +3286,7 @@ class PersonalCloud:
             - Sends an SMS with ``endpoint``, ``username`` and ``password`` to the ``phone_number``.
         """
         personal_cloud.delete_repo()
-        initial_script = f"cd {home_dir} && git clone -q https://github.com/thevickypedia/personal_cloud.git && " \
+        initial_script = f"cd {home} && git clone -q https://github.com/thevickypedia/personal_cloud.git && " \
                          f"cd personal_cloud && python3 -m venv venv && source venv/bin/activate && " \
                          f"pip3 install -r requirements.txt"
 
@@ -3303,7 +3305,7 @@ class PersonalCloud:
         personal_cloud_host = f"'{os.environ.get('personal_cloud_host')}'"
 
         # export PORT for both ngrok and exec scripts as they will be running in different Terminal sessions
-        ngrok_script = f"cd {home_dir}/personal_cloud && export port={personal_cloud_port} && " \
+        ngrok_script = f"cd {home}/personal_cloud && export port={personal_cloud_port} && " \
                        f"source venv/bin/activate && cd helper_functions && python3 ngrok.py"
 
         exec_script = f"export host_path='{personal_cloud_host}'" if personal_cloud_host and \
@@ -3314,9 +3316,9 @@ class PersonalCloud:
                        f"export gmail_user={gmail_user} && " \
                        f"export gmail_pass={gmail_pass} && " \
                        f"export recipient={icloud_user} && " \
-                       f"cd {home_dir}/personal_cloud && source venv/bin/activate && python3 authserver.py"
+                       f"cd {home}/personal_cloud && source venv/bin/activate && python3 authserver.py"
 
-        cloned_path = f'{home_dir}/personal_cloud'
+        cloned_path = f'{home}/personal_cloud'
         while True:  # wait for the requirements to be installed after the repo was cloned
             packages = [path.stem.split('-')[0] for path in Path(cloned_path).glob('**/site-packages/*')]
             if packages and not [req for req in [pkg.partition('==')[0] for pkg in
@@ -3328,7 +3330,7 @@ class PersonalCloud:
                 break
 
         while True:  # wait for the endpoint url (as file) to get generated within personal_cloud
-            if 'url' in os.listdir(f'{cloned_path}/helper_functions'):
+            if os.path.exists(f'{cloned_path}/helper_functions/url'):
                 with open(f'{cloned_path}/helper_functions/url', 'r') as file:
                     url = file.read()  # commit # dfc37853dfe232e268843cbe53719bd9a09903c4 on personal_cloud
                 if url.startswith('http'):
@@ -3387,7 +3389,6 @@ def sentry_mode() -> None:
         Invokes `morning <https://thevickypedia.github.io/Jarvis/#jarvis.morning>`__ function at 7 AM.
     """
     while True:
-        sys.stdout.write("\r")
         if datetime.now().strftime("%I:%M %p") == '07:00 AM':
             morning()
         if STOPPER.get('status'):
@@ -3396,7 +3397,7 @@ def sentry_mode() -> None:
         try:
             activator(recognizer.recognize_google(recognizer.listen(source=source, phrase_time_limit=5)))
         except (UnknownValueError, WaitTimeoutError, RequestError):
-            continue
+            sys.stdout.write("\r")
         except RuntimeError:
             logger.error(f'Received a RuntimeError while executing regular interaction.\n{format_exc()}')
             restart(quiet=True, quick=True)
@@ -3411,6 +3412,10 @@ def activator(key_original: str) -> None:
     Args:
         key_original: Takes the processed string from ``sentry_mode()`` as input.
     """
+    if not key_original:
+        return
+    logger.critical(f'Woke up for {key_original}')
+    Thread(target=playsound, args=['indicators/acknowledgement.mp3']).start()
     sys.stdout.write("\r")
     time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']
     wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
@@ -3820,7 +3825,7 @@ if __name__ == '__main__':
     personal_cloud = PersonalCloud()  # initiates PersonalCloud() to enable or disable HDD hosting
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 10)  # increases the recursion limit by 10 times
-    home_dir = os.path.expanduser('~')  # gets the path to current user profile
+    home = os.path.expanduser('~')  # gets the path to current user profile
 
     starter()  # initiates crucial functions which needs to be called during start up
 
@@ -3861,7 +3866,7 @@ if __name__ == '__main__':
     # Retrieves devices IP by doing a local IP range scan using Netgear API
     # Note: This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)
     # Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted
-    # noinspection PyUnboundLocalVariable is used since walrus operators with and is not recognized as a bound variable
+    # noinspection is used since, variables declared after 'and' in walrus operator are recognized as unbound variables
     if (hallway_ip := os.environ.get('hallway_ip')) and (kitchen_ip := os.environ.get('kitchen_ip')) and \
             (bedroom_ip := os.environ.get('bedroom_ip')) and (tv_ip := os.environ.get('tv_ip')):
         hallway_ip = eval(hallway_ip)
@@ -3926,8 +3931,11 @@ if __name__ == '__main__':
 
     sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
 
-    Thread(target=offline_communicator_initiate).start()
-    Thread(target=offline_communicator).start()
+    if os.path.exists(f"{home}/JarvisHelper"):
+        Thread(target=offline_communicator_initiate).start()
+        Thread(target=offline_communicator).start()
+    else:
+        logger.error(f'Unable to initiate OfflineCommunicator since, JarvisHelper is unavailable in {home}')
     Thread(target=meeting_gatherer).start()
     Thread(target=playsound, args=['indicators/initialize.mp3']).start()
 
