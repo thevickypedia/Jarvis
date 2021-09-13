@@ -3412,30 +3412,30 @@ def activator(key_original: str) -> None:
     Args:
         key_original: Takes the processed string from ``sentry_mode()`` as input.
     """
-    if not key_original:
+    key = key_original.lower()
+    key_split = key.split()
+    if 'jarvis' not in key and 'buddy' not in key:
         return
-    logger.critical(f'Woke up for {key_original}')
+    logger.info(f'Woke up for: "{key_original}"')
     Thread(target=playsound, args=['indicators/acknowledgement.mp3']).start()
     sys.stdout.write("\r")
     time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']
     wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
-    key = key_original.lower()
-    key_split = key.split()
-    if [word for word in key_split if word in time_of_day] and ('jarvis' in key or 'buddy' in key):
+    if [word for word in key_split if word in time_of_day]:
         time_travel.has_been_called = True
         if 'night' in key_split or 'goodnight' in key_split:
             Thread(target=pc_sleep).start()
         time_travel()
-    elif 'you there' in key and ('jarvis' in key or 'buddy' in key):
+    elif 'you there' in key:
         speaker.say(f'{choice(wake_up1)}')
         initialize()
-    elif any(word in key for word in wake_up_words) and ('jarvis' in key or 'buddy' in key):
+    elif any(word in key for word in wake_up_words):
         speaker.say(f'{choice(wake_up2)}')
         initialize()
     elif key == 'jarvis':
         speaker.say(f'{choice(wake_up3)}')
         initialize()
-    elif 'jarvis' in key or 'buddy' in key:
+    else:
         converted = ' '.join([i for i in key_original.split() if i.lower() not in ['buddy', 'jarvis']])
         if converted:
             split(converted.strip())
