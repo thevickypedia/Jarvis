@@ -1002,7 +1002,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.restart">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.restart" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quick</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.restart" title="Permalink to this definition">¶</a></dt>
 <dd><p>Restart triggers <code class="docutils literal notranslate"><span class="pre">restart.py</span></code> which in turn starts Jarvis after 5 seconds.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
@@ -1032,6 +1032,13 @@
 </ul>
 </li>
 <li><p><strong>quiet</strong> – If a boolean <code class="docutils literal notranslate"><span class="pre">True</span></code> is passed, a silent restart will be performed.</p></li>
+<li><p><strong>quick</strong> –</p>
+<ul>
+<li><p>If a boolean <code class="docutils literal notranslate"><span class="pre">True</span></code> is passed, local IP values are stored in <code class="docutils literal notranslate"><span class="pre">.env</span></code> file for quick re-use.</p></li>
+<li><p>Converts <code class="docutils literal notranslate"><span class="pre">hallway_ip</span></code>, <code class="docutils literal notranslate"><span class="pre">bedroom_ip</span></code> and <code class="docutils literal notranslate"><span class="pre">kitchen_ip</span></code> into a string before storing it as env vars.</p></li>
+<li><p>Doesn’t convert <code class="docutils literal notranslate"><span class="pre">tv_ip</span></code> as a string as it is already one.</p></li>
+</ul>
+</li>
 </ul>
 </dd>
 </dl>
@@ -3264,7 +3271,7 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2021, Vignesh Sivanandha Rao.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
     </div>
   </body>
 </html>

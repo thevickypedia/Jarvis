@@ -35,7 +35,7 @@ from appscript.reference import CommandError
 from certifi import where
 from chatterbot import ChatBot
 from chatterbot.trainers import ChatterBotCorpusTrainer
-from dotenv import load_dotenv
+from dotenv import load_dotenv, set_key, unset_key
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
 from geopy.geocoders import Nominatim, options
@@ -704,7 +704,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
     except (GeocoderUnavailable, GeopyError):
         logger.error('Error retrieving address from latitude and longitude information. Initiating self reboot.')
         speaker.say('Received an error while retrieving your address sir! I think a restart should fix this.')
-        restart()
+        restart(quick=True)
 
 
 def report() -> None:
@@ -1179,6 +1179,7 @@ def device_selector(converted: str = None) -> AppleDevice:
     devices = [device for device in icloud_api.devices]
     target_device = None
     if converted:
+        # todo: remove this and automate the work some how, consider loading a mapping file upon start up
         nth = {"first or 1st or number one or 1": 1, "second or 2nd or two or 2": 2, "third or 3rd or three or 3": 3,
                "fourth or 4th or four or 4": 4, "fifth or 4th or five or 5": 5, "sixth or 6th or six or 6": 6,
                "seventh or 7th or seven or 7": 7, "eighth or 8th or eight or 8": 8, "ninth or 9th or nine or 9": 9,
@@ -2965,14 +2966,20 @@ def offline_communicator_initiate():
     if not ngrok_status:
         logger.critical('Initiating ngrok connection for offline communicator.')
         initiator = f'cd $HOME/JarvisHelper && source venv/bin/activate && export ENV=1 && python3 {target_scripts[0]}'
-        apple_script('Terminal').do_script(initiator)
+        try:
+            apple_script('Terminal').do_script(initiator)
+        except CommandError as err:
+            logger.error(f'Unable to initiate OfflineCommunicator.\n{err}')
 
     if not uvicorn_status:
         logger.critical('Initiating FastAPI for offline listener.')
         offline_script = f'cd {os.getcwd()} && source venv/bin/activate && cd api && ' \
                          f'export offline_phrase={offline_phrase} && ' \
                          'uvicorn fast:app --reload --port=4483'
-        apple_script('Terminal').do_script(offline_script)
+        try:
+            apple_script('Terminal').do_script(offline_script)
+        except CommandError as err:
+            logger.error(f'Unable to initiate OfflineCommunicator.\n{err}')
 
 
 def offline_communicator() -> None:
@@ -3033,7 +3040,7 @@ def offline_communicator() -> None:
                     with open('offline_request', 'w') as off_request:
                         off_request.write(command)
                 logger.error(f'Received a RuntimeError while executing offline request.\n{format_exc()}')
-                restart(quiet=True)
+                restart(quiet=True, quick=True)
         if STOPPER.get('status'):
             break
 
@@ -3392,20 +3399,10 @@ def sentry_mode() -> None:
             continue
         except RuntimeError:
             logger.error(f'Received a RuntimeError while executing regular interaction.\n{format_exc()}')
-            restart(quiet=True)
+            restart(quiet=True, quick=True)
         except KeyboardInterrupt:
             exit_process()
             terminator()
-
-        # todo: Check and remove or revert. The below exception handler might not be needed since,
-        #  RecursionError - Recursion is increased in main module,
-        #  TimeoutError - Timeout errors are mostly raised only by sockets,
-        #  RuntimeError - Runtime error occurs only when there is a conflict with offline communicator which is handled,
-        # except (RecursionError, TimeoutError, RuntimeError):
-        #     unknown_error = sys.exc_info()[0]
-        #     logger.error(f'Unknown exception::{unknown_error.__name__}\n{format_exc()}')  # include traceback
-        #     speaker.say('I faced an unknown exception.')
-        #     restart()
 
 
 def activator(key_original: str) -> None:
@@ -3443,7 +3440,7 @@ def activator(key_original: str) -> None:
     try:
         speaker.runAndWait()
     except RuntimeError:
-        restart(quiet=True)
+        restart(quiet=True, quick=True)
 
 
 def size_converter(byte_size: int) -> str:
@@ -3640,7 +3637,7 @@ def stop_terminal() -> None:
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-def restart(target: str = None, quiet: bool = False) -> None:
+def restart(target: str = None, quiet: bool = False, quick: bool = False) -> None:
     """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
 
     Notes:
@@ -3657,6 +3654,10 @@ def restart(target: str = None, quiet: bool = False) -> None:
             - ``None``: Restarts Jarvis to reset PID
             - ``PC``: Restarts the machine after getting confirmation.
         quiet: If a boolean ``True`` is passed, a silent restart will be performed.
+        quick:
+            - If a boolean ``True`` is passed, local IP values are stored in ``.env`` file for quick re-use.
+            - Converts ``hallway_ip``, ``bedroom_ip`` and ``kitchen_ip`` into a string before storing it as env vars.
+            - Doesn't convert ``tv_ip`` as a string as it is already one.
     """
     offline = os.environ.get('called_by_offline')
     if target:
@@ -3686,6 +3687,11 @@ def restart(target: str = None, quiet: bool = False) -> None:
             speaker.runAndWait() if not offline else None
         except RuntimeError:
             logger.error(f'Received a RuntimeError while restarting.\n{format_exc()}')
+    if quick:
+        set_key(dotenv_path='.env', key_to_set='hallway_ip', value_to_set=str(hallway_ip)) if hallway_ip else None
+        set_key(dotenv_path='.env', key_to_set='bedroom_ip', value_to_set=str(bedroom_ip)) if bedroom_ip else None
+        set_key(dotenv_path='.env', key_to_set='kitchen_ip', value_to_set=str(kitchen_ip)) if kitchen_ip else None
+        set_key(dotenv_path='.env', key_to_set='tv_ip', value_to_set=tv_ip) if tv_ip else None
     os.system('python3 restart.py')
     exit(1)  # Don't call terminator() as, os._exit(1) in that func will kill the background threads running in parallel
 
@@ -3855,11 +3861,24 @@ if __name__ == '__main__':
     # Retrieves devices IP by doing a local IP range scan using Netgear API
     # Note: This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)
     # Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted
-    local_devices = LocalIPScan(router_pass=router_pass)
-    hallway_ip = [val for val in local_devices.hallway()]
-    kitchen_ip = [val for val in local_devices.kitchen()]
-    bedroom_ip = [val for val in local_devices.bedroom()]
-    tv_ip = ''.join([val for val in local_devices.tv()])
+    # noinspection PyUnboundLocalVariable is used since walrus operators with and is not recognized as a bound variable
+    if (hallway_ip := os.environ.get('hallway_ip')) and (kitchen_ip := os.environ.get('kitchen_ip')) and \
+            (bedroom_ip := os.environ.get('bedroom_ip')) and (tv_ip := os.environ.get('tv_ip')):
+        hallway_ip = eval(hallway_ip)
+        # noinspection PyUnboundLocalVariable
+        kitchen_ip = eval(kitchen_ip)
+        # noinspection PyUnboundLocalVariable
+        bedroom_ip = eval(bedroom_ip)
+        unset_key(dotenv_path='.env', key_to_unset='hallway_ip')
+        unset_key(dotenv_path='.env', key_to_unset='kitchen_ip')
+        unset_key(dotenv_path='.env', key_to_unset='bedroom_ip')
+        unset_key(dotenv_path='.env', key_to_unset='tv_ip')
+    else:
+        local_devices = LocalIPScan(router_pass=router_pass)
+        hallway_ip = [val for val in local_devices.hallway()]
+        kitchen_ip = [val for val in local_devices.kitchen()]
+        bedroom_ip = [val for val in local_devices.bedroom()]
+        tv_ip = ''.join([val for val in local_devices.tv()])
 
     if not root_password:
         sys.stdout.write('\rROOT PASSWORD is not set!')
