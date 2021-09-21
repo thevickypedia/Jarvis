@@ -549,7 +549,9 @@ def conditions(converted: str) -> bool:
         system_vitals()
 
     elif any(word in converted_lower for word in keywords.vpn_server()):
-        if 'start' in converted_lower or 'trigger' in converted_lower or 'initiate' in converted_lower or \
+        if vpn_server_check():
+            speaker.say('An operation for VPN Server is already in progress sir! Please wait and retry.')
+        elif 'start' in converted_lower or 'trigger' in converted_lower or 'initiate' in converted_lower or \
                 'enable' in converted_lower or 'spin up' in converted_lower:
             speaker.say('VPN Server has been initiated sir! Login details will be sent to you shortly.')
             Thread(target=vpn_server, args=['START']).start()
@@ -3367,6 +3369,20 @@ class PersonalCloud:
         personal_cloud.delete_repo()
 
 
+def vpn_server_check() -> bool:
+    """Checks if an instance of VPN Server is running.
+
+    Returns:
+        bool:
+        Returns ``True`` if an instance of ``vpn.py`` is currently running.
+    """
+    pid_check = check_output("ps -ef | grep vpn.py", shell=True)
+    pid_list = pid_check.decode('utf-8').split('\n')
+    for id_ in pid_list:
+        if id_ and 'grep' not in id_ and '/bin/sh' not in id_:
+            return True
+
+
 def vpn_server(operation: str) -> None:
     """Automator to ``START`` or ``STOP`` the VPN portal.
 
@@ -3376,10 +3392,11 @@ def vpn_server(operation: str) -> None:
     See Also:
         Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
     """
+    base_script = f'cd {home}/vpn-server && source venv/bin/activate'
     if operation == 'START':
-        apple_script('Terminal').do_script(f'cd {home}/vpn-server && source venv/bin/activate && python vpn.py START')
+        apple_script('Terminal').do_script(f'{base_script} && python vpn.py START && exit')
     elif operation == 'STOP':
-        apple_script('Terminal').do_script(f'cd {home}/vpn-server && source venv/bin/activate && python vpn.py STOP')
+        apple_script('Terminal').do_script(f'{base_script} && python vpn.py STOP && exit')
 
 
 def internet_checker() -> Union[Speedtest, bool]:
