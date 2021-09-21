@@ -456,7 +456,7 @@ class Keywords:
             List of words for the function name.
 
         """
-        return ['connect', 'disconnect', 'bluetooth']
+        return ['bluetooth']
 
     @staticmethod
     def brightness() -> list:
@@ -556,6 +556,17 @@ class Keywords:
 
         """
         return ['vitals', 'statistics', 'readings', 'stats']
+
+    @staticmethod
+    def vpn_server() -> list:
+        """Words to match the given statement.
+
+        Returns:
+            list:
+            List of words for the function name.
+
+        """
+        return ['vpn']
 
     @staticmethod
     def personal_cloud() -> list:

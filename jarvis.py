@@ -548,6 +548,18 @@ def conditions(converted: str) -> bool:
     elif any(word in converted_lower for word in keywords.system_vitals()):
         system_vitals()
 
+    elif any(word in converted_lower for word in keywords.vpn_server()):
+        if 'start' in converted_lower or 'trigger' in converted_lower or 'initiate' in converted_lower or \
+                'enable' in converted_lower or 'spin up' in converted_lower:
+            speaker.say('VPN Server has been initiated sir! Login details will be sent to you shortly.')
+            Thread(target=vpn_server, args=['START']).start()
+        elif 'stop' in converted_lower or 'shut' in converted_lower or 'close' in converted_lower or \
+                'disable' in converted_lower:
+            speaker.say('VPN Server will be shutdown sir!')
+            Thread(target=vpn_server, args=['STOP']).start()
+        else:
+            speaker.say("I don't understand the request sir! You can ask me to enable or disable the VPN server.")
+
     elif any(word in converted_lower for word in keywords.personal_cloud()):
         if 'enable' in converted_lower or 'initiate' in converted_lower or 'kick off' in converted_lower or \
                 'start' in converted_lower:
@@ -3353,6 +3365,21 @@ class PersonalCloud:
             if pid_info and 'Library' in pid_info and ('/bin/sh' not in pid_info or 'grep' not in pid_info):
                 os.system(f'kill -9 {pid_info.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
         personal_cloud.delete_repo()
+
+
+def vpn_server(operation: str) -> None:
+    """Automator to ``START`` or ``STOP`` the VPN portal.
+
+    Args:
+        operation: Takes the user request as argument and looks for start or stop instructions.
+
+    See Also:
+        Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
+    """
+    if operation == 'START':
+        apple_script('Terminal').do_script(f'cd {home}/vpn-server && source venv/bin/activate && python vpn.py START')
+    elif operation == 'STOP':
+        apple_script('Terminal').do_script(f'cd {home}/vpn-server && source venv/bin/activate && python vpn.py STOP')
 
 
 def internet_checker() -> Union[Speedtest, bool]:

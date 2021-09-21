@@ -124,10 +124,16 @@ Styling conventions: [`PEP 8`](https://www.python.org/dev/peps/pep-0008/) <br>
 Clean code with pre-commit hooks: [`flake8`](https://flake8.pycqa.org/en/latest/) and 
 [`isort`](https://pycqa.github.io/isort/)
 
-### Pre-Commit
-`pre-commit` will run `flake8` and `isort` to ensure proper coding standards along with [docs_generator](gen_docs.sh) 
-to update the [runbook](#Runbook)
-> `pre-commit run --all-files`
+### Linting
+`PreCommit` will ensure linting, and the doc creation are run on every commit.
+
+**Requirement:**
+<br>
+`pip install --no-cache --upgrade sphinx pre-commit recommonmark`
+
+**Usage:**
+<br>
+`pre-commit run --all-files`
 
 ### Feature(s) Implementation:
 Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, env variables, 

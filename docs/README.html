@@ -196,13 +196,15 @@ Styling conventions: <a class="reference external" href="https://www.python.org/
 Clean code with pre-commit hooks: <a class="reference external" href="https://flake8.pycqa.org/en/latest/"><code class="docutils literal notranslate"><span class="pre">flake8</span></code></a> and
 <a class="reference external" href="https://pycqa.github.io/isort/"><code class="docutils literal notranslate"><span class="pre">isort</span></code></a></p>
 </section>
-<section id="pre-commit">
-<h2>Pre-Commit<a class="headerlink" href="#pre-commit" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">pre-commit</span></code> will run <code class="docutils literal notranslate"><span class="pre">flake8</span></code> and <code class="docutils literal notranslate"><span class="pre">isort</span></code> to ensure proper coding standards along with <a class="reference external" href="gen_docs.sh">docs_generator</a>
-to update the <a class="reference external" href="#Runbook">runbook</a></p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">run</span> <span class="pre">--all-files</span></code></p>
-</div></blockquote>
+<section id="linting">
+<h2>Linting<a class="headerlink" href="#linting" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">PreCommit</span></code> will ensure linting, and the doc creation are run on every commit.</p>
+<p><strong>Requirement:</strong>
+<br>
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--no-cache</span> <span class="pre">--upgrade</span> <span class="pre">sphinx</span> <span class="pre">pre-commit</span> <span class="pre">recommonmark</span></code></p>
+<p><strong>Usage:</strong>
+<br>
+<code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">run</span> <span class="pre">--all-files</span></code></p>
 </section>
 <section id="feature-s-implementation">
 <h2>Feature(s) Implementation:<a class="headerlink" href="#feature-s-implementation" title="Permalink to this headline">¶</a></h2>
@@ -250,7 +252,7 @@ features’ overview and demo videos.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#coding-standards">Coding Standards:</a></li>
-<li><a class="reference internal" href="#pre-commit">Pre-Commit</a></li>
+<li><a class="reference internal" href="#linting">Linting</a></li>
 <li><a class="reference internal" href="#feature-s-implementation">Feature(s) Implementation:</a></li>
 <li><a class="reference internal" href="#runbook">Runbook:</a></li>
 <li><a class="reference internal" href="#license-copyright">License &amp; copyright</a></li>
