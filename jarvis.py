@@ -19,8 +19,7 @@ from shutil import disk_usage
 from socket import AF_INET, SOCK_DGRAM, gethostname, socket
 from ssl import create_default_context
 from string import ascii_letters, digits
-from subprocess import (PIPE, CalledProcessError, Popen, call, check_output,
-                        getoutput)
+from subprocess import PIPE, Popen, call, check_output, getoutput
 from threading import Thread
 from time import perf_counter, sleep, time
 from traceback import format_exc
@@ -2217,14 +2216,7 @@ def television(converted: str) -> None:
         speaker.say("I wasn't able to connect to your TV sir! I guess your TV is powered off already.")
         return
     elif tv_status() != 0:
-        try:
-            arp_output = check_output(f"arp {tv_ip}", shell=True).decode('utf-8')  # arp on tv ip to get mac address
-            tv_mac_address = re.search(' at (.*) on ', arp_output).group().replace(' at ', '').replace(' on ', '')
-        except CalledProcessError:
-            tv_mac_address = None
-        if not tv_mac_address or tv_mac_address == '(INCOMPLETE)':
-            tv_mac_address = tv_mac
-        Thread(target=lambda mac_address: wake(mac_address), args=[tv_mac_address]).start()  # turns TV on in a thread
+        Thread(target=wake, args=[tv_mac]).start()  # turns TV on in a thread
         speaker.say("Looks like your TV is powered off sir! Let me try to turn it back on!")
         speaker.runAndWait()  # speaks the message to buy some time while the TV is connecting to network
 
@@ -3383,20 +3375,30 @@ def vpn_server_check() -> bool:
             return True
 
 
-def vpn_server(operation: str) -> None:
+def vpn_server(operation: str, retry: bool = False) -> None:
     """Automator to ``START`` or ``STOP`` the VPN portal.
 
     Args:
         operation: Takes the user request as argument and looks for start or stop instructions.
+        retry: Takes a boolean flag based on which a restart will be performed.
 
     See Also:
         Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
     """
     base_script = f'cd {home}/vpn-server && source venv/bin/activate'
-    if operation == 'START':
-        apple_script('Terminal').do_script(f'{base_script} && python vpn.py START && exit')
-    elif operation == 'STOP':
-        apple_script('Terminal').do_script(f'{base_script} && python vpn.py STOP && exit')
+    try:
+        if operation == 'START':
+            apple_script('Terminal').do_script(f'{base_script} && python vpn.py START && exit')
+        elif operation == 'STOP':
+            apple_script('Terminal').do_script(f'{base_script} && python vpn.py STOP && exit')
+    except RuntimeError:
+        if not retry:
+            logger.error(f'Failed to {operation} VPN server. Trying to restart it now.')
+            vpn_server(operation=operation, retry=True)
+        else:
+            msg = f'Failed to {operation} VPN server despite restart.'
+            logger.error(msg)
+            notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=msg)
 
 
 def internet_checker() -> Union[Speedtest, bool]:
@@ -3741,6 +3743,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
         set_key(dotenv_path='.env', key_to_set='bedroom_ip', value_to_set=str(bedroom_ip)) if bedroom_ip else None
         set_key(dotenv_path='.env', key_to_set='kitchen_ip', value_to_set=str(kitchen_ip)) if kitchen_ip else None
         set_key(dotenv_path='.env', key_to_set='tv_ip', value_to_set=tv_ip) if tv_ip else None
+        set_key(dotenv_path='.env', key_to_set='tv_mac', value_to_set=tv_mac) if tv_mac else None
     os.system('python3 restart.py')
     exit(1)  # Don't call terminator() as, os._exit(1) in that func will kill the background threads running in parallel
 
@@ -3894,7 +3897,6 @@ if __name__ == '__main__':
     think_id = os.environ.get('think_id')
     router_pass = os.environ.get('router_pass')
     tv_client_key = os.environ.get('tv_client_key')
-    tv_mac = os.environ.get('tv_mac')
     root_password = os.environ.get('root_password')
 
     if st := internet_checker():
@@ -3922,12 +3924,13 @@ if __name__ == '__main__':
         unset_key(dotenv_path='.env', key_to_unset='kitchen_ip')
         unset_key(dotenv_path='.env', key_to_unset='bedroom_ip')
         unset_key(dotenv_path='.env', key_to_unset='tv_ip')
+        unset_key(dotenv_path='.env', key_to_unset='tv_mac')
     else:
         local_devices = LocalIPScan(router_pass=router_pass)
         hallway_ip = [val for val in local_devices.hallway()]
         kitchen_ip = [val for val in local_devices.kitchen()]
         bedroom_ip = [val for val in local_devices.bedroom()]
-        tv_ip = ''.join([val for val in local_devices.tv()])
+        tv_ip, tv_mac = local_devices.tv()
 
     if not root_password:
         sys.stdout.write('\rROOT PASSWORD is not set!')

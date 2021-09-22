@@ -65,18 +65,18 @@ class LocalIPScan:
                 if device.name == bedroom_1:
                     yield device.ip
 
-    def tv(self) -> str:
+    def tv(self) -> tuple:
         """Host name of TV for string equality comparison.
 
         Yields:
-            str:
-            IP address of the TV.
+            tuple:
+            A tuple object of IP address and mac address of the TV.
 
         """
         if attached_devices := self.attached_devices:
             for device in attached_devices:
                 if device.name == 'LGWEBOSTV':
-                    yield device.ip.strip("'")
+                    return device.ip, device.mac
 
 
 if __name__ == '__main__':

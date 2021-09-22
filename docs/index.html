@@ -1317,11 +1317,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.vpn_server">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">vpn_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.vpn_server" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">vpn_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.vpn_server" title="Permalink to this definition">¶</a></dt>
 <dd><p>Automator to <code class="docutils literal notranslate"><span class="pre">START</span></code> or <code class="docutils literal notranslate"><span class="pre">STOP</span></code> the VPN portal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>operation</strong> – Takes the user request as argument and looks for start or stop instructions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operation</strong> – Takes the user request as argument and looks for start or stop instructions.</p></li>
+<li><p><strong>retry</strong> – Takes a boolean flag based on which a restart will be performed.</p></li>
+</ul>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -2763,11 +2766,11 @@ Whites can have a value of None.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan.tv">
-<span class="sig-name descname"><span class="pre">tv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.tv" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">tv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.tv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Host name of TV for string equality comparison.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Yields</dt>
-<dd class="field-odd"><p><em>str</em> – IP address of the TV.</p>
+<dd class="field-odd"><p><em>tuple</em> – A tuple object of IP address and mac address of the TV.</p>
 </dd>
 </dl>
 </dd></dl>
