@@ -61,7 +61,7 @@
 # Jarvis
 IronMan's Jarvis with python
 
-### Setup:
+### Setup
    - Run the following commands in command line/terminal:
         - `cd lib && chmod +x installs.sh` - Makes [installation file](https://git.io/JBnPq) as executable.
         - `python3 -m venv venv` - Creates a virtual env named `venv`
@@ -70,18 +70,18 @@ IronMan's Jarvis with python
         - [`bash installs.sh`](https://git.io/JBnPq) - Installs the required libraries/modules.
         - [`python3 jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis
 
-### ENV Variables:
+### ENV Variables
 Environment variables are loaded from a `.env` file using the `python_dotenv` module.
 
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary>
 
-###### Default args:
+###### Default args
      Used to retrieve the current location.
 - **icloud_user** - iCloud account username.
 - **icloud_pass** - iCloud account password.
 
-###### Additional args:
+###### Additional args
 - **git_user** - GitHub Username
 - **git_pass** - GitHub Token
 - **weather_api** - API Key from [openweathermap](https://openweathermap.org/) 
@@ -98,19 +98,19 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 - **think_id** - API Key from wolfram alpha.
 - **root_password** - System password for your `mac` to get the system vitals.
 
-###### Args for [PersonalCloud](https://github.com/thevickypedia/personal_cloud) integration:
+###### Args for [PersonalCloud](https://github.com/thevickypedia/personal_cloud) integration
 - **personal_cloud_host** - Directory path which has to shared through the internet.
 
 ###### Args to control TV - Applies only for [LGWebOS](https://en.wikipedia.org/wiki/WebOS)
 - **tv_client_key** - Client key to [control the TV](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/tv_controls.py) using `pywebostv` module.
 - **tv_mac** - Mac address of the TV which will be retrieved by the `arp` command but just in case.
 
-###### Args for [ip_scanner](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/ip_scanner.py) - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers):
+###### Args for [ip_scanner](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/ip_scanner.py) - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers)
 - **router_pass** - Router's admin password to get the available devices using `pynetgear` module.
      > Note that this may be done even without the module by simply scanning the whole network.
   > Using the module makes it easier since the devices are already connected to the router.
 
-###### Args for [offline-communicator](https://thevickypedia.com/jarvisoffline):
+###### Args for [offline-communicator](https://thevickypedia.com/jarvisoffline)
 > Built for a personalized usage.
 - **offline_receive_user** - Alternate gmail account username to send response from Jarvis as SMS. (`gmail_user` can be re-used)
 - **offline_receive_pass** - Alternate gmail account password to send response from Jarvis as SMS. (`gmail_pass` can be re-used)
@@ -118,7 +118,7 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 - **ngrok_auth_key** - Auth token from [ngrok](https://dashboard.ngrok.com/) - Only used for `offline_communicator`
 </details>
 
-### Coding Standards:
+### Coding Standards
 Docstring format: [`Google`](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) <br>
 Styling conventions: [`PEP 8`](https://www.python.org/dev/peps/pep-0008/) <br>
 Clean code with pre-commit hooks: [`flake8`](https://flake8.pycqa.org/en/latest/) and 
@@ -127,19 +127,19 @@ Clean code with pre-commit hooks: [`flake8`](https://flake8.pycqa.org/en/latest/
 ### Linting
 `PreCommit` will ensure linting, and the doc creation are run on every commit.
 
-**Requirement:**
+**Requirement**
 <br>
 `pip install --no-cache --upgrade sphinx pre-commit recommonmark`
 
-**Usage:**
+**Usage**
 <br>
 `pre-commit run --all-files`
 
-### Feature(s) Implementation:
+### Feature(s) Implementation
 Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, env variables, 
 features' overview and demo videos.
 
-### Runbook:
+### Runbook
 [![made-with-sphinx-doc](https://img.shields.io/badge/Made%20with-Sphinx-1f425f.svg)](https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html)
 
 https://thevickypedia.github.io/Jarvis/

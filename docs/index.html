@@ -55,12 +55,12 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html#development-and-maintenance">Development and Maintenance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#reach-out">Reach Out</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#jarvis">Jarvis</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="README.html#setup">Setup:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="README.html#env-variables">ENV Variables:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="README.html#coding-standards">Coding Standards:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#env-variables">ENV Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#coding-standards">Coding Standards</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#linting">Linting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="README.html#feature-s-implementation">Feature(s) Implementation:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="README.html#runbook">Runbook:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#feature-s-implementation">Feature(s) Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#runbook">Runbook</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#license-copyright">License &amp; copyright</a></li>
 </ul>
 </li>
@@ -1317,14 +1317,11 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.vpn_server">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">vpn_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.vpn_server" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">vpn_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.vpn_server" title="Permalink to this definition">¶</a></dt>
 <dd><p>Automator to <code class="docutils literal notranslate"><span class="pre">START</span></code> or <code class="docutils literal notranslate"><span class="pre">STOP</span></code> the VPN portal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>operation</strong> – Takes the user request as argument and looks for start or stop instructions.</p></li>
-<li><p><strong>retry</strong> – Takes a boolean flag based on which a restart will be performed.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>operation</strong> – Takes <code class="docutils literal notranslate"><span class="pre">START</span></code> or <code class="docutils literal notranslate"><span class="pre">STOP</span></code> as an argument.</p>
 </dd>
 </dl>
 <div class="admonition seealso">

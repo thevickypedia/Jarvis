@@ -552,12 +552,12 @@ def conditions(converted: str) -> bool:
             speaker.say('An operation for VPN Server is already in progress sir! Please wait and retry.')
         elif 'start' in converted_lower or 'trigger' in converted_lower or 'initiate' in converted_lower or \
                 'enable' in converted_lower or 'spin up' in converted_lower:
-            speaker.say('VPN Server has been initiated sir! Login details will be sent to you shortly.')
             Thread(target=vpn_server, args=['START']).start()
+            speaker.say('VPN Server has been initiated sir! Login details will be sent to you shortly.')
         elif 'stop' in converted_lower or 'shut' in converted_lower or 'close' in converted_lower or \
                 'disable' in converted_lower:
-            speaker.say('VPN Server will be shutdown sir!')
             Thread(target=vpn_server, args=['STOP']).start()
+            speaker.say('VPN Server will be shutdown sir!')
         else:
             speaker.say("I don't understand the request sir! You can ask me to enable or disable the VPN server.")
 
@@ -3375,32 +3375,19 @@ def vpn_server_check() -> bool:
             return True
 
 
-def vpn_server(operation: str, retry: bool = False) -> None:
+def vpn_server(operation: str) -> None:
     """Automator to ``START`` or ``STOP`` the VPN portal.
 
     Args:
-        operation: Takes the user request as argument and looks for start or stop instructions.
-        retry: Takes a boolean flag based on which a restart will be performed.
+        operation: Takes ``START`` or ``STOP`` as an argument.
 
     See Also:
         - Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
         - Pulls the latest version before starting the server.
         - Adds an env var ``ENV: Jarvis`` so, ``vpn-server`` can log the details in a log file.
     """
-    base_script = f'cd {home}/vpn-server && git pull && source venv/bin/activate && export ENV=Jarvis'
-    try:
-        if operation == 'START':
-            apple_script('Terminal').do_script(f'{base_script} && python vpn.py START && exit')
-        elif operation == 'STOP':
-            apple_script('Terminal').do_script(f'{base_script} && python vpn.py STOP && exit')
-    except RuntimeError:
-        if not retry:
-            logger.error(f'Failed to {operation} VPN server. Trying to restart it now.')
-            vpn_server(operation=operation, retry=True)
-        else:
-            msg = f'Failed to {operation} VPN server despite restart.'
-            logger.error(msg)
-            notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number, body=msg)
+    base_script = f'cd {home}/vpn-server && git pull --quiet && source venv/bin/activate && export ENV=Jarvis'
+    os.system(f'{base_script} && python vpn.py {operation} && exit')
 
 
 def internet_checker() -> Union[Speedtest, bool]:
