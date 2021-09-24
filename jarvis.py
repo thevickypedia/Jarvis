@@ -3383,9 +3383,11 @@ def vpn_server(operation: str, retry: bool = False) -> None:
         retry: Takes a boolean flag based on which a restart will be performed.
 
     See Also:
-        Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
+        - Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
+        - Pulls the latest version before starting the server.
+        - Adds an env var ``ENV: Jarvis`` so, ``vpn-server`` can log the details in a log file.
     """
-    base_script = f'cd {home}/vpn-server && source venv/bin/activate'
+    base_script = f'cd {home}/vpn-server && git pull && source venv/bin/activate && export ENV=Jarvis'
     try:
         if operation == 'START':
             apple_script('Terminal').do_script(f'{base_script} && python vpn.py START && exit')

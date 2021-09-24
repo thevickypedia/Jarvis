@@ -80,7 +80,7 @@ def read_root(input_data: GetData):
             else:
                 raise HTTPException(status_code=422,
                                     detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
-                                           f'Please try an instruction that does not require an user interaction.')
+                                           'Please try an instruction that does not require an user interaction.')
     else:
         raise HTTPException(status_code=401, detail='Request not authorized.')
 
