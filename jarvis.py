@@ -606,7 +606,8 @@ def conditions(converted: str) -> bool:
             pc_sleep()
         else:
             speaker.say("Activating sentry mode, enjoy yourself sir!")
-            greet_check.pop('status')
+            if greet_check:
+                greet_check.pop('status')
         return True
 
     elif any(word in converted_lower for word in keywords.restart()):

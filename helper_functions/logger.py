@@ -17,7 +17,7 @@ import logging
 from datetime import datetime
 from importlib import reload
 from logging.config import dictConfig
-from os import environ, path
+from os import environ, makedirs, path
 from time import struct_time, time
 
 from pytz import timezone, utc
@@ -28,6 +28,9 @@ dictConfig({
 })
 
 directory = path.dirname(__file__)
+
+if not path.isdir(path.join(directory, '../logs')):
+    makedirs(path.join(directory, '../logs'))
 
 log_file = datetime.now().strftime(path.join(directory, '../logs/jarvis_%d-%m-%Y.log'))
 write = ''.join(['*' for _ in range(120)])
@@ -130,5 +133,5 @@ if __name__ == '__main__':
     test_logger.function4()
     test_logger.function5()
     for method_name, return_value in TestLogger.__dict__.items():
-        if type(return_value) == staticmethod:
-            print(return_value.__func__ or return_value.__get__(TestLogger))
+        if callable(return_value):
+            print(method_name)
