@@ -70,6 +70,41 @@
 <section id="module-jarvis">
 <span id="jarvis-main-module"></span><h1>Jarvis - Main Module<a class="headerlink" href="#module-jarvis" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
+<dt class="sig sig-object py" id="jarvis.Activator">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">Activator</span></span><a class="headerlink" href="#jarvis.Activator" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://github.com/Picovoice/porcupine">Porcupine</a> wake word engine.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Activator</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Creates an input audio stream from a microphone, monitors it, and detects the specified wake word.</p></li>
+<li><p>Once detected, Jarvis triggers the <code class="docutils literal notranslate"><span class="pre">listener()</span></code> function with a <code class="docutils literal notranslate"><span class="pre">phrase_time_limit</span></code> of 3 seconds.</p></li>
+<li><p>After processing the phrase, the converted text is sent as response to <code class="docutils literal notranslate"><span class="pre">initiator()</span></code>.</p></li>
+</ul>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.Activator.run">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.Activator.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates Porcupine object for hot word detection.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Instantiates an instance of Porcupine object and monitors audio stream for occurrences of keywords.</p></li>
+<li><p>A higher sensitivity results in fewer misses at the cost of increasing the false alarm rate.</p></li>
+</ul>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Porcupine <a class="reference external" href="https://git.io/JRBHb">demo</a> mic.</p></li>
+<li><p><a class="reference external" href="https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read">Audio Overflow</a> handling.</p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="jarvis.PersonalCloud">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">PersonalCloud</span></span><a class="headerlink" href="#jarvis.PersonalCloud" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controller for <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">Personal Cloud</a>.</p>
@@ -147,17 +182,6 @@
 </dl>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.activator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">activator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_original</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.activator" title="Permalink to this definition">¶</a></dt>
-<dd><p>When invoked by <code class="docutils literal notranslate"><span class="pre">sentry_mode()</span></code>, checks for the right keyword to wake up and gets into action.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key_original</strong> – Takes the processed string from <code class="docutils literal notranslate"><span class="pre">sentry_mode()</span></code> as input.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -650,6 +674,17 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.initiator">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_original</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.initiator" title="Permalink to this definition">¶</a></dt>
+<dd><p>When invoked by <code class="docutils literal notranslate"><span class="pre">Activator</span></code>, checks for the right keyword to wake up and gets into action.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key_original</strong> – Takes the processed string from <code class="docutils literal notranslate"><span class="pre">SentryMode</span></code> as input.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.internet_checker">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">internet_checker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">speedtest.Speedtest</span><span class="p"><span class="pre">,</span> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.internet_checker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses speed test api to check for internet connection.</p>
@@ -1063,14 +1098,6 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.sentry_mode">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">sentry_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.sentry_mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listens forever and invokes <code class="docutils literal notranslate"><span class="pre">activator()</span></code> when heard something. Stops when <code class="docutils literal notranslate"><span class="pre">STOPPER</span></code> flag is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
-<p class="rubric">References</p>
-<p>Invokes <a class="reference external" href="https://thevickypedia.github.io/Jarvis/#jarvis.morning">morning</a> function at 7 AM.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.set_brightness">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">set_brightness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.set_brightness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set brightness to a custom level.</p>
@@ -1253,7 +1280,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.time_travel">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">time_travel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.time_travel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Triggered only from <code class="docutils literal notranslate"><span class="pre">activator()</span></code> to give a quick update on the user’s daily routine.</p>
+<dd><p>Triggered only from <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> to give a quick update on the user’s daily routine.</p>
 </dd></dl>
 
 <dl class="py function">

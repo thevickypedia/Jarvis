@@ -19,6 +19,7 @@ from shutil import disk_usage
 from socket import AF_INET, SOCK_DGRAM, gethostname, socket
 from ssl import create_default_context
 from string import ascii_letters, digits
+from struct import unpack_from
 from subprocess import PIPE, Popen, call, check_output, getoutput
 from threading import Thread
 from time import perf_counter, sleep, time
@@ -48,6 +49,8 @@ from joke.jokes import chucknorris, geek, icanhazdad, icndb
 from newsapi import NewsApiClient, newsapi_exception
 from playsound import playsound
 from psutil import Process, boot_time, cpu_count, virtual_memory
+from pvporcupine import KEYWORD_PATHS, LIBRARY_PATH, MODEL_PATH, create
+from pyaudio import PyAudio, paInt16
 from pychromecast.error import ChromecastConnectionError
 from PyDictionary import PyDictionary
 from pyicloud import PyiCloudService
@@ -2801,7 +2804,7 @@ def celebrate() -> str:
 
 
 def time_travel() -> None:
-    """Triggered only from ``activator()`` to give a quick update on the user's daily routine."""
+    """Triggered only from ``initiator()`` to give a quick update on the user's daily routine."""
     part_day = part_of_day()
     meeting = None
     if not os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
@@ -2975,8 +2978,8 @@ def offline_communicator_initiate() -> None:
 
     if not ngrok_status:
         logger.info('Initiating ngrok connection for offline communicator.')
-        initiator = f'cd {home}/JarvisHelper && source venv/bin/activate && export ENV=1 && python3 {target_scripts[0]}'
-        apple_script('Terminal').do_script(initiator)
+        initiate = f'cd {home}/JarvisHelper && source venv/bin/activate && export ENV=1 && python3 {target_scripts[0]}'
+        apple_script('Terminal').do_script(initiate)
 
     if not uvicorn_status:
         logger.info('Initiating FastAPI for offline listener.')
@@ -3418,47 +3421,21 @@ def morning() -> None:
         volume_controller(level=50)
 
 
-def sentry_mode() -> None:
-    """Listens forever and invokes ``activator()`` when heard something. Stops when ``STOPPER`` flag is set to ``True``.
-
-    References:
-        Invokes `morning <https://thevickypedia.github.io/Jarvis/#jarvis.morning>`__ function at 7 AM.
-    """
-    while True:
-        if datetime.now().strftime("%I:%M %p") == '07:00 AM':
-            morning()
-        if STOPPER.get('status'):
-            break
-        sys.stdout.write("\rSentry Mode")
-        try:
-            activator(recognizer.recognize_google(recognizer.listen(source=source, phrase_time_limit=5)))
-        except (UnknownValueError, WaitTimeoutError, RequestError):
-            sys.stdout.write("\r")
-        except RuntimeError:
-            logger.error(f'Received a RuntimeError while executing regular interaction.\n{format_exc()}')
-            restart(quiet=True, quick=True)
-        except KeyboardInterrupt:
-            exit_process()
-            terminator()
-
-
-def activator(key_original: str) -> None:
-    """When invoked by ``sentry_mode()``, checks for the right keyword to wake up and gets into action.
+def initiator(key_original: str) -> None:
+    """When invoked by ``Activator``, checks for the right keyword to wake up and gets into action.
 
     Args:
-        key_original: Takes the processed string from ``sentry_mode()`` as input.
+        key_original: Takes the processed string from ``SentryMode`` as input.
     """
-    key = key_original.lower()
-    key_split = key.split()
-    if 'jarvis' not in key and 'buddy' not in key:
-        return
-    logger.info(f'Woke up for: "{key_original}"')
-    Thread(target=playsound, args=['indicators/acknowledgement.mp3']).start()
     sys.stdout.write("\r")
     time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']
     wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
+    key = key_original.lower()
+    key_split = key.split()
     if [word for word in key_split if word in time_of_day]:
         time_travel.has_been_called = True
+        if event := celebrate():
+            speaker.say(f'Happy {event}!')
         if 'night' in key_split or 'goodnight' in key_split:
             Thread(target=pc_sleep).start()
         time_travel()
@@ -3468,20 +3445,76 @@ def activator(key_original: str) -> None:
     elif any(word in key for word in wake_up_words):
         speaker.say(f'{choice(wake_up2)}')
         initialize()
-    elif key == 'jarvis':
-        speaker.say(f'{choice(wake_up3)}')
-        initialize()
     else:
-        converted = ' '.join([i for i in key_original.split() if i.lower() not in ['buddy', 'jarvis']])
+        converted = ' '.join([i for i in key_original.split() if i.lower() not in ['buddy', 'jarvis', 'sr_error']])
         if converted:
             split(converted.strip())
         else:
             speaker.say(f'{choice(wake_up3)}')
             initialize()
-    try:
-        speaker.runAndWait()
-    except RuntimeError:
-        restart(quiet=True, quick=True)
+
+
+class Activator:
+    """`Porcupine <https://github.com/Picovoice/porcupine>`__ wake word engine.
+
+    >>> Activator
+
+    See Also:
+        - Creates an input audio stream from a microphone, monitors it, and detects the specified wake word.
+        - Once detected, Jarvis triggers the ``listener()`` function with a ``phrase_time_limit`` of 3 seconds.
+        - After processing the phrase, the converted text is sent as response to ``initiator()``.
+    """
+
+    @staticmethod
+    def run() -> None:
+        """Initiates Porcupine object for hot word detection.
+
+        See Also:
+            - Instantiates an instance of Porcupine object and monitors audio stream for occurrences of keywords.
+            - A higher sensitivity results in fewer misses at the cost of increasing the false alarm rate.
+
+        References:
+            - Porcupine `demo <https://git.io/JRBHb>`__ mic.
+            - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
+        """
+        keyword_paths = [KEYWORD_PATHS[x] for x in ['jarvis']]
+        porcupine = create(
+            library_path=LIBRARY_PATH,
+            model_path=MODEL_PATH,
+            keyword_paths=keyword_paths,
+            sensitivities=[0.6]
+        )
+
+        py_audio = PyAudio()
+
+        audio_stream = py_audio.open(
+            rate=porcupine.sample_rate,
+            channels=1,
+            format=paInt16,
+            input=True,
+            frames_per_buffer=porcupine.frame_length,
+            input_device_index=0)
+
+        try:
+            while True:
+                sys.stdout.write('\rSentry Mode')
+                pcm = audio_stream.read(porcupine.frame_length, exception_on_overflow=False)
+                pcm = unpack_from("h" * porcupine.frame_length, pcm)
+                if porcupine.process(pcm) >= 0:
+                    Thread(target=playsound, args=['indicators/acknowledgement.mp3']).start()
+                    initiator(listener(phrase_limit=4, sound=False))
+                    speaker.runAndWait()
+                elif STOPPER.get('status'):
+                    raise KeyboardInterrupt
+        except KeyboardInterrupt:
+            logger.critical('Releasing resources acquired by Porcupine.')
+            porcupine.delete()
+            logger.critical('Closing Audio Stream.')
+            audio_stream.close()
+            logger.critical('Releasing PortAudio resources.')
+            py_audio.terminate()
+            exit_process()
+            terminator()
 
 
 def size_converter(byte_size: int) -> str:
@@ -3978,4 +4011,4 @@ if __name__ == '__main__':
 
     with Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
-        sentry_mode()
+        Activator.run()
