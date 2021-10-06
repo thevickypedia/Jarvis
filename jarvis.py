@@ -253,7 +253,7 @@ def conditions(converted: str) -> bool:
                 place += word + ' '
             elif '.' in word:
                 place += word + ' '
-        if place:
+        if place and len(place) < 3:
             current_time(place)
         else:
             current_time()
@@ -1298,19 +1298,17 @@ def music(device: str = None) -> None:
         device: Takes device name as argument.
     """
     sys.stdout.write("\rScanning music files...")
-
-    path = os.walk(f"{home}/Music")
-
-    get_all_files = (os.path.join(root, f) for root, _, files in path for f in files)
-    music_files = [file for file in get_all_files if os.path.splitext(file)[1] == '.mp3']
-    chosen = choice(music_files)
-
-    if device:
-        google_home(device, chosen)
+    get_all_files = (os.path.join(root, f) for root, _, files in os.walk(f"{home}/Music") for f in files)
+    if music_files := [file for file in get_all_files if os.path.splitext(file)[1] == '.mp3']:
+        chosen = choice(music_files)
+        if device:
+            google_home(device, chosen)
+        else:
+            call(["open", chosen])
+            sys.stdout.write("\r")
+            speaker.say("Enjoy your music sir!")
     else:
-        call(["open", chosen])
-        sys.stdout.write("\r")
-        speaker.say("Enjoy your music sir!")
+        speaker.say('No music files were found sir!')
 
 
 def gmail() -> None:
@@ -3507,11 +3505,11 @@ class Activator:
                 elif STOPPER.get('status'):
                     raise KeyboardInterrupt
         except KeyboardInterrupt:
-            logger.critical('Releasing resources acquired by Porcupine.')
+            logger.info('Releasing resources acquired by Porcupine.')
             porcupine.delete()
-            logger.critical('Closing Audio Stream.')
+            logger.info('Closing Audio Stream.')
             audio_stream.close()
-            logger.critical('Releasing PortAudio resources.')
+            logger.info('Releasing PortAudio resources.')
             py_audio.terminate()
             exit_process()
             terminator()
