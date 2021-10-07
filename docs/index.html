@@ -80,8 +80,9 @@
 <p class="admonition-title">See also</p>
 <ul class="simple">
 <li><p>Creates an input audio stream from a microphone, monitors it, and detects the specified wake word.</p></li>
-<li><p>Once detected, Jarvis triggers the <code class="docutils literal notranslate"><span class="pre">listener()</span></code> function with a <code class="docutils literal notranslate"><span class="pre">phrase_time_limit</span></code> of 3 seconds.</p></li>
-<li><p>After processing the phrase, the converted text is sent as response to <code class="docutils literal notranslate"><span class="pre">initiator()</span></code>.</p></li>
+<li><p>Once detected, Jarvis triggers the <code class="docutils literal notranslate"><span class="pre">listener()</span></code> function with an <code class="docutils literal notranslate"><span class="pre">acknowledgement</span></code> sound played.</p></li>
+<li><p>After processing the phrase, the converted text is sent as response to <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> with a <code class="docutils literal notranslate"><span class="pre">return</span></code> flag.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">should_return</span></code> flag ensures, the user is not disturbed when accidentally woke up by wake work engine.</p></li>
 </ul>
 </div>
 <dl class="py method">
@@ -675,11 +676,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.initiator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_original</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.initiator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_original</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.initiator" title="Permalink to this definition">¶</a></dt>
 <dd><p>When invoked by <code class="docutils literal notranslate"><span class="pre">Activator</span></code>, checks for the right keyword to wake up and gets into action.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key_original</strong> – Takes the processed string from <code class="docutils literal notranslate"><span class="pre">SentryMode</span></code> as input.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_original</strong> – Takes the processed string from <code class="docutils literal notranslate"><span class="pre">SentryMode</span></code> as input.</p></li>
+<li><p><strong>should_return</strong> – Flag to return the function if nothing is heard.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -731,7 +735,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.listener">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase_limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.listener" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase_limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.listener" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to activate listener, this function will be called by most upcoming functions to listen to user input.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

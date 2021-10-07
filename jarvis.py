@@ -94,7 +94,7 @@ from helper_functions.temperature import Temperature
 from helper_functions.tv_controls import TV
 
 
-def listener(phrase_limit: int, timeout: int = None, sound: bool = True) -> str:
+def listener(phrase_limit: int = None, timeout: int = None, sound: bool = True) -> str:
     """Function to activate listener, this function will be called by most upcoming functions to listen to user input.
 
     Args:
@@ -113,7 +113,7 @@ def listener(phrase_limit: int, timeout: int = None, sound: bool = True) -> str:
         if timeout and phrase_limit:
             listened = recognizer.listen(source, phrase_time_limit=phrase_limit, timeout=timeout)
         else:
-            listened = recognizer.listen(source, phrase_time_limit=phrase_limit)
+            listened = recognizer.listen(source)
         sys.stdout.write("\r") and playsound('indicators/end.mp3') if sound else sys.stdout.write("\r")
         return_val = recognizer.recognize_google(listened)
         sys.stdout.write(f'\r{return_val}')
@@ -3424,12 +3424,15 @@ def morning() -> None:
         volume_controller(level=50)
 
 
-def initiator(key_original: str) -> None:
+def initiator(key_original: str, should_return: bool = False) -> None:
     """When invoked by ``Activator``, checks for the right keyword to wake up and gets into action.
 
     Args:
         key_original: Takes the processed string from ``SentryMode`` as input.
+        should_return: Flag to return the function if nothing is heard.
     """
+    if key_original == 'SR_ERROR' and should_return:
+        return
     sys.stdout.write("\r")
     time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']
     wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
@@ -3464,8 +3467,9 @@ class Activator:
 
     See Also:
         - Creates an input audio stream from a microphone, monitors it, and detects the specified wake word.
-        - Once detected, Jarvis triggers the ``listener()`` function with a ``phrase_time_limit`` of 3 seconds.
-        - After processing the phrase, the converted text is sent as response to ``initiator()``.
+        - Once detected, Jarvis triggers the ``listener()`` function with an ``acknowledgement`` sound played.
+        - After processing the phrase, the converted text is sent as response to ``initiator()`` with a ``return`` flag.
+        - The ``should_return`` flag ensures, the user is not disturbed when accidentally woke up by wake work engine.
     """
 
     @staticmethod
@@ -3481,7 +3485,7 @@ class Activator:
             - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
         """
         keyword_paths = [KEYWORD_PATHS[x] for x in ['jarvis']]
-        porcupine = create(
+        waker = create(
             library_path=LIBRARY_PATH,
             model_path=MODEL_PATH,
             keyword_paths=keyword_paths,
@@ -3491,27 +3495,27 @@ class Activator:
         py_audio = PyAudio()
 
         audio_stream = py_audio.open(
-            rate=porcupine.sample_rate,
+            rate=waker.sample_rate,
             channels=1,
             format=paInt16,
             input=True,
-            frames_per_buffer=porcupine.frame_length,
+            frames_per_buffer=waker.frame_length,
             input_device_index=0)
 
         try:
             while True:
                 sys.stdout.write('\rSentry Mode')
-                pcm = audio_stream.read(porcupine.frame_length, exception_on_overflow=False)
-                pcm = unpack_from("h" * porcupine.frame_length, pcm)
-                if porcupine.process(pcm) >= 0:
+                pcm = audio_stream.read(waker.frame_length, exception_on_overflow=False)
+                pcm = unpack_from("h" * waker.frame_length, pcm)
+                if waker.process(pcm) >= 0:
                     Thread(target=playsound, args=['indicators/acknowledgement.mp3']).start()
-                    initiator(listener(phrase_limit=4, sound=False))
+                    initiator(key_original=listener(sound=False), should_return=True)
                     speaker.runAndWait()
                 elif STOPPER.get('status'):
                     raise KeyboardInterrupt
         except KeyboardInterrupt:
             logger.info('Releasing resources acquired by Porcupine.')
-            porcupine.delete()
+            waker.delete()
             logger.info('Closing Audio Stream.')
             audio_stream.close()
             logger.info('Releasing PortAudio resources.')
