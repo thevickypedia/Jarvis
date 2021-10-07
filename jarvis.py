@@ -1371,7 +1371,8 @@ def gmail() -> None:
                                 receive = datetime_obj.strftime("Yesterday, at %I:%M %p")
                             else:
                                 receive = datetime_obj.strftime("on %A, %B %d, at %I:%M %p")
-                            sys.stdout.write(f'\rReceived:{receive}\tSender: {sender}\tSubject: {subject}')
+                            sys.stdout.write(f'\rReceived:{receive.strip()}\tSender: {str(sender).strip()}\tSubject: '
+                                             f'{subject.strip()}')
                             speaker.say(f"You have an email from, {sender}, with subject, {subject}, {receive}")
                             speaker.runAndWait() if not offline else None
 
@@ -1553,10 +1554,10 @@ def delete_todo() -> None:
     if item != 'SR_ERROR':
         if 'exit' in item or 'quit' in item or 'Xzibit' in item:
             return
-        response = database.deleter(item)
+        response = database.deleter(item.lower())
         # if the return message from database starts with 'Looks' it means that the item wasn't matched for deletion
+        sys.stdout.write(f'\r{response}')
         if response.startswith('Looks'):
-            sys.stdout.write(f'\r{response}')
             speaker.say(response)
             speaker.runAndWait()
             delete_todo()
@@ -3473,8 +3474,11 @@ class Activator:
     """
 
     @staticmethod
-    def run() -> None:
+    def run(sensitivity: float = os.environ.get('sensitivity', 0.5)) -> None:
         """Initiates Porcupine object for hot word detection.
+
+        Args:
+            sensitivity: Tolerance/Sensitivity level. Takes argument or env var ``sensitivity`` or defaults to ``0.5``
 
         See Also:
             - Instantiates an instance of Porcupine object and monitors audio stream for occurrences of keywords.
@@ -3489,7 +3493,7 @@ class Activator:
             library_path=LIBRARY_PATH,
             model_path=MODEL_PATH,
             keyword_paths=keyword_paths,
-            sensitivities=[0.6]
+            sensitivities=[sensitivity]
         )
 
         py_audio = PyAudio()

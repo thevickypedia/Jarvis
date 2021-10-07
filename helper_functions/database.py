@@ -86,15 +86,19 @@ class Database:
         connection = connect(self.file_name)
         response = Database().downloader()
         check = 0
+        c, i = None, None
         for c, i in response:  # browses through all categories and items
-            if i == item or c == item:  # matches the item that needs to be deleted
+            if i.lower() == item or c.lower() == item:  # matches the item that needs to be deleted
                 check += 1
         # if check remains 0 returns the message that the item or category wasn't found
         if check == 0:
             return f"Looks like there is no item or category with the name: {item}"
         connection.execute(f"DELETE FROM {self.table_name} WHERE item='{item}' OR category='{item}'")
         connection.commit()
-        return f"Item: {item} has been removed from {self.table_name}."
+        if c and i:
+            return f"Item: {i} from the Category: {c} has been removed from {self.table_name}."
+        else:
+            return f"Item: {item} has been removed from {self.table_name}."
 
 
 if __name__ == '__main__':
