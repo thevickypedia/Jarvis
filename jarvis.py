@@ -3082,11 +3082,16 @@ def meeting_gatherer() -> None:
         sleep(900)
 
 
-def meetings(meeting_file: str = 'calendar.scpt') -> str:
-    """Uses ``applescript`` to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.
+def meeting_app_launcher() -> None:
+    """Launches either Calendar or Outlook application which is required to read meetings."""
+    if meeting_file == 'calendar.scpt':
+        os.system('open /System/Applications/Calendar.app > /dev/null 2>&1')
+    elif meeting_file == 'outlook.scpt':
+        os.system("open /Applications/'Microsoft Outlook.app' > /dev/null 2>&1")
 
-    Args:
-        meeting_file: Takes applescript filename as argument. Defaults to calendar.scpt unless an alternate is passed.
+
+def meetings() -> str:
+    """Uses ``applescript`` to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.
 
     Returns:
         str:
@@ -3111,7 +3116,7 @@ def meetings(meeting_file: str = 'calendar.scpt') -> str:
                       f"'with timeout of 300 seconds' to your {meeting_file} right after the " \
                       f"'tell application {source_app}' step and 'end timeout' before the 'end tell' step."
         elif err_code in ['(-10810)', '(-609)', '(-600)']:  # If unable to launch the app or app terminates.
-            apps(f'Launch {meeting_file}')
+            meeting_app_launcher()
         if not failure:
             failure = f"Unable to read {source_app} - [{error}]\n{err_msg}"
         logger.error(failure)
@@ -3870,6 +3875,7 @@ def starter() -> None:
     volume_controller(level=50)
     voice_changer()
     clear_logs()
+    meeting_app_launcher()
 
     if os.path.isfile('.env'):
         logger.info('Loading .env file.')
@@ -3895,6 +3901,7 @@ if __name__ == '__main__':
     sys.setrecursionlimit(limit * 10)  # increases the recursion limit by 10 times
     home = os.path.expanduser('~')  # gets the path to current user profile
 
+    meeting_file = 'calendar.scpt'
     starter()  # initiates crucial functions which needs to be called during start up
 
     git_user = os.environ.get('git_user')

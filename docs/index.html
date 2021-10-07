@@ -818,6 +818,12 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.meeting_app_launcher">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meeting_app_launcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.meeting_app_launcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launches either Calendar or Outlook application which is required to read meetings.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meeting_gatherer">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meeting_gatherer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.meeting_gatherer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets return value from <code class="docutils literal notranslate"><span class="pre">meetings()</span></code> and writes it to file named <code class="docutils literal notranslate"><span class="pre">meetings</span></code>.</p>
@@ -833,22 +839,19 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meetings">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meeting_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'calendar.scpt'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.meetings" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.meetings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses <code class="docutils literal notranslate"><span class="pre">applescript</span></code> to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>meeting_file</strong> – Takes applescript filename as argument. Defaults to calendar.scpt unless an alternate is passed.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
 <li><p>On success, returns a message saying which meeting is scheduled at what time.</p></li>
 <li><p>If no events, returns a message saying there are no events in the next 12 hours.</p></li>
 <li><p>On failure, returns a message saying Jarvis was unable to read calendar/outlook.</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
