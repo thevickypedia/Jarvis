@@ -3045,8 +3045,9 @@ def offline_communicator() -> None:
                     response = 'Received a null request. Please try to resend it'
                 current_time_ = datetime.now(timezone(current_tz))
                 dt_string = current_time_.strftime("%A, %B %d, %Y %I:%M:%S %p")
-                with open('offline_response', 'w') as off_response:
-                    off_response.write(dt_string + '\n\n' + response)
+                if 'restart' not in command:
+                    with open('offline_response', 'w') as off_response:
+                        off_response.write(dt_string + '\n\n' + response)
                 speaker.stop()
                 voice_changer()
             except RuntimeError:
@@ -3532,8 +3533,11 @@ class Activator:
             audio_stream.close()
             logger.info('Releasing PortAudio resources.')
             py_audio.terminate()
-            exit_process()
-            terminator()
+            if os.environ.get('called_by_offline'):
+                del os.environ['called_by_offline']
+            else:
+                exit_process()
+                terminator()
 
 
 def size_converter(byte_size: int) -> str:
@@ -3755,7 +3759,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
     offline = os.environ.get('called_by_offline')
     if target:
         if offline:
-            speaker.say(f"ERROR::Cannot restart {host_info(required='model')} via offline communicator.")
+            logger.warning(f"ERROR::Cannot restart {host_info(required='model')} via offline communicator.")
             return
         if target == 'PC':
             speaker.say(f'{choice(confirmation)} restart your {host_info("model")}?')

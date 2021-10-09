@@ -25,7 +25,6 @@ class Database:
         Returns:
             str:
             A success message on DB and table creation.
-
         """
         if isfile(self.file_name):
             return f"A database named, {self.file_name}, already exists."
@@ -41,7 +40,6 @@ class Database:
         Returns:
             list:
             The downloaded table information.
-
         """
         connection = connect(self.file_name)
         connector = connection.cursor()
@@ -60,10 +58,9 @@ class Database:
         Returns:
             str:
             A string indicating the item and category that it was added to.
-
         """
         connection = connect(self.file_name)
-        response = Database().downloader()
+        response = self.downloader()
         for c, i in response:  # browses through all categories and items
             if i == item and c == category:  # checks if already present and updates items in case of repeated category
                 return f"Looks like the table: {self.table_name}, already has the item: {item} in, {category} category"
@@ -81,10 +78,9 @@ class Database:
             str:
             On success, returns a string indicating the item has been deleted.
             On failure, returns a string indicating the item was not found.
-
         """
         connection = connect(self.file_name)
-        response = Database().downloader()
+        response = self.downloader()
         check = 0
         c, i = None, None
         for c, i in response:  # browses through all categories and items
