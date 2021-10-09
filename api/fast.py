@@ -8,6 +8,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from models import GetData
+from pytz import timezone
 from yaml import FullLoader, load
 
 getLogger("uvicorn.access").addFilter(EndpointFilter())
@@ -15,7 +16,7 @@ getLogger("uvicorn.access").addFilter(EndpointFilter())
 
 app = FastAPI(
     title="Jarvis API",
-    description="Jarvis API and webhooks",
+    description="API to interact with Jarvis",
     version="v1.0"
 )
 
@@ -23,7 +24,7 @@ offline_compatible = []
 zone = None
 if path.isfile('../location.yaml'):
     location_details = load(open('../location.yaml'), Loader=FullLoader)
-    zone = location_details.get('timezone')
+    zone = timezone(location_details.get('timezone'))
 
 
 @app.on_event(event_type='startup')

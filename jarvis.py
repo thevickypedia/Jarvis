@@ -3043,7 +3043,7 @@ def offline_communicator() -> None:
                     response = speaker.vig()
                 else:
                     response = 'Received a null request. Please try to resend it'
-                current_time_ = datetime.now(current_tz)
+                current_time_ = datetime.now(timezone(current_tz))
                 dt_string = current_time_.strftime("%A, %B %d, %Y %I:%M:%S %p")
                 with open('offline_response', 'w') as off_response:
                     off_response.write(dt_string + '\n\n' + response)
@@ -3998,7 +3998,7 @@ if __name__ == '__main__':
         current_tz = location_details['timezone']
     else:
         current_lat, current_lon, location_info = location_services(device_selector())
-        current_tz = timezone(TimezoneFinder().timezone_at(lat=current_lon, lng=current_lon))
+        current_tz = str(TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon))
         location_dumper = [{'timezone': current_tz}, {'latitude': current_lat}, {'longitude': current_lon},
                            {'address': location_info}]
         with open('location.yaml', 'w') as location_writer:
