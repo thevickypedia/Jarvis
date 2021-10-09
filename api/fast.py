@@ -1,12 +1,14 @@
+from datetime import datetime
 from logging import getLogger
-from os import environ, path
-from threading import Thread
+from os import environ, path, remove
+from time import sleep
 
-from controller import EndpointFilter, delete_offline_response
+from controller import EndpointFilter
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from models import GetData
+from yaml import FullLoader, load
 
 getLogger("uvicorn.access").addFilter(EndpointFilter())
 
@@ -18,6 +20,10 @@ app = FastAPI(
 )
 
 offline_compatible = []
+zone = None
+if path.isfile('../location.yaml'):
+    location_details = load(open('../location.yaml'), Loader=FullLoader)
+    zone = location_details.get('timezone')
 
 
 @app.on_event(event_type='startup')
@@ -63,7 +69,9 @@ def read_root(input_data: GetData):
         passphrase = bytes(passphrase, "utf-8").decode(encoding="unicode_escape")
     if passphrase == environ.get('offline_phrase'):
         if command.lower() == 'test':
-            raise HTTPException(status_code=200, detail='Test message has been received.')
+            current_time_ = datetime.now(zone)
+            dt_string = current_time_.strftime("%A, %B %d, %Y %I:%M:%S %p")
+            raise HTTPException(status_code=200, detail=f'Test message was received on {dt_string}.')
         else:
             if any(word in command.lower() for word in offline_compatible):
                 with open('../offline_request', 'w') as off_request:
@@ -73,10 +81,14 @@ def read_root(input_data: GetData):
                                         detail='Restarting now sir! I will be up and running momentarily.')
                 while True:
                     if path.isfile('../offline_response'):
+                        sleep(0.3)  # Read file after half a second for the content to be written
                         with open('../offline_response', 'r') as off_response:
-                            if response := off_response.read():
-                                Thread(target=delete_offline_response, args=[True]).start()
-                                raise HTTPException(status_code=200, detail=response)
+                            response = off_response.read()
+                        if response:
+                            remove('../offline_response')
+                            raise HTTPException(status_code=200, detail=response)
+                        else:
+                            raise HTTPException(status_code=409, detail='Received empty payload from Jarvis.')
             else:
                 raise HTTPException(status_code=422,
                                     detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'

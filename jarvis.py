@@ -2713,24 +2713,31 @@ def lights(converted: str) -> None:
         light_host_id = hallway_ip + kitchen_ip + bedroom_ip
 
     lights_count = len(light_host_id)
+
+    def thread_worker(function_to_call: staticmethod) -> None:
+        """Initiates ``ThreadPoolExecutor`` with in a dedicated thread.
+
+        Args:
+            function_to_call: Takes the function/method that has to be called as an argument.
+        """
+        with ThreadPoolExecutor(max_workers=lights_count) as executor:
+            executor.map(function_to_call, light_host_id)
+
     plural = 'lights!' if lights_count > 1 else 'light!'
     if 'turn on' in converted or 'cool' in converted or 'white' in converted:
         warm_light.pop('status') if warm_light.get('status') else None
         tone = 'white' if 'white' in converted else 'cool'
         speaker.say(f'{choice(ack)}! Turning on {lights_count} {plural}') if 'turn on' in converted else \
             speaker.say(f'{choice(ack)}! Setting {lights_count} {plural} to {tone}!')
-        with ThreadPoolExecutor(max_workers=lights_count) as executor:
-            executor.map(cool, light_host_id)
+        Thread(target=thread_worker, args=[cool]).start()
     elif 'turn off' in converted:
         speaker.say(f'{choice(ack)}! Turning off {lights_count} {plural}')
-        with ThreadPoolExecutor(max_workers=lights_count) as executor:
-            executor.map(turn_off, light_host_id)
+        Thread(target=thread_worker, args=[turn_off]).start()
     elif 'warm' in converted or 'yellow' in converted:
         warm_light['status'] = True
         speaker.say(f'{choice(ack)}! Setting {lights_count} {plural} to yellow!') if 'yellow' in converted else \
             speaker.say(f'Sure sir! Setting {lights_count} {plural} to warm!')
-        with ThreadPoolExecutor(max_workers=lights_count) as executor:
-            executor.map(warm, light_host_id)
+        Thread(target=thread_worker, args=[warm]).start()
     elif 'red' in converted:
         speaker.say(f"{choice(ack)}! I've changed {lights_count} {plural} to red!")
         for light_ip in light_host_id:
@@ -3021,6 +3028,7 @@ def offline_communicator() -> None:
     """
     while True:
         if os.path.isfile('offline_request'):
+            sleep(0.3)  # Read file after half a second for the content to be written
             with open('offline_request', 'r') as off_request:
                 command = off_request.read()
             logger.info(f'Received offline input::{command}')
@@ -3035,7 +3043,7 @@ def offline_communicator() -> None:
                     response = speaker.vig()
                 else:
                     response = 'Received a null request. Please try to resend it'
-                current_time_ = datetime.now(timezone('US/Central'))
+                current_time_ = datetime.now(current_tz)
                 dt_string = current_time_.strftime("%A, %B %d, %Y %I:%M:%S %p")
                 with open('offline_response', 'w') as off_response:
                     off_response.write(dt_string + '\n\n' + response)
@@ -3474,20 +3482,20 @@ class Activator:
     """
 
     @staticmethod
-    def run(sensitivity: float = os.environ.get('sensitivity', 0.5)) -> None:
+    def run() -> None:
         """Initiates Porcupine object for hot word detection.
-
-        Args:
-            sensitivity: Tolerance/Sensitivity level. Takes argument or env var ``sensitivity`` or defaults to ``0.5``
 
         See Also:
             - Instantiates an instance of Porcupine object and monitors audio stream for occurrences of keywords.
             - A higher sensitivity results in fewer misses at the cost of increasing the false alarm rate.
+            - sensitivity: Tolerance/Sensitivity level. Takes argument or env var ``sensitivity`` or defaults to ``0.5``
 
         References:
             - Porcupine `demo <https://git.io/JRBHb>`__ mic.
             - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
         """
+        sensitivity = float(os.environ.get('sensitivity', 0.5))
+        logger.info(f'Initiating model with sensitivity: {sensitivity} - {type(sensitivity)}')
         keyword_paths = [KEYWORD_PATHS[x] for x in ['jarvis']]
         waker = create(
             library_path=LIBRARY_PATH,
@@ -3987,15 +3995,18 @@ if __name__ == '__main__':
         current_lat = location_details['latitude']
         current_lon = location_details['longitude']
         location_info = location_details['address']
+        current_tz = location_details['timezone']
     else:
         current_lat, current_lon, location_info = location_services(device_selector())
-        location_dumper = [{'latitude': current_lat}, {'longitude': current_lon}, {'address': location_info}]
+        current_tz = timezone(TimezoneFinder().timezone_at(lat=current_lon, lng=current_lon))
+        location_dumper = [{'timezone': current_tz}, {'latitude': current_lat}, {'longitude': current_lon},
+                           {'address': location_info}]
         with open('location.yaml', 'w') as location_writer:
             for dumper in location_dumper:
                 yaml_dump(dumper, location_writer, default_flow_style=False)
 
     # different responses for different conditions in sentry mode
-    wake_up1 = ['For you sir - Always!', 'At your service sir!']
+    wake_up1 = ['For you sir! Always!', 'At your service sir!']
     wake_up2 = ['Up and running sir!', "We are online and ready sir!", "I have indeed been uploaded sir!",
                 'My listeners have been activated sir!']
     wake_up3 = ["I'm here sir!"]

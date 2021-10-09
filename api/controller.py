@@ -1,7 +1,5 @@
 from logging import Filter, LogRecord
-from os import remove
 from sys import path
-from time import sleep
 
 
 class EndpointFilter(Filter):
@@ -75,14 +73,3 @@ def startup():
                      keywords.meetings()]
     matrix_to_list = sum(offline_words, []) or [item for sublist in offline_words for item in sublist]
     return [i.strip() for n, i in enumerate(matrix_to_list) if i not in matrix_to_list[n + 1:]]
-
-
-def delete_offline_response(flag: bool = False) -> None:
-    """Delete the ``offline_response`` file created by Jarvis after 2 seconds.
-
-    Args:
-        flag: Flag set to False by default. Decides whether or not to delete the ``offline_response`` file.
-    """
-    if flag:
-        sleep(2)
-        remove('../offline_response')
