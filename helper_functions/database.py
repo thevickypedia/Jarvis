@@ -68,11 +68,11 @@ class Database:
         connection.commit()
         return f"I've added the item: {item} to the category: {category}."
 
-    def deleter(self, item: str) -> str:
+    def deleter(self, keyword: str) -> str:
         """Deletes a particular record from the table.
 
         Args:
-            item: Takes the item that has to be removed as an argument.
+            keyword: Takes the item that has to be removed as an argument.
 
         Returns:
             str:
@@ -81,20 +81,22 @@ class Database:
         """
         connection = connect(self.file_name)
         response = self.downloader()
-        check = 0
+        delete = None
         c, i = None, None
         for c, i in response:  # browses through all categories and items
-            if i.lower() == item or c.lower() == item:  # matches the item that needs to be deleted
-                check += 1
+            if c.lower() == keyword:  # matches keyword with Category to choose the deletion value
+                delete = c
+            elif i.lower() == keyword:  # matches keyword with Item to choose the deletion value
+                delete = i
         # if check remains 0 returns the message that the item or category wasn't found
-        if check == 0:
-            return f"Looks like there is no item or category with the name: {item}"
-        connection.execute(f"DELETE FROM {self.table_name} WHERE item='{item}' OR category='{item}'")
+        if not delete:
+            return f"Looks like there is no item or category with the name: {keyword}"
+        connection.execute(f"DELETE FROM {self.table_name} WHERE item='{delete}' OR category='{delete}'")
         connection.commit()
         if c and i:
             return f"Item: {i} from the Category: {c} has been removed from {self.table_name}."
         else:
-            return f"Item: {item} has been removed from {self.table_name}."
+            return f"Item: {keyword} has been removed from {self.table_name}."
 
 
 if __name__ == '__main__':

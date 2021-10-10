@@ -292,12 +292,15 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.conditions">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.conditions" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.conditions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conditions function is used to check the message processed.</p>
 <p>Uses the keywords to do a regex match and trigger the appropriate function which has dedicated task.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p></li>
+<li><p><strong>should_return</strong> – A boolean flag sent by <code class="docutils literal notranslate"><span class="pre">Activator</span></code> to indicate that the <code class="docutils literal notranslate"><span class="pre">else</span></code> part shouldn’t be executed.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Boolean True only when asked to sleep for conditioned sleep message.</p>
@@ -736,13 +739,13 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.listener">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase_limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.listener" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase_limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.listener" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to activate listener, this function will be called by most upcoming functions to listen to user input.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>phrase_limit</strong> – Time in seconds for the listener to actively listen to a sound.</p></li>
 <li><p><strong>timeout</strong> – Time in seconds for the overall listener to be active.</p></li>
+<li><p><strong>phrase_limit</strong> – Time in seconds for the listener to actively listen to a sound.</p></li>
 <li><p><strong>sound</strong> – Flag whether or not to play the listener indicator sound. Defaults to True unless set to False.</p></li>
 </ul>
 </dd>
@@ -1161,11 +1164,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.split">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.split" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.split" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits the input at ‘and’ or ‘also’ and makes it multiple commands to execute if found in statement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key</strong> – Takes the voice recognized statement as argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – Takes the voice recognized statement as argument.</p></li>
+<li><p><strong>should_return</strong> – A boolean flag sent to <code class="docutils literal notranslate"><span class="pre">conditions</span></code> to indicate that the <code class="docutils literal notranslate"><span class="pre">else</span></code> part shouldn’t be executed.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Return value from <code class="docutils literal notranslate"><span class="pre">conditions()</span></code></p>
@@ -1696,11 +1702,11 @@ name is specified, allow every event.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.database.Database.deleter">
-<span class="sig-name descname"><span class="pre">deleter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.database.Database.deleter" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">deleter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.database.Database.deleter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deletes a particular record from the table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>item</strong> – Takes the item that has to be removed as an argument.</p>
+<dd class="field-odd"><p><strong>keyword</strong> – Takes the item that has to be removed as an argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>On success, returns a string indicating the item has been deleted.

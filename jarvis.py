@@ -94,12 +94,12 @@ from helper_functions.temperature import Temperature
 from helper_functions.tv_controls import TV
 
 
-def listener(phrase_limit: int = None, timeout: int = None, sound: bool = True) -> str:
+def listener(timeout: int, phrase_limit: int, sound: bool = True) -> str:
     """Function to activate listener, this function will be called by most upcoming functions to listen to user input.
 
     Args:
-        phrase_limit: Time in seconds for the listener to actively listen to a sound.
         timeout: Time in seconds for the overall listener to be active.
+        phrase_limit: Time in seconds for the listener to actively listen to a sound.
         sound: Flag whether or not to play the listener indicator sound. Defaults to True unless set to False.
 
     Returns:
@@ -110,10 +110,7 @@ def listener(phrase_limit: int = None, timeout: int = None, sound: bool = True) 
     try:
         sys.stdout.write("\rListener activated..") and playsound('indicators/start.mp3') if sound else \
             sys.stdout.write("\rListener activated..")
-        if timeout and phrase_limit:
-            listened = recognizer.listen(source, phrase_time_limit=phrase_limit, timeout=timeout)
-        else:
-            listened = recognizer.listen(source)
+        listened = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_limit)
         sys.stdout.write("\r") and playsound('indicators/end.mp3') if sound else sys.stdout.write("\r")
         return_val = recognizer.recognize_google(listened)
         sys.stdout.write(f'\r{return_val}')
@@ -122,11 +119,12 @@ def listener(phrase_limit: int = None, timeout: int = None, sound: bool = True) 
     return return_val
 
 
-def split(key: str) -> bool:
+def split(key: str, should_return: bool = False) -> bool:
     """Splits the input at 'and' or 'also' and makes it multiple commands to execute if found in statement.
 
     Args:
         key: Takes the voice recognized statement as argument.
+        should_return: A boolean flag sent to ``conditions`` to indicate that the ``else`` part shouldn't be executed.
 
     Returns:
         bool:
@@ -135,12 +133,12 @@ def split(key: str) -> bool:
     exit_check = False  # this is specifically to catch the sleep command which should break the while loop in renew()
     if ' and ' in key and not any(word in key.lower() for word in keywords.avoid()):
         for each in key.split(' and '):
-            exit_check = conditions(each.strip())
+            exit_check = conditions(converted=each.strip(), should_return=should_return)
     elif ' also ' in key and not any(word in key.lower() for word in keywords.avoid()):
         for each in key.split(' also '):
-            exit_check = conditions(each.strip())
+            exit_check = conditions(converted=each.strip(), should_return=should_return)
     else:
-        exit_check = conditions(key.strip())
+        exit_check = conditions(converted=key.strip(), should_return=should_return)
     return exit_check
 
 
@@ -193,7 +191,7 @@ def renew() -> None:
             remove = ['buddy', 'jarvis', 'hey', 'hello', 'sr_error']
             converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
             if converted:
-                if split(converted):
+                if split(key=converted):  # should_return flag is not passed which will default to False
                     break  # split() returns what conditions function returns. Condition() returns True only for sleep.
             speaker.runAndWait()
         except (UnknownValueError, RequestError, WaitTimeoutError):
@@ -226,13 +224,14 @@ def time_converter(seconds: float) -> str:
         return f'{seconds} seconds'
 
 
-def conditions(converted: str) -> bool:
+def conditions(converted: str, should_return: bool = False) -> bool:
     """Conditions function is used to check the message processed.
 
     Uses the keywords to do a regex match and trigger the appropriate function which has dedicated task.
 
     Args:
         converted: Takes the voice recognized statement as argument.
+        should_return: A boolean flag sent by ``Activator`` to indicate that the ``else`` part shouldn't be executed.
 
     Returns:
         bool:
@@ -634,6 +633,9 @@ def conditions(converted: str) -> bool:
     elif any(word in converted_lower for word in keywords.chatbot()):
         chatter_bot()
 
+    elif should_return:
+        return False
+
     else:
         logger.info(f'Received the unrecognized lookup parameter: {converted}')
         Thread(target=unrecognized_dumper, args=[converted]).start()  # writes to training_data.yaml in a thread
@@ -807,7 +809,7 @@ def webpage(target: str or list) -> None:
     if not host:
         speaker.say("Which website shall I open sir?")
         speaker.runAndWait()
-        converted = listener(3, 4)
+        converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 return
@@ -1021,7 +1023,7 @@ def wikipedia_() -> None:
     """Gets any information from wikipedia using it's API."""
     speaker.say("Please tell the keyword.")
     speaker.runAndWait()
-    keyword = listener(3, 5)
+    keyword = listener(timeout=3, phrase_limit=5)
     if keyword != 'SR_ERROR':
         if any(word in keyword.lower() for word in keywords.exit()):
             return
@@ -1033,7 +1035,7 @@ def wikipedia_() -> None:
                 sys.stdout.write(f'\r{e}')
                 speaker.say('Your keyword has multiple results sir. Please pick any one displayed on your screen.')
                 speaker.runAndWait()
-                keyword1 = listener(3, 5)
+                keyword1 = listener(timeout=3, phrase_limit=5)
                 result = summary(keyword1) if keyword1 != 'SR_ERROR' else None
             except wiki_exceptions.PageError:
                 speaker.say(f"I'm sorry sir! I didn't get a response for the phrase: {keyword}. Try again!")
@@ -1044,7 +1046,7 @@ def wikipedia_() -> None:
             speaker.say(formatted)
             speaker.say("Do you want me to continue sir?")  # gets confirmation to read the whole passage
             speaker.runAndWait()
-            response = listener(3, 3)
+            response = listener(timeout=3, phrase_limit=3)
             if response != 'SR_ERROR':
                 if any(word in response.lower() for word in keywords.ok()):
                     speaker.say('. '.join(result.split('. ')[3:-1]))
@@ -1092,7 +1094,7 @@ def apps(keyword: str or None) -> None:
         if offline:
             return
         speaker.runAndWait()
-        keyword = listener(3, 4)
+        keyword = listener(timeout=3, phrase_limit=4)
         if keyword != 'SR_ERROR':
             if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
                 return
@@ -1142,7 +1144,7 @@ def repeater() -> None:
     """Repeats whatever is heard."""
     speaker.say("Please tell me what to repeat.")
     speaker.runAndWait()
-    keyword = listener(3, 10)
+    keyword = listener(timeout=3, phrase_limit=10)
     if keyword != 'SR_ERROR':
         sys.stdout.write(f'\r{keyword}')
         if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
@@ -1165,7 +1167,7 @@ def chatter_bot() -> None:
         trainer.train("chatterbot.corpus.english")
         speaker.say('The chat-bot is ready. You may start a conversation now.')
         speaker.runAndWait()
-    keyword = listener(3, 5)
+    keyword = listener(timeout=3, phrase_limit=5)
     if keyword != 'SR_ERROR':
         if any(word in keyword.lower() for word in keywords.exit()):
             speaker.say('Let me remove the training modules.')
@@ -1221,7 +1223,7 @@ def device_selector(converted: str = None) -> AppleDevice:
         web_open('file:///' + os.getcwd() + '/' + devices_file)
         speaker.say('Choose an option from your screen sir!')
         speaker.runAndWait()
-        converted = listener(5, 5)
+        converted = listener(timeout=5, phrase_limit=5)
         os.remove(devices_file) if os.path.isfile(devices_file) else None
         if converted != 'SR_ERROR':
             for key, value in nth.items():
@@ -1258,7 +1260,7 @@ def locate(converted: str, no_repeat: bool = False) -> None:
         speaker.runAndWait()
         speaker.say("Would you like to get the location details?")
     speaker.runAndWait()
-    phrase = listener(3, 3)
+    phrase = listener(timeout=3, phrase_limit=3)
     if phrase == 'SR_ERROR':
         if no_repeat:
             return
@@ -1282,7 +1284,7 @@ def locate(converted: str, no_repeat: bool = False) -> None:
                 speaker.say(f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
             speaker.say("I can also enable lost mode. Would you like to do it?")
             speaker.runAndWait()
-            phrase = listener(3, 3)
+            phrase = listener(timeout=3, phrase_limit=3)
             if any(word in phrase.lower() for word in keywords.ok()):
                 message = 'Return my phone immediately.'
                 target_device.lost_device(number=icloud_recovery, text=message)
@@ -1338,7 +1340,7 @@ def gmail() -> None:
         if not offline:
             speaker.say(f'You have {n} unread emails sir. Do you want me to check it?')
             speaker.runAndWait()
-        response = listener(3, 3)
+        response = listener(timeout=3, phrase_limit=3)
         if response != 'SR_ERROR':
             if any(word in response.lower() for word in keywords.ok()):
                 for nm in messages[0].split():
@@ -1390,7 +1392,7 @@ def meaning(keyword: str or None) -> None:
     if keyword is None:
         speaker.say("Please tell a keyword.")
         speaker.runAndWait()
-        response = listener(3, 3)
+        response = listener(timeout=3, phrase_limit=3)
         if response != 'SR_ERROR':
             if any(word in response.lower() for word in keywords.exit()):
                 return
@@ -1411,7 +1413,7 @@ def meaning(keyword: str or None) -> None:
                 return
             speaker.say(f'Do you wanna know how {keyword} is spelled?')
             speaker.runAndWait()
-            response = listener(3, 3)
+            response = listener(timeout=3, phrase_limit=3)
             if any(word in response.lower() for word in keywords.ok()):
                 for letter in list(keyword.lower()):
                     speaker.say(letter)
@@ -1453,7 +1455,7 @@ def todo(no_repeat: bool = False) -> None:
         else:
             speaker.say("You don't have a database created for your to-do list sir. Would you like to spin up one now?")
         speaker.runAndWait()
-        key = listener(3, 3)
+        key = listener(timeout=3, phrase_limit=3)
         if key != 'SR_ERROR':
             if any(word in key.lower() for word in keywords.ok()):
                 todo.has_been_called = True
@@ -1505,7 +1507,7 @@ def add_todo() -> None:
         speaker.say("You don't have a database created for your to-do list sir.")
         speaker.say("Would you like to spin up one now?")
         speaker.runAndWait()
-        key = listener(3, 3)
+        key = listener(timeout=3, phrase_limit=3)
         if key != 'SR_ERROR':
             if any(word in key.lower() for word in keywords.ok()):
                 add_todo.has_been_called = True
@@ -1515,7 +1517,7 @@ def add_todo() -> None:
                 return
     speaker.say("What's your plan sir?")
     speaker.runAndWait()
-    item = listener(3, 5)
+    item = listener(timeout=3, phrase_limit=5)
     if item != 'SR_ERROR':
         if 'exit' in item or 'quit' in item or 'Xzibit' in item:
             speaker.say('Your to-do list has been left intact sir.')
@@ -1523,7 +1525,7 @@ def add_todo() -> None:
             sys.stdout.write(f"\rItem: {item}")
             speaker.say(f"I heard {item}. Which category you want me to add it to?")
             speaker.runAndWait()
-            category = listener(3, 3)
+            category = listener(timeout=3, phrase_limit=3)
             if category == 'SR_ERROR':
                 category = 'Unknown'
             if 'exit' in category or 'quit' in category or 'Xzibit' in category:
@@ -1535,7 +1537,7 @@ def add_todo() -> None:
                 speaker.say(response)
                 speaker.say("Do you want to add anything else to your to-do list?")
                 speaker.runAndWait()
-                category_continue = listener(3, 3)
+                category_continue = listener(timeout=3, phrase_limit=3)
                 if any(word in category_continue.lower() for word in keywords.ok()):
                     add_todo()
                 else:
@@ -1550,11 +1552,11 @@ def delete_todo() -> None:
         return
     speaker.say("Which one should I remove sir?")
     speaker.runAndWait()
-    item = listener(3, 5)
+    item = listener(timeout=3, phrase_limit=5)
     if item != 'SR_ERROR':
         if 'exit' in item or 'quit' in item or 'Xzibit' in item:
             return
-        response = database.deleter(item.lower())
+        response = database.deleter(keyword=item.lower())
         # if the return message from database starts with 'Looks' it means that the item wasn't matched for deletion
         sys.stdout.write(f'\r{response}')
         if response.startswith('Looks'):
@@ -1573,7 +1575,7 @@ def delete_db() -> None:
     else:
         speaker.say(f'{choice(confirmation)} delete your database?')
         speaker.runAndWait()
-        response = listener(3, 3)
+        response = listener(timeout=3, phrase_limit=3)
         if response != 'SR_ERROR':
             if any(word in response.lower() for word in keywords.ok()):
                 os.remove(file_name)
@@ -1599,7 +1601,7 @@ def distance(starting_point: str = None, destination: str = None) -> None:
         if os.environ.get('called_by_offline'):
             return
         speaker.runAndWait()
-        destination = listener(3, 4)
+        destination = listener(timeout=3, phrase_limit=4)
         if destination != 'SR_ERROR':
             if len(destination.split()) > 2:
                 speaker.say("I asked for a destination sir, not a sentence. Try again.")
@@ -1661,7 +1663,7 @@ def locate_places(place: str or None) -> None:
             return
         speaker.say("Tell me the name of a place!")
         speaker.runAndWait()
-        converted = listener(3, 4)
+        converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 return
@@ -1716,7 +1718,7 @@ def directions(place: str or None) -> None:
     if not place:
         speaker.say("You might want to give a location.")
         speaker.runAndWait()
-        converted = listener(3, 4)
+        converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
             place = ''
             for word in converted.split():
@@ -1790,7 +1792,7 @@ def alarm(msg: str) -> None:
         if os.environ.get('called_by_offline'):
             return
         speaker.runAndWait()
-        converted = listener(3, 4)
+        converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 return
@@ -1817,7 +1819,7 @@ def kill_alarm() -> None:
         sys.stdout.write(f"\r{', '.join(alarm_state).replace('.lock', '')}")
         speaker.say("Please let me know which alarm you want to remove. Current alarms on your screen sir!")
         speaker.runAndWait()
-        converted = listener(3, 4)
+        converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
             alarm_time = converted.split()[0]
             am_pm = converted.split()[-1]
@@ -1965,7 +1967,7 @@ def reminder(converted: str) -> None:
             return
         speaker.say("When do you want to be reminded sir?")
         speaker.runAndWait()
-        converted = listener(3, 4)
+        converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
             extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
                 r'([0-9]+\s?(?:a.m.|p.m.:?))', converted)
@@ -2065,7 +2067,7 @@ def google_maps(query: str) -> bool:
         sys.stdout.write(f"\r{item['Name']} -- {item['Rating']} -- "
                          f"{''.join([j for j in item['Address'] if not j.isdigit()])}")
         speaker.runAndWait()
-        converted = listener(3, 3)
+        converted = listener(timeout=3, phrase_limit=3)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 break
@@ -2088,7 +2090,7 @@ def google_maps(query: str) -> bool:
 
 def notes() -> None:
     """Listens to the user and saves everything to a ``notes.txt`` file."""
-    converted = listener(5, 10)
+    converted = listener(timeout=5, phrase_limit=10)
     if converted != 'SR_ERROR':
         if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
             return
@@ -2116,7 +2118,7 @@ def github(target: list) -> None:
         sys.stdout.write(f"\r{', '.join(newest)}")
         speaker.say(f"I found {len(target)} results. On your screen sir! Which one shall I clone?")
         speaker.runAndWait()
-        converted = listener(3, 5)
+        converted = listener(timeout=3, phrase_limit=5)
         if converted != 'SR_ERROR':
             if any(word in converted.lower() for word in keywords.exit()):
                 return
@@ -2165,7 +2167,7 @@ def send_sms(number: int or None) -> None:
     if not number:
         speaker.say("Please tell me a number sir!")
         speaker.runAndWait()
-        number = listener(3, 5)
+        number = listener(timeout=3, phrase_limit=5)
         if number != 'SR_ERROR':
             if 'exit' in number or 'quit' in number or 'Xzibit' in number:
                 return
@@ -2178,12 +2180,12 @@ def send_sms(number: int or None) -> None:
     if number and len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) == 10:
         speaker.say("What would you like to send sir?")
         speaker.runAndWait()
-        body = listener(3, 5)
+        body = listener(timeout=3, phrase_limit=5)
         if body != 'SR_ERROR':
             sys.stdout.write(f'\r{body}::to::{number}')
             speaker.say(f'{body} to {number}. Do you want me to proceed?')
             speaker.runAndWait()
-            converted = listener(3, 3)
+            converted = listener(timeout=3, phrase_limit=3)
             if converted != 'SR_ERROR':
                 if not any(word in converted.lower() for word in keywords.ok()):
                     speaker.say("Message will not be sent sir!")
@@ -2441,7 +2443,7 @@ def google_search(phrase: str or None) -> None:
     if not phrase:
         speaker.say("Please tell me the search phrase.")
         speaker.runAndWait()
-        converted = listener(3, 5)
+        converted = listener(timeout=3, phrase_limit=5)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'xzibit' in converted or 'cancel' in converted:
                 return
@@ -2496,7 +2498,7 @@ def face_recognition_detection() -> None:
                     "so that I can add it to my database of known list? If you're ready, please tell me a name, "
                     "or simply say exit.")
         speaker.runAndWait()
-        phrase = listener(3, 5)
+        phrase = listener(timeout=3, phrase_limit=5)
         if any(word in phrase.lower() for word in keywords.ok()):
             sys.stdout.write(f"\r{phrase}")
             phrase = phrase.replace(' ', '_')
@@ -2837,7 +2839,7 @@ def time_travel() -> None:
     gmail()
     speaker.say('Would you like to hear the latest news?')
     speaker.runAndWait()
-    phrase = listener(3, 3)
+    phrase = listener(timeout=3, phrase_limit=3)
     if any(word in phrase.lower() for word in keywords.ok()):
         news()
     time_travel.has_been_called = False
@@ -3226,7 +3228,7 @@ def system_vitals() -> None:
             speaker.say(f'Sir! your {model} has been running continuously for more than {warn} days. You must '
                         f'consider a reboot for better performance. Would you like me to restart it for you sir?')
             speaker.runAndWait()
-            response = listener(3, 3)
+            response = listener(timeout=3, phrase_limit=3)
             if any(word in response.lower() for word in keywords.ok()):
                 logger.info(f'JARVIS::Restarting {host_info("model")}')
                 restart(target='PC_Proceed')
@@ -3464,7 +3466,7 @@ def initiator(key_original: str, should_return: bool = False) -> None:
     else:
         converted = ' '.join([i for i in key_original.split() if i.lower() not in ['buddy', 'jarvis', 'sr_error']])
         if converted:
-            split(converted.strip())
+            split(key=converted.strip(), should_return=should_return)
         else:
             speaker.say(f'{choice(wake_up3)}')
             initialize()
@@ -3522,7 +3524,7 @@ class Activator:
                 pcm = unpack_from("h" * waker.frame_length, pcm)
                 if waker.process(pcm) >= 0:
                     Thread(target=playsound, args=['indicators/acknowledgement.mp3']).start()
-                    initiator(key_original=listener(sound=False), should_return=True)
+                    initiator(key_original=listener(timeout=3, phrase_limit=5, sound=False), should_return=True)
                     speaker.runAndWait()
                 elif STOPPER.get('status'):
                     raise KeyboardInterrupt
@@ -3764,7 +3766,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
         if target == 'PC':
             speaker.say(f'{choice(confirmation)} restart your {host_info("model")}?')
             speaker.runAndWait()
-            converted = listener(3, 3)
+            converted = listener(timeout=3, phrase_limit=3)
         else:
             converted = 'yes'
         if any(word in converted.lower() for word in keywords.ok()):
@@ -3803,7 +3805,7 @@ def shutdown(proceed: bool = False) -> None:
     if not proceed:
         speaker.say(f"{choice(confirmation)} turn off the machine?")
         speaker.runAndWait()
-        converted = listener(3, 3)
+        converted = listener(timeout=3, phrase_limit=3)
     else:
         converted = 'yes'
     if converted != 'SR_ERROR':
@@ -3857,7 +3859,7 @@ def voice_changer(change: str = None) -> None:
                 speaker.say(f'The voice module number {module_id} is not available for your device sir! '
                             f'You may want to try a module number between 0 and {avail_voices - 1}')
             speaker.runAndWait()
-            keyword = listener(3, 3)
+            keyword = listener(timeout=3, phrase_limit=3)
             if keyword == 'SR_ERROR':
                 voice_default()
                 speaker.say("Sorry sir! I had trouble understanding. I'm back to my default voice.")
