@@ -2207,6 +2207,7 @@ def television(converted: str) -> None:
     Args:
         converted: Takes the voice recognized statement as argument.
     """
+    global tv
     phrase_exc = converted.replace('TV', '')
     phrase = phrase_exc.lower()
 
@@ -2225,12 +2226,13 @@ def television(converted: str) -> None:
         speaker.say("Looks like your TV is powered off sir! Let me try to turn it back on!")
         speaker.runAndWait()  # speaks the message to buy some time while the TV is connecting to network
 
-    if tv_status() != 0:  # checks if TV is reachable even before trying to launch the TV connector
-        speaker.say("I wasn't able to connect to your TV sir! Please make sure you are on the "
-                    "same network as your TV, and your TV is connected to a power source.")
-        return
+    for i in range(3):
+        if tv_status() != 0 and i == 2:  # checks if the TV is turned ON (thrice) even before launching the TV connector
+            speaker.say("I wasn't able to connect to your TV sir! Please make sure you are on the "
+                        "same network as your TV, and your TV is connected to a power source.")
+            return
 
-    if not tv_state.get('status'):
+    if not tv:
         try:
             tv = TV(ip_address=tv_ip, client_key=tv_client_key)
         except ConnectionResetError as error:
@@ -2238,12 +2240,11 @@ def television(converted: str) -> None:
             speaker.say("I was unable to connect to the TV sir! It appears to be a connection issue. "
                         "You might want to try again later.")
             return
-        tv_state['status'] = True
         if 'turn on' in phrase or 'connect' in phrase:
             speaker.say("TV features have been integrated sir!")
             return
 
-    if tv_state.get('status'):
+    if tv:
         if 'turn on' in phrase or 'connect' in phrase:
             speaker.say('Your TV is already powered on sir!')
         elif 'increase' in phrase:
@@ -2316,7 +2317,7 @@ def television(converted: str) -> None:
         elif 'shutdown' in phrase or 'shut down' in phrase or 'turn off' in phrase:
             Thread(target=tv.shutdown).start()
             speaker.say(f'{choice(ack)}! Turning your TV off.')
-            tv_state.pop('status')
+            tv = None
         else:
             speaker.say("I didn't quite get that.")
     else:
@@ -3988,7 +3989,7 @@ if __name__ == '__main__':
     # warm_light is initiated with an empty dict and the key status is set to True when requested to switch to yellow
     # greet_check is used in initialize() to greet only for the first run
     # tv is set to an empty dict instead of TV() at the start to avoid turning on the TV unnecessarily
-    tv_state, warm_light, greet_check, STOPPER = {}, {}, {}, {}
+    tv, warm_light, greet_check, STOPPER = None, {}, {}, {}
 
     # stores necessary values for geo location to receive the latitude, longitude and address
     options.default_ssl_context = create_default_context(cafile=where())
