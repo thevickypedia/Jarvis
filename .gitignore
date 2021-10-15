@@ -51,3 +51,8 @@ devices.html
 # temporary files that will created when an offline request is received
 offline_request
 offline_response
+
+# future work
+devices.json
+temp.py
+test.py
