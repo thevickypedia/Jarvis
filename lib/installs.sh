@@ -25,7 +25,7 @@ git clone https://github.com/toy/blueutil.git && cd blueutil && make && make ins
 python3 -m pip install --upgrade pip
 
 # Installs non version specicfic packages using --upgrade and --no-cache flag
-python3 -m pip install --upgrade --no-cache gmail-connector sphinx pre-commit recommonmark
+python3 -m pip install --upgrade --no-cache gmail-connector changelog-generator sphinx pre-commit recommonmark
 
 # Get to the current directory and install the module specific packages from requiements.txt
 current_dir="$(dirname "$(realpath "$0")")"

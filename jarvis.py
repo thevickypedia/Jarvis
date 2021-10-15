@@ -1356,10 +1356,10 @@ def gmail() -> None:
                             raw_receive = (original_email['Received'].split(';')[-1]).strip()
                             if '(PDT)' in raw_receive:
                                 datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
-                                               + timedelta(hours=2)
+                                    + timedelta(hours=2)
                             elif '(PST)' in raw_receive:
                                 datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0800 (PST)") \
-                                               + timedelta(hours=2)
+                                    + timedelta(hours=2)
                             else:
                                 sys.stdout.write(f'\rEmail from {sender} has a weird time stamp. Please check.')
                                 datetime_obj = datetime.now()  # sets to current date if PST or PDT are not found
