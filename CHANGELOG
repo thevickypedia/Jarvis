@@ -2158,7 +2158,14 @@ Change Log
 ------------------
 - auto upload to pypi when tagged a release version
 
-4.9.5 (10/14/2021)
+4.9.5 (10/15/2021)
 ------------------
-- Onboard Jarvis to pypi
+- Onboard to pypi
 - Update README.md
+
+4.9.6 (10/15/2021)
+------------------
+- Onboard a shell script to build locally
+- Add condition to abort if version.py wasn't modified
+- Add changelog-generator to installs.sh
+- Update requirements.txt, docstrings and CHANGELOG

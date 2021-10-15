@@ -1,5 +1,4 @@
-"""
-Initiates logger to log start time, restart time, results from security mode and offline communicator.
+"""Initiates logger to log start time, restart time, results from security mode and offline communicator.
 
 In order to use a common logger across multiple files, a dedicated logger has been created.
 
