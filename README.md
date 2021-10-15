@@ -37,7 +37,12 @@
 ![Make](https://img.shields.io/github/search/thevickypedia/Jarvis/Makefile)
 
 ###### Deployments
-[![docs](https://github.com/thevickypedia/Jarvis/actions/workflows/docs.yml/badge.svg)](https://thevickypedia.github.io/Jarvis/)
+[![docs](https://github.com/thevickypedia/Jarvis/actions/workflows/docs.yml/badge.svg)](https://github.com/thevickypedia/Jarvis/actions/workflows/docs.yml)
+[![pypi](https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml/badge.svg)](https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml)
+
+[![Pypi-format](https://img.shields.io/pypi/format/jarvis-ironman)](https://pypi.org/project/jarvis-ironman/#files)
+[![Pypi-status](https://img.shields.io/pypi/status/jarvis-ironman)](https://pypi.org/project/jarvis-ironman)
+[![sourcerank](https://img.shields.io/librariesio/sourcerank/pypi/jarvis-ironman)](https://libraries.io/pypi/jarvis-ironman)
 
 ###### Activity
 [![GitHub Repo created](https://img.shields.io/date/1599432310)](https://api.github.com/repos/thevickypedia/Jarvis)
@@ -62,6 +67,7 @@
 IronMan's Jarvis with python
 
 ### Setup
+   - Clone this [repository](https://github.com/thevickypedia/Jarvis.git) or download it from [pypi](https://pypi.org/project/jarvis-ironman/)
    - Run the following commands in command line/terminal:
         - `cd lib && chmod +x installs.sh` - Makes [installation file](https://git.io/JBnPq) as executable.
         - `python3 -m venv venv` - Creates a virtual env named `venv`
