@@ -85,10 +85,7 @@
 <li><p>The <code class="docutils literal notranslate"><span class="pre">should_return</span></code> flag ensures, the user is not disturbed when accidentally woke up by wake work engine.</p></li>
 </ul>
 </div>
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.Activator.run">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.Activator.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Porcupine object for hot word detection.</p>
+<p>Initiates Porcupine object for hot word detection.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
@@ -102,6 +99,24 @@
 <li><p>Porcupine <a class="reference external" href="https://git.io/JRBHb">demo</a> mic.</p></li>
 <li><p><a class="reference external" href="https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read">Audio Overflow</a> handling.</p></li>
 </ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.Activator.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.Activator.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs <code class="docutils literal notranslate"><span class="pre">audio_stream</span></code> in a forever loop and calls <code class="docutils literal notranslate"><span class="pre">initiator</span></code> when the phrase <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> is heard.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.Activator.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.Activator.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked when the run loop is exited or manual interrupt.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Releases resources held by porcupine.</p></li>
+<li><p>Closes audio stream.</p></li>
+<li><p>Releases port audio resources.</p></li>
+</ul>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -398,12 +413,15 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.directions">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">directions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">place</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.directions" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">directions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">place</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_repeat</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.directions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opens google maps for a route between starting and destination.</p>
 <p>Uses reverse geocoding to calculate latitude and longitude for both start and destination.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>place</strong> – Takes a place name as argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>place</strong> – Takes a place name as argument.</p></li>
+<li><p><strong>no_repeat</strong> – A place holder flag switched during <code class="docutils literal notranslate"><span class="pre">recursion</span></code> so that, <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> doesn’t repeat himself.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1213,6 +1231,12 @@
 <dt class="sig sig-object py" id="jarvis.stop_terminal">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">stop_terminal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.stop_terminal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses pid to kill terminals as terminals await user confirmation interrupting shutdown/restart.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.stopper">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">stopper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.stopper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the key of <code class="docutils literal notranslate"><span class="pre">STOPPER</span></code> flag to True.</p>
 </dd></dl>
 
 <dl class="py function">

@@ -2169,3 +2169,9 @@ Change Log
 - Add condition to abort if version.py wasn't modified
 - Add changelog-generator to installs.sh
 - Update requirements.txt, docstrings and CHANGELOG
+
+4.9.7 (10/16/2021)
+------------------
+- Add timer to restart every 24h to get updated IPs and renew PID
+- Modify Activator class to class objects from static
+- Fix bug on directions

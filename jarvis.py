@@ -21,7 +21,7 @@ from ssl import create_default_context
 from string import ascii_letters, digits
 from struct import unpack_from
 from subprocess import PIPE, Popen, call, check_output, getoutput
-from threading import Thread
+from threading import Thread, Timer
 from time import perf_counter, sleep, time
 from traceback import format_exc
 from typing import Tuple, Union
@@ -1707,13 +1707,14 @@ def locate_places(place: str or None) -> None:
     distance(starting_point=None, destination=place)
 
 
-def directions(place: str or None) -> None:
+def directions(place: str or None, no_repeat: bool = False) -> None:
     """Opens google maps for a route between starting and destination.
 
     Uses reverse geocoding to calculate latitude and longitude for both start and destination.
 
     Args:
         place: Takes a place name as argument.
+        no_repeat: A place holder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
     """
     if not place:
         speaker.say("You might want to give a location.")
@@ -1728,12 +1729,19 @@ def directions(place: str or None) -> None:
                     place += word + ' '
             place = place.replace('I ', '').strip()
             if not place:
+                if no_repeat:
+                    return
                 speaker.say("I can't take you to anywhere without a location sir!")
-                directions(place=None)
+                directions(place=None, no_repeat=True)
             if 'exit' in place or 'quit' in place or 'Xzibit' in place:
                 return
     destination_location = geo_locator.geocode(place)
-    coordinates = destination_location.latitude, destination_location.longitude
+    if not destination_location:
+        return
+    try:
+        coordinates = destination_location.latitude, destination_location.longitude
+    except AttributeError:
+        return
     located = geo_locator.reverse(coordinates, language='en')
     data = located.raw
     address = data['address']
@@ -3485,8 +3493,7 @@ class Activator:
         - The ``should_return`` flag ensures, the user is not disturbed when accidentally woke up by wake work engine.
     """
 
-    @staticmethod
-    def run() -> None:
+    def __init__(self):
         """Initiates Porcupine object for hot word detection.
 
         See Also:
@@ -3501,46 +3508,59 @@ class Activator:
         sensitivity = float(os.environ.get('sensitivity', 0.5))
         logger.info(f'Initiating model with sensitivity: {sensitivity} - {type(sensitivity)}')
         keyword_paths = [KEYWORD_PATHS[x] for x in ['jarvis']]
-        waker = create(
+
+        self.py_audio = PyAudio()
+        self.waker = create(
             library_path=LIBRARY_PATH,
             model_path=MODEL_PATH,
             keyword_paths=keyword_paths,
             sensitivities=[sensitivity]
         )
-
-        py_audio = PyAudio()
-
-        audio_stream = py_audio.open(
-            rate=waker.sample_rate,
+        self.audio_stream = self.py_audio.open(
+            rate=self.waker.sample_rate,
             channels=1,
             format=paInt16,
             input=True,
-            frames_per_buffer=waker.frame_length,
-            input_device_index=0)
+            frames_per_buffer=self.waker.frame_length,
+            input_device_index=0
+        )
 
+    def start(self) -> None:
+        """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
             while True:
                 sys.stdout.write('\rSentry Mode')
-                pcm = audio_stream.read(waker.frame_length, exception_on_overflow=False)
-                pcm = unpack_from("h" * waker.frame_length, pcm)
-                if waker.process(pcm) >= 0:
+                pcm = self.audio_stream.read(self.waker.frame_length, exception_on_overflow=False)
+                pcm = unpack_from("h" * self.waker.frame_length, pcm)
+                if self.waker.process(pcm) >= 0:
                     Thread(target=playsound, args=['indicators/acknowledgement.mp3']).start()
                     initiator(key_original=listener(timeout=3, phrase_limit=5, sound=False), should_return=True)
                     speaker.runAndWait()
                 elif STOPPER.get('status'):
-                    raise KeyboardInterrupt
+                    self.stop()
+                    restart(quiet=True)
         except KeyboardInterrupt:
-            logger.info('Releasing resources acquired by Porcupine.')
-            waker.delete()
-            logger.info('Closing Audio Stream.')
-            audio_stream.close()
-            logger.info('Releasing PortAudio resources.')
-            py_audio.terminate()
+            self.stop()
             if os.environ.get('called_by_offline'):
                 del os.environ['called_by_offline']
             else:
                 exit_process()
                 terminator()
+
+    def stop(self) -> None:
+        """Invoked when the run loop is exited or manual interrupt.
+
+        See Also:
+            - Releases resources held by porcupine.
+            - Closes audio stream.
+            - Releases port audio resources.
+        """
+        logger.info('Releasing resources acquired by Porcupine.')
+        self.waker.delete()
+        logger.info('Closing Audio Stream.')
+        self.audio_stream.close()
+        logger.info('Releasing PortAudio resources.')
+        self.py_audio.terminate()
 
 
 def size_converter(byte_size: int) -> str:
@@ -3905,10 +3925,17 @@ def starter() -> None:
         load_dotenv(dotenv_path='.env', verbose=True, override=True)  # loads the .env file
 
 
+def stopper() -> None:
+    """Sets the key of ``STOPPER`` flag to True."""
+    STOPPER['status'] = True
+
+
 if __name__ == '__main__':
     if system() != 'Darwin':
         exit('Unsupported Operating System.\nWindows support was recently deprecated. '
              'Refer https://github.com/thevickypedia/Jarvis/commit/cf54b69363440d20e21ba406e4972eb058af98fc')
+
+    Timer(86400, stopper).start()  # Restarts every 24 hours
 
     logger.info('JARVIS::Starting Now')
 
@@ -4042,4 +4069,4 @@ if __name__ == '__main__':
 
     with Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
-        Activator.run()
+        Activator().start()
