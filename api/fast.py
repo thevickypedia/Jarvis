@@ -69,12 +69,17 @@ def read_root(input_data: GetData):
     if passphrase.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
         passphrase = bytes(passphrase, "utf-8").decode(encoding="unicode_escape")
     if passphrase == environ.get('offline_phrase'):
-        if command.lower() == 'test':
+        command_lower = command.lower()
+        command_split = command.split()
+        if command_lower == 'test':
             current_time_ = datetime.now(zone)
             dt_string = current_time_.strftime("%A, %B %d, %Y %I:%M:%S %p")
             raise HTTPException(status_code=200, detail=f'Test message was received on {dt_string}.')
+        elif 'and' in command_split or 'also' in command_split:
+            raise HTTPException(status_code=413,
+                                detail='Jarvis can only process one command at a time via offline communicator.')
         else:
-            if any(word in command.lower() for word in offline_compatible):
+            if any(word in command_lower for word in offline_compatible):
                 with open('../offline_request', 'w') as off_request:
                     off_request.write(command)
                 if 'restart' in command:

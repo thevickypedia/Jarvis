@@ -677,6 +677,7 @@ def unrecognized_dumper(converted: str) -> None:
             yaml_dump(train_file, writer)
 
 
+# noinspection PyUnresolvedReferences,PyProtectedMember
 def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
     """Gets the current location of an apple device.
 
@@ -693,7 +694,6 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
         if not device:
             device = device_selector()
         raw_location = device.location()
-        # noinspection PyUnresolvedReferences,PyProtectedMember
         if not raw_location and sys._getframe(1).f_code.co_name == 'locate':
             return 'None', 'None', 'None'
         elif not raw_location:
@@ -702,9 +702,18 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
             current_lat_ = raw_location['latitude']
             current_lon_ = raw_location['longitude']
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException):
+        logger.error(f'Unable to retrieve location::{sys.exc_info()[0].__name__}\n{format_exc()}')  # include traceback
+        caller = sys._getframe(1).f_code.co_name
+        if caller == '<module>':
+            if os.path.isfile('pyicloud_error'):
+                logger.error(f'Exception raised by {caller} once again. Proceeding...')
+                os.remove('pyicloud_error')
+            else:
+                logger.error(f'Exception raised by {caller}. Restarting.')
+                with open('pyicloud_error', 'w') as f:
+                    f.write('')
+                restart(quiet=True)  # Restarts quietly if the error occurs when called from __main__
         # uses latitude and longitude information from your IP's client when unable to connect to icloud
-        icloud_error = sys.exc_info()[0]
-        logger.error(f'Unable to retrieve location::{icloud_error.__name__}\n{format_exc()}')  # include traceback
         current_lat_ = st.results.client['lat']
         current_lon_ = st.results.client['lon']
         speaker.say("I have trouble accessing the i-cloud API, so I'll be using your I.P address to get your location. "
@@ -3481,6 +3490,23 @@ def initiator(key_original: str, should_return: bool = False) -> None:
             initialize()
 
 
+def automator():
+    """Automatically puts the Mac on sleep and sets the volume to 25% at 9 PM and 50% at 6 AM."""
+    while True:
+        time_now = datetime.now()
+        checker = f'{time_now.strftime("%I")}:{time_now.strftime("%M")} {time_now.strftime("%p")}'
+        if STOPPER.get('status'):
+            break
+        elif checker == '6:00 AM':
+            volume_controller(level=50)
+            sleep(30)
+        elif checker == '9:00 PM':
+            volume_controller(level=25)
+            pc_sleep()
+            sleep(30)
+        sleep(30)
+
+
 class Activator:
     """`Porcupine <https://github.com/Picovoice/porcupine>`__ wake word engine.
 
@@ -3506,7 +3532,7 @@ class Activator:
             - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
         """
         sensitivity = float(os.environ.get('sensitivity', 0.5))
-        logger.info(f'Initiating model with sensitivity: {sensitivity} - {type(sensitivity)}')
+        logger.info(f'Initiating model with sensitivity: {sensitivity}')
         keyword_paths = [KEYWORD_PATHS[x] for x in ['jarvis']]
 
         self.py_audio = PyAudio()
@@ -3527,6 +3553,8 @@ class Activator:
 
     def start(self) -> None:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
+        timeout = int(os.environ.get('timeout', 3))
+        phrase_limit = int(os.environ.get('phrase_limit', 3))
         try:
             while True:
                 sys.stdout.write('\rSentry Mode')
@@ -3534,7 +3562,8 @@ class Activator:
                 pcm = unpack_from("h" * self.waker.frame_length, pcm)
                 if self.waker.process(pcm) >= 0:
                     Thread(target=playsound, args=['indicators/acknowledgement.mp3']).start()
-                    initiator(key_original=listener(timeout=3, phrase_limit=5, sound=False), should_return=True)
+                    initiator(key_original=listener(timeout=timeout, phrase_limit=phrase_limit, sound=False),
+                              should_return=True)
                     speaker.runAndWait()
                 elif STOPPER.get('status'):
                     self.stop()
@@ -4064,6 +4093,7 @@ if __name__ == '__main__':
         Thread(target=offline_communicator).start()
     else:
         logger.error(f'Unable to initiate OfflineCommunicator since, JarvisHelper is unavailable in {home}')
+    Thread(target=automator).start()
     Thread(target=meeting_gatherer).start()
     Thread(target=playsound, args=['indicators/initialize.mp3']).start()
 

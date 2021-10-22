@@ -2175,3 +2175,11 @@ Change Log
 - Add timer to restart every 24h to get updated IPs and renew PID
 - Modify Activator class to class objects from static
 - Fix bug on directions
+
+4.9.8 (10/22/2021)
+------------------
+- Restrict offline commands with `and` and `also` to process one at a time
+- Handle pyicloud error gracefully during the initial start
+- Create automator to perform custom automations at a given time
+- Set initial timeout and phrase_limit in env vars and default to 3
+- Remove plural for lights in keywords.py

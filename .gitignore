@@ -52,6 +52,9 @@ devices.html
 offline_request
 offline_response
 
+# temporary file that indicates that jarvis should restart
+pyicloud_error
+
 # future work
 devices.json
 temp.py
