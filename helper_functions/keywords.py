@@ -478,7 +478,7 @@ class Keywords:
             List of words for the function name.
 
         """
-        return ['lights', 'hallway', 'kitchen', 'living room', 'bedroom']
+        return ['light', 'hallway', 'kitchen', 'living room', 'bedroom']
 
     @staticmethod
     def guard_enable() -> list:
