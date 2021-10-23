@@ -2187,3 +2187,14 @@ Change Log
 4.9.9 (10/23/2021)
 ------------------
 - Custom env vars are no longer needed for API as the .env can be shared
+
+5.0.0 (10/23/2021)
+------------------
+- FEATURE::Jarvis API can now render investment portfolio as a static html
+- Secure endpoint behind single-use token which is a hashed uuid
+- Filter /investment?token=* logs as it will expose the single use token
+- Instead have a custom warning logged
+- Create static html file at given schedule including when app starts up
+- Create logging config to match Uvicorn
+- During doc creation remove docs dir after checking version.py
+- Add robinhood_bg.jpg and static.html to support the static HTML file

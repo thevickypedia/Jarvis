@@ -27,6 +27,9 @@ python3 -m pip install --upgrade pip
 # Installs non version specicfic packages using --upgrade and --no-cache flag
 python3 -m pip install --upgrade --no-cache gmail-connector changelog-generator sphinx pre-commit recommonmark
 
+# Install pre-commit checker to restrict commit if any step in .pre-commit-config.yaml fails.
+pre-commit install
+
 # Get to the current directory and install the module specific packages from requiements.txt
 current_dir="$(dirname "$(realpath "$0")")"
 python3 -m pip install --no-cache-dir -r $current_dir/requirements.txt

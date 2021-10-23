@@ -33,6 +33,13 @@ Jarvis - API Models
    :members:
    :undoc-members:
 
+Jarvis - API Robinhood
+======================
+
+.. automodule:: api.robinhood
+   :members:
+   :undoc-members:
+
 Alarm
 =====
 

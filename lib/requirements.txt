@@ -31,6 +31,7 @@ wolframalpha==4.1.1
 pynetgear==0.7.0
 fastapi==0.68.0
 uvicorn==0.14.0
+aiofiles==0.7.0
 opencv-python==4.4.0.44
 cmake==3.18.2.post1
 dlib==19.21.0
