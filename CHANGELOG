@@ -2183,3 +2183,7 @@ Change Log
 - Create automator to perform custom automations at a given time
 - Set initial timeout and phrase_limit in env vars and default to 3
 - Remove plural for lights in keywords.py
+
+4.9.9 (10/23/2021)
+------------------
+- Custom env vars are no longer needed for API as the .env can be shared

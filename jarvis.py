@@ -3010,7 +3010,6 @@ def offline_communicator_initiate() -> None:
     if not uvicorn_status:
         logger.info('Initiating FastAPI for offline listener.')
         offline_script = f'cd {os.getcwd()} && source venv/bin/activate && cd api && ' \
-                         f'export offline_phrase={offline_phrase} && ' \
                          'uvicorn fast:app --reload --port=4483'
         apple_script('Terminal').do_script(offline_script)
 
