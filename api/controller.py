@@ -1,16 +1,18 @@
+from hashlib import sha1
 from logging import Filter, LogRecord
 from sys import path
+from uuid import UUID, uuid4
 
 
 class EndpointFilter(Filter):
-    """Class to initiate endpoint filter in logs while preserving other access logs.
+    """Class to initiate ``/docs`` filter in logs while preserving other access logs.
 
     >>> EndpointFilter
 
     """
 
     def filter(self, record: LogRecord) -> bool:
-        """Filter out the mentioned ``/endpoint`` from log streams.
+        """Filter out logging at ``/docs`` from log streams.
 
         Args:
             record: ``LogRecord`` represents an event which is created every time something is logged.
@@ -22,7 +24,27 @@ class EndpointFilter(Filter):
         return record.getMessage().find("/docs") == -1
 
 
-def startup():
+class InvestmentFilter(Filter):
+    """Class to initiate ``/investment`` filter in logs while preserving other access logs.
+
+    >>> InvestmentFilter
+
+    """
+
+    def filter(self, record: LogRecord) -> bool:
+        """Filter out logging at ``/investment?token=`` from log streams.
+
+        Args:
+            record: ``LogRecord`` represents an event which is created every time something is logged.
+
+        Returns:
+            bool:
+            False flag for the endpoint that needs to be filtered.
+        """
+        return record.getMessage().find("/investment?token=") == -1
+
+
+def offline_compatible():
     """Calls ``Keywords`` class to get the return values of methods that are compatible with ``offline_communicator``.
 
     See Also:
@@ -73,3 +95,21 @@ def startup():
                      keywords.meetings()]
     matrix_to_list = sum(offline_words, []) or [item for sublist in offline_words for item in sublist]
     return [i.strip() for n, i in enumerate(matrix_to_list) if i not in matrix_to_list[n + 1:]]
+
+
+def hashed(key: UUID) -> str:
+    """Generates sha from UUID.
+
+    Args:
+        key: Takes the UUID generated as an argument.
+
+    Returns:
+        str:
+        Hashed value of the UUID received.
+    """
+    return sha1(key.bytes + bytes(key.hex, "utf-8")).digest().hex()
+
+
+def keygen():
+    """Generates key using hashed uuid4."""
+    return hashed(key=uuid4())

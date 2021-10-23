@@ -52,6 +52,9 @@ devices.html
 offline_request
 offline_response
 
+# robinhood report file generated to be accessed from API endpoint
+api/robinhood.html
+
 # temporary file that indicates that jarvis should restart
 pyicloud_error
 
