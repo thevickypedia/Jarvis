@@ -8,6 +8,7 @@ from time import sleep
 
 from controller import (EndpointFilter, InvestmentFilter, keygen,
                         offline_compatible)
+from cron import CronScheduler
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -62,75 +63,22 @@ if path.isfile('../location.yaml'):
     zone = timezone(location_details.get('timezone'))
 
 
-def run_robinhood(thread: int = None):
-    """Initiates report gatherer and sleeps for 55 minutes."""
-    logger.info(f'Initiated robinhood gatherer [{thread}]')
-    Investment(logger=logger).report_gatherer()
-
-
-def execute_sleep(timer: int) -> None:
-    """Using a for loop instead of regular sleep to make sure daemon thread exits when STOPPER flag is set.
-
-    Args:
-        timer: Takes the amount of time sleep has to be executed as an argument.
-    """
-    for _ in range(timer):
-        if environ.get('STOPPER'):
-            break
-        sleep(1)
-
-
-def rh_initiator(startup: bool = False):
-    """Runs in a dedicated thread at a set schedule.
-
-    Args:
-        startup: Boolean flag to indicate that an initial run is required.
-
-    See Also:
-        Schedule: Runs every hour on weekdays 8 AM to 4 PM CentralTime
-    """
+def run_robinhood():
+    """Runs in a dedicated thread during startup, if the file was modified earlier than the past hour."""
     thread_id = get_ident() or current_thread().ident
-    if startup:
-        if path.isfile(serve_file) and int(datetime.now().timestamp()) - int(stat(serve_file).st_mtime) < 3_600:
-            last_modified = datetime.fromtimestamp(int(stat(serve_file).st_mtime)).strftime('%c')
-            logger.info(f'{serve_file} was generated on {last_modified}.')
-        else:
-            logger.info('Starting portfolio gatherer to create static html file.')
-            run_robinhood(thread=thread_id)
-
-    while True:
-        if environ.get('STOPPER'):
-            logger.info(f'Stopping thread: {thread_id}')
-            break
-
-        if not datetime.today().isoweekday():
-            # Sleeps for 8 hours, since in worse case scenario checker runs at 12 AM, 8 AM is the next run
-            execute_sleep(timer=28_800)
-            continue
-
-        am_hours = ['08', '09', '10', '11']
-        pm_hours = ['12', '01', '02', '03', '04']
-        avoid_hours = ['05', '06', '07']
-
-        time_now = datetime.now()
-        hour = time_now.strftime("%I")
-        minute = time_now.strftime("%M")
-        am_pm = time_now.strftime("%p")
-
-        if hour in avoid_hours:
-            continue
-
-        if ((hour in am_hours and am_pm == 'AM') or (hour in pm_hours and am_pm == 'PM')) and minute == '00':
-            logger.info(f'Current time: {hour}:{minute} {am_pm}')
-            logger.info('Starting Robinhood gatherer to create static html file.')
-            run_robinhood(thread=thread_id)
-            execute_sleep(timer=3_300)  # 55 minutes wait after each run
+    if path.isfile(serve_file) and int(datetime.now().timestamp()) - int(stat(serve_file).st_mtime) < 3_600:
+        last_modified = datetime.fromtimestamp(int(stat(serve_file).st_mtime)).strftime('%c')
+        logger.info(f'{serve_file} was generated on {last_modified}.')
+    else:
+        logger.info(f'Initiated robinhood gatherer [{thread_id}]')
+        Investment(logger=logger).report_gatherer()
 
 
 @app.on_event(event_type='startup')
 async def get_compatible():
-    """Calls startup method to add the list of acceptable keywords for offline_compatible."""
-    Thread(target=rh_initiator, args=[True], daemon=True).start()
+    """Initiates robinhood gatherer in a thread and adds a cron schedule if not present already."""
+    Thread(target=run_robinhood, daemon=True).start()
+    CronScheduler(logger=logger).controller()
 
 
 @app.on_event(event_type='shutdown')
@@ -219,16 +167,16 @@ def jarvis_offline_communicator(input_data: GetData):
         raise HTTPException(status_code=401, detail='Request not authorized.')
 
 
-@app.get("/robinhood_bg.jpg", include_in_schema=False)
-async def get_background() -> FileResponse:
-    """Gets the robinhood_bg.jpg and adds to the API endpoint.
+@app.get("/favicon.ico", include_in_schema=False)
+async def get_favicon() -> FileResponse:
+    """Gets the favicon.ico and adds to the API endpoint.
 
     Returns:
         FileResponse:
-        Uses FileResponse to send the robinhood_bg.jpg to support the robinhood script's robinhood.html.
+        Uses FileResponse to send the favicon.ico to support the robinhood script's robinhood.html.
     """
-    if path.isfile('robinhood_bg.jpg'):
-        return FileResponse('robinhood_bg.jpg')
+    if path.isfile('favicon.ico'):
+        return FileResponse('favicon.ico')
 
 
 @app.post("/robinhood-authenticate")

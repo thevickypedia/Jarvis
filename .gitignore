@@ -23,8 +23,8 @@ notes.txt
 # WIP: Contacts to call or message
 contacts.yml
 
-# Start and restart logs will be saved here
-logs/*.log
+# Log files
+*.log
 
 # Storage for images of intruders
 threat
