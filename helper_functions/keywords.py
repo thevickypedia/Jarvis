@@ -1,650 +1,128 @@
 class Keywords:
-    """List of keywords for each function which is condition matched in the main module.
+    """List of keywords for each variable which is condition matched in the main module.
 
     >>> Keywords
 
     """
 
-    @staticmethod
-    def date() -> list:
-        """Words to match the given statement.
+    date = ['date']
 
-        Returns:
-            list:
-            List of words for the function name.
+    time = ['time']
 
-        """
-        return ['date']
+    weather = ['weather', 'temperature']
 
-    @staticmethod
-    def time() -> list:
-        """Words to match the given statement.
+    system_info = ['configuration']
 
-        Returns:
-            list:
-            List of words for the function name.
+    ip_info = ['address']
 
-        """
-        return ['time']
+    webpage = ['website', 'webpage', 'web page', '.']
 
-    @staticmethod
-    def weather() -> list:
-        """Words to match the given statement.
+    wikipedia = ['wikipedia', 'info', 'information']
 
-        Returns:
-            list:
-            List of words for the function name.
+    news = ['news']
 
-        """
-        return ['weather', 'temperature']
+    report = ['report']
 
-    @staticmethod
-    def system_info() -> list:
-        """Words to match the given statement.
+    robinhood = ['robinhood', 'investment', 'portfolio', 'summary']
 
-        Returns:
-            list:
-            List of words for the function name.
+    apps = ['launch']
 
-        """
-        return ['configuration']
+    repeat = ['repeat', 'train']
 
-    @staticmethod
-    def ip_info() -> list:
-        """Words to match the given statement.
+    chatbot = ['chat', 'chatbot', 'chatter']
 
-        Returns:
-            list:
-            List of words for the function name.
+    location = ['location', 'where am i']
 
-        """
-        return ['address']
+    locate = ['locate', 'where is my', "where's my"]
 
-    @staticmethod
-    def webpage() -> list:
-        """Words to match the given statement.
+    music = ['music', 'songs', 'play']
 
-        Returns:
-            list:
-            List of words for the function name.
+    gmail = ['email', 'mail', 'emails', 'mails']
 
-        """
-        return ['website', 'webpage', 'web page', '.']
+    meaning = ['meaning', 'meanings', 'dictionary', 'definition']
 
-    @staticmethod
-    def wikipedia() -> list:
-        """Words to match the given statement.
+    create_db = ['create a new database', 'create a new data base', 'create a database', 'create a data base']
 
-        Returns:
-            list:
-            List of words for the function name.
+    add_todo = ['add', 'update']
 
-        """
-        return ['wikipedia', 'info', 'information']
+    delete_todo = ['remove', 'delete']
 
-    @staticmethod
-    def news() -> list:
-        """Words to match the given statement.
+    delete_db = ['delete database', 'delete data base', 'delete my database', 'delete my data base']
 
-        Returns:
-            list:
-            List of words for the function name.
+    list_todo = ['plan']
 
-        """
-        return ['news']
+    distance = ['far', 'distance', 'miles']
 
-    @staticmethod
-    def report() -> list:
-        """Words to match the given statement.
+    avoid = ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
+             'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter', 'server',
+             'cloud']
 
-        Returns:
-            list:
-            List of words for the function name.
+    geopy = ['where is', "where's", 'which city', 'which state', 'which country', 'which county']
 
-        """
-        return ['report']
+    directions = ['take me', 'get directions']
 
-    @staticmethod
-    def robinhood() -> list:
-        """Words to match the given statement.
+    alarm = ['alarm', 'wake me']
 
-        Returns:
-            list:
-            List of words for the function name.
+    kill_alarm = ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off', 'stop another alarm']
 
-        """
-        return ['robinhood', 'investment', 'portfolio', 'summary']
+    reminder = ['remind', 'reminder']
 
-    @staticmethod
-    def apps() -> list:
-        """Words to match the given statement.
+    google_home = ['google home', 'googlehome']
 
-        Returns:
-            list:
-            List of words for the function name.
+    jokes = ['joke', 'jokes', 'make me laugh']
 
-        """
-        return ['launch']
+    notes = ['notes', 'note']
 
-    @staticmethod
-    def repeat() -> list:
-        """Words to match the given statement.
+    github = ['git', 'github', 'clone', 'GitHub']
 
-        Returns:
-            list:
-            List of words for the function name.
+    txt_message = ['message', 'text', 'messages']
 
-        """
-        return ['repeat', 'train']
+    google_search = ['google search']
 
-    @staticmethod
-    def chatbot() -> list:
-        """Words to match the given statement.
+    tv = ['tv', 'television']
 
-        Returns:
-            list:
-            List of words for the function name.
+    volume = ['volume', 'mute']
 
-        """
-        return ['chat', 'chatbot', 'chatter']
+    face_detection = ['face', 'recognize', 'who am i', 'detect', 'facial', 'recognition', 'detection']
 
-    @staticmethod
-    def location() -> list:
-        """Words to match the given statement.
+    speed_test = ['speed', 'fast']
 
-        Returns:
-            list:
-            List of words for the function name.
+    bluetooth = ['bluetooth']
 
-        """
-        return ['location', 'where am i']
+    brightness = ['brightness', 'bright', 'dim']
 
-    @staticmethod
-    def locate() -> list:
-        """Words to match the given statement.
+    lights = ['light', 'hallway', 'kitchen', 'living room', 'bedroom']
 
-        Returns:
-            list:
-            List of words for the function name.
+    guard_enable = ['take care', 'heading out', 'keep an eye', 'turn on security mode', 'enable security mode']
 
-        """
-        return ['locate', 'where is my', "where's my"]
+    guard_disable = ["I'm back", 'I am back', 'turn off security mode', 'disable security mode']
 
-    @staticmethod
-    def music() -> list:
-        """Words to match the given statement.
+    flip_a_coin = ['head', 'tail', 'flip']
 
-        Returns:
-            list:
-            List of words for the function name.
+    facts = ['fact', 'facts']
 
-        """
-        return ['music', 'songs', 'play']
+    meetings = ['meeting', 'appointment', 'schedule']
 
-    @staticmethod
-    def gmail() -> list:
-        """Words to match the given statement.
+    voice_changer = ['voice', 'module', 'audio']
 
-        Returns:
-            list:
-            List of words for the function name.
+    system_vitals = ['vitals', 'statistics', 'readings', 'stats']
 
-        """
-        return ['email', 'mail', 'emails', 'mails']
+    vpn_server = ['vpn']
 
-    @staticmethod
-    def meaning() -> list:
-        """Words to match the given statement.
+    personal_cloud = ['personal cloud', 'private cloud', 'personal server', 'private server']
 
-        Returns:
-            list:
-            List of words for the function name.
+    ok = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
 
-        """
-        return ['meaning', 'meanings', 'dictionary', 'definition']
+    restart = ['restart', 'reboot']
 
-    @staticmethod
-    def create_db() -> list:
-        """Words to match the given statement.
+    exit = ['exit', 'quit', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye', 'see you later',
+            'talk to you later', 'activate sentry mode', "that's it", 'that is it']
 
-        Returns:
-            list:
-            List of words for the function name.
+    sleep = ['exit', 'quit', 'lock', 'sleep', 'Xzibit', 'activate sentry mode']
 
-        """
-        return ['create a new database', 'create a new data base', 'create a database', 'create a data base']
+    kill = ['kill', 'terminate yourself', 'stop running']
 
-    @staticmethod
-    def add_todo() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['add', 'update']
-
-    @staticmethod
-    def delete_todo() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['remove', 'delete']
-
-    @staticmethod
-    def delete_db() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['delete database', 'delete data base', 'delete my database', 'delete my data base']
-
-    @staticmethod
-    def list_todo() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['plan']
-
-    @staticmethod
-    def distance() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['far', 'distance', 'miles']
-
-    @staticmethod
-    def avoid() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
-                'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter', 'server',
-                'cloud']
-
-    @staticmethod
-    def geopy() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['where is', "where's", 'which city', 'which state', 'which country', 'which county']
-
-    @staticmethod
-    def directions() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['take me', 'get directions']
-
-    @staticmethod
-    def alarm() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['alarm', 'wake me']
-
-    @staticmethod
-    def kill_alarm() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off', 'stop another alarm']
-
-    @staticmethod
-    def reminder() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['remind', 'reminder']
-
-    @staticmethod
-    def google_home() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['google home', 'googlehome']
-
-    @staticmethod
-    def jokes() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['joke', 'jokes', 'make me laugh']
-
-    @staticmethod
-    def notes() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['notes', 'note']
-
-    @staticmethod
-    def github() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['git', 'github', 'clone', 'GitHub']
-
-    @staticmethod
-    def txt_message() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['message', 'text', 'messages']
-
-    @staticmethod
-    def google_search() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['google search']
-
-    @staticmethod
-    def tv() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['tv', 'television']
-
-    @staticmethod
-    def volume() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['volume', 'mute']
-
-    @staticmethod
-    def face_detection() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['face', 'recognize', 'who am i', 'detect', 'facial', 'recognition', 'detection']
-
-    @staticmethod
-    def speed_test() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['speed', 'fast']
-
-    @staticmethod
-    def bluetooth() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['bluetooth']
-
-    @staticmethod
-    def brightness() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['brightness', 'bright', 'dim']
-
-    @staticmethod
-    def lights() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['light', 'hallway', 'kitchen', 'living room', 'bedroom']
-
-    @staticmethod
-    def guard_enable() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['take care', 'heading out', 'keep an eye', 'turn on security mode', 'enable security mode']
-
-    @staticmethod
-    def guard_disable() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ["I'm back", 'I am back', 'turn off security mode', 'disable security mode']
-
-    @staticmethod
-    def flip_a_coin() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['head', 'tail', 'flip']
-
-    @staticmethod
-    def facts() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['fact', 'facts']
-
-    @staticmethod
-    def meetings() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['meeting', 'appointment', 'schedule']
-
-    @staticmethod
-    def voice_changer() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['voice', 'module', 'audio']
-
-    @staticmethod
-    def system_vitals() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['vitals', 'statistics', 'readings', 'stats']
-
-    @staticmethod
-    def vpn_server() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['vpn']
-
-    @staticmethod
-    def personal_cloud() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['personal cloud', 'private cloud', 'personal server', 'private server']
-
-    @staticmethod
-    def ok() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
-
-    @staticmethod
-    def restart() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['restart', 'reboot']
-
-    @staticmethod
-    def exit() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['exit', 'quit', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye',
-                'see you later', 'talk to you later', 'activate sentry mode', "that's it", 'that is it']
-
-    @staticmethod
-    def sleep() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['exit', 'quit', 'lock', 'sleep', 'Xzibit', 'activate sentry mode']
-
-    @staticmethod
-    def kill() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['kill', 'terminate yourself', 'stop running']
-
-    @staticmethod
-    def shutdown() -> list:
-        """Words to match the given statement.
-
-        Returns:
-            list:
-            List of words for the function name.
-
-        """
-        return ['shutdown', 'shut down', 'terminate']
+    shutdown = ['shutdown', 'shut down', 'terminate']
 
 
 if __name__ == '__main__':

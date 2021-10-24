@@ -3,6 +3,10 @@ Change Log
 
 5.0.1 (10/23/2021)
 ------------------
+- Change static methods to class variables in keywords.py and conversation.py
+
+5.0.1 (10/23/2021)
+------------------
 - Use `Jinja` to render html and enable dark-light mode toggle switch
 - Store template in a python class instead of static.html
 - Update requirements.txt
