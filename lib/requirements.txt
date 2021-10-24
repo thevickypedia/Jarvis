@@ -32,6 +32,12 @@ pynetgear==0.7.0
 fastapi==0.68.0
 uvicorn==0.14.0
 aiofiles==0.7.0
+pydantic==1.8.2
+Jinja2==3.0.1
+requests==2.26.0
+setuptools==57.0.0
+certifi==2021.5.30
+PyChromecast==2.3.0
 opencv-python==4.4.0.44
 cmake==3.18.2.post1
 dlib==19.21.0
