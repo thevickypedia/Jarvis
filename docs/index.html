@@ -1662,74 +1662,8 @@ name is specified, allow every event.</p>
 </dd></dl>
 
 </section>
-<section id="module-api.robinhood">
-<span id="jarvis-api-robinhood"></span><h1>Jarvis - API Robinhood<a class="headerlink" href="#module-api.robinhood" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="api.robinhood.Investment">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.robinhood.</span></span><span class="sig-name descname"><span class="pre">Investment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.robinhood.Investment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Investment object to gather portfolio information.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Investment</span>
-</pre></div>
-</div>
-<p>Authenticates Robinhood object and gathers the portfolio information and stores in the var <code class="docutils literal notranslate"><span class="pre">raw_result</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>logger</strong> – Takes the class <code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code> as an argument.</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="api.robinhood.Investment.report_gatherer">
-<span class="sig-name descname"><span class="pre">report_gatherer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.robinhood.Investment.report_gatherer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gathers all the necessary information and creates an <code class="docutils literal notranslate"><span class="pre">index.html</span></code> using the template <code class="docutils literal notranslate"><span class="pre">static.html</span></code>.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="api.robinhood.Investment.watcher">
-<span class="sig-name descname"><span class="pre">watcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#api.robinhood.Investment.watcher" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gathers all the information and wraps into parts of strings to create an HTML file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Returns a tuple of portfolio header, profit stat, loss stat, and current profit/loss compared to purchased.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="api.robinhood.Investment.watchlist">
-<span class="sig-name descname"><span class="pre">watchlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'hour'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#api.robinhood.Investment.watchlist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sweeps all watchlist stocks and compares current price with historical data (24h ago) to wrap as a string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>interval</strong> – Takes interval for historic data. Options are <code class="docutils literal notranslate"><span class="pre">hour</span></code> or <code class="docutils literal notranslate"><span class="pre">10minute</span></code></p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns a tuple of each watch list item and a unicode character to indicate if the price went up or down.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.robinhood.market_status">
-<span class="sig-prename descclassname"><span class="pre">api.robinhood.</span></span><span class="sig-name descname"><span class="pre">market_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.robinhood.market_status" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if the stock market is open today.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>True if the current date is <code class="docutils literal notranslate"><span class="pre">NOT</span></code> in trading calendar or fails to fetch results from the URL.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
+<section id="jarvis-api-robinhood">
+<h1>Jarvis - API Robinhood<a class="headerlink" href="#jarvis-api-robinhood" title="Permalink to this headline">¶</a></h1>
 </section>
 <section id="module-helper_functions.alarm">
 <span id="alarm"></span><h1>Alarm<a class="headerlink" href="#module-helper_functions.alarm" title="Permalink to this headline">¶</a></h1>
@@ -3500,7 +3434,7 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 <li><a class="reference internal" href="#module-jarvis">Jarvis - Main Module</a></li>
 <li><a class="reference internal" href="#module-api.controller">Jarvis - API Controller</a></li>
 <li><a class="reference internal" href="#module-api.models">Jarvis - API Models</a></li>
-<li><a class="reference internal" href="#module-api.robinhood">Jarvis - API Robinhood</a></li>
+<li><a class="reference internal" href="#jarvis-api-robinhood">Jarvis - API Robinhood</a></li>
 <li><a class="reference internal" href="#module-helper_functions.alarm">Alarm</a></li>
 <li><a class="reference internal" href="#module-helper_functions.conversation">Conversation</a></li>
 <li><a class="reference internal" href="#module-helper_functions.database">Database</a></li>

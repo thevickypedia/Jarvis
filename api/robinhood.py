@@ -4,8 +4,10 @@ from math import fsum
 from os import environ
 from time import perf_counter
 
+from jinja2 import Template
 from pyrh import Robinhood
 from requests import get
+from robinhood_template import CustomTemplate
 
 
 def market_status() -> bool:
@@ -54,7 +56,6 @@ class Investment:
             Returns a tuple of portfolio header, profit stat, loss stat, and current profit/loss compared to purchased.
         """
         shares_total = []
-        port_msg = 'Your portfolio:\n'
         loss_output = ''
         profit_output = ''
         loss_total = []
@@ -100,8 +101,9 @@ class Investment:
 
         lost = round(fsum(loss_total), 2)
         gained = round(fsum(profit_total), 2)
-        port_msg += f'The below values will differ from overall profit/loss if shares were purchased ' \
-                    f'with different price values.\nTotal Profit: ${gained}\nTotal Loss: ${lost}\n'
+        port_msg = f'\nTotal Profit: ${gained}\nTotal Loss: ${lost}\n\n' \
+                   'The above values might differ from overall profit/loss if multiple shares ' \
+                   'of the stock were purchased at different prices.'
         net_worth = round(float(self.rh.equity()), 2)
         output = f'Total number of stocks purchased: {n}\n'
         output += f'Total number of shares owned: {n_}\n'
@@ -110,9 +112,9 @@ class Investment:
         output += f'\nValue of your total investment while purchase is: ${total_buy}'
         total_diff = round(float(net_worth - total_buy), 2)
         if total_diff < 0:
-            output += f'\nOverall Loss: ${total_diff}'
+            output += f'\n\nOverall Loss: ${total_diff}'
         else:
-            output += f'\nOverall Profit: ${total_diff}'
+            output += f'\n\nOverall Profit: ${total_diff}'
         yesterday_close = round(float(self.rh.equity_previous_close()), 2)
         two_day_diff = round(float(net_worth - yesterday_close), 2)
         output += f"\n\nYesterday's closing value: ${yesterday_close}"
@@ -167,7 +169,7 @@ class Investment:
         return r1, r2
 
     def report_gatherer(self) -> None:
-        """Gathers all the necessary information and creates an ``index.html`` using the template ``static.html``."""
+        """Gathers all the necessary information and creates an ``index.html`` using a ``Jinja`` template."""
         current_time = datetime.now()
         if not market_status():
             self.logger.warning(f'{current_time.strftime("%B %d, %Y")}: The markets are closed today.')
@@ -181,29 +183,44 @@ class Investment:
             s1, s2 = '', 'Watchlist feature is currently unstable.'
 
         self.logger.info('Generating HTMl file.')
+
         title = f'Investment Summary as of {current_time.strftime("%A, %B %d, %Y %I:%M %p")}'
         web_text = f'\n{overall_result}\n{port_head}\n'
         profit_web = f'\n{profit}\n'
         loss_web = f'\n{loss}\n'
-        # todo: Consider using Jinja template
-        with open('static.html') as template:
-            data = template.read()
-        data = data.strip()\
-            .replace('TITLE_HERE', title.replace('\n', '\n\t\t\t'))\
-            .replace('WEB_TEXT_HERE', web_text.replace('\n', '\n\t\t\t'))\
-            .replace('PROFIT_WEB_HERE', profit_web.replace('\n', '\n\t\t\t'))\
-            .replace('LOSS_WEB_HERE', loss_web.replace('\n', '\n\t\t\t'))\
-            .replace('S2_HERE', s2.replace('\n', '\n\t\t\t'))\
-            .replace('S1_HERE', s1.replace('\n', '\n\t\t\t'))
+        title = title.replace('\n', '\n\t\t\t')
+        web_text = web_text.replace('\n', '\n\t\t\t')
+        profit_web = profit_web.replace('\n', '\n\t\t\t\t')
+        loss_web = loss_web.replace('\n', '\n\t\t\t\t')
+        s2 = s2.replace('\n', '\n\t\t\t')
+        s1 = s1.replace('\n', '\n\t\t\t')
+
+        template = CustomTemplate.source.strip()
+        rendered = Template(template).render(TITLE=title, SUMMARY=web_text, PROFIT=profit_web, LOSS=loss_web,
+                                             WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)
         with open('robinhood.html', 'w') as file:
-            file.write(data)
+            file.write(rendered)
+
         self.logger.info(f'Static file generated in {round(float(perf_counter()), 2)}s')
 
 
 if __name__ == '__main__':
-    from logging import DEBUG, getLogger
+    from logging import INFO, Formatter, StreamHandler, getLogger
+    from pathlib import PurePath
 
-    module_logger = getLogger(__name__)
-    module_logger.setLevel(DEBUG)
+    from dotenv import load_dotenv
+
+    load_dotenv(dotenv_path='../.env')
+    log_format = Formatter(
+        fmt="%(asctime)s - [%(levelname)s] - %(name)s - %(funcName)s - Line: %(lineno)d - %(message)s",
+        datefmt='%b-%d-%Y %H:%M:%S'
+    )
+    handler = StreamHandler()
+    handler.setFormatter(fmt=log_format)
+
+    base_file = PurePath(__file__)
+    module_logger = getLogger(base_file.stem)
+    module_logger.setLevel(level=INFO)
+    module_logger.addHandler(hdlr=handler)
 
     Investment(logger=module_logger).report_gatherer()
