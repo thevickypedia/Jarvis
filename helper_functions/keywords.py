@@ -123,29 +123,3 @@ class Keywords:
     kill = ['kill', 'terminate yourself', 'stop running']
 
     shutdown = ['shutdown', 'shut down', 'terminate']
-
-
-if __name__ == '__main__':
-    # TODO: begin diagnostics to use dictionaries instead of long nested if statements in conditions() in jarvis.py
-    """Since Python stores the methods and other attributes of a class in a dictionary, which is unordered,
-    looping through and executing all of the functions in python is impossible.
-    Since we don't care about order, we can use the class's __dict__ and iter through it's items"""
-    funcs = 0
-    for method_name, return_value in Keywords.__dict__.items():
-        if type(return_value) == staticmethod:
-            funcs += 1
-    print(funcs)
-    # prove time complexity
-    from timeit import timeit
-
-    print(f"Accessing the class directly for {funcs} times:")
-    print(timeit(f"""
-from helper_functions.keywords import Keywords
-for _ in range({funcs}):
-    Keywords.__dict__.items()"""))
-    print(f"Assigning the class to a variable and then access it {funcs} times:")
-    print(timeit(f"""
-from helper_functions.keywords import Keywords
-keywords = Keywords()
-for _ in range({funcs}):
-    keywords.__dict__.items()"""))

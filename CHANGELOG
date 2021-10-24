@@ -1,7 +1,12 @@
 Change Log
 ==========
 
-5.0.1 (10/23/2021)
+5.0.3 (10/23/2021)
+------------------
+- Change static methods to class variables in keywords.py and conversation.py
+- Replicate changes to offline controller
+
+5.0.2 (10/23/2021)
 ------------------
 - Change static methods to class variables in keywords.py and conversation.py
 
