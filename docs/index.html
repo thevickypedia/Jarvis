@@ -1698,121 +1698,49 @@ name is specified, allow every event.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.conversation.</span></span><span class="sig-name descname"><span class="pre">Conversation</span></span><a class="headerlink" href="#helper_functions.conversation.Conversation" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of conversational keywords for each function which is condition matched in main module.</p>
+<dd><p>list of conversational keywords for each variable which is condition matched in main module.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Conversation</span>
 </pre></div>
 </div>
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.about_me">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">about_me</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.conversation.Conversation.about_me" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match and initiate a conversation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for conversation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">about_me</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['tell</span> <span class="pre">me</span> <span class="pre">about</span> <span class="pre">you',</span> <span class="pre">'tell</span> <span class="pre">me</span> <span class="pre">something</span> <span class="pre">about</span> <span class="pre">you',</span> <span class="pre">'i</span> <span class="pre">would</span> <span class="pre">like</span> <span class="pre">to</span> <span class="pre">get</span> <span class="pre">you</span> <span class="pre">know</span> <span class="pre">you',</span> <span class="pre">'tell</span> <span class="pre">me</span> <span class="pre">about</span> <span class="pre">yourself']</span></em><a class="headerlink" href="#helper_functions.conversation.Conversation.about_me" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.capabilities">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">capabilities</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.conversation.Conversation.capabilities" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match and initiate a conversation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for conversation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">capabilities</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['what</span> <span class="pre">can</span> <span class="pre">you</span> <span class="pre">do',</span> <span class="pre">'what</span> <span class="pre">all</span> <span class="pre">can</span> <span class="pre">you</span> <span class="pre">do',</span> <span class="pre">'what</span> <span class="pre">are</span> <span class="pre">your</span> <span class="pre">capabilities',</span> <span class="pre">&quot;what's</span> <span class="pre">your</span> <span class="pre">capacity&quot;,</span> <span class="pre">'what</span> <span class="pre">are</span> <span class="pre">you</span> <span class="pre">capable</span> <span class="pre">of']</span></em><a class="headerlink" href="#helper_functions.conversation.Conversation.capabilities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.form">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">form</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.conversation.Conversation.form" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match and initiate a conversation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for conversation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">form</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['where</span> <span class="pre">is</span> <span class="pre">your</span> <span class="pre">body',</span> <span class="pre">&quot;where's</span> <span class="pre">your</span> <span class="pre">body&quot;]</span></em><a class="headerlink" href="#helper_functions.conversation.Conversation.form" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.greeting">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">greeting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.conversation.Conversation.greeting" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match and initiate a conversation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for conversation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">greeting</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['how</span> <span class="pre">are</span> <span class="pre">you',</span> <span class="pre">'how</span> <span class="pre">are</span> <span class="pre">you</span> <span class="pre">doing',</span> <span class="pre">'how</span> <span class="pre">have</span> <span class="pre">you</span> <span class="pre">been',</span> <span class="pre">'how</span> <span class="pre">do</span> <span class="pre">you</span> <span class="pre">do']</span></em><a class="headerlink" href="#helper_functions.conversation.Conversation.greeting" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.languages">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">languages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.conversation.Conversation.languages" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match and initiate a conversation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for conversation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">languages</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['what</span> <span class="pre">languages</span> <span class="pre">do</span> <span class="pre">you</span> <span class="pre">speak',</span> <span class="pre">'what</span> <span class="pre">are</span> <span class="pre">all</span> <span class="pre">the</span> <span class="pre">languages</span> <span class="pre">you</span> <span class="pre">can</span> <span class="pre">speak',</span> <span class="pre">'what</span> <span class="pre">languages</span> <span class="pre">do</span> <span class="pre">you</span> <span class="pre">know',</span> <span class="pre">'can</span> <span class="pre">you</span> <span class="pre">speak</span> <span class="pre">in</span> <span class="pre">a</span> <span class="pre">different</span> <span class="pre">language',</span> <span class="pre">'how</span> <span class="pre">many</span> <span class="pre">languages</span> <span class="pre">can</span> <span class="pre">you</span> <span class="pre">speak',</span> <span class="pre">'what</span> <span class="pre">are</span> <span class="pre">you</span> <span class="pre">made</span> <span class="pre">of',</span> <span class="pre">'what</span> <span class="pre">languages</span> <span class="pre">can</span> <span class="pre">you</span> <span class="pre">speak',</span> <span class="pre">'what</span> <span class="pre">languages</span> <span class="pre">do</span> <span class="pre">you</span> <span class="pre">speak',</span> <span class="pre">'what</span> <span class="pre">are</span> <span class="pre">the</span> <span class="pre">languages</span> <span class="pre">you</span> <span class="pre">can</span> <span class="pre">speak']</span></em><a class="headerlink" href="#helper_functions.conversation.Conversation.languages" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.what">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">what</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.conversation.Conversation.what" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match and initiate a conversation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for conversation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">what</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['what</span> <span class="pre">are</span> <span class="pre">you']</span></em><a class="headerlink" href="#helper_functions.conversation.Conversation.what" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.whats_up">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">whats_up</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.conversation.Conversation.whats_up" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match and initiate a conversation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for conversation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">whats_up</span></span><em class="property"> <span class="pre">=</span> <span class="pre">[&quot;what's</span> <span class="pre">up&quot;,</span> <span class="pre">'what</span> <span class="pre">is</span> <span class="pre">up',</span> <span class="pre">&quot;what's</span> <span class="pre">going</span> <span class="pre">on&quot;,</span> <span class="pre">'sup']</span></em><a class="headerlink" href="#helper_functions.conversation.Conversation.whats_up" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation.who">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">who</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.conversation.Conversation.who" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match and initiate a conversation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for conversation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">who</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['who</span> <span class="pre">are</span> <span class="pre">you',</span> <span class="pre">'what</span> <span class="pre">do</span> <span class="pre">I</span> <span class="pre">call</span> <span class="pre">you',</span> <span class="pre">&quot;what's</span> <span class="pre">your</span> <span class="pre">name&quot;,</span> <span class="pre">'what</span> <span class="pre">is</span> <span class="pre">your</span> <span class="pre">name']</span></em><a class="headerlink" href="#helper_functions.conversation.Conversation.who" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1945,821 +1873,299 @@ None - NoneType if no face was recognized.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.keywords.</span></span><span class="sig-name descname"><span class="pre">Keywords</span></span><a class="headerlink" href="#helper_functions.keywords.Keywords" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of keywords for each function which is condition matched in the main module.</p>
+<dd><p>List of keywords for each variable which is condition matched in the main module.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Keywords</span>
 </pre></div>
 </div>
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.add_todo">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">add_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.add_todo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">add_todo</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['add',</span> <span class="pre">'update']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.add_todo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.alarm">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">alarm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.alarm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">alarm</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['alarm',</span> <span class="pre">'wake</span> <span class="pre">me']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.alarm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.apps">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">apps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.apps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">apps</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['launch']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.apps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.avoid">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">avoid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.avoid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">avoid</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['sun',</span> <span class="pre">'moon',</span> <span class="pre">'mercury',</span> <span class="pre">'venus',</span> <span class="pre">'earth',</span> <span class="pre">'mars',</span> <span class="pre">'jupiter',</span> <span class="pre">'saturn',</span> <span class="pre">'uranus',</span> <span class="pre">'neptune',</span> <span class="pre">'pluto',</span> <span class="pre">'a.m.',</span> <span class="pre">'p.m.',</span> <span class="pre">'update</span> <span class="pre">my</span> <span class="pre">to</span> <span class="pre">do</span> <span class="pre">list',</span> <span class="pre">'launch',</span> <span class="pre">'safari',</span> <span class="pre">'body',</span> <span class="pre">'human',</span> <span class="pre">'centimeter',</span> <span class="pre">'server',</span> <span class="pre">'cloud']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.avoid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.bluetooth">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">bluetooth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.bluetooth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">bluetooth</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['bluetooth']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.bluetooth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.brightness">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">brightness</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.brightness" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">brightness</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['brightness',</span> <span class="pre">'bright',</span> <span class="pre">'dim']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.brightness" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.chatbot">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">chatbot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.chatbot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">chatbot</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['chat',</span> <span class="pre">'chatbot',</span> <span class="pre">'chatter']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.chatbot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.create_db">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">create_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.create_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">create_db</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['create</span> <span class="pre">a</span> <span class="pre">new</span> <span class="pre">database',</span> <span class="pre">'create</span> <span class="pre">a</span> <span class="pre">new</span> <span class="pre">data</span> <span class="pre">base',</span> <span class="pre">'create</span> <span class="pre">a</span> <span class="pre">database',</span> <span class="pre">'create</span> <span class="pre">a</span> <span class="pre">data</span> <span class="pre">base']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.create_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.date">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">date</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.date" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">date</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['date']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.delete_db">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">delete_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.delete_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">delete_db</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['delete</span> <span class="pre">database',</span> <span class="pre">'delete</span> <span class="pre">data</span> <span class="pre">base',</span> <span class="pre">'delete</span> <span class="pre">my</span> <span class="pre">database',</span> <span class="pre">'delete</span> <span class="pre">my</span> <span class="pre">data</span> <span class="pre">base']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.delete_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.delete_todo">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">delete_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.delete_todo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">delete_todo</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['remove',</span> <span class="pre">'delete']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.delete_todo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.directions">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">directions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.directions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">directions</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['take</span> <span class="pre">me',</span> <span class="pre">'get</span> <span class="pre">directions']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.directions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.distance">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">distance</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['far',</span> <span class="pre">'distance',</span> <span class="pre">'miles']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.exit">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">exit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.exit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">exit</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['exit',</span> <span class="pre">'quit',</span> <span class="pre">'no',</span> <span class="pre">'nope',</span> <span class="pre">'thanks',</span> <span class="pre">'thank</span> <span class="pre">you',</span> <span class="pre">'Xzibit',</span> <span class="pre">'bye',</span> <span class="pre">'good</span> <span class="pre">bye',</span> <span class="pre">'see</span> <span class="pre">you</span> <span class="pre">later',</span> <span class="pre">'talk</span> <span class="pre">to</span> <span class="pre">you</span> <span class="pre">later',</span> <span class="pre">'activate</span> <span class="pre">sentry</span> <span class="pre">mode',</span> <span class="pre">&quot;that's</span> <span class="pre">it&quot;,</span> <span class="pre">'that</span> <span class="pre">is</span> <span class="pre">it']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.exit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.face_detection">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">face_detection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.face_detection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">face_detection</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['face',</span> <span class="pre">'recognize',</span> <span class="pre">'who</span> <span class="pre">am</span> <span class="pre">i',</span> <span class="pre">'detect',</span> <span class="pre">'facial',</span> <span class="pre">'recognition',</span> <span class="pre">'detection']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.face_detection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.facts">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">facts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.facts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">facts</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['fact',</span> <span class="pre">'facts']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.facts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.flip_a_coin">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">flip_a_coin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.flip_a_coin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">flip_a_coin</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['head',</span> <span class="pre">'tail',</span> <span class="pre">'flip']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.flip_a_coin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.geopy">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">geopy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.geopy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">geopy</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['where</span> <span class="pre">is',</span> <span class="pre">&quot;where's&quot;,</span> <span class="pre">'which</span> <span class="pre">city',</span> <span class="pre">'which</span> <span class="pre">state',</span> <span class="pre">'which</span> <span class="pre">country',</span> <span class="pre">'which</span> <span class="pre">county']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.geopy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.github">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">github</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.github" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">github</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['git',</span> <span class="pre">'github',</span> <span class="pre">'clone',</span> <span class="pre">'GitHub']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.github" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.gmail">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">gmail</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.gmail" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">gmail</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['email',</span> <span class="pre">'mail',</span> <span class="pre">'emails',</span> <span class="pre">'mails']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.gmail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.google_home">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">google_home</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.google_home" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">google_home</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['google</span> <span class="pre">home',</span> <span class="pre">'googlehome']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.google_home" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.google_search">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">google_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.google_search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">google_search</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['google</span> <span class="pre">search']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.google_search" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.guard_disable">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">guard_disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.guard_disable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">guard_disable</span></span><em class="property"> <span class="pre">=</span> <span class="pre">[&quot;I'm</span> <span class="pre">back&quot;,</span> <span class="pre">'I</span> <span class="pre">am</span> <span class="pre">back',</span> <span class="pre">'turn</span> <span class="pre">off</span> <span class="pre">security</span> <span class="pre">mode',</span> <span class="pre">'disable</span> <span class="pre">security</span> <span class="pre">mode']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.guard_disable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.guard_enable">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">guard_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.guard_enable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">guard_enable</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['take</span> <span class="pre">care',</span> <span class="pre">'heading</span> <span class="pre">out',</span> <span class="pre">'keep</span> <span class="pre">an</span> <span class="pre">eye',</span> <span class="pre">'turn</span> <span class="pre">on</span> <span class="pre">security</span> <span class="pre">mode',</span> <span class="pre">'enable</span> <span class="pre">security</span> <span class="pre">mode']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.guard_enable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.ip_info">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">ip_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.ip_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">ip_info</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['address']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.ip_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.jokes">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">jokes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.jokes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">jokes</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['joke',</span> <span class="pre">'jokes',</span> <span class="pre">'make</span> <span class="pre">me</span> <span class="pre">laugh']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.jokes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.kill">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">kill</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.kill" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">kill</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['kill',</span> <span class="pre">'terminate</span> <span class="pre">yourself',</span> <span class="pre">'stop</span> <span class="pre">running']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.kill" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.kill_alarm">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">kill_alarm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.kill_alarm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">kill_alarm</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['stop</span> <span class="pre">alarm',</span> <span class="pre">'stop</span> <span class="pre">my</span> <span class="pre">alarm',</span> <span class="pre">'turn</span> <span class="pre">off</span> <span class="pre">my</span> <span class="pre">alarm',</span> <span class="pre">'turn</span> <span class="pre">my</span> <span class="pre">alarm</span> <span class="pre">off',</span> <span class="pre">'stop</span> <span class="pre">another</span> <span class="pre">alarm']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.kill_alarm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.lights">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">lights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.lights" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">lights</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['light',</span> <span class="pre">'hallway',</span> <span class="pre">'kitchen',</span> <span class="pre">'living</span> <span class="pre">room',</span> <span class="pre">'bedroom']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.lights" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.list_todo">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">list_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.list_todo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">list_todo</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['plan']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.list_todo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.locate">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">locate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.locate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">locate</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['locate',</span> <span class="pre">'where</span> <span class="pre">is</span> <span class="pre">my',</span> <span class="pre">&quot;where's</span> <span class="pre">my&quot;]</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.locate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.location">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.location" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">location</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['location',</span> <span class="pre">'where</span> <span class="pre">am</span> <span class="pre">i']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.location" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.meaning">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">meaning</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.meaning" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">meaning</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['meaning',</span> <span class="pre">'meanings',</span> <span class="pre">'dictionary',</span> <span class="pre">'definition']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.meaning" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.meetings">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.meetings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">meetings</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['meeting',</span> <span class="pre">'appointment',</span> <span class="pre">'schedule']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.meetings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.music">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">music</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.music" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">music</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['music',</span> <span class="pre">'songs',</span> <span class="pre">'play']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.music" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.news">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">news</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.news" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">news</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['news']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.news" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.notes">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">notes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.notes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">notes</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['notes',</span> <span class="pre">'note']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.notes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.ok">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">ok</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.ok" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">ok</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['yeah',</span> <span class="pre">'yes',</span> <span class="pre">'yep',</span> <span class="pre">'go</span> <span class="pre">ahead',</span> <span class="pre">'proceed',</span> <span class="pre">'continue',</span> <span class="pre">'carry</span> <span class="pre">on',</span> <span class="pre">'please',</span> <span class="pre">'keep</span> <span class="pre">going']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.ok" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.personal_cloud">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">personal_cloud</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.personal_cloud" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">personal_cloud</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['personal</span> <span class="pre">cloud',</span> <span class="pre">'private</span> <span class="pre">cloud',</span> <span class="pre">'personal</span> <span class="pre">server',</span> <span class="pre">'private</span> <span class="pre">server']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.personal_cloud" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.reminder">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">reminder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.reminder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">reminder</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['remind',</span> <span class="pre">'reminder']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.reminder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.repeat">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.repeat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">repeat</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['repeat',</span> <span class="pre">'train']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.repeat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.report">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.report" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">report</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['report']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.report" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.restart">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.restart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">restart</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['restart',</span> <span class="pre">'reboot']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.restart" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.robinhood">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.robinhood" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">robinhood</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['robinhood',</span> <span class="pre">'investment',</span> <span class="pre">'portfolio',</span> <span class="pre">'summary']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.robinhood" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.shutdown">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.shutdown" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">shutdown</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['shutdown',</span> <span class="pre">'shut</span> <span class="pre">down',</span> <span class="pre">'terminate']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.shutdown" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.sleep">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">sleep</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.sleep" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">sleep</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['exit',</span> <span class="pre">'quit',</span> <span class="pre">'lock',</span> <span class="pre">'sleep',</span> <span class="pre">'Xzibit',</span> <span class="pre">'activate</span> <span class="pre">sentry</span> <span class="pre">mode']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.sleep" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.speed_test">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">speed_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.speed_test" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">speed_test</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['speed',</span> <span class="pre">'fast']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.speed_test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.system_info">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">system_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.system_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">system_info</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['configuration']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.system_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.system_vitals">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">system_vitals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.system_vitals" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">system_vitals</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['vitals',</span> <span class="pre">'statistics',</span> <span class="pre">'readings',</span> <span class="pre">'stats']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.system_vitals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.time">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['time']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.tv">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">tv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.tv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">tv</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['tv',</span> <span class="pre">'television']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.tv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.txt_message">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">txt_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.txt_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">txt_message</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['message',</span> <span class="pre">'text',</span> <span class="pre">'messages']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.txt_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.voice_changer">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">voice_changer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.voice_changer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">voice_changer</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['voice',</span> <span class="pre">'module',</span> <span class="pre">'audio']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.voice_changer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.volume">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.volume" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">volume</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['volume',</span> <span class="pre">'mute']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.volume" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.vpn_server">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">vpn_server</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.vpn_server" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">vpn_server</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['vpn']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.vpn_server" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.weather">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">weather</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.weather" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">weather</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['weather',</span> <span class="pre">'temperature']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.weather" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.webpage">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">webpage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.webpage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">webpage</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['website',</span> <span class="pre">'webpage',</span> <span class="pre">'web</span> <span class="pre">page',</span> <span class="pre">'.']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.webpage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="helper_functions.keywords.Keywords.wikipedia">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">wikipedia</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.keywords.Keywords.wikipedia" title="Permalink to this definition">¶</a></dt>
-<dd><p>Words to match the given statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of words for the function name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">wikipedia</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['wikipedia',</span> <span class="pre">'info',</span> <span class="pre">'information']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.wikipedia" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

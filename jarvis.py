@@ -131,10 +131,10 @@ def split(key: str, should_return: bool = False) -> bool:
         Return value from ``conditions()``
     """
     exit_check = False  # this is specifically to catch the sleep command which should break the while loop in renew()
-    if ' and ' in key and not any(word in key.lower() for word in keywords.avoid()):
+    if ' and ' in key and not any(word in key.lower() for word in keywords.avoid):
         for each in key.split(' and '):
             exit_check = conditions(converted=each.strip(), should_return=should_return)
-    elif ' also ' in key and not any(word in key.lower() for word in keywords.avoid()):
+    elif ' also ' in key and not any(word in key.lower() for word in keywords.avoid):
         for each in key.split(' also '):
             exit_check = conditions(converted=each.strip(), should_return=should_return)
     else:
@@ -240,12 +240,12 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     sys.stdout.write(f'\r{converted}')
     converted_lower = converted.lower()
     todo_checks = ['to do', 'to-do', 'todo']
-    if any(word in converted_lower for word in keywords.date()) and \
-            not any(word in converted_lower for word in keywords.avoid()):
+    if any(word in converted_lower for word in keywords.date) and \
+            not any(word in converted_lower for word in keywords.avoid):
         current_date()
 
-    elif any(word in converted_lower for word in keywords.time()) and \
-            not any(word in converted_lower for word in keywords.avoid()):
+    elif any(word in converted_lower for word in keywords.time) and \
+            not any(word in converted_lower for word in keywords.avoid):
         place = ''
         for word in converted.split():
             if word[0].isupper():
@@ -257,8 +257,8 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         else:
             current_time()
 
-    elif any(word in converted_lower for word in keywords.weather()) and \
-            not any(word in converted_lower for word in keywords.avoid()):
+    elif any(word in converted_lower for word in keywords.weather) and \
+            not any(word in converted_lower for word in keywords.avoid):
         place = ''
         for word in converted.split():
             if word[0].isupper():
@@ -276,10 +276,10 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         else:
             weather()
 
-    elif any(word in converted_lower for word in keywords.system_info()):
+    elif any(word in converted_lower for word in keywords.system_info):
         system_info()
 
-    elif any(word in converted for word in keywords.ip_info()) or 'IP' in converted.split():
+    elif any(word in converted for word in keywords.ip_info) or 'IP' in converted.split():
         if 'public' in converted_lower:
             if not internet_checker():
                 speaker.say("You are not connected to the internet sir!")
@@ -300,52 +300,52 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         sys.stdout.write(f'\r{output}')
         speaker.say(output)
 
-    elif any(word in converted_lower for word in keywords.wikipedia()):
+    elif any(word in converted_lower for word in keywords.wikipedia):
         wikipedia_()
 
-    elif any(word in converted_lower for word in keywords.news()):
+    elif any(word in converted_lower for word in keywords.news):
         news()
 
-    elif any(word in converted_lower for word in keywords.report()):
+    elif any(word in converted_lower for word in keywords.report):
         report()
 
-    elif any(word in converted_lower for word in keywords.robinhood()):
+    elif any(word in converted_lower for word in keywords.robinhood):
         robinhood()
 
-    elif any(word in converted_lower for word in keywords.repeat()):
+    elif any(word in converted_lower for word in keywords.repeat):
         repeater()
 
-    elif any(word in converted_lower for word in keywords.location()):
+    elif any(word in converted_lower for word in keywords.location):
         location()
 
-    elif any(word in converted_lower for word in keywords.locate()):
+    elif any(word in converted_lower for word in keywords.locate):
         locate(converted)
 
-    elif any(word in converted_lower for word in keywords.gmail()):
+    elif any(word in converted_lower for word in keywords.gmail):
         gmail()
 
-    elif any(word in converted_lower for word in keywords.meaning()):
+    elif any(word in converted_lower for word in keywords.meaning):
         meaning(converted.split()[-1])
 
-    elif any(word in converted_lower for word in keywords.delete_todo()) and \
+    elif any(word in converted_lower for word in keywords.delete_todo) and \
             any(word in converted_lower for word in todo_checks):
         delete_todo()
 
-    elif any(word in converted_lower for word in keywords.list_todo()):
+    elif any(word in converted_lower for word in keywords.list_todo):
         todo()
 
-    elif any(word in converted_lower for word in keywords.add_todo()) and \
+    elif any(word in converted_lower for word in keywords.add_todo) and \
             any(word in converted_lower for word in todo_checks):
         add_todo()
 
-    elif any(word in converted_lower for word in keywords.delete_db()):
+    elif any(word in converted_lower for word in keywords.delete_db):
         delete_db()
 
-    elif any(word in converted_lower for word in keywords.create_db()):
+    elif any(word in converted_lower for word in keywords.create_db):
         create_db()
 
-    elif any(word in converted_lower for word in keywords.distance()) and \
-            not any(word in converted_lower for word in keywords.avoid()):
+    elif any(word in converted_lower for word in keywords.distance) and \
+            not any(word in converted_lower for word in keywords.avoid):
         """the loop below differentiates between two places and one place with two words
         eg: New York will be considered as one word and New York and Las Vegas will be considered as two words"""
         check = converted.split()  # str to list
@@ -374,10 +374,10 @@ def conditions(converted: str, should_return: bool = False) -> bool:
             start, end = None, None
         distance(start, end)
 
-    elif any(word in converted_lower for word in conversation.form()):
+    elif any(word in converted_lower for word in conversation.form):
         speaker.say("I am a program, I'm without form.")
 
-    elif any(word in converted_lower for word in keywords.geopy()):
+    elif any(word in converted_lower for word in keywords.geopy):
         # tries to look for words starting with an upper case letter
         place = ''
         for word in converted.split():
@@ -392,7 +392,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
             place = after_keyword.replace(' in', '').strip()
         locate_places(place.strip())
 
-    elif any(word in converted_lower for word in keywords.directions()):
+    elif any(word in converted_lower for word in keywords.directions):
         place = ''
         for word in converted.split():
             if word[0].isupper():
@@ -406,31 +406,31 @@ def conditions(converted: str, should_return: bool = False) -> bool:
             speaker.say("I can't take you to anywhere without a location sir!")
             directions(place=None)
 
-    elif any(word in converted_lower for word in keywords.webpage()) and \
-            not any(word in converted_lower for word in keywords.avoid()):
+    elif any(word in converted_lower for word in keywords.webpage) and \
+            not any(word in converted_lower for word in keywords.avoid):
         converted = converted.replace(' In', 'in').replace(' Co. Uk', 'co.uk')
         host = (word for word in converted.split() if '.' in word)
         webpage(host)
 
-    elif any(word in converted_lower for word in keywords.kill_alarm()):
+    elif any(word in converted_lower for word in keywords.kill_alarm):
         kill_alarm()
 
-    elif any(word in converted_lower for word in keywords.alarm()):
+    elif any(word in converted_lower for word in keywords.alarm):
         alarm(converted_lower)
 
-    elif any(word in converted_lower for word in keywords.google_home()):
+    elif any(word in converted_lower for word in keywords.google_home):
         google_home()
 
-    elif any(word in converted_lower for word in keywords.jokes()):
+    elif any(word in converted_lower for word in keywords.jokes):
         jokes()
 
-    elif any(word in converted_lower for word in keywords.reminder()):
+    elif any(word in converted_lower for word in keywords.reminder):
         reminder(converted_lower)
 
-    elif any(word in converted_lower for word in keywords.notes()):
+    elif any(word in converted_lower for word in keywords.notes):
         notes()
 
-    elif any(word in converted_lower for word in keywords.github()):
+    elif any(word in converted_lower for word in keywords.github):
         auth = HTTPBasicAuth(git_user, git_pass)
         response = get('https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
         result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
@@ -452,27 +452,27 @@ def conditions(converted: str, should_return: bool = False) -> bool:
             else:
                 speaker.say("Sorry sir! I did not find that repo.")
 
-    elif any(word in converted_lower for word in keywords.txt_message()):
+    elif any(word in converted_lower for word in keywords.txt_message):
         number = '-'.join([str(s) for s in re.findall(r'\b\d+\b', converted)])
         send_sms(number)
 
-    elif any(word in converted_lower for word in keywords.google_search()):
+    elif any(word in converted_lower for word in keywords.google_search):
         phrase = converted.split('for')[-1] if 'for' in converted else None
         google_search(phrase)
 
-    elif any(word in converted_lower for word in keywords.tv()):
+    elif any(word in converted_lower for word in keywords.tv):
         television(converted)
 
-    elif any(word in converted_lower for word in keywords.apps()):
+    elif any(word in converted_lower for word in keywords.apps):
         apps(converted.split()[-1])
 
-    elif any(word in converted_lower for word in keywords.music()):
+    elif any(word in converted_lower for word in keywords.music):
         if 'speaker' in converted_lower:
             music(converted)
         else:
             music()
 
-    elif any(word in converted_lower for word in keywords.volume()):
+    elif any(word in converted_lower for word in keywords.volume):
         if 'mute' in converted_lower:
             level = 0
         elif 'max' in converted_lower or 'full' in converted_lower:
@@ -483,16 +483,16 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         volume_controller(level)
         speaker.say(f"{choice(ack)}!")
 
-    elif any(word in converted_lower for word in keywords.face_detection()):
+    elif any(word in converted_lower for word in keywords.face_detection):
         face_recognition_detection()
 
-    elif any(word in converted_lower for word in keywords.speed_test()):
+    elif any(word in converted_lower for word in keywords.speed_test):
         speed_test()
 
-    elif any(word in converted_lower for word in keywords.bluetooth()):
+    elif any(word in converted_lower for word in keywords.bluetooth):
         bluetooth(phrase=converted_lower)
 
-    elif any(word in converted_lower for word in keywords.brightness()) and 'lights' not in converted_lower:
+    elif any(word in converted_lower for word in keywords.brightness) and 'lights' not in converted_lower:
         speaker.say(choice(ack))
         if 'set' in converted_lower or re.findall(r'\b\d+\b', converted_lower):
             level = re.findall(r'\b\d+\b', converted_lower)  # gets integers from string as a list
@@ -506,27 +506,27 @@ def conditions(converted: str, should_return: bool = False) -> bool:
                 'brighten' in converted_lower or 'light up' in converted_lower:
             Thread(target=increase_brightness).start()
 
-    elif any(word in converted_lower for word in keywords.lights()):
+    elif any(word in converted_lower for word in keywords.lights):
         if not vpn_checker().startswith('VPN'):
             lights(converted=converted_lower)
 
-    elif any(word in converted_lower for word in keywords.guard_enable() or keywords.guard_disable()):
-        if any(word in converted_lower for word in keywords.guard_enable()):
+    elif any(word in converted_lower for word in keywords.guard_enable or keywords.guard_disable):
+        if any(word in converted_lower for word in keywords.guard_enable):
             logger.info('Enabled Security Mode')
             speaker.say(f"Enabled security mode sir! I will look out for potential threats and keep you posted. "
                         f"Have a nice {part_of_day()}, and enjoy yourself sir!")
             speaker.runAndWait()
             guard()
 
-    elif any(word in converted_lower for word in keywords.flip_a_coin()):
+    elif any(word in converted_lower for word in keywords.flip_a_coin):
         playsound('indicators/coin.mp3')
         sleep(0.5)
         speaker.say(f"""{choice(['You got', 'It landed on', "It's"])} {choice(['heads', 'tails'])} sir""")
 
-    elif any(word in converted_lower for word in keywords.facts()):
+    elif any(word in converted_lower for word in keywords.facts):
         speaker.say(getFact(False))
 
-    elif any(word in converted_lower for word in keywords.meetings()):
+    elif any(word in converted_lower for word in keywords.meetings):
         if os.path.isfile('meetings'):
             meeting_reader()
         else:
@@ -543,13 +543,13 @@ def conditions(converted: str, should_return: bool = False) -> bool:
                 speaker.say("I wasn't able to read your calendar within the set time limit sir!")
             speaker.runAndWait()
 
-    elif any(word in converted_lower for word in keywords.voice_changer()):
+    elif any(word in converted_lower for word in keywords.voice_changer):
         voice_changer(converted)
 
-    elif any(word in converted_lower for word in keywords.system_vitals()):
+    elif any(word in converted_lower for word in keywords.system_vitals):
         system_vitals()
 
-    elif any(word in converted_lower for word in keywords.vpn_server()):
+    elif any(word in converted_lower for word in keywords.vpn_server):
         if vpn_server_check():
             speaker.say('An operation for VPN Server is already in progress sir! Please wait and retry.')
         elif 'start' in converted_lower or 'trigger' in converted_lower or 'initiate' in converted_lower or \
@@ -563,7 +563,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         else:
             speaker.say("I don't understand the request sir! You can ask me to enable or disable the VPN server.")
 
-    elif any(word in converted_lower for word in keywords.personal_cloud()):
+    elif any(word in converted_lower for word in keywords.personal_cloud):
         if 'enable' in converted_lower or 'initiate' in converted_lower or 'kick off' in converted_lower or \
                 'start' in converted_lower:
             Thread(target=personal_cloud.enable).start()
@@ -575,34 +575,34 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         else:
             speaker.say("I didn't quite get that sir! Please tell me if I should enable or disable your server.")
 
-    elif any(word in converted_lower for word in conversation.greeting()):
+    elif any(word in converted_lower for word in conversation.greeting):
         speaker.say('I am spectacular. I hope you are doing fine too.')
 
-    elif any(word in converted_lower for word in conversation.capabilities()):
+    elif any(word in converted_lower for word in conversation.capabilities):
         speaker.say('There is a lot I can do. For example: I can get you the weather at any location, news around '
                     'you, meanings of words, launch applications, create a to-do list, check your emails, get your '
                     'system configuration, tell your investment details, locate your phone, find distance between '
                     'places, set an alarm, play music on smart devices around you, control your TV, tell a joke, send'
                     ' a message, set reminders, scan and clone your GitHub repositories, and much more. Time to ask,.')
 
-    elif any(word in converted_lower for word in conversation.languages()):
+    elif any(word in converted_lower for word in conversation.languages):
         speaker.say("Tricky question!. I'm configured in python, and I can speak English.")
 
-    elif any(word in converted_lower for word in conversation.whats_up()):
+    elif any(word in converted_lower for word in conversation.whats_up):
         speaker.say("My listeners are up. There is nothing I cannot process. So ask me anything..")
 
-    elif any(word in converted_lower for word in conversation.what()):
+    elif any(word in converted_lower for word in conversation.what):
         speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
 
-    elif any(word in converted_lower for word in conversation.who()):
+    elif any(word in converted_lower for word in conversation.who):
         speaker.say("I am Jarvis. A virtual assistant designed by Mr.Raauv.")
 
-    elif any(word in converted_lower for word in conversation.about_me()):
+    elif any(word in converted_lower for word in conversation.about_me):
         speaker.say("I am Jarvis. A virtual assistant designed by Mr.Raauv.")
         speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
         speaker.say("I can seamlessly take care of your daily tasks, and also help with most of your work!")
 
-    elif any(word in converted_lower for word in keywords.sleep()):
+    elif any(word in converted_lower for word in keywords.sleep):
         if 'pc' in converted_lower or 'computer' in converted_lower or 'imac' in converted_lower or \
                 'screen' in converted_lower:
             pc_sleep()
@@ -612,7 +612,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
                 greet_check.pop('status')
         return True
 
-    elif any(word in converted_lower for word in keywords.restart()):
+    elif any(word in converted_lower for word in keywords.restart):
         if 'pc' in converted_lower or 'computer' in converted_lower or 'imac' in converted_lower:
             logger.info(f'JARVIS::Restart for {host_info("model")} has been requested.')
             restart(target='PC')
@@ -623,14 +623,14 @@ def conditions(converted: str, should_return: bool = False) -> bool:
             else:
                 restart()
 
-    elif any(word in converted_lower for word in keywords.kill()) and \
-            not any(word in converted_lower for word in keywords.avoid()):
+    elif any(word in converted_lower for word in keywords.kill) and \
+            not any(word in converted_lower for word in keywords.avoid):
         raise KeyboardInterrupt
 
-    elif any(word in converted_lower for word in keywords.shutdown()):
+    elif any(word in converted_lower for word in keywords.shutdown):
         shutdown()
 
-    elif any(word in converted_lower for word in keywords.chatbot()):
+    elif any(word in converted_lower for word in keywords.chatbot):
         chatter_bot()
 
     elif should_return:
@@ -1034,7 +1034,7 @@ def wikipedia_() -> None:
     speaker.runAndWait()
     keyword = listener(timeout=3, phrase_limit=5)
     if keyword != 'SR_ERROR':
-        if any(word in keyword.lower() for word in keywords.exit()):
+        if any(word in keyword.lower() for word in keywords.exit):
             return
         else:
             sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
@@ -1057,7 +1057,7 @@ def wikipedia_() -> None:
             speaker.runAndWait()
             response = listener(timeout=3, phrase_limit=3)
             if response != 'SR_ERROR':
-                if any(word in response.lower() for word in keywords.ok()):
+                if any(word in response.lower() for word in keywords.ok):
                     speaker.say('. '.join(result.split('. ')[3:-1]))
             else:
                 sys.stdout.write("\r")
@@ -1178,7 +1178,7 @@ def chatter_bot() -> None:
         speaker.runAndWait()
     keyword = listener(timeout=3, phrase_limit=5)
     if keyword != 'SR_ERROR':
-        if any(word in keyword.lower() for word in keywords.exit()):
+        if any(word in keyword.lower() for word in keywords.exit):
             speaker.say('Let me remove the training modules.')
             os.system('rm db* > /dev/null 2>&1')
             os.system(f'rm -rf {file2}')
@@ -1276,7 +1276,7 @@ def locate(converted: str, no_repeat: bool = False) -> None:
         speaker.say("I didn't quite get that. Try again.")
         locate(converted=converted, no_repeat=True)
     else:
-        if any(word in phrase.lower() for word in keywords.ok()):
+        if any(word in phrase.lower() for word in keywords.ok):
             ignore_lat, ignore_lon, location_info_ = location_services(target_device)
             lookup = str(target_device).split(':')[0].strip()
             if location_info_ == 'None':
@@ -1294,7 +1294,7 @@ def locate(converted: str, no_repeat: bool = False) -> None:
             speaker.say("I can also enable lost mode. Would you like to do it?")
             speaker.runAndWait()
             phrase = listener(timeout=3, phrase_limit=3)
-            if any(word in phrase.lower() for word in keywords.ok()):
+            if any(word in phrase.lower() for word in keywords.ok):
                 message = 'Return my phone immediately.'
                 target_device.lost_device(number=icloud_recovery, text=message)
                 speaker.say("I've enabled lost mode on your phone.")
@@ -1351,7 +1351,7 @@ def gmail() -> None:
             speaker.runAndWait()
         response = listener(timeout=3, phrase_limit=3)
         if response != 'SR_ERROR':
-            if any(word in response.lower() for word in keywords.ok()):
+            if any(word in response.lower() for word in keywords.ok):
                 for nm in messages[0].split():
                     ignore, mail_data = mail.fetch(nm, '(RFC822)')
                     for response_part in mail_data:
@@ -1403,7 +1403,7 @@ def meaning(keyword: str or None) -> None:
         speaker.runAndWait()
         response = listener(timeout=3, phrase_limit=3)
         if response != 'SR_ERROR':
-            if any(word in response.lower() for word in keywords.exit()):
+            if any(word in response.lower() for word in keywords.exit):
                 return
             else:
                 meaning(keyword=response)
@@ -1423,7 +1423,7 @@ def meaning(keyword: str or None) -> None:
             speaker.say(f'Do you wanna know how {keyword} is spelled?')
             speaker.runAndWait()
             response = listener(timeout=3, phrase_limit=3)
-            if any(word in response.lower() for word in keywords.ok()):
+            if any(word in response.lower() for word in keywords.ok):
                 for letter in list(keyword.lower()):
                     speaker.say(letter)
                 speaker.runAndWait()
@@ -1466,7 +1466,7 @@ def todo(no_repeat: bool = False) -> None:
         speaker.runAndWait()
         key = listener(timeout=3, phrase_limit=3)
         if key != 'SR_ERROR':
-            if any(word in key.lower() for word in keywords.ok()):
+            if any(word in key.lower() for word in keywords.ok):
                 todo.has_been_called = True
                 sys.stdout.write("\r")
                 create_db()
@@ -1518,7 +1518,7 @@ def add_todo() -> None:
         speaker.runAndWait()
         key = listener(timeout=3, phrase_limit=3)
         if key != 'SR_ERROR':
-            if any(word in key.lower() for word in keywords.ok()):
+            if any(word in key.lower() for word in keywords.ok):
                 add_todo.has_been_called = True
                 sys.stdout.write("\r")
                 create_db()
@@ -1547,7 +1547,7 @@ def add_todo() -> None:
                 speaker.say("Do you want to add anything else to your to-do list?")
                 speaker.runAndWait()
                 category_continue = listener(timeout=3, phrase_limit=3)
-                if any(word in category_continue.lower() for word in keywords.ok()):
+                if any(word in category_continue.lower() for word in keywords.ok):
                     add_todo()
                 else:
                     speaker.say('Alright')
@@ -1586,7 +1586,7 @@ def delete_db() -> None:
         speaker.runAndWait()
         response = listener(timeout=3, phrase_limit=3)
         if response != 'SR_ERROR':
-            if any(word in response.lower() for word in keywords.ok()):
+            if any(word in response.lower() for word in keywords.ok):
                 os.remove(file_name)
                 speaker.say("I've removed your database sir.")
             else:
@@ -2088,7 +2088,7 @@ def google_maps(query: str) -> bool:
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 break
-            elif any(word in converted.lower() for word in keywords.ok()):
+            elif any(word in converted.lower() for word in keywords.ok):
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                 web_open(maps_url)
                 speaker.say("Directions on your screen sir!")
@@ -2137,7 +2137,7 @@ def github(target: list) -> None:
         speaker.runAndWait()
         converted = listener(timeout=3, phrase_limit=5)
         if converted != 'SR_ERROR':
-            if any(word in converted.lower() for word in keywords.exit()):
+            if any(word in converted.lower() for word in keywords.exit):
                 return
             if 'first' in converted.lower():
                 item = 1
@@ -2204,7 +2204,7 @@ def send_sms(number: int or None) -> None:
             speaker.runAndWait()
             converted = listener(timeout=3, phrase_limit=3)
             if converted != 'SR_ERROR':
-                if not any(word in converted.lower() for word in keywords.ok()):
+                if not any(word in converted.lower() for word in keywords.ok):
                     speaker.say("Message will not be sent sir!")
                 else:
                     notify(user=gmail_user, password=gmail_pass, number=number, body=body)
@@ -2517,7 +2517,7 @@ def face_recognition_detection() -> None:
                     "or simply say exit.")
         speaker.runAndWait()
         phrase = listener(timeout=3, phrase_limit=5)
-        if any(word in phrase.lower() for word in keywords.ok()):
+        if any(word in phrase.lower() for word in keywords.ok):
             sys.stdout.write(f"\r{phrase}")
             phrase = phrase.replace(' ', '_')
             # creates a named directory if it is not found already else simply ignores
@@ -2858,7 +2858,7 @@ def time_travel() -> None:
     speaker.say('Would you like to hear the latest news?')
     speaker.runAndWait()
     phrase = listener(timeout=3, phrase_limit=3)
-    if any(word in phrase.lower() for word in keywords.ok()):
+    if any(word in phrase.lower() for word in keywords.ok):
         news()
     time_travel.has_been_called = False
 
@@ -2905,7 +2905,7 @@ def guard() -> None:
         except (UnknownValueError, RequestError, WaitTimeoutError):
             pass
 
-        if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable()):
+        if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable):
             logger.info('Disabled security mode')
             speaker.say(f'Welcome back sir! Good {part_of_day()}.')
             if os.path.exists(f'threat/{date_extn}.jpg'):
@@ -3246,7 +3246,7 @@ def system_vitals() -> None:
                         f'consider a reboot for better performance. Would you like me to restart it for you sir?')
             speaker.runAndWait()
             response = listener(timeout=3, phrase_limit=3)
-            if any(word in response.lower() for word in keywords.ok()):
+            if any(word in response.lower() for word in keywords.ok):
                 logger.info(f'JARVIS::Restarting {host_info("model")}')
                 restart(target='PC_Proceed')
 
@@ -3818,7 +3818,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
             converted = listener(timeout=3, phrase_limit=3)
         else:
             converted = 'yes'
-        if any(word in converted.lower() for word in keywords.ok()):
+        if any(word in converted.lower() for word in keywords.ok):
             stop_terminal()
             call(['osascript', '-e', 'tell app "System Events" to restart'])
             raise KeyboardInterrupt
@@ -3858,7 +3858,7 @@ def shutdown(proceed: bool = False) -> None:
     else:
         converted = 'yes'
     if converted != 'SR_ERROR':
-        if any(word in converted.lower() for word in keywords.ok()):
+        if any(word in converted.lower() for word in keywords.ok):
             stop_terminal()
             call(['osascript', '-e', 'tell app "System Events" to shut down'])
             raise KeyboardInterrupt
@@ -3917,7 +3917,7 @@ def voice_changer(change: str = None) -> None:
                 voice_default()
                 speaker.say('Reverting the changes to default voice module sir!')
                 return
-            elif any(word in keyword.lower() for word in keywords.ok()):
+            elif any(word in keyword.lower() for word in keywords.ok):
                 speaker.say(choice(ack))
                 return
             elif custom_id := [int(id_) for id_ in re.findall(r'\b\d+\b', keyword)]:
