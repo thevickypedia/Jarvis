@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from json import loads
 from math import fsum
-from os import environ
+from os import environ, path, system
 from time import perf_counter
 
 from jinja2 import Template
@@ -198,29 +198,36 @@ class Investment:
         template = CustomTemplate.source.strip()
         rendered = Template(template).render(TITLE=title, SUMMARY=web_text, PROFIT=profit_web, LOSS=loss_web,
                                              WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)
-        with open('robinhood.html', 'w') as file:
-            file.write(rendered)
+        with open('robinhood.html', 'w') as static_file:
+            static_file.write(rendered)
 
         self.logger.info(f'Static file generated in {round(float(perf_counter()), 2)}s')
 
 
 if __name__ == '__main__':
-    from logging import INFO, Formatter, StreamHandler, getLogger
+    from logging import DEBUG, FileHandler, Formatter, getLogger
     from pathlib import PurePath
 
     from dotenv import load_dotenv
 
-    load_dotenv(dotenv_path='../.env')
-    log_format = Formatter(
-        fmt="%(asctime)s - [%(levelname)s] - %(name)s - %(funcName)s - Line: %(lineno)d - %(message)s",
-        datefmt='%b-%d-%Y %H:%M:%S'
-    )
-    handler = StreamHandler()
-    handler.setFormatter(fmt=log_format)
+    if not path.isdir('logs'):
+        system('mkdir logs')
 
-    base_file = PurePath(__file__)
-    module_logger = getLogger(base_file.stem)
-    module_logger.setLevel(level=INFO)
-    module_logger.addHandler(hdlr=handler)
+    log_file = datetime.now().strftime('logs/%Y-%m-%d.log')
+    handler = FileHandler(log_file)
+    formatter = Formatter(fmt='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s',
+                          datefmt='%b-%d-%Y %I:%M:%S %p')
+    handler.setFormatter(formatter)
+
+    module_logger = getLogger(PurePath(__file__).name)
+    module_logger.addHandler(handler)
+    module_logger.setLevel(DEBUG)
+
+    if path.isfile('../.env'):
+        load_dotenv(dotenv_path='../.env')
 
     Investment(logger=module_logger).report_gatherer()
+
+    with open(log_file, 'a') as file:
+        file.seek(0)
+        file.write('\n')

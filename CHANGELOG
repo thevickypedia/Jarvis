@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+5.0.4 (10/24/2021)
+------------------
+- FEATURE::Add cron schedule instead of dedicated Thread
+- Add MarketHours dictionary to auto-schedule cron entries
+- Add FileHandler for robinhood logs when triggered from main module
+- Remove robinhood_bg.jpg and add favicon.ico instead
+
 5.0.3 (10/23/2021)
 ------------------
 - Change static methods to class variables in keywords.py and conversation.py
