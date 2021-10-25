@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.0.6 (10/24/2021)
+------------------
+- Use comma separator for numbers in the 1000s
+- Simply some code bits in robinhood.py
+
 5.0.5 (10/24/2021)
 ------------------
 - Join hanging threads when API restarts/shutdown
