@@ -1,5 +1,4 @@
 from datetime import date, datetime
-from json import loads
 from math import fsum
 from os import environ, path, system
 from time import perf_counter
@@ -55,30 +54,21 @@ class Investment:
             tuple:
             Returns a tuple of portfolio header, profit stat, loss stat, and current profit/loss compared to purchased.
         """
-        shares_total = []
-        loss_output = ''
-        profit_output = ''
-        loss_total = []
-        profit_total = []
-        n = 0
-        n_ = 0
+        shares_total, loss_total, profit_total = [], [], []
+        loss_output, profit_output = '', ''
+        n, n_ = 0, 0
         self.logger.info('Gathering portfolio.')
         for data in self.result:
-            share_id = str(data['instrument'].split('/')[-2])
-            buy = round(float(data['average_buy_price']), 2)
             shares_count = int(data['quantity'].split('.')[0])
-            if shares_count != 0:
-                n = n + 1
-                n_ = n_ + shares_count
-            else:
+            if not shares_count:
                 continue
+            n += 1
+            n_ += shares_count
+            share_id = str(data['instrument'].split('/')[-2])
             raw_details = self.rh.get_quote(share_id)
             ticker = (raw_details['symbol'])
-            call = raw_details['instrument']
-            r = get(call)
-            response = r.text
-            json_load = loads(response)
-            stock_name = json_load['simple_name']
+            stock_name = get(raw_details['instrument']).json()['simple_name']
+            buy = round(float(data['average_buy_price']), 2)
             total = round(shares_count * float(buy), 2)
             shares_total.append(total)
             current = (round(float(raw_details['last_trade_price']), 2))
@@ -86,49 +76,49 @@ class Investment:
             difference = round(float(current_total - total), 2)
             if difference < 0:
                 loss_output += (
-                    f'\n{stock_name}:\n{shares_count} shares of <a href="https://robinhood.com/stocks/{ticker}" '
-                    f'target="_bottom">{ticker}</a> at ${buy} Currently: ${current}\n '
-                    f'Total bought: ${total} Current Total: ${current_total}'
-                    f'\nLOST ${-difference}\n')
+                    f'\n{stock_name}:\n{shares_count:,} shares of <a href="https://robinhood.com/stocks/{ticker}" '
+                    f'target="_bottom">{ticker}</a> at ${buy:,} Currently: ${current:,}\n '
+                    f'Total bought: ${total:,} Current Total: ${current_total:,}'
+                    f'\nLOST ${-difference:,}\n')
                 loss_total.append(-difference)
             else:
                 profit_output += (
-                    f'\n{stock_name}:\n{shares_count} shares of <a href="https://robinhood.com/stocks/{ticker}" '
-                    f'target="_bottom">{ticker}</a> at ${buy} Currently: ${current}\n'
-                    f'Total bought: ${total} Current Total: ${current_total}'
-                    f'\nGained ${difference}\n')
+                    f'\n{stock_name}:\n{shares_count:,} shares of <a href="https://robinhood.com/stocks/{ticker}" '
+                    f'target="_bottom">{ticker}</a> at ${buy:,} Currently: ${current:,}\n'
+                    f'Total bought: ${total:,} Current Total: ${current_total:,}'
+                    f'\nGained ${difference:,}\n')
                 profit_total.append(difference)
 
         lost = round(fsum(loss_total), 2)
         gained = round(fsum(profit_total), 2)
-        port_msg = f'\nTotal Profit: ${gained}\nTotal Loss: ${lost}\n\n' \
+        port_msg = f'\nTotal Profit: ${gained:,}\nTotal Loss: ${lost:,}\n\n' \
                    'The above values might differ from overall profit/loss if multiple shares ' \
                    'of the stock were purchased at different prices.'
         net_worth = round(float(self.rh.equity()), 2)
-        output = f'Total number of stocks purchased: {n}\n'
-        output += f'Total number of shares owned: {n_}\n'
-        output += f'\nCurrent value of your total investment is: ${net_worth}'
+        output = f'Total number of stocks purchased: {n:,}\n'
+        output += f'Total number of shares owned: {n_:,}\n'
+        output += f'\nCurrent value of your total investment is: ${net_worth:,}'
         total_buy = round(fsum(shares_total), 2)
-        output += f'\nValue of your total investment while purchase is: ${total_buy}'
+        output += f'\nValue of your total investment while purchase is: ${total_buy:,}'
         total_diff = round(float(net_worth - total_buy), 2)
         if total_diff < 0:
-            output += f'\n\nOverall Loss: ${total_diff}'
+            output += f'\n\nOverall Loss: ${total_diff:,}'
         else:
-            output += f'\n\nOverall Profit: ${total_diff}'
+            output += f'\n\nOverall Profit: ${total_diff:,}'
         yesterday_close = round(float(self.rh.equity_previous_close()), 2)
         two_day_diff = round(float(net_worth - yesterday_close), 2)
-        output += f"\n\nYesterday's closing value: ${yesterday_close}"
+        output += f"\n\nYesterday's closing value: ${yesterday_close:,}"
         if two_day_diff < 0:
-            output += f"\nCurrent Dip: ${two_day_diff}"
+            output += f"\nCurrent Dip: ${two_day_diff:,}"
         else:
-            output += f"\nCurrent Spike: ${two_day_diff}"
+            output += f"\nCurrent Spike: ${two_day_diff:,}"
         return port_msg, profit_output, loss_output, output
 
     def watchlist(self, interval: str = 'hour') -> tuple:
         """Sweeps all watchlist stocks and compares current price with historical data (24h ago) to wrap as a string.
 
         Args:
-            interval: Takes interval for historic data. Options are ``hour`` or ``10minute``
+            interval: Takes interval for historic data. Defaults to ``hour``. Options are ``hour`` or ``10minute``
 
         Returns:
             tuple:
@@ -144,8 +134,6 @@ class Investment:
             instrument = item['url']
             if instrument not in instruments:
                 stock = item['symbol']
-                raw_details = self.rh.get_quote(stock)
-                call = raw_details['instrument']
                 if interval == 'hour':
                     historic_data = self.rh.get_historical_quotes(stock, 'hour', 'day')
                 else:
@@ -156,16 +144,14 @@ class Investment:
                     historical_values = each_item['historicals']
                     for close_price in historical_values:
                         numbers.append(round(float(close_price['close_price']), 2))
-                r = get(call)
-                response = r.text
-                json_load = loads(response)
-                stock_name = json_load['simple_name']
+                raw_details = self.rh.get_quote(stock)
+                stock_name = get(raw_details['instrument']).json()['simple_name']
                 price = round(float(raw_details['last_trade_price']), 2)
                 difference = round(float(price - numbers[-1]), 2)
                 if price < numbers[-1]:
-                    r1 += f'{stock_name}({stock}) - {price} &#8595 {difference}\n'
+                    r1 += f'{stock_name}({stock}) - {price:,} &#8595 {difference}\n'
                 else:
-                    r2 += f'{stock_name}({stock}) - {price} &#8593 {difference}\n'
+                    r2 += f'{stock_name}({stock}) - {price:,} &#8593 {difference}\n'
         return r1, r2
 
     def report_gatherer(self) -> None:

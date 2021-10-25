@@ -1,1 +1,1 @@
-version_info = (5, 0, 5)
+version_info = (5, 0, 6)
