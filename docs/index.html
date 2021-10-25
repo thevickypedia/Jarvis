@@ -178,6 +178,30 @@ name is specified, allow every event.</p>
 </dd></dl>
 
 </section>
+<section id="jarvis-api-crontab">
+<h1>Jarvis - API CronTab<a class="headerlink" href="#jarvis-api-crontab" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="module-api.market_hours">
+<span id="jarvis-api-markethours"></span><h1>Jarvis - API MarketHours<a class="headerlink" href="#module-api.market_hours" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="api.market_hours.MarketHours">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.market_hours.</span></span><span class="sig-name descname"><span class="pre">MarketHours</span></span><a class="headerlink" href="#api.market_hours.MarketHours" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates MarketHours object to store the market hours for each timezone in USA.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MarketHours</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Class variable <code class="docutils literal notranslate"><span class="pre">hours</span></code> contains key-value pairs for both <code class="docutils literal notranslate"><span class="pre">EXTENDED</span></code> and <code class="docutils literal notranslate"><span class="pre">REGULAR</span></code> market hours.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.market_hours.MarketHours.hours">
+<span class="sig-name descname"><span class="pre">hours</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'EXTENDED':</span> <span class="pre">{'CDT':</span> <span class="pre">{'CLOSE':</span> <span class="pre">19,</span> <span class="pre">'OPEN':</span> <span class="pre">3},</span> <span class="pre">'CST':</span> <span class="pre">{'CLOSE':</span> <span class="pre">19,</span> <span class="pre">'OPEN':</span> <span class="pre">3},</span> <span class="pre">'EDT':</span> <span class="pre">{'CLOSE':</span> <span class="pre">20,</span> <span class="pre">'OPEN':</span> <span class="pre">4},</span> <span class="pre">'EST':</span> <span class="pre">{'CLOSE':</span> <span class="pre">20,</span> <span class="pre">'OPEN':</span> <span class="pre">4},</span> <span class="pre">'MDT':</span> <span class="pre">{'CLOSE':</span> <span class="pre">18,</span> <span class="pre">'OPEN':</span> <span class="pre">2},</span> <span class="pre">'MST':</span> <span class="pre">{'CLOSE':</span> <span class="pre">18,</span> <span class="pre">'OPEN':</span> <span class="pre">2},</span> <span class="pre">'PDT':</span> <span class="pre">{'CLOSE':</span> <span class="pre">17,</span> <span class="pre">'OPEN':</span> <span class="pre">1},</span> <span class="pre">'PST':</span> <span class="pre">{'CLOSE':</span> <span class="pre">17,</span> <span class="pre">'OPEN':</span> <span class="pre">1}},</span> <span class="pre">'REGULAR':</span> <span class="pre">{'CDT':</span> <span class="pre">{'CLOSE':</span> <span class="pre">15,</span> <span class="pre">'OPEN':</span> <span class="pre">8},</span> <span class="pre">'CST':</span> <span class="pre">{'CLOSE':</span> <span class="pre">15,</span> <span class="pre">'OPEN':</span> <span class="pre">8},</span> <span class="pre">'EDT':</span> <span class="pre">{'CLOSE':</span> <span class="pre">16,</span> <span class="pre">'OPEN':</span> <span class="pre">9},</span> <span class="pre">'EST':</span> <span class="pre">{'CLOSE':</span> <span class="pre">16,</span> <span class="pre">'OPEN':</span> <span class="pre">9},</span> <span class="pre">'MDT':</span> <span class="pre">{'CLOSE':</span> <span class="pre">14,</span> <span class="pre">'OPEN':</span> <span class="pre">7},</span> <span class="pre">'MST':</span> <span class="pre">{'CLOSE':</span> <span class="pre">14,</span> <span class="pre">'OPEN':</span> <span class="pre">7},</span> <span class="pre">'PDT':</span> <span class="pre">{'CLOSE':</span> <span class="pre">13,</span> <span class="pre">'OPEN':</span> <span class="pre">6},</span> <span class="pre">'PST':</span> <span class="pre">{'CLOSE':</span> <span class="pre">13,</span> <span class="pre">'OPEN':</span> <span class="pre">6}}}</span></em><a class="headerlink" href="#api.market_hours.MarketHours.hours" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-api.models">
 <span id="jarvis-api-models"></span><h1>Jarvis - API Models<a class="headerlink" href="#module-api.models" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -1441,6 +1465,8 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 <li><a class="reference internal" href="#">Welcome to Jarvis’s documentation!</a></li>
 <li><a class="reference internal" href="#jarvis-main-module">Jarvis - Main Module</a></li>
 <li><a class="reference internal" href="#module-api.controller">Jarvis - API Controller</a></li>
+<li><a class="reference internal" href="#jarvis-api-crontab">Jarvis - API CronTab</a></li>
+<li><a class="reference internal" href="#module-api.market_hours">Jarvis - API MarketHours</a></li>
 <li><a class="reference internal" href="#module-api.models">Jarvis - API Models</a></li>
 <li><a class="reference internal" href="#jarvis-api-robinhood">Jarvis - API Robinhood</a></li>
 <li><a class="reference internal" href="#module-helper_functions.alarm">Alarm</a></li>
