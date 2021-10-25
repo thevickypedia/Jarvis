@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+5.0.5 (10/24/2021)
+------------------
+- Join hanging threads when API restarts/shutdown
+
 5.0.4 (10/24/2021)
 ------------------
 - FEATURE::Add cron schedule instead of dedicated Thread

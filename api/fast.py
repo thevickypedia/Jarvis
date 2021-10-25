@@ -3,7 +3,7 @@ from logging import getLogger
 from logging.config import dictConfig
 from mimetypes import guess_type
 from os import environ, path, remove, stat
-from threading import Thread, current_thread, get_ident
+from threading import Thread
 from time import sleep
 
 from controller import (EndpointFilter, InvestmentFilter, keygen,
@@ -65,26 +65,30 @@ if path.isfile('../location.yaml'):
 
 def run_robinhood():
     """Runs in a dedicated thread during startup, if the file was modified earlier than the past hour."""
-    thread_id = get_ident() or current_thread().ident
     if path.isfile(serve_file) and int(datetime.now().timestamp()) - int(stat(serve_file).st_mtime) < 3_600:
         last_modified = datetime.fromtimestamp(int(stat(serve_file).st_mtime)).strftime('%c')
         logger.info(f'{serve_file} was generated on {last_modified}.')
     else:
-        logger.info(f'Initiated robinhood gatherer [{thread_id}]')
+        logger.info('Initiated robinhood gatherer.')
         Investment(logger=logger).report_gatherer()
 
 
+# noinspection PyGlobalUndefined
 @app.on_event(event_type='startup')
-async def get_compatible():
+async def start_robinhood():
     """Initiates robinhood gatherer in a thread and adds a cron schedule if not present already."""
-    Thread(target=run_robinhood, daemon=True).start()
+    global thread
+    thread = Thread(target=run_robinhood, daemon=True)
+    thread.start()
     CronScheduler(logger=logger).controller()
 
 
 @app.on_event(event_type='shutdown')
 async def stop_robinhood():
-    """Stop the thread that creates robinhood static file in the background."""
-    environ['STOPPER'] = 'True'
+    """If active, stops the thread that creates robinhood static file in the background."""
+    if thread.is_alive():
+        logger.warning(f'Hanging thread: {thread.ident}')
+        thread.join(timeout=3)
 
 
 @app.get('/', response_class=RedirectResponse, include_in_schema=False)

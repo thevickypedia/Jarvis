@@ -26,6 +26,20 @@ Jarvis - API Controller
    :members:
    :undoc-members:
 
+Jarvis - API CronTab
+====================
+
+.. automodule:: api.cron
+   :members:
+   :undoc-members:
+
+Jarvis - API MarketHours
+========================
+
+.. automodule:: api.market_hours
+   :members:
+   :undoc-members:
+
 Jarvis - API Models
 ===================
 
