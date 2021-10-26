@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.0.7 (10/25/2021)
+------------------
+- Fix issues with docstrings because of class variables
+- Reduce number of unnecessary classes
+
 5.0.6 (10/24/2021)
 ------------------
 - Use comma separator for numbers in the 1000s

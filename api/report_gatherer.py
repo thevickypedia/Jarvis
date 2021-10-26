@@ -6,7 +6,6 @@ from time import perf_counter
 from jinja2 import Template
 from pyrh import Robinhood
 from requests import get
-from robinhood_template import CustomTemplate
 
 
 def market_status() -> bool:
@@ -181,6 +180,7 @@ class Investment:
         s2 = s2.replace('\n', '\n\t\t\t')
         s1 = s1.replace('\n', '\n\t\t\t')
 
+        from rh_helper import CustomTemplate
         template = CustomTemplate.source.strip()
         rendered = Template(template).render(TITLE=title, SUMMARY=web_text, PROFIT=profit_web, LOSS=loss_web,
                                              WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)

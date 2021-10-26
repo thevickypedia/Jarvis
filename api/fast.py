@@ -13,9 +13,9 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
-from models import GetData, GetPasscode, LogConfig
+from models import GetData, LogConfig
 from pytz import timezone
-from robinhood import Investment
+from report_gatherer import Investment
 from yaml import FullLoader, load
 
 if path.isfile('../.env'):
@@ -184,7 +184,7 @@ async def get_favicon() -> FileResponse:
 
 
 @app.post("/robinhood-authenticate")
-def authenticate_robinhood_report_gatherer(feeder: GetPasscode):
+def authenticate_robinhood_report_gatherer(feeder: GetData):
     """# Authenticates the request. Uses a two-factor authentication by generating single use tokens.
 
     ## Args:

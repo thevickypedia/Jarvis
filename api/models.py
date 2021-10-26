@@ -18,18 +18,6 @@ class GetData(BaseModel):
     command: str = None
 
 
-class GetPasscode(BaseModel):
-    """BaseModel that handles input data for the API which is treated as members for the class ``GetData``.
-
-    >>> GetPasscode
-
-    See Also:
-        - ``phrase``: Secret phrase to authenticate the request sent to the API.
-    """
-
-    phrase: str = None
-
-
 class LogConfig(BaseModel):
     """Custom log configuration.
 
