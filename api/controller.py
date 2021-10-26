@@ -44,7 +44,7 @@ class InvestmentFilter(Filter):
         return record.getMessage().find("/investment?token=") == -1
 
 
-def offline_compatible():
+def offline_compatible() -> list:
     """Calls ``Keywords`` class to get the return values of methods that are compatible with ``offline_communicator``.
 
     See Also:
@@ -110,6 +110,11 @@ def hashed(key: UUID) -> str:
     return sha1(key.bytes + bytes(key.hex, "utf-8")).digest().hex()
 
 
-def keygen():
-    """Generates key using hashed uuid4."""
+def keygen() -> str:
+    """Generates key using hashed uuid4.
+
+    Returns:
+        str:
+        Returns hashed UUID as a string.
+    """
     return hashed(key=uuid4())

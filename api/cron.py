@@ -2,7 +2,6 @@ from datetime import datetime
 from os import environ, getcwd
 
 from crontab import CronTab
-from market_hours import MarketHours
 
 
 class CronScheduler:
@@ -32,11 +31,11 @@ class CronScheduler:
             self.logger.warning(f"No crontab was found for {environ.get('USER')}.")
             return False
         for job in self.cron:
-            if job.is_enabled() and 'robinhood.py' in str(job):
+            if job.is_enabled() and 'report_gatherer.py' in str(job):
                 self.logger.info(f"Existing crontab schedule found for {environ.get('USER')}")
                 return True
 
-    def scheduler(self, start: int, end: int):
+    def scheduler(self, start: int, end: int) -> None:
         """Creates a crontab schedule to run every 30 minutes between the ``start`` and ``end`` time.
 
         Args:
@@ -44,7 +43,7 @@ class CronScheduler:
             end: Time when the schedule ends everyday.
         """
         self.logger.info('Creating a new cron schedule.')
-        entry = f"cd {getcwd()} && source ../venv/bin/activate && python robinhood.py && deactivate"
+        entry = f"cd {getcwd()} && source ../venv/bin/activate && python report_gatherer.py && deactivate"
         job = self.cron.new(command=entry)
         job.minute.every(30)
         job.hours.during(vfrom=start, vto=end)
@@ -59,6 +58,7 @@ class CronScheduler:
         """
         if self.checker():
             return
+        from rh_helper import MarketHours
         self.logger.info(f'Type: {hours_type} market hours.')
         tz = datetime.utcnow().astimezone().tzname()
         data = MarketHours.hours

@@ -19,13 +19,6 @@ Jarvis - Main Module
    :members:
    :undoc-members:
 
-Jarvis - API Controller
-=======================
-
-.. automodule:: api.controller
-   :members:
-   :undoc-members:
-
 Jarvis - API CronTab
 ====================
 
@@ -33,10 +26,10 @@ Jarvis - API CronTab
    :members:
    :undoc-members:
 
-Jarvis - API MarketHours
-========================
+Jarvis - API Controller
+=======================
 
-.. automodule:: api.market_hours
+.. automodule:: api.controller
    :members:
    :undoc-members:
 
@@ -50,7 +43,14 @@ Jarvis - API Models
 Jarvis - API Robinhood
 ======================
 
-.. automodule:: api.robinhood
+.. automodule:: api.report_gatherer
+   :members:
+   :undoc-members:
+
+Jarvis - API Robinhood Helper
+=============================
+
+.. automodule:: api.rh_helper
    :members:
    :undoc-members:
 
