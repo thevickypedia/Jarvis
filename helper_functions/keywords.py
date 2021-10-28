@@ -9,9 +9,9 @@ class Keywords:
     """
 
     if not environ.get('COMMIT'):
-        date = ['date']
+        current_date = ['date']
 
-        time = ['time']
+        current_time = ['time']
 
         weather = ['weather', 'temperature']
 
@@ -21,7 +21,7 @@ class Keywords:
 
         webpage = ['website', 'webpage', 'web page', '.']
 
-        wikipedia = ['wikipedia', 'info', 'information']
+        wikipedia_ = ['wikipedia', 'info', 'information']
 
         news = ['news']
 
@@ -32,8 +32,6 @@ class Keywords:
         apps = ['launch']
 
         repeat = ['repeat', 'train']
-
-        chatbot = ['chat', 'chatbot', 'chatter']
 
         location = ['location', 'where am i']
 
@@ -53,7 +51,7 @@ class Keywords:
 
         delete_db = ['delete database', 'delete data base', 'delete my database', 'delete my data base']
 
-        list_todo = ['plan']
+        todo = ['plan']
 
         distance = ['far', 'distance', 'miles']
 
@@ -61,7 +59,7 @@ class Keywords:
                  'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter', 'server',
                  'cloud']
 
-        geopy = ['where is', "where's", 'which city', 'which state', 'which country', 'which county']
+        locate_places = ['where is', "where's", 'which city', 'which state', 'which country', 'which county']
 
         directions = ['take me', 'get directions']
 
@@ -79,11 +77,11 @@ class Keywords:
 
         github = ['git', 'github', 'clone', 'GitHub']
 
-        txt_message = ['message', 'text', 'messages']
+        send_sms = ['message', 'text', 'messages']
 
         google_search = ['google search']
 
-        tv = ['tv', 'television']
+        television = ['tv', 'television']
 
         volume = ['volume', 'mute']
 
@@ -117,12 +115,12 @@ class Keywords:
 
         ok = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
 
-        restart = ['restart', 'reboot']
+        restart_control = ['restart', 'reboot']
 
         exit = ['exit', 'quit', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye', 'see you later',
                 'talk to you later', 'activate sentry mode', "that's it", 'that is it']
 
-        sleep = ['exit', 'quit', 'lock', 'sleep', 'Xzibit', 'activate sentry mode']
+        sleep_control = ['exit', 'quit', 'lock', 'sleep', 'Xzibit', 'activate sentry mode']
 
         kill = ['kill', 'terminate yourself', 'stop running']
 

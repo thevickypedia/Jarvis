@@ -11,8 +11,6 @@ pytz==2020.1
 pyicloud==0.9.7
 geopy==2.0.0
 PyDictionary==2.0.1
-ChatterBot==1.0.0
-chatterbot-corpus==1.2.0
 PyYAML==5.4.1
 googlehomepush==0.1.0
 axju-jokes==1.0.3

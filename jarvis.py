@@ -33,8 +33,6 @@ from aeosa.aem.aemsend import EventError
 from appscript import app as apple_script
 from appscript.reference import CommandError
 from certifi import where
-from chatterbot import ChatBot
-from chatterbot.trainers import ChatterBotCorpusTrainer
 from dotenv import load_dotenv, set_key, unset_key
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
@@ -240,67 +238,25 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     sys.stdout.write(f'\r{converted}')
     converted_lower = converted.lower()
     todo_checks = ['to do', 'to-do', 'todo']
-    if any(word in converted_lower for word in keywords.date) and \
+    if any(word in converted_lower for word in keywords.current_date) and \
             not any(word in converted_lower for word in keywords.avoid):
         current_date()
 
-    elif any(word in converted_lower for word in keywords.time) and \
+    elif any(word in converted_lower for word in keywords.current_time) and \
             not any(word in converted_lower for word in keywords.avoid):
-        place = ''
-        for word in converted.split():
-            if word[0].isupper():
-                place += word + ' '
-            elif '.' in word:
-                place += word + ' '
-        if place and len(place) < 3:
-            current_time(place)
-        else:
-            current_time()
+        current_time(converted)
 
     elif any(word in converted_lower for word in keywords.weather) and \
             not any(word in converted_lower for word in keywords.avoid):
-        place = ''
-        for word in converted.split():
-            if word[0].isupper():
-                place += word + ' '
-            elif '.' in word:
-                place += word + ' '
-        weather_cond = ['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']
-        if any(match in converted_lower for match in weather_cond):
-            if place:
-                weather_condition(msg=converted, place=place)
-            else:
-                weather_condition(msg=converted)
-        elif place:
-            weather(place)
-        else:
-            weather()
+        weather(converted)
 
     elif any(word in converted_lower for word in keywords.system_info):
         system_info()
 
     elif any(word in converted for word in keywords.ip_info) or 'IP' in converted.split():
-        if 'public' in converted_lower:
-            if not internet_checker():
-                speaker.say("You are not connected to the internet sir!")
-                return False
-            if ssid := get_ssid():
-                ssid = f'for the connection {ssid} '
-            else:
-                ssid = ''
-            if public_ip := json_load(urlopen('http://ipinfo.io/json')).get('ip'):
-                output = f"My public IP {ssid}is {public_ip}"
-            elif public_ip := json_loads(urlopen('http://ip.jsontest.com').read()).get('ip'):
-                output = f"My public IP {ssid}is {public_ip}"
-            else:
-                output = 'I was unable to fetch the public IP sir!'
-        else:
-            ip_address = vpn_checker().split(':')[-1]
-            output = f"My local IP address for {gethostname()} is {ip_address}"
-        sys.stdout.write(f'\r{output}')
-        speaker.say(output)
+        ip_info(phrase=converted_lower)
 
-    elif any(word in converted_lower for word in keywords.wikipedia):
+    elif any(word in converted_lower for word in keywords.wikipedia_):
         wikipedia_()
 
     elif any(word in converted_lower for word in keywords.news):
@@ -313,7 +269,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         robinhood()
 
     elif any(word in converted_lower for word in keywords.repeat):
-        repeater()
+        repeat()
 
     elif any(word in converted_lower for word in keywords.location):
         location()
@@ -325,13 +281,13 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         gmail()
 
     elif any(word in converted_lower for word in keywords.meaning):
-        meaning(converted.split()[-1])
+        meaning(converted)
 
     elif any(word in converted_lower for word in keywords.delete_todo) and \
             any(word in converted_lower for word in todo_checks):
         delete_todo()
 
-    elif any(word in converted_lower for word in keywords.list_todo):
+    elif any(word in converted_lower for word in keywords.todo):
         todo()
 
     elif any(word in converted_lower for word in keywords.add_todo) and \
@@ -346,71 +302,20 @@ def conditions(converted: str, should_return: bool = False) -> bool:
 
     elif any(word in converted_lower for word in keywords.distance) and \
             not any(word in converted_lower for word in keywords.avoid):
-        """the loop below differentiates between two places and one place with two words
-        eg: New York will be considered as one word and New York and Las Vegas will be considered as two words"""
-        check = converted.split()  # str to list
-        places = []
-        for word in check:
-            if word[0].isupper() or '.' in word:  # looks for words that start with uppercase
-                try:
-                    next_word = check[check.index(word) + 1]  # looks if words after an uppercase word is also one
-                    if next_word[0].isupper():
-                        places.append(f"{word + ' ' + check[check.index(word) + 1]}")
-                    else:
-                        if word not in ' '.join(places):
-                            places.append(word)
-                except IndexError:  # catches exception on lowercase word after an upper case word
-                    if word not in ' '.join(places):
-                        places.append(word)
-        """the condition below assumes two different words as two places but not including two words starting upper case
-        right next to each other"""
-        if len(places) >= 2:
-            start = places[0]
-            end = places[1]
-        elif len(places) == 1:
-            start = None
-            end = places[0]
-        else:
-            start, end = None, None
-        distance(start, end)
+        distance(converted)
 
     elif any(word in converted_lower for word in conversation.form):
         speaker.say("I am a program, I'm without form.")
 
-    elif any(word in converted_lower for word in keywords.geopy):
-        # tries to look for words starting with an upper case letter
-        place = ''
-        for word in converted.split():
-            if word[0].isupper():
-                place += word + ' '
-            elif '.' in word:
-                place += word + ' '
-        # if no words found starting with an upper case letter, fetches word after the keyword 'is' eg: where is Chicago
-        if not place:
-            keyword = 'is'
-            before_keyword, keyword, after_keyword = converted.partition(keyword)
-            place = after_keyword.replace(' in', '').strip()
-        locate_places(place.strip())
+    elif any(word in converted_lower for word in keywords.locate_places):
+        locate_places(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.directions):
-        place = ''
-        for word in converted.split():
-            if word[0].isupper():
-                place += word + ' '
-            elif '.' in word:
-                place += word + ' '
-        place = place.replace('I ', '').strip()
-        if place:
-            directions(place)
-        else:
-            speaker.say("I can't take you to anywhere without a location sir!")
-            directions(place=None)
+        directions(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.webpage) and \
             not any(word in converted_lower for word in keywords.avoid):
-        converted = converted.replace(' In', 'in').replace(' Co. Uk', 'co.uk')
-        host = (word for word in converted.split() if '.' in word)
-        webpage(host)
+        webpage(converted)
 
     elif any(word in converted_lower for word in keywords.kill_alarm):
         kill_alarm()
@@ -431,60 +336,28 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         notes()
 
     elif any(word in converted_lower for word in keywords.github):
-        auth = HTTPBasicAuth(git_user, git_pass)
-        response = get('https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
-        result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
-        for i in range(len(response)):
-            total += 1
-            forked += 1 if response[i]['fork'] else 0
-            private += 1 if response[i]['private'] else 0
-            archived += 1 if response[i]['archived'] else 0
-            licensed += 1 if response[i]['license'] else 0
-            repos.append({response[i]['name'].replace('_', ' ').replace('-', ' '): response[i]['clone_url']})
-        if 'how many' in converted:
-            speaker.say(f'You have {total} repositories sir, out of which {forked} are forked, {private} are private, '
-                        f'{licensed} are licensed, and {archived} archived.')
-        else:
-            [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
-             for word in converted_lower.split() for item in repos for repo, clone_url in item.items()]
-            if result:
-                github(target=result)
-            else:
-                speaker.say("Sorry sir! I did not find that repo.")
+        github(phrase=converted)
 
-    elif any(word in converted_lower for word in keywords.txt_message):
-        number = '-'.join([str(s) for s in re.findall(r'\b\d+\b', converted)])
-        send_sms(number)
+    elif any(word in converted_lower for word in keywords.send_sms):
+        send_sms(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.google_search):
-        phrase = converted.split('for')[-1] if 'for' in converted else None
-        google_search(phrase)
+        google_search(converted)
 
-    elif any(word in converted_lower for word in keywords.tv):
+    elif any(word in converted_lower for word in keywords.television):
         television(converted)
 
     elif any(word in converted_lower for word in keywords.apps):
-        apps(converted.split()[-1])
+        apps(converted)
 
     elif any(word in converted_lower for word in keywords.music):
-        if 'speaker' in converted_lower:
-            music(converted)
-        else:
-            music()
+        music(converted)
 
     elif any(word in converted_lower for word in keywords.volume):
-        if 'mute' in converted_lower:
-            level = 0
-        elif 'max' in converted_lower or 'full' in converted_lower:
-            level = 100
-        else:
-            level = re.findall(r'\b\d+\b', converted)  # gets integers from string as a list
-            level = int(level[0]) if level else 50  # converted to int for volume
-        volume_controller(level)
-        speaker.say(f"{choice(ack)}!")
+        volume(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.face_detection):
-        face_recognition_detection()
+        face_detection()
 
     elif any(word in converted_lower for word in keywords.speed_test):
         speed_test()
@@ -493,55 +366,22 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         bluetooth(phrase=converted_lower)
 
     elif any(word in converted_lower for word in keywords.brightness) and 'lights' not in converted_lower:
-        speaker.say(choice(ack))
-        if 'set' in converted_lower or re.findall(r'\b\d+\b', converted_lower):
-            level = re.findall(r'\b\d+\b', converted_lower)  # gets integers from string as a list
-            if not level:
-                level = ['50']  # pass as list for brightness, as args must be iterable
-            Thread(target=set_brightness, args=level).start()
-        elif 'decrease' in converted_lower or 'reduce' in converted_lower or 'lower' in converted_lower or \
-                'dark' in converted_lower or 'dim' in converted_lower:
-            Thread(target=decrease_brightness).start()
-        elif 'increase' in converted_lower or 'bright' in converted_lower or 'max' in converted_lower or \
-                'brighten' in converted_lower or 'light up' in converted_lower:
-            Thread(target=increase_brightness).start()
+        brightness(phrase=converted_lower)
 
     elif any(word in converted_lower for word in keywords.lights):
-        if not vpn_checker().startswith('VPN'):
-            lights(converted=converted_lower)
+        lights(converted=converted_lower)
 
-    elif any(word in converted_lower for word in keywords.guard_enable or keywords.guard_disable):
-        if any(word in converted_lower for word in keywords.guard_enable):
-            logger.info('Enabled Security Mode')
-            speaker.say(f"Enabled security mode sir! I will look out for potential threats and keep you posted. "
-                        f"Have a nice {part_of_day()}, and enjoy yourself sir!")
-            speaker.runAndWait()
-            guard()
+    elif any(word in converted_lower for word in keywords.guard_enable):
+        guard_enable()
 
     elif any(word in converted_lower for word in keywords.flip_a_coin):
-        playsound('indicators/coin.mp3')
-        sleep(0.5)
-        speaker.say(f"""{choice(['You got', 'It landed on', "It's"])} {choice(['heads', 'tails'])} sir""")
+        flip_a_coin()
 
     elif any(word in converted_lower for word in keywords.facts):
-        speaker.say(getFact(False))
+        facts()
 
     elif any(word in converted_lower for word in keywords.meetings):
-        if os.path.isfile('meetings'):
-            meeting_reader()
-        else:
-            if os.environ.get('called_by_offline'):
-                speaker.say("Meetings file is not ready yet. Please try again in a minute or two.")
-                return False
-            meeting = ThreadPool(processes=1).apply_async(func=meetings)
-            speaker.say("Please give me a moment sir! Let me check your calendar.")
-            speaker.runAndWait()
-            try:
-                speaker.say(meeting.get(timeout=60))
-            except ThreadTimeoutError:
-                logger.error('Unable to read the calendar within 60 seconds.')
-                speaker.say("I wasn't able to read your calendar within the set time limit sir!")
-            speaker.runAndWait()
+        meetings()
 
     elif any(word in converted_lower for word in keywords.voice_changer):
         voice_changer(converted)
@@ -550,30 +390,10 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         system_vitals()
 
     elif any(word in converted_lower for word in keywords.vpn_server):
-        if vpn_server_check():
-            speaker.say('An operation for VPN Server is already in progress sir! Please wait and retry.')
-        elif 'start' in converted_lower or 'trigger' in converted_lower or 'initiate' in converted_lower or \
-                'enable' in converted_lower or 'spin up' in converted_lower:
-            Thread(target=vpn_server, args=['START']).start()
-            speaker.say('VPN Server has been initiated sir! Login details will be sent to you shortly.')
-        elif 'stop' in converted_lower or 'shut' in converted_lower or 'close' in converted_lower or \
-                'disable' in converted_lower:
-            Thread(target=vpn_server, args=['STOP']).start()
-            speaker.say('VPN Server will be shutdown sir!')
-        else:
-            speaker.say("I don't understand the request sir! You can ask me to enable or disable the VPN server.")
+        vpn_server(phrase=converted_lower)
 
     elif any(word in converted_lower for word in keywords.personal_cloud):
-        if 'enable' in converted_lower or 'initiate' in converted_lower or 'kick off' in converted_lower or \
-                'start' in converted_lower:
-            Thread(target=personal_cloud.enable).start()
-            speaker.say("Personal Cloud has been triggered sir! I will send the login details to your phone number "
-                        "once the server is up and running.")
-        elif 'disable' in converted_lower or 'stop' in converted_lower:
-            Thread(target=personal_cloud.disable).start()
-            speaker.say(choice(ack))
-        else:
-            speaker.say("I didn't quite get that sir! Please tell me if I should enable or disable your server.")
+        personal_cloud(phrase=converted_lower)
 
     elif any(word in converted_lower for word in conversation.greeting):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -602,26 +422,11 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
         speaker.say("I can seamlessly take care of your daily tasks, and also help with most of your work!")
 
-    elif any(word in converted_lower for word in keywords.sleep):
-        if 'pc' in converted_lower or 'computer' in converted_lower or 'imac' in converted_lower or \
-                'screen' in converted_lower:
-            pc_sleep()
-        else:
-            speaker.say("Activating sentry mode, enjoy yourself sir!")
-            if greet_check:
-                greet_check.pop('status')
-        return True
+    elif any(word in converted_lower for word in keywords.sleep_control):
+        sleep_control(phrase=converted_lower)
 
-    elif any(word in converted_lower for word in keywords.restart):
-        if 'pc' in converted_lower or 'computer' in converted_lower or 'imac' in converted_lower:
-            logger.info(f'JARVIS::Restart for {host_info("model")} has been requested.')
-            restart(target='PC')
-        else:
-            logger.info('JARVIS::Self reboot has been requested.')
-            if 'quick' in converted_lower or 'fast' in converted_lower:
-                restart(quick=True)
-            else:
-                restart()
+    elif any(word in converted_lower for word in keywords.restart_control):
+        restart_control(phrase=converted_lower)
 
     elif any(word in converted_lower for word in keywords.kill) and \
             not any(word in converted_lower for word in keywords.avoid):
@@ -629,9 +434,6 @@ def conditions(converted: str, should_return: bool = False) -> bool:
 
     elif any(word in converted_lower for word in keywords.shutdown):
         shutdown()
-
-    elif any(word in converted_lower for word in keywords.chatbot):
-        chatter_bot()
 
     elif should_return:
         return False
@@ -654,6 +456,53 @@ def conditions(converted: str, should_return: bool = False) -> bool:
                     search = str(converted).replace(' ', '+')
                     unknown_url = f"https://www.google.com/search?q={search}"
                     web_open(unknown_url)
+
+
+def get_place_from_phrase(phrase: str):
+    """Looks for the name of a place in the phrase received.
+
+    Args:
+        phrase: Takes the phrase converted as an argument.
+
+    Returns:
+        str:
+        Returns the name of place if skimmed.
+    """
+    place = ''
+    for word in phrase.split():
+        if word[0].isupper():
+            place += word + ' '
+        elif '.' in word:
+            place += word + ' '
+    if place:
+        return place
+
+
+def ip_info(phrase: str) -> None:
+    """Gets IP address of the host machine.
+
+    Args:
+        phrase: Takes the spoken phrase an an argument and tells the public IP if requested.
+    """
+    if 'public' in phrase:
+        if not internet_checker():
+            speaker.say("You are not connected to the internet sir!")
+            return
+        if ssid := get_ssid():
+            ssid = f'for the connection {ssid} '
+        else:
+            ssid = ''
+        if public_ip := json_load(urlopen('http://ipinfo.io/json')).get('ip'):
+            output = f"My public IP {ssid}is {public_ip}"
+        elif public_ip := json_loads(urlopen('http://ip.jsontest.com').read()).get('ip'):
+            output = f"My public IP {ssid}is {public_ip}"
+        else:
+            output = 'I was unable to fetch the public IP sir!'
+    else:
+        ip_address = vpn_checker().split(':')[-1]
+        output = f"My local IP address for {gethostname()} is {ip_address}"
+    sys.stdout.write(f'\r{output}')
+    speaker.say(output)
 
 
 def unrecognized_dumper(converted: str) -> None:
@@ -771,13 +620,20 @@ def current_date() -> None:
         speaker.say('The current time is, ')
 
 
-def current_time(place: str = None) -> None:
+def current_time(converted: str = None) -> None:
     """Says current time at the requested location if any, else with respect to the current timezone.
 
     Args:
-        place: Takes name of the place as argument.
+        converted: Takes the phrase as an argument.
     """
-    if place:
+    place = ''
+    if converted:
+        for word in converted.split():
+            if word[0].isupper():
+                place += word + ' '
+            elif '.' in word:
+                place += word + ' '
+    if place and len(place) < 3:
         tf = TimezoneFinder()
         place_tz = geo_locator.geocode(place)
         coordinates = place_tz.latitude, place_tz.longitude
@@ -802,14 +658,19 @@ def current_time(place: str = None) -> None:
         speaker.say(f'{c_time}.')
 
 
-def webpage(target: str or list) -> None:
+def webpage(phrase: str or list) -> None:
     """Opens up a webpage using the default browser to the target host.
 
     If no target received, will ask for user confirmation. If no '.' in the phrase heard, phrase will default to .com.
 
     Args:
-        target: Receives the webpage that has to be opened as an argument.
+        phrase: Receives the spoken phrase as an argument.
     """
+    if isinstance(phrase, str):
+        converted = phrase.replace(' In', 'in').replace(' Co. Uk', 'co.uk')
+        target = (word for word in converted.split() if '.' in word)
+    else:
+        target = phrase
     host = []
     try:
         [host.append(i) for i in target]
@@ -836,14 +697,23 @@ def webpage(target: str or list) -> None:
         speaker.say(f"I have opened {host}")
 
 
-def weather(place: str = None) -> None:
+def weather(phrase: str = None) -> None:
     """Says weather at any location if a specific location is mentioned.
 
     Says weather at current location by getting IP using reverse geocoding if no place is received.
 
     Args:
-        place: Takes the location name as an optional argument.
+        phrase: Takes the phrase as an optional argument.
     """
+    weather_cond = ['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']
+    place = get_place_from_phrase(phrase=phrase) if phrase else None
+    if any(match in phrase.lower() for match in weather_cond):
+        if place:
+            weather_condition(msg=phrase, place=place)
+        else:
+            weather_condition(msg=phrase)
+        return
+
     sys.stdout.write('\rGetting your weather info')
     if place:
         desired_location = geo_locator.geocode(place)
@@ -1090,12 +960,13 @@ def news(news_source: str = 'fox') -> None:
         speaker.runAndWait()
 
 
-def apps(keyword: str or None) -> None:
+def apps(phrase: str = None) -> None:
     """Launches the requested application and if Jarvis is unable to find the app, asks for the app name from the user.
 
     Args:
-        keyword: Gets app name as an argument to launch the application.
+        phrase: Takes the phrase spoken as an argument.
     """
+    keyword = phrase.split()[-1] if phrase else None
     offline = os.environ.get('called_by_offline')
     ignore = ['app', 'application']
     if not keyword or keyword in ignore:
@@ -1149,7 +1020,7 @@ def robinhood() -> None:
     sys.stdout.write("\r")
 
 
-def repeater() -> None:
+def repeat() -> None:
     """Repeats whatever is heard."""
     speaker.say("Please tell me what to repeat.")
     speaker.runAndWait()
@@ -1160,36 +1031,6 @@ def repeater() -> None:
             pass
         else:
             speaker.say(f"I heard {keyword}")
-
-
-def chatter_bot() -> None:
-    """Initiates chatter bot."""
-    file1 = 'db.sqlite3'
-    file2 = f"/Users/{os.environ.get('USER')}/nltk_data"
-    if os.path.isfile(file1) and os.path.isdir(file2):
-        bot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
-    else:
-        speaker.say('Give me a moment while I train the module.')
-        speaker.runAndWait()
-        bot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
-        trainer = ChatterBotCorpusTrainer(bot)
-        trainer.train("chatterbot.corpus.english")
-        speaker.say('The chat-bot is ready. You may start a conversation now.')
-        speaker.runAndWait()
-    keyword = listener(timeout=3, phrase_limit=5)
-    if keyword != 'SR_ERROR':
-        if any(word in keyword.lower() for word in keywords.exit):
-            speaker.say('Let me remove the training modules.')
-            os.system('rm db* > /dev/null 2>&1')
-            os.system(f'rm -rf {file2}')
-        else:
-            response = bot.get_response(keyword)
-            if response == 'What is AI?':
-                speaker.say(f'The chat bot is unable to get a response for the phrase, {keyword}. Try something else.')
-            else:
-                speaker.say(f'{response}')
-            speaker.runAndWait()
-            chatter_bot()
 
 
 def device_selector(converted: str = None) -> AppleDevice:
@@ -1302,18 +1143,18 @@ def locate(converted: str, no_repeat: bool = False) -> None:
                 speaker.say("No action taken sir!")
 
 
-def music(device: str = None) -> None:
+def music(phrase: str = None) -> None:
     """Scans music directory in the user profile for ``.mp3`` files and plays using default player.
 
     Args:
-        device: Takes device name as argument.
+        phrase: Takes the phrase spoken as an argument.
     """
     sys.stdout.write("\rScanning music files...")
     get_all_files = (os.path.join(root, f) for root, _, files in os.walk(f"{home}/Music") for f in files)
     if music_files := [file for file in get_all_files if os.path.splitext(file)[1] == '.mp3']:
         chosen = choice(music_files)
-        if device:
-            google_home(device, chosen)
+        if phrase and 'speaker' in phrase:
+            google_home(device=phrase, file=chosen)
         else:
             call(["open", chosen])
             sys.stdout.write("\r")
@@ -1350,55 +1191,68 @@ def gmail() -> None:
             speaker.say(f'You have {n} unread emails sir. Do you want me to check it?')
             speaker.runAndWait()
         response = listener(timeout=3, phrase_limit=3)
-        if response != 'SR_ERROR':
-            if any(word in response.lower() for word in keywords.ok):
-                for nm in messages[0].split():
-                    ignore, mail_data = mail.fetch(nm, '(RFC822)')
-                    for response_part in mail_data:
-                        if isinstance(response_part, tuple):  # checks for type(response_part)
-                            original_email = message_from_bytes(response_part[1])
-                            sender = make_header(decode_header((original_email['From']).split(' <')[0]))
-                            subject = make_header(decode_header(original_email['Subject'])) \
-                                if original_email['Subject'] else None
-                            if subject:
-                                subject = ''.join(str(subject).splitlines())
-                            raw_receive = (original_email['Received'].split(';')[-1]).strip()
-                            if '(PDT)' in raw_receive:
-                                datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
-                                    + timedelta(hours=2)
-                            elif '(PST)' in raw_receive:
-                                datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0800 (PST)") \
-                                    + timedelta(hours=2)
-                            else:
-                                sys.stdout.write(f'\rEmail from {sender} has a weird time stamp. Please check.')
-                                datetime_obj = datetime.now()  # sets to current date if PST or PDT are not found
-                            received_date = datetime_obj.strftime("%Y-%m-%d")
-                            current_date_ = datetime.today().date()
-                            yesterday = current_date_ - timedelta(days=1)
-                            # replaces current date with today or yesterday
-                            if received_date == str(current_date_):
-                                receive = datetime_obj.strftime("Today, at %I:%M %p")
-                            elif received_date == str(yesterday):
-                                receive = datetime_obj.strftime("Yesterday, at %I:%M %p")
-                            else:
-                                receive = datetime_obj.strftime("on %A, %B %d, at %I:%M %p")
-                            sys.stdout.write(f'\rReceived:{receive.strip()}\tSender: {str(sender).strip()}\tSubject: '
-                                             f'{subject.strip()}')
-                            speaker.say(f"You have an email from, {sender}, with subject, {subject}, {receive}")
-                            speaker.runAndWait() if not offline else None
+        if response == 'SR_ERROR':
+            return
+        if not any(word in response.lower() for word in keywords.ok):
+            return
+        for nm in messages[0].split():
+            ignore, mail_data = mail.fetch(nm, '(RFC822)')
+            for response_part in mail_data:
+                if isinstance(response_part, tuple):  # checks for type(response_part)
+                    original_email = message_from_bytes(response_part[1])
+                    sender = make_header(decode_header((original_email['From']).split(' <')[0]))
+                    subject = make_header(decode_header(original_email['Subject'])) \
+                        if original_email['Subject'] else None
+                    if subject:
+                        subject = ''.join(str(subject).splitlines())
+                    raw_receive = (original_email['Received'].split(';')[-1]).strip()
+                    if '(PDT)' in raw_receive:
+                        datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0700 (PDT)") \
+                            + timedelta(hours=2)
+                    elif '(PST)' in raw_receive:
+                        datetime_obj = datetime.strptime(raw_receive, "%a, %d %b %Y %H:%M:%S -0800 (PST)") \
+                            + timedelta(hours=2)
+                    else:
+                        sys.stdout.write(f'\rEmail from {sender} has a weird time stamp. Please check.')
+                        datetime_obj = datetime.now()  # sets to current date if PST or PDT are not found
+                    received_date = datetime_obj.strftime("%Y-%m-%d")
+                    current_date_ = datetime.today().date()
+                    yesterday = current_date_ - timedelta(days=1)
+                    # replaces current date with today or yesterday
+                    if received_date == str(current_date_):
+                        receive = datetime_obj.strftime("Today, at %I:%M %p")
+                    elif received_date == str(yesterday):
+                        receive = datetime_obj.strftime("Yesterday, at %I:%M %p")
+                    else:
+                        receive = datetime_obj.strftime("on %A, %B %d, at %I:%M %p")
+                    sys.stdout.write(f'\rReceived:{receive.strip()}\tSender: {str(sender).strip()}\tSubject: '
+                                     f'{subject.strip()}')
+                    speaker.say(f"You have an email from, {sender}, with subject, {subject}, {receive}")
+                    speaker.runAndWait() if not offline else None
 
 
-def meaning(keyword: str or None) -> None:
+def flip_a_coin():
+    """Says ``heads`` or ``tails`` from a random choice."""
+    playsound('indicators/coin.mp3')
+    sleep(0.5)
+    speaker.say(f"""{choice(['You got', 'It landed on', "It's"])} {choice(['heads', 'tails'])} sir!""")
+
+
+def facts():
+    """Tells a random fact."""
+    speaker.say(getFact(False))
+
+
+def meaning(phrase: str) -> None:
     """Gets meaning for a word skimmed from the user statement using PyDictionary.
 
     Args:
-        keyword: Takes a keyword as argument for which the meaning was requested.
+        phrase: Takes the phrase spoken as an argument.
     """
+    keyword = phrase.split()[-1] if phrase else None
     offline = os.environ.get('called_by_offline')
     dictionary = PyDictionary()
-    if keyword == 'word':
-        keyword = None
-    if keyword is None:
+    if not keyword or keyword == 'word':
         speaker.say("Please tell a keyword.")
         speaker.runAndWait()
         response = listener(timeout=3, phrase_limit=3)
@@ -1406,7 +1260,7 @@ def meaning(keyword: str or None) -> None:
             if any(word in response.lower() for word in keywords.exit):
                 return
             else:
-                meaning(keyword=response)
+                meaning(phrase=response)
     else:
         definition = dictionary.meaning(keyword)
         if definition:
@@ -1431,7 +1285,6 @@ def meaning(keyword: str or None) -> None:
             return
         else:
             speaker.say("Keyword should be a single word sir! Try again")
-            meaning(None)
     return
 
 
@@ -1594,7 +1447,47 @@ def delete_db() -> None:
             return
 
 
-def distance(starting_point: str = None, destination: str = None) -> None:
+def distance(phrase):
+    """Extracts the start and end location to get the distance for it.
+
+    Args:
+        phrase:Takes the phrase spoken as an argument.
+
+    See Also:
+        A loop differentiates between two-worded places and one-worded place.
+        A condition below assumes two different words as two places but not including two words starting upper case
+    right next to each other
+
+    Examples:
+        New York will be considered as one word and New York and Las Vegas will be considered as two words.
+    """
+    check = phrase.split()  # str to list
+    places = []
+    for word in check:
+        if word[0].isupper() or '.' in word:  # looks for words that start with uppercase
+            try:
+                next_word = check[check.index(word) + 1]  # looks if words after an uppercase word is also one
+                if next_word[0].isupper():
+                    places.append(f"{word + ' ' + check[check.index(word) + 1]}")
+                else:
+                    if word not in ' '.join(places):
+                        places.append(word)
+            except IndexError:  # catches exception on lowercase word after an upper case word
+                if word not in ' '.join(places):
+                    places.append(word)
+
+    if len(places) >= 2:
+        start = places[0]
+        end = places[1]
+    elif len(places) == 1:
+        start = None
+        end = places[0]
+    else:
+        start, end = None, None
+    distance_controller(start, end)
+
+
+def distance_controller(starting_point: str = None, destination: str = None) -> None:
     """Calculates distance between two locations.
 
     Notes:
@@ -1614,7 +1507,7 @@ def distance(starting_point: str = None, destination: str = None) -> None:
         if destination != 'SR_ERROR':
             if len(destination.split()) > 2:
                 speaker.say("I asked for a destination sir, not a sentence. Try again.")
-                distance()
+                distance_controller()
             if 'exit' in destination or 'quit' in destination or 'Xzibit' in destination:
                 return
 
@@ -1659,13 +1552,19 @@ def distance(starting_point: str = None, destination: str = None) -> None:
     return
 
 
-def locate_places(place: str or None) -> None:
+def locate_places(phrase: str = None) -> None:
     """Gets location details of a place.
 
     Args:
-        place: Takes a place name as argument.
+        phrase: Takes the phrase spoken as an argument.
     """
     offline = os.environ.get('called_by_offline')
+    # if no words found starting with an upper case letter, fetches word after the keyword 'is' eg: where is Chicago
+    place = get_place_from_phrase(phrase=phrase) if phrase else None
+    if not place:
+        keyword = 'is'
+        before_keyword, keyword, after_keyword = phrase.partition(keyword)
+        place = after_keyword.replace(' in', '').strip()
     if not place:
         if offline:
             speaker.say('I need a location to get you the details sir!')
@@ -1712,19 +1611,21 @@ def locate_places(place: str or None) -> None:
         speaker.say(f"{place} is not a real place on Earth sir! Try again.")
         if offline:
             return
-        locate_places(place=None)
-    distance(starting_point=None, destination=place)
+        locate_places(phrase=None)
+    distance_controller(starting_point=None, destination=place)
 
 
-def directions(place: str or None, no_repeat: bool = False) -> None:
+def directions(phrase: str = None, no_repeat: bool = False) -> None:
     """Opens google maps for a route between starting and destination.
 
     Uses reverse geocoding to calculate latitude and longitude for both start and destination.
 
     Args:
-        place: Takes a place name as argument.
+        phrase: Takes the phrase spoken as an argument.
         no_repeat: A place holder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
     """
+    place = get_place_from_phrase(phrase=phrase)
+    place = place.replace('I ', '').strip() if place else None
     if not place:
         speaker.say("You might want to give a location.")
         speaker.runAndWait()
@@ -1741,7 +1642,7 @@ def directions(place: str or None, no_repeat: bool = False) -> None:
                 if no_repeat:
                     return
                 speaker.say("I can't take you to anywhere without a location sir!")
-                directions(place=None, no_repeat=True)
+                directions(phrase=None, no_repeat=True)
             if 'exit' in place or 'quit' in place or 'Xzibit' in place:
                 return
     destination_location = geo_locator.geocode(place)
@@ -1765,7 +1666,7 @@ def directions(place: str or None, no_repeat: bool = False) -> None:
     if start_country and end_country:
         if re.match(start_country, end_country, flags=re.IGNORECASE):
             directions.has_been_called = True
-            distance(starting_point=None, destination=place)
+            distance_controller(starting_point=None, destination=place)
         else:
             speaker.say("You might need a flight to get there!")
     return
@@ -2117,7 +2018,35 @@ def notes() -> None:
                              f"{converted}\n")
 
 
-def github(target: list) -> None:
+def github(phrase: str):
+    """Pre-process to check the phrase received and call the ``github`` function as necessary.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+    """
+    auth = HTTPBasicAuth(git_user, git_pass)
+    response = get('https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
+    result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
+    for i in range(len(response)):
+        total += 1
+        forked += 1 if response[i]['fork'] else 0
+        private += 1 if response[i]['private'] else 0
+        archived += 1 if response[i]['archived'] else 0
+        licensed += 1 if response[i]['license'] else 0
+        repos.append({response[i]['name'].replace('_', ' ').replace('-', ' '): response[i]['clone_url']})
+    if 'how many' in phrase:
+        speaker.say(f'You have {total} repositories sir, out of which {forked} are forked, {private} are private, '
+                    f'{licensed} are licensed, and {archived} archived.')
+    else:
+        [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
+         for word in phrase.lower().split() for item in repos for repo, clone_url in item.items()]
+        if result:
+            github_controller(target=result)
+        else:
+            speaker.say("Sorry sir! I did not find that repo.")
+
+
+def github_controller(target: list) -> None:
     """Clones the github repository matched with existing repository in conditions function.
 
     Asks confirmation if the results are more than 1 but less than 3 else asks to be more specific.
@@ -2148,7 +2077,7 @@ def github(target: list) -> None:
             else:
                 item = None
                 speaker.say("Only first second or third can be accepted sir! Try again!")
-                github(target)
+                github_controller(target)
             os.system(f"cd {home} && git clone -q {target[item]}")
             cloned = target[item].split('/')[-1].replace('.git', '')
             speaker.say(f"I've cloned {cloned} on your home directory sir!")
@@ -2173,14 +2102,15 @@ def notify(user: str, password: str, number: str, body: str) -> None:
               message=f'\n\n{body}').send_sms()
 
 
-def send_sms(number: int or None) -> None:
+def send_sms(phrase: str = None) -> None:
     """Sends a message to the number received.
 
     If no number was received, it will ask for a number, looks if it is 10 digits and then sends a message.
 
     Args:
-        number: Phone number to which the message has to be sent.
+        phrase: Takes phrase spoken as an argument.
     """
+    number = '-'.join([str(s) for s in re.findall(r'\b\d+\b', phrase)]) if phrase else None
     if not number:
         speaker.say("Please tell me a number sir!")
         speaker.runAndWait()
@@ -2193,7 +2123,7 @@ def send_sms(number: int or None) -> None:
     elif len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) != 10:
         sys.stdout.write(f'\r{number}')
         speaker.say("I don't think that's a right number sir! Phone numbers are 10 digits. Try again!")
-        send_sms(number=None)
+        send_sms()
     if number and len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) == 10:
         speaker.say("What would you like to send sir?")
         speaker.runAndWait()
@@ -2452,12 +2382,13 @@ def google(query: str, suggestion_count: int = 0) -> bool:
         return True
 
 
-def google_search(phrase: str or None) -> None:
+def google_search(phrase: str = None) -> None:
     """Opens up a google search for the phrase received. If nothing was received, gets phrase from user.
 
     Args:
-        phrase: Takes the voice recognized statement as argument.
+        phrase: Takes the phrase spoken as an argument.
     """
+    phrase = phrase.split('for')[-1] if 'for' in phrase else None
     if not phrase:
         speaker.say("Please tell me the search phrase.")
         speaker.runAndWait()
@@ -2473,18 +2404,30 @@ def google_search(phrase: str or None) -> None:
     speaker.say(f"I've opened up a google search for: {phrase}.")
 
 
-def volume_controller(level: int) -> None:
+def volume(phrase: str = None, level: int = None) -> None:
     """Controls volume from the numbers received. Defaults to 50%.
 
     Args:
+        phrase: Takes the phrase spoken as an argument.
         level: Level of volume to which the system has to set.
     """
+    if not level:
+        phrase_lower = phrase.lower()
+        if 'mute' in phrase_lower:
+            level = 0
+        elif 'max' in phrase_lower or 'full' in phrase_lower:
+            level = 100
+        else:
+            level = re.findall(r'\b\d+\b', phrase)  # gets integers from string as a list
+            level = int(level[0]) if level else 50  # converted to int for volume
     sys.stdout.write("\r")
     level = round((8 * level) / 100)
     os.system(f'osascript -e "set Volume {level}"')
+    if phrase:
+        speaker.say(f"{choice(ack)}!")
 
 
-def face_recognition_detection() -> None:
+def face_detection() -> None:
     """Initiates face recognition script and looks for images stored in named directories within ``train`` directory."""
     sys.stdout.write("\r")
     train_dir = 'train'
@@ -2625,6 +2568,26 @@ def bluetooth(phrase: str) -> None:
                                                                                     'You may want to be more precise.')
 
 
+def brightness(phrase: str):
+    """Pre-process to check the phrase received and call the appropriate brightness function as necessary.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+    """
+    speaker.say(choice(ack))
+    if 'set' in phrase or re.findall(r'\b\d+\b', phrase):
+        level = re.findall(r'\b\d+\b', phrase)  # gets integers from string as a list
+        if not level:
+            level = ['50']  # pass as list for brightness, as args must be iterable
+        Thread(target=set_brightness, args=level).start()
+    elif 'decrease' in phrase or 'reduce' in phrase or 'lower' in phrase or \
+            'dark' in phrase or 'dim' in phrase:
+        Thread(target=decrease_brightness).start()
+    elif 'increase' in phrase or 'bright' in phrase or 'max' in phrase or \
+            'brighten' in phrase or 'light up' in phrase:
+        Thread(target=increase_brightness).start()
+
+
 def increase_brightness() -> None:
     """Increases the brightness to maximum in macOS."""
     for _ in range(32):
@@ -2659,6 +2622,8 @@ def lights(converted: str) -> None:
     Args:
         converted: Takes the voice recognized statement as argument.
     """
+    if vpn_checker().startswith('VPN'):
+        return
 
     def light_switch():
         """Says a message if the physical switch is toggled off."""
@@ -2835,7 +2800,7 @@ def time_travel() -> None:
     meeting = None
     if not os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
             ['Saturday', 'Sunday']:
-        meeting = ThreadPool(processes=1).apply_async(func=meetings)
+        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)
     speaker.say(f"Good {part_day} Vignesh.")
     if part_day == 'Night':
         if event := celebrate():
@@ -2863,13 +2828,18 @@ def time_travel() -> None:
     time_travel.has_been_called = False
 
 
-def guard() -> None:
+def guard_enable() -> None:
     """Security Mode will enable camera and microphone in the background.
 
     Notes:
         - If any speech is recognized or a face is detected, there will another thread triggered to send notifications.
         - Notifications will be triggered only after 5 minutes of previous notification.
     """
+    logger.info('Enabled Security Mode')
+    speaker.say(f"Enabled security mode sir! I will look out for potential threats and keep you posted. "
+                f"Have a nice {part_of_day()}, and enjoy yourself sir!")
+    speaker.runAndWait()
+
     import cv2
     cam_source, cam = None, None
     for i in range(0, 3):
@@ -3099,7 +3069,7 @@ def meeting_gatherer() -> None:
     while True:
         if os.path.isfile('meetings') and int(datetime.now().timestamp()) - int(os.stat('meetings').st_mtime) < 1_800:
             os.remove('meetings')  # removes the file if it is older than 30 minutes
-        data = meetings()
+        data = meetings_gatherer()
         if data.startswith('You'):
             with open('meetings', 'w') as gatherer:
                 gatherer.write(data)
@@ -3119,7 +3089,26 @@ def meeting_app_launcher() -> None:
         os.system("open /Applications/'Microsoft Outlook.app' > /dev/null 2>&1")
 
 
-def meetings() -> str:
+def meetings():
+    """Controller for meetings."""
+    if os.path.isfile('meetings'):
+        meeting_reader()
+    else:
+        if os.environ.get('called_by_offline'):
+            speaker.say("Meetings file is not ready yet. Please try again in a minute or two.")
+            return False
+        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)
+        speaker.say("Please give me a moment sir! Let me check your calendar.")
+        speaker.runAndWait()
+        try:
+            speaker.say(meeting.get(timeout=60))
+        except ThreadTimeoutError:
+            logger.error('Unable to read the calendar within 60 seconds.')
+            speaker.say("I wasn't able to read your calendar within the set time limit sir!")
+        speaker.runAndWait()
+
+
+def meetings_gatherer() -> str:
     """Uses ``applescript`` to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.
 
     Returns:
@@ -3268,6 +3257,24 @@ def get_ssid() -> str:
     return dict(map(str.strip, info.split(': ')) for info in out.decode('utf-8').split('\n')[:-1]).get('SSID')
 
 
+def personal_cloud(phrase: str) -> None:
+    """Enables or disables personal cloud.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+    """
+    if 'enable' in phrase or 'initiate' in phrase or 'kick off' in phrase or \
+            'start' in phrase:
+        Thread(target=PersonalCloud.enable).start()
+        speaker.say("Personal Cloud has been triggered sir! I will send the login details to your phone number "
+                    "once the server is up and running.")
+    elif 'disable' in phrase or 'stop' in phrase:
+        Thread(target=PersonalCloud.disable).start()
+        speaker.say(choice(ack))
+    else:
+        speaker.say("I didn't quite get that sir! Please tell me if I should enable or disable your server.")
+
+
 class PersonalCloud:
     """Controller for `Personal Cloud <https://github.com/thevickypedia/personal_cloud>`__.
 
@@ -3394,7 +3401,27 @@ class PersonalCloud:
         for pid_info in pid_list:
             if pid_info and 'Library' in pid_info and ('/bin/sh' not in pid_info or 'grep' not in pid_info):
                 os.system(f'kill -9 {pid_info.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
-        personal_cloud.delete_repo()
+        PersonalCloud.delete_repo()
+
+
+def vpn_server(phrase: str):
+    """Enables or disables VPN server.
+
+    Args:
+        phrase: Takes the phrase spoken as an agument.
+    """
+    if vpn_server_check():
+        speaker.say('An operation for VPN Server is already in progress sir! Please wait and retry.')
+    elif 'start' in phrase or 'trigger' in phrase or 'initiate' in phrase or \
+            'enable' in phrase or 'spin up' in phrase:
+        Thread(target=vpn_server_switch, args=['START']).start()
+        speaker.say('VPN Server has been initiated sir! Login details will be sent to you shortly.')
+    elif 'stop' in phrase or 'shut' in phrase or 'close' in phrase or \
+            'disable' in phrase:
+        Thread(target=vpn_server_switch, args=['STOP']).start()
+        speaker.say('VPN Server will be shutdown sir!')
+    else:
+        speaker.say("I don't understand the request sir! You can ask me to enable or disable the VPN server.")
 
 
 def vpn_server_check() -> bool:
@@ -3411,7 +3438,7 @@ def vpn_server_check() -> bool:
             return True
 
 
-def vpn_server(operation: str) -> None:
+def vpn_server_switch(operation: str) -> None:
     """Automator to ``START`` or ``STOP`` the VPN portal.
 
     Args:
@@ -3448,9 +3475,9 @@ def morning() -> None:
         time_travel.has_been_called = True
         weather()
         time_travel.has_been_called = False
-        volume_controller(level=100)
+        volume(level=100)
         speaker.runAndWait()
-        volume_controller(level=50)
+        volume(level=50)
 
 
 def initiator(key_original: str, should_return: bool = False) -> None:
@@ -3497,10 +3524,10 @@ def automator():
         if STOPPER.get('status'):
             break
         elif checker == '6:00 AM':
-            volume_controller(level=50)
+            volume(level=50)
             sleep(30)
         elif checker == '9:00 PM':
-            volume_controller(level=25)
+            volume(level=25)
             pc_sleep()
             sleep(30)
         sleep(30)
@@ -3784,6 +3811,39 @@ def stop_terminal() -> None:
             os.system(f'kill -9 {id_.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
 
 
+def sleep_control(phrase: str) -> bool:
+    """Controls whether to stop listeneing or to put the host device on sleep.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+    """
+    if 'pc' in phrase or 'computer' in phrase or 'imac' in phrase or \
+            'screen' in phrase:
+        pc_sleep()
+    else:
+        speaker.say("Activating sentry mode, enjoy yourself sir!")
+        if greet_check:
+            greet_check.pop('status')
+    return True
+
+
+def restart_control(phrase: str):
+    """Controls the restart functions based on the user request.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+    """
+    if 'pc' in phrase or 'computer' in phrase or 'imac' in phrase:
+        logger.info(f'JARVIS::Restart for {host_info("model")} has been requested.')
+        restart(target='PC')
+    else:
+        logger.info('JARVIS::Self reboot has been requested.')
+        if 'quick' in phrase or 'fast' in phrase:
+            restart(quick=True)
+        else:
+            restart()
+
+
 # noinspection PyUnresolvedReferences,PyProtectedMember
 def restart(target: str = None, quiet: bool = False, quick: bool = False) -> None:
     """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
@@ -3943,7 +4003,7 @@ def starter() -> None:
         voice_changer(): To change the voice to default value.
         clear_logs(): To purge log files older than 48 hours.
     """
-    volume_controller(level=50)
+    volume(level=50)
     voice_changer()
     clear_logs()
     meeting_app_launcher()
@@ -3974,7 +4034,6 @@ if __name__ == '__main__':
     conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
     database = Database()  # initiates Database() for TO-DO items
     temperature = Temperature()  # initiates Temperature() for temperature conversions
-    personal_cloud = PersonalCloud()  # initiates PersonalCloud() to enable or disable HDD hosting
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 10)  # increases the recursion limit by 10 times
     home = os.path.expanduser('~')  # gets the path to current user profile
