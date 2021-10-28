@@ -626,14 +626,8 @@ def current_time(converted: str = None) -> None:
     Args:
         converted: Takes the phrase as an argument.
     """
-    place = ''
-    if converted:
-        for word in converted.split():
-            if word[0].isupper():
-                place += word + ' '
-            elif '.' in word:
-                place += word + ' '
-    if place and len(place) < 3:
+    place = get_place_from_phrase(phrase=converted) if converted else None
+    if place and len(place) > 3:
         tf = TimezoneFinder()
         place_tz = geo_locator.geocode(place)
         coordinates = place_tz.latitude, place_tz.longitude
@@ -918,8 +912,7 @@ def wikipedia_() -> None:
                 result = summary(keyword1) if keyword1 != 'SR_ERROR' else None
             except wiki_exceptions.PageError:
                 speaker.say(f"I'm sorry sir! I didn't get a response for the phrase: {keyword}. Try again!")
-                result = None
-                wikipedia_()
+                return
             # stops with two sentences before reading whole passage
             formatted = '. '.join(result.split('. ')[0:2]) + '.'
             speaker.say(formatted)
@@ -928,7 +921,7 @@ def wikipedia_() -> None:
             response = listener(timeout=3, phrase_limit=3)
             if response != 'SR_ERROR':
                 if any(word in response.lower() for word in keywords.ok):
-                    speaker.say('. '.join(result.split('. ')[3:-1]))
+                    speaker.say('. '.join(result.split('. ')[3:]))
             else:
                 sys.stdout.write("\r")
                 speaker.say("I'm sorry sir, I didn't get your response.")
@@ -966,13 +959,15 @@ def apps(phrase: str = None) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
+    # todo: remove recursion and see why no apps are getting launched
     keyword = phrase.split()[-1] if phrase else None
     offline = os.environ.get('called_by_offline')
     ignore = ['app', 'application']
     if not keyword or keyword in ignore:
-        speaker.say("Which app shall I open sir?")
         if offline:
+            speaker.say('I need an app name to open sir!')
             return
+        speaker.say("Which app shall I open sir?")
         speaker.runAndWait()
         keyword = listener(timeout=3, phrase_limit=4)
         if keyword != 'SR_ERROR':
@@ -1017,7 +1012,6 @@ def robinhood() -> None:
     stock_value = RobinhoodGatherer().watcher(rh, result)
     sys.stdout.write(f'\r{stock_value}')
     speaker.say(stock_value)
-    sys.stdout.write("\r")
 
 
 def repeat() -> None:
@@ -1461,6 +1455,7 @@ def distance(phrase):
     Examples:
         New York will be considered as one word and New York and Las Vegas will be considered as two words.
     """
+    # todo: Distance between st.louis and chicago is broke
     check = phrase.split()  # str to list
     places = []
     for word in check:
@@ -2388,6 +2383,7 @@ def google_search(phrase: str = None) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
+    # todo: opens search for None
     phrase = phrase.split('for')[-1] if 'for' in phrase else None
     if not phrase:
         speaker.say("Please tell me the search phrase.")
@@ -2460,6 +2456,8 @@ def face_detection() -> None:
                     "or simply say exit.")
         speaker.runAndWait()
         phrase = listener(timeout=3, phrase_limit=5)
+        # todo: look for name or ok words
+        # todo: asks for ok words but uses that as the person's name :facepalm:
         if any(word in phrase.lower() for word in keywords.ok):
             sys.stdout.write(f"\r{phrase}")
             phrase = phrase.replace(' ', '_')
@@ -3177,6 +3175,7 @@ def system_vitals() -> None:
         - Jarvis will suggest a reboot if the system uptime is more than 2 days.
         - If confirmed, invokes `restart <https://thevickypedia.github.io/Jarvis/#jarvis.restart>`__ function.
     """
+    # todo: check why fan speed is not working
     if not root_password:
         speaker.say("You haven't provided a root password for me to read system vitals sir! "
                     "Add the root password as an environment variable for me to read.")
@@ -3845,7 +3844,7 @@ def restart_control(phrase: str):
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-def restart(target: str = None, quiet: bool = False, quick: bool = False) -> None:
+def restart(target: str = None, quiet: bool = False, quick: bool = True) -> None:
     """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
 
     Notes:
