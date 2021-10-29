@@ -92,6 +92,12 @@ from helper_functions.temperature import Temperature
 from helper_functions.tv_controls import TV
 
 
+def no_env_vars():
+    """Says a message about permissions when env vars are missing."""
+    speaker.say("I don't have permissions sir! Please add the necessary environment variables and ask me to restart!")
+    return
+
+
 def listener(timeout: int, phrase_limit: int, sound: bool = True) -> str:
     """Function to activate listener, this function will be called by most upcoming functions to listen to user input.
 
@@ -492,7 +498,7 @@ def ip_info(phrase: str) -> None:
             ssid = f'for the connection {ssid} '
         else:
             ssid = ''
-        if public_ip := json_load(urlopen('http://ipinfo.io/json')).get('ip'):
+        if public_ip := json_load(urlopen('https://ipinfo.io/json')).get('ip'):
             output = f"My public IP {ssid}is {public_ip}"
         elif public_ip := json_loads(urlopen('http://ip.jsontest.com').read()).get('ip'):
             output = f"My public IP {ssid}is {public_ip}"
@@ -527,7 +533,7 @@ def unrecognized_dumper(converted: str) -> None:
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
+def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, str or float, str]]:
     """Gets the current location of an apple device.
 
     Args:
@@ -541,7 +547,8 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
     try:
         # tries with icloud api to get your device's location for precise location services
         if not device:
-            device = device_selector()
+            if not (device := device_selector()):
+                raise PyiCloudFailedLoginException
         raw_location = device.location()
         if not raw_location and sys._getframe(1).f_code.co_name == 'locate':
             return 'None', 'None', 'None'
@@ -551,17 +558,18 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
             current_lat_ = raw_location['latitude']
             current_lon_ = raw_location['longitude']
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException):
-        logger.error(f'Unable to retrieve location::{sys.exc_info()[0].__name__}\n{format_exc()}')  # include traceback
-        caller = sys._getframe(1).f_code.co_name
-        if caller == '<module>':
-            if os.path.isfile('pyicloud_error'):
-                logger.error(f'Exception raised by {caller} once again. Proceeding...')
-                os.remove('pyicloud_error')
-            else:
-                logger.error(f'Exception raised by {caller}. Restarting.')
-                with open('pyicloud_error', 'w') as f:
-                    f.write('')
-                restart(quiet=True)  # Restarts quietly if the error occurs when called from __main__
+        if device:
+            logger.error(f'Unable to retrieve location::{sys.exc_info()[0].__name__}\n{format_exc()}')  # traceback
+            caller = sys._getframe(1).f_code.co_name
+            if caller == '<module>':
+                if os.path.isfile('pyicloud_error'):
+                    logger.error(f'Exception raised by {caller} once again. Proceeding...')
+                    os.remove('pyicloud_error')
+                else:
+                    logger.error(f'Exception raised by {caller}. Restarting.')
+                    with open('pyicloud_error', 'w') as f:
+                        f.write('')
+                    restart(quiet=True)  # Restarts quietly if the error occurs when called from __main__
         # uses latitude and longitude information from your IP's client when unable to connect to icloud
         current_lat_ = st.results.client['lat']
         current_lon_ = st.results.client['lon']
@@ -580,7 +588,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str, str, str]]:
     try:
         # Uses the latitude and longitude information and converts to the required address.
         locator = geo_locator.reverse(f'{current_lat_}, {current_lon_}', language='en')
-        return current_lat_, current_lon_, locator.raw['address']
+        return float(current_lat_), float(current_lon_), locator.raw['address']
     except (GeocoderUnavailable, GeopyError):
         logger.error('Error retrieving address from latitude and longitude information. Initiating self reboot.')
         speaker.say('Received an error while retrieving your address sir! I think a restart should fix this.')
@@ -699,6 +707,10 @@ def weather(phrase: str = None) -> None:
     Args:
         phrase: Takes the phrase as an optional argument.
     """
+    if not weather_api:
+        no_env_vars()
+        return
+
     weather_cond = ['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']
     place = get_place_from_phrase(phrase=phrase) if phrase else None
     if any(match_word in phrase.lower() for match_word in weather_cond):
@@ -723,7 +735,7 @@ def weather(phrase: str = None) -> None:
         city, state = location_info['city'], location_info['state']
         lat = current_lat
         lon = current_lon
-    api_endpoint = "http://api.openweathermap.org/data/2.5/"
+    api_endpoint = "https://api.openweathermap.org/data/2.5/"
     weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={weather_api}'
     r = urlopen(weather_url)  # sends request to the url created
     response = json_loads(r.read())  # loads the response in a json
@@ -811,7 +823,7 @@ def weather_condition(msg: str, place: str = None) -> None:
         city, state, = location_info['city'], location_info['state']
         lat = current_lat
         lon = current_lon
-    api_endpoint = "http://api.openweathermap.org/data/2.5/"
+    api_endpoint = "https://api.openweathermap.org/data/2.5/"
     weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={weather_api}'
     r = urlopen(weather_url)  # sends request to the url created
     response = json_loads(r.read())  # loads the response in a json
@@ -933,6 +945,10 @@ def news(news_source: str = 'fox') -> None:
     Args:
         news_source: Source from where the news has to be fetched. Defaults to ``fox``.
     """
+    if not news_api:
+        no_env_vars()
+        return
+
     sys.stdout.write(f'\rGetting news from {news_source} news.')
     news_client = NewsApiClient(api_key=news_api)
     try:
@@ -1001,6 +1017,10 @@ def apps(phrase: str) -> None:
 
 def robinhood() -> None:
     """Gets investment details from robinhood API."""
+    if not all([robinhood_user, robinhood_pass, robinhood_qr]):
+        no_env_vars()
+        return
+
     sys.stdout.write('\rGetting your investment details.')
     rh = Robinhood()
     rh.login(username=robinhood_user, password=robinhood_pass, qr_code=robinhood_qr)
@@ -1024,7 +1044,7 @@ def repeat() -> None:
             speaker.say(f"I heard {keyword}")
 
 
-def device_selector(converted: str = None) -> AppleDevice:
+def device_selector(converted: str = None) -> AppleDevice or None:
     """Selects a device using the received input string.
 
     See Also:
@@ -1035,9 +1055,11 @@ def device_selector(converted: str = None) -> AppleDevice:
         converted: Takes the voice recognized statement as argument.
 
     Returns:
-        AppleDevice:
+        AppleDevice or None:
         Returns the selected device from the class ``AppleDevice``
     """
+    if not all([icloud_user, icloud_pass]):
+        return
     icloud_api = PyiCloudService(icloud_user, icloud_pass)
     devices = [device for device in icloud_api.devices]
     target_device = None
@@ -1090,7 +1112,9 @@ def locate(converted: str, no_repeat: bool = False) -> None:
         no_repeat: A place holder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
         converted: Takes the voice recognized statement as argument and extracts device name from it.
     """
-    target_device = device_selector(converted)
+    if not (target_device := device_selector(converted)):
+        no_env_vars()
+        return
     sys.stdout.write(f"\rLocating your {target_device}")
     if no_repeat:
         speaker.say("Would you like to get the location details?")
@@ -1156,6 +1180,10 @@ def music(phrase: str = None) -> None:
 
 def gmail() -> None:
     """Reads unread emails from the gmail account for which the credentials are stored in env variables."""
+    if not all([gmail_user, gmail_pass]):
+        no_env_vars()
+        return
+
     sys.stdout.write("\rFetching unread emails..")
     offline = os.environ.get('called_by_offline')
     try:
@@ -1923,6 +1951,9 @@ def google_maps(query: str) -> bool:
         bool:
         Boolean True if google's maps API is unable to fetch consumable results.
     """
+    if not maps_api:
+        return False
+
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
     response = get(maps_url + 'query=' + query + '&key=' + maps_api)
     collection = response.json()['results']
@@ -2015,6 +2046,9 @@ def github(phrase: str):
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
+    if not all([git_user, git_pass]):
+        no_env_vars()
+        return
     auth = HTTPBasicAuth(git_user, git_pass)
     response = get('https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
     result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
@@ -2088,6 +2122,9 @@ def notify(user: str, password: str, number: str, body: str) -> None:
         number: Phone number stored as env var.
         body: Content of the message.
     """
+    if not any([phone_number, number]):
+        logger.error('No phone number was stored in env vars to trigger a notification.')
+        return
     subject = "Message from Jarvis" if number == phone_number else "Jarvis::Message from Vignesh"
     Messenger(gmail_user=user, gmail_pass=password, phone_number=number, subject=subject,
               message=f'\n\n{body}').send_sms()
@@ -2145,6 +2182,9 @@ def television(converted: str) -> None:
     Args:
         converted: Takes the voice recognized statement as argument.
     """
+    if not all([tv_ip, tv_mac, tv_client_key]):
+        no_env_vars()
+        return
     global tv
     phrase_exc = converted.replace('TV', '')
     phrase = phrase_exc.lower()
@@ -2279,6 +2319,8 @@ def alpha(text: str) -> bool:
     References:
         `Error 1000 <https://products.wolframalpha.com/show-steps-api/documentation/#:~:text=(Error%201000)>`__
     """
+    if not think_id:
+        return False
     alpha_client = Think(app_id=think_id)
     # noinspection PyBroadException
     try:
@@ -2324,7 +2366,7 @@ def google(query: str, suggestion_count: int = 0) -> bool:
         a = {"Google": google_results}
         results = [result['titles'] for k, v in a.items() for result in v]
     except NoResultsOrTrafficError:
-        suggest_url = "http://suggestqueries.google.com/complete/search"
+        suggest_url = "https://suggestqueries.google.com/complete/search"
         params = {
             "client": "firefox",
             "q": query,
@@ -2614,6 +2656,10 @@ def lights(converted: str) -> None:
     Args:
         converted: Takes the voice recognized statement as argument.
     """
+    if not any([hallway_ip, kitchen_ip, bedroom_ip]):
+        no_env_vars()
+        return
+
     if vpn_checker().startswith('VPN'):
         return
 
@@ -2759,7 +2805,7 @@ def vpn_checker() -> str:
     socket_.close()
     if not (ip_address.startswith('192') | ip_address.startswith('127')):
         ip_address = 'VPN:' + ip_address
-        info = json_load(urlopen('http://ipinfo.io/json'))
+        info = json_load(urlopen('https://ipinfo.io/json'))
         sys.stdout.write(f"\rVPN connection is detected to {info.get('ip')} at {info.get('city')}, "
                          f"{info.get('region')} maintained by {info.get('org')}")
         speaker.say("You have your VPN turned on. Details on your screen sir! Please note that none of the home "
@@ -2782,7 +2828,7 @@ def celebrate() -> str:
         return in_holidays
     elif us_holidays and 'Observed' not in us_holidays:
         return us_holidays
-    elif today == birthday:
+    elif birthday and today == birthday:
         return 'Birthday'
 
 
@@ -3537,7 +3583,7 @@ class Activator:
         - The ``should_return`` flag ensures, the user is not disturbed when accidentally woke up by wake work engine.
     """
 
-    def __init__(self):
+    def __init__(self, input_device_index: int = None):
         """Initiates Porcupine object for hot word detection.
 
         See Also:
@@ -3566,7 +3612,7 @@ class Activator:
             format=paInt16,
             input=True,
             frames_per_buffer=self.waker.frame_length,
-            input_device_index=0
+            input_device_index=input_device_index
         )
 
     def start(self) -> None:
@@ -4078,11 +4124,14 @@ if __name__ == '__main__':
         unset_key(dotenv_path='.env', key_to_unset='tv_ip')
         unset_key(dotenv_path='.env', key_to_unset='tv_mac')
     else:
-        local_devices = LocalIPScan(router_pass=router_pass)
-        hallway_ip = [val for val in local_devices.hallway()]
-        kitchen_ip = [val for val in local_devices.kitchen()]
-        bedroom_ip = [val for val in local_devices.bedroom()]
-        tv_ip, tv_mac = local_devices.tv()
+        if router_pass:
+            local_devices = LocalIPScan(router_pass=router_pass)
+            hallway_ip = [val for val in local_devices.hallway()]
+            kitchen_ip = [val for val in local_devices.kitchen()]
+            bedroom_ip = [val for val in local_devices.bedroom()]
+            tv_ip, tv_mac = local_devices.tv()
+        else:
+            hallway_ip, kitchen_ip, bedroom_ip, tv_ip, tv_mac = None, None, None, None, None
 
     if not root_password:
         sys.stdout.write('\rROOT PASSWORD is not set!')
