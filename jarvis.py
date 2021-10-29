@@ -1,5 +1,4 @@
 import os
-import re
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
@@ -13,8 +12,9 @@ from math import ceil, floor, log, pow
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
-from platform import platform, system
+from platform import platform
 from random import choice, choices, randrange
+from re import IGNORECASE, findall, match, search
 from shutil import disk_usage
 from socket import AF_INET, SOCK_DGRAM, gethostname, socket
 from ssl import create_default_context
@@ -453,8 +453,8 @@ def conditions(converted: str, should_return: bool = False) -> bool:
                         speaker.say(f"I heard {converted}. Let me look that up.")
                         speaker.runAndWait()
                         speaker.say("I have opened a google search for your request.")
-                    search = str(converted).replace(' ', '+')
-                    unknown_url = f"https://www.google.com/search?q={search}"
+                    search_query = str(converted).replace(' ', '+')
+                    unknown_url = f"https://www.google.com/search?q={search_query}"
                     web_open(unknown_url)
 
 
@@ -701,7 +701,7 @@ def weather(phrase: str = None) -> None:
     """
     weather_cond = ['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']
     place = get_place_from_phrase(phrase=phrase) if phrase else None
-    if any(match in phrase.lower() for match in weather_cond):
+    if any(match_word in phrase.lower() for match_word in weather_cond):
         if place:
             weather_condition(msg=phrase, place=place)
         else:
@@ -953,13 +953,12 @@ def news(news_source: str = 'fox') -> None:
         speaker.runAndWait()
 
 
-def apps(phrase: str = None) -> None:
+def apps(phrase: str) -> None:
     """Launches the requested application and if Jarvis is unable to find the app, asks for the app name from the user.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    # todo: remove recursion and see why no apps are getting launched
     keyword = phrase.split()[-1] if phrase else None
     offline = os.environ.get('called_by_offline')
     ignore = ['app', 'application']
@@ -975,23 +974,21 @@ def apps(phrase: str = None) -> None:
                 return
         else:
             speaker.say("I didn't quite get that. Try again.")
-            apps(None)
+            return
 
-    v = (check_output("ls /Applications/", shell=True))
-    apps_ = (v.decode('utf-8').split('\n'))
+    all_apps = (check_output("ls /Applications/", shell=True))
+    apps_ = (all_apps.decode('utf-8').split('\n'))
 
     app_check = False
     for app in apps_:
-        if re.search(keyword, app, flags=re.IGNORECASE) is not None:
+        if search(keyword, app, flags=IGNORECASE) is not None:
             keyword = app
             app_check = True
             break
 
     if not app_check:
         speaker.say(f"I did not find the app {keyword}. Try again.")
-        if offline:
-            return
-        apps(None)
+        return
     else:
         app_status = os.system(f"open /Applications/'{keyword}' > /dev/null 2>&1")
         keyword = keyword.replace('.app', '')
@@ -1262,10 +1259,10 @@ def meaning(phrase: str) -> None:
             vowel = ['A', 'E', 'I', 'O', 'U']
             for key, value in definition.items():
                 insert = 'an' if key[0] in vowel else 'a'
-                repeat = 'also' if n != 0 else ''
+                repeated = 'also' if n != 0 else ''
                 n += 1
                 mean = ', '.join(value[0:2])
-                speaker.say(f'{keyword} is {repeat} {insert} {key}, which means {mean}.')
+                speaker.say(f'{keyword} is {repeated} {insert} {key}, which means {mean}.')
             if offline:
                 return
             speaker.say(f'Do you wanna know how {keyword} is spelled?')
@@ -1455,7 +1452,6 @@ def distance(phrase):
     Examples:
         New York will be considered as one word and New York and Las Vegas will be considered as two words.
     """
-    # todo: Distance between st.louis and chicago is broke
     check = phrase.split()  # str to list
     places = []
     for word in check:
@@ -1659,7 +1655,7 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     web_open(maps_url)
     speaker.say("Directions on your screen sir!")
     if start_country and end_country:
-        if re.match(start_country, end_country, flags=re.IGNORECASE):
+        if match(start_country, end_country, flags=IGNORECASE):
             directions.has_been_called = True
             distance_controller(starting_point=None, destination=place)
         else:
@@ -1673,8 +1669,8 @@ def alarm(msg: str) -> None:
     Args:
         msg: Takes the voice recognized statement as argument and extracts time from it.
     """
-    extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', msg) or \
-        re.findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', msg) or re.findall(r'([0-9]+\s?(?:am|pm:?))', msg)
+    extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', msg) or \
+        findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', msg) or findall(r'([0-9]+\s?(?:am|pm:?))', msg)
     if extracted_time:
         extracted_time = extracted_time[0]
         am_pm = extracted_time.split()[-1]
@@ -1865,14 +1861,14 @@ def reminder(converted: str) -> None:
     Args:
         converted: Takes the voice recognized statement as argument and extracts the time and message from it.
     """
-    message = re.search(' to (.*) at ', converted) or re.search(' about (.*) at ', converted)
+    message = search(' to (.*) at ', converted) or search(' about (.*) at ', converted)
     if not message:
-        message = re.search(' to (.*)', converted) or re.search(' about (.*)', converted)
+        message = search(' to (.*)', converted) or search(' about (.*)', converted)
         if not message:
             speaker.say('Reminder format should be::Remind me to do something, at some time.')
             sys.stdout.write('\rReminder format should be::Remind ME to do something, AT some time.')
             return
-    extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
+    extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or findall(
         r'([0-9]+\s?(?:a.m.|p.m.:?))', converted)
     if not extracted_time:
         if os.environ.get('called_by_offline'):
@@ -1882,7 +1878,7 @@ def reminder(converted: str) -> None:
         speaker.runAndWait()
         converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
-            extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or re.findall(
+            extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or findall(
                 r'([0-9]+\s?(?:a.m.|p.m.:?))', converted)
         else:
             return
@@ -1937,7 +1933,7 @@ def google_maps(query: str) -> bool:
             rating = collection[element]['rating']
             full_address = collection[element]['formatted_address']
             geometry = collection[element]['geometry']['location']
-            address = re.search('(.*)Rd|(.*)Ave|(.*)St |(.*)St,|(.*)Blvd|(.*)Ct', full_address)
+            address = search('(.*)Rd|(.*)Ave|(.*)St |(.*)St,|(.*)Blvd|(.*)Ct', full_address)
             address = address.group().replace(',', '')
             new_dict = {"Name": name, "Rating": rating, "Address": address, "Location": geometry, "place": full_address}
             required.append(new_dict)
@@ -2033,7 +2029,7 @@ def github(phrase: str):
         speaker.say(f'You have {total} repositories sir, out of which {forked} are forked, {private} are private, '
                     f'{licensed} are licensed, and {archived} archived.')
     else:
-        [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
+        [result.append(clone_url) if clone_url not in result and search(rf'\b{word}\b', repo.lower()) else None
          for word in phrase.lower().split() for item in repos for repo, clone_url in item.items()]
         if result:
             github_controller(target=result)
@@ -2105,7 +2101,7 @@ def send_sms(phrase: str = None) -> None:
     Args:
         phrase: Takes phrase spoken as an argument.
     """
-    number = '-'.join([str(s) for s in re.findall(r'\b\d+\b', phrase)]) if phrase else None
+    number = '-'.join([str(s) for s in findall(r'\b\d+\b', phrase)]) if phrase else None
     if not number:
         speaker.say("Please tell me a number sir!")
         speaker.runAndWait()
@@ -2115,11 +2111,11 @@ def send_sms(phrase: str = None) -> None:
                 return
             else:
                 sys.stdout.write(f'\rNumber: {number}')
-    elif len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) != 10:
+    elif len(''.join([str(s) for s in findall(r'\b\d+\b', number)])) != 10:
         sys.stdout.write(f'\r{number}')
         speaker.say("I don't think that's a right number sir! Phone numbers are 10 digits. Try again!")
         send_sms()
-    if number and len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) == 10:
+    if number and len(''.join([str(s) for s in findall(r'\b\d+\b', number)])) == 10:
         speaker.say("What would you like to send sir?")
         speaker.runAndWait()
         body = listener(timeout=3, phrase_limit=5)
@@ -2214,7 +2210,7 @@ def television(converted: str) -> None:
             tv.stop()
             speaker.say(f'{choice(ack)}!')
         elif 'set' in phrase:
-            vol = int(''.join([str(s) for s in re.findall(r'\b\d+\b', phrase_exc)]))
+            vol = int(''.join([str(s) for s in findall(r'\b\d+\b', phrase_exc)]))
             sys.stdout.write(f'\rRequested volume: {vol}')
             if vol:
                 tv.set_volume(vol)
@@ -2365,9 +2361,9 @@ def google(query: str, suggestion_count: int = 0) -> bool:
             refined = ' '.join(repeats)
             output = refined + required[1] + '.' + required[2]
         output = output.replace('\\', ' or ')
-        match = re.search(r'(\w{3},|\w{3}) (\d,|\d|\d{2},|\d{2}) \d{4}', output)
-        if match:
-            output = output.replace(match.group(), '')
+        match_word = search(r'(\w{3},|\w{3}) (\d,|\d|\d{2},|\d{2}) \d{4}', output)
+        if match_word:
+            output = output.replace(match_word.group(), '')
         output = output.replace('\\', ' or ')
         sys.stdout.write(f'\r{output}')
         speaker.say(output)
@@ -2383,19 +2379,19 @@ def google_search(phrase: str = None) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    # todo: opens search for None
     phrase = phrase.split('for')[-1] if 'for' in phrase else None
     if not phrase:
         speaker.say("Please tell me the search phrase.")
         speaker.runAndWait()
         converted = listener(timeout=3, phrase_limit=5)
-        if converted != 'SR_ERROR':
-            if 'exit' in converted or 'quit' in converted or 'xzibit' in converted or 'cancel' in converted:
-                return
-            else:
-                phrase = converted.lower()
-    search = str(phrase).replace(' ', '+')
-    unknown_url = f"https://www.google.com/search?q={search}"
+        if converted == 'SR_ERROR':
+            return
+        elif 'exit' in converted or 'quit' in converted or 'xzibit' in converted or 'cancel' in converted:
+            return
+        else:
+            phrase = converted.lower()
+    search_query = str(phrase).replace(' ', '+')
+    unknown_url = f"https://www.google.com/search?q={search_query}"
     web_open(unknown_url)
     speaker.say(f"I've opened up a google search for: {phrase}.")
 
@@ -2414,7 +2410,7 @@ def volume(phrase: str = None, level: int = None) -> None:
         elif 'max' in phrase_lower or 'full' in phrase_lower:
             level = 100
         else:
-            level = re.findall(r'\b\d+\b', phrase)  # gets integers from string as a list
+            level = findall(r'\b\d+\b', phrase)  # gets integers from string as a list
             level = int(level[0]) if level else 50  # converted to int for volume
     sys.stdout.write("\r")
     level = round((8 * level) / 100)
@@ -2456,9 +2452,10 @@ def face_detection() -> None:
                     "or simply say exit.")
         speaker.runAndWait()
         phrase = listener(timeout=3, phrase_limit=5)
-        # todo: look for name or ok words
-        # todo: asks for ok words but uses that as the person's name :facepalm:
-        if any(word in phrase.lower() for word in keywords.ok):
+        if phrase == 'SR_ERROR' or 'exit' in phrase or 'quit' in phrase or 'Xzibit' in phrase:
+            os.remove('cv2_open.jpg')
+            speaker.say("I've deleted the image.")
+        else:
             sys.stdout.write(f"\r{phrase}")
             phrase = phrase.replace(' ', '_')
             # creates a named directory if it is not found already else simply ignores
@@ -2468,9 +2465,6 @@ def face_detection() -> None:
             os.rename('cv2_open.jpg', img_name)  # renames the files
             os.system(f"mv {img_name} {train_dir}/{phrase}")  # move files into named directory within train_dir
             speaker.say(f"Image has been saved as {img_name}. I will be able to recognize {phrase} in the future.")
-        else:
-            os.remove('cv2_open.jpg')
-            speaker.say("I've deleted the image.")
     else:
         speaker.say(f'Hi {result}! How can I be of service to you?')
 
@@ -2509,7 +2503,7 @@ def connector(phrase: str, targets: dict) -> bool:
     for target in targets:
         if target['name']:
             target['name'] = normalize("NFKD", target['name'])
-            if any(re.search(line, target['name'], flags=re.IGNORECASE) for line in phrase.split()):
+            if any(search(line, target['name'], flags=IGNORECASE) for line in phrase.split()):
                 connection_attempt = True
                 if 'disconnect' in phrase:
                     output = getoutput(f"blueutil --disconnect {target['address']}")
@@ -2573,8 +2567,8 @@ def brightness(phrase: str):
         phrase: Takes the phrase spoken as an argument.
     """
     speaker.say(choice(ack))
-    if 'set' in phrase or re.findall(r'\b\d+\b', phrase):
-        level = re.findall(r'\b\d+\b', phrase)  # gets integers from string as a list
+    if 'set' in phrase or findall(r'\b\d+\b', phrase):
+        level = findall(r'\b\d+\b', phrase)  # gets integers from string as a list
         if not level:
             level = ['50']  # pass as list for brightness, as args must be iterable
         Thread(target=set_brightness, args=level).start()
@@ -2740,7 +2734,7 @@ def lights(converted: str) -> None:
         elif 'dim' in converted:
             level = 50
         else:
-            if level := re.findall(r'\b\d+\b', converted):
+            if level := findall(r'\b\d+\b', converted):
                 level = int(level[0])
             else:
                 level = 100
@@ -3154,7 +3148,7 @@ def meetings_gatherer() -> str:
     events = {}
     for i in range(count):
         if i < len(event_name):
-            event_time[i] = re.search(' at (.*)', event_time[i]).group(1).strip()
+            event_time[i] = search(' at (.*)', event_time[i]).group(1).strip()
             dt_string = datetime.strptime(event_time[i], '%I:%M:%S %p')
             event_time[i] = dt_string.strftime('%I:%M %p')
             events.update({event_name[i]: event_time[i]})
@@ -3175,17 +3169,16 @@ def system_vitals() -> None:
         - Jarvis will suggest a reboot if the system uptime is more than 2 days.
         - If confirmed, invokes `restart <https://thevickypedia.github.io/Jarvis/#jarvis.restart>`__ function.
     """
-    # todo: check why fan speed is not working
     if not root_password:
         speaker.say("You haven't provided a root password for me to read system vitals sir! "
                     "Add the root password as an environment variable for me to read.")
         return
 
-    version = host_info(required='version')
-    model = host_info(required='model')
+    version = hosted_device.get('os_version')
+    model = hosted_device.get('device')
 
     cpu_temp, gpu_temp, fan_speed, output = None, None, None, ""
-    if version >= 12:  # smc information is available only on 12+ versions (tested on 11.3, 12.1 and 16.1 versions)
+    if version >= 10.14:  # Tested on 10.13, 10.14 and 11.6 versions
         critical_info = [each.strip() for each in (os.popen(
             f'echo {root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
         )).read().split('\n') if each != '']
@@ -3228,14 +3221,14 @@ def system_vitals() -> None:
     speaker.say(f'Your {model} was last booted on {restart_time}. '
                 f'Current boot time is: {restart_duration}.')
     if second >= 172_800:
-        if boot_extreme := re.search('(.*) days', restart_duration):
+        if boot_extreme := search('(.*) days', restart_duration):
             warn = int(boot_extreme.group().replace(' days', '').strip())
             speaker.say(f'Sir! your {model} has been running continuously for more than {warn} days. You must '
                         f'consider a reboot for better performance. Would you like me to restart it for you sir?')
             speaker.runAndWait()
             response = listener(timeout=3, phrase_limit=3)
             if any(word in response.lower() for word in keywords.ok):
-                logger.info(f'JARVIS::Restarting {host_info("model")}')
+                logger.info(f'JARVIS::Restarting {hosted_device.get("device")}')
                 restart(target='PC_Proceed')
 
 
@@ -3743,7 +3736,7 @@ def extract_nos(input_: str) -> float:
         float:
         Float values.
     """
-    return float('.'.join(re.findall(r"\d+", input_)))
+    return float('.'.join(findall(r"\d+", input_)))
 
 
 def format_nos(input_: float) -> int:
@@ -3769,27 +3762,21 @@ def extract_str(input_: str) -> str:
         str:
         A string after removing special characters.
     """
-    return ''.join([i for i in input_ if not i.isdigit() and i not in [',', '.', '?', '-', ';', '!', ':']])
+    return ''.join([i for i in input_ if not i.isdigit() and i not in [',', '.', '?', '-', ';', '!', ':']]).strip()
 
 
-def host_info(required: str) -> Union[str, float]:
-    """Gets both the model and version of the hosted device.
-
-    Args:
-        required: model or version
+def hosted_device_info() -> dict:
+    """Gets basic information of the hosted device.
 
     Returns:
-        str or float:
-        Model or version of the machine based on the arg received.
+        dict:
+        A dictionary of key-value pairs with device type, operating system, os version.
     """
-    device = (check_output("sysctl hw.model", shell=True)).decode('utf-8').split('\n')  # gets model info
-    result = list(filter(None, device))[0]  # removes empty string ('\n')
-    model = extract_str(result).strip('hwmodel ')
-    version = extract_nos(''.join(device))
-    if required == 'model':
-        return model
-    elif required == 'version':
-        return version
+    system_kernel = (check_output("sysctl hw.model", shell=True)).decode('utf-8').splitlines()  # gets model info
+    device = extract_str(system_kernel[0].split(':')[1])
+    platform_info = platform().split('-')
+    version = '.'.join(platform_info[1].split('.')[0:2])
+    return {'device': device, 'os_name': platform_info[0], 'os_version': float(version)}
 
 
 def pc_sleep() -> None:
@@ -3833,7 +3820,7 @@ def restart_control(phrase: str):
         phrase: Takes the phrase spoken as an argument.
     """
     if 'pc' in phrase or 'computer' in phrase or 'imac' in phrase:
-        logger.info(f'JARVIS::Restart for {host_info("model")} has been requested.')
+        logger.info(f'JARVIS::Restart for {hosted_device.get("device")} has been requested.')
         restart(target='PC')
     else:
         logger.info('JARVIS::Self reboot has been requested.')
@@ -3869,10 +3856,10 @@ def restart(target: str = None, quiet: bool = False, quick: bool = True) -> None
     offline = os.environ.get('called_by_offline')
     if target:
         if offline:
-            logger.warning(f"ERROR::Cannot restart {host_info(required='model')} via offline communicator.")
+            logger.warning(f"ERROR::Cannot restart {hosted_device.get('device')} via offline communicator.")
             return
         if target == 'PC':
-            speaker.say(f'{choice(confirmation)} restart your {host_info("model")}?')
+            speaker.say(f"{choice(confirmation)} restart your {hosted_device.get('device')}?")
             speaker.runAndWait()
             converted = listener(timeout=3, phrase_limit=3)
         else:
@@ -3949,7 +3936,7 @@ def voice_changer(change: str = None) -> None:
         speaker.setProperty("voice", voices[voice_id[0]].id)  # voice module #7 for MacOS
 
     if change:
-        if not (distribution := [int(s) for s in re.findall(r'\b\d+\b', change)]):  # walrus on if not distribution
+        if not (distribution := [int(s) for s in findall(r'\b\d+\b', change)]):  # walrus on if not distribution
             distribution = range(avail_voices)
         for module_id in distribution:
             if module_id < avail_voices:
@@ -3979,7 +3966,7 @@ def voice_changer(change: str = None) -> None:
             elif any(word in keyword.lower() for word in keywords.ok):
                 speaker.say(choice(ack))
                 return
-            elif custom_id := [int(id_) for id_ in re.findall(r'\b\d+\b', keyword)]:
+            elif custom_id := [int(id_) for id_ in findall(r'\b\d+\b', keyword)]:
                 voice_changer(str(custom_id))
                 break
     else:
@@ -4018,7 +4005,8 @@ def stopper() -> None:
 
 
 if __name__ == '__main__':
-    if system() != 'Darwin':
+    hosted_device = hosted_device_info()
+    if hosted_device.get('os_name') != 'macOS':
         exit('Unsupported Operating System.\nWindows support was recently deprecated. '
              'Refer https://github.com/thevickypedia/Jarvis/commit/cf54b69363440d20e21ba406e4972eb058af98fc')
 
