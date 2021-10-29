@@ -14,7 +14,7 @@ from multiprocessing.pool import ThreadPool
 from pathlib import Path
 from platform import platform
 from random import choice, choices, randrange
-from re import IGNORECASE, findall, match, search
+from re import IGNORECASE, findall, match, search, sub
 from shutil import disk_usage
 from socket import AF_INET, SOCK_DGRAM, gethostname, socket
 from ssl import create_default_context
@@ -429,7 +429,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         speaker.say("I can seamlessly take care of your daily tasks, and also help with most of your work!")
 
     elif any(word in converted_lower for word in keywords.sleep_control):
-        sleep_control(phrase=converted_lower)
+        return sleep_control(phrase=converted_lower)
 
     elif any(word in converted_lower for word in keywords.restart_control):
         restart_control(phrase=converted_lower)
@@ -2332,7 +2332,8 @@ def alpha(text: str) -> bool:
     else:
         try:
             response = next(res.results).text
-            response = response.replace('\n', '. ').strip()
+            response = sub(r'(([0-9]+) \|)', '', response).strip()
+            response = response.replace(' |', ':')
             sys.stdout.write(f'\r{response}')
             if response == '(no data available)':
                 return True
@@ -3877,7 +3878,7 @@ def restart_control(phrase: str):
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-def restart(target: str = None, quiet: bool = False, quick: bool = True) -> None:
+def restart(target: str = None, quiet: bool = False, quick: bool = False) -> None:
     """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
 
     Notes:
