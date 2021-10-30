@@ -94,8 +94,9 @@ from helper_functions.tv_controls import TV
 
 def no_env_vars():
     """Says a message about permissions when env vars are missing."""
+    # noinspection PyProtectedMember,PyUnresolvedReferences
+    logger.error(f'Called by: {sys._getframe(1).f_code.co_name}')
     speaker.say("I don't have permissions sir! Please add the necessary environment variables and ask me to restart!")
-    return
 
 
 def listener(timeout: int, phrase_limit: int, sound: bool = True) -> str:
@@ -250,17 +251,17 @@ def conditions(converted: str, should_return: bool = False) -> bool:
 
     elif any(word in converted_lower for word in keywords.current_time) and \
             not any(word in converted_lower for word in keywords.avoid):
-        current_time(converted)
+        current_time()
 
     elif any(word in converted_lower for word in keywords.weather) and \
             not any(word in converted_lower for word in keywords.avoid):
-        weather(converted)
+        weather(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.system_info):
         system_info()
 
     elif any(word in converted for word in keywords.ip_info) or 'IP' in converted.split():
-        ip_info(phrase=converted_lower)
+        ip_info(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.wikipedia_):
         wikipedia_()
@@ -281,13 +282,13 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         location()
 
     elif any(word in converted_lower for word in keywords.locate):
-        locate(converted)
+        locate(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.gmail):
         gmail()
 
     elif any(word in converted_lower for word in keywords.meaning):
-        meaning(converted)
+        meaning(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.delete_todo) and \
             any(word in converted_lower for word in todo_checks):
@@ -308,7 +309,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
 
     elif any(word in converted_lower for word in keywords.distance) and \
             not any(word in converted_lower for word in keywords.avoid):
-        distance(converted)
+        distance(phrase=converted)
 
     elif any(word in converted_lower for word in conversation.form):
         speaker.say("I am a program, I'm without form.")
@@ -321,13 +322,13 @@ def conditions(converted: str, should_return: bool = False) -> bool:
 
     elif any(word in converted_lower for word in keywords.webpage) and \
             not any(word in converted_lower for word in keywords.avoid):
-        webpage(converted)
+        webpage(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.kill_alarm):
         kill_alarm()
 
     elif any(word in converted_lower for word in keywords.alarm):
-        alarm(converted_lower)
+        alarm(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.google_home):
         google_home()
@@ -336,7 +337,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         jokes()
 
     elif any(word in converted_lower for word in keywords.reminder):
-        reminder(converted_lower)
+        reminder(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.notes):
         notes()
@@ -348,16 +349,16 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         send_sms(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.google_search):
-        google_search(converted)
+        google_search(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.television):
-        television(converted)
+        television(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.apps):
-        apps(converted)
+        apps(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.music):
-        music(converted)
+        music(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.volume):
         volume(phrase=converted)
@@ -369,13 +370,13 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         speed_test()
 
     elif any(word in converted_lower for word in keywords.bluetooth):
-        bluetooth(phrase=converted_lower)
+        bluetooth(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.brightness) and 'lights' not in converted_lower:
-        brightness(phrase=converted_lower)
+        brightness(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.lights):
-        lights(converted=converted_lower)
+        lights(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.guard_enable):
         guard_enable()
@@ -390,16 +391,16 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         meetings()
 
     elif any(word in converted_lower for word in keywords.voice_changer):
-        voice_changer(converted)
+        voice_changer(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.system_vitals):
         system_vitals()
 
     elif any(word in converted_lower for word in keywords.vpn_server):
-        vpn_server(phrase=converted_lower)
+        vpn_server(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.personal_cloud):
-        personal_cloud(phrase=converted_lower)
+        personal_cloud(phrase=converted)
 
     elif any(word in converted_lower for word in conversation.greeting):
         speaker.say('I am spectacular. I hope you are doing fine too.')
@@ -429,10 +430,10 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         speaker.say("I can seamlessly take care of your daily tasks, and also help with most of your work!")
 
     elif any(word in converted_lower for word in keywords.sleep_control):
-        return sleep_control(phrase=converted_lower)
+        return sleep_control(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.restart_control):
-        restart_control(phrase=converted_lower)
+        restart_control(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.kill) and \
             not any(word in converted_lower for word in keywords.avoid):
@@ -464,7 +465,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
                     web_open(unknown_url)
 
 
-def get_place_from_phrase(phrase: str):
+def get_place_from_phrase(phrase: str) -> str:
     """Looks for the name of a place in the phrase received.
 
     Args:
@@ -490,7 +491,7 @@ def ip_info(phrase: str) -> None:
     Args:
         phrase: Takes the spoken phrase an an argument and tells the public IP if requested.
     """
-    if 'public' in phrase:
+    if 'public' in phrase.lower():
         if not internet_checker():
             speaker.say("You are not connected to the internet sir!")
             return
@@ -1105,14 +1106,14 @@ def location() -> None:
     speaker.say(f"You're at {city} {state}, in {country}")
 
 
-def locate(converted: str, no_repeat: bool = False) -> None:
+def locate(phrase: str, no_repeat: bool = False) -> None:
     """Locates an apple device using icloud api for python.
 
     Args:
         no_repeat: A place holder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
-        converted: Takes the voice recognized statement as argument and extracts device name from it.
+        phrase: Takes the voice recognized statement as argument and extracts device name from it.
     """
-    if not (target_device := device_selector(converted)):
+    if not (target_device := device_selector(phrase)):
         no_env_vars()
         return
     sys.stdout.write(f"\rLocating your {target_device}")
@@ -1125,14 +1126,14 @@ def locate(converted: str, no_repeat: bool = False) -> None:
         speaker.runAndWait()
         speaker.say("Would you like to get the location details?")
     speaker.runAndWait()
-    phrase = listener(timeout=3, phrase_limit=3)
-    if phrase == 'SR_ERROR':
+    phrase_location = listener(timeout=3, phrase_limit=3)
+    if phrase_location == 'SR_ERROR':
         if no_repeat:
             return
         speaker.say("I didn't quite get that. Try again.")
-        locate(converted=converted, no_repeat=True)
+        locate(phrase=phrase, no_repeat=True)
     else:
-        if any(word in phrase.lower() for word in keywords.ok):
+        if any(word in phrase_location.lower() for word in keywords.ok):
             ignore_lat, ignore_lon, location_info_ = location_services(target_device)
             lookup = str(target_device).split(':')[0].strip()
             if location_info_ == 'None':
@@ -1149,8 +1150,8 @@ def locate(converted: str, no_repeat: bool = False) -> None:
                 speaker.say(f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
             speaker.say("I can also enable lost mode. Would you like to do it?")
             speaker.runAndWait()
-            phrase = listener(timeout=3, phrase_limit=3)
-            if any(word in phrase.lower() for word in keywords.ok):
+            phrase_lost = listener(timeout=3, phrase_limit=3)
+            if any(word in phrase_lost.lower() for word in keywords.ok):
                 message = 'Return my phone immediately.'
                 target_device.lost_device(number=icloud_recovery, text=message)
                 speaker.say("I've enabled lost mode on your phone.")
@@ -1250,14 +1251,14 @@ def gmail() -> None:
                     speaker.runAndWait() if not offline else None
 
 
-def flip_a_coin():
+def flip_a_coin() -> None:
     """Says ``heads`` or ``tails`` from a random choice."""
     playsound('indicators/coin.mp3')
     sleep(0.5)
     speaker.say(f"""{choice(['You got', 'It landed on', "It's"])} {choice(['heads', 'tails'])} sir!""")
 
 
-def facts():
+def facts() -> None:
     """Tells a random fact."""
     speaker.say(getFact(False))
 
@@ -1594,11 +1595,7 @@ def locate_places(phrase: str = None) -> None:
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 return
-            for word in converted.split():
-                if word[0].isupper():
-                    place += word + ' '
-                elif '.' in word:
-                    place += word + ' '
+            place = get_place_from_phrase(phrase=converted)
             if not place:
                 keyword = 'is'
                 before_keyword, keyword, after_keyword = converted.partition(keyword)
@@ -1650,12 +1647,7 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
         speaker.runAndWait()
         converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
-            place = ''
-            for word in converted.split():
-                if word[0].isupper():
-                    place += word + ' '
-                elif '.' in word:
-                    place += word + ' '
+            place = get_place_from_phrase(phrase=phrase)
             place = place.replace('I ', '').strip()
             if not place:
                 if no_repeat:
@@ -1691,14 +1683,15 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     return
 
 
-def alarm(msg: str) -> None:
+def alarm(phrase: str) -> None:
     """Passes hour, minute and am/pm to ``Alarm`` class which initiates a thread for alarm clock in the background.
 
     Args:
-        msg: Takes the voice recognized statement as argument and extracts time from it.
+        phrase: Takes the voice recognized statement as argument and extracts time from it.
     """
-    extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', msg) or \
-        findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', msg) or findall(r'([0-9]+\s?(?:am|pm:?))', msg)
+    phrase = phrase.lower()
+    extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or \
+        findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', phrase) or findall(r'([0-9]+\s?(?:am|pm:?))', phrase)
     if extracted_time:
         extracted_time = extracted_time[0]
         am_pm = extracted_time.split()[-1]
@@ -1716,7 +1709,7 @@ def alarm(msg: str) -> None:
         if int(hour) <= 12 and int(minute) <= 59:
             open(f'alarm/{hour}_{minute}_{am_pm}.lock', 'a')
             Alarm(hour, minute, am_pm).start()
-            if 'wake' in msg.lower().strip():
+            if 'wake' in phrase.strip():
                 speaker.say(f"{choice(ack)}! I will wake you up at {hour}:{minute} {am_pm}.")
             else:
                 speaker.say(f"{choice(ack)}! Alarm has been set for {hour}:{minute} {am_pm}.")
@@ -1883,35 +1876,35 @@ def jokes() -> None:
     speaker.say(choice([geek, icanhazdad, chucknorris, icndb])())
 
 
-def reminder(converted: str) -> None:
+def reminder(phrase: str) -> None:
     """Passes hour, minute, am/pm and reminder message to Reminder class which initiates a thread for reminder.
 
     Args:
-        converted: Takes the voice recognized statement as argument and extracts the time and message from it.
+        phrase: Takes the voice recognized statement as argument and extracts the time and message from it.
     """
-    message = search(' to (.*) at ', converted) or search(' about (.*) at ', converted)
+    message = search(' to (.*) at ', phrase) or search(' about (.*) at ', phrase)
     if not message:
-        message = search(' to (.*)', converted) or search(' about (.*)', converted)
+        message = search(' to (.*)', phrase) or search(' about (.*)', phrase)
         if not message:
             speaker.say('Reminder format should be::Remind me to do something, at some time.')
             sys.stdout.write('\rReminder format should be::Remind ME to do something, AT some time.')
             return
-    extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or findall(
-        r'([0-9]+\s?(?:a.m.|p.m.:?))', converted)
+    extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or findall(
+        r'([0-9]+\s?(?:a.m.|p.m.:?))', phrase)
     if not extracted_time:
         if os.environ.get('called_by_offline'):
             speaker.say('Reminder format should be::Remind me to do something, at some time.')
             return
         speaker.say("When do you want to be reminded sir?")
         speaker.runAndWait()
-        converted = listener(timeout=3, phrase_limit=4)
-        if converted != 'SR_ERROR':
-            extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', converted) or findall(
-                r'([0-9]+\s?(?:a.m.|p.m.:?))', converted)
+        phrase = listener(timeout=3, phrase_limit=4)
+        if phrase != 'SR_ERROR':
+            extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or findall(
+                r'([0-9]+\s?(?:a.m.|p.m.:?))', phrase)
         else:
             return
     if message and extracted_time:
-        to_about = 'about' if 'about' in converted else 'to'
+        to_about = 'about' if 'about' in phrase else 'to'
         message = message.group(1).strip()
         extracted_time = extracted_time[0]
         am_pm = extracted_time.split()[-1]
@@ -2171,7 +2164,7 @@ def send_sms(phrase: str = None) -> None:
 
 
 # noinspection PyUnboundLocalVariable
-def television(converted: str) -> None:
+def television(phrase: str) -> None:
     """Controls all actions on a TV (LG Web OS).
 
     Notes:
@@ -2180,14 +2173,14 @@ def television(converted: str) -> None:
         - Once the tv is turned on, the TV class is also initiated and assigned to tv variable.
 
     Args:
-        converted: Takes the voice recognized statement as argument.
+        phrase: Takes the voice recognized statement as argument.
     """
     if not all([tv_ip, tv_mac, tv_client_key]):
         no_env_vars()
         return
     global tv
-    phrase_exc = converted.replace('TV', '')
-    phrase = phrase_exc.lower()
+    phrase_exc = phrase.replace('TV', '')
+    phrase_lower = phrase_exc.lower()
 
     # 'tv_status = lambda: os.system(f"ping ....) #noqa' is an alternate but adhering to pep 8 best practice using a def
     def tv_status():
@@ -2196,7 +2189,7 @@ def television(converted: str) -> None:
 
     if vpn_checker().startswith('VPN'):
         return
-    elif ('turn off' in phrase or 'shutdown' in phrase or 'shut down' in phrase) and tv_status() != 0:
+    elif ('turn off' in phrase_lower or 'shutdown' in phrase_lower or 'shut down' in phrase_lower) and tv_status() != 0:
         speaker.say("I wasn't able to connect to your TV sir! I guess your TV is powered off already.")
         return
     elif tv_status() != 0:
@@ -2218,38 +2211,38 @@ def television(converted: str) -> None:
             speaker.say("I was unable to connect to the TV sir! It appears to be a connection issue. "
                         "You might want to try again later.")
             return
-        if 'turn on' in phrase or 'connect' in phrase:
+        if 'turn on' in phrase_lower or 'connect' in phrase_lower:
             speaker.say("TV features have been integrated sir!")
             return
 
     if tv:
-        if 'turn on' in phrase or 'connect' in phrase:
+        if 'turn on' in phrase_lower or 'connect' in phrase_lower:
             speaker.say('Your TV is already powered on sir!')
-        elif 'increase' in phrase:
+        elif 'increase' in phrase_lower:
             tv.increase_volume()
             speaker.say(f'{choice(ack)}!')
-        elif 'decrease' in phrase or 'reduce' in phrase:
+        elif 'decrease' in phrase_lower or 'reduce' in phrase_lower:
             tv.decrease_volume()
             speaker.say(f'{choice(ack)}!')
-        elif 'mute' in phrase:
+        elif 'mute' in phrase_lower:
             tv.mute()
             speaker.say(f'{choice(ack)}!')
-        elif 'pause' in phrase or 'hold' in phrase:
+        elif 'pause' in phrase_lower or 'hold' in phrase_lower:
             tv.pause()
             speaker.say(f'{choice(ack)}!')
-        elif 'resume' in phrase or 'play' in phrase:
+        elif 'resume' in phrase_lower or 'play' in phrase_lower:
             tv.play()
             speaker.say(f'{choice(ack)}!')
-        elif 'rewind' in phrase:
+        elif 'rewind' in phrase_lower:
             tv.rewind()
             speaker.say(f'{choice(ack)}!')
-        elif 'forward' in phrase:
+        elif 'forward' in phrase_lower:
             tv.forward()
             speaker.say(f'{choice(ack)}!')
-        elif 'stop' in phrase:
+        elif 'stop' in phrase_lower:
             tv.stop()
             speaker.say(f'{choice(ack)}!')
-        elif 'set' in phrase:
+        elif 'set' in phrase_lower:
             vol = int(''.join([str(s) for s in findall(r'\b\d+\b', phrase_exc)]))
             sys.stdout.write(f'\rRequested volume: {vol}')
             if vol:
@@ -2257,14 +2250,14 @@ def television(converted: str) -> None:
                 speaker.say(f"I've set the volume to {vol}% sir.")
             else:
                 speaker.say(f"{vol} doesn't match the right format sir!")
-        elif 'volume' in phrase:
+        elif 'volume' in phrase_lower:
             speaker.say(f"The current volume on your TV is, {tv.get_volume()}%")
-        elif 'app' in phrase or 'application' in phrase:
+        elif 'app' in phrase_lower or 'application' in phrase_lower:
             sys.stdout.write(f'\r{tv.list_apps()}')
             speaker.say('App list on your screen sir!')
             speaker.runAndWait()
             sleep(5)
-        elif 'open' in phrase or 'launch' in phrase:
+        elif 'open' in phrase_lower or 'launch' in phrase_lower:
             app_name = ''
             for word in phrase_exc.split():
                 if word[0].isupper():
@@ -2277,9 +2270,9 @@ def television(converted: str) -> None:
                     speaker.say(f"I've launched {app_name} on your TV sir!")
                 except ValueError:
                     speaker.say(f"I didn't find the app {app_name} on your TV sir!")
-        elif "what's" in phrase or 'currently' in phrase:
+        elif "what's" in phrase_lower or 'currently' in phrase_lower:
             speaker.say(f'{tv.current_app()} is running on your TV.')
-        elif 'change' in phrase or 'source' in phrase:
+        elif 'change' in phrase_lower or 'source' in phrase_lower:
             tv_source = ''
             for word in phrase_exc.split():
                 if word[0].isupper():
@@ -2292,15 +2285,15 @@ def television(converted: str) -> None:
                     speaker.say(f"I've changed the source to {tv_source}.")
                 except ValueError:
                     speaker.say(f"I didn't find the source {tv_source} on your TV sir!")
-        elif 'shutdown' in phrase or 'shut down' in phrase or 'turn off' in phrase:
+        elif 'shutdown' in phrase_lower or 'shut down' in phrase_lower or 'turn off' in phrase_lower:
             Thread(target=tv.shutdown).start()
             speaker.say(f'{choice(ack)}! Turning your TV off.')
             tv = None
         else:
             speaker.say("I didn't quite get that.")
     else:
-        converted = converted.replace('my', 'your').replace('please', '').replace('will you', '').strip()
-        speaker.say(f"I'm sorry sir! I wasn't able to {converted}, as the TV state is unknown!")
+        phrase = phrase.replace('my', 'your').replace('please', '').replace('will you', '').strip()
+        speaker.say(f"I'm sorry sir! I wasn't able to {phrase}, as the TV state is unknown!")
 
 
 def alpha(text: str) -> bool:
@@ -2331,9 +2324,8 @@ def alpha(text: str) -> bool:
         return True
     else:
         try:
-            response = next(res.results).text
-            response = sub(r'(([0-9]+) \|)', '', response).strip()
-            response = response.replace(' |', ':')
+            response = next(res.results).text.splitlines()[0]
+            response = sub(r'(([0-9]+) \|)', '', response).replace(' |', ':').strip()
             sys.stdout.write(f'\r{response}')
             if response == '(no data available)':
                 return True
@@ -2576,6 +2568,7 @@ def bluetooth(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
+    phrase = phrase.lower()
     if 'turn off' in phrase or 'power off' in phrase:
         call("blueutil --power 0", shell=True)
         sys.stdout.write('\rBluetooth has been turned off')
@@ -2609,6 +2602,7 @@ def brightness(phrase: str):
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
+    phrase = phrase.lower()
     speaker.say(choice(ack))
     if 'set' in phrase or findall(r'\b\d+\b', phrase):
         level = findall(r'\b\d+\b', phrase)  # gets integers from string as a list
@@ -2651,12 +2645,13 @@ def set_brightness(level: int) -> None:
         os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
 
 
-def lights(converted: str) -> None:
+def lights(phrase: str) -> None:
     """Controller for smart lights.
 
     Args:
-        converted: Takes the voice recognized statement as argument.
+        phrase: Takes the voice recognized statement as argument.
     """
+    phrase = phrase.lower()
     if not any([hallway_ip, kitchen_ip, bedroom_ip]):
         no_env_vars()
         return
@@ -2721,15 +2716,15 @@ def lights(converted: str) -> None:
             controller = MagicHomeApi(device_ip=host, device_type=2, operation='Custom Brightness')
             controller.update_device(r=255, g=255, b=255, warm_white=rgb, cool_white=rgb)
 
-    if 'hallway' in converted:
+    if 'hallway' in phrase:
         if not (light_host_id := hallway_ip):
             light_switch()
             return
-    elif 'kitchen' in converted:
+    elif 'kitchen' in phrase:
         if not (light_host_id := kitchen_ip):
             light_switch()
             return
-    elif 'bedroom' in converted:
+    elif 'bedroom' in phrase:
         if not (light_host_id := bedroom_ip):
             light_switch()
             return
@@ -2748,40 +2743,40 @@ def lights(converted: str) -> None:
             executor.map(function_to_call, light_host_id)
 
     plural = 'lights!' if lights_count > 1 else 'light!'
-    if 'turn on' in converted or 'cool' in converted or 'white' in converted:
+    if 'turn on' in phrase or 'cool' in phrase or 'white' in phrase:
         warm_light.pop('status') if warm_light.get('status') else None
-        tone = 'white' if 'white' in converted else 'cool'
-        speaker.say(f'{choice(ack)}! Turning on {lights_count} {plural}') if 'turn on' in converted else \
+        tone = 'white' if 'white' in phrase else 'cool'
+        speaker.say(f'{choice(ack)}! Turning on {lights_count} {plural}') if 'turn on' in phrase else \
             speaker.say(f'{choice(ack)}! Setting {lights_count} {plural} to {tone}!')
         Thread(target=thread_worker, args=[cool]).start()
-    elif 'turn off' in converted:
+    elif 'turn off' in phrase:
         speaker.say(f'{choice(ack)}! Turning off {lights_count} {plural}')
         Thread(target=thread_worker, args=[turn_off]).start()
-    elif 'warm' in converted or 'yellow' in converted:
+    elif 'warm' in phrase or 'yellow' in phrase:
         warm_light['status'] = True
-        speaker.say(f'{choice(ack)}! Setting {lights_count} {plural} to yellow!') if 'yellow' in converted else \
+        speaker.say(f'{choice(ack)}! Setting {lights_count} {plural} to yellow!') if 'yellow' in phrase else \
             speaker.say(f'Sure sir! Setting {lights_count} {plural} to warm!')
         Thread(target=thread_worker, args=[warm]).start()
-    elif 'red' in converted:
+    elif 'red' in phrase:
         speaker.say(f"{choice(ack)}! I've changed {lights_count} {plural} to red!")
         for light_ip in light_host_id:
             preset(host=light_ip, value=preset_values['red'])
-    elif 'blue' in converted:
+    elif 'blue' in phrase:
         speaker.say(f"{choice(ack)}! I've changed {lights_count} {plural} to blue!")
         for light_ip in light_host_id:
             preset(host=light_ip, value=preset_values['blue'])
-    elif 'green' in converted:
+    elif 'green' in phrase:
         speaker.say(f"{choice(ack)}! I've changed {lights_count} {plural} to green!")
         for light_ip in light_host_id:
             preset(host=light_ip, value=preset_values['green'])
-    elif 'set' in converted or 'percentage' in converted or '%' in converted or 'dim' in converted \
-            or 'bright' in converted:
-        if 'bright' in converted:
+    elif 'set' in phrase or 'percentage' in phrase or '%' in phrase or 'dim' in phrase \
+            or 'bright' in phrase:
+        if 'bright' in phrase:
             level = 100
-        elif 'dim' in converted:
+        elif 'dim' in phrase:
             level = 50
         else:
-            if level := findall(r'\b\d+\b', converted):
+            if level := findall(r'\b\d+\b', phrase):
                 level = int(level[0])
             else:
                 level = 100
@@ -3302,6 +3297,7 @@ def personal_cloud(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
+    phrase = phrase.lower()
     if 'enable' in phrase or 'initiate' in phrase or 'kick off' in phrase or \
             'start' in phrase:
         Thread(target=PersonalCloud.enable).start()
@@ -3447,8 +3443,9 @@ def vpn_server(phrase: str):
     """Enables or disables VPN server.
 
     Args:
-        phrase: Takes the phrase spoken as an agument.
+        phrase: Takes the phrase spoken as an argument.
     """
+    phrase = phrase.lower()
     if vpn_server_check():
         speaker.say('An operation for VPN Server is already in progress sir! Please wait and retry.')
     elif 'start' in phrase or 'trigger' in phrase or 'initiate' in phrase or \
@@ -3850,6 +3847,7 @@ def sleep_control(phrase: str) -> bool:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
+    phrase = phrase.lower()
     if 'pc' in phrase or 'computer' in phrase or 'imac' in phrase or \
             'screen' in phrase:
         pc_sleep()
@@ -3866,6 +3864,7 @@ def restart_control(phrase: str):
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
+    phrase = phrase.lower()
     if 'pc' in phrase or 'computer' in phrase or 'imac' in phrase:
         logger.info(f'JARVIS::Restart for {hosted_device.get("device")} has been requested.')
         restart(target='PC')
@@ -3960,13 +3959,13 @@ def shutdown(proceed: bool = False) -> None:
             return
 
 
-def voice_changer(change: str = None) -> None:
+def voice_changer(phrase: str = None) -> None:
     """Defaults to a particular voice module.
 
     Alternatively the user can choose from a variety of voices available for that particular device.
 
     Args:
-        change: Initiates changing voices with the volume ID given in statement.
+        phrase: Initiates changing voices with the volume ID given in statement.
     """
     alter_msg = 0
     voices = speaker.getProperty("voices")  # gets the list of voices available
@@ -3982,8 +3981,8 @@ def voice_changer(change: str = None) -> None:
         """
         speaker.setProperty("voice", voices[voice_id[0]].id)  # voice module #7 for MacOS
 
-    if change:
-        if not (distribution := [int(s) for s in findall(r'\b\d+\b', change)]):  # walrus on if not distribution
+    if phrase:
+        if not (distribution := [int(s) for s in findall(r'\b\d+\b', phrase)]):  # walrus on if not distribution
             distribution = range(avail_voices)
         for module_id in distribution:
             if module_id < avail_voices:
