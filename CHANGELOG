@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+5.0.8 (10/29/2021)
+------------------
+- Default all args to `phrase`
+- Prep to convert all conditions into a looped execution
+- Move opencv from requirements.txt to installs.sh
+- Handle multiple outputs coming from wolfram alpha
+- Fix batch installation of dlib and cmake
+- Make Jarvis work without env vars
+- Default input_device_index to None in Activator
+- Remove chatterbot as it is messy
+- Some basic bug fixes
+- Prep to convert all conditions into a looped execution
+
 5.0.7 (10/25/2021)
 ------------------
 - Fix issues with docstrings because of class variables

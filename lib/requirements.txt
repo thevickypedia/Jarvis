@@ -11,8 +11,6 @@ pytz==2020.1
 pyicloud==0.9.7
 geopy==2.0.0
 PyDictionary==2.0.1
-ChatterBot==1.0.0
-chatterbot-corpus==1.2.0
 PyYAML==5.4.1
 googlehomepush==0.1.0
 axju-jokes==1.0.3
@@ -39,7 +37,3 @@ requests==2.26.0
 setuptools==57.0.0
 certifi==2021.5.30
 PyChromecast==2.3.0
-opencv-python==4.4.0.44
-cmake==3.18.2.post1
-dlib==19.21.0
-face-recognition==1.3.0

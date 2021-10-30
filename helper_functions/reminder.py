@@ -1,5 +1,5 @@
 from datetime import datetime
-from os import listdir, remove, system
+from os import environ, listdir, remove, system
 from threading import Thread
 
 from gmailconnector.send_sms import Messenger
@@ -49,8 +49,6 @@ class Reminder(Thread):
 
 
 if __name__ == '__main__':
-    from os import environ
-
     from dotenv import load_dotenv
 
     env_file_path = '../.env'
