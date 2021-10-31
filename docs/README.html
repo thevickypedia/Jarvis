@@ -122,25 +122,6 @@
 </ul>
 </li>
 </ul>
-<section id="automation-setup">
-<h3>Automation Setup:<a class="headerlink" href="#automation-setup" title="Permalink to this headline">¶</a></h3>
-<ul>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">automation_file</span></code> should be a JSON file of dictionary within a dictionary that looks like the below:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;6:00 AM&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 50%&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
-  <span class="p">},</span>
-  <span class="nt">&quot;9:00 PM&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 5%&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</section>
 </section>
 <section id="env-variables">
 <h2>ENV Variables<a class="headerlink" href="#env-variables" title="Permalink to this headline">¶</a></h2>
@@ -148,12 +129,16 @@
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary><section id="default-args">
 <h3>Default args<a class="headerlink" href="#default-args" title="Permalink to this headline">¶</a></h3>
-<p>####### <a class="reference external" href="https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator">Offline communicator helper</a>:</p>
+</section>
+<section id="offline-communicator-helper">
+<h3>- <a class="reference external" href="https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator">Offline communicator helper</a>:<a class="headerlink" href="#offline-communicator-helper" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><strong>offline_port</strong> - Port number to initiate offline communicator on. Defaults to <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>
 <li><p><strong>offline_phrase</strong> - Secure phrase to be used for authentication purpose. Defaults to <code class="docutils literal notranslate"><span class="pre">jarvis</span></code></p></li>
 </ul>
-<p>####### Accurate Location: (Defaults to the location based on <code class="docutils literal notranslate"><span class="pre">Public</span> <span class="pre">IP</span></code>)</p>
+</section>
+<section id="accurate-location-defaults-to-the-location-based-on-public-ip">
+<h3>- Accurate Location: (Defaults to the location based on <code class="docutils literal notranslate"><span class="pre">Public</span> <span class="pre">IP</span></code>)<a class="headerlink" href="#accurate-location-defaults-to-the-location-based-on-public-ip" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><strong>icloud_user</strong> - iCloud account username.</p></li>
 <li><p><strong>icloud_pass</strong> - iCloud account password.</p></li>
@@ -214,6 +199,25 @@ Using the module makes it easier since the devices are already connected to the 
 <li><p><strong>ngrok_auth_key</strong> - Auth token from <a class="reference external" href="https://dashboard.ngrok.com/">ngrok</a> - Only used for <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code></p></li>
 </ul>
 </details></section>
+<section id="automation-setup-optional">
+<h3>Automation Setup [Optional]:<a class="headerlink" href="#automation-setup-optional" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p>The file <code class="docutils literal notranslate"><span class="pre">automation.json</span></code> should be a JSON file of dictionary within a dictionary that looks like the below:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;6:00 AM&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 50%&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;9:00 PM&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 5%&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
 </section>
 <section id="coding-standards">
 <h2>Coding Standards<a class="headerlink" href="#coding-standards" title="Permalink to this headline">¶</a></h2>
@@ -237,10 +241,15 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <p>Please refer <a class="reference external" href="https://github.com/thevickypedia/Jarvis/wiki">wiki</a> for API usage, access controls, env variables,
 features’ overview and demo videos.</p>
 </section>
+<section id="pypi-package">
+<h2>Pypi Package<a class="headerlink" href="#pypi-package" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://packaging.python.org/tutorials/packaging-projects/"><img alt="pypi-module" src="https://img.shields.io/badge/Software%20Repository-pypi-1f425f.svg" /></a></p>
+<p><a class="reference external" href="https://pypi.org/project/jarvis-ironman/">https://pypi.org/project/jarvis-ironman/</a></p>
+</section>
 <section id="runbook">
 <h2>Runbook<a class="headerlink" href="#runbook" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html"><img alt="made-with-sphinx-doc" src="https://img.shields.io/badge/Made%20with-Sphinx-1f425f.svg" /></a></p>
-<p>https://thevickypedia.github.io/Jarvis/</p>
+<p><a class="reference external" href="https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html"><img alt="made-with-sphinx-doc" src="https://img.shields.io/badge/Code%20Docs-Sphinx-1f425f.svg" /></a></p>
+<p><a class="reference external" href="https://thevickypedia.github.io/Jarvis/">https://thevickypedia.github.io/Jarvis/</a></p>
 </section>
 <section id="license-copyright">
 <h2>License &amp; copyright<a class="headerlink" href="#license-copyright" title="Permalink to this headline">¶</a></h2>
@@ -267,22 +276,23 @@ features’ overview and demo videos.</p>
 <li><a class="reference internal" href="#development-and-maintenance">Development and Maintenance</a></li>
 <li><a class="reference internal" href="#reach-out">Reach Out</a></li>
 <li><a class="reference internal" href="#jarvis">Jarvis</a><ul>
-<li><a class="reference internal" href="#setup">Setup</a><ul>
-<li><a class="reference internal" href="#automation-setup">Automation Setup:</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#setup">Setup</a></li>
 <li><a class="reference internal" href="#env-variables">ENV Variables</a><ul>
 <li><a class="reference internal" href="#default-args">Default args</a></li>
+<li><a class="reference internal" href="#offline-communicator-helper">- Offline communicator helper:</a></li>
+<li><a class="reference internal" href="#accurate-location-defaults-to-the-location-based-on-public-ip">- Accurate Location: (Defaults to the location based on <code class="docutils literal notranslate"><span class="pre">Public</span> <span class="pre">IP</span></code>)</a></li>
 <li><a class="reference internal" href="#additional-args">Additional args</a></li>
 <li><a class="reference internal" href="#args-for-personalcloud-integration">Args for PersonalCloud integration</a></li>
 <li><a class="reference internal" href="#args-to-control-tv-applies-only-for-lgwebos">Args to control TV - Applies only for LGWebOS</a></li>
 <li><a class="reference internal" href="#args-for-ip-scanner-applies-only-for-netgear-routers">Args for ip_scanner - Applies only for Netgear routers</a></li>
 <li><a class="reference internal" href="#args-for-offline-communicator">Args for offline-communicator</a></li>
+<li><a class="reference internal" href="#automation-setup-optional">Automation Setup [Optional]:</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#coding-standards">Coding Standards</a></li>
 <li><a class="reference internal" href="#linting">Linting</a></li>
 <li><a class="reference internal" href="#feature-s-implementation">Feature(s) Implementation</a></li>
+<li><a class="reference internal" href="#pypi-package">Pypi Package</a></li>
 <li><a class="reference internal" href="#runbook">Runbook</a></li>
 <li><a class="reference internal" href="#license-copyright">License &amp; copyright</a></li>
 </ul>

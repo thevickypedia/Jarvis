@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.1.2 (10/31/2021)
+------------------
+- Use `difflib.SequenceMatcher` to get the right device to locate
+- Update README.md
+
 5.1.1 (10/31/2021)
 ------------------
 - FEATURE::Jarvis offline communicator has been made public and automations setup
