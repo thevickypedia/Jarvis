@@ -122,6 +122,25 @@
 </ul>
 </li>
 </ul>
+<section id="automation-setup">
+<h3>Automation Setup:<a class="headerlink" href="#automation-setup" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">automation_file</span></code> should be a JSON file of dictionary within a dictionary that looks like the below:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;6:00 AM&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 50%&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;9:00 PM&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 5%&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
 </section>
 <section id="env-variables">
 <h2>ENV Variables<a class="headerlink" href="#env-variables" title="Permalink to this headline">¶</a></h2>
@@ -129,9 +148,12 @@
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary><section id="default-args">
 <h3>Default args<a class="headerlink" href="#default-args" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">Used</span> <span class="n">to</span> <span class="n">retrieve</span> <span class="n">the</span> <span class="n">current</span> <span class="n">location</span><span class="o">.</span>
-</pre></div>
-</div>
+<p>####### <a class="reference external" href="https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator">Offline communicator helper</a>:</p>
+<ul class="simple">
+<li><p><strong>offline_port</strong> - Port number to initiate offline communicator on. Defaults to <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>
+<li><p><strong>offline_phrase</strong> - Secure phrase to be used for authentication purpose. Defaults to <code class="docutils literal notranslate"><span class="pre">jarvis</span></code></p></li>
+</ul>
+<p>####### Accurate Location: (Defaults to the location based on <code class="docutils literal notranslate"><span class="pre">Public</span> <span class="pre">IP</span></code>)</p>
 <ul class="simple">
 <li><p><strong>icloud_user</strong> - iCloud account username.</p></li>
 <li><p><strong>icloud_pass</strong> - iCloud account password.</p></li>
@@ -147,6 +169,8 @@
 <li><p><strong>maps_api</strong> - API Key for maps from <a class="reference external" href="https://developers.google.com/maps/documentation/maps-static/get-api-key">google</a></p></li>
 <li><p><strong>gmail_user</strong> - Gmail account username to send and read emails.</p></li>
 <li><p><strong>gmail_pass</strong> - Gmail account password to send and read emails.</p></li>
+<li><p><strong>offline_receive_user</strong> - Alternate gmail account username to send an SMS. (<code class="docutils literal notranslate"><span class="pre">gmail_user</span></code> can be re-used)</p></li>
+<li><p><strong>offline_receive_pass</strong> - Alternate gmail account password to send an SMS. (<code class="docutils literal notranslate"><span class="pre">gmail_pass</span></code> can be re-used)</p></li>
 <li><p><strong>robinhood_user</strong> - Robinhood account username.</p></li>
 <li><p><strong>robinhood_pass</strong> - Robinhood account password.</p></li>
 <li><p><strong>robinhood_qr</strong> - Robinhood login <a class="reference external" href="https://robinhood.com/account/settings">QR code</a></p></li>
@@ -187,9 +211,6 @@ Using the module makes it easier since the devices are already connected to the 
 <div><p>Built for a personalized usage.</p>
 </div></blockquote>
 <ul class="simple">
-<li><p><strong>offline_receive_user</strong> - Alternate gmail account username to send response from Jarvis as SMS. (<code class="docutils literal notranslate"><span class="pre">gmail_user</span></code> can be re-used)</p></li>
-<li><p><strong>offline_receive_pass</strong> - Alternate gmail account password to send response from Jarvis as SMS. (<code class="docutils literal notranslate"><span class="pre">gmail_pass</span></code> can be re-used)</p></li>
-<li><p><strong>offline_phrase</strong> - Secure phrase to be used for authentication purpose.</p></li>
 <li><p><strong>ngrok_auth_key</strong> - Auth token from <a class="reference external" href="https://dashboard.ngrok.com/">ngrok</a> - Only used for <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code></p></li>
 </ul>
 </details></section>
@@ -246,7 +267,10 @@ features’ overview and demo videos.</p>
 <li><a class="reference internal" href="#development-and-maintenance">Development and Maintenance</a></li>
 <li><a class="reference internal" href="#reach-out">Reach Out</a></li>
 <li><a class="reference internal" href="#jarvis">Jarvis</a><ul>
-<li><a class="reference internal" href="#setup">Setup</a></li>
+<li><a class="reference internal" href="#setup">Setup</a><ul>
+<li><a class="reference internal" href="#automation-setup">Automation Setup:</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#env-variables">ENV Variables</a><ul>
 <li><a class="reference internal" href="#default-args">Default args</a></li>
 <li><a class="reference internal" href="#additional-args">Additional args</a></li>

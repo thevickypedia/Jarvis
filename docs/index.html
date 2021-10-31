@@ -253,16 +253,40 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.automator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">automator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">every_1</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">every_2</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1800</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.automator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">automator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">automation_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'automation.json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">every_1</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">every_2</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1800</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.automator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Place for long-running background threads.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>every_1</strong> – Triggers every 15 minutes in a dedicated thread.</p></li>
-<li><p><strong>every_2</strong> – Triggers every 30 minutes in a dedicated thread.</p></li>
+<li><p><strong>automation_file</strong> – Takes the automation filename as an argument.</p></li>
+<li><p><strong>every_1</strong> – Triggers every 15 minutes in a dedicated thread, to switch volumes to time based levels.</p></li>
+<li><p><strong>every_2</strong> – Triggers every 30 minutes in a dedicated thread, to initiate <code class="docutils literal notranslate"><span class="pre">meeting_file_writer</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">automation_file</span></code> should be a JSON file of dictionary within a dictionary that looks like the below:</p>
+<blockquote>
+<div><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;6:00 AM&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 50%&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;9:00 PM&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 5%&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>The status for all automations can be set to either <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p></li>
+<li><p>Jarvis will swap these flags as necessary, so that the execution doesn’t repeat more than once in a minute.</p></li>
+</ul>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -772,6 +796,36 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.initiate_background_threads">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiate_background_threads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.initiate_background_threads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiate background threads.</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">offline_communicator_initiate</span></span></dt>
+<dd><p>Initiates ngrok tunnel and Jarvis API.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">offline_communicator</span></span></dt>
+<dd><p>Initiates response checker for Jarvis API.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">automator</span></span></dt>
+<dd><p>Initiates automator that executes certain functions at said time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">playsound</span></span></dt>
+<dd><p>Plays a start up sound.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.initiator">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_original</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.initiator" title="Permalink to this definition">¶</a></dt>
 <dd><p>When invoked by <code class="docutils literal notranslate"><span class="pre">Activator</span></code>, checks for the right keyword to wake up and gets into action.</p>
@@ -1038,7 +1092,7 @@ A condition below assumes two different words as two places but not including tw
 <dd><p>Reads <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file generated by <a class="reference external" href="https://git.io/JBPFQ">fast.py</a> containing request sent via API.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<dl class="simple">
+<dl>
 <dt>To replicate a working model for offline communicator:</dt><dd><ul class="simple">
 <li><p>Run <code class="docutils literal notranslate"><span class="pre">ngrok</span></code> on port 4483 or any desired port.</p></li>
 <li><p>The port number should match with the one in <a class="reference external" href="https://git.io/JBPFQ">fast.py</a></p></li>
@@ -1047,22 +1101,31 @@ A condition below assumes two different words as two places but not including tw
 <li><p><code class="docutils literal notranslate"><span class="pre">voice_changer()</span></code> is called as the voice property is reset when <code class="docutils literal notranslate"><span class="pre">speaker.stop()</span></code> is used.</p></li>
 </ul>
 </dd>
-<dt>Changes in <cite>pyttsx3</cite>:</dt><dd><ul class="simple">
+<dt>Changes in <code class="docutils literal notranslate"><span class="pre">pyttsx3</span></code>:</dt><dd><ul class="simple">
 <li><p>Created a global variable in <code class="docutils literal notranslate"><span class="pre">say()</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">pyttsx3/engine.py</span></code> (before proxy) and store the response.</p></li>
 <li><p>Created a new method and return the global variable which I created in <code class="docutils literal notranslate"><span class="pre">say()</span></code></p></li>
-<li><p>The new method (<code class="docutils literal notranslate"><span class="pre">vig()</span></code> in this case) is called to get the response which is sent as SMS notification.</p></li>
+<li><p>The method <code class="docutils literal notranslate"><span class="pre">text_spoken()</span></code> is called to get the response which is sent as a response.</p></li>
 <li><p>Doing so, avoids changes to all functions within <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> to notify the response from Jarvis.</p></li>
 </ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">say</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">return_this</span>
+    <span class="n">return_this</span> <span class="o">=</span> <span class="n">text</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">text_spoken</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">return_this</span>
+</pre></div>
+</div>
 </dd>
 <dt>Env Vars:</dt><dd><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">offline_phrase</span></code> - Unique phrase to authenticate the requests coming from an external source.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">offline_phrase</span></code> - Phrase to authenticate the requests to API. Defaults to <code class="docutils literal notranslate"><span class="pre">jarvis</span></code></p></li>
 </ul>
 </dd>
 </dl>
 </div>
 <p class="rubric">Notes</p>
 <dl class="simple">
-<dt>More cool stuff:</dt><dd><ul class="simple">
+<dt>More cool stuff (Done by <code class="docutils literal notranslate"><span class="pre">JarvisHelper</span></code>):</dt><dd><ul class="simple">
 <li><p>I have linked the ngrok <code class="docutils literal notranslate"><span class="pre">public_url</span></code> tunnelling the FastAPI to a JavaScript on my webpage.</p></li>
 <li><p>When a request is submitted, the JavaScript makes a POST call to the API.</p></li>
 <li><p>The API does the authentication and creates the <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file if authenticated.</p></li>
@@ -1073,7 +1136,7 @@ A condition below assumes two different words as two places but not including tw
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <ul class="simple">
-<li><p>Restarts quietly in case of a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> however, the offline request will still be be executed.</p></li>
+<li><p>Restarts <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> quietly in case of a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> however, the offline request will still be executed.</p></li>
 <li><p>This happens when <code class="docutils literal notranslate"><span class="pre">speaker</span></code> is stopped while another loop of speaker is in progress by regular interaction.</p></li>
 </ul>
 </div>
@@ -1089,6 +1152,23 @@ A condition below assumes two different words as two places but not including tw
 <li><p>The connection is tunneled through a public facing URL which is used to make <code class="docutils literal notranslate"><span class="pre">POST</span></code> requests to Jarvis API.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">uvicorn</span></code> command launches JarvisAPI <code class="docutils literal notranslate"><span class="pre">fast.py</span></code> using the same port <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>
 </ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.on_demand_offline_automation">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">on_demand_offline_automation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.on_demand_offline_automation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a <code class="docutils literal notranslate"><span class="pre">POST</span></code> call to offline-communicator running on <code class="docutils literal notranslate"><span class="pre">localhost</span></code> to execute a said task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>task</strong> – Takes the command to be executed as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a boolean <code class="docutils literal notranslate"><span class="pre">True</span></code> if the request was successful.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1186,13 +1266,13 @@ A condition below assumes two different words as two places but not including tw
 <p class="admonition-title">Warning</p>
 <ul class="simple">
 <li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">restart(target=!PC)</span></code> will restart the machine without getting any approval as the confirmation is requested</dt><dd><ul>
+<dt>Restarts the machine without approval when <code class="docutils literal notranslate"><span class="pre">uptime</span></code> is more than 2 days as the confirmation is requested</dt><dd><ul>
 <li><p>in <a class="reference external" href="https://thevickypedia.github.io/Jarvis/#jarvis.system_vitals">system_vitals</a>.</p></li>
 </ul>
 </dd>
 </dl>
 </li>
-<li><p>This is done only when the system vitals are read, and the uptime is more than 2 days.</p></li>
+<li><p>This is done ONLY when the system vitals are read, and the uptime is more than 2 days.</p></li>
 </ul>
 </div>
 <dl class="field-list simple">
@@ -1224,6 +1304,20 @@ A condition below assumes two different words as two places but not including tw
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.rewrite_automator">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">rewrite_automator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_object</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.rewrite_automator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rewrites the <code class="docutils literal notranslate"><span class="pre">automation_file</span></code> with the updated json object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – Name of the automation source file.</p></li>
+<li><p><strong>json_object</strong> – Takes the new json object as a dictionary.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
