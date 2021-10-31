@@ -62,3 +62,6 @@ pyicloud_error
 devices.json
 temp.py
 test.py
+
+# pypi package files
+jarvis_ironman.egg-info

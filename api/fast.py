@@ -128,6 +128,45 @@ def status() -> dict:
     return {'Message': 'Healthy'}
 
 
+def pre_check_offline_communicator(passphrase: str, command: str) -> bool:
+    """Runs pre-checks before letting office_communicator to proceed.
+
+    Args:
+        passphrase: Takes the password as one of the arguments.
+        command: Takes the command to be processed as another argument.
+
+    Raises:
+        - 401: If auth failed.
+        - 503: If Jarvis is not running.
+        - 413: If request command has 'and' or 'also' in the phrase.
+        - 422: If the request is not part of offline compatible words.
+        - 200: If phrase is test.
+
+    Returns:
+        bool:
+        If all the pre-checks have been successful.
+    """
+    command_lower = command.lower()
+    command_split = command.split()
+    if passphrase.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
+        passphrase = bytes(passphrase, "utf-8").decode(encoding="unicode_escape")
+    if passphrase != environ.get('offline_phrase'):
+        raise HTTPException(status_code=401, detail='Request not authorized.')
+    if not get_jarvis_status():
+        logger.error(f'Received offline request: {command}, but Jarvis is not running.')
+        raise HTTPException(status_code=503, detail='Jarvis is currently un-reachable.')
+    if command_lower == 'test':
+        raise HTTPException(status_code=200, detail='Test message received.')
+    if 'and' in command_split or 'also' in command_split:
+        raise HTTPException(status_code=413,
+                            detail='Jarvis can only process one command at a time via offline communicator.')
+    if not any(word in command_lower for word in offline_compatible):
+        raise HTTPException(status_code=422,
+                            detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
+                                   'Please try an instruction that does not require an user interaction.')
+    return True
+
+
 @app.post("/offline-communicator")
 def jarvis_offline_communicator(input_data: GetData):
     """# Offline Communicator for Jarvis.
@@ -137,8 +176,8 @@ def jarvis_offline_communicator(input_data: GetData):
             - command: The task which Jarvis has to do.
             - passphrase: Pass phrase for authentication.
 
-    ## Returns:
-        - A dictionary with the command requested and the response for it from Jarvis.
+    ## Raises:
+        - 200: A dictionary with the command requested and the response for it from Jarvis.
 
     ## See Also:
         - Include response_model only when the response should have same keys as arguments
@@ -148,42 +187,25 @@ def jarvis_offline_communicator(input_data: GetData):
     """
     passphrase = input_data.phrase
     command = input_data.command
-    if not get_jarvis_status():
-        logger.error(f'Received offline request: {command}, but Jarvis is not running.')
-        raise HTTPException(status_code=503, detail='Jarvis is currently un-reachable.')
-    if passphrase.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
-        passphrase = bytes(passphrase, "utf-8").decode(encoding="unicode_escape")
-    if passphrase == environ.get('offline_phrase'):
-        command_lower = command.lower()
-        command_split = command.split()
-        if command_lower == 'test':
-            raise HTTPException(status_code=200, detail='Test message received.')
-        if 'and' in command_split or 'also' in command_split:
-            raise HTTPException(status_code=413,
-                                detail='Jarvis can only process one command at a time via offline communicator.')
-        if not any(word in command_lower for word in offline_compatible):
-            raise HTTPException(status_code=422,
-                                detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
-                                       'Please try an instruction that does not require an user interaction.')
-        with open('../offline_request', 'w') as off_request:
-            off_request.write(command)
-        dt_string = datetime.now(zone).strftime("%A, %B %d, %Y %I:%M:%S %p")
-        if 'restart' in command:
-            raise HTTPException(status_code=200,
-                                detail='Restarting now sir! I will be up and running momentarily.')
-        while True:
-            # todo: Consider async functions and await instead of hard-coded sleepers
-            if path.isfile('../offline_response'):
-                sleep(0.2)  # Read file after half a second for the content to be written
-                with open('../offline_response', 'r') as off_response:
-                    response = off_response.read()
-                if response:
-                    remove('../offline_response')
-                    raise HTTPException(status_code=200, detail=f'{dt_string}\n\n{response}')
-                else:
-                    raise HTTPException(status_code=409, detail='Received empty payload from Jarvis.')
-    else:
-        raise HTTPException(status_code=401, detail='Request not authorized.')
+    pre_check_offline_communicator(passphrase=passphrase, command=command)
+
+    with open('../offline_request', 'w') as off_request:
+        off_request.write(command)
+    dt_string = datetime.now(zone).strftime("%A, %B %d, %Y %I:%M:%S %p")
+    if 'restart' in command:
+        raise HTTPException(status_code=200,
+                            detail='Restarting now sir! I will be up and running momentarily.')
+    while True:
+        # todo: Consider async functions and await instead of hard-coded sleepers
+        if path.isfile('../offline_response'):
+            sleep(0.2)  # Read file after half a second for the content to be written
+            with open('../offline_response', 'r') as off_response:
+                response = off_response.read()
+            if response:
+                remove('../offline_response')
+                raise HTTPException(status_code=200, detail=f'{dt_string}\n\n{response}')
+            else:
+                raise HTTPException(status_code=409, detail='Received empty payload from Jarvis.')
 
 
 @app.get("/favicon.ico", include_in_schema=False)

@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.1.0 (10/30/2021)
+------------------
+- Include conversation responses to offline compatible
+- Split pre-checks for offline_communicator
+
 5.0.9 (10/30/2021)
 ------------------
 - Reduce number of long-running threads
