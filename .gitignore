@@ -45,9 +45,6 @@ meetings
 # credentials stored locally
 .env
 
-# devices information temporarily stored to open as webpage
-devices.html
-
 # temporary files that will created when an offline request is received
 offline_request
 offline_response
@@ -62,7 +59,6 @@ api/robinhood.html
 pyicloud_error
 
 # future work
-devices.json
 temp.py
 test.py
 

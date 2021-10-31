@@ -76,22 +76,6 @@ IronMan's Jarvis with python
         - [`bash installs.sh`](https://git.io/JBnPq) - Installs the required libraries/modules.
         - [`python3 jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis
 
-##### Automation Setup:
-- The ``automation_file`` should be a JSON file of dictionary within a dictionary that looks like the below:
-
-    ```json
-    {
-      "6:00 AM": {
-        "task": "set my bedroom lights to 50%",
-        "status": false
-      },
-      "9:00 PM": {
-        "task": "set my bedroom lights to 5%",
-        "status": false
-      }
-    }
-    ```
-
 ### ENV Variables
 Environment variables are loaded from a `.env` file using the `python_dotenv` module.
 
@@ -99,11 +83,11 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 <summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary>
 
 ###### Default args
-####### [Offline communicator helper](https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator):
+###### - [Offline communicator helper](https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator):
 - **offline_port** - Port number to initiate offline communicator on. Defaults to `4483`
 - **offline_phrase** - Secure phrase to be used for authentication purpose. Defaults to `jarvis`
 
-####### Accurate Location: (Defaults to the location based on `Public IP`)
+###### - Accurate Location: (Defaults to the location based on `Public IP`)
 - **icloud_user** - iCloud account username.
 - **icloud_pass** - iCloud account password.
 
@@ -143,6 +127,22 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 - **ngrok_auth_key** - Auth token from [ngrok](https://dashboard.ngrok.com/) - Only used for `offline_communicator`
 </details>
 
+##### Automation Setup [Optional]:
+- The file ``automation.json`` should be a JSON file of dictionary within a dictionary that looks like the below:
+
+    ```json
+    {
+      "6:00 AM": {
+        "task": "set my bedroom lights to 50%",
+        "status": false
+      },
+      "9:00 PM": {
+        "task": "set my bedroom lights to 5%",
+        "status": false
+      }
+    }
+    ```
+
 ### Coding Standards
 Docstring format: [`Google`](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) <br>
 Styling conventions: [`PEP 8`](https://www.python.org/dev/peps/pep-0008/) <br>
@@ -164,10 +164,15 @@ Clean code with pre-commit hooks: [`flake8`](https://flake8.pycqa.org/en/latest/
 Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, env variables, 
 features' overview and demo videos.
 
-### Runbook
-[![made-with-sphinx-doc](https://img.shields.io/badge/Made%20with-Sphinx-1f425f.svg)](https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html)
+### Pypi Package
+[![pypi-module](https://img.shields.io/badge/Software%20Repository-pypi-1f425f.svg)](https://packaging.python.org/tutorials/packaging-projects/)
 
-https://thevickypedia.github.io/Jarvis/
+[https://pypi.org/project/jarvis-ironman/](https://pypi.org/project/jarvis-ironman/)
+
+### Runbook
+[![made-with-sphinx-doc](https://img.shields.io/badge/Code%20Docs-Sphinx-1f425f.svg)](https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html)
+
+[https://thevickypedia.github.io/Jarvis/](https://thevickypedia.github.io/Jarvis/)
 
 ## License & copyright
 
