@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from email import message_from_bytes
 from email.header import decode_header, make_header
 from imaplib import IMAP4_SSL
+from json import JSONDecodeError
+from json import dump as json_dump
 from json import dumps as json_dumps
 from json import load as json_load
 from json import loads as json_loads
@@ -16,7 +18,7 @@ from platform import platform
 from random import choice, choices, randrange
 from re import IGNORECASE, findall, match, search, sub
 from shutil import disk_usage
-from socket import AF_INET, SOCK_DGRAM, gethostname, socket
+from socket import AF_INET, SOCK_DGRAM, gethostbyname, gethostname, socket
 from ssl import create_default_context
 from string import ascii_letters, digits
 from struct import unpack_from
@@ -59,9 +61,9 @@ from pyrh import Robinhood
 from pyttsx3 import init
 from pytz import timezone
 from randfacts import getFact
-from requests import exceptions as requests_exceptions
-from requests import get
+from requests import get, post
 from requests.auth import HTTPBasicAuth
+from requests.exceptions import ConnectionError
 from search_engine_parser.core.engines.google import Search as GoogleSearch
 from search_engine_parser.core.exceptions import NoResultsOrTrafficError
 from speech_recognition import (Microphone, Recognizer, RequestError,
@@ -577,7 +579,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
         speaker.say("I have trouble accessing the i-cloud API, so I'll be using your I.P address to get your location. "
                     "Please note that this may not be accurate enough for location services.")
         speaker.runAndWait()
-    except requests_exceptions.ConnectionError:
+    except ConnectionError:
         current_lat_, current_lon_ = None, None
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
         speaker.say("I was unable to connect to the internet. Please check your connection settings and retry.")
@@ -1150,15 +1152,16 @@ def locate(phrase: str, no_repeat: bool = False) -> None:
                 device_model = stat['deviceDisplayName']
                 phone_name = stat['name']
                 speaker.say(f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
-            speaker.say("I can also enable lost mode. Would you like to do it?")
-            speaker.runAndWait()
-            phrase_lost = listener(timeout=3, phrase_limit=3)
-            if any(word in phrase_lost.lower() for word in keywords.ok):
-                message = 'Return my phone immediately.'
-                target_device.lost_device(number=icloud_recovery, text=message)
-                speaker.say("I've enabled lost mode on your phone.")
-            else:
-                speaker.say("No action taken sir!")
+            if icloud_recovery:
+                speaker.say("I can also enable lost mode. Would you like to do it?")
+                speaker.runAndWait()
+                phrase_lost = listener(timeout=3, phrase_limit=3)
+                if any(word in phrase_lost.lower() for word in keywords.ok):
+                    message = 'Return my phone immediately.'
+                    target_device.lost_device(number=icloud_recovery, text=message)
+                    speaker.say("I've enabled lost mode on your phone.")
+                else:
+                    speaker.say("No action taken sir!")
 
 
 def music(phrase: str = None) -> None:
@@ -2995,9 +2998,9 @@ def offline_communicator_initiate() -> None:
         - The connection is tunneled through a public facing URL which is used to make ``POST`` requests to Jarvis API.
         - ``uvicorn`` command launches JarvisAPI ``fast.py`` using the same port ``4483``
     """
-    ngrok_status, uvicorn_status = False, False
-    target_scripts = ['forever_ngrok.py', 'uvicorn']
-    for target_script in target_scripts:
+    ngrok_status, api_status = False, False
+    targets = ['forever_ngrok.py', 'fast.py']
+    for target_script in targets:
         pid_check = check_output(f"ps -ef | grep {target_script}", shell=True)
         pid_list = pid_check.decode('utf-8').split('\n')
         for id_ in pid_list:
@@ -3005,19 +3008,24 @@ def offline_communicator_initiate() -> None:
                 if target_script == 'forever_ngrok.py':
                     ngrok_status = True
                     logger.info('An instance of ngrok connection for offline communicator is running already.')
-                elif target_script == 'uvicorn':
-                    uvicorn_status = True
-                    logger.info('An instance of uvicorn application for offline communicator is running already.')
+                elif target_script == 'fast.py':
+                    api_status = True
+                    logger.info('An instance of Jarvis API for offline communicator is running already.')
 
     if not ngrok_status:
-        logger.info('Initiating ngrok connection for offline communicator.')
-        initiate = f'cd {home}/JarvisHelper && source venv/bin/activate && export ENV=1 && python3 {target_scripts[0]}'
-        apple_script('Terminal').do_script(initiate)
+        if os.path.exists(f"{home}/JarvisHelper"):
+            logger.info('Initiating ngrok connection for offline communicator.')
+            initiate = f'cd {home}/JarvisHelper && source venv/bin/activate && export ENV=1 && python {targets[0]}'
+            apple_script('Terminal').do_script(initiate)
+        else:
+            logger.error(f'JarvisHelper is not available to trigger an ngrok tunneling through {offline_port}')
+            endpoint = rf'http:\\{offline_host}:{offline_port}'
+            logger.error(f'However offline communicator can still be accessed via {endpoint}\\offline-communicator '
+                         f'for API calls and {endpoint}\\docs for docs.')
 
-    if not uvicorn_status:
+    if not api_status:
         logger.info('Initiating FastAPI for offline listener.')
-        offline_script = f'cd {os.getcwd()} && source venv/bin/activate && cd api && ' \
-                         'uvicorn fast:app --reload --port=4483'
+        offline_script = f'cd {os.getcwd()} && source venv/bin/activate && cd api && python fast.py'
         apple_script('Terminal').do_script(offline_script)
 
 
@@ -3032,24 +3040,34 @@ def offline_communicator() -> None:
             - I also stop the response from being spoken.
             - ``voice_changer()`` is called as the voice property is reset when ``speaker.stop()`` is used.
 
-        Changes in `pyttsx3`:
+        Changes in ``pyttsx3``:
             - Created a global variable in ``say()`` -> ``pyttsx3/engine.py`` (before proxy) and store the response.
             - Created a new method and return the global variable which I created in ``say()``
-            - The new method (``vig()`` in this case) is called to get the response which is sent as SMS notification.
+            - The method ``text_spoken()`` is called to get the response which is sent as a response.
             - Doing so, avoids changes to all functions within ``conditions()`` to notify the response from Jarvis.
 
+            .. code-block:: python
+
+                def say(self, text, name=None):
+                    global return_this
+                    return_this = text
+                    self.proxy.say(text, name)
+
+                def text_spoken(self):
+                    return return_this
+
         Env Vars:
-            - ``offline_phrase`` - Unique phrase to authenticate the requests coming from an external source.
+            - ``offline_phrase`` - Phrase to authenticate the requests to API. Defaults to ``jarvis``
 
     Notes:
-        More cool stuff:
+        More cool stuff (Done by ``JarvisHelper``):
             - I have linked the ngrok ``public_url`` tunnelling the FastAPI to a JavaScript on my webpage.
             - When a request is submitted, the JavaScript makes a POST call to the API.
             - The API does the authentication and creates the ``offline_request`` file if authenticated.
             - Check it out: `JarvisOffline <https://thevickypedia.com/jarvisoffline>`__
 
     Warnings:
-        - Restarts quietly in case of a ``RuntimeError`` however, the offline request will still be be executed.
+        - Restarts ``Jarvis`` quietly in case of a ``RuntimeError`` however, the offline request will still be executed.
         - This happens when ``speaker`` is stopped while another loop of speaker is in progress by regular interaction.
     """
     while True:
@@ -3066,7 +3084,11 @@ def offline_communicator() -> None:
                     split(command)
                     del os.environ['called_by_offline']  # deletes the env var
                     sys.stdout.write('\r')
-                    response = speaker.vig()
+                    try:
+                        response = speaker.text_spoken()
+                    except AttributeError:
+                        response = "Request processed. Response has not been configured.\n" \
+                                   "Please check: https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator"
                 else:
                     response = 'Received a null request. Please try to resend it'
                 if 'restart' not in command:
@@ -3533,23 +3555,124 @@ def initiator(key_original: str, should_return: bool = False) -> None:
             initialize()
 
 
-def automator(every_1: int = 900, every_2: int = 1800) -> None:
+def rewrite_automator(filename: str, json_object: dict) -> None:
+    """Rewrites the ``automation_file`` with the updated json object.
+
+    Args:
+        filename: Name of the automation source file.
+        json_object: Takes the new json object as a dictionary.
+    """
+    with open(filename, 'w') as file:
+        logger.warning('Data has been modified. Rewriting automation data into JSON file.')
+        json_dump(json_object, file, indent=2)
+
+
+def on_demand_offline_automation(task: str) -> bool:
+    """Makes a ``POST`` call to offline-communicator running on ``localhost`` to execute a said task.
+
+    Args:
+        task: Takes the command to be executed as an argument.
+
+    Returns:
+        bool:
+        Returns a boolean ``True`` if the request was successful.
+    """
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+    }
+
+    data = {
+        'phrase': offline_phrase,
+        'command': task
+    }
+
+    offline_endpoint = f"http://{offline_host}:{offline_port}/offline-communicator"
+    response = post(url=offline_endpoint, headers=headers, data=json_dumps(data))
+    if response.ok:
+        return True
+
+
+def automator(automation_file: str = 'automation.json', every_1: int = 900, every_2: int = 1800) -> None:
     """Place for long-running background threads.
 
     Args:
-        every_1: Triggers every 15 minutes in a dedicated thread.
-        every_2: Triggers every 30 minutes in a dedicated thread.
+        automation_file: Takes the automation filename as an argument.
+        every_1: Triggers every 15 minutes in a dedicated thread, to switch volumes to time based levels.
+        every_2: Triggers every 30 minutes in a dedicated thread, to initiate ``meeting_file_writer``.
+
+    See Also:
+        - The ``automation_file`` should be a JSON file of dictionary within a dictionary that looks like the below:
+
+            .. code-block:: json
+
+                {
+                  "6:00 AM": {
+                    "task": "set my bedroom lights to 50%",
+                    "status": false
+                  },
+                  "9:00 PM": {
+                    "task": "set my bedroom lights to 5%",
+                    "status": false
+                  }
+                }
+
+        - The status for all automations can be set to either ``true`` or ``false``.
+        - Jarvis will swap these flags as necessary, so that the execution doesn't repeat more than once in a minute.
     """
     start_1 = start_2 = time()
     while True:
         if STOPPER.get('status'):
             break
-        if start_1 + every_1 <= time():  # 15 minutes
+        if start_1 + every_1 <= time():
             start_1 = time()
             Thread(target=switch_volumes).start()
         if start_2 + every_2 <= time():
             start_2 = time()
             Thread(target=meeting_file_writer).start()
+
+        if os.path.isfile(automation_file):
+            with open(automation_file) as read_file:
+                try:
+                    automation_data = json_load(read_file)
+                except JSONDecodeError:
+                    logger.error('Invalid file format. '
+                                 'Logging automation data and removing the file to avoid endless errors.\n'
+                                 f'{automation_data}')
+                    os.remove(automation_file)
+                    continue
+
+            for automation_time, automation_info in automation_data.items():
+                try:
+                    datetime.strptime(automation_time, "%I:%M %p")
+                except ValueError:
+                    logger.error(f'Incorrect Datetime format: {automation_time}. '
+                                 'Datetime string should be in the format: 6:00 AM. '
+                                 'Removing the key-value from automation.json')
+                    automation_data.pop(automation_time)
+                    rewrite_automator(filename=automation_file, json_object=automation_data)
+                    break  # Using break instead of continue as python doesn't like dict size change in-between a loop
+
+                exec_task = automation_info.get('task')
+                exec_status = automation_info.get('status')
+
+                if automation_time != datetime.now().strftime("%I:%M %p"):
+                    if exec_status:
+                        logger.info(f"Reverting execution status flag for task: {exec_task} runs at {automation_time}")
+                        automation_data[automation_time]['status'] = False
+                        rewrite_automator(filename=automation_file, json_object=automation_data)
+                    continue
+
+                if exec_status:
+                    continue
+
+                if on_demand_offline_automation(task=exec_task):
+                    logger.info(f"Changing execution status flag for task: {exec_task} runs at {automation_time}")
+                    automation_data[automation_time]['status'] = True
+                    rewrite_automator(filename=automation_file, json_object=automation_data)
+                else:
+                    logger.error('Jarvis API is currently not responding.')
+        sleep(1)
 
 
 def switch_volumes() -> None:
@@ -3893,9 +4016,9 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
         - restart(PC) will restart the machine after getting confirmation.
 
     Warnings:
-        - ``restart(target=!PC)`` will restart the machine without getting any approval as the confirmation is requested
+        - Restarts the machine without approval when ``uptime`` is more than 2 days as the confirmation is requested
             - in `system_vitals <https://thevickypedia.github.io/Jarvis/#jarvis.system_vitals>`__.
-        - This is done only when the system vitals are read, and the uptime is more than 2 days.
+        - This is done ONLY when the system vitals are read, and the uptime is more than 2 days.
 
     Args:
         target:
@@ -4053,6 +4176,21 @@ def starter() -> None:
         load_dotenv(dotenv_path='.env', verbose=True, override=True)  # loads the .env file
 
 
+def initiate_background_threads():
+    """Initiate background threads.
+
+    Methods:
+        - offline_communicator_initiate: Initiates ngrok tunnel and Jarvis API.
+        - offline_communicator: Initiates response checker for Jarvis API.
+        - automator: Initiates automator that executes certain functions at said time.
+        - playsound: Plays a start up sound.
+    """
+    Thread(target=offline_communicator_initiate).start()
+    Thread(target=offline_communicator).start()
+    Thread(target=automator).start()
+    Thread(target=playsound, args=['indicators/initialize.mp3']).start()
+
+
 def stopper() -> None:
     """Sets the key of ``STOPPER`` flag to True."""
     STOPPER['status'] = True
@@ -4080,6 +4218,7 @@ if __name__ == '__main__':
     home = os.path.expanduser('~')  # gets the path to current user profile
 
     meeting_file = 'calendar.scpt'
+    offline_host = gethostbyname('localhost')
     starter()  # initiates crucial functions which needs to be called during start up
 
     git_user = os.environ.get('git_user')
@@ -4095,7 +4234,8 @@ if __name__ == '__main__':
     birthday = os.environ.get('birthday')
     offline_receive_user = os.environ.get('offline_receive_user')
     offline_receive_pass = os.environ.get('offline_receive_pass')
-    offline_phrase = os.environ.get('offline_phrase')
+    offline_phrase = os.environ.get('offline_phrase', 'jarvis')
+    offline_port = int(os.environ.get('offline_port', 4483))
     icloud_user = os.environ.get('icloud_user')
     icloud_pass = os.environ.get('icloud_pass')
     icloud_recovery = os.environ.get('icloud_recovery')
@@ -4190,13 +4330,7 @@ if __name__ == '__main__':
 
     sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
 
-    if os.path.exists(f"{home}/JarvisHelper"):
-        Thread(target=offline_communicator_initiate).start()
-        Thread(target=offline_communicator).start()
-    else:
-        logger.error(f'Unable to initiate OfflineCommunicator since, JarvisHelper is unavailable in {home}')
-    Thread(target=automator).start()
-    Thread(target=playsound, args=['indicators/initialize.mp3']).start()
+    initiate_background_threads()
 
     with Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)

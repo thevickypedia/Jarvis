@@ -3,6 +3,7 @@ from logging import getLogger
 from logging.config import dictConfig
 from mimetypes import guess_type
 from os import environ, path, remove, stat
+from socket import gethostbyname
 from subprocess import check_output
 from threading import Thread
 from time import sleep
@@ -23,6 +24,12 @@ if path.isfile('../.env'):
     load_dotenv(dotenv_path='../.env', verbose=True)
 
 dictConfig(LogConfig().dict())
+
+offline_host = gethostbyname('localhost')
+offline_port = int(environ.get('offline_port', 4483))
+offline_phrase = environ.get('offline_phrase', 'jarvis')
+offline_compatible = offline_compatible()
+robinhood_auth = environ.get('robinhood_auth')
 
 getLogger("uvicorn.access").addFilter(EndpointFilter())
 getLogger("uvicorn.access").addFilter(InvestmentFilter())
@@ -56,8 +63,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-offline_compatible = offline_compatible()
 zone = None
 if path.isfile('../location.yaml'):
     location_details = load(open('../location.yaml'), Loader=FullLoader)
@@ -88,14 +93,15 @@ def run_robinhood() -> None:
         Investment(logger=logger).report_gatherer()
 
 
-# noinspection PyGlobalUndefined
 @app.on_event(event_type='startup')
 async def start_robinhood():
     """Initiates robinhood gatherer in a thread and adds a cron schedule if not present already."""
-    global thread
-    thread = Thread(target=run_robinhood, daemon=True)
-    thread.start()
-    CronScheduler(logger=logger).controller()
+    if robinhood_auth:
+        # noinspection PyGlobalUndefined
+        global thread
+        thread = Thread(target=run_robinhood, daemon=True)
+        thread.start()
+        CronScheduler(logger=logger).controller()
 
 
 @app.on_event(event_type='shutdown')
@@ -150,7 +156,7 @@ def pre_check_offline_communicator(passphrase: str, command: str) -> bool:
     command_split = command.split()
     if passphrase.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
         passphrase = bytes(passphrase, "utf-8").decode(encoding="unicode_escape")
-    if passphrase != environ.get('offline_phrase'):
+    if passphrase != offline_phrase:
         raise HTTPException(status_code=401, detail='Request not authorized.')
     if not get_jarvis_status():
         logger.error(f'Received offline request: {command}, but Jarvis is not running.')
@@ -220,6 +226,14 @@ async def get_favicon() -> FileResponse:
         return FileResponse('favicon.ico')
 
 
+def pre_check_robinhood():
+    """Checks if the env var ``robinhood_auth`` is present. Raises 500 if not."""
+    if not robinhood_auth:
+        raise HTTPException(status_code=500,
+                            detail='Accessing robinhood requires username, password and QR code in env-vars.\n'
+                                   'Please check the read me/wiki page for setup instructions.')
+
+
 @app.post("/robinhood-authenticate")
 def authenticate_robinhood_report_gatherer(feeder: GetData):
     """# Authenticates the request. Uses a two-factor authentication by generating single use tokens.
@@ -238,13 +252,14 @@ def authenticate_robinhood_report_gatherer(feeder: GetData):
             - Also stores the token as an env var "robinhood_token" which is verified in the path "/investment"
             - The token is deleted from env var as soon as it is verified, making page-refresh useless.
     """
+    pre_check_robinhood()
     environ['robinhood_token'] = keygen()
     passcode = feeder.phrase
     if not passcode:
         raise HTTPException(status_code=500, detail='Passcode was not received.')
     if passcode.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
         passcode = bytes(passcode, "utf-8").decode(encoding="unicode_escape")
-    if passcode == environ.get('robinhood_auth'):
+    if passcode == robinhood_auth:
         raise HTTPException(status_code=200, detail=f"?token={environ.get('robinhood_token')}")
     else:
         raise HTTPException(status_code=401, detail='Request not authorized.')
@@ -265,6 +280,7 @@ async def robinhood(token: str = None):
         - The UUID is deleted from env var as soon as the argument is checked for the first time.
         - Page refresh doesn't work because the env var is deleted as soon as it is authed once.
     """
+    pre_check_robinhood()
     if not token:
         raise HTTPException(status_code=400, detail='Request needs to be authorized with a single-use token.')
     if token == environ.get('robinhood_token'):
@@ -284,4 +300,4 @@ async def robinhood(token: str = None):
 if __name__ == '__main__':
     from uvicorn import run
 
-    run(app="fast:app", port=4483, reload=True)
+    run(app="fast:app", host=offline_host, port=offline_port, reload=True)

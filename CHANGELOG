@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+5.1.1 (10/31/2021)
+------------------
+- FEATURE::Jarvis offline communicator has been made public and automations setup
+- Make port number for offline communicator as an env var and default to a value
+- Raise 500 if robinhood auth env var is not found but accessed
+- Initiate robinhood related scripts on API startup only if the env var is present
+- Block ngrok if JarvisHelper is not available but allow api trigger in localhost
+- Setup on-demand automation.json to process some daily process and reduce background threads
+
 5.1.0 (10/30/2021)
 ------------------
 - Include conversation responses to offline compatible

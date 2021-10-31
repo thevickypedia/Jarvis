@@ -76,6 +76,22 @@ IronMan's Jarvis with python
         - [`bash installs.sh`](https://git.io/JBnPq) - Installs the required libraries/modules.
         - [`python3 jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis
 
+##### Automation Setup:
+- The ``automation_file`` should be a JSON file of dictionary within a dictionary that looks like the below:
+
+    ```json
+    {
+      "6:00 AM": {
+        "task": "set my bedroom lights to 50%",
+        "status": false
+      },
+      "9:00 PM": {
+        "task": "set my bedroom lights to 5%",
+        "status": false
+      }
+    }
+    ```
+
 ### ENV Variables
 Environment variables are loaded from a `.env` file using the `python_dotenv` module.
 
@@ -83,7 +99,11 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 <summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary>
 
 ###### Default args
-     Used to retrieve the current location.
+####### [Offline communicator helper](https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator):
+- **offline_port** - Port number to initiate offline communicator on. Defaults to `4483`
+- **offline_phrase** - Secure phrase to be used for authentication purpose. Defaults to `jarvis`
+
+####### Accurate Location: (Defaults to the location based on `Public IP`)
 - **icloud_user** - iCloud account username.
 - **icloud_pass** - iCloud account password.
 
@@ -95,6 +115,8 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 - **maps_api** - API Key for maps from [google](https://developers.google.com/maps/documentation/maps-static/get-api-key)
 - **gmail_user** - Gmail account username to send and read emails.
 - **gmail_pass** - Gmail account password to send and read emails.
+- **offline_receive_user** - Alternate gmail account username to send an SMS. (`gmail_user` can be re-used)
+- **offline_receive_pass** - Alternate gmail account password to send an SMS. (`gmail_pass` can be re-used)
 - **robinhood_user** - Robinhood account username.
 - **robinhood_pass** - Robinhood account password.
 - **robinhood_qr** - Robinhood login [QR code](https://robinhood.com/account/settings)
@@ -118,9 +140,6 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 
 ###### Args for [offline-communicator](https://thevickypedia.com/jarvisoffline)
 > Built for a personalized usage.
-- **offline_receive_user** - Alternate gmail account username to send response from Jarvis as SMS. (`gmail_user` can be re-used)
-- **offline_receive_pass** - Alternate gmail account password to send response from Jarvis as SMS. (`gmail_pass` can be re-used)
-- **offline_phrase** - Secure phrase to be used for authentication purpose.
 - **ngrok_auth_key** - Auth token from [ngrok](https://dashboard.ngrok.com/) - Only used for `offline_communicator`
 </details>
 
