@@ -29,3 +29,13 @@ class Conversation:
 
         about_me = ['tell me about you', 'tell me something about you', 'i would like to get you know you',
                     'tell me about yourself']
+
+
+if __name__ == '__main__':
+    from pprint import pprint
+    all_vars = {}
+    conversation = vars(Conversation)
+    for class_var in conversation:
+        if not class_var.startswith('_'):
+            all_vars.update({class_var: conversation[class_var]})
+    pprint(all_vars)

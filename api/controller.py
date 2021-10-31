@@ -45,7 +45,7 @@ class InvestmentFilter(Filter):
 
 
 def offline_compatible() -> list:
-    """Calls ``Keywords`` class to get the return values of methods that are compatible with ``offline_communicator``.
+    """Calls ``Keywords`` and ``Conversation`` classes to get the variables that are compatible.
 
     See Also:
         - ``offline_communicator`` cannot process commands that require an interaction with the user.
@@ -57,9 +57,11 @@ def offline_compatible() -> list:
         Flat list from a matrix (list of lists) after removing the duplicates.
     """
     path.append('..')
+    from helper_functions.conversation import Conversation
     from helper_functions.keywords import Keywords
     path.remove('..')
     keywords = Keywords
+    conversation = Conversation
     offline_words = [keywords.sleep_control,
                      keywords.exit,
                      keywords.alarm,
@@ -92,7 +94,15 @@ def offline_compatible() -> list:
                      keywords.system_vitals,
                      keywords.volume,
                      keywords.meaning,
-                     keywords.meetings]
+                     keywords.meetings,
+                     conversation.about_me,
+                     conversation.capabilities,
+                     conversation.form,
+                     conversation.greeting,
+                     conversation.languages,
+                     conversation.what,
+                     conversation.whats_up,
+                     conversation.who]
     matrix_to_list = sum(offline_words, []) or [item for sublist in offline_words for item in sublist]
     return [i.strip() for n, i in enumerate(matrix_to_list) if i not in matrix_to_list[n + 1:]]  # remove dupes
 
