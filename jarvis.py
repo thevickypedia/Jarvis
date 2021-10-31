@@ -712,14 +712,16 @@ def weather(phrase: str = None) -> None:
         no_env_vars()
         return
 
-    weather_cond = ['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']
-    place = get_place_from_phrase(phrase=phrase) if phrase else None
-    if any(match_word in phrase.lower() for match_word in weather_cond):
-        if place:
-            weather_condition(msg=phrase, place=place)
-        else:
-            weather_condition(msg=phrase)
-        return
+    place = None
+    if phrase:
+        weather_cond = ['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']
+        place = get_place_from_phrase(phrase=phrase) if phrase else None
+        if any(match_word in phrase.lower() for match_word in weather_cond):
+            if place:
+                weather_condition(msg=phrase, place=place)
+            else:
+                weather_condition(msg=phrase)
+            return
 
     sys.stdout.write('\rGetting your weather info')
     if place:
@@ -1302,6 +1304,7 @@ def meaning(phrase: str) -> None:
                     speaker.say(letter)
                 speaker.runAndWait()
         elif offline:
+            speaker.say(f"I'm sorry sir! I was unable to get meaning for the word: {keyword}")
             return
         else:
             speaker.say("Keyword should be a single word sir! Try again")
@@ -3051,7 +3054,7 @@ def offline_communicator() -> None:
     """
     while True:
         if os.path.isfile('offline_request'):
-            sleep(0.3)  # Read file after half a second for the content to be written
+            sleep(0.2)  # Read file after half a second for the content to be written
             with open('offline_request', 'r') as off_request:
                 command = off_request.read()
             logger.info(f'Received offline input::{command}')
@@ -3066,11 +3069,9 @@ def offline_communicator() -> None:
                     response = speaker.vig()
                 else:
                     response = 'Received a null request. Please try to resend it'
-                current_time_ = datetime.now(timezone(current_tz))
-                dt_string = current_time_.strftime("%A, %B %d, %Y %I:%M:%S %p")
                 if 'restart' not in command:
                     with open('offline_response', 'w') as off_response:
-                        off_response.write(dt_string + '\n\n' + response)
+                        off_response.write(response)
                 speaker.stop()
                 voice_changer()
             except RuntimeError:
@@ -3092,27 +3093,6 @@ def meeting_reader() -> None:
         meeting_info = meeting.read()
         sys.stdout.write(f'\r{meeting_info}')
         speaker.say(meeting_info)
-
-
-def meeting_gatherer() -> None:
-    """Gets return value from ``meetings()`` and writes it to file named ``meetings``.
-
-    This function runs in a dedicated thread every 30 minutes to avoid wait time when meetings information is requested.
-    """
-    logger.info('Meeting gather has been initiated.')
-    while True:
-        if os.path.isfile('meetings') and int(datetime.now().timestamp()) - int(os.stat('meetings').st_mtime) < 1_800:
-            os.remove('meetings')  # removes the file if it is older than 30 minutes
-        data = meetings_gatherer()
-        if data.startswith('You'):
-            with open('meetings', 'w') as gatherer:
-                gatherer.write(data)
-            gatherer.close()
-        elif data == "The calendar Office is unavailable sir!":
-            break
-        if STOPPER.get('status'):
-            break
-        sleep(900)
 
 
 def meeting_app_launcher() -> None:
@@ -3288,7 +3268,8 @@ def get_ssid() -> str:
     if error := process.returncode:
         logger.error(f"Failed to fetch SSID with exit code: {error}\n{err}")
     # noinspection PyTypeChecker
-    return dict(map(str.strip, info.split(': ')) for info in out.decode('utf-8').split('\n')[:-1]).get('SSID')
+    return dict(map(str.strip, info.split(': ')) for info in out.decode('utf-8').splitlines()[:-1] if
+                len(info.split()) == 2).get('SSID')
 
 
 def personal_cloud(phrase: str) -> None:
@@ -3552,21 +3533,48 @@ def initiator(key_original: str, should_return: bool = False) -> None:
             initialize()
 
 
-def automator():
-    """Automatically puts the Mac on sleep and sets the volume to 25% at 9 PM and 50% at 6 AM."""
+def automator(every_1: int = 900, every_2: int = 1800) -> None:
+    """Place for long-running background threads.
+
+    Args:
+        every_1: Triggers every 15 minutes in a dedicated thread.
+        every_2: Triggers every 30 minutes in a dedicated thread.
+    """
+    start_1 = start_2 = time()
     while True:
-        time_now = datetime.now()
-        checker = f'{time_now.strftime("%I")}:{time_now.strftime("%M")} {time_now.strftime("%p")}'
         if STOPPER.get('status'):
             break
-        elif checker == '6:00 AM':
-            volume(level=50)
-            sleep(30)
-        elif checker == '9:00 PM':
-            volume(level=25)
-            pc_sleep()
-            sleep(30)
-        sleep(30)
+        if start_1 + every_1 <= time():  # 15 minutes
+            start_1 = time()
+            Thread(target=switch_volumes).start()
+        if start_2 + every_2 <= time():
+            start_2 = time()
+            Thread(target=meeting_file_writer).start()
+
+
+def switch_volumes() -> None:
+    """Automatically puts the Mac on sleep and sets the volume to 25% at 9 PM and 50% at 6 AM."""
+    time_now = datetime.now()
+    hour = int(time_now.strftime("%I"))
+    am_pm = time_now.strftime("%p")
+    if (hour >= 9 and am_pm == 'PM') or (hour <= 6 and am_pm == 'AM'):
+        volume(level=20)
+        pc_sleep()
+    elif (hour >= 6 and am_pm == 'AM') or (hour <= 9 and am_pm == 'PM'):
+        volume(level=50)
+
+
+def meeting_file_writer() -> None:
+    """Gets return value from ``meetings()`` and writes it to file named ``meetings``.
+
+    This function runs in a dedicated thread every 30 minutes to avoid wait time when meetings information is requested.
+    """
+    if os.path.isfile('meetings') and int(datetime.now().timestamp()) - int(os.stat('meetings').st_mtime) < 1_800:
+        os.remove('meetings')  # removes the file if it is older than 30 minutes
+    data = meetings_gatherer()
+    if data.startswith('You'):
+        with open('meetings', 'w') as gatherer:
+            gatherer.write(data)
 
 
 class Activator:
@@ -4188,7 +4196,6 @@ if __name__ == '__main__':
     else:
         logger.error(f'Unable to initiate OfflineCommunicator since, JarvisHelper is unavailable in {home}')
     Thread(target=automator).start()
-    Thread(target=meeting_gatherer).start()
     Thread(target=playsound, args=['indicators/initialize.mp3']).start()
 
     with Microphone() as source:

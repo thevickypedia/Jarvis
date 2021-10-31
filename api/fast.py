@@ -3,6 +3,7 @@ from logging import getLogger
 from logging.config import dictConfig
 from mimetypes import guess_type
 from os import environ, path, remove, stat
+from subprocess import check_output
 from threading import Thread
 from time import sleep
 
@@ -63,7 +64,21 @@ if path.isfile('../location.yaml'):
     zone = timezone(location_details.get('timezone'))
 
 
-def run_robinhood():
+def get_jarvis_status() -> bool:
+    """Checks process information to see if Jarvis is running.
+
+    Returns:
+        bool:
+        A boolean True flag is jarvis.py is found in the list of current PIDs.
+    """
+    pid_check = check_output("ps -ef | grep jarvis.py", shell=True)
+    pid_list = pid_check.decode('utf-8').splitlines()
+    for pid_info in pid_list:
+        if pid_info and 'grep' not in pid_info and '/bin/sh' not in pid_info:
+            return True
+
+
+def run_robinhood() -> None:
     """Runs in a dedicated thread during startup, if the file was modified earlier than the past hour."""
     if path.isfile(serve_file) and int(datetime.now().timestamp()) - int(stat(serve_file).st_mtime) < 3_600:
         last_modified = datetime.fromtimestamp(int(stat(serve_file).st_mtime)).strftime('%c')
@@ -133,40 +148,40 @@ def jarvis_offline_communicator(input_data: GetData):
     """
     passphrase = input_data.phrase
     command = input_data.command
+    if not get_jarvis_status():
+        logger.error(f'Received offline request: {command}, but Jarvis is not running.')
+        raise HTTPException(status_code=503, detail='Jarvis is currently un-reachable.')
     if passphrase.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
         passphrase = bytes(passphrase, "utf-8").decode(encoding="unicode_escape")
     if passphrase == environ.get('offline_phrase'):
         command_lower = command.lower()
         command_split = command.split()
         if command_lower == 'test':
-            current_time_ = datetime.now(zone)
-            dt_string = current_time_.strftime("%A, %B %d, %Y %I:%M:%S %p")
-            raise HTTPException(status_code=200, detail=f'Test message was received on {dt_string}.')
-        elif 'and' in command_split or 'also' in command_split:
+            raise HTTPException(status_code=200, detail='Test message received.')
+        if 'and' in command_split or 'also' in command_split:
             raise HTTPException(status_code=413,
                                 detail='Jarvis can only process one command at a time via offline communicator.')
-        else:
-            if any(word in command_lower for word in offline_compatible):
-                with open('../offline_request', 'w') as off_request:
-                    off_request.write(command)
-                if 'restart' in command:
-                    raise HTTPException(status_code=200,
-                                        detail='Restarting now sir! I will be up and running momentarily.')
-                while True:
-                    # todo: Consider async functions and await instead of hard-coded sleepers
-                    if path.isfile('../offline_response'):
-                        sleep(0.3)  # Read file after half a second for the content to be written
-                        with open('../offline_response', 'r') as off_response:
-                            response = off_response.read()
-                        if response:
-                            remove('../offline_response')
-                            raise HTTPException(status_code=200, detail=response)
-                        else:
-                            raise HTTPException(status_code=409, detail='Received empty payload from Jarvis.')
-            else:
-                raise HTTPException(status_code=422,
-                                    detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
-                                           'Please try an instruction that does not require an user interaction.')
+        if not any(word in command_lower for word in offline_compatible):
+            raise HTTPException(status_code=422,
+                                detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
+                                       'Please try an instruction that does not require an user interaction.')
+        with open('../offline_request', 'w') as off_request:
+            off_request.write(command)
+        dt_string = datetime.now(zone).strftime("%A, %B %d, %Y %I:%M:%S %p")
+        if 'restart' in command:
+            raise HTTPException(status_code=200,
+                                detail='Restarting now sir! I will be up and running momentarily.')
+        while True:
+            # todo: Consider async functions and await instead of hard-coded sleepers
+            if path.isfile('../offline_response'):
+                sleep(0.2)  # Read file after half a second for the content to be written
+                with open('../offline_response', 'r') as off_response:
+                    response = off_response.read()
+                if response:
+                    remove('../offline_response')
+                    raise HTTPException(status_code=200, detail=f'{dt_string}\n\n{response}')
+                else:
+                    raise HTTPException(status_code=409, detail='Received empty payload from Jarvis.')
     else:
         raise HTTPException(status_code=401, detail='Request not authorized.')
 
