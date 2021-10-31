@@ -253,8 +253,16 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.automator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">automator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.automator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Automatically puts the Mac on sleep and sets the volume to 25% at 9 PM and 50% at 6 AM.</p>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">automator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">every_1</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">every_2</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1800</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.automator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Place for long-running background threads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>every_1</strong> – Triggers every 15 minutes in a dedicated thread.</p></li>
+<li><p><strong>every_2</strong> – Triggers every 30 minutes in a dedicated thread.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -928,8 +936,8 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.meeting_gatherer">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meeting_gatherer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.meeting_gatherer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.meeting_file_writer">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meeting_file_writer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.meeting_file_writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets return value from <code class="docutils literal notranslate"><span class="pre">meetings()</span></code> and writes it to file named <code class="docutils literal notranslate"><span class="pre">meetings</span></code>.</p>
 <p>This function runs in a dedicated thread every 30 minutes to avoid wait time when meetings information is requested.</p>
 </dd></dl>
@@ -1360,6 +1368,12 @@ A condition below assumes two different words as two places but not including tw
 <dt class="sig sig-object py" id="jarvis.stopper">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">stopper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.stopper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the key of <code class="docutils literal notranslate"><span class="pre">STOPPER</span></code> flag to True.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.switch_volumes">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">switch_volumes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.switch_volumes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically puts the Mac on sleep and sets the volume to 25% at 9 PM and 50% at 6 AM.</p>
 </dd></dl>
 
 <dl class="py function">

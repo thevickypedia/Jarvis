@@ -125,3 +125,13 @@ class Keywords:
         kill = ['kill', 'terminate yourself', 'stop running']
 
         shutdown = ['shutdown', 'shut down', 'terminate']
+
+
+if __name__ == '__main__':
+    from pprint import pprint
+    all_vars = {}
+    keywords = vars(Keywords)
+    for class_var in keywords:
+        if not class_var.startswith('_'):
+            all_vars.update({class_var: keywords[class_var]})
+    pprint(all_vars)

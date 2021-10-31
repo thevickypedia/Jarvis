@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.0.9 (10/30/2021)
+------------------
+- Reduce number of long-running threads
+- Check jarvis' status before writing offline_request file
+- Fix SSID info retrieval breaking Jarvis
+
 5.0.8 (10/29/2021)
 ------------------
 - Default all args to `phrase`
