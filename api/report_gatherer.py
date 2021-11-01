@@ -124,7 +124,12 @@ class Investment:
             Returns a tuple of each watch list item and a unicode character to indicate if the price went up or down.
         """
         self.logger.info('Gathering watchlist.')
-        watchlist = (self.rh.get_watchlists())
+        try:
+            watchlist = (self.rh.get_watchlists())
+        except AttributeError:
+            self.logger.error('Watchlist feature for robinhood is not enabled.')
+            self.logger.error('Please refer to the PR: https://github.com/robinhood-unofficial/pyrh/pull/274/files')
+            return '', 'Watchlist feature is currently unstable.'
         r1, r2 = '', ''
         instruments = []
         for data in self.result:
