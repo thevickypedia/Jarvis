@@ -204,7 +204,7 @@ def jarvis_offline_communicator(input_data: GetData):
     while True:
         # todo: Consider async functions and await instead of hard-coded sleepers
         if path.isfile('../offline_response'):
-            sleep(0.2)  # Read file after half a second for the content to be written
+            sleep(0.1)  # Read file after half a second for the content to be written
             with open('../offline_response', 'r') as off_response:
                 response = off_response.read()
             if response:

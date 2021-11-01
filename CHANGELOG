@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+5.1.3 (10/31/2021)
+------------------
+- Reduce one more long-running thread
+- Add offline_communicator to automator
+- Allow offline_communicator without changes to pyttsx3
+- Allow robinhood to run without watchlists
+
 5.1.2 (10/31/2021)
 ------------------
 - Use `difflib.SequenceMatcher` to get the right device to locate
