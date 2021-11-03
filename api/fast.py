@@ -85,9 +85,11 @@ def get_jarvis_status() -> bool:
 
 def run_robinhood() -> None:
     """Runs in a dedicated thread during startup, if the file was modified earlier than the past hour."""
-    if path.isfile(serve_file) and int(datetime.now().timestamp()) - int(stat(serve_file).st_mtime) < 3_600:
-        last_modified = datetime.fromtimestamp(int(stat(serve_file).st_mtime)).strftime('%c')
-        logger.info(f'{serve_file} was generated on {last_modified}.')
+    if path.isfile(serve_file):
+        modified = int(stat(serve_file).st_mtime)
+        logger.info(f"{serve_file} was generated on {datetime.fromtimestamp(modified).strftime('%c')}.")
+        if int(datetime.now().timestamp()) - modified > 3_600:
+            Investment(logger=logger).report_gatherer()
     else:
         logger.info('Initiated robinhood gatherer.')
         Investment(logger=logger).report_gatherer()
@@ -204,7 +206,7 @@ def jarvis_offline_communicator(input_data: GetData):
     while True:
         # todo: Consider async functions and await instead of hard-coded sleepers
         if path.isfile('../offline_response'):
-            sleep(0.1)  # Read file after half a second for the content to be written
+            sleep(0.1)  # Read file after 0.1 second for the content to be written
             with open('../offline_response', 'r') as off_response:
                 response = off_response.read()
             if response:
