@@ -32,6 +32,7 @@ from unicodedata import normalize
 from urllib.request import urlopen
 from webbrowser import open as web_open
 
+import pyttsx3
 from aeosa.aem.aemsend import EventError
 from appscript import app as apple_script
 from appscript.reference import CommandError
@@ -59,7 +60,6 @@ from pyicloud.exceptions import (PyiCloudAPIResponseException,
                                  PyiCloudFailedLoginException)
 from pyicloud.services.findmyiphone import AppleDevice
 from pyrh import Robinhood
-from pyttsx3 import init
 from pytz import timezone
 from randfacts import getFact
 from requests import get, post
@@ -95,11 +95,27 @@ from helper_functions.temperature import Temperature
 from helper_functions.tv_controls import TV
 
 
+# noinspection PyProtectedMember,PyUnresolvedReferences
+def say(text: str, run: bool = False) -> None:
+    """Calls speaker.say to speak a statement from the received text.
+
+    Args:
+        text: Takes the text that has to be spoken as an argument.
+        run: Takes a boolean flag to choose whether or not to run the speaker.say loop.
+    """
+    speaker.say(text=text)
+    text = text.replace('\n', '\t').strip()
+    logger.info(f'Called by: {sys._getframe(1).f_code.co_name} to say::{text}')
+    sys.stdout.write(f"\r{text}")
+    if run:
+        speaker.runAndWait()
+
+
 def no_env_vars():
     """Says a message about permissions when env vars are missing."""
     # noinspection PyProtectedMember,PyUnresolvedReferences
     logger.error(f'Called by: {sys._getframe(1).f_code.co_name}')
-    speaker.say("I don't have permissions sir! Please add the necessary environment variables and ask me to restart!")
+    say(text="I don't have permissions sir! Please add the necessary environment variables and ask me to restart!")
 
 
 def listener(timeout: int, phrase_limit: int, sound: bool = True) -> str:
@@ -173,9 +189,9 @@ def part_of_day() -> str:
 def initialize() -> None:
     """Awakens from sleep mode. ``greet_check`` is to ensure greeting is given only for the first function call."""
     if greet_check.get('status'):
-        speaker.say("What can I do for you?")
+        say(text="What can I do for you?")
     else:
-        speaker.say(f'Good {part_of_day()}.')
+        say(text=f'Good {part_of_day()}.')
         greet_check['status'] = True
     renew()
 
@@ -315,7 +331,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         distance(phrase=converted)
 
     elif any(word in converted_lower for word in conversation.form):
-        speaker.say("I am a program, I'm without form.")
+        say(text="I am a program, I'm without form.")
 
     elif any(word in converted_lower for word in keywords.locate_places):
         locate_places(phrase=converted)
@@ -406,31 +422,31 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         personal_cloud(phrase=converted)
 
     elif any(word in converted_lower for word in conversation.greeting):
-        speaker.say('I am spectacular. I hope you are doing fine too.')
+        say(text='I am spectacular. I hope you are doing fine too.')
 
     elif any(word in converted_lower for word in conversation.capabilities):
-        speaker.say('There is a lot I can do. For example: I can get you the weather at any location, news around '
-                    'you, meanings of words, launch applications, create a to-do list, check your emails, get your '
-                    'system configuration, tell your investment details, locate your phone, find distance between '
-                    'places, set an alarm, play music on smart devices around you, control your TV, tell a joke, send'
-                    ' a message, set reminders, scan and clone your GitHub repositories, and much more. Time to ask,.')
+        say(text='There is a lot I can do. For example: I can get you the weather at any location, news around '
+                 'you, meanings of words, launch applications, create a to-do list, check your emails, get your '
+                 'system configuration, tell your investment details, locate your phone, find distance between '
+                 'places, set an alarm, play music on smart devices around you, control your TV, tell a joke, send'
+                 ' a message, set reminders, scan and clone your GitHub repositories, and much more. Time to ask,.')
 
     elif any(word in converted_lower for word in conversation.languages):
-        speaker.say("Tricky question!. I'm configured in python, and I can speak English.")
+        say(text="Tricky question!. I'm configured in python, and I can speak English.")
 
     elif any(word in converted_lower for word in conversation.whats_up):
-        speaker.say("My listeners are up. There is nothing I cannot process. So ask me anything..")
+        say(text="My listeners are up. There is nothing I cannot process. So ask me anything..")
 
     elif any(word in converted_lower for word in conversation.what):
-        speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
+        say(text="I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
 
     elif any(word in converted_lower for word in conversation.who):
-        speaker.say("I am Jarvis. A virtual assistant designed by Mr.Raauv.")
+        say(text="I am Jarvis. A virtual assistant designed by Mr.Raauv.")
 
     elif any(word in converted_lower for word in conversation.about_me):
-        speaker.say("I am Jarvis. A virtual assistant designed by Mr.Raauv.")
-        speaker.say("I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
-        speaker.say("I can seamlessly take care of your daily tasks, and also help with most of your work!")
+        say(text="I am Jarvis. A virtual assistant designed by Mr.Raauv.")
+        say(text="I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
+        say(text="I can seamlessly take care of your daily tasks, and also help with most of your work!")
 
     elif any(word in converted_lower for word in keywords.sleep_control):
         return sleep_control(phrase=converted)
@@ -458,11 +474,10 @@ def conditions(converted: str, should_return: bool = False) -> bool:
                     sys.stdout.write(f"\r{converted}")
                     if google_maps.has_been_called:
                         google_maps.has_been_called = False
-                        speaker.say("I have also opened a google search for your request.")
+                        say(text="I have also opened a google search for your request.")
                     else:
-                        speaker.say(f"I heard {converted}. Let me look that up.")
-                        speaker.runAndWait()
-                        speaker.say("I have opened a google search for your request.")
+                        say(text=f"I heard {converted}. Let me look that up.", run=True)
+                        say(text="I have opened a google search for your request.")
                     search_query = str(converted).replace(' ', '+')
                     unknown_url = f"https://www.google.com/search?q={search_query}"
                     web_open(unknown_url)
@@ -496,7 +511,7 @@ def ip_info(phrase: str) -> None:
     """
     if 'public' in phrase.lower():
         if not internet_checker():
-            speaker.say("You are not connected to the internet sir!")
+            say(text="You are not connected to the internet sir!")
             return
         if ssid := get_ssid():
             ssid = f'for the connection {ssid} '
@@ -511,8 +526,7 @@ def ip_info(phrase: str) -> None:
     else:
         ip_address = vpn_checker().split(':')[-1]
         output = f"My local IP address for {gethostname()} is {ip_address}"
-    sys.stdout.write(f'\r{output}')
-    speaker.say(output)
+    say(text=output)
 
 
 def unrecognized_dumper(converted: str) -> None:
@@ -577,14 +591,12 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
         # uses latitude and longitude information from your IP's client when unable to connect to icloud
         current_lat_ = st.results.client['lat']
         current_lon_ = st.results.client['lon']
-        speaker.say("I have trouble accessing the i-cloud API, so I'll be using your I.P address to get your location. "
-                    "Please note that this may not be accurate enough for location services.")
-        speaker.runAndWait()
+        say(text="I have trouble accessing the i-cloud API, so I'll be using your I.P address to get your location. "
+                 "Please note that this may not be accurate enough for location services.", run=True)
     except ConnectionError:
         current_lat_, current_lon_ = None, None
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
-        speaker.say("I was unable to connect to the internet. Please check your connection settings and retry.")
-        speaker.runAndWait()
+        say(text="I was unable to connect to the internet. Please check your connection settings and retry.", run=True)
         sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
                          f"\nTotal runtime: {time_converter(perf_counter())}")
         terminator()
@@ -595,7 +607,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
         return float(current_lat_), float(current_lon_), locator.raw['address']
     except (GeocoderUnavailable, GeopyError):
         logger.error('Error retrieving address from latitude and longitude information. Initiating self reboot.')
-        speaker.say('Received an error while retrieving your address sir! I think a restart should fix this.')
+        say(text='Received an error while retrieving your address sir! I think a restart should fix this.')
         restart(quick=True)
 
 
@@ -623,13 +635,13 @@ def current_date() -> None:
         dt_string = dt_string + date_
     else:
         dt_string = dt_string + date_ + ', ' + year
-    speaker.say(f"It's {dt_string}")
+    say(text=f"It's {dt_string}")
     if event and event == 'Birthday':
-        speaker.say(f"It's also your {event} sir!")
+        say(text=f"It's also your {event} sir!")
     elif event:
-        speaker.say(f"It's also {event} sir!")
+        say(text=f"It's also {event} sir!")
     if report.has_been_called or time_travel.has_been_called:
-        speaker.say('The current time is, ')
+        say(text='The current time is, ')
 
 
 def current_time(converted: str = None) -> None:
@@ -656,12 +668,12 @@ def current_time(converted: str = None) -> None:
         dt_string = datetime.now().strftime("%A, %B %d, %Y")
         if date_tz != dt_string:
             date_tz = datetime_zone.strftime("%A, %B %d")
-            speaker.say(f'The current time in {time_location} is {time_tz}, on {date_tz}.')
+            say(text=f'The current time in {time_location} is {time_tz}, on {date_tz}.')
         else:
-            speaker.say(f'The current time in {time_location} is {time_tz}.')
+            say(text=f'The current time in {time_location} is {time_tz}.')
     else:
         c_time = datetime.now().strftime("%I:%M %p")
-        speaker.say(f'{c_time}.')
+        say(text=f'{c_time}.')
 
 
 def webpage(phrase: str or list) -> None:
@@ -683,8 +695,7 @@ def webpage(phrase: str or list) -> None:
     except TypeError:
         host = None
     if not host:
-        speaker.say("Which website shall I open sir?")
-        speaker.runAndWait()
+        say(text="Which website shall I open sir?", run=True)
         converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
@@ -700,7 +711,7 @@ def webpage(phrase: str or list) -> None:
         for web in host:
             web_url = f"https://{web}"
             web_open(web_url)
-        speaker.say(f"I have opened {host}")
+        say(text=f"I have opened {host}")
 
 
 def weather(phrase: str = None) -> None:
@@ -801,8 +812,7 @@ def weather(phrase: str = None) -> None:
         alerts, start_alert, end_alert = None, None, None
     if alerts and start_alert and end_alert:
         output += f' You have a weather alert for {alerts} between {start_alert} and {end_alert}'
-    sys.stdout.write(f"\r{output}")
-    speaker.say(output)
+    say(text=output)
 
 
 def weather_condition(msg: str, place: str = None) -> None:
@@ -888,8 +898,7 @@ def weather_condition(msg: str, place: str = None) -> None:
              f'Sunrise at {sunrise}. Sunset at {sunset}. '
     if alerts and start_alert and end_alert:
         output += f'There is a weather alert for {alerts} between {start_alert} and {end_alert}'
-    sys.stdout.write(f'\r{output}')
-    speaker.say(output)
+    say(text=output)
 
 
 def system_info() -> None:
@@ -906,14 +915,12 @@ def system_info() -> None:
     sys_config = f"You're running {o_system}, with {physical} physical cores and {logical} logical cores. " \
                  f"Your physical drive capacity is {total}. You have used up {used} of space. Your free space is " \
                  f"{free}. Your RAM capacity is {ram}. You are currently utilizing {ram_used} of your memory."
-    sys.stdout.write(f'\r{sys_config}')
-    speaker.say(sys_config)
+    say(text=sys_config)
 
 
 def wikipedia_() -> None:
     """Gets any information from wikipedia using it's API."""
-    speaker.say("Please tell the keyword.")
-    speaker.runAndWait()
+    say(text="Please tell the keyword.", run=True)
     keyword = listener(timeout=3, phrase_limit=5)
     if keyword != 'SR_ERROR':
         if any(word in keyword.lower() for word in keywords.exit):
@@ -924,25 +931,24 @@ def wikipedia_() -> None:
                 result = summary(keyword)
             except wiki_exceptions.DisambiguationError as e:  # checks for the right keyword in case of 1+ matches
                 sys.stdout.write(f'\r{e}')
-                speaker.say('Your keyword has multiple results sir. Please pick any one displayed on your screen.')
-                speaker.runAndWait()
+                say(text='Your keyword has multiple results sir. Please pick any one displayed on your screen.',
+                    run=True)
                 keyword1 = listener(timeout=3, phrase_limit=5)
                 result = summary(keyword1) if keyword1 != 'SR_ERROR' else None
             except wiki_exceptions.PageError:
-                speaker.say(f"I'm sorry sir! I didn't get a response for the phrase: {keyword}. Try again!")
+                say(text=f"I'm sorry sir! I didn't get a response for the phrase: {keyword}. Try again!")
                 return
             # stops with two sentences before reading whole passage
             formatted = '. '.join(result.split('. ')[0:2]) + '.'
-            speaker.say(formatted)
-            speaker.say("Do you want me to continue sir?")  # gets confirmation to read the whole passage
-            speaker.runAndWait()
+            say(text=formatted)
+            say(text="Do you want me to continue sir?", run=True)  # gets confirmation to read the whole passage
             response = listener(timeout=3, phrase_limit=3)
             if response != 'SR_ERROR':
                 if any(word in response.lower() for word in keywords.ok):
-                    speaker.say('. '.join(result.split('. ')[3:]))
+                    say(text='. '.join(result.split('. ')[3:]))
             else:
                 sys.stdout.write("\r")
-                speaker.say("I'm sorry sir, I didn't get your response.")
+                say(text="I'm sorry sir, I didn't get your response.")
 
 
 def news(news_source: str = 'fox') -> None:
@@ -961,15 +967,15 @@ def news(news_source: str = 'fox') -> None:
         all_articles = news_client.get_top_headlines(sources=f'{news_source}-news')
     except newsapi_exception.NewsAPIException:
         all_articles = None
-        speaker.say("I wasn't able to get the news sir! I think the News API broke, you may try after sometime.")
+        say(text="I wasn't able to get the news sir! I think the News API broke, you may try after sometime.")
 
     if all_articles:
-        speaker.say("News around you!")
+        say(text="News around you!")
         for article in all_articles['articles']:
-            speaker.say(article['title'])
+            say(text=article['title'])
         if os.environ.get('called_by_offline'):
             return
-        speaker.say("That's the end of news around you.")
+        say(text="That's the end of news around you.")
 
     if report.has_been_called or time_travel.has_been_called:
         speaker.runAndWait()
@@ -986,16 +992,15 @@ def apps(phrase: str) -> None:
     ignore = ['app', 'application']
     if not keyword or keyword in ignore:
         if offline:
-            speaker.say('I need an app name to open sir!')
+            say(text='I need an app name to open sir!')
             return
-        speaker.say("Which app shall I open sir?")
-        speaker.runAndWait()
+        say(text="Which app shall I open sir?", run=True)
         keyword = listener(timeout=3, phrase_limit=4)
         if keyword != 'SR_ERROR':
             if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
                 return
         else:
-            speaker.say("I didn't quite get that. Try again.")
+            say(text="I didn't quite get that. Try again.")
             return
 
     all_apps = (check_output("ls /Applications/", shell=True))
@@ -1009,16 +1014,16 @@ def apps(phrase: str) -> None:
             break
 
     if not app_check:
-        speaker.say(f"I did not find the app {keyword}. Try again.")
+        say(text=f"I did not find the app {keyword}. Try again.")
         return
     else:
         app_status = os.system(f"open /Applications/'{keyword}' > /dev/null 2>&1")
         keyword = keyword.replace('.app', '')
         if app_status == 256:
-            speaker.say(f"I'm sorry sir! I wasn't able to launch {keyword}. "
-                        f"You might need to check its permissions.")
+            say(text=f"I'm sorry sir! I wasn't able to launch {keyword}. "
+                     f"You might need to check its permissions.")
         else:
-            speaker.say(f"I have opened {keyword}")
+            say(text=f"I have opened {keyword}")
 
 
 def robinhood() -> None:
@@ -1033,21 +1038,18 @@ def robinhood() -> None:
     raw_result = rh.positions()
     result = raw_result['results']
     stock_value = RobinhoodGatherer().watcher(rh, result)
-    sys.stdout.write(f'\r{stock_value}')
-    speaker.say(stock_value)
+    say(text=stock_value)
 
 
 def repeat() -> None:
     """Repeats whatever is heard."""
-    speaker.say("Please tell me what to repeat.")
-    speaker.runAndWait()
+    say(text="Please tell me what to repeat.", run=True)
     keyword = listener(timeout=3, phrase_limit=10)
     if keyword != 'SR_ERROR':
-        sys.stdout.write(f'\r{keyword}')
         if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
             pass
         else:
-            speaker.say(f"I heard {keyword}")
+            say(text=f"I heard {keyword}")
 
 
 def device_selector(converted: str = None) -> AppleDevice or None:
@@ -1069,10 +1071,7 @@ def device_selector(converted: str = None) -> AppleDevice or None:
     icloud_api = PyiCloudService(icloud_user, icloud_pass)
     devices = [device for device in icloud_api.devices]
     if converted:
-        devices_str = []
-        for device in devices:
-            value = str(device).split(':')
-            devices_str.append({value[0].strip(): value[1].strip()})
+        devices_str = [{str(device).split(':')[0].strip(): str(device).split(':')[1].strip()} for device in devices]
         closest_match = [(SequenceMatcher(a=converted, b=key).ratio() + SequenceMatcher(a=converted, b=val).ratio()) / 2
                          for device in devices_str for key, val in device.items()]
         index = closest_match.index(max(closest_match))
@@ -1086,7 +1085,7 @@ def device_selector(converted: str = None) -> AppleDevice or None:
 def location() -> None:
     """Gets the user's current location."""
     city, state, country = location_info['city'], location_info['state'], location_info['country']
-    speaker.say(f"You're at {city} {state}, in {country}")
+    say(text=f"You're at {city} {state}, in {country}")
 
 
 def locate(phrase: str, no_repeat: bool = False) -> None:
@@ -1101,49 +1100,48 @@ def locate(phrase: str, no_repeat: bool = False) -> None:
         return
     sys.stdout.write(f"\rLocating your {target_device}")
     if no_repeat:
-        speaker.say("Would you like to get the location details?")
+        say(text="Would you like to get the location details?")
     else:
         target_device.play_sound()
         before_keyword, keyword, after_keyword = str(target_device).partition(':')  # partitions the hostname info
         if before_keyword == 'Accessory':
             after_keyword = after_keyword.replace("Vignesh’s", "").replace("Vignesh's", "").strip()
-            speaker.say(f"I've located your {after_keyword} sir!")
+            say(text=f"I've located your {after_keyword} sir!")
         else:
-            speaker.say(f"Your {before_keyword} should be ringing now sir!")
-        speaker.say("Would you like to get the location details?")
+            say(text=f"Your {before_keyword} should be ringing now sir!")
+        say(text="Would you like to get the location details?")
     speaker.runAndWait()
     phrase_location = listener(timeout=3, phrase_limit=3)
     if phrase_location == 'SR_ERROR':
         if no_repeat:
             return
-        speaker.say("I didn't quite get that. Try again.")
+        say(text="I didn't quite get that. Try again.")
         locate(phrase=phrase, no_repeat=True)
     else:
         if any(word in phrase_location.lower() for word in keywords.ok):
             ignore_lat, ignore_lon, location_info_ = location_services(target_device)
             lookup = str(target_device).split(':')[0].strip()
             if location_info_ == 'None':
-                speaker.say(f"I wasn't able to locate your {lookup} sir! It is probably offline.")
+                say(text=f"I wasn't able to locate your {lookup} sir! It is probably offline.")
             else:
                 post_code = '"'.join(list(location_info_['postcode'].split('-')[0]))
                 iphone_location = f"Your {lookup} is near {location_info_['road']}, {location_info_['city']} " \
                                   f"{location_info_['state']}. Zipcode: {post_code}, {location_info_['country']}"
-                speaker.say(iphone_location)
+                say(text=iphone_location)
                 stat = target_device.status()
                 bat_percent = f"Battery: {round(stat['batteryLevel'] * 100)} %, " if stat['batteryLevel'] else ''
                 device_model = stat['deviceDisplayName']
                 phone_name = stat['name']
-                speaker.say(f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
+                say(text=f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
             if icloud_recovery:
-                speaker.say("I can also enable lost mode. Would you like to do it?")
-                speaker.runAndWait()
+                say(text="I can also enable lost mode. Would you like to do it?", run=True)
                 phrase_lost = listener(timeout=3, phrase_limit=3)
                 if any(word in phrase_lost.lower() for word in keywords.ok):
                     message = 'Return my phone immediately.'
                     target_device.lost_device(number=icloud_recovery, text=message)
-                    speaker.say("I've enabled lost mode on your phone.")
+                    say(text="I've enabled lost mode on your phone.")
                 else:
-                    speaker.say("No action taken sir!")
+                    say(text="No action taken sir!")
 
 
 def music(phrase: str = None) -> None:
@@ -1161,9 +1159,9 @@ def music(phrase: str = None) -> None:
         else:
             call(["open", chosen])
             sys.stdout.write("\r")
-            speaker.say("Enjoy your music sir!")
+            say(text="Enjoy your music sir!")
     else:
-        speaker.say('No music files were found sir!')
+        say(text='No music files were found sir!')
 
 
 def gmail() -> None:
@@ -1181,22 +1179,24 @@ def gmail() -> None:
         mail.select('inbox')  # choose inbox
     except TimeoutError as TimeOut:
         logger.error(TimeOut)
-        speaker.say("I wasn't able to check your emails sir. You might need to check to logs.")
+        say(text="I wasn't able to check your emails sir. You might need to check to logs.")
         return
 
     return_code, messages = mail.search(None, 'UNSEEN')  # looks for unread emails
     if return_code == 'OK':
         n = len(messages[0].split())
     else:
-        speaker.say("I'm unable access your email sir.")
+        say(text="I'm unable access your email sir.")
         return
     if n == 0:
-        speaker.say("You don't have any emails to catch up sir")
+        say(text="You don't have any emails to catch up sir")
         return
     else:
-        if not offline:
-            speaker.say(f'You have {n} unread emails sir. Do you want me to check it?')
-            speaker.runAndWait()
+        if offline:
+            say(text=f'You have {n} unread emails sir.')
+            return
+        else:
+            say(text=f'You have {n} unread emails sir. Do you want me to check it?', run=True)
         response = listener(timeout=3, phrase_limit=3)
         if response == 'SR_ERROR':
             return
@@ -1234,20 +1234,19 @@ def gmail() -> None:
                         receive = datetime_obj.strftime("on %A, %B %d, at %I:%M %p")
                     sys.stdout.write(f'\rReceived:{receive.strip()}\tSender: {str(sender).strip()}\tSubject: '
                                      f'{subject.strip()}')
-                    speaker.say(f"You have an email from, {sender}, with subject, {subject}, {receive}")
-                    speaker.runAndWait() if not offline else None
+                    say(text=f"You have an email from, {sender}, with subject, {subject}, {receive}", run=True)
 
 
 def flip_a_coin() -> None:
     """Says ``heads`` or ``tails`` from a random choice."""
     playsound('indicators/coin.mp3')
     sleep(0.5)
-    speaker.say(f"""{choice(['You got', 'It landed on', "It's"])} {choice(['heads', 'tails'])} sir!""")
+    say(text=f"""{choice(['You got', 'It landed on', "It's"])} {choice(['heads', 'tails'])} sir!""")
 
 
 def facts() -> None:
     """Tells a random fact."""
-    speaker.say(getFact(False))
+    say(text=getFact(False))
 
 
 def meaning(phrase: str) -> None:
@@ -1260,8 +1259,7 @@ def meaning(phrase: str) -> None:
     offline = os.environ.get('called_by_offline')
     dictionary = PyDictionary()
     if not keyword or keyword == 'word':
-        speaker.say("Please tell a keyword.")
-        speaker.runAndWait()
+        say(text="Please tell a keyword.", run=True)
         response = listener(timeout=3, phrase_limit=3)
         if response != 'SR_ERROR':
             if any(word in response.lower() for word in keywords.exit):
@@ -1278,27 +1276,26 @@ def meaning(phrase: str) -> None:
                 repeated = 'also' if n != 0 else ''
                 n += 1
                 mean = ', '.join(value[0:2])
-                speaker.say(f'{keyword} is {repeated} {insert} {key}, which means {mean}.')
+                say(text=f'{keyword} is {repeated} {insert} {key}, which means {mean}.')
             if offline:
                 return
-            speaker.say(f'Do you wanna know how {keyword} is spelled?')
-            speaker.runAndWait()
+            say(text=f'Do you wanna know how {keyword} is spelled?', run=True)
             response = listener(timeout=3, phrase_limit=3)
             if any(word in response.lower() for word in keywords.ok):
                 for letter in list(keyword.lower()):
-                    speaker.say(letter)
+                    say(text=letter)
                 speaker.runAndWait()
         elif offline:
-            speaker.say(f"I'm sorry sir! I was unable to get meaning for the word: {keyword}")
+            say(text=f"I'm sorry sir! I was unable to get meaning for the word: {keyword}")
             return
         else:
-            speaker.say("Keyword should be a single word sir! Try again")
+            say(text="Keyword should be a single word sir! Try again")
     return
 
 
 def create_db() -> None:
     """Creates a database for to-do list by calling the ``create_db`` function in ``database`` module."""
-    speaker.say(database.create_db())
+    say(text=database.create_db())
     if todo.has_been_called:
         todo.has_been_called = False
         todo()
@@ -1318,12 +1315,12 @@ def todo(no_repeat: bool = False) -> None:
         pass
     elif not os.path.isfile(file_name):
         if os.environ.get('called_by_offline'):
-            speaker.say("Your don't have any items in your to-do list sir!")
+            say(text="Your don't have any items in your to-do list sir!")
             return
         if no_repeat:
-            speaker.say("Would you like to create a database for your to-do list?")
+            say(text="Would you like to create a database for your to-do list?")
         else:
-            speaker.say("You don't have a database created for your to-do list sir. Would you like to spin up one now?")
+            say(text="You don't have a database created for your to-do list sir. Would you like to spin up one now?")
         speaker.runAndWait()
         key = listener(timeout=3, phrase_limit=3)
         if key != 'SR_ERROR':
@@ -1336,7 +1333,7 @@ def todo(no_repeat: bool = False) -> None:
         else:
             if no_repeat:
                 return
-            speaker.say("I didn't quite get that. Try again.")
+            say(text="I didn't quite get that. Try again.")
             todo(no_repeat=True)
     else:
         sys.stdout.write("\rQuerying DB for to-do list..")
@@ -1350,19 +1347,18 @@ def todo(no_repeat: bool = False) -> None:
         sys.stdout.write("\r")
         if result:
             if os.environ.get('called_by_offline'):
-                speaker.say(json_dumps(result))
+                say(text=json_dumps(result))
                 return
-            speaker.say('Your to-do items are')
+            say(text='Your to-do items are')
             for category, item in result.items():  # browses dictionary and stores result in response and says it
                 response = f"{item}, in {category} category."
-                speaker.say(response)
-                sys.stdout.write(f"\r{response}")
+                say(text=response)
         elif report.has_been_called and not time_travel.has_been_called:
-            speaker.say("You don't have any tasks in your to-do list sir.")
+            say(text="You don't have any tasks in your to-do list sir.")
         elif time_travel.has_been_called:
             pass
         else:
-            speaker.say("You don't have any tasks in your to-do list sir.")
+            say(text="You don't have any tasks in your to-do list sir.")
 
     if report.has_been_called or time_travel.has_been_called:
         speaker.runAndWait()
@@ -1374,9 +1370,8 @@ def add_todo() -> None:
     # if database file is not found calls create_db()
     if not os.path.isfile(file_name):
         sys.stdout.write("\r")
-        speaker.say("You don't have a database created for your to-do list sir.")
-        speaker.say("Would you like to spin up one now?")
-        speaker.runAndWait()
+        say(text="You don't have a database created for your to-do list sir.")
+        say(text="Would you like to spin up one now?", run=True)
         key = listener(timeout=3, phrase_limit=3)
         if key != 'SR_ERROR':
             if any(word in key.lower() for word in keywords.ok):
@@ -1385,73 +1380,60 @@ def add_todo() -> None:
                 create_db()
             else:
                 return
-    speaker.say("What's your plan sir?")
-    speaker.runAndWait()
+    say(text="What's your plan sir?", run=True)
     item = listener(timeout=3, phrase_limit=5)
     if item != 'SR_ERROR':
         if 'exit' in item or 'quit' in item or 'Xzibit' in item:
-            speaker.say('Your to-do list has been left intact sir.')
+            say(text='Your to-do list has been left intact sir.')
         else:
-            sys.stdout.write(f"\rItem: {item}")
-            speaker.say(f"I heard {item}. Which category you want me to add it to?")
-            speaker.runAndWait()
+            say(text=f"I heard {item}. Which category you want me to add it to?", run=True)
             category = listener(timeout=3, phrase_limit=3)
             if category == 'SR_ERROR':
                 category = 'Unknown'
             if 'exit' in category or 'quit' in category or 'Xzibit' in category:
-                speaker.say('Your to-do list has been left intact sir.')
+                say(text='Your to-do list has been left intact sir.')
             else:
-                sys.stdout.write(f"\rCategory: {category}")
                 # passes the category and item to uploader() in helper_functions/database.py which updates the database
                 response = database.uploader(category, item)
-                speaker.say(response)
-                speaker.say("Do you want to add anything else to your to-do list?")
-                speaker.runAndWait()
+                say(text=response)
+                say(text="Do you want to add anything else to your to-do list?", run=True)
                 category_continue = listener(timeout=3, phrase_limit=3)
                 if any(word in category_continue.lower() for word in keywords.ok):
                     add_todo()
                 else:
-                    speaker.say('Alright')
+                    say(text='Alright')
 
 
 def delete_todo() -> None:
     """Deletes items from an existing to-do list."""
     sys.stdout.write("\rLooking for to-do database..")
     if not os.path.isfile(file_name):
-        speaker.say("You don't have a database created for your to-do list sir.")
+        say(text="You don't have a database created for your to-do list sir.")
         return
-    speaker.say("Which one should I remove sir?")
-    speaker.runAndWait()
+    say(text="Which one should I remove sir?", run=True)
     item = listener(timeout=3, phrase_limit=5)
     if item != 'SR_ERROR':
         if 'exit' in item or 'quit' in item or 'Xzibit' in item:
             return
         response = database.deleter(keyword=item.lower())
         # if the return message from database starts with 'Looks' it means that the item wasn't matched for deletion
-        sys.stdout.write(f'\r{response}')
-        if response.startswith('Looks'):
-            speaker.say(response)
-            speaker.runAndWait()
-            delete_todo()
-        else:
-            speaker.say(response)
+        say(text=response, run=True)
 
 
 def delete_db() -> None:
     """Deletes the ``tasks.db`` database file after getting confirmation."""
     if not os.path.isfile(file_name):
-        speaker.say('I did not find any database sir.')
+        say(text='I did not find any database sir.')
         return
     else:
-        speaker.say(f'{choice(confirmation)} delete your database?')
-        speaker.runAndWait()
+        say(text=f'{choice(confirmation)} delete your database?', run=True)
         response = listener(timeout=3, phrase_limit=3)
         if response != 'SR_ERROR':
             if any(word in response.lower() for word in keywords.ok):
                 os.remove(file_name)
-                speaker.say("I've removed your database sir.")
+                say(text="I've removed your database sir.")
             else:
-                speaker.say("Your database has been left intact sir.")
+                say(text="Your database has been left intact sir.")
             return
 
 
@@ -1507,14 +1489,14 @@ def distance_controller(starting_point: str = None, destination: str = None) -> 
         destination: Takes the destination place name as optional argument.
     """
     if not destination:
-        speaker.say("Destination please?")
+        say(text="Destination please?")
         if os.environ.get('called_by_offline'):
             return
         speaker.runAndWait()
         destination = listener(timeout=3, phrase_limit=4)
         if destination != 'SR_ERROR':
             if len(destination.split()) > 2:
-                speaker.say("I asked for a destination sir, not a sentence. Try again.")
+                say(text="I asked for a destination sir, not a sentence. Try again.")
                 distance_controller()
             if 'exit' in destination or 'quit' in destination or 'Xzibit' in destination:
                 return
@@ -1544,19 +1526,19 @@ def distance_controller(starting_point: str = None, destination: str = None) -> 
         t_taken = miles / avg_speed
         if miles < avg_speed:
             drive_time = int(t_taken * 60)
-            speaker.say(f"It might take you about {drive_time} minutes to get there sir!")
+            say(text=f"It might take you about {drive_time} minutes to get there sir!")
         else:
             drive_time = ceil(t_taken)
             if drive_time == 1:
-                speaker.say(f"It might take you about {drive_time} hour to get there sir!")
+                say(text=f"It might take you about {drive_time} hour to get there sir!")
             else:
-                speaker.say(f"It might take you about {drive_time} hours to get there sir!")
+                say(text=f"It might take you about {drive_time} hours to get there sir!")
     elif start_check:
-        speaker.say(f"Sir! You're {miles} miles away from {destination}.")
+        say(text=f"Sir! You're {miles} miles away from {destination}.")
         if not locate_places.has_been_called:  # promotes using locate_places() function
-            speaker.say(f"You may also ask where is {destination}")
+            say(text=f"You may also ask where is {destination}")
     else:
-        speaker.say(f"{starting_point} is {miles} miles away from {destination}.")
+        say(text=f"{starting_point} is {miles} miles away from {destination}.")
     return
 
 
@@ -1575,10 +1557,9 @@ def locate_places(phrase: str = None) -> None:
         place = after_keyword.replace(' in', '').strip()
     if not place:
         if offline:
-            speaker.say('I need a location to get you the details sir!')
+            say(text='I need a location to get you the details sir!')
             return
-        speaker.say("Tell me the name of a place!")
-        speaker.runAndWait()
+        say(text="Tell me the name of a place!", run=True)
         converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
@@ -1599,20 +1580,20 @@ def locate_places(phrase: str = None) -> None:
         state = address['state'] if 'state' in address.keys() else None
         country = address['country'] if 'country' in address else None
         if place in country:
-            speaker.say(f"{place} is a country")
+            say(text=f"{place} is a country")
         elif place in (city or county):
-            speaker.say(f"{place} is in {state}" if country == location_info['country'] else f"{place} is in "
-                                                                                             f"{state} in {country}")
+            say(text=f"{place} is in {state}" if country == location_info['country'] else f"{place} is in "
+                                                                                          f"{state} in {country}")
         elif place in state:
-            speaker.say(f"{place} is a state in {country}")
+            say(text=f"{place} is a state in {country}")
         elif (city or county) and state and country:
-            speaker.say(f"{place} is in {city or county}, {state}" if country == location_info['country']
-                        else f"{place} is in {city or county}, {state}, in {country}")
+            say(text=f"{place} is in {city or county}, {state}" if country == location_info['country']
+                else f"{place} is in {city or county}, {state}, in {country}")
         if offline:
             return
         locate_places.has_been_called = True
     except (TypeError, AttributeError):
-        speaker.say(f"{place} is not a real place on Earth sir! Try again.")
+        say(text=f"{place} is not a real place on Earth sir! Try again.")
         if offline:
             return
         locate_places(phrase=None)
@@ -1631,8 +1612,7 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     place = get_place_from_phrase(phrase=phrase)
     place = place.replace('I ', '').strip() if place else None
     if not place:
-        speaker.say("You might want to give a location.")
-        speaker.runAndWait()
+        say(text="You might want to give a location.", run=True)
         converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
             place = get_place_from_phrase(phrase=phrase)
@@ -1640,7 +1620,7 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
             if not place:
                 if no_repeat:
                     return
-                speaker.say("I can't take you to anywhere without a location sir!")
+                say(text="I can't take you to anywhere without a location sir!")
                 directions(phrase=None, no_repeat=True)
             if 'exit' in place or 'quit' in place or 'Xzibit' in place:
                 return
@@ -1661,13 +1641,13 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     start = current_lat, current_lon
     maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
     web_open(maps_url)
-    speaker.say("Directions on your screen sir!")
+    say(text="Directions on your screen sir!")
     if start_country and end_country:
         if match(start_country, end_country, flags=IGNORECASE):
             directions.has_been_called = True
             distance_controller(starting_point=None, destination=place)
         else:
-            speaker.say("You might need a flight to get there!")
+            say(text="You might need a flight to get there!")
     return
 
 
@@ -1698,15 +1678,14 @@ def alarm(phrase: str) -> None:
             open(f'alarm/{hour}_{minute}_{am_pm}.lock', 'a')
             Alarm(hour, minute, am_pm).start()
             if 'wake' in phrase.strip():
-                speaker.say(f"{choice(ack)}! I will wake you up at {hour}:{minute} {am_pm}.")
+                say(text=f"{choice(ack)}! I will wake you up at {hour}:{minute} {am_pm}.")
             else:
-                speaker.say(f"{choice(ack)}! Alarm has been set for {hour}:{minute} {am_pm}.")
-            sys.stdout.write(f"\rAlarm has been set for {hour}:{minute} {am_pm} sir!")
+                say(text=f"{choice(ack)}! Alarm has been set for {hour}:{minute} {am_pm}.")
         else:
-            speaker.say(f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
-                        f"I don't think a time like that exists on Earth.")
+            say(text=f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
+                     f"I don't think a time like that exists on Earth.")
     else:
-        speaker.say('Please tell me a time sir!')
+        say(text='Please tell me a time sir!')
         if os.environ.get('called_by_offline'):
             return
         speaker.runAndWait()
@@ -1728,15 +1707,14 @@ def kill_alarm() -> None:
     [alarm_state.append(file) for file in os.listdir('alarm') if file != '.keep']
     alarm_state.remove('.DS_Store') if '.DS_Store' in alarm_state else None
     if not alarm_state:
-        speaker.say("You have no alarms set sir!")
+        say(text="You have no alarms set sir!")
     elif len(alarm_state) == 1:
         hour, minute, am_pm = alarm_state[0][0:2], alarm_state[0][3:5], alarm_state[0][6:8]
         os.remove(f"alarm/{alarm_state[0]}")
-        speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
+        say(text=f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
     else:
         sys.stdout.write(f"\r{', '.join(alarm_state).replace('.lock', '')}")
-        speaker.say("Please let me know which alarm you want to remove. Current alarms on your screen sir!")
-        speaker.runAndWait()
+        say(text="Please let me know which alarm you want to remove. Current alarms on your screen sir!", run=True)
         converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
             alarm_time = converted.split()[0]
@@ -1751,9 +1729,9 @@ def kill_alarm() -> None:
             am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
             if os.path.exists(f'alarm/{hour}_{minute}_{am_pm}.lock'):
                 os.remove(f"alarm/{hour}_{minute}_{am_pm}.lock")
-                speaker.say(f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
+                say(text=f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
             else:
-                speaker.say(f"I wasn't able to find an alarm at {hour}:{minute} {am_pm}. Try again.")
+                say(text=f"I wasn't able to find an alarm at {hour}:{minute} {am_pm}. Try again.")
                 kill_alarm()
 
 
@@ -1805,9 +1783,8 @@ def google_home(device: str = None, file: str = None) -> None:
         return
 
     if not os.environ.get('called_by_offline'):
-        speaker.say('Scanning your IP range for Google Home devices sir!')
+        say(text='Scanning your IP range for Google Home devices sir!', run=True)
         sys.stdout.write('\rScanning your IP range for Google Home devices..')
-        speaker.runAndWait()
     network_id = '.'.join(network_id.split('.')[0:3])
 
     def ip_scan(host_id: int) -> Tuple[str, str]:
@@ -1839,13 +1816,13 @@ def google_home(device: str = None, file: str = None) -> None:
 
     if not device or not file:
         sys.stdout.write("\r")
-        speaker.say(f"You have {len(devices)} devices in your IP range sir! {comma_separator(list(devices.keys()))}. "
-                    f"You can choose one and ask me to play some music on any of these.")
+        say(text=f"You have {len(devices)} devices in your IP range sir! {comma_separator(list(devices.keys()))}. "
+                 f"You can choose one and ask me to play some music on any of these.")
         return
     else:
         chosen = [value for key, value in devices.items() if key.lower() in device.lower()]
         if not chosen:
-            speaker.say("I don't see any matching devices sir!. Let me help you.")
+            say(text="I don't see any matching devices sir!. Let me help you.")
             google_home()
         for target in chosen:
             file_url = serve_file(file, "audio/mp3")  # serves the file on local host and generates the play url
@@ -1853,15 +1830,16 @@ def google_home(device: str = None, file: str = None) -> None:
             sys.stdout = open(os.devnull, 'w')  # suppresses print statement from "googlehomepush/__init.py__"
             GoogleHome(host=target).play(file_url, "audio/mp3")
             sys.stdout = sys.__stdout__  # removes print statement's suppression above
-        speaker.say("Enjoy your music sir!") if len(chosen) == 1 else \
-            speaker.say(f"That's interesting, you've asked me to play on {len(chosen)} devices at a time. "
-                        f"I hope you'll enjoy this sir.")
-        speaker.runAndWait()
+        if len(chosen) == 1:
+            say(text="Enjoy your music sir!", run=True)
+        else:
+            say(text=f"That's interesting, you've asked me to play on {len(chosen)} devices at a time. "
+                     f"I hope you'll enjoy this sir.", run=True)
 
 
 def jokes() -> None:
     """Uses jokes lib to say chucknorris jokes."""
-    speaker.say(choice([geek, icanhazdad, chucknorris, icndb])())
+    say(text=choice([geek, icanhazdad, chucknorris, icndb])())
 
 
 def reminder(phrase: str) -> None:
@@ -1874,17 +1852,16 @@ def reminder(phrase: str) -> None:
     if not message:
         message = search(' to (.*)', phrase) or search(' about (.*)', phrase)
         if not message:
-            speaker.say('Reminder format should be::Remind me to do something, at some time.')
+            say(text='Reminder format should be::Remind me to do something, at some time.')
             sys.stdout.write('\rReminder format should be::Remind ME to do something, AT some time.')
             return
     extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or findall(
         r'([0-9]+\s?(?:a.m.|p.m.:?))', phrase)
     if not extracted_time:
         if os.environ.get('called_by_offline'):
-            speaker.say('Reminder format should be::Remind me to do something, at some time.')
+            say(text='Reminder format should be::Remind me to do something, at some time.')
             return
-        speaker.say("When do you want to be reminded sir?")
-        speaker.runAndWait()
+        say(text="When do you want to be reminded sir?", run=True)
         phrase = listener(timeout=3, phrase_limit=4)
         if phrase != 'SR_ERROR':
             extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or findall(
@@ -1909,13 +1886,12 @@ def reminder(phrase: str) -> None:
         if int(hour) <= 12 and int(minute) <= 59:
             open(f'reminder/{hour}_{minute}_{am_pm}|{message.replace(" ", "_")}.lock', 'a')
             Reminder(hour, minute, am_pm, message).start()
-            speaker.say(f"{choice(ack)}! I will remind you {to_about} {message}, at {hour}:{minute} {am_pm}.")
-            sys.stdout.write(f"\r{message} at {hour}:{minute} {am_pm}")
+            say(text=f"{choice(ack)}! I will remind you {to_about} {message}, at {hour}:{minute} {am_pm}.")
         else:
-            speaker.say(f"A reminder at {hour}:{minute} {am_pm}? Are you an alien? "
-                        f"I don't think a time like that exists on Earth.")
+            say(text=f"A reminder at {hour}:{minute} {am_pm}? Are you an alien? "
+                     f"I don't think a time like that exists on Earth.")
     else:
-        speaker.say('Reminder format should be::Remind me to do something, at some time.')
+        say(text='Reminder format should be::Remind me to do something, at some time.')
         sys.stdout.write('Reminder format should be::Remind ME to do something, AT some time.')
     return
 
@@ -1956,7 +1932,7 @@ def google_maps(query: str) -> bool:
     else:
         return True
     results = len(required)
-    speaker.say(f"I found {results} results sir!") if results != 1 else None
+    say(text=f"I found {results} results sir!") if results != 1 else None
     start = current_lat, current_lon
     n = 0
     for item in required:
@@ -1981,13 +1957,12 @@ def google_maps(query: str) -> bool:
         else:
             option = 'other'
             next_val = 'How about that?'
-        speaker.say(f"The {option}, {item['Name']}, with {item['Rating']} rating, "
-                    f"on{''.join([j for j in item['Address'] if not j.isdigit()])}, which is approximately "
-                    f"{miles} away.")
-        speaker.say(f"{next_val}")
+        say(text=f"The {option}, {item['Name']}, with {item['Rating']} rating, "
+                 f"on{''.join([j for j in item['Address'] if not j.isdigit()])}, which is approximately "
+                 f"{miles} away.")
+        say(text=f"{next_val}", run=True)
         sys.stdout.write(f"\r{item['Name']} -- {item['Rating']} -- "
                          f"{''.join([j for j in item['Address'] if not j.isdigit()])}")
-        speaker.runAndWait()
         converted = listener(timeout=3, phrase_limit=3)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
@@ -1995,12 +1970,12 @@ def google_maps(query: str) -> bool:
             elif any(word in converted.lower() for word in keywords.ok):
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                 web_open(maps_url)
-                speaker.say("Directions on your screen sir!")
+                say(text="Directions on your screen sir!")
                 return False
             elif results == 1:
                 return False
             elif n == results:
-                speaker.say("I've run out of options sir!")
+                say(text="I've run out of options sir!")
                 return False
             else:
                 continue
@@ -2041,15 +2016,15 @@ def github(phrase: str):
         licensed += 1 if response[i]['license'] else 0
         repos.append({response[i]['name'].replace('_', ' ').replace('-', ' '): response[i]['clone_url']})
     if 'how many' in phrase:
-        speaker.say(f'You have {total} repositories sir, out of which {forked} are forked, {private} are private, '
-                    f'{licensed} are licensed, and {archived} archived.')
+        say(text=f'You have {total} repositories sir, out of which {forked} are forked, {private} are private, '
+                 f'{licensed} are licensed, and {archived} archived.')
     else:
         [result.append(clone_url) if clone_url not in result and search(rf'\b{word}\b', repo.lower()) else None
          for word in phrase.lower().split() for item in repos for repo, clone_url in item.items()]
         if result:
             github_controller(target=result)
         else:
-            speaker.say("Sorry sir! I did not find that repo.")
+            say(text="Sorry sir! I did not find that repo.")
 
 
 def github_controller(target: list) -> None:
@@ -2063,13 +2038,12 @@ def github_controller(target: list) -> None:
     if len(target) == 1:
         os.system(f"cd {home} && git clone -q {target[0]}")
         cloned = target[0].split('/')[-1].replace('.git', '')
-        speaker.say(f"I've cloned {cloned} on your home directory sir!")
+        say(text=f"I've cloned {cloned} on your home directory sir!")
         return
     elif len(target) <= 3:
         newest = [new.split('/')[-1] for new in target]
         sys.stdout.write(f"\r{', '.join(newest)}")
-        speaker.say(f"I found {len(target)} results. On your screen sir! Which one shall I clone?")
-        speaker.runAndWait()
+        say(text=f"I found {len(target)} results. On your screen sir! Which one shall I clone?", run=True)
         converted = listener(timeout=3, phrase_limit=5)
         if converted != 'SR_ERROR':
             if any(word in converted.lower() for word in keywords.exit):
@@ -2082,13 +2056,13 @@ def github_controller(target: list) -> None:
                 item = 3
             else:
                 item = None
-                speaker.say("Only first second or third can be accepted sir! Try again!")
+                say(text="Only first second or third can be accepted sir! Try again!")
                 github_controller(target)
             os.system(f"cd {home} && git clone -q {target[item]}")
             cloned = target[item].split('/')[-1].replace('.git', '')
-            speaker.say(f"I've cloned {cloned} on your home directory sir!")
+            say(text=f"I've cloned {cloned} on your home directory sir!")
     else:
-        speaker.say(f"I found {len(target)} repositories sir! You may want to be more specific.")
+        say(text=f"I found {len(target)} repositories sir! You may want to be more specific.")
 
 
 def notify(user: str, password: str, number: str, body: str) -> None:
@@ -2121,33 +2095,26 @@ def send_sms(phrase: str = None) -> None:
     """
     number = '-'.join([str(s) for s in findall(r'\b\d+\b', phrase)]) if phrase else None
     if not number:
-        speaker.say("Please tell me a number sir!")
-        speaker.runAndWait()
+        say(text="Please tell me a number sir!", run=True)
         number = listener(timeout=3, phrase_limit=5)
         if number != 'SR_ERROR':
             if 'exit' in number or 'quit' in number or 'Xzibit' in number:
                 return
-            else:
-                sys.stdout.write(f'\rNumber: {number}')
     elif len(''.join([str(s) for s in findall(r'\b\d+\b', number)])) != 10:
-        sys.stdout.write(f'\r{number}')
-        speaker.say("I don't think that's a right number sir! Phone numbers are 10 digits. Try again!")
+        say(text="I don't think that's a right number sir! Phone numbers are 10 digits. Try again!")
         send_sms()
     if number and len(''.join([str(s) for s in findall(r'\b\d+\b', number)])) == 10:
-        speaker.say("What would you like to send sir?")
-        speaker.runAndWait()
+        say(text="What would you like to send sir?", run=True)
         body = listener(timeout=3, phrase_limit=5)
         if body != 'SR_ERROR':
-            sys.stdout.write(f'\r{body}::to::{number}')
-            speaker.say(f'{body} to {number}. Do you want me to proceed?')
-            speaker.runAndWait()
+            say(text=f'{body} to {number}. Do you want me to proceed?', run=True)
             converted = listener(timeout=3, phrase_limit=3)
             if converted != 'SR_ERROR':
                 if not any(word in converted.lower() for word in keywords.ok):
-                    speaker.say("Message will not be sent sir!")
+                    say(text="Message will not be sent sir!")
                 else:
                     notify(user=gmail_user, password=gmail_pass, number=number, body=body)
-                    speaker.say("Message has been sent sir!")
+                    say(text="Message has been sent sir!")
                 return
 
 
@@ -2178,17 +2145,17 @@ def television(phrase: str) -> None:
     if vpn_checker().startswith('VPN'):
         return
     elif ('turn off' in phrase_lower or 'shutdown' in phrase_lower or 'shut down' in phrase_lower) and tv_status() != 0:
-        speaker.say("I wasn't able to connect to your TV sir! I guess your TV is powered off already.")
+        say(text="I wasn't able to connect to your TV sir! I guess your TV is powered off already.")
         return
     elif tv_status() != 0:
         Thread(target=wake, args=[tv_mac]).start()  # turns TV on in a thread
-        speaker.say("Looks like your TV is powered off sir! Let me try to turn it back on!")
-        speaker.runAndWait()  # speaks the message to buy some time while the TV is connecting to network
+        # speaks the message to buy some time while the TV is connecting to network
+        say(text="Looks like your TV is powered off sir! Let me try to turn it back on!", run=True)
 
     for i in range(3):
         if tv_status() != 0 and i == 2:  # checks if the TV is turned ON (thrice) even before launching the TV connector
-            speaker.say("I wasn't able to connect to your TV sir! Please make sure you are on the "
-                        "same network as your TV, and your TV is connected to a power source.")
+            say(text="I wasn't able to connect to your TV sir! Please make sure you are on the "
+                     "same network as your TV, and your TV is connected to a power source.")
             return
 
     if not tv:
@@ -2196,54 +2163,52 @@ def television(phrase: str) -> None:
             tv = TV(ip_address=tv_ip, client_key=tv_client_key)
         except ConnectionResetError as error:
             logger.error(f"Failed to connect to the TV. {error}")
-            speaker.say("I was unable to connect to the TV sir! It appears to be a connection issue. "
-                        "You might want to try again later.")
+            say(text="I was unable to connect to the TV sir! It appears to be a connection issue. "
+                     "You might want to try again later.")
             return
         if 'turn on' in phrase_lower or 'connect' in phrase_lower:
-            speaker.say("TV features have been integrated sir!")
+            say(text="TV features have been integrated sir!")
             return
 
     if tv:
         if 'turn on' in phrase_lower or 'connect' in phrase_lower:
-            speaker.say('Your TV is already powered on sir!')
+            say(text='Your TV is already powered on sir!')
         elif 'increase' in phrase_lower:
             tv.increase_volume()
-            speaker.say(f'{choice(ack)}!')
+            say(text=f'{choice(ack)}!')
         elif 'decrease' in phrase_lower or 'reduce' in phrase_lower:
             tv.decrease_volume()
-            speaker.say(f'{choice(ack)}!')
+            say(text=f'{choice(ack)}!')
         elif 'mute' in phrase_lower:
             tv.mute()
-            speaker.say(f'{choice(ack)}!')
+            say(text=f'{choice(ack)}!')
         elif 'pause' in phrase_lower or 'hold' in phrase_lower:
             tv.pause()
-            speaker.say(f'{choice(ack)}!')
+            say(text=f'{choice(ack)}!')
         elif 'resume' in phrase_lower or 'play' in phrase_lower:
             tv.play()
-            speaker.say(f'{choice(ack)}!')
+            say(text=f'{choice(ack)}!')
         elif 'rewind' in phrase_lower:
             tv.rewind()
-            speaker.say(f'{choice(ack)}!')
+            say(text=f'{choice(ack)}!')
         elif 'forward' in phrase_lower:
             tv.forward()
-            speaker.say(f'{choice(ack)}!')
+            say(text=f'{choice(ack)}!')
         elif 'stop' in phrase_lower:
             tv.stop()
-            speaker.say(f'{choice(ack)}!')
+            say(text=f'{choice(ack)}!')
         elif 'set' in phrase_lower:
             vol = int(''.join([str(s) for s in findall(r'\b\d+\b', phrase_exc)]))
-            sys.stdout.write(f'\rRequested volume: {vol}')
             if vol:
                 tv.set_volume(vol)
-                speaker.say(f"I've set the volume to {vol}% sir.")
+                say(text=f"I've set the volume to {vol}% sir.")
             else:
-                speaker.say(f"{vol} doesn't match the right format sir!")
+                say(text=f"{vol} doesn't match the right format sir!")
         elif 'volume' in phrase_lower:
-            speaker.say(f"The current volume on your TV is, {tv.get_volume()}%")
+            say(text=f"The current volume on your TV is, {tv.get_volume()}%")
         elif 'app' in phrase_lower or 'application' in phrase_lower:
             sys.stdout.write(f'\r{tv.list_apps()}')
-            speaker.say('App list on your screen sir!')
-            speaker.runAndWait()
+            say(text='App list on your screen sir!', run=True)
             sleep(5)
         elif 'open' in phrase_lower or 'launch' in phrase_lower:
             app_name = ''
@@ -2251,37 +2216,37 @@ def television(phrase: str) -> None:
                 if word[0].isupper():
                     app_name += word + ' '
             if not app_name:
-                speaker.say("I didn't quite get that.")
+                say(text="I didn't quite get that.")
             else:
                 try:
                     tv.launch_app(app_name.strip())
-                    speaker.say(f"I've launched {app_name} on your TV sir!")
+                    say(text=f"I've launched {app_name} on your TV sir!")
                 except ValueError:
-                    speaker.say(f"I didn't find the app {app_name} on your TV sir!")
+                    say(text=f"I didn't find the app {app_name} on your TV sir!")
         elif "what's" in phrase_lower or 'currently' in phrase_lower:
-            speaker.say(f'{tv.current_app()} is running on your TV.')
+            say(text=f'{tv.current_app()} is running on your TV.')
         elif 'change' in phrase_lower or 'source' in phrase_lower:
             tv_source = ''
             for word in phrase_exc.split():
                 if word[0].isupper():
                     tv_source += word + ' '
             if not tv_source:
-                speaker.say("I didn't quite get that.")
+                say(text="I didn't quite get that.")
             else:
                 try:
                     tv.set_source(tv_source.strip())
-                    speaker.say(f"I've changed the source to {tv_source}.")
+                    say(text=f"I've changed the source to {tv_source}.")
                 except ValueError:
-                    speaker.say(f"I didn't find the source {tv_source} on your TV sir!")
+                    say(text=f"I didn't find the source {tv_source} on your TV sir!")
         elif 'shutdown' in phrase_lower or 'shut down' in phrase_lower or 'turn off' in phrase_lower:
             Thread(target=tv.shutdown).start()
-            speaker.say(f'{choice(ack)}! Turning your TV off.')
+            say(text=f'{choice(ack)}! Turning your TV off.')
             tv = None
         else:
-            speaker.say("I didn't quite get that.")
+            say(text="I didn't quite get that.")
     else:
         phrase = phrase.replace('my', 'your').replace('please', '').replace('will you', '').strip()
-        speaker.say(f"I'm sorry sir! I wasn't able to {phrase}, as the TV state is unknown!")
+        say(text=f"I'm sorry sir! I wasn't able to {phrase}, as the TV state is unknown!")
 
 
 def alpha(text: str) -> bool:
@@ -2314,10 +2279,9 @@ def alpha(text: str) -> bool:
         try:
             response = next(res.results).text.splitlines()[0]
             response = sub(r'(([0-9]+) \|)', '', response).replace(' |', ':').strip()
-            sys.stdout.write(f'\r{response}')
             if response == '(no data available)':
                 return True
-            speaker.say(response)
+            say(text=response)
         except (StopIteration, AttributeError):
             return True
 
@@ -2359,8 +2323,7 @@ def google(query: str, suggestion_count: int = 0) -> bool:
             suggestion = r.json()[1][1]
             suggestion_count += 1
             if suggestion_count >= 3:  # avoids infinite suggestions over the same suggestion
-                speaker.say(r.json()[1][0].replace('=', ''))  # picks the closest match and opens a google search
-                speaker.runAndWait()
+                say(text=r.json()[1][0].replace('=', ''), run=True)  # picks the closest match and opens a google search
                 return False
             else:
                 google(suggestion, suggestion_count)
@@ -2388,9 +2351,7 @@ def google(query: str, suggestion_count: int = 0) -> bool:
         if match_word:
             output = output.replace(match_word.group(), '')
         output = output.replace('\\', ' or ')
-        sys.stdout.write(f'\r{output}')
-        speaker.say(output)
-        speaker.runAndWait()
+        say(text=output, run=True)
         return False
     else:
         return True
@@ -2404,8 +2365,7 @@ def google_search(phrase: str = None) -> None:
     """
     phrase = phrase.split('for')[-1] if 'for' in phrase else None
     if not phrase:
-        speaker.say("Please tell me the search phrase.")
-        speaker.runAndWait()
+        say(text="Please tell me the search phrase.", run=True)
         converted = listener(timeout=3, phrase_limit=5)
         if converted == 'SR_ERROR':
             return
@@ -2416,7 +2376,7 @@ def google_search(phrase: str = None) -> None:
     search_query = str(phrase).replace(' ', '+')
     unknown_url = f"https://www.google.com/search?q={search_query}"
     web_open(unknown_url)
-    speaker.say(f"I've opened up a google search for: {phrase}.")
+    say(text=f"I've opened up a google search for: {phrase}.")
 
 
 def volume(phrase: str = None, level: int = None) -> None:
@@ -2439,7 +2399,7 @@ def volume(phrase: str = None, level: int = None) -> None:
     level = round((8 * level) / 100)
     os.system(f'osascript -e "set Volume {level}"')
     if phrase:
-        speaker.say(f"{choice(ack)}!")
+        say(text=f"{choice(ack)}!")
 
 
 def face_detection() -> None:
@@ -2447,39 +2407,35 @@ def face_detection() -> None:
     sys.stdout.write("\r")
     train_dir = 'train'
     os.mkdir(train_dir) if not os.path.isdir(train_dir) else None
-    speaker.say('Initializing facial recognition. Please smile at the camera for me.')
-    speaker.runAndWait()
+    say(text='Initializing facial recognition. Please smile at the camera for me.', run=True)
     sys.stdout.write('\rLooking for faces to recognize.')
     try:
         result = Face().face_recognition()
     except BlockingIOError:
         logger.error('Unable to access the camera.')
-        speaker.say("I was unable to access the camera. Facial recognition can work only when cameras are "
-                    "present and accessible.")
+        say(text="I was unable to access the camera. Facial recognition can work only when cameras are "
+                 "present and accessible.")
         return
     if not result:
         sys.stdout.write('\rLooking for faces to detect.')
-        speaker.say("No faces were recognized. Switching on to face detection.")
-        speaker.runAndWait()
+        say(text="No faces were recognized. Switching on to face detection.", run=True)
         result = Face().face_detection()
         if not result:
             sys.stdout.write('\rNo faces were recognized nor detected.')
-            speaker.say('No faces were recognized. nor detected. Please check if your camera is working, '
-                        'and look at the camera when you retry.')
+            say(text='No faces were recognized. nor detected. Please check if your camera is working, '
+                     'and look at the camera when you retry.')
             return
         sys.stdout.write('\rNew face has been detected. Like to give it a name?')
-        speaker.say('I was able to detect a face, but was unable to recognize it.')
+        say(text='I was able to detect a face, but was unable to recognize it.')
         os.system('open cv2_open.jpg')
-        speaker.say("I've taken a photo of you. Preview on your screen. Would you like to give it a name, "
-                    "so that I can add it to my database of known list? If you're ready, please tell me a name, "
-                    "or simply say exit.")
-        speaker.runAndWait()
+        say(text="I've taken a photo of you. Preview on your screen. Would you like to give it a name, "
+                 "so that I can add it to my database of known list? If you're ready, please tell me a name, "
+                 "or simply say exit.", run=True)
         phrase = listener(timeout=3, phrase_limit=5)
         if phrase == 'SR_ERROR' or 'exit' in phrase or 'quit' in phrase or 'Xzibit' in phrase:
             os.remove('cv2_open.jpg')
-            speaker.say("I've deleted the image.")
+            say(text="I've deleted the image.", run=True)
         else:
-            sys.stdout.write(f"\r{phrase}")
             phrase = phrase.replace(' ', '_')
             # creates a named directory if it is not found already else simply ignores
             os.system(f'cd {train_dir} && mkdir {phrase}') if not os.path.exists(f'{train_dir}/{phrase}') else None
@@ -2487,9 +2443,9 @@ def face_detection() -> None:
             img_name = f"{phrase}_{c_time}.jpg"  # adds current time to image name to avoid overwrite
             os.rename('cv2_open.jpg', img_name)  # renames the files
             os.system(f"mv {img_name} {train_dir}/{phrase}")  # move files into named directory within train_dir
-            speaker.say(f"Image has been saved as {img_name}. I will be able to recognize {phrase} in the future.")
+            say(text=f"Image has been saved as {img_name}. I will be able to recognize {phrase} in the future.")
     else:
-        speaker.say(f'Hi {result}! How can I be of service to you?')
+        say(text=f'Hi {result}! How can I be of service to you?')
 
 
 def speed_test() -> None:
@@ -2498,17 +2454,15 @@ def speed_test() -> None:
     client_location = client_locator.raw['address']
     city, state = client_location.get('city'), client_location.get('state')
     isp = st.results.client.get('isp').replace(',', '').replace('.', '')
-    sys.stdout.write(f"\rStarting speed test with your ISP: {isp}. Location: {city}, {state}")
-    speaker.say(f"Starting speed test sir! I.S.P: {isp}. Location: {city} {state}")
-    speaker.runAndWait()
+    say(text=f"Starting speed test sir! I.S.P: {isp}. Location: {city} {state}", run=True)
     st.download() and st.upload()
     ping = round(st.results.ping)
     download = size_converter(st.results.download)
     upload = size_converter(st.results.upload)
     sys.stdout.write(f'\rPing: {ping}m/s\tDownload: {download}\tUpload: {upload}')
-    speaker.say(f'Ping rate: {ping} milli seconds.')
-    speaker.say(f'Download speed: {download} per second.')
-    speaker.say(F'Upload speed: {upload} per second.')
+    say(text=f'Ping rate: {ping} milli seconds.')
+    say(text=f'Download speed: {download} per second.')
+    say(text=F'Upload speed: {upload} per second.')
 
 
 def connector(phrase: str, targets: dict) -> bool:
@@ -2531,21 +2485,19 @@ def connector(phrase: str, targets: dict) -> bool:
                 if 'disconnect' in phrase:
                     output = getoutput(f"blueutil --disconnect {target['address']}")
                     if not output:
-                        sys.stdout.write(f"\rDisconnected from {target['name']}")
                         sleep(2)  # included a sleep here, so it avoids voice swapping between devices
-                        speaker.say(f"Disconnected from {target['name']} sir!")
+                        say(text=f"Disconnected from {target['name']} sir!")
                     else:
-                        speaker.say(f"I was unable to disconnect {target['name']} sir!. "
-                                    f"Perhaps it was never connected.")
+                        say(text=f"I was unable to disconnect {target['name']} sir!. "
+                                 f"Perhaps it was never connected.")
                 elif 'connect' in phrase:
                     output = getoutput(f"blueutil --connect {target['address']}")
                     if not output:
-                        sys.stdout.write(f"\rConnected to {target['name']}")
                         sleep(2)  # included a sleep here, so it avoids voice swapping between devices
-                        speaker.say(f"Connected to {target['name']} sir!")
+                        say(text=f"Connected to {target['name']} sir!")
                     else:
-                        speaker.say(f"Unable to connect {target['name']} sir!, please make sure the device is "
-                                    f"turned on and ready to pair.")
+                        say(text=f"Unable to connect {target['name']} sir!, please make sure the device is "
+                                 f"turned on and ready to pair.")
                 break
     return connection_attempt
 
@@ -2560,28 +2512,27 @@ def bluetooth(phrase: str) -> None:
     if 'turn off' in phrase or 'power off' in phrase:
         call("blueutil --power 0", shell=True)
         sys.stdout.write('\rBluetooth has been turned off')
-        speaker.say("Bluetooth has been turned off sir!")
+        say(text="Bluetooth has been turned off sir!")
     elif 'turn on' in phrase or 'power on' in phrase:
         call("blueutil --power 1", shell=True)
         sys.stdout.write('\rBluetooth has been turned on')
-        speaker.say("Bluetooth has been turned on sir!")
+        say(text="Bluetooth has been turned on sir!")
     elif 'disconnect' in phrase and ('bluetooth' in phrase or 'devices' in phrase):
         call("blueutil --power 0", shell=True)
         sleep(2)
         call("blueutil --power 1", shell=True)
-        speaker.say('All bluetooth devices have been disconnected sir!')
+        say(text='All bluetooth devices have been disconnected sir!')
     else:
         sys.stdout.write('\rScanning paired Bluetooth devices')
         paired = getoutput("blueutil --paired --format json")
         paired = json_loads(paired)
         if not connector(phrase=phrase, targets=paired):
             sys.stdout.write('\rScanning UN-paired Bluetooth devices')
-            speaker.say('No connections were established sir, looking for un-paired devices.')
-            speaker.runAndWait()
+            say(text='No connections were established sir, looking for un-paired devices.', run=True)
             unpaired = getoutput("blueutil --inquiry --format json")
             unpaired = json_loads(unpaired)
-            connector(phrase=phrase, targets=unpaired) if unpaired else speaker.say('No un-paired devices found sir! '
-                                                                                    'You may want to be more precise.')
+            connector(phrase=phrase, targets=unpaired) if unpaired else say(text='No un-paired devices found sir! '
+                                                                                 'You may want to be more precise.')
 
 
 def brightness(phrase: str):
@@ -2591,7 +2542,7 @@ def brightness(phrase: str):
         phrase: Takes the phrase spoken as an argument.
     """
     phrase = phrase.lower()
-    speaker.say(choice(ack))
+    say(text=choice(ack))
     if 'set' in phrase or findall(r'\b\d+\b', phrase):
         level = findall(r'\b\d+\b', phrase)  # gets integers from string as a list
         if not level:
@@ -2649,8 +2600,8 @@ def lights(phrase: str) -> None:
 
     def light_switch():
         """Says a message if the physical switch is toggled off."""
-        speaker.say("I guess your light switch is turned off sir! I wasn't able to read the device. "
-                    "Try toggling the switch and ask me to restart myself!")
+        say(text="I guess your light switch is turned off sir! I wasn't able to read the device. "
+                 "Try toggling the switch and ask me to restart myself!")
 
     def turn_off(host: str):
         """Turns off the device.
@@ -2734,27 +2685,27 @@ def lights(phrase: str) -> None:
     if 'turn on' in phrase or 'cool' in phrase or 'white' in phrase:
         warm_light.pop('status') if warm_light.get('status') else None
         tone = 'white' if 'white' in phrase else 'cool'
-        speaker.say(f'{choice(ack)}! Turning on {lights_count} {plural}') if 'turn on' in phrase else \
-            speaker.say(f'{choice(ack)}! Setting {lights_count} {plural} to {tone}!')
+        say(text=f'{choice(ack)}! Turning on {lights_count} {plural}') if 'turn on' in phrase else \
+            say(text=f'{choice(ack)}! Setting {lights_count} {plural} to {tone}!')
         Thread(target=thread_worker, args=[cool]).start()
     elif 'turn off' in phrase:
-        speaker.say(f'{choice(ack)}! Turning off {lights_count} {plural}')
+        say(text=f'{choice(ack)}! Turning off {lights_count} {plural}')
         Thread(target=thread_worker, args=[turn_off]).start()
     elif 'warm' in phrase or 'yellow' in phrase:
         warm_light['status'] = True
-        speaker.say(f'{choice(ack)}! Setting {lights_count} {plural} to yellow!') if 'yellow' in phrase else \
-            speaker.say(f'Sure sir! Setting {lights_count} {plural} to warm!')
+        say(text=f'{choice(ack)}! Setting {lights_count} {plural} to yellow!') if 'yellow' in phrase else \
+            say(text=f'Sure sir! Setting {lights_count} {plural} to warm!')
         Thread(target=thread_worker, args=[warm]).start()
     elif 'red' in phrase:
-        speaker.say(f"{choice(ack)}! I've changed {lights_count} {plural} to red!")
+        say(text=f"{choice(ack)}! I've changed {lights_count} {plural} to red!")
         for light_ip in light_host_id:
             preset(host=light_ip, value=preset_values['red'])
     elif 'blue' in phrase:
-        speaker.say(f"{choice(ack)}! I've changed {lights_count} {plural} to blue!")
+        say(text=f"{choice(ack)}! I've changed {lights_count} {plural} to blue!")
         for light_ip in light_host_id:
             preset(host=light_ip, value=preset_values['blue'])
     elif 'green' in phrase:
-        speaker.say(f"{choice(ack)}! I've changed {lights_count} {plural} to green!")
+        say(text=f"{choice(ack)}! I've changed {lights_count} {plural} to green!")
         for light_ip in light_host_id:
             preset(host=light_ip, value=preset_values['green'])
     elif 'set' in phrase or 'percentage' in phrase or '%' in phrase or 'dim' in phrase \
@@ -2768,12 +2719,12 @@ def lights(phrase: str) -> None:
                 level = int(level[0])
             else:
                 level = 100
-        speaker.say(f"{choice(ack)}! I've set {lights_count} {plural} to {level}%!")
+        say(text=f"{choice(ack)}! I've set {lights_count} {plural} to {level}%!")
         level = round((255 * level) / 100)
         for light_ip in light_host_id:
             lumen(host=light_ip, warm_lights=warm_light.get('status'), rgb=level)
     else:
-        speaker.say(f"I didn't quite get that sir! What do you want me to do to your {plural}?")
+        say(text=f"I didn't quite get that sir! What do you want me to do to your {plural}?")
 
 
 def vpn_checker() -> str:
@@ -2792,8 +2743,8 @@ def vpn_checker() -> str:
         info = json_load(urlopen('https://ipinfo.io/json'))
         sys.stdout.write(f"\rVPN connection is detected to {info.get('ip')} at {info.get('city')}, "
                          f"{info.get('region')} maintained by {info.get('org')}")
-        speaker.say("You have your VPN turned on. Details on your screen sir! Please note that none of the home "
-                    "integrations will work with VPN enabled.")
+        say(text="You have your VPN turned on. Details on your screen sir! Please note that none of the home "
+                 "integrations will work with VPN enabled.")
     return ip_address
 
 
@@ -2823,10 +2774,10 @@ def time_travel() -> None:
     if not os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
             ['Saturday', 'Sunday']:
         meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)
-    speaker.say(f"Good {part_day} Vignesh.")
+    say(text=f"Good {part_day} Vignesh.")
     if part_day == 'Night':
         if event := celebrate():
-            speaker.say(f'Happy {event}!')
+            say(text=f'Happy {event}!')
         return
     current_date()
     current_time()
@@ -2837,13 +2788,12 @@ def time_travel() -> None:
         meeting_reader()
     elif meeting:
         try:
-            speaker.say(meeting.get(timeout=30))
+            say(text=meeting.get(timeout=30))
         except ThreadTimeoutError:
             pass  # skip terminate, close and join thread since the motive is to skip meetings info in case of a timeout
     todo()
     gmail()
-    speaker.say('Would you like to hear the latest news?')
-    speaker.runAndWait()
+    say(text='Would you like to hear the latest news?', run=True)
     phrase = listener(timeout=3, phrase_limit=3)
     if any(word in phrase.lower() for word in keywords.ok):
         news()
@@ -2858,9 +2808,8 @@ def guard_enable() -> None:
         - Notifications will be triggered only after 5 minutes of previous notification.
     """
     logger.info('Enabled Security Mode')
-    speaker.say(f"Enabled security mode sir! I will look out for potential threats and keep you posted. "
-                f"Have a nice {part_of_day()}, and enjoy yourself sir!")
-    speaker.runAndWait()
+    say(text=f"Enabled security mode sir! I will look out for potential threats and keep you posted. "
+             f"Have a nice {part_of_day()}, and enjoy yourself sir!", run=True)
 
     import cv2
     cam_source, cam = None, None
@@ -2893,15 +2842,14 @@ def guard_enable() -> None:
             listened = recognizer.listen(source, timeout=3, phrase_time_limit=10)
             converted = recognizer.recognize_google(listened)
             converted = converted.replace('Jarvis', '').strip()
-            sys.stdout.write(f"\r{converted}")
         except (UnknownValueError, RequestError, WaitTimeoutError):
             pass
 
         if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable):
             logger.info('Disabled security mode')
-            speaker.say(f'Welcome back sir! Good {part_of_day()}.')
+            say(text=f'Welcome back sir! Good {part_of_day()}.')
             if os.path.exists(f'threat/{date_extn}.jpg'):
-                speaker.say("We had a potential threat sir! Please check your email to confirm.")
+                say(text="We had a potential threat sir! Please check your email to confirm.")
             speaker.runAndWait()
             sys.stdout.write('\rDisabled Security Mode')
             break
@@ -3054,7 +3002,6 @@ def offline_communicator(command: str = None) -> None:
         - Restarts ``Jarvis`` quietly in case of a ``RuntimeError`` however, the offline request will still be executed.
         - This happens when ``speaker`` is stopped while another loop of speaker is in progress by regular interaction.
     """
-    logger.info(f'Received offline input::{command}')
     response = None
     try:
         if command:
@@ -3062,10 +3009,9 @@ def offline_communicator(command: str = None) -> None:
             os.environ['called_by_offline'] = '1'  # Write env var so some function can use it
             split(command)
             del os.environ['called_by_offline']  # deletes the env var
-            sys.stdout.write('\r')
             response = DEFAULT_OFFLINE_RESPONSE if DEFAULT_OFFLINE_RESPONSE else speaker.text_spoken()
         else:
-            response = 'Received a null request. Please try to resend it'
+            response = 'Received a null request. Please resend it.'
         if 'restart' not in command:
             with open('offline_response', 'w') as off_response:
                 off_response.write(response)
@@ -3086,8 +3032,7 @@ def meeting_reader() -> None:
     """
     with open('meetings', 'r') as meeting:
         meeting_info = meeting.read()
-        sys.stdout.write(f'\r{meeting_info}')
-        speaker.say(meeting_info)
+        say(text=meeting_info)
 
 
 def meeting_app_launcher() -> None:
@@ -3104,17 +3049,15 @@ def meetings():
         meeting_reader()
     else:
         if os.environ.get('called_by_offline'):
-            speaker.say("Meetings file is not ready yet. Please try again in a minute or two.")
+            say(text="Meetings file is not ready yet. Please try again in a minute or two.")
             return False
         meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)
-        speaker.say("Please give me a moment sir! Let me check your calendar.")
-        speaker.runAndWait()
+        say(text="Please give me a moment sir! Let me check your calendar.", run=True)
         try:
-            speaker.say(meeting.get(timeout=60))
+            say(text=meeting.get(timeout=60), run=True)
         except ThreadTimeoutError:
             logger.error('Unable to read the calendar within 60 seconds.')
-            speaker.say("I wasn't able to read your calendar within the set time limit sir!")
-        speaker.runAndWait()
+            say(text="I wasn't able to read your calendar within the set time limit sir!", run=True)
 
 
 def meetings_gatherer() -> str:
@@ -3187,8 +3130,8 @@ def system_vitals() -> None:
         - If confirmed, invokes `restart <https://thevickypedia.github.io/Jarvis/#jarvis.restart>`__ function.
     """
     if not root_password:
-        speaker.say("You haven't provided a root password for me to read system vitals sir! "
-                    "Add the root password as an environment variable for me to read.")
+        say(text="You haven't provided a root password for me to read system vitals sir! "
+                 "Add the root password as an environment variable for me to read.")
         return
 
     version = hosted_device.get('os_version')
@@ -3216,15 +3159,15 @@ def system_vitals() -> None:
     if cpu_temp:
         cpu = f'Your current average CPU temperature is {format_nos(temperature.c2f(extract_nos(cpu_temp)))}°F. '
         output += cpu
-        speaker.say(cpu)
+        say(text=cpu)
     if gpu_temp:
         gpu = f'GPU temperature is {format_nos(temperature.c2f(extract_nos(gpu_temp)))}°F. '
         output += gpu
-        speaker.say(gpu)
+        say(text=gpu)
     if fan_speed:
         fan = f'Current fan speed is {format_nos(extract_nos(fan_speed))} RPM. '
         output += fan
-        speaker.say(fan)
+        say(text=fan)
 
     restart_time = datetime.fromtimestamp(boot_time())
     second = (datetime.now() - restart_time).total_seconds()
@@ -3232,17 +3175,17 @@ def system_vitals() -> None:
     restart_duration = time_converter(seconds=second)
     output += f'Restarted on: {restart_time} - {restart_duration} ago from now.'
     if os.environ.get('called_by_offline'):
-        speaker.say(output)
+        say(text=output)
         return
     sys.stdout.write(f'\r{output}')
-    speaker.say(f'Your {model} was last booted on {restart_time}. '
-                f'Current boot time is: {restart_duration}.')
+    say(text=f'Your {model} was last booted on {restart_time}. '
+             f'Current boot time is: {restart_duration}.')
     if second >= 172_800:
         if boot_extreme := search('(.*) days', restart_duration):
             warn = int(boot_extreme.group().replace(' days', '').strip())
-            speaker.say(f'Sir! your {model} has been running continuously for more than {warn} days. You must '
-                        f'consider a reboot for better performance. Would you like me to restart it for you sir?')
-            speaker.runAndWait()
+            say(text=f'Sir! your {model} has been running continuously for more than {warn} days. You must '
+                     f'consider a reboot for better performance. Would you like me to restart it for you sir?',
+                run=True)
             response = listener(timeout=3, phrase_limit=3)
             if any(word in response.lower() for word in keywords.ok):
                 logger.info(f'JARVIS::Restarting {hosted_device.get("device")}')
@@ -3277,13 +3220,13 @@ def personal_cloud(phrase: str) -> None:
     if 'enable' in phrase or 'initiate' in phrase or 'kick off' in phrase or \
             'start' in phrase:
         Thread(target=PersonalCloud.enable).start()
-        speaker.say("Personal Cloud has been triggered sir! I will send the login details to your phone number "
-                    "once the server is up and running.")
+        say(text="Personal Cloud has been triggered sir! I will send the login details to your phone number "
+                 "once the server is up and running.")
     elif 'disable' in phrase or 'stop' in phrase:
         Thread(target=PersonalCloud.disable).start()
-        speaker.say(choice(ack))
+        say(text=choice(ack))
     else:
-        speaker.say("I didn't quite get that sir! Please tell me if I should enable or disable your server.")
+        say(text="I didn't quite get that sir! Please tell me if I should enable or disable your server.")
 
 
 class PersonalCloud:
@@ -3423,17 +3366,17 @@ def vpn_server(phrase: str):
     """
     phrase = phrase.lower()
     if vpn_server_check():
-        speaker.say('An operation for VPN Server is already in progress sir! Please wait and retry.')
+        say(text='An operation for VPN Server is already in progress sir! Please wait and retry.')
     elif 'start' in phrase or 'trigger' in phrase or 'initiate' in phrase or \
             'enable' in phrase or 'spin up' in phrase:
         Thread(target=vpn_server_switch, args=['START']).start()
-        speaker.say('VPN Server has been initiated sir! Login details will be sent to you shortly.')
+        say(text='VPN Server has been initiated sir! Login details will be sent to you shortly.')
     elif 'stop' in phrase or 'shut' in phrase or 'close' in phrase or \
             'disable' in phrase:
         Thread(target=vpn_server_switch, args=['STOP']).start()
-        speaker.say('VPN Server will be shutdown sir!')
+        say(text='VPN Server will be shutdown sir!')
     else:
-        speaker.say("I don't understand the request sir! You can ask me to enable or disable the VPN server.")
+        say(text="I don't understand the request sir! You can ask me to enable or disable the VPN server.")
 
 
 def vpn_server_check() -> bool:
@@ -3483,7 +3426,7 @@ def morning() -> None:
     """Checks for the current time of the day and day of the week to trigger a series of morning messages."""
     clock = datetime.now()
     if clock.strftime('%A') not in ['Saturday', 'Sunday'] and int(clock.strftime('%S')) < 10:
-        speaker.say("Good Morning. It's 7 AM.")
+        say(text="Good Morning. It's 7 AM.")
         time_travel.has_been_called = True
         weather()
         time_travel.has_been_called = False
@@ -3509,22 +3452,22 @@ def initiator(key_original: str, should_return: bool = False) -> None:
     if [word for word in key_split if word in time_of_day]:
         time_travel.has_been_called = True
         if event := celebrate():
-            speaker.say(f'Happy {event}!')
+            say(text=f'Happy {event}!')
         if 'night' in key_split or 'goodnight' in key_split:
             Thread(target=pc_sleep).start()
         time_travel()
     elif 'you there' in key:
-        speaker.say(f'{choice(wake_up1)}')
+        say(text=f'{choice(wake_up1)}')
         initialize()
     elif any(word in key for word in wake_up_words):
-        speaker.say(f'{choice(wake_up2)}')
+        say(text=f'{choice(wake_up2)}')
         initialize()
     else:
         converted = ' '.join([i for i in key_original.split() if i.lower() not in ['buddy', 'jarvis', 'sr_error']])
         if converted:
             split(key=converted.strip(), should_return=should_return)
         else:
-            speaker.say(f'{choice(wake_up3)}')
+            say(text=f'{choice(wake_up3)}')
             initialize()
 
 
@@ -3561,7 +3504,10 @@ def on_demand_offline_automation(task: str) -> bool:
     }
 
     offline_endpoint = f"http://{offline_host}:{offline_port}/offline-communicator"
-    response = post(url=offline_endpoint, headers=headers, data=json_dumps(data))
+    try:
+        response = post(url=offline_endpoint, headers=headers, data=json_dumps(data))
+    except ConnectionError:
+        return False
     if response.ok:
         return True
 
@@ -3597,10 +3543,12 @@ def automator(automation_file: str = 'automation.json', every_1: int = 900, ever
     start_1 = start_2 = time()
     while True:
         if os.path.isfile('offline_request'):
-            sleep(0.1)  # Read file after half a second for the content to be written
+            sleep(0.1)  # Read file after 0.1 second for the content to be written
             with open('offline_request') as off_request:
                 request = off_request.read()
+            logger.info(f'Received request: {request}')
             offline_communicator(command=request)
+            sys.stdout.write('\r')
         if start_1 + every_1 <= time():
             start_1 = time()
             Thread(target=switch_volumes).start()
@@ -3633,7 +3581,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 900, ever
                 exec_task = automation_info.get('task')
                 exec_status = automation_info.get('status')
 
-                if automation_time != datetime.now().strftime("%I:%M %p"):
+                if automation_time != datetime.now().strftime("%-I:%M %p"):  # "%-I" to consider 06:05 AM as 6:05 AM
                     if exec_status:
                         logger.info(f"Reverting execution status flag for task: {exec_task} runs at {automation_time}")
                         automation_data[automation_time]['status'] = False
@@ -3642,7 +3590,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 900, ever
 
                 if exec_status:
                     continue
-
+                sys.stdout.write(f'\rExecuting the task: {exec_task}')
                 if on_demand_offline_automation(task=exec_task):
                     logger.info(f"Changing execution status flag for task: {exec_task} runs at {automation_time}")
                     automation_data[automation_time]['status'] = True
@@ -3650,6 +3598,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 900, ever
                 else:
                     logger.error('Jarvis API is currently not responding.')
         if STOPPER.get('status'):
+            logger.warning('Exiting automator since the STOPPER flag was set.')
             break
 
 
@@ -3822,8 +3771,11 @@ def terminator() -> None:
 
     Using this, eliminates the hassle of forcing multiple threads to stop.
     """
-    # noinspection PyUnresolvedReferences,PyProtectedMember
-    os._exit(0)
+    pid_check = check_output("ps -ef | grep jarvis.py", shell=True)
+    pid_list = pid_check.decode('utf-8').splitlines()
+    for pid_info in pid_list:
+        if pid_info and 'grep' not in pid_info and '/bin/sh' not in pid_info:
+            os.system(f'kill -9 {pid_info.split()[1].strip()}')
 
 
 def remove_files() -> None:
@@ -3854,24 +3806,22 @@ def exit_process() -> None:
     if reminders:
         logger.info(f'JARVIS::Deleting Reminders - {reminders}')
         if len(reminders) == 1:
-            speaker.say('You have a pending reminder sir!')
+            say(text='You have a pending reminder sir!')
         else:
-            speaker.say(f'You have {len(reminders)} pending reminders sir!')
+            say(text=f'You have {len(reminders)} pending reminders sir!')
         for key, value in reminders.items():
-            speaker.say(f"{value.replace('_', ' ')} at "
-                        f"{key.replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')}")
+            say(text=f"{value.replace('_', ' ')} at "
+                     f"{key.replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')}")
     if alarms:
         logger.info(f'JARVIS::Deleting Alarms - {alarms}')
         alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
         alarms = alarms.replace('.lock', '').replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')
-        sys.stdout.write(f"\r{alarms}")
-        speaker.say(f'You have a pending alarm at {alarms} sir!')
+        say(text=f'You have a pending alarm at {alarms} sir!')
     if reminders or alarms:
-        speaker.say('This will be removed while shutting down!')
-    speaker.say('Shutting down now sir!')
-    speaker.say(exit_message())
+        say(text='This will be removed while shutting down!')
+    say(text='Shutting down now sir!')
     try:
-        speaker.runAndWait()
+        say(text=exit_message(), run=True)
     except RuntimeError:
         logger.error(f'Received a RuntimeError while self terminating.\n{format_exc()}')
     remove_files()
@@ -3938,7 +3888,7 @@ def pc_sleep() -> None:
     # os.system("""osascript -e 'tell app "System Events" to sleep'""")  # requires restarting Jarvis manually
     os.system("""osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'""")
     if not (report.has_been_called or time_travel.has_been_called):
-        speaker.say(choice(ack))
+        say(text=choice(ack))
 
 
 def stop_terminal() -> None:
@@ -3961,7 +3911,7 @@ def sleep_control(phrase: str) -> bool:
             'screen' in phrase:
         pc_sleep()
     else:
-        speaker.say("Activating sentry mode, enjoy yourself sir!")
+        say(text="Activating sentry mode, enjoy yourself sir!")
         if greet_check:
             greet_check.pop('status')
     return True
@@ -4014,8 +3964,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
             logger.warning(f"ERROR::Cannot restart {hosted_device.get('device')} via offline communicator.")
             return
         if target == 'PC':
-            speaker.say(f"{choice(confirmation)} restart your {hosted_device.get('device')}?")
-            speaker.runAndWait()
+            say(text=f"{choice(confirmation)} restart your {hosted_device.get('device')}?", run=True)
             converted = listener(timeout=3, phrase_limit=3)
         else:
             converted = 'yes'
@@ -4024,7 +3973,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
             call(['osascript', '-e', 'tell app "System Events" to restart'])
             raise KeyboardInterrupt
         else:
-            speaker.say("Machine state is left intact sir!")
+            say(text="Machine state is left intact sir!")
             return
     STOPPER['status'] = True
     logger.info('JARVIS::Restarting Now::STOPPER flag has been set.')
@@ -4032,8 +3981,8 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(perf_counter())}")
     if not quiet:
         try:
-            speaker.say('Restarting now sir! I will be up and running momentarily.')
-            speaker.runAndWait() if not offline else None
+            if not offline:
+                say(text='Restarting now sir! I will be up and running momentarily.', run=True)
         except RuntimeError:
             logger.error(f'Received a RuntimeError while restarting.\n{format_exc()}')
     if quick:
@@ -4053,8 +4002,7 @@ def shutdown(proceed: bool = False) -> None:
         proceed: Boolean value whether or not to get confirmation.
     """
     if not proceed:
-        speaker.say(f"{choice(confirmation)} turn off the machine?")
-        speaker.runAndWait()
+        say(text=f"{choice(confirmation)} turn off the machine?", run=True)
         converted = listener(timeout=3, phrase_limit=3)
     else:
         converted = 'yes'
@@ -4064,7 +4012,7 @@ def shutdown(proceed: bool = False) -> None:
             call(['osascript', '-e', 'tell app "System Events" to shut down'])
             raise KeyboardInterrupt
         else:
-            speaker.say("Machine state is left intact sir!")
+            say(text="Machine state is left intact sir!")
             return
 
 
@@ -4098,28 +4046,27 @@ def voice_changer(phrase: str = None) -> None:
                 voice_default([module_id])  # passing a list as default is tuple and index values are used to reference
                 sys.stdout.write(f'\rVoice module has been re-configured to {module_id}')
                 if not alter_msg:
-                    speaker.say('Voice module has been re-configured sir! Would you like me to retain this?')
+                    say(text='Voice module has been re-configured sir! Would you like me to retain this?')
                     alter_msg = 1
                 elif alter_msg == 1:
-                    speaker.say("Here's an example of one of my other voices sir!. Would you like me to use this one?")
+                    say(text="Here's an example of one of my other voices sir!. Would you like me to use this one?")
                     alter_msg = 2
                 else:
-                    speaker.say('How about this one sir?')
+                    say(text='How about this one sir?')
             else:
-                speaker.say(f'The voice module number {module_id} is not available for your device sir! '
-                            f'You may want to try a module number between 0 and {avail_voices - 1}')
-            speaker.runAndWait()
+                say(text=f'The voice module number {module_id} is not available for your device sir! '
+                         f'You may want to try a module number between 0 and {avail_voices - 1}', run=True)
             keyword = listener(timeout=3, phrase_limit=3)
             if keyword == 'SR_ERROR':
                 voice_default()
-                speaker.say("Sorry sir! I had trouble understanding. I'm back to my default voice.")
+                say(text="Sorry sir! I had trouble understanding. I'm back to my default voice.")
                 return
             elif 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
                 voice_default()
-                speaker.say('Reverting the changes to default voice module sir!')
+                say(text='Reverting the changes to default voice module sir!')
                 return
             elif any(word in keyword.lower() for word in keywords.ok):
-                speaker.say(choice(ack))
+                say(text=choice(ack))
                 return
             elif custom_id := [int(id_) for id_ in findall(r'\b\d+\b', keyword)]:
                 voice_changer(str(custom_id))
@@ -4169,7 +4116,7 @@ def test_offline_responder(test_phrase: str = 'TEST OFFLINE RESPONDER') -> bool:
         Returns ``True`` or ``False`` based on whether the test was successful.
     """
     try:
-        speaker.say(test_phrase)
+        say(text=test_phrase)
         if speaker.text_spoken() == test_phrase:
             logger.info('Verified offline response successfully.')
             return True
@@ -4214,7 +4161,7 @@ if __name__ == '__main__':
     logger.info('JARVIS::Starting Now')
 
     sys.stdout.write('\rVoice ID::Female: 1/17 Male: 0/7')  # Voice ID::reference
-    speaker = init()  # initiates speaker
+    speaker = pyttsx3.init()  # initiates speaker
     recognizer = Recognizer()  # initiates recognizer that uses google's translation
     keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
     conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
@@ -4263,8 +4210,8 @@ if __name__ == '__main__':
         sys.stdout.write(f'\rINTERNET::Connected to {get_ssid()}. Scanning localhost for connected devices.')
     else:
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
-        speaker.say("I was unable to connect to the internet sir! Please check your connection settings and retry.")
-        speaker.runAndWait()
+        say(text="I was unable to connect to the internet sir! Please check your connection settings and retry.",
+            run=True)
         sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
                          f"\nTotal runtime: {time_converter(perf_counter())}")
         terminator()
