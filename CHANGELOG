@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.1.5 (11/04/2021)
+------------------
+- Fix conflicts between automation and offline communicator
+- Reference voice modules with model name instead of ID
+
 5.1.4 (11/02/2021)
 ------------------
 - Move all speaker commands to a single function
