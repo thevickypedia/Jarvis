@@ -1097,7 +1097,7 @@ A condition below assumes two different words as two places but not including tw
 <dt>To replicate a working model for offline communicator:</dt><dd><ul class="simple">
 <li><p>To return the response and send it out as notification, I made some changes to the pyttsx3 module. (below)</p></li>
 <li><p>I also stop the response from being spoken.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">voice_changer()</span></code> is called as the voice property is reset when <code class="docutils literal notranslate"><span class="pre">speaker.stop()</span></code> is used.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">voice_default()</span></code> is called as the voice property is reset when <code class="docutils literal notranslate"><span class="pre">speaker.stop()</span></code> is used.</p></li>
 </ul>
 </dd>
 <dt>Changes in <code class="docutils literal notranslate"><span class="pre">pyttsx3</span></code>:</dt><dd><ul class="simple">
@@ -1447,22 +1447,19 @@ A condition below assumes two different words as two places but not including tw
 <li><p>Loads the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file so that all the necessary credentials and api keys can be accessed as <code class="docutils literal notranslate"><span class="pre">ENV</span> <span class="pre">vars</span></code></p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="jarvis.volume_controller">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">volume_controller</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.volume_controller" title="Permalink to this definition">¶</a></dt>
-<dd><p>To default the master volume 50%.</p>
-</dd></dl>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">``volume_controller():``</span> <span class="pre">To</span> <span class="pre">default</span> <span class="pre">the</span> <span class="pre">master</span> <span class="pre">volume</span> <span class="pre">50%.</span></span></dt>
+<dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="jarvis.voice_changer">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">voice_changer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.voice_changer" title="Permalink to this definition">¶</a></dt>
-<dd><p>To change the voice to default value.</p>
-</dd></dl>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">``voice_default():``</span> <span class="pre">To</span> <span class="pre">change</span> <span class="pre">the</span> <span class="pre">voice</span> <span class="pre">to</span> <span class="pre">default</span> <span class="pre">value.</span></span></dt>
+<dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">clear_logs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
-<dd><p>To purge log files older than 48 hours.</p>
-</dd></dl>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">``clear_logs():``</span> <span class="pre">To</span> <span class="pre">purge</span> <span class="pre">log</span> <span class="pre">files</span> <span class="pre">older</span> <span class="pre">than</span> <span class="pre">48</span> <span class="pre">hours.</span></span></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1476,12 +1473,6 @@ A condition below assumes two different words as two places but not including tw
 <dt class="sig sig-object py" id="jarvis.stopper">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">stopper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.stopper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the key of <code class="docutils literal notranslate"><span class="pre">STOPPER</span></code> flag to True.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.switch_volumes">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">switch_volumes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.switch_volumes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Automatically puts the Mac on sleep and sets the volume to 25% at 9 PM and 50% at 6 AM.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1525,6 +1516,11 @@ A condition below assumes two different words as two places but not including tw
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">terminator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.terminator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.</p>
 <p>Using this, eliminates the hassle of forcing multiple threads to stop.</p>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li><p>os._exit(0)</p></li>
+<li><p>kill -15 <code class="docutils literal notranslate"><span class="pre">PID</span></code></p></li>
+</ul>
 </dd></dl>
 
 <dl class="py function">
@@ -1615,13 +1611,23 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">voice_changer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defaults to a particular voice module.</p>
-<p>Alternatively the user can choose from a variety of voices available for that particular device.</p>
+<dt class="sig sig-object py" id="jarvis.voice_changer">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">voice_changer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.voice_changer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speaks to the user with available voices and prompts the user to choose one.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Initiates changing voices with the volume ID given in statement.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Initiates changing voices with the model name. If none, defaults to <code class="docutils literal notranslate"><span class="pre">Daniel</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.voice_default">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">voice_default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">voice_model</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Daniel'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.voice_default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets voice module to default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>voice_model</strong> – Defaults to <code class="docutils literal notranslate"><span class="pre">Daniel</span></code> in mac.</p>
 </dd>
 </dl>
 </dd></dl>

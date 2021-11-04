@@ -2969,7 +2969,7 @@ def offline_communicator(command: str = None) -> None:
         To replicate a working model for offline communicator:
             - To return the response and send it out as notification, I made some changes to the pyttsx3 module. (below)
             - I also stop the response from being spoken.
-            - ``voice_changer()`` is called as the voice property is reset when ``speaker.stop()`` is used.
+            - ``voice_default()`` is called as the voice property is reset when ``speaker.stop()`` is used.
 
         Changes in ``pyttsx3``:
             - Created a global variable in ``say()`` -> ``pyttsx3/engine.py`` (before proxy) and store the response.
@@ -3016,7 +3016,7 @@ def offline_communicator(command: str = None) -> None:
             with open('offline_response', 'w') as off_response:
                 off_response.write(response)
         speaker.stop()
-        voice_changer()
+        voice_default()
     except RuntimeError:
         if command and not response:
             with open('offline_request', 'w') as off_request:
@@ -3541,6 +3541,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 900, ever
         - Jarvis will swap these flags as necessary, so that the execution doesn't repeat more than once in a minute.
     """
     start_1 = start_2 = time()
+    locker = """osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'"""
     while True:
         if os.path.isfile('offline_request'):
             sleep(0.1)  # Read file after 0.1 second for the content to be written
@@ -3549,14 +3550,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 900, ever
             logger.info(f'Received request: {request}')
             offline_communicator(command=request)
             sys.stdout.write('\r')
-        if start_1 + every_1 <= time():
-            start_1 = time()
-            Thread(target=switch_volumes).start()
-        if start_2 + every_2 <= time():
-            start_2 = time()
-            Thread(target=meeting_file_writer).start()
-
-        if os.path.isfile(automation_file):
+        elif os.path.isfile(automation_file):
             with open(automation_file) as read_file:
                 try:
                     automation_data = json_load(read_file)
@@ -3597,21 +3591,16 @@ def automator(automation_file: str = 'automation.json', every_1: int = 900, ever
                     rewrite_automator(filename=automation_file, json_object=automation_data)
                 else:
                     logger.error('Jarvis API is currently not responding.')
+        if start_1 + every_1 <= time():
+            start_1 = time()
+            Thread(target=decrease_brightness).start()
+            os.system(locker)
+        if start_2 + every_2 <= time():
+            start_2 = time()
+            Thread(target=meeting_file_writer).start()
         if STOPPER.get('status'):
             logger.warning('Exiting automator since the STOPPER flag was set.')
             break
-
-
-def switch_volumes() -> None:
-    """Automatically puts the Mac on sleep and sets the volume to 25% at 9 PM and 50% at 6 AM."""
-    time_now = datetime.now()
-    hour = int(time_now.strftime("%I"))
-    am_pm = time_now.strftime("%p")
-    if (hour >= 9 and am_pm == 'PM') or (hour <= 6 and am_pm == 'AM'):
-        volume(level=20)
-        pc_sleep()
-    elif (hour >= 6 and am_pm == 'AM') or (hour <= 9 and am_pm == 'PM'):
-        volume(level=50)
 
 
 def meeting_file_writer() -> None:
@@ -3770,12 +3759,16 @@ def terminator() -> None:
     """Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.
 
     Using this, eliminates the hassle of forcing multiple threads to stop.
+
+    Examples:
+        - os._exit(0)
+        - kill -15 ``PID``
     """
     pid_check = check_output("ps -ef | grep jarvis.py", shell=True)
     pid_list = pid_check.decode('utf-8').splitlines()
     for pid_info in pid_list:
         if pid_info and 'grep' not in pid_info and '/bin/sh' not in pid_info:
-            os.system(f'kill -9 {pid_info.split()[1].strip()}')
+            os.system(f'kill -15 {pid_info.split()[1].strip()}')
 
 
 def remove_files() -> None:
@@ -4016,63 +4009,55 @@ def shutdown(proceed: bool = False) -> None:
             return
 
 
-def voice_changer(phrase: str = None) -> None:
-    """Defaults to a particular voice module.
-
-    Alternatively the user can choose from a variety of voices available for that particular device.
+# noinspection PyTypeChecker,PyUnresolvedReferences
+def voice_default(voice_model: str = 'Daniel') -> None:
+    """Sets voice module to default.
 
     Args:
-        phrase: Initiates changing voices with the volume ID given in statement.
+        voice_model: Defaults to ``Daniel`` in mac.
     """
-    alter_msg = 0
     voices = speaker.getProperty("voices")  # gets the list of voices available
-    # noinspection PyTypeChecker,PyUnresolvedReferences
-    avail_voices = len(voices)
+    for ind_d, voice_d in enumerate(voices):
+        if voice_d.name == voice_model:
+            sys.stdout.write(f'\rVoice module has been re-configured to {ind_d}::{voice_d.name}')
+            speaker.setProperty("voice", voices[ind_d].id)
+            return
 
-    # noinspection PyUnresolvedReferences
-    def voice_default(voice_id=(7, 0)) -> None:  # default values set as tuple
-        """Sets default voice module number.
 
-        Args:
-            voice_id: Default voice ID.
-        """
-        speaker.setProperty("voice", voices[voice_id[0]].id)  # voice module #7 for MacOS
+# noinspection PyTypeChecker,PyUnresolvedReferences
+def voice_changer(phrase: str = None) -> None:
+    """Speaks to the user with available voices and prompts the user to choose one.
 
-    if phrase:
-        if not (distribution := [int(s) for s in findall(r'\b\d+\b', phrase)]):  # walrus on if not distribution
-            distribution = range(avail_voices)
-        for module_id in distribution:
-            if module_id < avail_voices:
-                voice_default([module_id])  # passing a list as default is tuple and index values are used to reference
-                sys.stdout.write(f'\rVoice module has been re-configured to {module_id}')
-                if not alter_msg:
-                    say(text='Voice module has been re-configured sir! Would you like me to retain this?')
-                    alter_msg = 1
-                elif alter_msg == 1:
-                    say(text="Here's an example of one of my other voices sir!. Would you like me to use this one?")
-                    alter_msg = 2
-                else:
-                    say(text='How about this one sir?')
-            else:
-                say(text=f'The voice module number {module_id} is not available for your device sir! '
-                         f'You may want to try a module number between 0 and {avail_voices - 1}', run=True)
-            keyword = listener(timeout=3, phrase_limit=3)
-            if keyword == 'SR_ERROR':
-                voice_default()
-                say(text="Sorry sir! I had trouble understanding. I'm back to my default voice.")
-                return
-            elif 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
-                voice_default()
-                say(text='Reverting the changes to default voice module sir!')
-                return
-            elif any(word in keyword.lower() for word in keywords.ok):
-                say(text=choice(ack))
-                return
-            elif custom_id := [int(id_) for id_ in findall(r'\b\d+\b', keyword)]:
-                voice_changer(str(custom_id))
-                break
-    else:
+    Args:
+        phrase: Initiates changing voices with the model name. If none, defaults to ``Daniel``
+    """
+    if not phrase:
         voice_default()
+        return
+
+    voices = speaker.getProperty("voices")  # gets the list of voices available
+    choices_to_say = ['My voice module has been reconfigured. Would you like me to retain this?',
+                      "Here's an example of one of my other voices. Would you like me to use this one?",
+                      'How about this one?']
+
+    for ind, voice in enumerate(voices):
+        speaker.setProperty("voice", voices[ind].id)
+        speaker.say(f'I am {voice.name} sir!')
+        sys.stdout.write(f'\rVoice module has been re-configured to {ind}::{voice.name}')
+        speaker.say(choices_to_say[ind]) if ind < len(choices_to_say) else speaker.say(choice(choices_to_say))
+        speaker.runAndWait()
+        keyword = listener(timeout=3, phrase_limit=3)
+        if keyword == 'SR_ERROR':
+            voice_default()
+            speaker.say(text="Sorry sir! I had trouble understanding. I'm back to my default voice.")
+            return
+        elif 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
+            voice_default()
+            speaker.say(text='Reverting the changes to default voice module sir!')
+            return
+        elif any(word in keyword.lower() for word in keywords.ok):
+            speaker.say(text=choice(ack))
+            return
 
 
 def clear_logs() -> None:
@@ -4087,12 +4072,12 @@ def starter() -> None:
     - Loads the ``.env`` file so that all the necessary credentials and api keys can be accessed as ``ENV vars``
 
     Methods:
-        volume_controller(): To default the master volume 50%.
-        voice_changer(): To change the voice to default value.
-        clear_logs(): To purge log files older than 48 hours.
+        ``volume_controller():`` To default the master volume 50%.
+        ``voice_default():`` To change the voice to default value.
+        ``clear_logs():`` To purge log files older than 48 hours.
     """
     volume(level=50)
-    voice_changer()
+    voice_default()
     clear_logs()
     meeting_app_launcher()
 
