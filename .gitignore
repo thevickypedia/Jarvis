@@ -32,9 +32,9 @@ threat
 # Storage for location details to reuse
 location.yaml
 
-# .lock files for Alarms and Reminders
-alarm/*.lock
-reminder/*.lock
+# .keep files for Alarms and Reminders
+alarm
+reminder
 
 # sphinx docs builder within doc_generator
 _build

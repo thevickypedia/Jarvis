@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+5.1.8 (11/06/2021)
+------------------
+- Remove super class for alarms and reminders
+- Add the alarm and reminder operation to automator
+- Create directory for alarm and reminder on the go
+- Log request and response from one place at conditions and speak
+
 5.1.7 (11/05/2021)
 ------------------
 - FEATURE::No special changes required for offline communicator
