@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.1.7 (11/05/2021)
+------------------
+- FEATURE::No special changes required for offline communicator
+- text_spoken dict will handle the response when a text is spoken
+- Remove speaker.runAndWait() and move it to say()
+
 5.1.6 (11/05/2021)
 ------------------
 - Bug Fix: Don't read and write offline file in a single thread
