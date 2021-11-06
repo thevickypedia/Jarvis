@@ -1094,37 +1094,12 @@ A condition below assumes two different words as two places but not including tw
 </ul>
 </dd>
 </dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl>
-<dt>To replicate a working model for offline communicator:</dt><dd><ul class="simple">
-<li><p>To return the response and send it out as notification, I made some changes to the pyttsx3 module. (below)</p></li>
-<li><p>I also stop the response from being spoken.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">voice_default()</span></code> is called as the voice property is reset when <code class="docutils literal notranslate"><span class="pre">speaker.stop()</span></code> is used.</p></li>
-</ul>
-</dd>
-<dt>Changes in <code class="docutils literal notranslate"><span class="pre">pyttsx3</span></code>:</dt><dd><ul class="simple">
-<li><p>Created a global variable in <code class="docutils literal notranslate"><span class="pre">say()</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">pyttsx3/engine.py</span></code> (before proxy) and store the response.</p></li>
-<li><p>Created a new method and return the global variable which I created in <code class="docutils literal notranslate"><span class="pre">say()</span></code></p></li>
-<li><p>The method <code class="docutils literal notranslate"><span class="pre">text_spoken()</span></code> is called to get the response which is sent as a response.</p></li>
-<li><p>Doing so, avoids changes to all functions within <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> to notify the response from Jarvis.</p></li>
-</ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">say</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">global</span> <span class="n">return_this</span>
-    <span class="n">return_this</span> <span class="o">=</span> <span class="n">text</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">text_spoken</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">return_this</span>
-</pre></div>
-</div>
-</dd>
+<dl class="simple">
 <dt>Env Vars:</dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">offline_phrase</span></code> - Phrase to authenticate the requests to API. Defaults to <code class="docutils literal notranslate"><span class="pre">jarvis</span></code></p></li>
 </ul>
 </dd>
 </dl>
-</div>
 <p class="rubric">Notes</p>
 <dl class="simple">
 <dt>More cool stuff (Done by <code class="docutils literal notranslate"><span class="pre">JarvisHelper</span></code>):</dt><dd><ul class="simple">
@@ -1333,7 +1308,7 @@ A condition below assumes two different words as two places but not including tw
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.say">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">say</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.say" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">say</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.say" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls speaker.say to speak a statement from the received text.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1530,32 +1505,6 @@ A condition below assumes two different words as two places but not including tw
 <li><p>os._exit(0)</p></li>
 <li><p>kill -15 <code class="docutils literal notranslate"><span class="pre">PID</span></code></p></li>
 </ul>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.test_offline_responder">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">test_offline_responder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_phrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'TEST</span> <span class="pre">OFFLINE</span> <span class="pre">RESPONDER'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.test_offline_responder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates a <code class="docutils literal notranslate"><span class="pre">say</span></code> followed by <code class="docutils literal notranslate"><span class="pre">text_spoken</span></code> on <code class="docutils literal notranslate"><span class="pre">pyttsx3</span></code> which is configured to get text sent to <code class="docutils literal notranslate"><span class="pre">say</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>test_phrase</strong> – Phrase that has to be sent to <code class="docutils literal notranslate"><span class="pre">say</span></code> and retrieved using <code class="docutils literal notranslate"><span class="pre">text_spoken</span></code> to test offline response.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>If test fails, returns a False which sets a <code class="docutils literal notranslate"><span class="pre">DEFAULT_OFFLINE_RESPONSE</span></code> arg.</p></li>
-<li><p>Displays link to a particular section of the docs page which explains the setup instructions for 20 seconds.</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> based on whether the test was successful.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">

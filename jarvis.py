@@ -97,17 +97,19 @@ from helper_functions.tv_controls import TV
 
 
 # noinspection PyProtectedMember,PyUnresolvedReferences
-def say(text: str, run: bool = False) -> None:
+def say(text: str = None, run: bool = False) -> None:
     """Calls speaker.say to speak a statement from the received text.
 
     Args:
         text: Takes the text that has to be spoken as an argument.
         run: Takes a boolean flag to choose whether or not to run the speaker.say loop.
     """
-    speaker.say(text=text)
-    text = text.replace('\n', '\t').strip()
-    logger.info(f'Called by: {sys._getframe(1).f_code.co_name} to say::{text}')
-    sys.stdout.write(f"\r{text}")
+    if text:
+        speaker.say(text=text)
+        text = text.replace('\n', '\t').strip()
+        logger.info(f'Called by: {sys._getframe(1).f_code.co_name} to say::{text}')
+        sys.stdout.write(f"\r{text}")
+        text_spoken['text'] = text
     if run:
         speaker.runAndWait()
 
@@ -204,7 +206,7 @@ def renew() -> None:
         - This function runs only for a minute.
         - split(converted) is a condition so that, loop breaks when if sleep in ``conditions()`` returns True.
     """
-    speaker.runAndWait()
+    say(run=True)
     waiter = 0
     while waiter < 12:
         waiter += 1
@@ -218,7 +220,7 @@ def renew() -> None:
             if converted:
                 if split(key=converted):  # should_return flag is not passed which will default to False
                     break  # split() returns what conditions function returns. Condition() returns True only for sleep.
-            speaker.runAndWait()
+            say(run=True)
         except (UnknownValueError, RequestError, WaitTimeoutError):
             pass
 
@@ -979,7 +981,7 @@ def news(news_source: str = 'fox') -> None:
         say(text="That's the end of news around you.")
 
     if report.has_been_called or time_travel.has_been_called:
-        speaker.runAndWait()
+        say(run=True)
 
 
 def apps(phrase: str) -> None:
@@ -1111,7 +1113,7 @@ def locate(phrase: str, no_repeat: bool = False) -> None:
         else:
             say(text=f"Your {before_keyword} should be ringing now sir!")
         say(text="Would you like to get the location details?")
-    speaker.runAndWait()
+    say(run=True)
     phrase_location = listener(timeout=3, phrase_limit=3)
     if phrase_location == 'SR_ERROR':
         if no_repeat:
@@ -1285,7 +1287,7 @@ def meaning(phrase: str) -> None:
             if any(word in response.lower() for word in keywords.ok):
                 for letter in list(keyword.lower()):
                     say(text=letter)
-                speaker.runAndWait()
+                say(run=True)
         elif offline:
             say(text=f"I'm sorry sir! I was unable to get meaning for the word: {keyword}")
             return
@@ -1322,7 +1324,7 @@ def todo(no_repeat: bool = False) -> None:
             say(text="Would you like to create a database for your to-do list?")
         else:
             say(text="You don't have a database created for your to-do list sir. Would you like to spin up one now?")
-        speaker.runAndWait()
+        say(run=True)
         key = listener(timeout=3, phrase_limit=3)
         if key != 'SR_ERROR':
             if any(word in key.lower() for word in keywords.ok):
@@ -1362,7 +1364,7 @@ def todo(no_repeat: bool = False) -> None:
             say(text="You don't have any tasks in your to-do list sir.")
 
     if report.has_been_called or time_travel.has_been_called:
-        speaker.runAndWait()
+        say(run=True)
 
 
 def add_todo() -> None:
@@ -1493,7 +1495,7 @@ def distance_controller(starting_point: str = None, destination: str = None) -> 
         say(text="Destination please?")
         if os.environ.get('called_by_offline'):
             return
-        speaker.runAndWait()
+        say(run=True)
         destination = listener(timeout=3, phrase_limit=4)
         if destination != 'SR_ERROR':
             if len(destination.split()) > 2:
@@ -1689,7 +1691,7 @@ def alarm(phrase: str) -> None:
         say(text='Please tell me a time sir!')
         if os.environ.get('called_by_offline'):
             return
-        speaker.runAndWait()
+        say(run=True)
         converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
@@ -2783,7 +2785,7 @@ def time_travel() -> None:
     current_date()
     current_time()
     weather()
-    speaker.runAndWait()
+    say(run=True)
     if os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
             ['Saturday', 'Sunday']:
         meeting_reader()
@@ -2851,7 +2853,7 @@ def guard_enable() -> None:
             say(text=f'Welcome back sir! Good {part_of_day()}.')
             if os.path.exists(f'threat/{date_extn}.jpg'):
                 say(text="We had a potential threat sir! Please check your email to confirm.")
-            speaker.runAndWait()
+            say(run=True)
             sys.stdout.write('\rDisabled Security Mode')
             break
         elif converted:
@@ -2967,30 +2969,8 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
         command: Takes the command that has to be executed as an argument.
         respond: Takes the argument to decide whether or not to create the ``offline_response`` file.
 
-    See Also:
-        To replicate a working model for offline communicator:
-            - To return the response and send it out as notification, I made some changes to the pyttsx3 module. (below)
-            - I also stop the response from being spoken.
-            - ``voice_default()`` is called as the voice property is reset when ``speaker.stop()`` is used.
-
-        Changes in ``pyttsx3``:
-            - Created a global variable in ``say()`` -> ``pyttsx3/engine.py`` (before proxy) and store the response.
-            - Created a new method and return the global variable which I created in ``say()``
-            - The method ``text_spoken()`` is called to get the response which is sent as a response.
-            - Doing so, avoids changes to all functions within ``conditions()`` to notify the response from Jarvis.
-
-            .. code-block:: python
-
-                def say(self, text, name=None):
-                    global return_this
-                    return_this = text
-                    self.proxy.say(text, name)
-
-                def text_spoken(self):
-                    return return_this
-
-        Env Vars:
-            - ``offline_phrase`` - Phrase to authenticate the requests to API. Defaults to ``jarvis``
+    Env Vars:
+        - ``offline_phrase`` - Phrase to authenticate the requests to API. Defaults to ``jarvis``
 
     Notes:
         More cool stuff (Done by ``JarvisHelper``):
@@ -3004,7 +2984,6 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
         - Restarts ``Jarvis`` quietly in case of a ``RuntimeError`` however, the offline request will still be executed.
         - This happens when ``speaker`` is stopped while another loop of speaker is in progress by regular interaction.
     """
-    # todo: remove speaker.text_spoken() and use the phrase from say()
     response = None
     try:
         if command:
@@ -3012,7 +2991,7 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
             os.environ['called_by_offline'] = '1'  # Write env var so some function can use it
             split(command)
             del os.environ['called_by_offline']  # deletes the env var
-            response = DEFAULT_OFFLINE_RESPONSE if DEFAULT_OFFLINE_RESPONSE else speaker.text_spoken()
+            response = text_spoken.get('text')
         else:
             response = 'Received a null request. Please resend it.'
         if 'restart' not in command and respond:
@@ -3434,7 +3413,7 @@ def morning() -> None:
         weather()
         time_travel.has_been_called = False
         volume(level=100)
-        speaker.runAndWait()
+        say(run=True)
         volume(level=50)
 
 
@@ -3692,7 +3671,7 @@ class Activator:
                     Thread(target=playsound, args=['indicators/acknowledgement.mp3']).start()
                     initiator(key_original=listener(timeout=timeout, phrase_limit=phrase_limit, sound=False),
                               should_return=True)
-                    speaker.runAndWait()
+                    say(run=True)
                 elif STOPPER.get('status'):
                     self.stop()
                     restart(quiet=True)
@@ -4061,21 +4040,21 @@ def voice_changer(phrase: str = None) -> None:
 
     for ind, voice in enumerate(voices):
         speaker.setProperty("voice", voices[ind].id)
-        speaker.say(f'I am {voice.name} sir!')
+        say(text=f'I am {voice.name} sir!')
         sys.stdout.write(f'\rVoice module has been re-configured to {ind}::{voice.name}')
-        speaker.say(choices_to_say[ind]) if ind < len(choices_to_say) else speaker.say(choice(choices_to_say))
-        speaker.runAndWait()
+        say(text=choices_to_say[ind]) if ind < len(choices_to_say) else say(text=choice(choices_to_say))
+        say(run=True)
         keyword = listener(timeout=3, phrase_limit=3)
         if keyword == 'SR_ERROR':
             voice_default()
-            speaker.say(text="Sorry sir! I had trouble understanding. I'm back to my default voice.")
+            say(text="Sorry sir! I had trouble understanding. I'm back to my default voice.")
             return
         elif 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
             voice_default()
-            speaker.say(text='Reverting the changes to default voice module sir!')
+            say(text='Reverting the changes to default voice module sir!')
             return
         elif any(word in keyword.lower() for word in keywords.ok):
-            speaker.say(text=choice(ack))
+            say(text=choice(ack))
             return
 
 
@@ -4103,37 +4082,6 @@ def starter() -> None:
     if os.path.isfile('.env'):
         logger.info('Loading .env file.')
         load_dotenv(dotenv_path='.env', verbose=True, override=True)  # loads the .env file
-
-
-def test_offline_responder(test_phrase: str = 'TEST OFFLINE RESPONDER') -> bool:
-    """Initiates a ``say`` followed by ``text_spoken`` on ``pyttsx3`` which is configured to get text sent to ``say``.
-
-    Args:
-        test_phrase: Phrase that has to be sent to ``say`` and retrieved using ``text_spoken`` to test offline response.
-
-    See Also:
-        - If test fails, returns a False which sets a ``DEFAULT_OFFLINE_RESPONSE`` arg.
-        - Displays link to a particular section of the docs page which explains the setup instructions for 20 seconds.
-
-    Returns:
-        bool:
-        Returns ``True`` or ``False`` based on whether the test was successful.
-    """
-    try:
-        say(text=test_phrase)
-        if speaker.text_spoken() == test_phrase:
-            logger.info('Verified offline response successfully.')
-            return True
-        else:
-            raise AttributeError
-    except AttributeError:
-        logger.warning("Response functions for offline communicator wasn't configured.")
-        for msg_time_remaining in reversed(list(range(20))):
-            sys.stdout.write(f"\r{msg_time_remaining} :: Functions for offline responder weren't configured. "
-                             "Please refer: https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator")
-            sleep(1)
-        sys.stdout.write('\r')
-        return False
 
 
 def initiate_background_threads():
@@ -4174,14 +4122,7 @@ if __name__ == '__main__':
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 10)  # increases the recursion limit by 10 times
     home = os.path.expanduser('~')  # gets the path to current user profile
-
     offline_list = offline_compatible()
-    if test_offline_responder():
-        DEFAULT_OFFLINE_RESPONSE = None
-    else:
-        DEFAULT_OFFLINE_RESPONSE = "Request processed. Response has not been configured.\n" \
-                                   "Please check: https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator"
-    speaker.stop()
 
     meeting_file = 'calendar.scpt'
     offline_host = gethostbyname('localhost')
@@ -4253,7 +4194,7 @@ if __name__ == '__main__':
     # warm_light is initiated with an empty dict and the key status is set to True when requested to switch to yellow
     # greet_check is used in initialize() to greet only for the first run
     # tv is set to an empty dict instead of TV() at the start to avoid turning on the TV unnecessarily
-    tv, warm_light, greet_check, STOPPER = None, {}, {}, {}
+    tv, warm_light, greet_check, text_spoken, STOPPER = None, {}, {}, {'text': ''}, {}
 
     # stores necessary values for geo location to receive the latitude, longitude and address
     options.default_ssl_context = create_default_context(cafile=where())
