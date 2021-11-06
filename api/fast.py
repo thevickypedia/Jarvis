@@ -4,6 +4,7 @@ from logging.config import dictConfig
 from mimetypes import guess_type
 from os import environ, path, remove, stat
 from socket import gethostbyname
+from string import punctuation
 from subprocess import check_output
 from threading import Thread
 from time import sleep
@@ -195,6 +196,7 @@ def jarvis_offline_communicator(input_data: GetData):
     """
     passphrase = input_data.phrase
     command = input_data.command
+    command = command.translate(str.maketrans('', '', punctuation))  # Remove punctuations from the str
     pre_check_offline_communicator(passphrase=passphrase, command=command)
 
     with open('../offline_request', 'w') as off_request:
