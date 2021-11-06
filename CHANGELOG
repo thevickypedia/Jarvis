@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+5.1.6 (11/05/2021)
+------------------
+- Bug Fix: Don't read and write offline file in a single thread
+- Bug Fix: Don't lock screens and lower volume during daytime
+- Bug Fix: Remove punctuations in offline commands
+- Avoid API calls for internal requests
+
 5.1.5 (11/04/2021)
 ------------------
 - Fix conflicts between automation and offline communicator
