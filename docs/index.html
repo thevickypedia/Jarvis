@@ -220,6 +220,12 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.alarm_executor">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">alarm_executor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.alarm_executor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the <code class="docutils literal notranslate"><span class="pre">alarm.mp3</span></code> file at max volume and reverts the volume after 3 minutes.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.alpha">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.alpha" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses wolfram alpha API to fetch results for uncategorized phrases heard.</p>
@@ -969,6 +975,26 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.lock_files">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">lock_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alarm_files</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reminder_files</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#jarvis.lock_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for <code class="docutils literal notranslate"><span class="pre">*.lock</span></code> files within the <code class="docutils literal notranslate"><span class="pre">alarm</span></code> directory if present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alarm_files</strong> – Takes a boolean value to gather list of alarm lock files.</p></li>
+<li><p><strong>reminder_files</strong> – Takes a boolean value to gather list of reminder lock files.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of <code class="docutils literal notranslate"><span class="pre">*.lock</span></code> file names ignoring other hidden files.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meaning">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meaning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.meaning" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets meaning for a word skimmed from the user statement using PyDictionary.</p>
@@ -1066,7 +1092,7 @@ A condition below assumes two different words as two places but not including tw
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.notify">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.notify" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.notify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send text message through SMS gateway of destination number.</p>
 <p class="rubric">References</p>
 <p>Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> to send the SMS.</p>
@@ -1077,6 +1103,7 @@ A condition below assumes two different words as two places but not including tw
 <li><p><strong>password</strong> – Gmail password to authenticate SMTP lib.</p></li>
 <li><p><strong>number</strong> – Phone number stored as env var.</p></li>
 <li><p><strong>body</strong> – Content of the message.</p></li>
+<li><p><strong>subject</strong> – Takes subject as an optional argument.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1187,6 +1214,17 @@ A condition below assumes two different words as two places but not including tw
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument and extracts the time and message from it.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.reminder_executor">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">reminder_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.reminder_executor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Notifies user about the reminder and displays a notification on the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> – Takes the reminder message as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2042,33 +2080,8 @@ name is specified, allow every event.</p>
 </dd></dl>
 
 </section>
-<section id="module-helper_functions.alarm">
-<span id="alarm"></span><h1>Alarm<a class="headerlink" href="#module-helper_functions.alarm" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="helper_functions.alarm.Alarm">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.alarm.</span></span><span class="sig-name descname"><span class="pre">Alarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hours</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minutes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">am_pm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.alarm.Alarm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to initiate <code class="docutils literal notranslate"><span class="pre">Alarm</span></code> as a super class to run in background.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Alarm</span>
-</pre></div>
-</div>
-<p>Initiates super class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>hours</strong> – Hour value of current time.</p></li>
-<li><p><strong>minutes</strong> – Minutes value of current time.</p></li>
-<li><p><strong>am_pm</strong> – Indicates AM or PM of the day.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.alarm.Alarm.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.alarm.Alarm.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plays <code class="docutils literal notranslate"><span class="pre">mp3/alarm.mp3</span></code> tone when the hours and minutes match the current time.</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="alarm">
+<h1>Alarm<a class="headerlink" href="#alarm" title="Permalink to this headline">¶</a></h1>
 </section>
 <section id="module-helper_functions.conversation">
 <span id="conversation"></span><h1>Conversation<a class="headerlink" href="#module-helper_functions.conversation" title="Permalink to this headline">¶</a></h1>
@@ -2476,34 +2489,8 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
-<section id="module-helper_functions.reminder">
-<span id="reminder"></span><h1>Reminder<a class="headerlink" href="#module-helper_functions.reminder" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="helper_functions.reminder.Reminder">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.reminder.</span></span><span class="sig-name descname"><span class="pre">Reminder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hours</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minutes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">am_pm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.reminder.Reminder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to initiate <code class="docutils literal notranslate"><span class="pre">Reminder</span></code> as a super class to run in background.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Reminder</span>
-</pre></div>
-</div>
-<p>Initiates super class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>hours</strong> – Hour value of current time.</p></li>
-<li><p><strong>minutes</strong> – Minutes value of current time.</p></li>
-<li><p><strong>am_pm</strong> – Indicates AM or PM of the day.</p></li>
-<li><p><strong>message</strong> – Message that has to be reminded with.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="helper_functions.reminder.Reminder.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.reminder.Reminder.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Triggers the reminder notification when the hours and minutes match the current time.</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="reminder">
+<h1>Reminder<a class="headerlink" href="#reminder" title="Permalink to this headline">¶</a></h1>
 </section>
 <section id="module-helper_functions.robinhood">
 <span id="robinhood-gatherer"></span><h1>Robinhood Gatherer<a class="headerlink" href="#module-helper_functions.robinhood" title="Permalink to this headline">¶</a></h1>
@@ -2890,7 +2877,7 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 <li><a class="reference internal" href="#module-api.models">Jarvis - API Models</a></li>
 <li><a class="reference internal" href="#module-api.report_gatherer">Jarvis - API Robinhood</a></li>
 <li><a class="reference internal" href="#module-api.rh_helper">Jarvis - API Robinhood Helper</a></li>
-<li><a class="reference internal" href="#module-helper_functions.alarm">Alarm</a></li>
+<li><a class="reference internal" href="#alarm">Alarm</a></li>
 <li><a class="reference internal" href="#module-helper_functions.conversation">Conversation</a></li>
 <li><a class="reference internal" href="#module-helper_functions.database">Database</a></li>
 <li><a class="reference internal" href="#module-helper_functions.facial_recognition">Face Recognition</a></li>
@@ -2898,7 +2885,7 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 <li><a class="reference internal" href="#module-helper_functions.lights">Lights</a></li>
 <li><a class="reference internal" href="#module-helper_functions.ip_scanner">Local IP Scanner</a></li>
 <li><a class="reference internal" href="#module-helper_functions.logger">Logger</a></li>
-<li><a class="reference internal" href="#module-helper_functions.reminder">Reminder</a></li>
+<li><a class="reference internal" href="#reminder">Reminder</a></li>
 <li><a class="reference internal" href="#module-helper_functions.robinhood">Robinhood Gatherer</a></li>
 <li><a class="reference internal" href="#module-helper_functions.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-helper_functions.tv_controls">TV Connector</a></li>

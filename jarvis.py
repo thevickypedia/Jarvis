@@ -81,7 +81,6 @@ from yaml import dump as yaml_dump
 from yaml import load as yaml_load
 
 from api.controller import offline_compatible
-from helper_functions.alarm import Alarm
 from helper_functions.conversation import Conversation
 from helper_functions.database import Database, file_name
 from helper_functions.facial_recognition import Face
@@ -90,7 +89,6 @@ from helper_functions.keywords import Keywords
 from helper_functions.lights import MagicHomeApi
 from helper_functions.logger import logger
 from helper_functions.preset_values import preset_values
-from helper_functions.reminder import Reminder
 from helper_functions.robinhood import RobinhoodGatherer
 from helper_functions.temperature import Temperature
 from helper_functions.tv_controls import TV
@@ -107,7 +105,8 @@ def say(text: str = None, run: bool = False) -> None:
     if text:
         speaker.say(text=text)
         text = text.replace('\n', '\t').strip()
-        logger.info(f'Called by: {sys._getframe(1).f_code.co_name} to say::{text}')
+        logger.info(f'Response: {text}')
+        logger.info(f'Speaker called by: {sys._getframe(1).f_code.co_name}')
         sys.stdout.write(f"\r{text}")
         text_spoken['text'] = text
     if run:
@@ -264,7 +263,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         bool:
         Boolean True only when asked to sleep for conditioned sleep message.
     """
-    sys.stdout.write(f'\r{converted}')
+    logger.info(f'Request: {converted}')
     converted_lower = converted.lower()
     todo_checks = ['to do', 'to-do', 'todo']
     if any(word in converted_lower for word in keywords.current_date) and \
@@ -474,7 +473,6 @@ def conditions(converted: str, should_return: bool = False) -> bool:
             if google_maps(converted):
                 if google(converted):
                     # if none of the conditions above are met, opens a google search on default browser
-                    sys.stdout.write(f"\r{converted}")
                     if google_maps.has_been_called:
                         google_maps.has_been_called = False
                         say(text="I have also opened a google search for your request.")
@@ -1654,6 +1652,23 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     return
 
 
+def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> list:
+    """Checks for ``*.lock`` files within the ``alarm`` directory if present.
+
+    Args:
+        alarm_files: Takes a boolean value to gather list of alarm lock files.
+        reminder_files: Takes a boolean value to gather list of reminder lock files.
+
+    Returns:
+        list:
+        List of ``*.lock`` file names ignoring other hidden files.
+    """
+    if alarm_files:
+        return [f for f in os.listdir('alarm') if not f.startswith('.')] if os.path.isdir('alarm') else None
+    elif reminder_files:
+        return [f for f in os.listdir('reminder') if not f.startswith('.')] if os.path.isdir('reminder') else None
+
+
 def alarm(phrase: str) -> None:
     """Passes hour, minute and am/pm to ``Alarm`` class which initiates a thread for alarm clock in the background.
 
@@ -1678,8 +1693,7 @@ def alarm(phrase: str) -> None:
         hour, minute = f"{hour:02}", f"{minute:02}"
         am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
         if int(hour) <= 12 and int(minute) <= 59:
-            open(f'alarm/{hour}_{minute}_{am_pm}.lock', 'a')
-            Alarm(hour, minute, am_pm).start()
+            os.system(f'mkdir -p alarm && touch alarm/{hour}_{minute}_{am_pm}.lock')
             if 'wake' in phrase.strip():
                 say(text=f"{choice(ack)}! I will wake you up at {hour}:{minute} {am_pm}.")
             else:
@@ -1706,9 +1720,7 @@ def kill_alarm() -> None:
     Notes:
         - ``alarm_state`` is the list of lock files currently present.
     """
-    alarm_state = []
-    [alarm_state.append(file) for file in os.listdir('alarm') if file != '.keep']
-    alarm_state.remove('.DS_Store') if '.DS_Store' in alarm_state else None
+    alarm_state = lock_files(alarm_files=True)
     if not alarm_state:
         say(text="You have no alarms set sir!")
     elif len(alarm_state) == 1:
@@ -1719,23 +1731,23 @@ def kill_alarm() -> None:
         sys.stdout.write(f"\r{', '.join(alarm_state).replace('.lock', '')}")
         say(text="Please let me know which alarm you want to remove. Current alarms on your screen sir!", run=True)
         converted = listener(timeout=3, phrase_limit=4)
-        if converted != 'SR_ERROR':
-            alarm_time = converted.split()[0]
-            am_pm = converted.split()[-1]
-            if ":" in converted:
-                hour = int(alarm_time.split(":")[0])
-                minute = int(alarm_time.split(":")[-1])
-            else:
-                hour = int(alarm_time.split()[0])
-                minute = 0
-            hour, minute = f"{hour:02}", f"{minute:02}"
-            am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
-            if os.path.exists(f'alarm/{hour}_{minute}_{am_pm}.lock'):
-                os.remove(f"alarm/{hour}_{minute}_{am_pm}.lock")
-                say(text=f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
-            else:
-                say(text=f"I wasn't able to find an alarm at {hour}:{minute} {am_pm}. Try again.")
-                kill_alarm()
+        if converted == 'SR_ERROR':
+            return
+        alarm_time = converted.split()[0]
+        am_pm = converted.split()[-1]
+        if ":" in converted:
+            hour = int(alarm_time.split(":")[0])
+            minute = int(alarm_time.split(":")[-1])
+        else:
+            hour = int(alarm_time.split()[0])
+            minute = 0
+        hour, minute = f"{hour:02}", f"{minute:02}"
+        am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
+        if os.path.exists(f'alarm/{hour}_{minute}_{am_pm}.lock'):
+            os.remove(f"alarm/{hour}_{minute}_{am_pm}.lock")
+            say(text=f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
+        else:
+            say(text=f"I wasn't able to find an alarm at {hour}:{minute} {am_pm}. Try again.")
 
 
 def comma_separator(list_: list) -> str:
@@ -1887,8 +1899,7 @@ def reminder(phrase: str) -> None:
         # makes sure hour and minutes are two digits
         hour, minute = f"{hour:02}", f"{minute:02}"
         if int(hour) <= 12 and int(minute) <= 59:
-            open(f'reminder/{hour}_{minute}_{am_pm}|{message.replace(" ", "_")}.lock', 'a')
-            Reminder(hour, minute, am_pm, message).start()
+            os.system(f'mkdir -p reminder && touch reminder/{hour}_{minute}_{am_pm}-{message.replace(" ", "_")}.lock')
             say(text=f"{choice(ack)}! I will remind you {to_about} {message}, at {hour}:{minute} {am_pm}.")
         else:
             say(text=f"A reminder at {hour}:{minute} {am_pm}? Are you an alien? "
@@ -2068,7 +2079,7 @@ def github_controller(target: list) -> None:
         say(text=f"I found {len(target)} repositories sir! You may want to be more specific.")
 
 
-def notify(user: str, password: str, number: str, body: str) -> None:
+def notify(user: str, password: str, number: str, body: str, subject: str = None) -> None:
     """Send text message through SMS gateway of destination number.
 
     References:
@@ -2079,13 +2090,19 @@ def notify(user: str, password: str, number: str, body: str) -> None:
         password: Gmail password to authenticate SMTP lib.
         number: Phone number stored as env var.
         body: Content of the message.
+        subject: Takes subject as an optional argument.
     """
     if not any([phone_number, number]):
         logger.error('No phone number was stored in env vars to trigger a notification.')
         return
-    subject = "Message from Jarvis" if number == phone_number else "Jarvis::Message from Vignesh"
-    Messenger(gmail_user=user, gmail_pass=password, phone_number=number, subject=subject,
-              message=f'\n\n{body}').send_sms()
+    if not subject:
+        subject = "Message from Jarvis" if number == phone_number else "Jarvis::Message from Vignesh"
+    response = Messenger(gmail_user=user, gmail_pass=password, phone_number=number, subject=subject,
+                         message=body).send_sms()
+    if response.get('ok') and response.get('status') == 200:
+        logger.info('SMS notification has been sent.')
+    else:
+        logger.error(f'Unable to send SMS notification.\n{response}')
 
 
 def send_sms(phrase: str = None) -> None:
@@ -2827,12 +2844,9 @@ def guard_enable() -> None:
     if cam_source is None:
         cam_error = 'Guarding mode disabled as I was unable to access any of the cameras.'
         logger.error(cam_error)
-        response = Messenger(gmail_user=gmail_user, gmail_pass=gmail_pass, phone_number=phone_number,
-                             subject="IMPORTANT::Guardian mode faced an exception.", message=cam_error).send_sms()
-        if response.get('ok') and response.get('status') == 200:
-            logger.info('SMS notification has been sent.')
-        else:
-            logger.error(f'Unable to send SMS notification.\n{response}')
+        notify(user=gmail_user, password=gmail_pass, number=phone_number, body=cam_error,
+               subject="IMPORTANT::Guardian mode faced an exception.")
+        return
 
     scale_factor = 1.1  # Parameter specifying how much the image size is reduced at each image scale.
     min_neighbors = 5  # Parameter specifying how many neighbors each candidate rectangle should have, to retain it.
@@ -2898,21 +2912,15 @@ def threat_notify(converted: str, date_extn: str or None) -> None:
     title_ = f'Intruder Alert on {dt_string}'
 
     if converted:
-        response = Messenger(gmail_user=gmail_user, gmail_pass=gmail_pass, phone_number=phone_number,
-                             subject="!!INTRUDER ALERT!!", message=f"{dt_string}\n{converted}").send_sms()
+        notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
+               body=f"{dt_string}\n{converted}")
         body_ = f"""<html><head></head><body><h2>Conversation of Intruder:</h2><br>{converted}<br><br>
                                     <h2>Attached is a photo of the intruder.</h2>"""
     else:
-        response = Messenger(gmail_user=gmail_user, gmail_pass=gmail_pass, phone_number=phone_number,
-                             subject="!!INTRUDER ALERT!!",
-                             message=f"{dt_string}\nCheck your email for more information.").send_sms()
+        notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
+               body=f"{dt_string}\nCheck your email for more information.")
         body_ = """<html><head></head><body><h2>No conversation was recorded,
                                 but attached is a photo of the intruder.</h2>"""
-    if response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
-        logger.info('SMS notification has been sent.')
-    else:
-        logger.error(f'Unable to send SMS notification.\n{response}')
-
     if date_extn:
         attachment_ = f'threat/{date_extn}.jpg'
         response_ = SendEmail(gmail_user=gmail_user, gmail_pass=gmail_pass,
@@ -3582,9 +3590,39 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
         if start_2 + every_2 <= time():
             start_2 = time()
             Thread(target=meeting_file_writer).start()
+        if alarm_state := lock_files(alarm_files=True):
+            for each_alarm in alarm_state:
+                if each_alarm == datetime.now().strftime("%I_%M_%p.lock"):
+                    Thread(target=alarm_executor).start()
+                    os.remove(f'alarm/{each_alarm}')
+        if reminder_state := lock_files(reminder_files=True):
+            for each_reminder in reminder_state:
+                remind_time, remind_msg = each_reminder.split('-')
+                remind_msg = remind_msg.rstrip('.lock')
+                if remind_time == datetime.now().strftime("%I_%M_%p"):
+                    Thread(target=reminder_executor, args=[remind_msg]).start()
+                    os.remove(f'reminder/{each_reminder}')
         if STOPPER.get('status'):
             logger.warning('Exiting automator since the STOPPER flag was set.')
             break
+
+
+def alarm_executor() -> None:
+    """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
+    volume(level=100)
+    call(["open", "indicators/alarm.mp3"])
+    sleep(200)
+    volume(level=50)
+
+
+def reminder_executor(message: str) -> None:
+    """Notifies user about the reminder and displays a notification on the device.
+
+    Args:
+        message: Takes the reminder message as an argument.
+    """
+    notify(user=gmail_user, password=gmail_pass, number=phone_number, body=message, subject="REMINDER from Jarvis")
+    os.system(f"""osascript -e 'display notification "{message}" with title "REMINDER from Jarvis"'""")
 
 
 def switch_volumes() -> None:
@@ -3668,7 +3706,7 @@ class Activator:
                 pcm = self.audio_stream.read(self.waker.frame_length, exception_on_overflow=False)
                 pcm = unpack_from("h" * self.waker.frame_length, pcm)
                 if self.waker.process(pcm) >= 0:
-                    Thread(target=playsound, args=['indicators/acknowledgement.mp3']).start()
+                    playsound(sound='indicators/acknowledgement.mp3', block=False)
                     initiator(key_original=listener(timeout=timeout, phrase_limit=phrase_limit, sound=False),
                               should_return=True)
                     say(run=True)
@@ -3778,8 +3816,8 @@ def remove_files() -> None:
             - ``location.yaml`` file, to recreate a new one next time around.
             - ``meetings`` file, to recreate a new one next time around.
     """
-    [os.remove(f"alarm/{file}") for file in os.listdir('alarm') if file != '.keep']
-    [os.remove(f"reminder/{file}") for file in os.listdir('reminder') if file != '.keep']
+    os.removedirs('alarm') if os.path.isdir('alarm') else None
+    os.removedirs('reminder') if os.path.isdir('reminder') else None
     os.remove('location.yaml') if os.path.isfile('location.yaml') else None
     os.remove('meetings') if os.path.isfile('meetings') else None
 
@@ -3789,10 +3827,10 @@ def exit_process() -> None:
     STOPPER['status'] = True
     logger.info('JARVIS::Stopping Now::STOPPER flag has been set to True')
     reminders = {}
-    alarms = [file for file in os.listdir('alarm') if file != '.keep' and file != '.DS_Store']
-    for file in os.listdir('reminder'):
-        if file != '.keep' and file != '.DS_Store':
-            split_val = file.replace('.lock', '').split('|')
+    alarms = lock_files(alarm_files=True)
+    if reminder_files := lock_files(reminder_files=True):
+        for file in reminder_files:
+            split_val = file.replace('.lock', '').split('-')
             reminders.update({split_val[0]: split_val[-1]})
     if reminders:
         logger.info(f'JARVIS::Deleting Reminders - {reminders}')
@@ -4060,8 +4098,8 @@ def voice_changer(phrase: str = None) -> None:
 
 def clear_logs() -> None:
     """Deletes log files that were updated before 48 hours."""
-    [os.remove(f"logs/{file}") for file in os.listdir('logs') if file != '.keep' and
-     int(datetime.now().timestamp()) - int(os.stat(f'logs/{file}').st_mtime) > 172_800]
+    [os.remove(f"logs/{file}") for file in os.listdir('logs')
+     if int(datetime.now().timestamp()) - int(os.stat(f'logs/{file}').st_mtime) > 172_800]
 
 
 def starter() -> None:
@@ -4094,7 +4132,7 @@ def initiate_background_threads():
     """
     Thread(target=offline_communicator_initiate).start()
     Thread(target=automator).start()
-    Thread(target=playsound, args=['indicators/initialize.mp3']).start()
+    playsound(sound='indicators/initialize.mp3', block=False)
 
 
 def stopper() -> None:
