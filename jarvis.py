@@ -1,6 +1,7 @@
 import os
 import sys
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 from datetime import datetime, timedelta
 from difflib import SequenceMatcher
 from email import message_from_bytes
@@ -16,10 +17,11 @@ from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
 from platform import platform
-from random import choice, choices, randrange
+from random import choice, choices
 from re import IGNORECASE, findall, match, search, sub
 from shutil import disk_usage
-from socket import AF_INET, SOCK_DGRAM, gethostbyname, gethostname, socket
+from socket import (AF_INET, SO_REUSEADDR, SOCK_DGRAM, SOCK_STREAM, SOL_SOCKET,
+                    gethostbyname, gethostname, socket)
 from ssl import create_default_context
 from string import ascii_letters, digits, punctuation
 from struct import unpack_from
@@ -3239,25 +3241,29 @@ class PersonalCloud:
 
     @staticmethod
     def get_port() -> int:
-        """Chooses a TCP PORT number dynamically that is not being used to ensure we don't rely on a single port.
+        """Chooses a PORT number dynamically that is not being used to ensure we don't rely on a single port.
 
-        - Well-Known ports: 0 to 1023
-        - Registered ports: 1024 to 49151
-        - Dynamically available: 49152 to 65535
-        - Alternate to active_sessions ->
-            - ``check_output(f"echo {PASSWORD} | sudo -S lsof -PiTCP -sTCP:LISTEN 2>&1;", shell=True).decode('utf-8')``
-        - ``remove`` variable should be an actual function as per pep-8 standards, bypassing it using  # noqa
+        Instead of binding to a specific port, ``sock.bind(('', 0))`` is used to bind to 0.
+
+        See Also:
+            - The port number chosen can be found using ``sock.getsockname()[1]``
+            - Passing it on to the slaves so that they can connect back.
+            - ``sock`` is the socket that was created, returned by socket.socket.
+
+        Notes:
+            - Well-Known ports: 0 to 1023
+            - Registered ports: 1024 to 49151
+            - Dynamically available: 49152 to 65535
+            - The OS will then pick an available port.
 
         Returns:
             int:
             Randomly chosen port number that is not in use.
         """
-        active_sessions = check_output("netstat -anvp tcp | awk 'NR<3 || /LISTEN/' 2>&1;", shell=True).decode('utf-8')
-        active_ports = [row.split()[3].split('.')[-1] for index, row in enumerate(active_sessions.split('\n')) if
-                        row and index > 1]
-        port = randrange(49152, 65535)
-        if port not in active_ports:
-            return port
+        with closing(socket(AF_INET, SOCK_STREAM)) as sock:
+            sock.bind(('', 0))
+            sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+            return sock.getsockname()[1]
 
     @staticmethod
     def delete_repo() -> None:
