@@ -54,13 +54,6 @@ Jarvis - API Robinhood Helper
    :members:
    :undoc-members:
 
-Alarm
-=====
-
-.. automodule:: helper_functions.alarm
-   :members:
-   :undoc-members:
-
 Conversation
 ============
 
@@ -111,13 +104,6 @@ Logger
 ======
 
 .. automodule:: helper_functions.logger
-   :members:
-   :undoc-members:
-
-Reminder
-========
-
-.. automodule:: helper_functions.reminder
    :members:
    :undoc-members:
 
