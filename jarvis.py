@@ -2101,10 +2101,10 @@ def notify(user: str, password: str, number: str, body: str, subject: str = None
         subject = "Message from Jarvis" if number == phone_number else "Jarvis::Message from Vignesh"
     response = Messenger(gmail_user=user, gmail_pass=password, phone_number=number, subject=subject,
                          message=body).send_sms()
-    if response.get('ok') and response.get('status') == 200:
+    if response.ok and response.status == 200:
         logger.info('SMS notification has been sent.')
     else:
-        logger.error(f'Unable to send SMS notification.\n{response}')
+        logger.error(f'Unable to send SMS notification.\n{response.body}')
 
 
 def send_sms(phrase: str = None) -> None:
@@ -2927,10 +2927,10 @@ def threat_notify(converted: str, date_extn: str or None) -> None:
         attachment_ = f'threat/{date_extn}.jpg'
         response_ = SendEmail(gmail_user=gmail_user, gmail_pass=gmail_pass,
                               recipient=robinhood_user, subject=title_, body=body_, attachment=attachment_).send_email()
-        if response_.get('ok'):
+        if response_.ok:
             logger.info('Email has been sent!')
         else:
-            logger.error(f"Email dispatch failed with response: {response_.get('body')}\n")
+            logger.error(f"Email dispatch failed with response: {response_.body}\n")
 
 
 def offline_communicator_initiate() -> None:
