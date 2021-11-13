@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+5.2.1 (11/12/2021)
+------------------
+- FEATURE::Include `day` option for automations
+
 5.2.0 (11/11/2021)
 ------------------
 - Update responses from `gmail-connector`
