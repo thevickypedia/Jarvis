@@ -7,6 +7,8 @@ from jinja2 import Template
 from pyrh import Robinhood
 from requests import get
 
+from api.rh_helper import CustomTemplate
+
 
 def market_status() -> bool:
     """Checks if the stock market is open today.
@@ -124,38 +126,31 @@ class Investment:
             Returns a tuple of each watch list item and a unicode character to indicate if the price went up or down.
         """
         self.logger.info('Gathering watchlist.')
-        try:
-            watchlist = (self.rh.get_watchlists())
-        except AttributeError:
-            self.logger.error('Watchlist feature for robinhood is not enabled.')
-            self.logger.error('Please refer to the PR: https://github.com/robinhood-unofficial/pyrh/pull/274/files')
-            return '', 'Watchlist feature is currently unstable.'
+        watchlist_items = self.rh.get_url(url="https://api.robinhood.com/watchlists/")
+        watchlist = [self.rh.get_url(item['instrument'])
+                     for item in self.rh.get_url(url=watchlist_items["results"][0]["url"])["results"]
+                     if watchlist_items and 'results' in watchlist_items]
         r1, r2 = '', ''
-        instruments = []
-        for data in self.result:
-            instruments.append(data['instrument'])
+        instruments = [data['instrument'] for data in self.result]
         for item in watchlist:
-            instrument = item['url']
-            if instrument not in instruments:
-                stock = item['symbol']
-                if interval == 'hour':
-                    historic_data = self.rh.get_historical_quotes(stock, 'hour', 'day')
-                else:
-                    historic_data = self.rh.get_historical_quotes(stock, '10minute', 'day')
-                historic_results = historic_data['results']
-                numbers = []
-                for each_item in historic_results:
-                    historical_values = each_item['historicals']
-                    for close_price in historical_values:
-                        numbers.append(round(float(close_price['close_price']), 2))
-                raw_details = self.rh.get_quote(stock)
-                stock_name = get(raw_details['instrument']).json()['simple_name']
-                price = round(float(raw_details['last_trade_price']), 2)
-                difference = round(float(price - numbers[-1]), 2)
-                if price < numbers[-1]:
-                    r1 += f'{stock_name}({stock}) - {price:,} &#8595 {difference}\n'
-                else:
-                    r2 += f'{stock_name}({stock}) - {price:,} &#8593 {difference}\n'
+            if item['url'] in instruments:  # ignores the watchlist items if the stocks were purchased already
+                continue
+            stock = item['symbol']
+            if interval == 'hour':
+                historic_data = self.rh.get_historical_quotes(stock, 'hour', 'day')
+            else:
+                historic_data = self.rh.get_historical_quotes(stock, '10minute', 'day')
+            historic_results = historic_data['results']
+            numbers = [round(float(close_price['close_price']), 2) for each_item in historic_results
+                       for close_price in each_item['historicals']]
+            raw_details = self.rh.get_quote(stock)
+            stock_name = get(raw_details['instrument']).json()['simple_name']
+            price = round(float(raw_details['last_trade_price']), 2)
+            difference = round(float(price - numbers[-1]), 2)
+            if price < numbers[-1]:
+                r1 += f'{stock_name}({stock}) - {price:,} &#8595 {difference}\n'
+            else:
+                r2 += f'{stock_name}({stock}) - {price:,} &#8593 {difference}\n'
         return r1, r2
 
     def report_gatherer(self) -> None:
@@ -166,12 +161,7 @@ class Investment:
             return
 
         port_head, profit, loss, overall_result = self.watcher()
-        try:
-            s1, s2 = self.watchlist()
-        except IndexError:
-            self.logger.error('Unable to gather watchlist information.')
-            s1, s2 = '', 'Watchlist feature is currently unstable.'
-
+        s1, s2 = self.watchlist()
         self.logger.info('Generating HTMl file.')
 
         title = f'Investment Summary as of {current_time.strftime("%A, %B %d, %Y %I:%M %p")}'
@@ -185,7 +175,6 @@ class Investment:
         s2 = s2.replace('\n', '\n\t\t\t')
         s1 = s1.replace('\n', '\n\t\t\t')
 
-        from rh_helper import CustomTemplate
         template = CustomTemplate.source.strip()
         rendered = Template(template).render(TITLE=title, SUMMARY=web_text, PROFIT=profit_web, LOSS=loss_web,
                                              WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)

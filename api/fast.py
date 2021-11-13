@@ -9,17 +9,18 @@ from subprocess import check_output
 from threading import Thread
 from time import sleep
 
-from controller import (EndpointFilter, InvestmentFilter, keygen,
-                        offline_compatible)
-from cron import CronScheduler
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
-from models import GetData, LogConfig
 from pytz import timezone
 from report_gatherer import Investment
 from yaml import FullLoader, load
+
+from api.controller import (EndpointFilter, InvestmentFilter, keygen,
+                            offline_compatible)
+from api.cron import CronScheduler
+from api.models import GetData, LogConfig
 
 if path.isfile('../.env'):
     load_dotenv(dotenv_path='../.env', verbose=True)
