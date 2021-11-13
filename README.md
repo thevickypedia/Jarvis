@@ -127,21 +127,43 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 - **ngrok_auth_key** - Auth token from [ngrok](https://dashboard.ngrok.com/) - Only used for `offline_communicator`
 </details>
 
-##### Automation Setup [Optional]:
-- The file ``automation.json`` should be a JSON file of dictionary within a dictionary that looks like the below:
+### Automation Setup [Optional]
+Executes pre-defined tasks at pre-defined times without any user interaction. Uses an `automation.json` file as source.
 
-    ```json
-    {
-      "6:00 AM": {
-        "task": "set my bedroom lights to 50%",
-        "status": false
-      },
-      "9:00 PM": {
-        "task": "set my bedroom lights to 5%",
-        "status": false
-      }
-    }
-    ```
+<details>
+<summary><strong>Setup Instructions</strong></summary>
+
+The JSON file should be a dictionary within a dictionary that looks like the below.
+
+**OPTIONAL:** The key, `day` can be a `list` of days, or a `str` of a specific day or simply a `str` saying `weekday` or
+`weekend` when the particular automation should be executed.
+
+> Not having the key `day` will run the automation daily.
+
+```json
+{
+  "6:00 AM": {
+    "day": "weekday",
+    "task": "set my bedroom lights to 50%",
+    "status": false
+  },
+  "6:30 AM": {
+    "day": ["Monday", "wednesday", "FRIDAY"],
+    "task": "set my bedroom lights to 100%",
+    "status": false
+  },
+  "8:00 AM": {
+    "day": "weekend",
+    "task": "set my bedroom lights to 100%",
+    "status": false
+  },
+  "9:00 PM": {
+    "task": "set my bedroom lights to 5%",
+    "status": false
+  }
+}
+```
+</details>
 
 ### Coding Standards
 Docstring format: [`Google`](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) <br>
@@ -178,4 +200,4 @@ features' overview and demo videos.
 
 &copy; Vignesh Sivanandha Rao
 
-Licensed under the [MIT License](LICENSE)
+Licensed under the [MIT License](https://github.com/thevickypedia/Jarvis/blob/master/LICENSE)

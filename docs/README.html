@@ -199,13 +199,31 @@ Using the module makes it easier since the devices are already connected to the 
 <li><p><strong>ngrok_auth_key</strong> - Auth token from <a class="reference external" href="https://dashboard.ngrok.com/">ngrok</a> - Only used for <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code></p></li>
 </ul>
 </details></section>
+</section>
 <section id="automation-setup-optional">
-<h3>Automation Setup [Optional]:<a class="headerlink" href="#automation-setup-optional" title="Permalink to this headline">¶</a></h3>
-<ul>
-<li><p>The file <code class="docutils literal notranslate"><span class="pre">automation.json</span></code> should be a JSON file of dictionary within a dictionary that looks like the below:</p>
+<h2>Automation Setup [Optional]<a class="headerlink" href="#automation-setup-optional" title="Permalink to this headline">¶</a></h2>
+<p>Executes pre-defined tasks at pre-defined times without any user interaction. Uses an <code class="docutils literal notranslate"><span class="pre">automation.json</span></code> file as source.</p>
+<details>
+<summary><strong>Setup Instructions</strong></summary><p>The JSON file should be a dictionary within a dictionary that looks like the below.</p>
+<p><strong>OPTIONAL:</strong> The key, <code class="docutils literal notranslate"><span class="pre">day</span></code> can be a <code class="docutils literal notranslate"><span class="pre">list</span></code> of days, or a <code class="docutils literal notranslate"><span class="pre">str</span></code> of a specific day or simply a <code class="docutils literal notranslate"><span class="pre">str</span></code> saying <code class="docutils literal notranslate"><span class="pre">weekday</span></code> or
+<code class="docutils literal notranslate"><span class="pre">weekend</span></code> when the particular automation should be executed.</p>
+<blockquote>
+<div><p>Not having the key <code class="docutils literal notranslate"><span class="pre">day</span></code> will run the automation daily.</p>
+</div></blockquote>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;6:00 AM&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;day&quot;</span><span class="p">:</span> <span class="s2">&quot;weekday&quot;</span><span class="p">,</span>
     <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 50%&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;6:30 AM&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;day&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Monday&quot;</span><span class="p">,</span> <span class="s2">&quot;wednesday&quot;</span><span class="p">,</span> <span class="s2">&quot;FRIDAY&quot;</span><span class="p">],</span>
+    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 100%&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;8:00 AM&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;day&quot;</span><span class="p">:</span> <span class="s2">&quot;weekend&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 100%&quot;</span><span class="p">,</span>
     <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
   <span class="p">},</span>
   <span class="nt">&quot;9:00 PM&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -215,10 +233,7 @@ Using the module makes it easier since the devices are already connected to the 
 <span class="p">}</span>
 </pre></div>
 </div>
-</li>
-</ul>
-</section>
-</section>
+</details></section>
 <section id="coding-standards">
 <h2>Coding Standards<a class="headerlink" href="#coding-standards" title="Permalink to this headline">¶</a></h2>
 <p>Docstring format: <a class="reference external" href="https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings"><code class="docutils literal notranslate"><span class="pre">Google</span></code></a> <br>
@@ -254,7 +269,7 @@ features’ overview and demo videos.</p>
 <section id="license-copyright">
 <h2>License &amp; copyright<a class="headerlink" href="#license-copyright" title="Permalink to this headline">¶</a></h2>
 <p>© Vignesh Sivanandha Rao</p>
-<p>Licensed under the <a class="reference external" href="LICENSE">MIT License</a></p>
+<p>Licensed under the <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/LICENSE">MIT License</a></p>
 </section>
 </section>
 
@@ -286,9 +301,9 @@ features’ overview and demo videos.</p>
 <li><a class="reference internal" href="#args-to-control-tv-applies-only-for-lgwebos">Args to control TV - Applies only for LGWebOS</a></li>
 <li><a class="reference internal" href="#args-for-ip-scanner-applies-only-for-netgear-routers">Args for ip_scanner - Applies only for Netgear routers</a></li>
 <li><a class="reference internal" href="#args-for-offline-communicator">Args for offline-communicator</a></li>
-<li><a class="reference internal" href="#automation-setup-optional">Automation Setup [Optional]:</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#automation-setup-optional">Automation Setup [Optional]</a></li>
 <li><a class="reference internal" href="#coding-standards">Coding Standards</a></li>
 <li><a class="reference internal" href="#linting">Linting</a></li>
 <li><a class="reference internal" href="#feature-s-implementation">Feature(s) Implementation</a></li>
