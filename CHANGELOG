@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.2.3 (11/13/2021)
+------------------
+- Make watchlist feature in built
+- Fix module level imports
+
 5.2.2 (11/13/2021)
 ------------------
 - Bugfix on `day` option for automations
