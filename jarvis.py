@@ -3575,7 +3575,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
                     rewrite_automator(filename=automation_file, json_object=automation_data)
                     break  # Using break instead of continue as python doesn't like dict size change in-between a loop
 
-                if day := automation_data.get('day'):
+                if day := automation_info.get('day'):
                     today = datetime.today().strftime('%A').upper()
                     if isinstance(day, list):
                         day_list = [d.upper() for d in day]
@@ -3583,16 +3583,14 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
                             continue
                     elif isinstance(day, str):
                         day = day.upper()
-                        if today != day:
-                            continue
-                        elif day == 'WEEKEND' and today in ['SATURDAY', 'SUNDAY']:
+                        if day == 'WEEKEND' and today in ['SATURDAY', 'SUNDAY']:
                             pass
                         elif day == 'WEEKDAY' and today in ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY']:
                             pass
+                        elif today == day:
+                            pass
                         else:
                             continue
-                    else:
-                        continue
 
                 if automation_time != datetime.now().strftime("%-I:%M %p"):  # "%-I" to consider 06:05 AM as 6:05 AM
                     if exec_status:
