@@ -3,8 +3,6 @@ from os import environ, getcwd
 
 from crontab import CronTab
 
-from api.rh_helper import MarketHours
-
 
 class CronScheduler:
     """Initiates CronScheduler object to check for existing schedule and add if not.
@@ -60,6 +58,7 @@ class CronScheduler:
         """
         if self.checker():
             return
+        from rh_helper import MarketHours
         self.logger.info(f'Type: {hours_type} market hours.')
         tz = datetime.utcnow().astimezone().tzname()
         data = MarketHours.hours
