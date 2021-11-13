@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+5.2.4 (11/13/2021)
+------------------
+- Revert module level imports
+
 5.2.3 (11/13/2021)
 ------------------
 - Make watchlist feature in built
