@@ -1,8 +1,7 @@
 from datetime import datetime
-from logging import getLogger
-from logging.config import dictConfig
+from logging import config, getLogger
 from mimetypes import guess_type
-from os import environ, path, remove, stat
+from os import environ, path, remove, stat, system
 from socket import gethostbyname
 from string import punctuation
 from subprocess import check_output
@@ -16,7 +15,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
-from models import GetData, LogConfig
+from models import GetData, GetPhrase, LogConfig
 from pytz import timezone
 from report_gatherer import Investment
 from yaml import FullLoader, load
@@ -24,7 +23,10 @@ from yaml import FullLoader, load
 if path.isfile('../.env'):
     load_dotenv(dotenv_path='../.env', verbose=True)
 
-dictConfig(LogConfig().dict())
+if not path.isdir('logs'):
+    system('mkdir logs')
+
+config.dictConfig(LogConfig().dict())
 
 offline_host = gethostbyname('localhost')
 offline_port = int(environ.get('offline_port', 4483))
@@ -99,6 +101,7 @@ def run_robinhood() -> None:
 @app.on_event(event_type='startup')
 async def start_robinhood():
     """Initiates robinhood gatherer in a thread and adds a cron schedule if not present already."""
+    logger.info(f'Hosting at http://{offline_host}:{offline_port}')
     if robinhood_auth:
         # noinspection PyGlobalUndefined
         global thread
@@ -239,7 +242,7 @@ def pre_check_robinhood():
 
 
 @app.post("/robinhood-authenticate")
-def authenticate_robinhood_report_gatherer(feeder: GetData):
+def authenticate_robinhood_report_gatherer(feeder: GetPhrase):
     """# Authenticates the request. Uses a two-factor authentication by generating single use tokens.
 
     ## Args:

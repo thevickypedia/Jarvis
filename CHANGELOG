@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.2.5 (11/14/2021)
+------------------
+- Add a new model for robinhood authentication
+- Use logging dict config for report gatherer
+- Create logs dir if not found
+
 5.2.4 (11/13/2021)
 ------------------
 - Revert module level imports

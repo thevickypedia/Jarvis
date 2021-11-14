@@ -184,29 +184,21 @@ class Investment:
 
 
 if __name__ == '__main__':
-    from logging import DEBUG, FileHandler, Formatter, getLogger
-    from pathlib import PurePath
+    from logging import config, getLogger
 
     from dotenv import load_dotenv
+    from models import LogConfig
+
+    config.dictConfig(LogConfig().dict())
 
     if not path.isdir('logs'):
         system('mkdir logs')
 
-    log_file = datetime.now().strftime('logs/%Y-%m-%d.log')
-    handler = FileHandler(log_file)
-    formatter = Formatter(fmt='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s',
-                          datefmt='%b-%d-%Y %I:%M:%S %p')
-    handler.setFormatter(formatter)
-
-    module_logger = getLogger(PurePath(__file__).name)
-    module_logger.addHandler(handler)
-    module_logger.setLevel(DEBUG)
-
     if path.isfile('../.env'):
         load_dotenv(dotenv_path='../.env')
 
-    Investment(logger=module_logger).report_gatherer()
+    Investment(logger=getLogger('investment')).report_gatherer()
 
-    with open(log_file, 'a') as file:
+    with open(LogConfig().FILE_LOG, 'a') as file:
         file.seek(0)
         file.write('\n')
