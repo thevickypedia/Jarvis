@@ -70,7 +70,7 @@ class Investment:
             buy = round(float(data['average_buy_price']), 2)
             total = round(shares_count * float(buy), 2)
             shares_total.append(total)
-            current = (round(float(raw_details['last_trade_price']), 2))
+            current = round(float(raw_details['last_trade_price']), 2)
             current_total = round(shares_count * current, 2)
             difference = round(float(current_total - total), 2)
             if difference < 0:
@@ -146,9 +146,11 @@ class Investment:
             price = round(float(raw_details['last_trade_price']), 2)
             difference = round(float(price - numbers[-1]), 2)
             if price < numbers[-1]:
-                r1 += f'{stock_name}({stock}) - {price:,} &#8595 {difference}\n'
+                r1 += f'{stock_name}\t<a href="https://robinhood.com/stocks/{stock}" target="_bottom">{stock}</a>: ' \
+                      f'{price:,} &#8595 {difference}\n'
             else:
-                r2 += f'{stock_name}({stock}) - {price:,} &#8593 {difference}\n'
+                r2 += f'{stock_name}\t<a href="https://robinhood.com/stocks/{stock}" target="_bottom">{stock}</a>: ' \
+                      f'{price:,} &#8593 {difference}\n'
         return r1, r2
 
     def report_gatherer(self) -> None:

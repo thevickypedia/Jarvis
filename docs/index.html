@@ -811,24 +811,14 @@ A condition below assumes two different words as two places but not including tw
 <dt class="sig sig-object py" id="jarvis.initiate_background_threads">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiate_background_threads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.initiate_background_threads" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiate background threads.</p>
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">-</span> <span class="pre">offline_communicator_initiate</span></span></dt>
-<dd><p>Initiates ngrok tunnel and Jarvis API.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">-</span> <span class="pre">automator</span></span></dt>
-<dd><p>Initiates automator that executes certain functions at said time.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">-</span> <span class="pre">playsound</span></span></dt>
-<dd><p>Plays a start up sound.</p>
-</dd></dl>
-
+<dl class="simple">
+<dt>Methods</dt><dd><ul class="simple">
+<li><p>offline_communicator_initiate: Initiates ngrok tunnel and Jarvis API.</p></li>
+<li><p>automator: Initiates automator that executes certain functions at said time.</p></li>
+<li><p>playsound: Plays a start up sound.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1463,24 +1453,15 @@ A condition below assumes two different words as two places but not including tw
 <dt class="sig sig-object py" id="jarvis.starter">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">starter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.starter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates crucial functions which needs to be called during start up.</p>
-<ul class="simple">
-<li><p>Loads the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file so that all the necessary credentials and api keys can be accessed as <code class="docutils literal notranslate"><span class="pre">ENV</span> <span class="pre">vars</span></code></p></li>
+<p>Loads the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file so that all the necessary credentials and api keys can be accessed as <code class="docutils literal notranslate"><span class="pre">ENV</span> <span class="pre">vars</span></code></p>
+<dl class="simple">
+<dt>Methods</dt><dd><ul class="simple">
+<li><p>volume_controller: To default the master volume 50%.</p></li>
+<li><p>voice_default: To change the voice to default value.</p></li>
+<li><p>clear_logs: To purge log files older than 48 hours.</p></li>
 </ul>
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">``volume_controller():``</span> <span class="pre">To</span> <span class="pre">default</span> <span class="pre">the</span> <span class="pre">master</span> <span class="pre">volume</span> <span class="pre">50%.</span></span></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">``voice_default():``</span> <span class="pre">To</span> <span class="pre">change</span> <span class="pre">the</span> <span class="pre">voice</span> <span class="pre">to</span> <span class="pre">default</span> <span class="pre">value.</span></span></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">``clear_logs():``</span> <span class="pre">To</span> <span class="pre">purge</span> <span class="pre">log</span> <span class="pre">files</span> <span class="pre">older</span> <span class="pre">than</span> <span class="pre">48</span> <span class="pre">hours.</span></span></dt>
-<dd></dd></dl>
-
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1980,7 +1961,7 @@ name is specified, allow every event.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="api.models.LogConfig">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">LogConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LOGGER_NAME</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'jarvis'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LOG_FORMAT</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'%(levelname)s:\t</span>&#160; <span class="pre">%(message)s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LOG_LEVEL</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'DEBUG'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FILE_LOG</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'logs/2021-11-14.log'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FILE_LOG_FORMAT</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s</span> <span class="pre">-</span> <span class="pre">[%(module)s:%(lineno)d]</span> <span class="pre">-</span> <span class="pre">%(funcName)s</span> <span class="pre">-</span> <span class="pre">%(message)s'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.LogConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">LogConfig</span></span><a class="headerlink" href="#api.models.LogConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom log configuration.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LogConfig</span>
 </pre></div>
@@ -1994,31 +1975,6 @@ name is specified, allow every event.</p>
 </div>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.LogConfig.FILE_LOG">
-<span class="sig-name descname"><span class="pre">FILE_LOG</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#api.models.LogConfig.FILE_LOG" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.LogConfig.FILE_LOG_FORMAT">
-<span class="sig-name descname"><span class="pre">FILE_LOG_FORMAT</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#api.models.LogConfig.FILE_LOG_FORMAT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.LogConfig.LOGGER_NAME">
-<span class="sig-name descname"><span class="pre">LOGGER_NAME</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#api.models.LogConfig.LOGGER_NAME" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.LogConfig.LOG_FORMAT">
-<span class="sig-name descname"><span class="pre">LOG_FORMAT</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#api.models.LogConfig.LOG_FORMAT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.LogConfig.LOG_LEVEL">
-<span class="sig-name descname"><span class="pre">LOG_LEVEL</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#api.models.LogConfig.LOG_LEVEL" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </section>
