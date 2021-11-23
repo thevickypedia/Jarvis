@@ -40,13 +40,13 @@ class LogConfig(BaseModel):
         - ``LOG_FORMAT`` is set to match the format of ``uvicorn.access`` logs.
     """
 
-    LOGGER_NAME: str = "jarvis"
-    LOG_FORMAT: str = '%(levelname)s:\t  %(message)s'
-    LOG_LEVEL: str = "DEBUG"
-    FILE_LOG: str = datetime.now().strftime('logs/%Y-%m-%d.log')
-    FILE_LOG_FORMAT: str = '%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
-
     if not environ.get('COMMIT'):  # Disable code in docs
+        LOGGER_NAME: str = "jarvis"
+        LOG_FORMAT: str = '%(levelname)s:\t  %(message)s'
+        LOG_LEVEL: str = "DEBUG"
+        FILE_LOG: str = datetime.now().strftime('logs/%Y-%m-%d.log')
+        FILE_LOG_FORMAT: str = '%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
+
         version = 1
         disable_existing_loggers = False
         formatters = {

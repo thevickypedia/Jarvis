@@ -4128,12 +4128,12 @@ def clear_logs() -> None:
 def starter() -> None:
     """Initiates crucial functions which needs to be called during start up.
 
-    - Loads the ``.env`` file so that all the necessary credentials and api keys can be accessed as ``ENV vars``
+    Loads the ``.env`` file so that all the necessary credentials and api keys can be accessed as ``ENV vars``
 
-    Methods:
-        ``volume_controller():`` To default the master volume 50%.
-        ``voice_default():`` To change the voice to default value.
-        ``clear_logs():`` To purge log files older than 48 hours.
+    Methods
+        - volume_controller: To default the master volume 50%.
+        - voice_default: To change the voice to default value.
+        - clear_logs: To purge log files older than 48 hours.
     """
     volume(level=50)
     voice_default()
@@ -4148,7 +4148,7 @@ def starter() -> None:
 def initiate_background_threads():
     """Initiate background threads.
 
-    Methods:
+    Methods
         - offline_communicator_initiate: Initiates ngrok tunnel and Jarvis API.
         - automator: Initiates automator that executes certain functions at said time.
         - playsound: Plays a start up sound.

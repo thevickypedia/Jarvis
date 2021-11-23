@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.2.6 (11/22/2021)
+------------------
+- Add hyperlinks to watchlist stocks in report_gatherer.py
+- Fix some wonky docstrings
+
 5.2.5 (11/14/2021)
 ------------------
 - Add a new model for robinhood authentication
