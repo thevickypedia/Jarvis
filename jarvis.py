@@ -1,4 +1,7 @@
+import json
 import os
+import random
+import re
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
@@ -7,18 +10,11 @@ from difflib import SequenceMatcher
 from email import message_from_bytes
 from email.header import decode_header, make_header
 from imaplib import IMAP4_SSL
-from json import JSONDecodeError
-from json import dump as json_dump
-from json import dumps as json_dumps
-from json import load as json_load
-from json import loads as json_loads
 from math import ceil, floor, log, pow
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
 from platform import platform
-from random import choice, choices
-from re import IGNORECASE, findall, match, search, sub
 from shutil import disk_usage
 from socket import (AF_INET, SO_REUSEADDR, SOCK_DGRAM, SOCK_STREAM, SOL_SOCKET,
                     gethostbyname, gethostname, socket)
@@ -34,11 +30,13 @@ from unicodedata import normalize
 from urllib.request import urlopen
 from webbrowser import open as web_open
 
+import certifi
 import pyttsx3
+import wordninja
+import yaml
 from aeosa.aem.aemsend import EventError
 from appscript import app as apple_script
 from appscript.reference import CommandError
-from certifi import where
 from dotenv import load_dotenv, set_key, unset_key
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
@@ -77,14 +75,10 @@ from wakeonlan import send_magic_packet as wake
 from wikipedia import exceptions as wiki_exceptions
 from wikipedia import summary
 from wolframalpha import Client as Think
-from wordninja import split as splitter
-from yaml import FullLoader
-from yaml import dump as yaml_dump
-from yaml import load as yaml_load
 
 from api.controller import offline_compatible
 from helper_functions.conversation import Conversation
-from helper_functions.database import Database, file_name
+from helper_functions.database import TASKS_DB, Database
 from helper_functions.facial_recognition import Face
 from helper_functions.ip_scanner import LocalIPScan
 from helper_functions.keywords import Keywords
@@ -177,17 +171,14 @@ def part_of_day() -> str:
         str:
         Morning, Afternoon, Evening or Night based on time of day.
     """
-    am_pm = datetime.now().strftime("%p")
-    current_hour = int(datetime.now().strftime("%I"))
-    if current_hour in range(4, 12) and am_pm == 'AM':
-        greet = 'Morning'
-    elif am_pm == 'PM' and (current_hour == 12 or current_hour in range(1, 4)):
-        greet = 'Afternoon'
-    elif current_hour in range(4, 8) and am_pm == 'PM':
-        greet = 'Evening'
-    else:
-        greet = 'Night'
-    return greet
+    current_hour = int(datetime.now().strftime("%H"))
+    if 5 <= current_hour <= 11:
+        return 'Morning'
+    if 12 <= current_hour <= 15:
+        return 'Afternoon'
+    if 16 <= current_hour <= 19:
+        return 'Evening'
+    return 'Night'
 
 
 def initialize() -> None:
@@ -520,9 +511,9 @@ def ip_info(phrase: str) -> None:
             ssid = f'for the connection {ssid} '
         else:
             ssid = ''
-        if public_ip := json_load(urlopen('https://ipinfo.io/json')).get('ip'):
+        if public_ip := json.load(urlopen('https://ipinfo.io/json')).get('ip'):
             output = f"My public IP {ssid}is {public_ip}"
-        elif public_ip := json_loads(urlopen('http://ip.jsontest.com').read()).get('ip'):
+        elif public_ip := json.loads(urlopen('http://ip.jsontest.com').read()).get('ip'):
             output = f"My public IP {ssid}is {public_ip}"
         else:
             output = 'I was unable to fetch the public IP sir!'
@@ -545,12 +536,12 @@ def unrecognized_dumper(converted: str) -> None:
             if str(value) not in content:  # avoids duplication in yaml file
                 dict_file = [{key: [value]}]
                 with open(r'training_data.yaml', 'a') as writer:
-                    yaml_dump(dict_file, writer)
+                    yaml.dump(dict_file, writer)
     else:
         for key, value in train_file.items():
             train_file = [{key: [value]}]
         with open(r'training_data.yaml', 'w') as writer:
-            yaml_dump(train_file, writer)
+            yaml.dump(train_file, writer)
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
@@ -758,7 +749,7 @@ def weather(phrase: str = None) -> None:
     api_endpoint = "https://api.openweathermap.org/data/2.5/"
     weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={weather_api}'
     r = urlopen(weather_url)  # sends request to the url created
-    response = json_loads(r.read())  # loads the response in a json
+    response = json.loads(r.read())  # loads the response in a json
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
     temp = response['current']['temp']
@@ -845,7 +836,7 @@ def weather_condition(msg: str, place: str = None) -> None:
     api_endpoint = "https://api.openweathermap.org/data/2.5/"
     weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={weather_api}'
     r = urlopen(weather_url)  # sends request to the url created
-    response = json_loads(r.read())  # loads the response in a json
+    response = json.loads(r.read())  # loads the response in a json
     weather_location = f'{city} {state}' if city and state else place
     if 'tonight' in msg:
         key = 0
@@ -1011,7 +1002,7 @@ def apps(phrase: str) -> None:
 
     app_check = False
     for app in apps_:
-        if search(keyword, app, flags=IGNORECASE) is not None:
+        if re.search(keyword, app, flags=re.IGNORECASE) is not None:
             keyword = app
             app_check = True
             break
@@ -1156,7 +1147,7 @@ def music(phrase: str = None) -> None:
     sys.stdout.write("\rScanning music files...")
     get_all_files = (os.path.join(root, f) for root, _, files in os.walk(f"{home}/Music") for f in files)
     if music_files := [file for file in get_all_files if os.path.splitext(file)[1] == '.mp3']:
-        chosen = choice(music_files)
+        chosen = random.choice(music_files)
         if phrase and 'speaker' in phrase:
             google_home(device=phrase, file=chosen)
         else:
@@ -1244,7 +1235,7 @@ def flip_a_coin() -> None:
     """Says ``heads`` or ``tails`` from a random choice."""
     playsound('indicators/coin.mp3')
     sleep(0.5)
-    say(text=f"""{choice(['You got', 'It landed on', "It's"])} {choice(['heads', 'tails'])} sir!""")
+    say(text=f"""{random.choice(['You got', 'It landed on', "It's"])} {random.choice(['heads', 'tails'])} sir!""")
 
 
 def facts() -> None:
@@ -1314,9 +1305,9 @@ def todo(no_repeat: bool = False) -> None:
         no_repeat: A place holder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
     """
     sys.stdout.write("\rLooking for to-do database..")
-    if not os.path.isfile(file_name) and (time_travel.has_been_called or report.has_been_called):
+    if not os.path.isfile(TASKS_DB) and (time_travel.has_been_called or report.has_been_called):
         pass
-    elif not os.path.isfile(file_name):
+    elif not os.path.isfile(TASKS_DB):
         if os.environ.get('called_by_offline'):
             say(text="Your don't have any items in your to-do list sir!")
             return
@@ -1350,7 +1341,7 @@ def todo(no_repeat: bool = False) -> None:
         sys.stdout.write("\r")
         if result:
             if os.environ.get('called_by_offline'):
-                say(text=json_dumps(result))
+                say(text=json.dumps(result))
                 return
             say(text='Your to-do items are')
             for category, item in result.items():  # browses dictionary and stores result in response and says it
@@ -1371,7 +1362,7 @@ def add_todo() -> None:
     """Adds new items to the to-do list."""
     sys.stdout.write("\rLooking for to-do database..")
     # if database file is not found calls create_db()
-    if not os.path.isfile(file_name):
+    if not os.path.isfile(TASKS_DB):
         sys.stdout.write("\r")
         say(text="You don't have a database created for your to-do list sir.")
         say(text="Would you like to spin up one now?", run=True)
@@ -1410,7 +1401,7 @@ def add_todo() -> None:
 def delete_todo() -> None:
     """Deletes items from an existing to-do list."""
     sys.stdout.write("\rLooking for to-do database..")
-    if not os.path.isfile(file_name):
+    if not os.path.isfile(TASKS_DB):
         say(text="You don't have a database created for your to-do list sir.")
         return
     say(text="Which one should I remove sir?", run=True)
@@ -1425,15 +1416,15 @@ def delete_todo() -> None:
 
 def delete_db() -> None:
     """Deletes the ``tasks.db`` database file after getting confirmation."""
-    if not os.path.isfile(file_name):
+    if not os.path.isfile(TASKS_DB):
         say(text='I did not find any database sir.')
         return
     else:
-        say(text=f'{choice(confirmation)} delete your database?', run=True)
+        say(text=f'{random.choice(confirmation)} delete your database?', run=True)
         response = listener(timeout=3, phrase_limit=3)
         if response != 'SR_ERROR':
             if any(word in response.lower() for word in keywords.ok):
-                os.remove(file_name)
+                os.remove(TASKS_DB)
                 say(text="I've removed your database sir.")
             else:
                 say(text="Your database has been left intact sir.")
@@ -1646,7 +1637,7 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     web_open(maps_url)
     say(text="Directions on your screen sir!")
     if start_country and end_country:
-        if match(start_country, end_country, flags=IGNORECASE):
+        if re.match(start_country, end_country, flags=re.IGNORECASE):
             directions.has_been_called = True
             distance_controller(starting_point=None, destination=place)
         else:
@@ -1678,8 +1669,8 @@ def alarm(phrase: str) -> None:
         phrase: Takes the voice recognized statement as argument and extracts time from it.
     """
     phrase = phrase.lower()
-    extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or \
-        findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', phrase) or findall(r'([0-9]+\s?(?:am|pm:?))', phrase)
+    extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or \
+        re.findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', phrase) or re.findall(r'([0-9]+\s?(?:am|pm:?))', phrase)
     if extracted_time:
         extracted_time = extracted_time[0]
         am_pm = extracted_time.split()[-1]
@@ -1697,9 +1688,9 @@ def alarm(phrase: str) -> None:
         if int(hour) <= 12 and int(minute) <= 59:
             os.system(f'mkdir -p alarm && touch alarm/{hour}_{minute}_{am_pm}.lock')
             if 'wake' in phrase.strip():
-                say(text=f"{choice(ack)}! I will wake you up at {hour}:{minute} {am_pm}.")
+                say(text=f"{random.choice(ack)}! I will wake you up at {hour}:{minute} {am_pm}.")
             else:
-                say(text=f"{choice(ack)}! Alarm has been set for {hour}:{minute} {am_pm}.")
+                say(text=f"{random.choice(ack)}! Alarm has been set for {hour}:{minute} {am_pm}.")
         else:
             say(text=f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
                      f"I don't think a time like that exists on Earth.")
@@ -1856,7 +1847,7 @@ def google_home(device: str = None, file: str = None) -> None:
 
 def jokes() -> None:
     """Uses jokes lib to say chucknorris jokes."""
-    say(text=choice([geek, icanhazdad, chucknorris, icndb])())
+    say(text=random.choice([geek, icanhazdad, chucknorris, icndb])())
 
 
 def reminder(phrase: str) -> None:
@@ -1865,14 +1856,14 @@ def reminder(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument and extracts the time and message from it.
     """
-    message = search(' to (.*) at ', phrase) or search(' about (.*) at ', phrase)
+    message = re.search(' to (.*) at ', phrase) or re.search(' about (.*) at ', phrase)
     if not message:
-        message = search(' to (.*)', phrase) or search(' about (.*)', phrase)
+        message = re.search(' to (.*)', phrase) or re.search(' about (.*)', phrase)
         if not message:
             say(text='Reminder format should be::Remind me to do something, at some time.')
             sys.stdout.write('\rReminder format should be::Remind ME to do something, AT some time.')
             return
-    extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or findall(
+    extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or re.findall(
         r'([0-9]+\s?(?:a.m.|p.m.:?))', phrase)
     if not extracted_time:
         if os.environ.get('called_by_offline'):
@@ -1881,7 +1872,7 @@ def reminder(phrase: str) -> None:
         say(text="When do you want to be reminded sir?", run=True)
         phrase = listener(timeout=3, phrase_limit=4)
         if phrase != 'SR_ERROR':
-            extracted_time = findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or findall(
+            extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or re.findall(
                 r'([0-9]+\s?(?:a.m.|p.m.:?))', phrase)
         else:
             return
@@ -1902,7 +1893,7 @@ def reminder(phrase: str) -> None:
         hour, minute = f"{hour:02}", f"{minute:02}"
         if int(hour) <= 12 and int(minute) <= 59:
             os.system(f'mkdir -p reminder && touch reminder/{hour}_{minute}_{am_pm}-{message.replace(" ", "_")}.lock')
-            say(text=f"{choice(ack)}! I will remind you {to_about} {message}, at {hour}:{minute} {am_pm}.")
+            say(text=f"{random.choice(ack)}! I will remind you {to_about} {message}, at {hour}:{minute} {am_pm}.")
         else:
             say(text=f"A reminder at {hour}:{minute} {am_pm}? Are you an alien? "
                      f"I don't think a time like that exists on Earth.")
@@ -1937,7 +1928,7 @@ def google_maps(query: str) -> bool:
             rating = collection[element]['rating']
             full_address = collection[element]['formatted_address']
             geometry = collection[element]['geometry']['location']
-            address = search('(.*)Rd|(.*)Ave|(.*)St |(.*)St,|(.*)Blvd|(.*)Ct', full_address)
+            address = re.search('(.*)Rd|(.*)Ave|(.*)St |(.*)St,|(.*)Blvd|(.*)Ct', full_address)
             address = address.group().replace(',', '')
             new_dict = {"Name": name, "Rating": rating, "Address": address, "Location": geometry, "place": full_address}
             required.append(new_dict)
@@ -2035,7 +2026,7 @@ def github(phrase: str):
         say(text=f'You have {total} repositories sir, out of which {forked} are forked, {private} are private, '
                  f'{licensed} are licensed, and {archived} archived.')
     else:
-        [result.append(clone_url) if clone_url not in result and search(rf'\b{word}\b', repo.lower()) else None
+        [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
          for word in phrase.lower().split() for item in repos for repo, clone_url in item.items()]
         if result:
             github_controller(target=result)
@@ -2115,17 +2106,17 @@ def send_sms(phrase: str = None) -> None:
     Args:
         phrase: Takes phrase spoken as an argument.
     """
-    number = '-'.join([str(s) for s in findall(r'\b\d+\b', phrase)]) if phrase else None
+    number = '-'.join([str(s) for s in re.findall(r'\b\d+\b', phrase)]) if phrase else None
     if not number:
         say(text="Please tell me a number sir!", run=True)
         number = listener(timeout=3, phrase_limit=5)
         if number != 'SR_ERROR':
             if 'exit' in number or 'quit' in number or 'Xzibit' in number:
                 return
-    elif len(''.join([str(s) for s in findall(r'\b\d+\b', number)])) != 10:
+    elif len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) != 10:
         say(text="I don't think that's a right number sir! Phone numbers are 10 digits. Try again!")
         send_sms()
-    if number and len(''.join([str(s) for s in findall(r'\b\d+\b', number)])) == 10:
+    if number and len(''.join([str(s) for s in re.findall(r'\b\d+\b', number)])) == 10:
         say(text="What would you like to send sir?", run=True)
         body = listener(timeout=3, phrase_limit=5)
         if body != 'SR_ERROR':
@@ -2197,30 +2188,30 @@ def television(phrase: str) -> None:
             say(text='Your TV is already powered on sir!')
         elif 'increase' in phrase_lower:
             tv.increase_volume()
-            say(text=f'{choice(ack)}!')
+            say(text=f'{random.choice(ack)}!')
         elif 'decrease' in phrase_lower or 'reduce' in phrase_lower:
             tv.decrease_volume()
-            say(text=f'{choice(ack)}!')
+            say(text=f'{random.choice(ack)}!')
         elif 'mute' in phrase_lower:
             tv.mute()
-            say(text=f'{choice(ack)}!')
+            say(text=f'{random.choice(ack)}!')
         elif 'pause' in phrase_lower or 'hold' in phrase_lower:
             tv.pause()
-            say(text=f'{choice(ack)}!')
+            say(text=f'{random.choice(ack)}!')
         elif 'resume' in phrase_lower or 'play' in phrase_lower:
             tv.play()
-            say(text=f'{choice(ack)}!')
+            say(text=f'{random.choice(ack)}!')
         elif 'rewind' in phrase_lower:
             tv.rewind()
-            say(text=f'{choice(ack)}!')
+            say(text=f'{random.choice(ack)}!')
         elif 'forward' in phrase_lower:
             tv.forward()
-            say(text=f'{choice(ack)}!')
+            say(text=f'{random.choice(ack)}!')
         elif 'stop' in phrase_lower:
             tv.stop()
-            say(text=f'{choice(ack)}!')
+            say(text=f'{random.choice(ack)}!')
         elif 'set' in phrase_lower:
-            vol = int(''.join([str(s) for s in findall(r'\b\d+\b', phrase_exc)]))
+            vol = int(''.join([str(s) for s in re.findall(r'\b\d+\b', phrase_exc)]))
             if vol:
                 tv.set_volume(vol)
                 say(text=f"I've set the volume to {vol}% sir.")
@@ -2262,7 +2253,7 @@ def television(phrase: str) -> None:
                     say(text=f"I didn't find the source {tv_source} on your TV sir!")
         elif 'shutdown' in phrase_lower or 'shut down' in phrase_lower or 'turn off' in phrase_lower:
             Thread(target=tv.shutdown).start()
-            say(text=f'{choice(ack)}! Turning your TV off.')
+            say(text=f'{random.choice(ack)}! Turning your TV off.')
             tv = None
         else:
             say(text="I didn't quite get that.")
@@ -2300,7 +2291,7 @@ def alpha(text: str) -> bool:
     else:
         try:
             response = next(res.results).text.splitlines()[0]
-            response = sub(r'(([0-9]+) \|)', '', response).replace(' |', ':').strip()
+            response = re.sub(r'(([0-9]+) \|)', '', response).replace(' |', ':').strip()
             if response == '(no data available)':
                 return True
             say(text=response)
@@ -2362,14 +2353,14 @@ def google(query: str, suggestion_count: int = 0) -> bool:
         if '\n' in output:
             required = output.split('\n')
             modify = required[0].strip()
-            split_val = ' '.join(splitter(modify.replace('.', 'rEpLaCInG')))
+            split_val = ' '.join(wordninja.split(modify.replace('.', 'rEpLaCInG')))
             sentence = split_val.replace(' rEpLaCInG ', '.')
             repeats = []
             [repeats.append(word) for word in sentence.split() if word not in repeats]
             refined = ' '.join(repeats)
             output = refined + required[1] + '.' + required[2]
         output = output.replace('\\', ' or ')
-        match_word = search(r'(\w{3},|\w{3}) (\d,|\d|\d{2},|\d{2}) \d{4}', output)
+        match_word = re.search(r'(\w{3},|\w{3}) (\d,|\d|\d{2},|\d{2}) \d{4}', output)
         if match_word:
             output = output.replace(match_word.group(), '')
         output = output.replace('\\', ' or ')
@@ -2415,13 +2406,13 @@ def volume(phrase: str = None, level: int = None) -> None:
         elif 'max' in phrase_lower or 'full' in phrase_lower:
             level = 100
         else:
-            level = findall(r'\b\d+\b', phrase)  # gets integers from string as a list
+            level = re.findall(r'\b\d+\b', phrase)  # gets integers from string as a list
             level = int(level[0]) if level else 50  # converted to int for volume
     sys.stdout.write("\r")
     level = round((8 * level) / 100)
     os.system(f'osascript -e "set Volume {level}"')
     if phrase:
-        say(text=f"{choice(ack)}!")
+        say(text=f"{random.choice(ack)}!")
 
 
 def face_detection() -> None:
@@ -2502,7 +2493,7 @@ def connector(phrase: str, targets: dict) -> bool:
     for target in targets:
         if target['name']:
             target['name'] = normalize("NFKD", target['name'])
-            if any(search(line, target['name'], flags=IGNORECASE) for line in phrase.split()):
+            if any(re.search(line, target['name'], flags=re.IGNORECASE) for line in phrase.split()):
                 connection_attempt = True
                 if 'disconnect' in phrase:
                     output = getoutput(f"blueutil --disconnect {target['address']}")
@@ -2547,12 +2538,12 @@ def bluetooth(phrase: str) -> None:
     else:
         sys.stdout.write('\rScanning paired Bluetooth devices')
         paired = getoutput("blueutil --paired --format json")
-        paired = json_loads(paired)
+        paired = json.loads(paired)
         if not connector(phrase=phrase, targets=paired):
             sys.stdout.write('\rScanning UN-paired Bluetooth devices')
             say(text='No connections were established sir, looking for un-paired devices.', run=True)
             unpaired = getoutput("blueutil --inquiry --format json")
-            unpaired = json_loads(unpaired)
+            unpaired = json.loads(unpaired)
             connector(phrase=phrase, targets=unpaired) if unpaired else say(text='No un-paired devices found sir! '
                                                                                  'You may want to be more precise.')
 
@@ -2564,9 +2555,9 @@ def brightness(phrase: str):
         phrase: Takes the phrase spoken as an argument.
     """
     phrase = phrase.lower()
-    say(text=choice(ack))
-    if 'set' in phrase or findall(r'\b\d+\b', phrase):
-        level = findall(r'\b\d+\b', phrase)  # gets integers from string as a list
+    say(text=random.choice(ack))
+    if 'set' in phrase or re.findall(r'\b\d+\b', phrase):
+        level = re.findall(r'\b\d+\b', phrase)  # gets integers from string as a list
         if not level:
             level = ['50']  # pass as list for brightness, as args must be iterable
         Thread(target=set_brightness, args=level).start()
@@ -2707,27 +2698,27 @@ def lights(phrase: str) -> None:
     if 'turn on' in phrase or 'cool' in phrase or 'white' in phrase:
         warm_light.pop('status') if warm_light.get('status') else None
         tone = 'white' if 'white' in phrase else 'cool'
-        say(text=f'{choice(ack)}! Turning on {lights_count} {plural}') if 'turn on' in phrase else \
-            say(text=f'{choice(ack)}! Setting {lights_count} {plural} to {tone}!')
+        say(text=f'{random.choice(ack)}! Turning on {lights_count} {plural}') if 'turn on' in phrase else \
+            say(text=f'{random.choice(ack)}! Setting {lights_count} {plural} to {tone}!')
         Thread(target=thread_worker, args=[cool]).start()
     elif 'turn off' in phrase:
-        say(text=f'{choice(ack)}! Turning off {lights_count} {plural}')
+        say(text=f'{random.choice(ack)}! Turning off {lights_count} {plural}')
         Thread(target=thread_worker, args=[turn_off]).start()
     elif 'warm' in phrase or 'yellow' in phrase:
         warm_light['status'] = True
-        say(text=f'{choice(ack)}! Setting {lights_count} {plural} to yellow!') if 'yellow' in phrase else \
+        say(text=f'{random.choice(ack)}! Setting {lights_count} {plural} to yellow!') if 'yellow' in phrase else \
             say(text=f'Sure sir! Setting {lights_count} {plural} to warm!')
         Thread(target=thread_worker, args=[warm]).start()
     elif 'red' in phrase:
-        say(text=f"{choice(ack)}! I've changed {lights_count} {plural} to red!")
+        say(text=f"{random.choice(ack)}! I've changed {lights_count} {plural} to red!")
         for light_ip in light_host_id:
             preset(host=light_ip, value=preset_values['red'])
     elif 'blue' in phrase:
-        say(text=f"{choice(ack)}! I've changed {lights_count} {plural} to blue!")
+        say(text=f"{random.choice(ack)}! I've changed {lights_count} {plural} to blue!")
         for light_ip in light_host_id:
             preset(host=light_ip, value=preset_values['blue'])
     elif 'green' in phrase:
-        say(text=f"{choice(ack)}! I've changed {lights_count} {plural} to green!")
+        say(text=f"{random.choice(ack)}! I've changed {lights_count} {plural} to green!")
         for light_ip in light_host_id:
             preset(host=light_ip, value=preset_values['green'])
     elif 'set' in phrase or 'percentage' in phrase or '%' in phrase or 'dim' in phrase \
@@ -2737,11 +2728,11 @@ def lights(phrase: str) -> None:
         elif 'dim' in phrase:
             level = 50
         else:
-            if level := findall(r'\b\d+\b', phrase):
+            if level := re.findall(r'\b\d+\b', phrase):
                 level = int(level[0])
             else:
                 level = 100
-        say(text=f"{choice(ack)}! I've set {lights_count} {plural} to {level}%!")
+        say(text=f"{random.choice(ack)}! I've set {lights_count} {plural} to {level}%!")
         level = round((255 * level) / 100)
         for light_ip in light_host_id:
             lumen(host=light_ip, warm_lights=warm_light.get('status'), rgb=level)
@@ -2762,7 +2753,7 @@ def vpn_checker() -> str:
     socket_.close()
     if not (ip_address.startswith('192') | ip_address.startswith('127')):
         ip_address = 'VPN:' + ip_address
-        info = json_load(urlopen('https://ipinfo.io/json'))
+        info = json.load(urlopen('https://ipinfo.io/json'))
         sys.stdout.write(f"\rVPN connection is detected to {info.get('ip')} at {info.get('city')}, "
                          f"{info.get('region')} maintained by {info.get('org')}")
         say(text="You have your VPN turned on. Details on your screen sir! Please note that none of the home "
@@ -3100,7 +3091,7 @@ def meetings_gatherer() -> str:
     events = {}
     for i in range(count):
         if i < len(event_name):
-            event_time[i] = search(' at (.*)', event_time[i]).group(1).strip()
+            event_time[i] = re.search(' at (.*)', event_time[i]).group(1).strip()
             dt_string = datetime.strptime(event_time[i], '%I:%M:%S %p')
             event_time[i] = dt_string.strftime('%I:%M %p')
             events.update({event_name[i]: event_time[i]})
@@ -3173,7 +3164,7 @@ def system_vitals() -> None:
     say(text=f'Your {model} was last booted on {restart_time}. '
              f'Current boot time is: {restart_duration}.')
     if second >= 172_800:
-        if boot_extreme := search('(.*) days', restart_duration):
+        if boot_extreme := re.search('(.*) days', restart_duration):
             warn = int(boot_extreme.group().replace(' days', '').strip())
             say(text=f'Sir! your {model} has been running continuously for more than {warn} days. You must '
                      f'consider a reboot for better performance. Would you like me to restart it for you sir?',
@@ -3216,7 +3207,7 @@ def personal_cloud(phrase: str) -> None:
                  "once the server is up and running.")
     elif 'disable' in phrase or 'stop' in phrase:
         Thread(target=PersonalCloud.disable).start()
-        say(text=choice(ack))
+        say(text=random.choice(ack))
     else:
         say(text="I didn't quite get that sir! Please tell me if I should enable or disable your server.")
 
@@ -3299,8 +3290,8 @@ class PersonalCloud:
             return
 
         personal_cloud_port = personal_cloud.get_port()
-        personal_cloud_username = ''.join(choices(ascii_letters, k=10))
-        personal_cloud_password = ''.join(choices(ascii_letters + digits, k=10))
+        personal_cloud_username = ''.join(random.choices(ascii_letters, k=10))
+        personal_cloud_password = ''.join(random.choices(ascii_letters + digits, k=10))
         personal_cloud_host = f"'{os.environ.get('personal_cloud_host')}'"
 
         # export PORT for both ngrok and exec scripts as they will be running in different Terminal sessions
@@ -3453,17 +3444,17 @@ def initiator(key_original: str, should_return: bool = False) -> None:
             Thread(target=pc_sleep).start()
         time_travel()
     elif 'you there' in key:
-        say(text=f'{choice(wake_up1)}')
+        say(text=f'{random.choice(wake_up1)}')
         initialize()
     elif any(word in key for word in wake_up_words):
-        say(text=f'{choice(wake_up2)}')
+        say(text=f'{random.choice(wake_up2)}')
         initialize()
     else:
         converted = ' '.join([i for i in key_original.split() if i.lower() not in ['buddy', 'jarvis', 'sr_error']])
         if converted:
             split(key=converted.strip(), should_return=should_return)
         else:
-            say(text=f'{choice(wake_up3)}')
+            say(text=f'{random.choice(wake_up3)}')
             initialize()
 
 
@@ -3476,7 +3467,7 @@ def rewrite_automator(filename: str, json_object: dict) -> None:
     """
     with open(filename, 'w') as file:
         logger.warning('Data has been modified. Rewriting automation data into JSON file.')
-        json_dump(json_object, file, indent=2)
+        json.dump(json_object, file, indent=2)
 
 
 def on_demand_offline_automation(task: str) -> bool:
@@ -3501,7 +3492,7 @@ def on_demand_offline_automation(task: str) -> bool:
 
     offline_endpoint = f"http://{offline_host}:{offline_port}/offline-communicator"
     try:
-        response = post(url=offline_endpoint, headers=headers, data=json_dumps(data))
+        response = post(url=offline_endpoint, headers=headers, data=json.dumps(data))
     except ConnectionError:
         return False
     if response.ok:
@@ -3548,8 +3539,8 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
         elif os.path.isfile(automation_file):
             with open(automation_file) as read_file:
                 try:
-                    automation_data = json_load(read_file)
-                except JSONDecodeError:
+                    automation_data = json.load(read_file)
+                except json.JSONDecodeError:
                     logger.error('Invalid file format. '
                                  'Logging automation data and removing the file to avoid endless errors.\n'
                                  f'{automation_data}')
@@ -3650,15 +3641,13 @@ def reminder_executor(message: str) -> None:
 
 def switch_volumes() -> None:
     """Automatically puts the Mac on sleep and sets the volume to 25% at 9 PM and 50% at 6 AM."""
-    time_now = datetime.now()
-    hour = int(time_now.strftime("%I"))
-    am_pm = time_now.strftime("%p")
+    hour = int(datetime.now().strftime('%H'))
     locker = """osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'"""
-    if (hour >= 9 and am_pm == 'PM') or (hour <= 6 and am_pm == 'AM'):
+    if 21 <= hour <= 6:
         volume(level=20)
         Thread(target=decrease_brightness).start()
         os.system(locker)
-    elif (hour >= 6 and am_pm == 'AM') or (hour <= 9 and am_pm == 'PM'):
+    elif 20 >= hour >= 7:
         volume(level=50)
 
 
@@ -3891,7 +3880,7 @@ def extract_nos(input_: str) -> float:
         float:
         Float values.
     """
-    return float('.'.join(findall(r"\d+", input_)))
+    return float('.'.join(re.findall(r"\d+", input_)))
 
 
 def format_nos(input_: float) -> int:
@@ -3940,7 +3929,7 @@ def pc_sleep() -> None:
     # os.system("""osascript -e 'tell app "System Events" to sleep'""")  # requires restarting Jarvis manually
     os.system("""osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'""")
     if not (report.has_been_called or time_travel.has_been_called):
-        say(text=choice(ack))
+        say(text=random.choice(ack))
 
 
 def stop_terminal() -> None:
@@ -4016,7 +4005,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
             logger.warning(f"ERROR::Cannot restart {hosted_device.get('device')} via offline communicator.")
             return
         if target == 'PC':
-            say(text=f"{choice(confirmation)} restart your {hosted_device.get('device')}?", run=True)
+            say(text=f"{random.choice(confirmation)} restart your {hosted_device.get('device')}?", run=True)
             converted = listener(timeout=3, phrase_limit=3)
         else:
             converted = 'yes'
@@ -4054,7 +4043,7 @@ def shutdown(proceed: bool = False) -> None:
         proceed: Boolean value whether or not to get confirmation.
     """
     if not proceed:
-        say(text=f"{choice(confirmation)} turn off the machine?", run=True)
+        say(text=f"{random.choice(confirmation)} turn off the machine?", run=True)
         converted = listener(timeout=3, phrase_limit=3)
     else:
         converted = 'yes'
@@ -4103,7 +4092,7 @@ def voice_changer(phrase: str = None) -> None:
         speaker.setProperty("voice", voices[ind].id)
         say(text=f'I am {voice.name} sir!')
         sys.stdout.write(f'\rVoice module has been re-configured to {ind}::{voice.name}')
-        say(text=choices_to_say[ind]) if ind < len(choices_to_say) else say(text=choice(choices_to_say))
+        say(text=choices_to_say[ind]) if ind < len(choices_to_say) else say(text=random.choice(choices_to_say))
         say(run=True)
         keyword = listener(timeout=3, phrase_limit=3)
         if keyword == 'SR_ERROR':
@@ -4115,7 +4104,7 @@ def voice_changer(phrase: str = None) -> None:
             say(text='Reverting the changes to default voice module sir!')
             return
         elif any(word in keyword.lower() for word in keywords.ok):
-            say(text=choice(ack))
+            say(text=random.choice(ack))
             return
 
 
@@ -4258,13 +4247,13 @@ if __name__ == '__main__':
     tv, warm_light, greet_check, text_spoken, STOPPER = None, {}, {}, {'text': ''}, {}
 
     # stores necessary values for geo location to receive the latitude, longitude and address
-    options.default_ssl_context = create_default_context(cafile=where())
+    options.default_ssl_context = create_default_context(cafile=certifi.where())
     geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
 
     # checks modified time of location.yaml (if exists) and uses the data only if it was modified less than 72 hours ago
     if os.path.isfile('location.yaml') and \
             int(datetime.now().timestamp()) - int(os.stat('location.yaml').st_mtime) < 259_200:
-        location_details = yaml_load(open('location.yaml'), Loader=FullLoader)
+        location_details = yaml.load(open('location.yaml'), Loader=yaml.FullLoader)
         current_lat = location_details['latitude']
         current_lon = location_details['longitude']
         location_info = location_details['address']
@@ -4276,7 +4265,7 @@ if __name__ == '__main__':
                            {'address': location_info}]
         with open('location.yaml', 'w') as location_writer:
             for dumper in location_dumper:
-                yaml_dump(dumper, location_writer, default_flow_style=False)
+                yaml.dump(dumper, location_writer, default_flow_style=False)
 
     # different responses for different conditions in sentry mode
     wake_up1 = ['For you sir! Always!', 'At your service sir!']
