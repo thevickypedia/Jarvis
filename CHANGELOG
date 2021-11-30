@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.2.7 (11/30/2021)
+------------------
+- Simplify day and nighttime checks
+- Fix item and category mismatch in database.py
+- Revert customized imports
+
 5.2.6 (11/22/2021)
 ------------------
 - Add hyperlinks to watchlist stocks in report_gatherer.py

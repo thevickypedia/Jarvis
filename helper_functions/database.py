@@ -1,7 +1,7 @@
 from os.path import isfile
 from sqlite3 import connect
 
-file_name = 'tasks.db'
+TASKS_DB = 'tasks.db'
 
 
 class Database:
@@ -16,7 +16,7 @@ class Database:
     """
 
     def __init__(self):
-        self.file_name = file_name
+        self.file_name = TASKS_DB
         self.table_name = self.file_name.replace('.db', '')
 
     def create_db(self) -> str:
@@ -82,19 +82,21 @@ class Database:
         connection = connect(self.file_name)
         response = self.downloader()
         delete = None
-        c, i = None, None
+        cat, it = None, None
         for c, i in response:  # browses through all categories and items
             if c.lower() == keyword:  # matches keyword with Category to choose the deletion value
-                delete = c
+                delete = cat = c
+                it = i
             elif i.lower() == keyword:  # matches keyword with Item to choose the deletion value
-                delete = i
+                delete = it = i
+                cat = c
         # if check remains 0 returns the message that the item or category wasn't found
         if not delete:
             return f"Looks like there is no item or category with the name: {keyword}"
         connection.execute(f"DELETE FROM {self.table_name} WHERE item='{delete}' OR category='{delete}'")
         connection.commit()
-        if c and i:
-            return f"Item: {i} from the Category: {c} has been removed from {self.table_name}."
+        if cat and it:
+            return f"Item: {it} from the Category: {cat} has been removed from {self.table_name}."
         else:
             return f"Item: {keyword} has been removed from {self.table_name}."
 
