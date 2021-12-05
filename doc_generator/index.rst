@@ -19,6 +19,13 @@ Jarvis - Main Module
    :members:
    :undoc-members:
 
+Jarvis - API Handler
+====================
+
+.. automodule:: api.fast
+   :members:
+   :undoc-members:
+
 Jarvis - API CronTab
 ====================
 

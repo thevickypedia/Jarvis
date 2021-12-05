@@ -9,18 +9,19 @@ from subprocess import check_output
 from threading import Thread
 from time import sleep
 
-from controller import keygen, offline_compatible
-from cron import CronScheduler
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
-from filters import EndpointFilter, InvestmentFilter
-from models import GetData, GetPhrase, LogConfig
 from pytz import timezone
-from report_gatherer import Investment
 from uvicorn import run
 from yaml import FullLoader, load
+
+from api.controller import keygen, offline_compatible
+from api.cron import CronScheduler
+from api.filters import EndpointFilter, InvestmentFilter
+from api.models import GetData, GetPhrase, LogConfig
+from api.report_gatherer import Investment
 
 if path.isfile('../.env'):
     load_dotenv(dotenv_path='../.env', verbose=True)
@@ -46,26 +47,6 @@ app = FastAPI(
     title="Jarvis API",
     description="API to interact with Jarvis",
     version="v1.0"
-)
-
-website = environ.get('website', 'thevickypedia.com')
-
-origins = [
-    "http://localhost.com",
-    "https://localhost.com",
-    f"http://{website}",
-    f"https://{website}",
-    f"http://{website}/*",
-    f"https://{website}/*",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_origin_regex='https://.*\.ngrok\.io/*',  # noqa: W605
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
 )
 
 zone = None
@@ -147,9 +128,34 @@ def pre_check_offline_communicator(passphrase: str, command: str) -> bool:
     return True
 
 
+async def enable_cors() -> None:
+    """Allow ``CORS: Cross-Origin Resource Sharing`` to allow restricted resources on the API."""
+    logger.info('Setting CORS policy.')
+    website = environ.get('website', 'thevickypedia.com')
+
+    origins = [
+        "http://localhost.com",
+        "https://localhost.com",
+        f"http://{website}",
+        f"https://{website}",
+        f"http://{website}/*",
+        f"https://{website}/*",
+    ]
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_origin_regex='https://.*\.ngrok\.io/*',  # noqa: W605
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+
 @app.on_event(event_type='startup')
 async def start_robinhood():
     """Initiates robinhood gatherer in a thread and adds a cron schedule if not present already."""
+    await enable_cors()
     logger.info(f'Hosting at http://{offline_host}:{offline_port}')
     if robinhood_auth:
         # noinspection PyGlobalUndefined
@@ -191,19 +197,21 @@ def status() -> dict:
 
 @app.post("/offline-communicator")
 def jarvis_offline_communicator(input_data: GetData):
-    """# Offline Communicator for Jarvis.
+    """Offline Communicator for Jarvis.
 
-    ## Args:
-        - input_data: - Takes the following arguments as data instead of a QueryString.
+    Args:
+        - input_data: Takes the following arguments as data instead of a QueryString.
+
             - command: The task which Jarvis has to do.
             - passphrase: Pass phrase for authentication.
 
-    ## Raises:
+    Raises:
         - 200: A dictionary with the command requested and the response for it from Jarvis.
 
-    ## See Also:
+    See Also:
         - Include response_model only when the response should have same keys as arguments
-            - @app.post("/offline-communicator", response_model=GetData)
+
+            - ``@app.post("/offline-communicator", response_model=GetData)``
         - Keeps waiting until Jarvis sends a response back by creating the offline_response file.
         - This response will be sent as raising a HTTPException with status code 200.
     """
@@ -244,22 +252,24 @@ async def get_favicon() -> FileResponse:
 
 
 @app.post("/robinhood-authenticate")
-def authenticate_robinhood_report_gatherer(feeder: GetPhrase):
-    """# Authenticates the request. Uses a two-factor authentication by generating single use tokens.
+async def authenticate_robinhood(feeder: GetPhrase):
+    """Authenticates the request. Uses a two-factor authentication by generating single use tokens.
 
-    ## Args:
-        feeder: Takes the following arguments as dataString instead of a QueryString.
+    Args:
+        feeder: Takes the following argument(s) as dataString instead of a QueryString.
+
             - passphrase: Pass phrase for authentication.
 
-    ## Raises:
+    Raises:
         - Status code: 200, if initial auth is successful and returns the single-use token.
         - Status code: 401, if request is not authorized.
 
-    ## See Also:
-        If basic (auth stored as an env var "robinhood_auth") succeeds:
-            - Returns "?token=HASHED_UUID" which can be used to access "/investment" by "/?investment?token=HASHED_UUID"
-            - Also stores the token as an env var "robinhood_token" which is verified in the path "/investment"
-            - The token is deleted from env var as soon as it is verified, making page-refresh useless.
+    See Also:
+        If basic auth (stored as an env var ``robinhood_auth``) succeeds:
+
+        - Returns ``?token=HASHED_UUID`` to access ``/investment`` which is used as ``/?investment?token=HASHED_UUID``
+        - Also stores the token as an env var ``robinhood_token`` which is verified in the path ``/investment``
+        - The token is deleted from env var as soon as it is verified, making page-refresh useless.
     """
     pre_check_robinhood()
     environ['robinhood_token'] = keygen()

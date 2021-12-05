@@ -9,10 +9,10 @@ class Database:
 
     >>> Database
 
-    ``create_db`` - creates a database named 'tasks.db' with table as 'tasks'
-    ``downloader`` - gets item and category stored in the table 'tasks'
-    ``uploader`` - adds new item and category to the table 'tasks' and groups with existing category if found
-    ``deleter`` - removes items from the table 'tasks' when the item or category name is matched.
+    - ``create_db``: creates a database named 'tasks.db' with table as 'tasks'
+    - ``downloader``: gets item and category stored in the table 'tasks'
+    - ``uploader``: adds new item and category to the table 'tasks' and groups with existing category if found
+    - ``deleter``: removes items from the table 'tasks' when the item or category name is matched.
     """
 
     def __init__(self):
