@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+5.2.9 (12/05/2021)
+------------------
+- Add docs section for Jarvis API
+
 5.2.8 (12/04/2021)
 ------------------
 - Use `:autoclass::` instead of `:automodule::` in index.rst

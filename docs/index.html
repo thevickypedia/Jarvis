@@ -237,9 +237,10 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>text</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>Broad Exception clause indicating that the Full Results API did not find an input parameter while parsing.</strong> – </p>
-</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Handles broad <code class="docutils literal notranslate"><span class="pre">Exception</span></code> clause raised when Full Results API did not find an input parameter while parsing.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Boolean True if wolfram alpha API is unable to fetch consumable results.</p>
 </dd>
@@ -1733,6 +1734,207 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 </section>
+<section id="module-api.fast">
+<span id="jarvis-api-handler"></span><h1>Jarvis - API Handler<a class="headerlink" href="#module-api.fast" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.authenticate_robinhood">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">authenticate_robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feeder</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#api.models.GetPhrase" title="api.models.GetPhrase"><span class="pre">api.models.GetPhrase</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.fast.authenticate_robinhood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authenticates the request. Uses a two-factor authentication by generating single use tokens.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>feeder</strong> – Takes the following argument(s) as dataString instead of a QueryString.</p>
+<ul class="simple">
+<li><p>passphrase: Pass phrase for authentication.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>- Status code</strong> – 200, if initial auth is successful and returns the single-use token.</p></li>
+<li><p><strong>- Status code</strong> – 401, if request is not authorized.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>If basic auth (stored as an env var <code class="docutils literal notranslate"><span class="pre">robinhood_auth</span></code>) succeeds:</p>
+<ul class="simple">
+<li><p>Returns <code class="docutils literal notranslate"><span class="pre">?token=HASHED_UUID</span></code> to access <code class="docutils literal notranslate"><span class="pre">/investment</span></code> which is used as <code class="docutils literal notranslate"><span class="pre">/?investment?token=HASHED_UUID</span></code></p></li>
+<li><p>Also stores the token as an env var <code class="docutils literal notranslate"><span class="pre">robinhood_token</span></code> which is verified in the path <code class="docutils literal notranslate"><span class="pre">/investment</span></code></p></li>
+<li><p>The token is deleted from env var as soon as it is verified, making page-refresh useless.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.enable_cors">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">enable_cors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.enable_cors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allow <code class="docutils literal notranslate"><span class="pre">CORS:</span> <span class="pre">Cross-Origin</span> <span class="pre">Resource</span> <span class="pre">Sharing</span></code> to allow restricted resources on the API.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.get_favicon">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">get_favicon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">starlette.responses.FileResponse</span></span></span><a class="headerlink" href="#api.fast.get_favicon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the favicon.ico and adds to the API endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Uses FileResponse to send the favicon.ico to support the robinhood script’s robinhood.html.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>FileResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.get_jarvis_status">
+<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">get_jarvis_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.fast.get_jarvis_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks process information to see if Jarvis is running.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A boolean True flag is jarvis.py is found in the list of current PIDs.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.jarvis_offline_communicator">
+<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">jarvis_offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#api.models.GetData" title="api.models.GetData"><span class="pre">api.models.GetData</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.fast.jarvis_offline_communicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Offline Communicator for Jarvis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>- input_data</strong> – Takes the following arguments as data instead of a QueryString.</p>
+<ul class="simple">
+<li><p>command: The task which Jarvis has to do.</p></li>
+<li><p>passphrase: Pass phrase for authentication.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>- 200</strong> – A dictionary with the command requested and the response for it from Jarvis.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul>
+<li><p>Include response_model only when the response should have same keys as arguments</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;app.post(&quot;/offline-communicator&quot;,</span> <span class="pre">response_model=GetData)</span></code></p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Keeps waiting until Jarvis sends a response back by creating the offline_response file.</p></li>
+<li><p>This response will be sent as raising a HTTPException with status code 200.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.pre_check_offline_communicator">
+<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">pre_check_offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">passphrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.fast.pre_check_offline_communicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs pre-checks before letting office_communicator to proceed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>passphrase</strong> – Takes the password as one of the arguments.</p></li>
+<li><p><strong>command</strong> – Takes the command to be processed as another argument.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>- 401</strong> – If auth failed.</p></li>
+<li><p><strong>- 503</strong> – If Jarvis is not running.</p></li>
+<li><p><strong>- 413</strong> – If request command has ‘and’ or ‘also’ in the phrase.</p></li>
+<li><p><strong>- 422</strong> – If the request is not part of offline compatible words.</p></li>
+<li><p><strong>- 200</strong> – If phrase is test.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>If all the pre-checks have been successful.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.pre_check_robinhood">
+<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">pre_check_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.fast.pre_check_robinhood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the env var <code class="docutils literal notranslate"><span class="pre">robinhood_auth</span></code> is present. Raises 500 if not.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.redirect_index">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">redirect_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#api.fast.redirect_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redirect to documents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Redirects <cite>/</cite> url to <cite>/docs</cite></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.robinhood">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.fast.robinhood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serves static file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>token</strong> – Takes custom auth token as an argument.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>This endpoint is secured behind two factor authentication.</p></li>
+<li><p>Initial check is done by the function robinhood_auth behind the path “/robinhood-authenticate”</p></li>
+<li><p>Once the auth succeeds, a one-time usable hashed-uuid is generated and stored as an environment variable.</p></li>
+<li><p>This UUID is sent as response to the API endpoint behind ngrok tunnel.</p></li>
+<li><p>The UUID is deleted from env var as soon as the argument is checked for the first time.</p></li>
+<li><p>Page refresh doesn’t work because the env var is deleted as soon as it is authed once.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.run_robinhood">
+<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">run_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.run_robinhood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs in a dedicated thread during startup, if the file was modified earlier than the past hour.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.start_robinhood">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">start_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.fast.start_robinhood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates robinhood gatherer in a thread and adds a cron schedule if not present already.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.status">
+<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#api.fast.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Health Check for OfflineCommunicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Health status in a dictionary.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.stop_robinhood">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">stop_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.fast.stop_robinhood" title="Permalink to this definition">¶</a></dt>
+<dd><p>If active, stops the thread that creates robinhood static file in the background.</p>
+</dd></dl>
+
+</section>
 <section id="module-api.cron">
 <span id="jarvis-api-crontab"></span><h1>Jarvis - API CronTab<a class="headerlink" href="#module-api.cron" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -2109,10 +2311,12 @@ name is specified, allow every event.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Database</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">create_db</span></code> - creates a database named ‘tasks.db’ with table as ‘tasks’
-<code class="docutils literal notranslate"><span class="pre">downloader</span></code> - gets item and category stored in the table ‘tasks’
-<code class="docutils literal notranslate"><span class="pre">uploader</span></code> - adds new item and category to the table ‘tasks’ and groups with existing category if found
-<code class="docutils literal notranslate"><span class="pre">deleter</span></code> - removes items from the table ‘tasks’ when the item or category name is matched.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">create_db</span></code>: creates a database named ‘tasks.db’ with table as ‘tasks’</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">downloader</span></code>: gets item and category stored in the table ‘tasks’</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uploader</span></code>: adds new item and category to the table ‘tasks’ and groups with existing category if found</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deleter</span></code>: removes items from the table ‘tasks’ when the item or category name is matched.</p></li>
+</ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.database.Database.create_db">
 <span class="sig-name descname"><span class="pre">create_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.database.Database.create_db" title="Permalink to this definition">¶</a></dt>
@@ -2874,6 +3078,7 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
   <ul>
 <li><a class="reference internal" href="#">Welcome to Jarvis’s documentation!</a></li>
 <li><a class="reference internal" href="#module-jarvis">Jarvis - Main Module</a></li>
+<li><a class="reference internal" href="#module-api.fast">Jarvis - API Handler</a></li>
 <li><a class="reference internal" href="#module-api.cron">Jarvis - API CronTab</a></li>
 <li><a class="reference internal" href="#module-api.controller">Jarvis - API Controller</a></li>
 <li><a class="reference internal" href="#jarvis-api-log-filters">Jarvis - API Log Filters</a></li>

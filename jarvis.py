@@ -2264,8 +2264,8 @@ def alpha(text: str) -> bool:
     Args:
         text: Takes the voice recognized statement as argument.
 
-    Raises:
-        Broad ``Exception`` clause indicating that the Full Results API did not find an input parameter while parsing.
+    Notes:
+        Handles broad ``Exception`` clause raised when Full Results API did not find an input parameter while parsing.
 
     Returns:
         bool:
