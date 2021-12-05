@@ -1737,8 +1737,37 @@ A condition below assumes two different words as two places but not including tw
 <section id="module-api.fast">
 <span id="jarvis-api-handler"></span><h1>Jarvis - API Handler<a class="headerlink" href="#module-api.fast" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="api.fast.auth_offline_communicator">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">auth_offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">passphrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.fast.auth_offline_communicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs pre-checks before letting office_communicator to proceed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>passphrase</strong> – Takes the password as one of the arguments.</p></li>
+<li><p><strong>command</strong> – Takes the command to be processed as another argument.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>- 401</strong> – If auth failed.</p></li>
+<li><p><strong>- 503</strong> – If Jarvis is not running.</p></li>
+<li><p><strong>- 413</strong> – If request command has ‘and’ or ‘also’ in the phrase.</p></li>
+<li><p><strong>- 422</strong> – If the request is not part of offline compatible words.</p></li>
+<li><p><strong>- 200</strong> – If phrase is test.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>If all the pre-checks have been successful.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="api.fast.authenticate_robinhood">
-<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">authenticate_robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feeder</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#api.models.GetPhrase" title="api.models.GetPhrase"><span class="pre">api.models.GetPhrase</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.fast.authenticate_robinhood" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">authenticate_robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feeder</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#api.models.GetPhrase" title="api.models.GetPhrase"><span class="pre">api.models.GetPhrase</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.authenticate_robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Authenticates the request. Uses a two-factor authentication by generating single use tokens.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1800,8 +1829,8 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="api.fast.jarvis_offline_communicator">
-<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">jarvis_offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#api.models.GetData" title="api.models.GetData"><span class="pre">api.models.GetData</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.fast.jarvis_offline_communicator" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="api.fast.offline_communicator">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#api.models.GetData" title="api.models.GetData"><span class="pre">api.models.GetData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.offline_communicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Offline Communicator for Jarvis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1832,37 +1861,8 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="api.fast.pre_check_offline_communicator">
-<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">pre_check_offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">passphrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.fast.pre_check_offline_communicator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs pre-checks before letting office_communicator to proceed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>passphrase</strong> – Takes the password as one of the arguments.</p></li>
-<li><p><strong>command</strong> – Takes the command to be processed as another argument.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>- 401</strong> – If auth failed.</p></li>
-<li><p><strong>- 503</strong> – If Jarvis is not running.</p></li>
-<li><p><strong>- 413</strong> – If request command has ‘and’ or ‘also’ in the phrase.</p></li>
-<li><p><strong>- 422</strong> – If the request is not part of offline compatible words.</p></li>
-<li><p><strong>- 200</strong> – If phrase is test.</p></li>
-</ul>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>If all the pre-checks have been successful.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="api.fast.pre_check_robinhood">
-<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">pre_check_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.fast.pre_check_robinhood" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">pre_check_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.pre_check_robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the env var <code class="docutils literal notranslate"><span class="pre">robinhood_auth</span></code> is present. Raises 500 if not.</p>
 </dd></dl>
 
@@ -1872,7 +1872,7 @@ A condition below assumes two different words as two places but not including tw
 <dd><p>Redirect to documents.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Redirects <cite>/</cite> url to <cite>/docs</cite></p>
+<dd class="field-odd"><p>Redirects the root endpoint <code class="docutils literal notranslate"><span class="pre">/</span></code> url to <code class="docutils literal notranslate"><span class="pre">/docs</span></code></p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>str</p>
@@ -1882,11 +1882,17 @@ A condition below assumes two different words as two places but not including tw
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.robinhood">
-<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.fast.robinhood" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">starlette.responses.HTMLResponse</span></span></span><a class="headerlink" href="#api.fast.robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Serves static file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>token</strong> – Takes custom auth token as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Renders the html page.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HTMLResponse</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1910,13 +1916,13 @@ A condition below assumes two different words as two places but not including tw
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.start_robinhood">
-<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">start_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.fast.start_robinhood" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">start_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.start_robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates robinhood gatherer in a thread and adds a cron schedule if not present already.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.status">
-<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#api.fast.status" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#api.fast.status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Health Check for OfflineCommunicator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1930,7 +1936,7 @@ A condition below assumes two different words as two places but not including tw
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.stop_robinhood">
-<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">stop_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.fast.stop_robinhood" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">stop_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.stop_robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>If active, stops the thread that creates robinhood static file in the background.</p>
 </dd></dl>
 

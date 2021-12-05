@@ -1,7 +1,8 @@
+import os
+import sys
 from datetime import datetime
 from logging import config, getLogger
 from mimetypes import guess_type
-from os import environ, path, remove, stat, system
 from pathlib import PurePath
 from socket import gethostbyname
 from string import punctuation
@@ -9,33 +10,37 @@ from subprocess import check_output
 from threading import Thread
 from time import sleep
 
+import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from pytz import timezone
-from uvicorn import run
 from yaml import FullLoader, load
 
-from api.controller import keygen, offline_compatible
-from api.cron import CronScheduler
-from api.filters import EndpointFilter, InvestmentFilter
-from api.models import GetData, GetPhrase, LogConfig
-from api.report_gatherer import Investment
+sys.path.append('..')
+from api.controller import keygen, offline_compatible  # noqa: E402
+from api.cron import CronScheduler  # noqa: E402
+from api.filters import EndpointFilter, InvestmentFilter  # noqa: E402
+from api.models import GetData, GetPhrase, LogConfig  # noqa: E402
+from api.report_gatherer import Investment  # noqa: E402
 
-if path.isfile('../.env'):
+sys.path.remove('..')
+
+if os.path.isfile('../.env'):
     load_dotenv(dotenv_path='../.env', verbose=True)
 
-if not path.isdir('logs'):
-    system('mkdir logs')
+if not os.path.isdir('logs'):
+    os.system('mkdir logs')
 
 config.dictConfig(LogConfig().dict())
 
 offline_host = gethostbyname('localhost')
-offline_port = int(environ.get('offline_port', 4483))
-offline_phrase = environ.get('offline_phrase', 'jarvis')
+offline_port = int(os.environ.get('offline_port', 4483))
+offline_phrase = os.environ.get('offline_phrase', 'jarvis')
+robinhood_auth = os.environ.get('robinhood_auth')
+
 offline_compatible = offline_compatible()
-robinhood_auth = environ.get('robinhood_auth')
 
 getLogger("uvicorn.access").addFilter(EndpointFilter())
 getLogger("uvicorn.access").addFilter(InvestmentFilter())
@@ -50,7 +55,7 @@ app = FastAPI(
 )
 
 zone = None
-if path.isfile('../location.yaml'):
+if os.path.isfile('../location.yaml'):
     location_details = load(open('../location.yaml'), Loader=FullLoader)
     zone = timezone(location_details.get('timezone'))
 
@@ -69,7 +74,7 @@ def get_jarvis_status() -> bool:
             return True
 
 
-def pre_check_robinhood():
+async def pre_check_robinhood() -> None:
     """Checks if the env var ``robinhood_auth`` is present. Raises 500 if not."""
     if not robinhood_auth:
         raise HTTPException(status_code=500,
@@ -79,8 +84,8 @@ def pre_check_robinhood():
 
 def run_robinhood() -> None:
     """Runs in a dedicated thread during startup, if the file was modified earlier than the past hour."""
-    if path.isfile(serve_file):
-        modified = int(stat(serve_file).st_mtime)
+    if os.path.isfile(serve_file):
+        modified = int(os.stat(serve_file).st_mtime)
         logger.info(f"{serve_file} was generated on {datetime.fromtimestamp(modified).strftime('%c')}.")
         if int(datetime.now().timestamp()) - modified > 3_600:
             Investment(logger=logger).report_gatherer()
@@ -89,7 +94,7 @@ def run_robinhood() -> None:
         Investment(logger=logger).report_gatherer()
 
 
-def pre_check_offline_communicator(passphrase: str, command: str) -> bool:
+async def auth_offline_communicator(passphrase: str, command: str) -> bool:
     """Runs pre-checks before letting office_communicator to proceed.
 
     Args:
@@ -131,7 +136,7 @@ def pre_check_offline_communicator(passphrase: str, command: str) -> bool:
 async def enable_cors() -> None:
     """Allow ``CORS: Cross-Origin Resource Sharing`` to allow restricted resources on the API."""
     logger.info('Setting CORS policy.')
-    website = environ.get('website', 'thevickypedia.com')
+    website = os.environ.get('website', 'thevickypedia.com')
 
     origins = [
         "http://localhost.com",
@@ -153,7 +158,7 @@ async def enable_cors() -> None:
 
 
 @app.on_event(event_type='startup')
-async def start_robinhood():
+async def start_robinhood() -> None:
     """Initiates robinhood gatherer in a thread and adds a cron schedule if not present already."""
     await enable_cors()
     logger.info(f'Hosting at http://{offline_host}:{offline_port}')
@@ -166,7 +171,7 @@ async def start_robinhood():
 
 
 @app.on_event(event_type='shutdown')
-async def stop_robinhood():
+async def stop_robinhood() -> None:
     """If active, stops the thread that creates robinhood static file in the background."""
     if thread.is_alive():
         logger.warning(f'Hanging thread: {thread.ident}')
@@ -179,13 +184,13 @@ async def redirect_index() -> str:
 
     Returns:
         str:
-        Redirects `/` url to `/docs`
+        Redirects the root endpoint ``/`` url to ``/docs``
     """
     return '/docs'
 
 
 @app.get('/status', include_in_schema=False)
-def status() -> dict:
+async def status() -> dict:
     """Health Check for OfflineCommunicator.
 
     Returns:
@@ -196,7 +201,7 @@ def status() -> dict:
 
 
 @app.post("/offline-communicator")
-def jarvis_offline_communicator(input_data: GetData):
+async def offline_communicator(input_data: GetData) -> None:
     """Offline Communicator for Jarvis.
 
     Args:
@@ -218,7 +223,7 @@ def jarvis_offline_communicator(input_data: GetData):
     passphrase = input_data.phrase
     command = input_data.command
     command = command.translate(str.maketrans('', '', punctuation))  # Remove punctuations from the str
-    pre_check_offline_communicator(passphrase=passphrase, command=command)
+    await auth_offline_communicator(passphrase=passphrase, command=command)
 
     with open('../offline_request', 'w') as off_request:
         off_request.write(command)
@@ -227,13 +232,12 @@ def jarvis_offline_communicator(input_data: GetData):
         raise HTTPException(status_code=200,
                             detail='Restarting now sir! I will be up and running momentarily.')
     while True:
-        # todo: Consider async functions and await instead of hard-coded sleepers
-        if path.isfile('../offline_response'):
+        if os.path.isfile('../offline_response'):
             sleep(0.1)  # Read file after 0.1 second for the content to be written
             with open('../offline_response', 'r') as off_response:
                 response = off_response.read()
             if response:
-                remove('../offline_response')
+                os.remove('../offline_response')
                 raise HTTPException(status_code=200, detail=f'{dt_string}\n\n{response}')
             else:
                 raise HTTPException(status_code=409, detail='Received empty payload from Jarvis.')
@@ -247,12 +251,12 @@ async def get_favicon() -> FileResponse:
         FileResponse:
         Uses FileResponse to send the favicon.ico to support the robinhood script's robinhood.html.
     """
-    if path.isfile('favicon.ico'):
+    if os.path.isfile('favicon.ico'):
         return FileResponse('favicon.ico')
 
 
 @app.post("/robinhood-authenticate")
-async def authenticate_robinhood(feeder: GetPhrase):
+async def authenticate_robinhood(feeder: GetPhrase) -> None:
     """Authenticates the request. Uses a two-factor authentication by generating single use tokens.
 
     Args:
@@ -271,25 +275,29 @@ async def authenticate_robinhood(feeder: GetPhrase):
         - Also stores the token as an env var ``robinhood_token`` which is verified in the path ``/investment``
         - The token is deleted from env var as soon as it is verified, making page-refresh useless.
     """
-    pre_check_robinhood()
-    environ['robinhood_token'] = keygen()
+    await pre_check_robinhood()
+    os.environ['robinhood_token'] = keygen()
     passcode = feeder.phrase
     if not passcode:
         raise HTTPException(status_code=500, detail='Passcode was not received.')
     if passcode.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
         passcode = bytes(passcode, "utf-8").decode(encoding="unicode_escape")
     if passcode == robinhood_auth:
-        raise HTTPException(status_code=200, detail=f"?token={environ.get('robinhood_token')}")
+        raise HTTPException(status_code=200, detail=f"?token={os.environ.get('robinhood_token')}")
     else:
         raise HTTPException(status_code=401, detail='Request not authorized.')
 
 
 @app.get("/investment", response_class=HTMLResponse, include_in_schema=False)
-async def robinhood(token: str = None):
+async def robinhood(token: str = None) -> HTMLResponse:
     """Serves static file.
 
     Args:
         token: Takes custom auth token as an argument.
+
+    Returns:
+        HTMLResponse:
+        Renders the html page.
 
     See Also:
         - This endpoint is secured behind two factor authentication.
@@ -299,13 +307,13 @@ async def robinhood(token: str = None):
         - The UUID is deleted from env var as soon as the argument is checked for the first time.
         - Page refresh doesn't work because the env var is deleted as soon as it is authed once.
     """
-    pre_check_robinhood()
+    await pre_check_robinhood()
     if not token:
         raise HTTPException(status_code=400, detail='Request needs to be authorized with a single-use token.')
-    if token == environ.get('robinhood_token'):
-        if not path.isfile(serve_file):
+    if token == os.environ.get('robinhood_token'):
+        if not os.path.isfile(serve_file):
             raise HTTPException(status_code=404, detail='Static file was not found on server.')
-        del environ['robinhood_token']
+        del os.environ['robinhood_token']
         with open(serve_file) as static_file:
             html_content = static_file.read()
         content_type, _ = guess_type(html_content)
@@ -323,4 +331,4 @@ if __name__ == '__main__':
         "port": offline_port,
         "reload": True
     }
-    run(**argument_dict)
+    uvicorn.run(**argument_dict)
