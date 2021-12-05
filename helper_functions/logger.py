@@ -16,7 +16,7 @@ import logging
 from datetime import datetime
 from importlib import reload
 from logging.config import dictConfig
-from os import environ, makedirs, path
+from os import makedirs, path
 from time import struct_time, time
 
 from pytz import timezone, utc
@@ -34,13 +34,12 @@ if not path.isdir(path.join(directory, '../logs')):
 log_file = datetime.now().strftime(path.join(directory, '../logs/jarvis_%d-%m-%Y.log'))
 write = ''.join(['*' for _ in range(120)])
 
-if not environ.get('COMMIT'):
-    with open(log_file, 'a+') as file:
-        file.seek(0)
-        if not file.read():
-            file.write(f"{write}\n")
-        else:
-            file.write(f"\n{write}\n")
+with open(log_file, 'a+') as file:
+    file.seek(0)
+    if not file.read():
+        file.write(f"{write}\n")
+    else:
+        file.write(f"\n{write}\n")
 
 reload(logging)
 logging.basicConfig(

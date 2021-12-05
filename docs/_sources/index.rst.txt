@@ -33,10 +33,29 @@ Jarvis - API Controller
    :members:
    :undoc-members:
 
+Jarvis - API Log Filters
+========================
+
+.. autoclass:: api.filters.EndpointFilter(logging.Filter)
+   :members:
+   :undoc-members:
+
+.. autoclass:: api.filters.InvestmentFilter(logging.Filter)
+   :members:
+   :undoc-members:
+
 Jarvis - API Models
 ===================
 
-.. automodule:: api.models
+.. autoclass:: api.models.GetData(pydantic.BaseModel)
+   :members:
+   :undoc-members:
+
+.. autoclass:: api.models.GetPhrase(pydantic.BaseModel)
+   :members:
+   :undoc-members:
+
+.. autoclass:: api.models.LogConfig(pydantic.BaseModel)
    :members:
    :undoc-members:
 
@@ -50,9 +69,15 @@ Jarvis - API Robinhood
 Jarvis - API Robinhood Helper
 =============================
 
-.. automodule:: api.rh_helper
+.. autoclass:: api.rh_helper.CustomTemplate
    :members:
    :undoc-members:
+   :exclude-members: source
+
+.. autoclass:: api.rh_helper.MarketHours
+   :members:
+   :undoc-members:
+   :exclude-members: hours
 
 Conversation
 ============
@@ -60,6 +85,7 @@ Conversation
 .. automodule:: helper_functions.conversation
    :members:
    :undoc-members:
+   :exclude-members: greeting, capabilities, languages, what, who, form, whats_up, about_me
 
 Database
 ========
@@ -81,6 +107,7 @@ Keywords
 .. automodule:: helper_functions.keywords
    :members:
    :undoc-members:
+   :exclude-members: current_date, current_time, weather, system_info, ip_info, webpage, wikipedia_, news, report, robinhood, apps, repeat, location, locate, music, gmail, meaning, create_db, add_todo, delete_todo, delete_db, todo, distance, avoid, locate_places, directions, alarm, kill_alarm, reminder, google_home, jokes, notes, github, send_sms, google_search, television, volume, face_detection, speed_test, bluetooth, brightness, lights, guard_enable, guard_disable, flip_a_coin, facts, meetings, voice_changer, system_vitals, vpn_server, personal_cloud, ok, restart_control, exit, sleep_control, kill, shutdown
 
 Lights
 ======

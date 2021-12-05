@@ -74,7 +74,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.Activator">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">Activator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_device_index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.Activator" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://github.com/Picovoice/porcupine">Porcupine</a> wake word engine.</p>
+<dd><p>Awaits for the keyword <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> and triggers <code class="docutils literal notranslate"><span class="pre">initiator</span></code> when heard.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Activator</span>
 </pre></div>
 </div>
@@ -502,21 +502,21 @@ A condition below assumes two different words as two places but not including tw
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.distance_controller">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">distance_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">starting_point</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.distance_controller" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">distance_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.distance_controller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates distance between two locations.</p>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>If starting point is None, Jarvis takes the current location as starting point.</p></li>
-<li><p>If destination is None, Jarvis will ask for a destination from the user.</p></li>
-</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>starting_point</strong> – Takes the starting place name as an optional argument.</p></li>
+<li><p><strong>origin</strong> – Takes the starting place name as an optional argument.</p></li>
 <li><p><strong>destination</strong> – Takes the destination place name as optional argument.</p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">origin</span></code> is None, Jarvis takes the current location as <code class="docutils literal notranslate"><span class="pre">origin</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">destination</span></code> is None, Jarvis will ask for a destination from the user.</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py function">
@@ -707,17 +707,14 @@ A condition below assumes two different words as two places but not including tw
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul>
-<li><dl>
-<dt>Changes made to google-home-push module:</dt><dd><ol class="arabic simple">
-<li><p>Modified the way local IP is received: <a class="reference external" href="https://github.com/deblockt/google-home-push/pull/7">https://github.com/deblockt/google-home-push/pull/7</a></p></li>
-<li><p>Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py</p></li>
-</ol>
-<ul class="simple">
-<li><p>I have used <code class="docutils literal notranslate"><span class="pre">sys.stdout</span> <span class="pre">=</span> <span class="pre">open(os.devnull,</span> <span class="pre">'w')</span></code> to suppress any print statements.</p></li>
+<li><p><a class="reference external" href="https://github.com/deblockt/google-home-push/pull/7">https://github.com/deblockt/google-home-push/pull/7</a></p></li>
+<li><p>Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sys.stdout</span> <span class="pre">=</span> <span class="pre">open(os.devnull,</span> <span class="pre">'w')</span></code> is used to suppress any print statements.</p></li>
 <li><p>To enable this again at a later time use <code class="docutils literal notranslate"><span class="pre">sys.stdout</span> <span class="pre">=</span> <span class="pre">sys.__stdout__</span></code></p></li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
 </li>
 <li><p>When music is played and immediately stopped/tasked the google home device, it is most likely to except.</p></li>
 <li><p>Broken Pipe error. This usually happens when a socket is written after it is fully closed.</p></li>
@@ -874,10 +871,6 @@ A condition below assumes two different words as two places but not including tw
 <dt class="sig sig-object py" id="jarvis.kill_alarm">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">kill_alarm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.kill_alarm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes lock file to stop the alarm which rings only when the certain lock file is present.</p>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">alarm_state</span></code> is the list of lock files currently present.</p></li>
-</ul>
 </dd></dl>
 
 <dl class="py function">
@@ -1274,13 +1267,11 @@ A condition below assumes two different words as two places but not including tw
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Restarts the machine without approval when <code class="docutils literal notranslate"><span class="pre">uptime</span></code> is more than 2 days as the confirmation is requested</dt><dd><ul>
-<li><p>in <a class="reference external" href="https://thevickypedia.github.io/Jarvis/#jarvis.system_vitals">system_vitals</a>.</p></li>
-</ul>
-</dd>
-</dl>
+<ul>
+<li><div class="line-block">
+<div class="line">Restarts the machine without approval when <code class="docutils literal notranslate"><span class="pre">uptime</span></code> is more than 2 days as the confirmation is requested</div>
+<div class="line">in <a class="reference external" href="https://thevickypedia.github.io/Jarvis/#jarvis.system_vitals">system_vitals</a>.</div>
+</div>
 </li>
 <li><p>This is done ONLY when the system vitals are read, and the uptime is more than 2 days.</p></li>
 </ul>
@@ -1368,13 +1359,11 @@ A condition below assumes two different words as two places but not including tw
 <dt class="sig sig-object py" id="jarvis.set_brightness">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">set_brightness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.set_brightness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set brightness to a custom level.</p>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Since Jarvis uses in-built apple script, the only way to achieve this is to:</dt><dd><ul>
-<li><p>set the brightness to bare minimum and increase [*]% from there or vice-versa.</p></li>
-</ul>
-</dd>
-</dl>
+<ul>
+<li><div class="line-block">
+<div class="line">Since Jarvis uses in-built apple script, the only way to achieve this is to set the brightness to absolute</div>
+<div class="line">minimum/maximum and increase/decrease the required % from there.</div>
+</div>
 </li>
 </ul>
 <dl class="field-list simple">
@@ -1454,14 +1443,24 @@ A condition below assumes two different words as two places but not including tw
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">starter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.starter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates crucial functions which needs to be called during start up.</p>
 <p>Loads the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file so that all the necessary credentials and api keys can be accessed as <code class="docutils literal notranslate"><span class="pre">ENV</span> <span class="pre">vars</span></code></p>
-<dl class="simple">
-<dt>Methods</dt><dd><ul class="simple">
-<li><p>volume_controller: To default the master volume 50%.</p></li>
-<li><p>voice_default: To change the voice to default value.</p></li>
-<li><p>clear_logs: To purge log files older than 48 hours.</p></li>
-</ul>
-</dd>
-</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">volume_controller</span></span></dt>
+<dd><p>To default the master volume 50%.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">voice_default</span></span></dt>
+<dd><p>To change the voice to default value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">clear_logs</span></span></dt>
+<dd><p>To purge log files older than 48 hours.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -1526,7 +1525,7 @@ A condition below assumes two different words as two places but not including tw
 <p class="rubric">Examples</p>
 <ul class="simple">
 <li><p>os._exit(0)</p></li>
-<li><p>kill -15 <code class="docutils literal notranslate"><span class="pre">PID</span></code></p></li>
+<li><p>kill -15 <cite>PID</cite></p></li>
 </ul>
 </dd></dl>
 
@@ -1793,66 +1792,6 @@ A condition below assumes two different words as two places but not including tw
 </section>
 <section id="module-api.controller">
 <span id="jarvis-api-controller"></span><h1>Jarvis - API Controller<a class="headerlink" href="#module-api.controller" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="api.controller.EndpointFilter">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.controller.</span></span><span class="sig-name descname"><span class="pre">EndpointFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.controller.EndpointFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to initiate <code class="docutils literal notranslate"><span class="pre">/docs</span></code> filter in logs while preserving other access logs.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">EndpointFilter</span>
-</pre></div>
-</div>
-<p>Initialize a filter.</p>
-<p>Initialize with the name of the logger which, together with its
-children, will have its events allowed through the filter. If no
-name is specified, allow every event.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="api.controller.EndpointFilter.filter">
-<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">logging.LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.controller.EndpointFilter.filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Filter out logging at <code class="docutils literal notranslate"><span class="pre">/docs</span></code> from log streams.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>record</strong> – <code class="docutils literal notranslate"><span class="pre">LogRecord</span></code> represents an event which is created every time something is logged.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>False flag for the endpoint that needs to be filtered.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="api.controller.InvestmentFilter">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.controller.</span></span><span class="sig-name descname"><span class="pre">InvestmentFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.controller.InvestmentFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to initiate <code class="docutils literal notranslate"><span class="pre">/investment</span></code> filter in logs while preserving other access logs.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">InvestmentFilter</span>
-</pre></div>
-</div>
-<p>Initialize a filter.</p>
-<p>Initialize with the name of the logger which, together with its
-children, will have its events allowed through the filter. If no
-name is specified, allow every event.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="api.controller.InvestmentFilter.filter">
-<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">logging.LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.controller.InvestmentFilter.filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Filter out logging at <code class="docutils literal notranslate"><span class="pre">/investment?token=</span></code> from log streams.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>record</strong> – <code class="docutils literal notranslate"><span class="pre">LogRecord</span></code> represents an event which is created every time something is logged.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>False flag for the endpoint that needs to be filtered.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="api.controller.hashed">
 <span class="sig-prename descclassname"><span class="pre">api.controller.</span></span><span class="sig-name descname"><span class="pre">hashed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">uuid.UUID</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#api.controller.hashed" title="Permalink to this definition">¶</a></dt>
@@ -1907,11 +1846,88 @@ name is specified, allow every event.</p>
 </dd></dl>
 
 </section>
-<section id="module-api.models">
-<span id="jarvis-api-models"></span><h1>Jarvis - API Models<a class="headerlink" href="#module-api.models" title="Permalink to this headline">¶</a></h1>
+<section id="jarvis-api-log-filters">
+<h1>Jarvis - API Log Filters<a class="headerlink" href="#jarvis-api-log-filters" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="api.filters.EndpointFilter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.filters.</span></span><span class="sig-name descname"><span class="pre">EndpointFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">logging.Filter</span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.filters.EndpointFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to initiate <code class="docutils literal notranslate"><span class="pre">/docs</span></code> filter in logs while preserving other access logs.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">EndpointFilter</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Overrides logging by implementing a subclass of <code class="docutils literal notranslate"><span class="pre">logging.Filter</span></code></p></li>
+<li><p>The method <code class="docutils literal notranslate"><span class="pre">filter(record)</span></code>, that examines the log record and returns True to log it or False to discard it.</p></li>
+</ul>
+</div>
+<p>Initialize a filter.</p>
+<p>Initialize with the name of the logger which, together with its
+children, will have its events allowed through the filter. If no
+name is specified, allow every event.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="api.filters.EndpointFilter.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">logging.LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.filters.EndpointFilter.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter out logging at <code class="docutils literal notranslate"><span class="pre">/docs</span></code> from log streams.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>record</strong> – <code class="docutils literal notranslate"><span class="pre">LogRecord</span></code> represents an event which is created every time something is logged.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False flag for the endpoint that needs to be filtered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="api.filters.InvestmentFilter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.filters.</span></span><span class="sig-name descname"><span class="pre">InvestmentFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">logging.Filter</span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.filters.InvestmentFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to initiate <code class="docutils literal notranslate"><span class="pre">/investment</span></code> filter in logs while preserving other access logs.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">InvestmentFilter</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Overrides logging by implementing a subclass of <code class="docutils literal notranslate"><span class="pre">logging.Filter</span></code></p></li>
+<li><p>The method <code class="docutils literal notranslate"><span class="pre">filter(record)</span></code>, that examines the log record and returns True to log it or False to discard it.</p></li>
+</ul>
+</div>
+<p>Initialize a filter.</p>
+<p>Initialize with the name of the logger which, together with its
+children, will have its events allowed through the filter. If no
+name is specified, allow every event.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="api.filters.InvestmentFilter.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">logging.LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.filters.InvestmentFilter.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter out logging at <code class="docutils literal notranslate"><span class="pre">/investment?token=</span></code> from log streams.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>record</strong> – <code class="docutils literal notranslate"><span class="pre">LogRecord</span></code> represents an event which is created every time something is logged.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False flag for the endpoint that needs to be filtered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="jarvis-api-models">
+<h1>Jarvis - API Models<a class="headerlink" href="#jarvis-api-models" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="api.models.GetData">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">GetData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.GetData" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">GetData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">pydantic.BaseModel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.GetData" title="Permalink to this definition">¶</a></dt>
 <dd><p>BaseModel that handles input data for the API which is treated as members for the class <code class="docutils literal notranslate"><span class="pre">GetData</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">GetData</span>
 </pre></div>
@@ -1939,7 +1955,7 @@ name is specified, allow every event.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="api.models.GetPhrase">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">GetPhrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.GetPhrase" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">GetPhrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">pydantic.BaseModel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.GetPhrase" title="Permalink to this definition">¶</a></dt>
 <dd><p>BaseModel that handles input data for the API which is treated as members for the class <code class="docutils literal notranslate"><span class="pre">GetPhrase</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">GetPhrase</span>
 </pre></div>
@@ -1961,7 +1977,7 @@ name is specified, allow every event.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="api.models.LogConfig">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">LogConfig</span></span><a class="headerlink" href="#api.models.LogConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">LogConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">pydantic.BaseModel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.LogConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom log configuration.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LogConfig</span>
 </pre></div>
@@ -2047,8 +2063,8 @@ name is specified, allow every event.</p>
 </dd></dl>
 
 </section>
-<section id="module-api.rh_helper">
-<span id="jarvis-api-robinhood-helper"></span><h1>Jarvis - API Robinhood Helper<a class="headerlink" href="#module-api.rh_helper" title="Permalink to this headline">¶</a></h1>
+<section id="jarvis-api-robinhood-helper">
+<h1>Jarvis - API Robinhood Helper<a class="headerlink" href="#jarvis-api-robinhood-helper" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="api.rh_helper.CustomTemplate">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.rh_helper.</span></span><span class="sig-name descname"><span class="pre">CustomTemplate</span></span><a class="headerlink" href="#api.rh_helper.CustomTemplate" title="Permalink to this definition">¶</a></dt>
@@ -2077,7 +2093,7 @@ name is specified, allow every event.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.conversation.Conversation">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">helper_functions.conversation.</span></span><span class="sig-name descname"><span class="pre">Conversation</span></span><a class="headerlink" href="#helper_functions.conversation.Conversation" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of conversational keywords for each variable which is condition matched in main module.</p>
+<dd><p>List of conversational keywords for each variable which is condition matched in main module.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Conversation</span>
 </pre></div>
 </div>
@@ -2860,9 +2876,10 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 <li><a class="reference internal" href="#module-jarvis">Jarvis - Main Module</a></li>
 <li><a class="reference internal" href="#module-api.cron">Jarvis - API CronTab</a></li>
 <li><a class="reference internal" href="#module-api.controller">Jarvis - API Controller</a></li>
-<li><a class="reference internal" href="#module-api.models">Jarvis - API Models</a></li>
+<li><a class="reference internal" href="#jarvis-api-log-filters">Jarvis - API Log Filters</a></li>
+<li><a class="reference internal" href="#jarvis-api-models">Jarvis - API Models</a></li>
 <li><a class="reference internal" href="#module-api.report_gatherer">Jarvis - API Robinhood</a></li>
-<li><a class="reference internal" href="#module-api.rh_helper">Jarvis - API Robinhood Helper</a></li>
+<li><a class="reference internal" href="#jarvis-api-robinhood-helper">Jarvis - API Robinhood Helper</a></li>
 <li><a class="reference internal" href="#module-helper_functions.conversation">Conversation</a></li>
 <li><a class="reference internal" href="#module-helper_functions.database">Database</a></li>
 <li><a class="reference internal" href="#module-helper_functions.facial_recognition">Face Recognition</a></li>

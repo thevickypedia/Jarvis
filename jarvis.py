@@ -31,6 +31,7 @@ from urllib.request import urlopen
 from webbrowser import open as web_open
 
 import certifi
+import cv2
 import pyttsx3
 import wordninja
 import yaml
@@ -1471,16 +1472,16 @@ def distance(phrase):
     distance_controller(start, end)
 
 
-def distance_controller(starting_point: str = None, destination: str = None) -> None:
+def distance_controller(origin: str = None, destination: str = None) -> None:
     """Calculates distance between two locations.
 
-    Notes:
-        - If starting point is None, Jarvis takes the current location as starting point.
-        - If destination is None, Jarvis will ask for a destination from the user.
-
     Args:
-        starting_point: Takes the starting place name as an optional argument.
+        origin: Takes the starting place name as an optional argument.
         destination: Takes the destination place name as optional argument.
+
+    Notes:
+        - If ``origin`` is None, Jarvis takes the current location as ``origin``.
+        - If ``destination`` is None, Jarvis will ask for a destination from the user.
     """
     if not destination:
         say(text="Destination please?")
@@ -1495,9 +1496,9 @@ def distance_controller(starting_point: str = None, destination: str = None) -> 
             if 'exit' in destination or 'quit' in destination or 'Xzibit' in destination:
                 return
 
-    if starting_point:
+    if origin:
         # if starting_point is received gets latitude and longitude of that location
-        desired_start = geo_locator.geocode(starting_point)
+        desired_start = geo_locator.geocode(origin)
         sys.stdout.write(f"\r{desired_start.address} **")
         start = desired_start.latitude, desired_start.longitude
         start_check = None
@@ -1505,7 +1506,7 @@ def distance_controller(starting_point: str = None, destination: str = None) -> 
         # else gets latitude and longitude information of current location
         start = (current_lat, current_lon)
         start_check = 'My Location'
-    sys.stdout.write("::TO::") if starting_point else sys.stdout.write("\r::TO::")
+    sys.stdout.write("::TO::") if origin else sys.stdout.write("\r::TO::")
     desired_location = geo_locator.geocode(destination)
     if desired_location:
         end = desired_location.latitude, desired_location.longitude
@@ -1532,7 +1533,7 @@ def distance_controller(starting_point: str = None, destination: str = None) -> 
         if not locate_places.has_been_called:  # promotes using locate_places() function
             say(text=f"You may also ask where is {destination}")
     else:
-        say(text=f"{starting_point} is {miles} miles away from {destination}.")
+        say(text=f"{origin} is {miles} miles away from {destination}.")
     return
 
 
@@ -1591,7 +1592,7 @@ def locate_places(phrase: str = None) -> None:
         if offline:
             return
         locate_places(phrase=None)
-    distance_controller(starting_point=None, destination=place)
+    distance_controller(origin=None, destination=place)
 
 
 def directions(phrase: str = None, no_repeat: bool = False) -> None:
@@ -1639,7 +1640,7 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     if start_country and end_country:
         if re.match(start_country, end_country, flags=re.IGNORECASE):
             directions.has_been_called = True
-            distance_controller(starting_point=None, destination=place)
+            distance_controller(origin=None, destination=place)
         else:
             say(text="You might need a flight to get there!")
     return
@@ -1708,11 +1709,7 @@ def alarm(phrase: str) -> None:
 
 
 def kill_alarm() -> None:
-    """Removes lock file to stop the alarm which rings only when the certain lock file is present.
-
-    Notes:
-        - ``alarm_state`` is the list of lock files currently present.
-    """
+    """Removes lock file to stop the alarm which rings only when the certain lock file is present."""
     alarm_state = lock_files(alarm_files=True)
     if not alarm_state:
         say(text="You have no alarms set sir!")
@@ -1763,11 +1760,10 @@ def google_home(device: str = None, file: str = None) -> None:
         - Can also play music on multiple devices at once.
 
     See Also:
-        - Changes made to google-home-push module:
-            1. Modified the way local IP is received: https://github.com/deblockt/google-home-push/pull/7
-            2. Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
+        - https://github.com/deblockt/google-home-push/pull/7
+        - Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
 
-            - I have used ``sys.stdout = open(os.devnull, 'w')`` to suppress any print statements.
+            - ``sys.stdout = open(os.devnull, 'w')`` is used to suppress any print statements.
             - To enable this again at a later time use ``sys.stdout = sys.__stdout__``
 
         - When music is played and immediately stopped/tasked the google home device, it is most likely to except.
@@ -2584,8 +2580,8 @@ def decrease_brightness() -> None:
 def set_brightness(level: int) -> None:
     """Set brightness to a custom level.
 
-    - Since Jarvis uses in-built apple script, the only way to achieve this is to:
-        - set the brightness to bare minimum and increase [*]% from there or vice-versa.
+    - | Since Jarvis uses in-built apple script, the only way to achieve this is to set the brightness to absolute
+      | minimum/maximum and increase/decrease the required % from there.
 
     Args:
         level: Percentage of brightness to be set.
@@ -2824,7 +2820,6 @@ def guard_enable() -> None:
     say(text=f"Enabled security mode sir! I will look out for potential threats and keep you posted. "
              f"Have a nice {part_of_day()}, and enjoy yourself sir!", run=True)
 
-    import cv2
     cam_source, cam = None, None
     for i in range(0, 3):
         cam = cv2.VideoCapture(i)  # tries thrice to choose the camera for which Jarvis has access
@@ -3665,7 +3660,7 @@ def meeting_file_writer() -> None:
 
 
 class Activator:
-    """`Porcupine <https://github.com/Picovoice/porcupine>`__ wake word engine.
+    """Awaits for the keyword ``Jarvis`` and triggers ``initiator`` when heard.
 
     >>> Activator
 
@@ -3810,7 +3805,7 @@ def terminator() -> None:
 
     Examples:
         - os._exit(0)
-        - kill -15 ``PID``
+        - kill -15 `PID`
     """
     pid_check = check_output("ps -ef | grep jarvis.py", shell=True)
     pid_list = pid_check.decode('utf-8').splitlines()
@@ -3985,8 +3980,8 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
         - restart(PC) will restart the machine after getting confirmation.
 
     Warnings:
-        - Restarts the machine without approval when ``uptime`` is more than 2 days as the confirmation is requested
-            - in `system_vitals <https://thevickypedia.github.io/Jarvis/#jarvis.system_vitals>`__.
+        - | Restarts the machine without approval when ``uptime`` is more than 2 days as the confirmation is requested
+          | in `system_vitals <https://thevickypedia.github.io/Jarvis/#jarvis.system_vitals>`__.
         - This is done ONLY when the system vitals are read, and the uptime is more than 2 days.
 
     Args:
@@ -4119,7 +4114,7 @@ def starter() -> None:
 
     Loads the ``.env`` file so that all the necessary credentials and api keys can be accessed as ``ENV vars``
 
-    Methods
+    Methods:
         - volume_controller: To default the master volume 50%.
         - voice_default: To change the voice to default value.
         - clear_logs: To purge log files older than 48 hours.

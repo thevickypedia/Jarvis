@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+5.2.8 (12/04/2021)
+------------------
+- Use `:autoclass::` instead of `:automodule::` in index.rst
+- Remove env var commit to ignore class members in docs
+- Fix multiline docstrings
+- Create new file for logging filters
+- Re-arrange methods in fast.py
+
 5.2.7 (11/30/2021)
 ------------------
 - Simplify day and nighttime checks
