@@ -2,22 +2,24 @@ from datetime import datetime
 from logging import config, getLogger
 from mimetypes import guess_type
 from os import environ, path, remove, stat, system
+from pathlib import PurePath
 from socket import gethostbyname
 from string import punctuation
 from subprocess import check_output
 from threading import Thread
 from time import sleep
 
-from controller import (EndpointFilter, InvestmentFilter, keygen,
-                        offline_compatible)
+from controller import keygen, offline_compatible
 from cron import CronScheduler
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
+from filters import EndpointFilter, InvestmentFilter
 from models import GetData, GetPhrase, LogConfig
 from pytz import timezone
 from report_gatherer import Investment
+from uvicorn import run
 from yaml import FullLoader, load
 
 if path.isfile('../.env'):
@@ -86,6 +88,14 @@ def get_jarvis_status() -> bool:
             return True
 
 
+def pre_check_robinhood():
+    """Checks if the env var ``robinhood_auth`` is present. Raises 500 if not."""
+    if not robinhood_auth:
+        raise HTTPException(status_code=500,
+                            detail='Accessing robinhood requires username, password and QR code in env-vars.\n'
+                                   'Please check the read me/wiki page for setup instructions.')
+
+
 def run_robinhood() -> None:
     """Runs in a dedicated thread during startup, if the file was modified earlier than the past hour."""
     if path.isfile(serve_file):
@@ -96,6 +106,45 @@ def run_robinhood() -> None:
     else:
         logger.info('Initiated robinhood gatherer.')
         Investment(logger=logger).report_gatherer()
+
+
+def pre_check_offline_communicator(passphrase: str, command: str) -> bool:
+    """Runs pre-checks before letting office_communicator to proceed.
+
+    Args:
+        passphrase: Takes the password as one of the arguments.
+        command: Takes the command to be processed as another argument.
+
+    Raises:
+        - 401: If auth failed.
+        - 503: If Jarvis is not running.
+        - 413: If request command has 'and' or 'also' in the phrase.
+        - 422: If the request is not part of offline compatible words.
+        - 200: If phrase is test.
+
+    Returns:
+        bool:
+        If all the pre-checks have been successful.
+    """
+    command_lower = command.lower()
+    command_split = command.split()
+    if passphrase.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
+        passphrase = bytes(passphrase, "utf-8").decode(encoding="unicode_escape")
+    if passphrase != offline_phrase:
+        raise HTTPException(status_code=401, detail='Request not authorized.')
+    if not get_jarvis_status():
+        logger.error(f'Received offline request: {command}, but Jarvis is not running.')
+        raise HTTPException(status_code=503, detail='Jarvis is currently un-reachable.')
+    if command_lower == 'test':
+        raise HTTPException(status_code=200, detail='Test message received.')
+    if 'and' in command_split or 'also' in command_split:
+        raise HTTPException(status_code=413,
+                            detail='Jarvis can only process one command at a time via offline communicator.')
+    if not any(word in command_lower for word in offline_compatible):
+        raise HTTPException(status_code=422,
+                            detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
+                                   'Please try an instruction that does not require an user interaction.')
+    return True
 
 
 @app.on_event(event_type='startup')
@@ -138,45 +187,6 @@ def status() -> dict:
         Health status in a dictionary.
     """
     return {'Message': 'Healthy'}
-
-
-def pre_check_offline_communicator(passphrase: str, command: str) -> bool:
-    """Runs pre-checks before letting office_communicator to proceed.
-
-    Args:
-        passphrase: Takes the password as one of the arguments.
-        command: Takes the command to be processed as another argument.
-
-    Raises:
-        - 401: If auth failed.
-        - 503: If Jarvis is not running.
-        - 413: If request command has 'and' or 'also' in the phrase.
-        - 422: If the request is not part of offline compatible words.
-        - 200: If phrase is test.
-
-    Returns:
-        bool:
-        If all the pre-checks have been successful.
-    """
-    command_lower = command.lower()
-    command_split = command.split()
-    if passphrase.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
-        passphrase = bytes(passphrase, "utf-8").decode(encoding="unicode_escape")
-    if passphrase != offline_phrase:
-        raise HTTPException(status_code=401, detail='Request not authorized.')
-    if not get_jarvis_status():
-        logger.error(f'Received offline request: {command}, but Jarvis is not running.')
-        raise HTTPException(status_code=503, detail='Jarvis is currently un-reachable.')
-    if command_lower == 'test':
-        raise HTTPException(status_code=200, detail='Test message received.')
-    if 'and' in command_split or 'also' in command_split:
-        raise HTTPException(status_code=413,
-                            detail='Jarvis can only process one command at a time via offline communicator.')
-    if not any(word in command_lower for word in offline_compatible):
-        raise HTTPException(status_code=422,
-                            detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
-                                   'Please try an instruction that does not require an user interaction.')
-    return True
 
 
 @app.post("/offline-communicator")
@@ -231,14 +241,6 @@ async def get_favicon() -> FileResponse:
     """
     if path.isfile('favicon.ico'):
         return FileResponse('favicon.ico')
-
-
-def pre_check_robinhood():
-    """Checks if the env var ``robinhood_auth`` is present. Raises 500 if not."""
-    if not robinhood_auth:
-        raise HTTPException(status_code=500,
-                            detail='Accessing robinhood requires username, password and QR code in env-vars.\n'
-                                   'Please check the read me/wiki page for setup instructions.')
 
 
 @app.post("/robinhood-authenticate")
@@ -305,6 +307,10 @@ async def robinhood(token: str = None):
 
 
 if __name__ == '__main__':
-    from uvicorn import run
-
-    run(app="fast:app", host=offline_host, port=offline_port, reload=True)
+    argument_dict = {
+        "app": f"{PurePath(__file__).stem or __name__}:app",
+        "host": offline_host,
+        "port": offline_port,
+        "reload": True
+    }
+    run(**argument_dict)
