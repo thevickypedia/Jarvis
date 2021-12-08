@@ -33,6 +33,8 @@ from webbrowser import open as web_open
 import certifi
 import cv2
 import pyttsx3
+import requests
+import wikipedia as wiki
 import wordninja
 import yaml
 from aeosa.aem.aemsend import EventError
@@ -63,7 +65,6 @@ from pyicloud.services.findmyiphone import AppleDevice
 from pyrh import Robinhood
 from pytz import timezone
 from randfacts import getFact
-from requests import get, post
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import ConnectionError
 from search_engine_parser.core.engines.google import Search as GoogleSearch
@@ -73,8 +74,7 @@ from speech_recognition import (Microphone, Recognizer, RequestError,
 from speedtest import ConfigRetrievalError, Speedtest
 from timezonefinder import TimezoneFinder
 from wakeonlan import send_magic_packet as wake
-from wikipedia import exceptions as wiki_exceptions
-from wikipedia import summary
+from wikipedia.exceptions import DisambiguationError, PageError
 from wolframalpha import Client as Think
 
 from api.controller import offline_compatible
@@ -923,14 +923,14 @@ def wikipedia_() -> None:
         else:
             sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
             try:
-                result = summary(keyword)
-            except wiki_exceptions.DisambiguationError as e:  # checks for the right keyword in case of 1+ matches
+                result = wiki.summary(keyword)
+            except DisambiguationError as e:  # checks for the right keyword in case of 1+ matches
                 sys.stdout.write(f'\r{e}')
                 say(text='Your keyword has multiple results sir. Please pick any one displayed on your screen.',
                     run=True)
                 keyword1 = listener(timeout=3, phrase_limit=5)
-                result = summary(keyword1) if keyword1 != 'SR_ERROR' else None
-            except wiki_exceptions.PageError:
+                result = wiki.summary(keyword1) if keyword1 != 'SR_ERROR' else None
+            except PageError:
                 say(text=f"I'm sorry sir! I didn't get a response for the phrase: {keyword}. Try again!")
                 return
             # stops with two sentences before reading whole passage
@@ -1915,7 +1915,7 @@ def google_maps(query: str) -> bool:
         return False
 
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
-    response = get(maps_url + 'query=' + query + '&key=' + maps_api)
+    response = requests.get(maps_url + 'query=' + query + '&key=' + maps_api)
     collection = response.json()['results']
     required = []
     for element in range(len(collection)):
@@ -2009,7 +2009,7 @@ def github(phrase: str):
         no_env_vars()
         return
     auth = HTTPBasicAuth(git_user, git_pass)
-    response = get('https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
+    response = requests.get('https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
     result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
     for i in range(len(response)):
         total += 1
@@ -2325,14 +2325,14 @@ def google(query: str, suggestion_count: int = 0) -> bool:
             "client": "firefox",
             "q": query,
         }
-        r = get(suggest_url, params)
-        if not r:
+        response = requests.get(suggest_url, params)
+        if not response:
             return True
         try:
-            suggestion = r.json()[1][1]
+            suggestion = response.json()[1][1]
             suggestion_count += 1
             if suggestion_count >= 3:  # avoids infinite suggestions over the same suggestion
-                say(text=r.json()[1][0].replace('=', ''), run=True)  # picks the closest match and opens a google search
+                say(text=response.json()[1][0].replace('=', ''), run=True)  # picks the closest match and Google's it
                 return False
             else:
                 google(suggestion, suggestion_count)
@@ -3487,7 +3487,7 @@ def on_demand_offline_automation(task: str) -> bool:
 
     offline_endpoint = f"http://{offline_host}:{offline_port}/offline-communicator"
     try:
-        response = post(url=offline_endpoint, headers=headers, data=json.dumps(data))
+        response = requests.post(url=offline_endpoint, headers=headers, data=json.dumps(data))
     except ConnectionError:
         return False
     if response.ok:
