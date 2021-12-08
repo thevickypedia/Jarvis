@@ -2206,12 +2206,12 @@ name is specified, allow every event.</p>
 <span id="jarvis-api-robinhood"></span><h1>Jarvis - API Robinhood<a class="headerlink" href="#module-api.report_gatherer" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="api.report_gatherer.Investment">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.report_gatherer.</span></span><span class="sig-name descname"><span class="pre">Investment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.report_gatherer.Investment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Investment object to gather portfolio information.</p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.report_gatherer.</span></span><span class="sig-name descname"><span class="pre">Investment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">logging.Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.report_gatherer.Investment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">Investment</span></code> which gathers portfolio information.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Investment</span>
 </pre></div>
 </div>
-<p>Authenticates Robinhood object and gathers the portfolio information and stores in the var <code class="docutils literal notranslate"><span class="pre">raw_result</span></code>.</p>
+<p>Authenticates Robinhood object and gathers the portfolio information to store it in a variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>logger</strong> – Takes the class <code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code> as an argument.</p>

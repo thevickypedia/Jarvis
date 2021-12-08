@@ -1,11 +1,12 @@
 from datetime import date, datetime
+from logging import Logger, config, getLogger
 from math import fsum
 from os import environ, path, system
 from time import perf_counter
 
+import requests
 from jinja2 import Template
 from pyrh import Robinhood
-from requests import get
 
 
 def market_status() -> bool:
@@ -16,7 +17,7 @@ def market_status() -> bool:
         True if the current date is ``NOT`` in trading calendar or fails to fetch results from the URL.
     """
     today = date.today().strftime("%B %d, %Y")
-    url = get(url='https://www.nasdaqtrader.com/trader.aspx?id=Calendar')
+    url = requests.get(url='https://www.nasdaqtrader.com/trader.aspx?id=Calendar')
 
     if not url.ok:
         return True
@@ -26,14 +27,14 @@ def market_status() -> bool:
 
 
 class Investment:
-    """Initiates Investment object to gather portfolio information.
+    """Initiates ``Investment`` which gathers portfolio information.
 
     >>> Investment
 
     """
 
-    def __init__(self, logger):
-        """Authenticates Robinhood object and gathers the portfolio information and stores in the var ``raw_result``.
+    def __init__(self, logger: Logger):
+        """Authenticates Robinhood object and gathers the portfolio information to store it in a variable.
 
         Args:
             logger: Takes the class ``logging.Logger`` as an argument.
@@ -66,7 +67,7 @@ class Investment:
             share_id = str(data['instrument'].split('/')[-2])
             raw_details = self.rh.get_quote(share_id)
             ticker = (raw_details['symbol'])
-            stock_name = get(raw_details['instrument']).json()['simple_name']
+            stock_name = requests.get(raw_details['instrument']).json()['simple_name']
             buy = round(float(data['average_buy_price']), 2)
             total = round(shares_count * float(buy), 2)
             shares_total.append(total)
@@ -142,7 +143,7 @@ class Investment:
             numbers = [round(float(close_price['close_price']), 2) for each_item in historic_results
                        for close_price in each_item['historicals']]
             raw_details = self.rh.get_quote(stock)
-            stock_name = get(raw_details['instrument']).json()['simple_name']
+            stock_name = requests.get(raw_details['instrument']).json()['simple_name']
             price = round(float(raw_details['last_trade_price']), 2)
             difference = round(float(price - numbers[-1]), 2)
             if price < numbers[-1]:
@@ -186,8 +187,6 @@ class Investment:
 
 
 if __name__ == '__main__':
-    from logging import config, getLogger
-
     from dotenv import load_dotenv
     from models import LogConfig
 

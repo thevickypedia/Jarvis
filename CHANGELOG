@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.3.1 (12/07/2021)
+------------------
+- Fix some vague imports
+- Update type hinting in docs strings
+
 5.3.0 (12/05/2021)
 ------------------
 - Fix module import without changing PYTHONPATH
