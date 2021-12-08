@@ -3538,7 +3538,9 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
                 except json.JSONDecodeError:
                     logger.error('Invalid file format. '
                                  'Logging automation data and removing the file to avoid endless errors.\n'
-                                 f'{automation_data}')
+                                 f'{"".join(["*" for _ in range(120)])}\n\n'
+                                 f'{open(automation_file).read()}\n\n'
+                                 f'{"".join(["*" for _ in range(120)])}')
                     os.remove(automation_file)
                     continue
 
