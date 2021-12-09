@@ -35,13 +35,13 @@ class Keywords:
 
     music = ['music', 'songs', 'play']
 
-    gmail = ['email', 'mail', 'emails', 'mails']
+    gmail = ['email', 'mail']
 
-    meaning = ['meaning', 'meanings', 'dictionary', 'definition']
+    meaning = ['meaning', 'dictionary', 'definition']
 
     create_db = ['create a new database', 'create a new data base', 'create a database', 'create a data base']
 
-    add_todo = ['add', 'update']
+    add_todo = ['add']
 
     delete_todo = ['remove', 'delete']
 

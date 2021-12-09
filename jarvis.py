@@ -3640,12 +3640,12 @@ def switch_volumes() -> None:
     """Automatically puts the Mac on sleep and sets the volume to 25% at 9 PM and 50% at 6 AM."""
     hour = int(datetime.now().strftime('%H'))
     locker = """osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'"""
-    if 21 <= hour <= 6:
+    if 20 >= hour >= 7:
+        volume(level=50)
+    elif hour >= 21 or hour <= 6:
         volume(level=20)
         Thread(target=decrease_brightness).start()
         os.system(locker)
-    elif 20 >= hour >= 7:
-        volume(level=50)
 
 
 def meeting_file_writer() -> None:
