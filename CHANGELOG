@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.3.3 (12/09/2021)
+------------------
+- Fix automation hour check
+- Remove redundant keywords
+
 5.3.2 (12/08/2021)
 ------------------
 - Write automation data during JSONDecodeError
