@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.3.4 (12/11/2021)
+------------------
+- Avoid hitting os module for offline check
+- Swap to dictionary instead
+- Fix some offs in docs
+
 5.3.3 (12/09/2021)
 ------------------
 - Fix automation hour check

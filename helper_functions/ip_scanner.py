@@ -22,7 +22,6 @@ class LocalIPScan:
         Yields:
             str:
             IP address of the device.
-
         """
         hallway_1 = 'ZENGGE_35_011853'
         hallway_2 = 'ZENGGE_35_0171D9'
@@ -41,7 +40,6 @@ class LocalIPScan:
         Yields:
             str:
             IP address of the device.
-
         """
         kitchen_1 = 'ZENGGE_35_239190'
         kitchen_2 = 'ZENGGE_35_22E6FD'
@@ -57,7 +55,6 @@ class LocalIPScan:
         Yields:
             str:
             IP address of the device.
-
         """
         bedroom_1 = 'ZENGGE_35_22E43F'
         if attached_devices := self.attached_devices:
@@ -68,15 +65,15 @@ class LocalIPScan:
     def tv(self) -> tuple:
         """Host name of TV for string equality comparison.
 
-        Yields:
+        Returns:
             tuple:
             A tuple object of IP address and mac address of the TV.
-
         """
         if attached_devices := self.attached_devices:
             for device in attached_devices:
                 if device.name == 'LGWEBOSTV':
                     return device.ip, device.mac
+        return None, None
 
 
 if __name__ == '__main__':
