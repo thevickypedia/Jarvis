@@ -97,7 +97,7 @@ def say(text: str = None, run: bool = False) -> None:
 
     Args:
         text: Takes the text that has to be spoken as an argument.
-        run: Takes a boolean flag to choose whether or not to run the speaker.say loop.
+        run: Takes a boolean flag to choose whether to run the speaker.say loop.
     """
     if text:
         speaker.say(text=text)
@@ -123,7 +123,7 @@ def listener(timeout: int, phrase_limit: int, sound: bool = True) -> str:
     Args:
         timeout: Time in seconds for the overall listener to be active.
         phrase_limit: Time in seconds for the listener to actively listen to a sound.
-        sound: Flag whether or not to play the listener indicator sound. Defaults to True unless set to False.
+        sound: Flag whether to play the listener indicator sound. Defaults to True unless set to False.
 
     Returns:
         str:
@@ -547,15 +547,18 @@ def unrecognized_dumper(converted: str) -> None:
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
 def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, str or float, str]]:
-    """Gets the current location of an apple device.
+    """Gets the current location of an Apple device.
 
     Args:
         device: Passed when locating a particular apple device.
 
     Returns:
-        None or Tuple[str, str, str]:
+        None or Tuple[str or float, str or float, str or float]:
         - On success, returns ``current latitude``, ``current longitude`` and ``location`` information as a ``dict``.
         - On failure, calls the ``restart()`` or ``terminator()`` function depending on the error.
+
+    Raises:
+        PyiCloudFailedLoginException: Restarts if occurs once. Uses location by IP, if occurs once again.
     """
     try:
         # tries with icloud api to get your device's location for precise location services
@@ -968,7 +971,7 @@ def news(news_source: str = 'fox') -> None:
         say(text="News around you!")
         for article in all_articles['articles']:
             say(text=article['title'])
-        if os.environ.get('called_by_offline'):
+        if called_by_offline['status']:
             return
         say(text="That's the end of news around you.")
 
@@ -983,10 +986,9 @@ def apps(phrase: str) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     keyword = phrase.split()[-1] if phrase else None
-    offline = os.environ.get('called_by_offline')
     ignore = ['app', 'application']
     if not keyword or keyword in ignore:
-        if offline:
+        if called_by_offline['status']:
             say(text='I need an app name to open sir!')
             return
         say(text="Which app shall I open sir?", run=True)
@@ -1166,7 +1168,6 @@ def gmail() -> None:
         return
 
     sys.stdout.write("\rFetching unread emails..")
-    offline = os.environ.get('called_by_offline')
     try:
         mail = IMAP4_SSL('imap.gmail.com')  # connects to imaplib
         mail.login(gmail_user, gmail_pass)
@@ -1187,7 +1188,7 @@ def gmail() -> None:
         say(text="You don't have any emails to catch up sir")
         return
     else:
-        if offline:
+        if called_by_offline['status']:
             say(text=f'You have {n} unread emails sir.')
             return
         else:
@@ -1251,7 +1252,6 @@ def meaning(phrase: str) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     keyword = phrase.split()[-1] if phrase else None
-    offline = os.environ.get('called_by_offline')
     dictionary = PyDictionary()
     if not keyword or keyword == 'word':
         say(text="Please tell a keyword.", run=True)
@@ -1272,7 +1272,7 @@ def meaning(phrase: str) -> None:
                 n += 1
                 mean = ', '.join(value[0:2])
                 say(text=f'{keyword} is {repeated} {insert} {key}, which means {mean}.')
-            if offline:
+            if called_by_offline['status']:
                 return
             say(text=f'Do you wanna know how {keyword} is spelled?', run=True)
             response = listener(timeout=3, phrase_limit=3)
@@ -1280,7 +1280,7 @@ def meaning(phrase: str) -> None:
                 for letter in list(keyword.lower()):
                     say(text=letter)
                 say(run=True)
-        elif offline:
+        elif called_by_offline['status']:
             say(text=f"I'm sorry sir! I was unable to get meaning for the word: {keyword}")
             return
         else:
@@ -1309,7 +1309,7 @@ def todo(no_repeat: bool = False) -> None:
     if not os.path.isfile(TASKS_DB) and (time_travel.has_been_called or report.has_been_called):
         pass
     elif not os.path.isfile(TASKS_DB):
-        if os.environ.get('called_by_offline'):
+        if called_by_offline['status']:
             say(text="Your don't have any items in your to-do list sir!")
             return
         if no_repeat:
@@ -1341,7 +1341,7 @@ def todo(no_repeat: bool = False) -> None:
                 result[category] = result[category] + ', ' + item  # updates category if already found in result
         sys.stdout.write("\r")
         if result:
-            if os.environ.get('called_by_offline'):
+            if called_by_offline['status']:
                 say(text=json.dumps(result))
                 return
             say(text='Your to-do items are')
@@ -1485,7 +1485,7 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
     """
     if not destination:
         say(text="Destination please?")
-        if os.environ.get('called_by_offline'):
+        if called_by_offline['status']:
             return
         say(run=True)
         destination = listener(timeout=3, phrase_limit=4)
@@ -1543,15 +1543,14 @@ def locate_places(phrase: str = None) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    offline = os.environ.get('called_by_offline')
-    # if no words found starting with an upper case letter, fetches word after the keyword 'is' eg: where is Chicago
     place = get_place_from_phrase(phrase=phrase) if phrase else None
+    # if no words found starting with an upper case letter, fetches word after the keyword 'is' eg: where is Chicago
     if not place:
         keyword = 'is'
         before_keyword, keyword, after_keyword = phrase.partition(keyword)
         place = after_keyword.replace(' in', '').strip()
     if not place:
-        if offline:
+        if called_by_offline['status']:
             say(text='I need a location to get you the details sir!')
             return
         say(text="Tell me the name of a place!", run=True)
@@ -1584,12 +1583,12 @@ def locate_places(phrase: str = None) -> None:
         elif (city or county) and state and country:
             say(text=f"{place} is in {city or county}, {state}" if country == location_info['country']
                 else f"{place} is in {city or county}, {state}, in {country}")
-        if offline:
+        if called_by_offline['status']:
             return
         locate_places.has_been_called = True
     except (TypeError, AttributeError):
         say(text=f"{place} is not a real place on Earth sir! Try again.")
-        if offline:
+        if called_by_offline['status']:
             return
         locate_places(phrase=None)
     distance_controller(origin=None, destination=place)
@@ -1697,7 +1696,7 @@ def alarm(phrase: str) -> None:
                      f"I don't think a time like that exists on Earth.")
     else:
         say(text='Please tell me a time sir!')
-        if os.environ.get('called_by_offline'):
+        if called_by_offline['status']:
             return
         say(run=True)
         converted = listener(timeout=3, phrase_limit=4)
@@ -1786,7 +1785,7 @@ def google_home(device: str = None, file: str = None) -> None:
     if network_id.startswith('VPN'):
         return
 
-    if not os.environ.get('called_by_offline'):
+    if not called_by_offline['status']:
         say(text='Scanning your IP range for Google Home devices sir!', run=True)
         sys.stdout.write('\rScanning your IP range for Google Home devices..')
     network_id = '.'.join(network_id.split('.')[0:3])
@@ -1862,7 +1861,7 @@ def reminder(phrase: str) -> None:
     extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or re.findall(
         r'([0-9]+\s?(?:a.m.|p.m.:?))', phrase)
     if not extracted_time:
-        if os.environ.get('called_by_offline'):
+        if called_by_offline['status']:
             say(text='Reminder format should be::Remind me to do something, at some time.')
             return
         say(text="When do you want to be reminded sir?", run=True)
@@ -2963,7 +2962,7 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
 
     Args:
         command: Takes the command that has to be executed as an argument.
-        respond: Takes the argument to decide whether or not to create the ``offline_response`` file.
+        respond: Takes the argument to decide whether to create the ``offline_response`` file.
 
     Env Vars:
         - ``offline_phrase`` - Phrase to authenticate the requests to API. Defaults to ``jarvis``
@@ -2984,9 +2983,9 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
     try:
         if command:
             os.remove('offline_request') if respond else None
-            os.environ['called_by_offline'] = '1'  # Write env var so some function can use it
+            called_by_offline['status'] = True
             split(command)
-            del os.environ['called_by_offline']  # deletes the env var
+            called_by_offline['status'] = False
             response = text_spoken.get('text')
         else:
             response = 'Received a null request. Please resend it.'
@@ -3026,7 +3025,7 @@ def meetings():
     if os.path.isfile('meetings'):
         meeting_reader()
     else:
-        if os.environ.get('called_by_offline'):
+        if called_by_offline['status']:
             say(text="Meetings file is not ready yet. Please try again in a minute or two.")
             return False
         meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)
@@ -3152,7 +3151,7 @@ def system_vitals() -> None:
     restart_time = datetime.strftime(restart_time, "%A, %B %d, at %I:%M %p")
     restart_duration = time_converter(seconds=second)
     output += f'Restarted on: {restart_time} - {restart_duration} ago from now.'
-    if os.environ.get('called_by_offline'):
+    if called_by_offline['status']:
         say(text=output)
         return
     sys.stdout.write(f'\r{output}')
@@ -3724,7 +3723,7 @@ class Activator:
                     restart(quiet=True)
         except KeyboardInterrupt:
             self.stop()
-            if os.environ.get('called_by_offline'):
+            if called_by_offline['status']:
                 del os.environ['called_by_offline']
             else:
                 exit_process()
@@ -3995,10 +3994,12 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
             - If a boolean ``True`` is passed, local IP values are stored in ``.env`` file for quick re-use.
             - Converts ``hallway_ip``, ``bedroom_ip`` and ``kitchen_ip`` into a string before storing it as env vars.
             - Doesn't convert ``tv_ip`` as a string as it is already one.
+
+    Raises:
+        KeyboardInterrupt: To stop Jarvis' PID.
     """
-    offline = os.environ.get('called_by_offline')
     if target:
-        if offline:
+        if called_by_offline['status']:
             logger.warning(f"ERROR::Cannot restart {hosted_device.get('device')} via offline communicator.")
             return
         if target == 'PC':
@@ -4019,7 +4020,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
     sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(perf_counter())}")
     if not quiet:
         try:
-            if not offline:
+            if not called_by_offline['status']:
                 say(text='Restarting now sir! I will be up and running momentarily.', run=True)
         except RuntimeError:
             logger.error(f'Received a RuntimeError while restarting.\n{format_exc()}')
@@ -4037,7 +4038,10 @@ def shutdown(proceed: bool = False) -> None:
     """Gets confirmation and turns off the machine.
 
     Args:
-        proceed: Boolean value whether or not to get confirmation.
+        proceed: Boolean value whether to get confirmation.
+
+    Raises:
+        KeyboardInterrupt: To stop Jarvis' PID.
     """
     if not proceed:
         say(text=f"{random.choice(confirmation)} turn off the machine?", run=True)
@@ -4242,6 +4246,7 @@ if __name__ == '__main__':
     # greet_check is used in initialize() to greet only for the first run
     # tv is set to an empty dict instead of TV() at the start to avoid turning on the TV unnecessarily
     tv, warm_light, greet_check, text_spoken, STOPPER = None, {}, {}, {'text': ''}, {}
+    called_by_offline = {'status': False}
 
     # stores necessary values for geo location to receive the latitude, longitude and address
     options.default_ssl_context = create_default_context(cafile=certifi.where())

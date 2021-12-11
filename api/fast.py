@@ -102,11 +102,11 @@ async def auth_offline_communicator(passphrase: str, command: str) -> bool:
         command: Takes the command to be processed as another argument.
 
     Raises:
-        - 401: If auth failed.
-        - 503: If Jarvis is not running.
-        - 413: If request command has 'and' or 'also' in the phrase.
-        - 422: If the request is not part of offline compatible words.
-        - 200: If phrase is test.
+        401: If auth failed.
+        503: If Jarvis is not running.
+        413: If request command has 'and' or 'also' in the phrase.
+        422: If the request is not part of offline compatible words.
+        200: If phrase is test.
 
     Returns:
         bool:
@@ -211,7 +211,7 @@ async def offline_communicator(input_data: GetData) -> None:
             - passphrase: Pass phrase for authentication.
 
     Raises:
-        - 200: A dictionary with the command requested and the response for it from Jarvis.
+        200: A dictionary with the command requested and the response for it from Jarvis.
 
     See Also:
         - Include response_model only when the response should have same keys as arguments
@@ -265,8 +265,8 @@ async def authenticate_robinhood(feeder: GetPhrase) -> None:
             - passphrase: Pass phrase for authentication.
 
     Raises:
-        - Status code: 200, if initial auth is successful and returns the single-use token.
-        - Status code: 401, if request is not authorized.
+        200: If initial auth is successful and returns the single-use token.
+        401: If request is not authorized.
 
     See Also:
         If basic auth (stored as an env var ``robinhood_auth``) succeeds:

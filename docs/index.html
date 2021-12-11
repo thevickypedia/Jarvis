@@ -894,7 +894,7 @@ A condition below assumes two different words as two places but not including tw
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>timeout</strong> – Time in seconds for the overall listener to be active.</p></li>
 <li><p><strong>phrase_limit</strong> – Time in seconds for the listener to actively listen to a sound.</p></li>
-<li><p><strong>sound</strong> – Flag whether or not to play the listener indicator sound. Defaults to True unless set to False.</p></li>
+<li><p><strong>sound</strong> – Flag whether to play the listener indicator sound. Defaults to True unless set to False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -944,7 +944,7 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.location_services">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">location_services</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.location_services" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the current location of an apple device.</p>
+<dd><p>Gets the current location of an Apple device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>device</strong> – Passed when locating a particular apple device.</p>
@@ -957,7 +957,10 @@ A condition below assumes two different words as two places but not including tw
 </p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None or Tuple[str, str, str]</p>
+<dd class="field-odd"><p>None or Tuple[str or float, str or float, str or float]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>PyiCloudFailedLoginException</strong> – Restarts if occurs once. Uses location by IP, if occurs once again.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1105,7 +1108,7 @@ A condition below assumes two different words as two places but not including tw
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>command</strong> – Takes the command that has to be executed as an argument.</p></li>
-<li><p><strong>respond</strong> – Takes the argument to decide whether or not to create the <code class="docutils literal notranslate"><span class="pre">offline_response</span></code> file.</p></li>
+<li><p><strong>respond</strong> – Takes the argument to decide whether to create the <code class="docutils literal notranslate"><span class="pre">offline_response</span></code> file.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1296,6 +1299,9 @@ A condition below assumes two different words as two places but not including tw
 </li>
 </ul>
 </dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyboardInterrupt</strong> – To stop Jarvis’ PID.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -1338,7 +1344,7 @@ A condition below assumes two different words as two places but not including tw
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> – Takes the text that has to be spoken as an argument.</p></li>
-<li><p><strong>run</strong> – Takes a boolean flag to choose whether or not to run the speaker.say loop.</p></li>
+<li><p><strong>run</strong> – Takes a boolean flag to choose whether to run the speaker.say loop.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1380,7 +1386,10 @@ A condition below assumes two different words as two places but not including tw
 <dd><p>Gets confirmation and turns off the machine.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>proceed</strong> – Boolean value whether or not to get confirmation.</p>
+<dd class="field-odd"><p><strong>proceed</strong> – Boolean value whether to get confirmation.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyboardInterrupt</strong> – To stop Jarvis’ PID.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1749,11 +1758,11 @@ A condition below assumes two different words as two places but not including tw
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>- 401</strong> – If auth failed.</p></li>
-<li><p><strong>- 503</strong> – If Jarvis is not running.</p></li>
-<li><p><strong>- 413</strong> – If request command has ‘and’ or ‘also’ in the phrase.</p></li>
-<li><p><strong>- 422</strong> – If the request is not part of offline compatible words.</p></li>
-<li><p><strong>- 200</strong> – If phrase is test.</p></li>
+<li><p><strong>401</strong> – If auth failed.</p></li>
+<li><p><strong>503</strong> – If Jarvis is not running.</p></li>
+<li><p><strong>413</strong> – If request command has ‘and’ or ‘also’ in the phrase.</p></li>
+<li><p><strong>422</strong> – If the request is not part of offline compatible words.</p></li>
+<li><p><strong>200</strong> – If phrase is test.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns</dt>
@@ -1778,8 +1787,8 @@ A condition below assumes two different words as two places but not including tw
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>- Status code</strong> – 200, if initial auth is successful and returns the single-use token.</p></li>
-<li><p><strong>- Status code</strong> – 401, if request is not authorized.</p></li>
+<li><p><strong>200</strong> – If initial auth is successful and returns the single-use token.</p></li>
+<li><p><strong>401</strong> – If request is not authorized.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1841,7 +1850,7 @@ A condition below assumes two different words as two places but not including tw
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>- 200</strong> – A dictionary with the command requested and the response for it from Jarvis.</p>
+<dd class="field-even"><p><strong>200</strong> – A dictionary with the command requested and the response for it from Jarvis.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -2625,8 +2634,11 @@ Whites can have a value of None.</p>
 <span class="sig-name descname"><span class="pre">tv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan.tv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Host name of TV for string equality comparison.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Yields</dt>
-<dd class="field-odd"><p><em>tuple</em> – A tuple object of IP address and mac address of the TV.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A tuple object of IP address and mac address of the TV.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
