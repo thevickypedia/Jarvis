@@ -137,8 +137,8 @@
 <p>PersonalCloud integration requires Admin previleages for the default <code class="docutils literal notranslate"><span class="pre">Terminal</span></code>.</p>
 <dl class="simple">
 <dt>Step 1:</dt><dd><ul class="simple">
-<li><p>Mac OS 10.14.* and higher - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Full Disk Access</p></li>
-<li><p>Mac OS 10.13.* and lower - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Accessibility</p></li>
+<li><p>macOS 10.14.* and higher - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Full Disk Access</p></li>
+<li><p>macOS 10.13.* and lower - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Accessibility</p></li>
 </ul>
 </dd>
 <dt>Step 2:</dt><dd><p>Unlock for admin privileges. Click on the “+” icon. Select Applications -&gt; Utilities -&gt; Terminal</p>
@@ -305,7 +305,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.bluetooth">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">bluetooth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.bluetooth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find and connect to bluetooth devices near by.</p>
+<dd><p>Find and connect to bluetooth devices nearby.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument.</p>
@@ -450,7 +450,7 @@
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>Opens an html table with the index value and name of device.</p></li>
+<li><p>Opens a html table with the index value and name of device.</p></li>
 <li><p>When chosen an index value, the device name will be returned.</p></li>
 </ul>
 </div>
@@ -470,13 +470,13 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.directions">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">directions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_repeat</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.directions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Opens google maps for a route between starting and destination.</p>
+<dd><p>Opens Google Maps for a route between starting and destination.</p>
 <p>Uses reverse geocoding to calculate latitude and longitude for both start and destination.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
-<li><p><strong>no_repeat</strong> – A place holder flag switched during <code class="docutils literal notranslate"><span class="pre">recursion</span></code> so that, <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> doesn’t repeat himself.</p></li>
+<li><p><strong>no_repeat</strong> – A placeholder flag switched during <code class="docutils literal notranslate"><span class="pre">recursion</span></code> so that, <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> doesn’t repeat himself.</p></li>
 </ul>
 </dd>
 </dl>
@@ -632,7 +632,7 @@ A condition below assumes two different words as two places but not including tw
 <dd><p>Gets SSID of the network connected.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>WiFi or Ethernet SSID.</p>
+<dd class="field-odd"><p>Wi-Fi or Ethernet SSID.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>str</p>
@@ -643,7 +643,7 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.github">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">github</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.github" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pre-process to check the phrase received and call the <code class="docutils literal notranslate"><span class="pre">github</span></code> function as necessary.</p>
+<dd><p>Pre-process to check the phrase received and call the <code class="docutils literal notranslate"><span class="pre">GitHub</span></code> function as necessary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
@@ -654,7 +654,7 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.github_controller">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">github_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.github_controller" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clones the github repository matched with existing repository in conditions function.</p>
+<dd><p>Clones the GitHub repository matched with existing repository in conditions function.</p>
 <p>Asks confirmation if the results are more than 1 but less than 3 else asks to be more specific.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -672,7 +672,7 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.google">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">google</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suggestion_count</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.google" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses Google’s search engine parser and gets the first result that shows up on a google search.</p>
+<dd><p>Uses Google’s search engine parser and gets the first result that shows up on a Google search.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>If it is unable to get the result, Jarvis sends a request to <code class="docutils literal notranslate"><span class="pre">suggestqueries.google.com</span></code></p></li>
@@ -700,7 +700,7 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.google_home">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">google_home</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.google_home" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses <code class="docutils literal notranslate"><span class="pre">socket</span> <span class="pre">lib</span></code> to extract ip address and scan ip range for google home devices.</p>
+<dd><p>Uses <code class="docutils literal notranslate"><span class="pre">socket</span> <span class="pre">lib</span></code> to extract ip address and scan ip range for Google home devices.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>Can also play music on multiple devices at once.</p></li>
@@ -717,7 +717,7 @@ A condition below assumes two different words as two places but not including tw
 </ul>
 </div></blockquote>
 </li>
-<li><p>When music is played and immediately stopped/tasked the google home device, it is most likely to except.</p></li>
+<li><p>When music is played and immediately stopped/tasked the Google home device, it is most likely to except.</p></li>
 <li><p>Broken Pipe error. This usually happens when a socket is written after it is fully closed.</p></li>
 <li><p>This error occurs when one end of the connection tries sending data while the other has closed the connection.</p></li>
 <li><p>This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).</p></li>
@@ -732,7 +732,7 @@ A condition below assumes two different words as two places but not including tw
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>device</strong> – Name of the google home device on which the music has to be played.</p></li>
+<li><p><strong>device</strong> – Name of the Google home device on which the music has to be played.</p></li>
 <li><p><strong>file</strong> – Scanned audio file to be played.</p></li>
 </ul>
 </dd>
@@ -742,14 +742,14 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.google_maps">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">google_maps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.google_maps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses google’s places api to get places near by or any particular destination.</p>
+<dd><p>Uses google’s places api to get places nearby or any particular destination.</p>
 <p>This function is triggered when the words in user’s statement doesn’t match with any predefined functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>query</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean True if google’s maps API is unable to fetch consumable results.</p>
+<dd class="field-even"><p>Boolean True if Google’s maps API is unable to fetch consumable results.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
@@ -760,7 +760,7 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.google_search">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">google_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.google_search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Opens up a google search for the phrase received. If nothing was received, gets phrase from user.</p>
+<dd><p>Opens up a Google search for the phrase received. If nothing was received, gets phrase from user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
@@ -813,7 +813,7 @@ A condition below assumes two different words as two places but not including tw
 <dt>Methods</dt><dd><ul class="simple">
 <li><p>offline_communicator_initiate: Initiates ngrok tunnel and Jarvis API.</p></li>
 <li><p>automator: Initiates automator that executes certain functions at said time.</p></li>
-<li><p>playsound: Plays a start up sound.</p></li>
+<li><p>playsound: Plays a start-up sound.</p></li>
 </ul>
 </dd>
 </dl>
@@ -857,7 +857,7 @@ A condition below assumes two different words as two places but not including tw
 <dd><p>Gets IP address of the host machine.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the spoken phrase an an argument and tells the public IP if requested.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the spoken phrase an argument and tells the public IP if requested.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -913,11 +913,11 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.locate">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">locate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_repeat</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.locate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Locates an apple device using icloud api for python.</p>
+<dd><p>Locates an Apple device using icloud api for python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>no_repeat</strong> – A place holder flag switched during <code class="docutils literal notranslate"><span class="pre">recursion</span></code> so that, <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> doesn’t repeat himself.</p></li>
+<li><p><strong>no_repeat</strong> – A placeholder flag switched during <code class="docutils literal notranslate"><span class="pre">recursion</span></code> so that, <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> doesn’t repeat himself.</p></li>
 <li><p><strong>phrase</strong> – Takes the voice recognized statement as argument and extracts device name from it.</p></li>
 </ul>
 </dd>
@@ -947,7 +947,7 @@ A condition below assumes two different words as two places but not including tw
 <dd><p>Gets the current location of an Apple device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> – Passed when locating a particular apple device.</p>
+<dd class="field-odd"><p><strong>device</strong> – Passed when locating a particular Apple device.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
@@ -1266,7 +1266,7 @@ A condition below assumes two different words as two places but not including tw
 <dd><p>Restart triggers <code class="docutils literal notranslate"><span class="pre">restart.py</span></code> which in turn starts Jarvis after 5 seconds.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>Doing this changes the PID to avoid any Fatal Errors occurred by long running threads.</p></li>
+<li><p>Doing this changes the PID to avoid any Fatal Errors occurred by long-running threads.</p></li>
 <li><p>restart(PC) will restart the machine after getting confirmation.</p></li>
 </ul>
 <div class="admonition warning">
@@ -1339,12 +1339,12 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.say">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">say</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.say" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls speaker.say to speak a statement from the received text.</p>
+<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">speaker.say</span></code> to speak a statement from the received text.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> – Takes the text that has to be spoken as an argument.</p></li>
-<li><p><strong>run</strong> – Takes a boolean flag to choose whether to run the speaker.say loop.</p></li>
+<li><p><strong>run</strong> – Takes a boolean flag to choose whether to run the <code class="docutils literal notranslate"><span class="pre">speaker.say</span></code> loop.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1414,7 +1414,7 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.sleep_control">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">sleep_control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.sleep_control" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controls whether to stop listeneing or to put the host device on sleep.</p>
+<dd><p>Controls whether to stop listening or to put the host device on sleep.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
@@ -1500,7 +1500,7 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.system_vitals">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">system_vitals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.system_vitals" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads system vitals on MacOS.</p>
+<dd><p>Reads system vitals on macOS.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
@@ -1584,7 +1584,7 @@ A condition below assumes two different words as two places but not including tw
 <dd><p>Says the item and category stored in the to-do list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>no_repeat</strong> – A place holder flag switched during <code class="docutils literal notranslate"><span class="pre">recursion</span></code> so that, <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> doesn’t repeat himself.</p>
+<dd class="field-odd"><p><strong>no_repeat</strong> – A placeholder flag switched during <code class="docutils literal notranslate"><span class="pre">recursion</span></code> so that, <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> doesn’t repeat himself.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1739,7 +1739,7 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.wikipedia_">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">wikipedia_</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.wikipedia_" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets any information from wikipedia using it’s API.</p>
+<dd><p>Gets any information from wikipedia using its API.</p>
 </dd></dl>
 
 </section>
