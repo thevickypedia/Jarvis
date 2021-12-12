@@ -93,11 +93,11 @@ from helper_functions.tv_controls import TV
 
 # noinspection PyProtectedMember,PyUnresolvedReferences
 def say(text: str = None, run: bool = False) -> None:
-    """Calls speaker.say to speak a statement from the received text.
+    """Calls ``speaker.say`` to speak a statement from the received text.
 
     Args:
         text: Takes the text that has to be spoken as an argument.
-        run: Takes a boolean flag to choose whether to run the speaker.say loop.
+        run: Takes a boolean flag to choose whether to run the ``speaker.say`` loop.
     """
     if text:
         speaker.say(text=text)
@@ -466,7 +466,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         if alpha(converted):
             if google_maps(converted):
                 if google(converted):
-                    # if none of the conditions above are met, opens a google search on default browser
+                    # if none of the conditions above are met, opens a Google search on default browser
                     if google_maps.has_been_called:
                         google_maps.has_been_called = False
                         say(text="I have also opened a google search for your request.")
@@ -502,7 +502,7 @@ def ip_info(phrase: str) -> None:
     """Gets IP address of the host machine.
 
     Args:
-        phrase: Takes the spoken phrase an an argument and tells the public IP if requested.
+        phrase: Takes the spoken phrase an argument and tells the public IP if requested.
     """
     if 'public' in phrase.lower():
         if not internet_checker():
@@ -550,7 +550,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
     """Gets the current location of an Apple device.
 
     Args:
-        device: Passed when locating a particular apple device.
+        device: Passed when locating a particular Apple device.
 
     Returns:
         None or Tuple[str or float, str or float, str or float]:
@@ -917,7 +917,7 @@ def system_info() -> None:
 
 
 def wikipedia_() -> None:
-    """Gets any information from wikipedia using it's API."""
+    """Gets any information from wikipedia using its API."""
     say(text="Please tell the keyword.", run=True)
     keyword = listener(timeout=3, phrase_limit=5)
     if keyword != 'SR_ERROR':
@@ -1053,7 +1053,7 @@ def device_selector(converted: str = None) -> AppleDevice or None:
     """Selects a device using the received input string.
 
     See Also:
-        - Opens an html table with the index value and name of device.
+        - Opens a html table with the index value and name of device.
         - When chosen an index value, the device name will be returned.
 
     Args:
@@ -1086,10 +1086,10 @@ def location() -> None:
 
 
 def locate(phrase: str, no_repeat: bool = False) -> None:
-    """Locates an apple device using icloud api for python.
+    """Locates an Apple device using icloud api for python.
 
     Args:
-        no_repeat: A place holder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
+        no_repeat: A placeholder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
         phrase: Takes the voice recognized statement as argument and extracts device name from it.
     """
     if not (target_device := device_selector(phrase)):
@@ -1303,7 +1303,7 @@ def todo(no_repeat: bool = False) -> None:
     """Says the item and category stored in the to-do list.
 
     Args:
-        no_repeat: A place holder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
+        no_repeat: A placeholder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
     """
     sys.stdout.write("\rLooking for to-do database..")
     if not os.path.isfile(TASKS_DB) and (time_travel.has_been_called or report.has_been_called):
@@ -1595,13 +1595,13 @@ def locate_places(phrase: str = None) -> None:
 
 
 def directions(phrase: str = None, no_repeat: bool = False) -> None:
-    """Opens google maps for a route between starting and destination.
+    """Opens Google Maps for a route between starting and destination.
 
     Uses reverse geocoding to calculate latitude and longitude for both start and destination.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
-        no_repeat: A place holder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
+        no_repeat: A placeholder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
     """
     place = get_place_from_phrase(phrase=phrase)
     place = place.replace('I ', '').strip() if place else None
@@ -1753,7 +1753,7 @@ def comma_separator(list_: list) -> str:
 
 
 def google_home(device: str = None, file: str = None) -> None:
-    """Uses ``socket lib`` to extract ip address and scan ip range for google home devices.
+    """Uses ``socket lib`` to extract ip address and scan ip range for Google home devices.
 
     Notes:
         - Can also play music on multiple devices at once.
@@ -1765,7 +1765,7 @@ def google_home(device: str = None, file: str = None) -> None:
             - ``sys.stdout = open(os.devnull, 'w')`` is used to suppress any print statements.
             - To enable this again at a later time use ``sys.stdout = sys.__stdout__``
 
-        - When music is played and immediately stopped/tasked the google home device, it is most likely to except.
+        - When music is played and immediately stopped/tasked the Google home device, it is most likely to except.
         - Broken Pipe error. This usually happens when a socket is written after it is fully closed.
         - This error occurs when one end of the connection tries sending data while the other has closed the connection.
         - This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).
@@ -1778,7 +1778,7 @@ def google_home(device: str = None, file: str = None) -> None:
                     sys.stdout.write(error)
 
     Args:
-        device: Name of the google home device on which the music has to be played.
+        device: Name of the Google home device on which the music has to be played.
         file: Scanned audio file to be played.
     """
     network_id = vpn_checker()
@@ -1794,11 +1794,11 @@ def google_home(device: str = None, file: str = None) -> None:
         """Scans the IP range using the received args as host id in an IP address.
 
         Args:
-            host_id: Host ID passed in a multi-threaded fashion to scan for google home devices in IP range.
+            host_id: Host ID passed in a multithreaded fashion to scan for Google home devices in IP range.
 
         Returns:
             Tuple(str, str):
-            Device name and it's IP address.
+            Device name, and it's IP address.
         """
         try:
             device_info = GoogleHome(host=f"{network_id}.{host_id}").cc
@@ -1858,8 +1858,9 @@ def reminder(phrase: str) -> None:
             say(text='Reminder format should be::Remind me to do something, at some time.')
             sys.stdout.write('\rReminder format should be::Remind ME to do something, AT some time.')
             return
-    extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or re.findall(
-        r'([0-9]+\s?(?:a.m.|p.m.:?))', phrase)
+    phrase = phrase.lower()
+    extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or \
+        re.findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', phrase) or re.findall(r'([0-9]+\s?(?:am|pm:?))', phrase)
     if not extracted_time:
         if called_by_offline['status']:
             say(text='Reminder format should be::Remind me to do something, at some time.')
@@ -1899,7 +1900,7 @@ def reminder(phrase: str) -> None:
 
 
 def google_maps(query: str) -> bool:
-    """Uses google's places api to get places near by or any particular destination.
+    """Uses google's places api to get places nearby or any particular destination.
 
     This function is triggered when the words in user's statement doesn't match with any predefined functions.
 
@@ -1908,7 +1909,7 @@ def google_maps(query: str) -> bool:
 
     Returns:
         bool:
-        Boolean True if google's maps API is unable to fetch consumable results.
+        Boolean True if Google's maps API is unable to fetch consumable results.
     """
     if not maps_api:
         return False
@@ -1999,7 +2000,7 @@ def notes() -> None:
 
 
 def github(phrase: str):
-    """Pre-process to check the phrase received and call the ``github`` function as necessary.
+    """Pre-process to check the phrase received and call the ``GitHub`` function as necessary.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
@@ -2030,7 +2031,7 @@ def github(phrase: str):
 
 
 def github_controller(target: list) -> None:
-    """Clones the github repository matched with existing repository in conditions function.
+    """Clones the GitHub repository matched with existing repository in conditions function.
 
     Asks confirmation if the results are more than 1 but less than 3 else asks to be more specific.
 
@@ -2295,7 +2296,7 @@ def alpha(text: str) -> bool:
 
 
 def google(query: str, suggestion_count: int = 0) -> bool:
-    """Uses Google's search engine parser and gets the first result that shows up on a google search.
+    """Uses Google's search engine parser and gets the first result that shows up on a Google search.
 
     Notes:
         - If it is unable to get the result, Jarvis sends a request to ``suggestqueries.google.com``
@@ -2338,7 +2339,7 @@ def google(query: str, suggestion_count: int = 0) -> bool:
         except IndexError:
             return True
     if results:
-        [results.remove(result) for result in results if len(result.split()) < 3]  # removes results with dummy words
+        [results.remove(result) for result in results if len(result.split()) < 3]  # Remove results with dummy words
     else:
         return False
     if results:
@@ -2366,7 +2367,7 @@ def google(query: str, suggestion_count: int = 0) -> bool:
 
 
 def google_search(phrase: str = None) -> None:
-    """Opens up a google search for the phrase received. If nothing was received, gets phrase from user.
+    """Opens up a Google search for the phrase received. If nothing was received, gets phrase from user.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
@@ -2511,7 +2512,7 @@ def connector(phrase: str, targets: dict) -> bool:
 
 
 def bluetooth(phrase: str) -> None:
-    """Find and connect to bluetooth devices near by.
+    """Find and connect to bluetooth devices nearby.
 
     Args:
         phrase: Takes the voice recognized statement as argument.
@@ -2861,7 +2862,7 @@ def guard_enable() -> None:
             logger.info(f'Conversation::{converted}')
 
         if cam_source is not None:
-            # captures images and keeps storing it to a folder
+            # Capture images and keeps storing it to a folder
             validation_video = cv2.VideoCapture(cam_source)
             cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
             ignore, image = validation_video.read()
@@ -3100,7 +3101,7 @@ def meetings_gatherer() -> str:
 
 
 def system_vitals() -> None:
-    """Reads system vitals on MacOS.
+    """Reads system vitals on macOS.
 
     See Also:
         - Jarvis will suggest a reboot if the system uptime is more than 2 days.
@@ -3174,7 +3175,7 @@ def get_ssid() -> str:
 
     Returns:
         str:
-        WiFi or Ethernet SSID.
+        Wi-Fi or Ethernet SSID.
     """
     process = Popen(
         ['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'],
@@ -3218,8 +3219,8 @@ class PersonalCloud:
         PersonalCloud integration requires Admin previleages for the default ``Terminal``.
 
         Step 1:
-            - Mac OS 10.14.* and higher - System Preferences -> Security & Privacy -> Privacy -> Full Disk Access
-            - Mac OS 10.13.* and lower - System Preferences -> Security & Privacy -> Privacy -> Accessibility
+            - macOS 10.14.* and higher - System Preferences -> Security & Privacy -> Privacy -> Full Disk Access
+            - macOS 10.13.* and lower - System Preferences -> Security & Privacy -> Privacy -> Accessibility
         Step 2:
             Unlock for admin privileges. Click on the "+" icon. Select Applications -> Utilities -> Terminal
     """
@@ -3689,18 +3690,18 @@ class Activator:
         keyword_paths = [KEYWORD_PATHS[x] for x in ['jarvis']]
 
         self.py_audio = PyAudio()
-        self.waker = create(
+        self.detector = create(
             library_path=LIBRARY_PATH,
             model_path=MODEL_PATH,
             keyword_paths=keyword_paths,
             sensitivities=[sensitivity]
         )
         self.audio_stream = self.py_audio.open(
-            rate=self.waker.sample_rate,
+            rate=self.detector.sample_rate,
             channels=1,
             format=paInt16,
             input=True,
-            frames_per_buffer=self.waker.frame_length,
+            frames_per_buffer=self.detector.frame_length,
             input_device_index=input_device_index
         )
 
@@ -3711,9 +3712,9 @@ class Activator:
         try:
             while True:
                 sys.stdout.write('\rSentry Mode')
-                pcm = self.audio_stream.read(self.waker.frame_length, exception_on_overflow=False)
-                pcm = unpack_from("h" * self.waker.frame_length, pcm)
-                if self.waker.process(pcm) >= 0:
+                pcm = self.audio_stream.read(self.detector.frame_length, exception_on_overflow=False)
+                pcm = unpack_from("h" * self.detector.frame_length, pcm)
+                if self.detector.process(pcm) >= 0:
                     playsound(sound='indicators/acknowledgement.mp3', block=False)
                     initiator(key_original=listener(timeout=timeout, phrase_limit=phrase_limit, sound=False),
                               should_return=True)
@@ -3738,7 +3739,7 @@ class Activator:
             - Releases port audio resources.
         """
         logger.info('Releasing resources acquired by Porcupine.')
-        self.waker.delete()
+        self.detector.delete()
         logger.info('Closing Audio Stream.')
         self.audio_stream.close()
         logger.info('Releasing PortAudio resources.')
@@ -3938,7 +3939,7 @@ def stop_terminal() -> None:
 
 
 def sleep_control(phrase: str) -> bool:
-    """Controls whether to stop listeneing or to put the host device on sleep.
+    """Controls whether to stop listening or to put the host device on sleep.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
@@ -3977,7 +3978,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
     """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
 
     Notes:
-        - Doing this changes the PID to avoid any Fatal Errors occurred by long running threads.
+        - Doing this changes the PID to avoid any Fatal Errors occurred by long-running threads.
         - restart(PC) will restart the machine after getting confirmation.
 
     Warnings:
@@ -4141,7 +4142,7 @@ def initiate_background_threads():
     Methods
         - offline_communicator_initiate: Initiates ngrok tunnel and Jarvis API.
         - automator: Initiates automator that executes certain functions at said time.
-        - playsound: Plays a start up sound.
+        - playsound: Plays a start-up sound.
     """
     Thread(target=offline_communicator_initiate).start()
     Thread(target=automator).start()
@@ -4248,7 +4249,7 @@ if __name__ == '__main__':
     tv, warm_light, greet_check, text_spoken, STOPPER = None, {}, {}, {'text': ''}, {}
     called_by_offline = {'status': False}
 
-    # stores necessary values for geo location to receive the latitude, longitude and address
+    # stores necessary values for geolocation to receive the latitude, longitude and address
     options.default_ssl_context = create_default_context(cafile=certifi.where())
     geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
 
@@ -4281,7 +4282,7 @@ if __name__ == '__main__':
 
     weekend = ['Friday', 'Saturday']
 
-    # {function_name}.has_been_called is use to denote which function has triggered the other
+    # {function_name}.has_been_called is used to denote which function has triggered the other
     report.has_been_called, locate_places.has_been_called, directions.has_been_called, google_maps.has_been_called, \
         time_travel.has_been_called = False, False, False, False, False
     for functions in [delete_todo, todo, add_todo]:

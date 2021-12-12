@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.3.5 (12/11/2021)
+------------------
+- Make reminders to pick am/pm in any format
+- Fix spell checks in docs strings
+
 5.3.4 (12/11/2021)
 ------------------
 - Avoid hitting os module for offline check
