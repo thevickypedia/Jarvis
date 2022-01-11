@@ -73,6 +73,7 @@ from speech_recognition import (Microphone, Recognizer, RequestError,
                                 UnknownValueError, WaitTimeoutError)
 from speedtest import ConfigRetrievalError, Speedtest
 from timezonefinder import TimezoneFinder
+from vpn.controller import VPNServer
 from wakeonlan import send_magic_packet as wake
 from wikipedia.exceptions import DisambiguationError, PageError
 from wolframalpha import Client as Think
@@ -573,6 +574,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
         else:
             current_lat_ = raw_location['latitude']
             current_lon_ = raw_location['longitude']
+        os.remove('pyicloud_error') if os.path.isfile('pyicloud_error') else None
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException):
         if device:
             logger.error(f'Unable to retrieve location::{sys.exc_info()[0].__name__}\n{format_exc()}')  # traceback
@@ -583,8 +585,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
                     os.remove('pyicloud_error')
                 else:
                     logger.error(f'Exception raised by {caller}. Restarting.')
-                    with open('pyicloud_error', 'w') as f:
-                        f.write('')
+                    Path('pyicloud_error').touch()
                     restart(quiet=True)  # Restarts quietly if the error occurs when called from __main__
         # uses latitude and longitude information from your IP's client when unable to connect to icloud
         current_lat_ = st.results.client['lat']
@@ -2086,7 +2087,7 @@ def notify(user: str, password: str, number: str, body: str, subject: str = None
         return
     if not subject:
         subject = "Message from Jarvis" if number == phone_number else "Jarvis::Message from Vignesh"
-    response = Messenger(gmail_user=user, gmail_pass=password, phone_number=number, subject=subject,
+    response = Messenger(gmail_user=user, gmail_pass=password, phone=number, subject=subject,
                          message=body).send_sms()
     if response.ok and response.status == 200:
         logger.info('SMS notification has been sent.')
@@ -3279,7 +3280,7 @@ class PersonalCloud:
             apple_script('Terminal').do_script(initial_script)
         except (CommandError, EventError) as ps_error:
             logger.error(ps_error)
-            notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
+            notify(user=offline_user, password=offline_pass, number=phone_number,
                    body="Sir! I was unable to trigger your personal cloud due to lack of permissions.\n"
                         "Please check the log file.")
             return
@@ -3319,10 +3320,10 @@ class PersonalCloud:
                 with open(f'{cloned_path}/helper_functions/url', 'r') as file:
                     url = file.read()  # commit # dfc37853dfe232e268843cbe53719bd9a09903c4 on personal_cloud
                 if url.startswith('http'):
-                    notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
+                    notify(user=offline_user, password=offline_pass, number=phone_number,
                            body=f"URL: {url}\nUsername: {personal_cloud_username}\nPassword: {personal_cloud_password}")
                 else:
-                    notify(user=offline_receive_user, password=offline_receive_pass, number=phone_number,
+                    notify(user=offline_user, password=offline_pass, number=phone_number,
                            body="Unable to start ngrok! Please check the logs for more information.")
                 break
 
@@ -3340,14 +3341,14 @@ class PersonalCloud:
         PersonalCloud.delete_repo()
 
 
-def vpn_server(phrase: str):
+def vpn_server(phrase: str) -> None:
     """Enables or disables VPN server.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
     phrase = phrase.lower()
-    if vpn_server_check():
+    if os.environ.get('VPN_LIVE'):
         say(text='An operation for VPN Server is already in progress sir! Please wait and retry.')
     elif 'start' in phrase or 'trigger' in phrase or 'initiate' in phrase or \
             'enable' in phrase or 'spin up' in phrase:
@@ -3361,20 +3362,6 @@ def vpn_server(phrase: str):
         say(text="I don't understand the request sir! You can ask me to enable or disable the VPN server.")
 
 
-def vpn_server_check() -> bool:
-    """Checks if an instance of VPN Server is running.
-
-    Returns:
-        bool:
-        Returns ``True`` if an instance of ``vpn.py`` is currently running.
-    """
-    pid_check = check_output("ps -ef | grep vpn.py", shell=True)
-    pid_list = pid_check.decode('utf-8').split('\n')
-    for id_ in pid_list:
-        if id_ and 'grep' not in id_ and '/bin/sh' not in id_:
-            return True
-
-
 def vpn_server_switch(operation: str) -> None:
     """Automator to ``START`` or ``STOP`` the VPN portal.
 
@@ -3383,11 +3370,15 @@ def vpn_server_switch(operation: str) -> None:
 
     See Also:
         - Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
-        - Pulls the latest version before starting the server.
-        - Adds an env var ``ENV: Jarvis`` so, ``vpn-server`` can log the details in a log file.
     """
-    base_script = f'cd {home}/vpn-server && git pull --quiet && source venv/bin/activate && export ENV=Jarvis'
-    os.system(f'{base_script} && python vpn.py {operation} && exit')
+    os.environ['VPN_LIVE'] = 'True'
+    vpn_object = VPNServer(gmail_user=offline_user, gmail_pass=offline_pass, phone=phone_number, recipient=icloud_user,
+                           log='FILE')
+    if operation == 'START':
+        vpn_object.create_vpn_server()
+    elif operation == 'STOP':
+        vpn_object.delete_vpn_server()
+    del os.environ['VPN_LIVE']
 
 
 def internet_checker() -> Union[Speedtest, bool]:
@@ -4191,8 +4182,8 @@ if __name__ == '__main__':
     robinhood_pass = os.environ.get('robinhood_pass')
     robinhood_qr = os.environ.get('robinhood_qr')
     birthday = os.environ.get('birthday')
-    offline_receive_user = os.environ.get('offline_receive_user')
-    offline_receive_pass = os.environ.get('offline_receive_pass')
+    offline_user = os.environ.get('offline_user')
+    offline_pass = os.environ.get('offline_pass')
     offline_phrase = os.environ.get('offline_phrase', 'jarvis')
     offline_port = int(os.environ.get('offline_port', 4483))
     icloud_user = os.environ.get('icloud_user')
