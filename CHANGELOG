@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+5.3.6 (01/10/2021)
+------------------
+- Use `vpn-server` from pypi package
+- Bump common packages to >= versions
+- Change variable name on offline_receive
+- Use .touch to create pyicloud_error file
+
 5.3.5 (12/11/2021)
 ------------------
 - Make reminders to pick am/pm in any format

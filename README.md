@@ -53,7 +53,7 @@
 [![Active Development](https://img.shields.io/badge/Development%20Level-Actively%20Developed-success.svg)](https://github.com/thevickypedia/Jarvis)
 [![Actively Maintained](https://img.shields.io/badge/Maintenance%20Level-Actively%20Maintained-success.svg)](https://github.com/thevickypedia/Jarvis)
 
-[![Maintained](https://img.shields.io/maintenance/yes/2021)](https://api.github.com/repos/thevickypedia/Jarvis)
+[![Maintained](https://img.shields.io/maintenance/yes/2022)](https://api.github.com/repos/thevickypedia/Jarvis)
 [![Maintainer](https://img.shields.io/badge/Maintained%20By-Vignesh%20Sivanandha%20Rao-blue.svg)](https://vigneshrao.com/)
 
 ###### Reach Out
@@ -99,8 +99,8 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 - **maps_api** - API Key for maps from [google](https://developers.google.com/maps/documentation/maps-static/get-api-key)
 - **gmail_user** - Gmail account username to send and read emails.
 - **gmail_pass** - Gmail account password to send and read emails.
-- **offline_receive_user** - Alternate gmail account username to send an SMS. (`gmail_user` can be re-used)
-- **offline_receive_pass** - Alternate gmail account password to send an SMS. (`gmail_pass` can be re-used)
+- **offline_user** - Alternate gmail account username to send an SMS. (`gmail_user` can be re-used)
+- **offline_pass** - Alternate gmail account password to send an SMS. (`gmail_pass` can be re-used)
 - **robinhood_user** - Robinhood account username.
 - **robinhood_pass** - Robinhood account password.
 - **robinhood_qr** - Robinhood login [QR code](https://robinhood.com/account/settings)

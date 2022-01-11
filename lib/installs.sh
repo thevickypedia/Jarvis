@@ -25,7 +25,7 @@ git clone https://github.com/toy/blueutil.git && cd blueutil && make && make ins
 python3 -m pip install --upgrade pip
 
 # Installs non version specicfic packages using --upgrade and --no-cache flag
-python3 -m pip install --upgrade --no-cache gmail-connector changelog-generator sphinx pre-commit recommonmark
+python3 -m pip install --no-cache --upgrade gmail-connector vpn-server changelog-generator sphinx pre-commit recommonmark
 
 # Install pre-commit checker to restrict commit if any step in .pre-commit-config.yaml fails.
 pre-commit install
