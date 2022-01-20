@@ -1050,7 +1050,7 @@ def repeat() -> None:
             say(text=f"I heard {keyword}")
 
 
-def device_selector(converted: str = None) -> AppleDevice or None:
+def device_selector(converted: str = None) -> Union[AppleDevice, None]:
     """Selects a device using the received input string.
 
     See Also:
@@ -1061,7 +1061,7 @@ def device_selector(converted: str = None) -> AppleDevice or None:
         converted: Takes the voice recognized statement as argument.
 
     Returns:
-        AppleDevice or None:
+        AppleDevice:
         Returns the selected device from the class ``AppleDevice``
     """
     if not all([icloud_user, icloud_pass]):
@@ -2422,6 +2422,8 @@ def face_detection() -> None:
     try:
         result = Face().face_recognition()
     except BlockingIOError:
+        sys.stdout.flush()
+        sys.stdout.write('\r')
         logger.error('Unable to access the camera.')
         say(text="I was unable to access the camera. Facial recognition can work only when cameras are "
                  "present and accessible.")
@@ -2887,7 +2889,7 @@ def guard_enable() -> None:
             Thread(target=threat_notify, args=(converted, date_extn)).start()
 
 
-def threat_notify(converted: str, date_extn: str or None) -> None:
+def threat_notify(converted: str, date_extn: Union[str, None]) -> None:
     """Sends an SMS and email notification in case of a threat.
 
     References:
@@ -3121,6 +3123,7 @@ def system_vitals() -> None:
         critical_info = [each.strip() for each in (os.popen(
             f'echo {root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
         )).read().split('\n') if each != '']
+        sys.stdout.flush()
         sys.stdout.write('\r')
 
         for info in critical_info:
@@ -3372,7 +3375,8 @@ def vpn_server_switch(operation: str) -> None:
         - Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
     """
     os.environ['VPN_LIVE'] = 'True'
-    vpn_object = VPNServer(gmail_user=offline_user, gmail_pass=offline_pass, phone=phone_number, recipient=icloud_user,
+    vpn_object = VPNServer(vpn_username=os.environ.get('VPN_USERNAME'), vpn_password=os.environ.get('VPN_PASSWORD'),
+                           gmail_user=offline_user, gmail_pass=offline_pass, phone=phone_number, recipient=icloud_user,
                            log='FILE')
     if operation == 'START':
         vpn_object.create_vpn_server()
@@ -3521,6 +3525,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
                 request = off_request.read()
             logger.info(f'Received request: {request}')
             offline_communicator(command=request)
+            sys.stdout.flush()
             sys.stdout.write('\r')
         elif os.path.isfile(automation_file):
             with open(automation_file) as read_file:
@@ -3582,6 +3587,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
                     continue
                 exec_task = exec_task.translate(str.maketrans('', '', punctuation))  # Remove punctuations from the str
                 offline_communicator(command=exec_task, respond=False)
+                sys.stdout.flush()
                 sys.stdout.write('\r')
                 automation_data[automation_time]['status'] = True
                 rewrite_automator(filename=automation_file, json_object=automation_data)

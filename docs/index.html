@@ -445,7 +445,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.device_selector">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">device_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span></span></span><a class="headerlink" href="#jarvis.device_selector" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">device_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.device_selector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selects a device using the received input string.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -462,7 +462,7 @@
 <dd class="field-even"><p>Returns the selected device from the class <code class="docutils literal notranslate"><span class="pre">AppleDevice</span></code></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>AppleDevice or None</p>
+<dd class="field-odd"><p>AppleDevice</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1541,7 +1541,7 @@ A condition below assumes two different words as two places but not including tw
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.threat_notify">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">threat_notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_extn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.threat_notify" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">threat_notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_extn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.threat_notify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends an SMS and email notification in case of a threat.</p>
 <p class="rubric">References</p>
 <p>Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> to send the SMS and email.</p>
@@ -3076,8 +3076,9 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="#">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Welcome to Jarvis’s documentation!</a></li>
 <li><a class="reference internal" href="#module-jarvis">Jarvis - Main Module</a></li>
 <li><a class="reference internal" href="#module-api.fast">Jarvis - API Handler</a></li>
@@ -3101,9 +3102,12 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
-  <h4>Next topic</h4>
-  <p class="topless"><a href="README.html"
-                        title="next chapter">Platform Supported</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="README.html"
+                          title="next chapter">Platform Supported</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -3143,7 +3147,7 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2021, Vignesh Sivanandha Rao.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
     </div>
   </body>
 </html>

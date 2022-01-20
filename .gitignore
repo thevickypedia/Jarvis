@@ -38,6 +38,7 @@ reminder
 
 # sphinx docs builder within doc_generator
 _build
+_static
 
 # file where meetings() data is written every 15 minutes
 meetings
