@@ -1,7 +1,14 @@
 Change Log
 ==========
 
-5.3.6 (01/10/2021)
+5.3.7 (01/19/2022)
+------------------
+- Flush screen output before carriage return
+- Upgrade sphinx version and update docs
+- Update dotenv module version
+- Update .gitignore
+
+5.3.6 (01/10/2022)
 ------------------
 - Use `vpn-server` from pypi package
 - Bump common packages to >= versions
