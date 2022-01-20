@@ -13,7 +13,7 @@ class EndpointFilter(Filter):
     """
 
     def filter(self, record: LogRecord) -> bool:
-        """Filter out logging at ``/docs`` from log streams.
+        """Filter out logging at ``/redoc`` from log streams.
 
         Args:
             record: ``LogRecord`` represents an event which is created every time something is logged.
@@ -22,7 +22,7 @@ class EndpointFilter(Filter):
             bool:
             False flag for the endpoint that needs to be filtered.
         """
-        return record.getMessage().find("/docs") == -1
+        return record.getMessage().find("/redoc") == -1
 
 
 class InvestmentFilter(Filter):
