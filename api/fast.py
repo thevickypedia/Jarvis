@@ -184,9 +184,9 @@ async def redirect_index() -> str:
 
     Returns:
         str:
-        Redirects the root endpoint ``/`` url to ``/docs``
+        Redirects the root endpoint ``/`` url to ``/redoc``
     """
-    return '/docs'
+    return '/redoc'
 
 
 @app.get('/status', include_in_schema=False)
