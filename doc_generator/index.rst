@@ -141,6 +141,21 @@ Logger
    :members:
    :undoc-members:
 
+SMS Notification
+================
+
+.. automodule:: helper_functions.notify
+   :members:
+   :undoc-members:
+
+Personal Cloud
+==============
+
+.. automodule:: helper_functions.personal_cloud
+   :members:
+   :undoc-members:
+   :exclude-members: HOME
+
 Robinhood Gatherer
 ==================
 

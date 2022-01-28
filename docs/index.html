@@ -123,89 +123,6 @@
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.PersonalCloud">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">PersonalCloud</span></span><a class="headerlink" href="#jarvis.PersonalCloud" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controller for <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">Personal Cloud</a>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PersonalCloud</span>
-</pre></div>
-</div>
-<p class="rubric">References</p>
-<p><a class="reference external" href="https://github.com/thevickypedia/personal_cloud/blob/main/README.md">PersonalCloud README.md</a></p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>PersonalCloud integration requires Admin previleages for the default <code class="docutils literal notranslate"><span class="pre">Terminal</span></code>.</p>
-<dl class="simple">
-<dt>Step 1:</dt><dd><ul class="simple">
-<li><p>macOS 10.14.* and higher - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Full Disk Access</p></li>
-<li><p>macOS 10.13.* and lower - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Accessibility</p></li>
-</ul>
-</dd>
-<dt>Step 2:</dt><dd><p>Unlock for admin privileges. Click on the “+” icon. Select Applications -&gt; Utilities -&gt; Terminal</p>
-</dd>
-</dl>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.PersonalCloud.delete_repo">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_repo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.PersonalCloud.delete_repo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Called during enable and disable to delete any existing bits for a clean start next time.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.PersonalCloud.disable">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.PersonalCloud.disable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Kills <a class="reference external" href="https://git.io/JchR5">authserver.py</a> and <a class="reference external" href="https://git.io/JchBu">ngrok.py</a> to stop hosting.</p>
-<p>This eliminates the hassle of passing args and handling threads.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.PersonalCloud.enable">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.PersonalCloud.enable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enables <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">personal cloud</a>.</p>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>Clones <code class="docutils literal notranslate"><span class="pre">personal_cloud</span></code> repo in a dedicated Terminal.</p></li>
-<li><p>Creates a virtual env and installs the requirements within it (ETA: ~20 seconds)</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">personal_cloud_host</span></code> env var is provided, Jarvis will mount the drive if connected to the device.</p></li>
-<li><p>Sets env vars required for the personal cloud.</p></li>
-<li><p>Generates random username and passphrase for login info.</p></li>
-<li><p>Triggers personal cloud using another Terminal session.</p></li>
-<li><p>Sends an SMS with <code class="docutils literal notranslate"><span class="pre">endpoint</span></code>, <code class="docutils literal notranslate"><span class="pre">username</span></code> and <code class="docutils literal notranslate"><span class="pre">password</span></code> to the <code class="docutils literal notranslate"><span class="pre">phone_number</span></code>.</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.PersonalCloud.get_port">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.PersonalCloud.get_port" title="Permalink to this definition">¶</a></dt>
-<dd><p>Chooses a PORT number dynamically that is not being used to ensure we don’t rely on a single port.</p>
-<p>Instead of binding to a specific port, <code class="docutils literal notranslate"><span class="pre">sock.bind(('',</span> <span class="pre">0))</span></code> is used to bind to 0.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>The port number chosen can be found using <code class="docutils literal notranslate"><span class="pre">sock.getsockname()[1]</span></code></p></li>
-<li><p>Passing it on to the slaves so that they can connect back.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sock</span></code> is the socket that was created, returned by socket.socket.</p></li>
-</ul>
-</div>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>Well-Known ports: 0 to 1023</p></li>
-<li><p>Registered ports: 1024 to 49151</p></li>
-<li><p>Dynamically available: 49152 to 65535</p></li>
-<li><p>The OS will then pick an available port.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Randomly chosen port number that is not in use.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.add_todo">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">add_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.add_todo" title="Permalink to this definition">¶</a></dt>
@@ -807,7 +724,7 @@ A condition below assumes two different words as two places but not including tw
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.initiate_background_threads">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiate_background_threads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.initiate_background_threads" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiate_background_threads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.initiate_background_threads" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiate background threads.</p>
 <dl class="simple">
 <dt>Methods</dt><dd><ul class="simple">
@@ -1079,25 +996,6 @@ A condition below assumes two different words as two places but not including tw
 <dt class="sig sig-object py" id="jarvis.notes">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">notes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.notes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Listens to the user and saves everything to a <code class="docutils literal notranslate"><span class="pre">notes.txt</span></code> file.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.notify">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.notify" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send text message through SMS gateway of destination number.</p>
-<p class="rubric">References</p>
-<p>Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> to send the SMS.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>user</strong> – Gmail username to authenticate SMTP lib.</p></li>
-<li><p><strong>password</strong> – Gmail password to authenticate SMTP lib.</p></li>
-<li><p><strong>number</strong> – Phone number stored as env var.</p></li>
-<li><p><strong>body</strong> – Content of the message.</p></li>
-<li><p><strong>subject</strong> – Takes subject as an optional argument.</p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -2700,6 +2598,114 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
+<section id="module-helper_functions.notify">
+<span id="sms-notification"></span><h1>SMS Notification<a class="headerlink" href="#module-helper_functions.notify" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="helper_functions.notify.notify">
+<span class="sig-prename descclassname"><span class="pre">helper_functions.notify.</span></span><span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.notify.notify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send text message through SMS gateway of destination number.</p>
+<p class="rubric">References</p>
+<p>Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> to send the SMS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user</strong> – Gmail username to authenticate SMTP lib.</p></li>
+<li><p><strong>password</strong> – Gmail password to authenticate SMTP lib.</p></li>
+<li><p><strong>number</strong> – Phone number stored as env var.</p></li>
+<li><p><strong>body</strong> – Content of the message.</p></li>
+<li><p><strong>subject</strong> – Takes subject as an optional argument.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-helper_functions.personal_cloud">
+<span id="personal-cloud"></span><h1>Personal Cloud<a class="headerlink" href="#module-helper_functions.personal_cloud" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="helper_functions.personal_cloud.PersonalCloud">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">helper_functions.personal_cloud.</span></span><span class="sig-name descname"><span class="pre">PersonalCloud</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gmail_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmail_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offline_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offline_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phone_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">home</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/Users/vicky'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.personal_cloud.PersonalCloud" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controller for <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">Personal Cloud</a>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PersonalCloud</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://github.com/thevickypedia/personal_cloud/blob/main/README.md">PersonalCloud README.md</a></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>PersonalCloud integration requires Admin previleages for the default <code class="docutils literal notranslate"><span class="pre">Terminal</span></code>.</p>
+<dl class="simple">
+<dt>Step 1:</dt><dd><ul class="simple">
+<li><p>macOS 10.14.* and higher - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Full Disk Access</p></li>
+<li><p>macOS 10.13.* and lower - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Accessibility</p></li>
+</ul>
+</dd>
+<dt>Step 2:</dt><dd><p>Unlock for admin privileges. Click on the “+” icon. Select Applications -&gt; Utilities -&gt; Terminal</p>
+</dd>
+</dl>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.personal_cloud.PersonalCloud.delete_repo">
+<span class="sig-name descname"><span class="pre">delete_repo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.personal_cloud.PersonalCloud.delete_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called during enable and disable to delete any existing bits for a clean start next time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.personal_cloud.PersonalCloud.disable">
+<span class="sig-name descname"><span class="pre">disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.personal_cloud.PersonalCloud.disable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kills <a class="reference external" href="https://git.io/JchR5">authserver.py</a> and <a class="reference external" href="https://git.io/JchBu">ngrok.py</a> to stop hosting.</p>
+<p>This eliminates the hassle of passing args and handling threads.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.personal_cloud.PersonalCloud.enable">
+<span class="sig-name descname"><span class="pre">enable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.personal_cloud.PersonalCloud.enable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enables <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">personal cloud</a>.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Clones <code class="docutils literal notranslate"><span class="pre">personal_cloud</span></code> repo in a dedicated Terminal.</p></li>
+<li><p>Creates a virtual env and installs the requirements within it (ETA: ~20 seconds)</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">personal_cloud_host</span></code> env var is provided, Jarvis will mount the drive if connected to the device.</p></li>
+<li><p>Sets env vars required for the personal cloud.</p></li>
+<li><p>Generates random username and passphrase for login info.</p></li>
+<li><p>Triggers personal cloud using another Terminal session.</p></li>
+<li><p>Sends an SMS with <code class="docutils literal notranslate"><span class="pre">endpoint</span></code>, <code class="docutils literal notranslate"><span class="pre">username</span></code> and <code class="docutils literal notranslate"><span class="pre">password</span></code> to the <code class="docutils literal notranslate"><span class="pre">phone_number</span></code>.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.personal_cloud.PersonalCloud.get_port">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#helper_functions.personal_cloud.PersonalCloud.get_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chooses a PORT number dynamically that is not being used to ensure we don’t rely on a single port.</p>
+<p>Instead of binding to a specific port, <code class="docutils literal notranslate"><span class="pre">sock.bind(('',</span> <span class="pre">0))</span></code> is used to bind to 0.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>The port number chosen can be found using <code class="docutils literal notranslate"><span class="pre">sock.getsockname()[1]</span></code></p></li>
+<li><p>Passing it on to the slaves so that they can connect back.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sock</span></code> is the socket that was created, returned by socket.socket.</p></li>
+</ul>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Well-Known ports: 0 to 1023</p></li>
+<li><p>Registered ports: 1024 to 49151</p></li>
+<li><p>Dynamically available: 49152 to 65535</p></li>
+<li><p>The OS will then pick an available port.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Randomly chosen port number that is not in use.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-helper_functions.robinhood">
 <span id="robinhood-gatherer"></span><h1>Robinhood Gatherer<a class="headerlink" href="#module-helper_functions.robinhood" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -3095,6 +3101,8 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 <li><a class="reference internal" href="#module-helper_functions.lights">Lights</a></li>
 <li><a class="reference internal" href="#module-helper_functions.ip_scanner">Local IP Scanner</a></li>
 <li><a class="reference internal" href="#module-helper_functions.logger">Logger</a></li>
+<li><a class="reference internal" href="#module-helper_functions.notify">SMS Notification</a></li>
+<li><a class="reference internal" href="#module-helper_functions.personal_cloud">Personal Cloud</a></li>
 <li><a class="reference internal" href="#module-helper_functions.robinhood">Robinhood Gatherer</a></li>
 <li><a class="reference internal" href="#module-helper_functions.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-helper_functions.tv_controls">TV Connector</a></li>

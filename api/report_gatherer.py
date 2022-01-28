@@ -142,6 +142,8 @@ class Investment:
             historic_results = historic_data['results']
             numbers = [round(float(close_price['close_price']), 2) for each_item in historic_results
                        for close_price in each_item['historicals']]
+            if not numbers:
+                return r1, r2
             raw_details = self.rh.get_quote(stock)
             stock_name = requests.get(raw_details['instrument']).json()['simple_name']
             price = round(float(raw_details['last_trade_price']), 2)

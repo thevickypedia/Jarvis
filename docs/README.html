@@ -127,25 +127,18 @@
 <h2>ENV Variables<a class="headerlink" href="#env-variables" title="Permalink to this headline">¶</a></h2>
 <p>Environment variables are loaded from a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file using the <code class="docutils literal notranslate"><span class="pre">python_dotenv</span></code> module.</p>
 <details>
-<summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary><section id="default-args">
-<h3>Default args<a class="headerlink" href="#default-args" title="Permalink to this headline">¶</a></h3>
-</section>
-<section id="offline-communicator-helper">
-<h3>- <a class="reference external" href="https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator">Offline communicator helper</a>:<a class="headerlink" href="#offline-communicator-helper" title="Permalink to this headline">¶</a></h3>
+<summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary><p><strong>Default args</strong>
+<strong><a class="reference external" href="https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator">Offline communicator helper</a>:</strong></p>
 <ul class="simple">
 <li><p><strong>offline_port</strong> - Port number to initiate offline communicator on. Defaults to <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>
 <li><p><strong>offline_phrase</strong> - Secure phrase to be used for authentication purpose. Defaults to <code class="docutils literal notranslate"><span class="pre">jarvis</span></code></p></li>
 </ul>
-</section>
-<section id="accurate-location-defaults-to-the-location-based-on-public-ip">
-<h3>- Accurate Location: (Defaults to the location based on <code class="docutils literal notranslate"><span class="pre">Public</span> <span class="pre">IP</span></code>)<a class="headerlink" href="#accurate-location-defaults-to-the-location-based-on-public-ip" title="Permalink to this headline">¶</a></h3>
+<p><strong>Accurate Location: (Defaults to the location based on <code class="docutils literal notranslate"><span class="pre">Public</span> <span class="pre">IP</span></code>)</strong></p>
 <ul class="simple">
 <li><p><strong>icloud_user</strong> - iCloud account username.</p></li>
 <li><p><strong>icloud_pass</strong> - iCloud account password.</p></li>
 </ul>
-</section>
-<section id="additional-args">
-<h3>Additional args<a class="headerlink" href="#additional-args" title="Permalink to this headline">¶</a></h3>
+<p><strong>Additional args</strong></p>
 <ul class="simple">
 <li><p><strong>git_user</strong> - GitHub Username</p></li>
 <li><p><strong>git_pass</strong> - GitHub Token</p></li>
@@ -165,22 +158,16 @@
 <li><p><strong>think_id</strong> - API Key from wolfram alpha.</p></li>
 <li><p><strong>root_password</strong> - System password for your <code class="docutils literal notranslate"><span class="pre">mac</span></code> to get the system vitals.</p></li>
 </ul>
-</section>
-<section id="args-for-personalcloud-integration">
-<h3>Args for <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">PersonalCloud</a> integration<a class="headerlink" href="#args-for-personalcloud-integration" title="Permalink to this headline">¶</a></h3>
+<p><strong>Args for <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">PersonalCloud</a> integration</strong></p>
 <ul class="simple">
 <li><p><strong>personal_cloud_host</strong> - Directory path which has to shared through the internet.</p></li>
 </ul>
-</section>
-<section id="args-to-control-tv-applies-only-for-lgwebos">
-<h3>Args to control TV - Applies only for <a class="reference external" href="https://en.wikipedia.org/wiki/WebOS">LGWebOS</a><a class="headerlink" href="#args-to-control-tv-applies-only-for-lgwebos" title="Permalink to this headline">¶</a></h3>
+<p><strong>Args to control TV</strong> - Applies only for <a class="reference external" href="https://en.wikipedia.org/wiki/WebOS">LGWebOS</a></p>
 <ul class="simple">
 <li><p><strong>tv_client_key</strong> - Client key to <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/tv_controls.py">control the TV</a> using <code class="docutils literal notranslate"><span class="pre">pywebostv</span></code> module.</p></li>
 <li><p><strong>tv_mac</strong> - Mac address of the TV which will be retrieved by the <code class="docutils literal notranslate"><span class="pre">arp</span></code> command but just in case.</p></li>
 </ul>
-</section>
-<section id="args-for-ip-scanner-applies-only-for-netgear-routers">
-<h3>Args for <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/ip_scanner.py">ip_scanner</a> - Applies only for <a class="reference external" href="https://github.com/MatMaul/pynetgear#supported-routers">Netgear routers</a><a class="headerlink" href="#args-for-ip-scanner-applies-only-for-netgear-routers" title="Permalink to this headline">¶</a></h3>
+<p><strong>Args for <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/ip_scanner.py">ip_scanner</a></strong> - Applies only for <a class="reference external" href="https://github.com/MatMaul/pynetgear#supported-routers">Netgear routers</a></p>
 <ul>
 <li><p><strong>router_pass</strong> - Router’s admin password to get the available devices using <code class="docutils literal notranslate"><span class="pre">pynetgear</span></code> module.</p>
 <blockquote>
@@ -189,9 +176,7 @@ Using the module makes it easier since the devices are already connected to the 
 </div></blockquote>
 </li>
 </ul>
-</section>
-<section id="args-for-offline-communicator">
-<h3>Args for <a class="reference external" href="https://thevickypedia.com/jarvisoffline">offline-communicator</a><a class="headerlink" href="#args-for-offline-communicator" title="Permalink to this headline">¶</a></h3>
+<p><strong>Args for <a class="reference external" href="https://thevickypedia.com/jarvisoffline">offline-communicator</a></strong></p>
 <blockquote>
 <div><p>Built for a personalized usage.</p>
 </div></blockquote>
@@ -199,7 +184,6 @@ Using the module makes it easier since the devices are already connected to the 
 <li><p><strong>ngrok_auth_key</strong> - Auth token from <a class="reference external" href="https://dashboard.ngrok.com/">ngrok</a> - Only used for <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code></p></li>
 </ul>
 </details></section>
-</section>
 <section id="automation-setup-optional">
 <h2>Automation Setup [Optional]<a class="headerlink" href="#automation-setup-optional" title="Permalink to this headline">¶</a></h2>
 <p>Executes pre-defined tasks at pre-defined times without any user interaction. Uses an <code class="docutils literal notranslate"><span class="pre">automation.json</span></code> file as source.</p>
@@ -293,17 +277,7 @@ features’ overview and demo videos.</p>
 <li><a class="reference internal" href="#reach-out">Reach Out</a></li>
 <li><a class="reference internal" href="#jarvis">Jarvis</a><ul>
 <li><a class="reference internal" href="#setup">Setup</a></li>
-<li><a class="reference internal" href="#env-variables">ENV Variables</a><ul>
-<li><a class="reference internal" href="#default-args">Default args</a></li>
-<li><a class="reference internal" href="#offline-communicator-helper">- Offline communicator helper:</a></li>
-<li><a class="reference internal" href="#accurate-location-defaults-to-the-location-based-on-public-ip">- Accurate Location: (Defaults to the location based on <code class="docutils literal notranslate"><span class="pre">Public</span> <span class="pre">IP</span></code>)</a></li>
-<li><a class="reference internal" href="#additional-args">Additional args</a></li>
-<li><a class="reference internal" href="#args-for-personalcloud-integration">Args for PersonalCloud integration</a></li>
-<li><a class="reference internal" href="#args-to-control-tv-applies-only-for-lgwebos">Args to control TV - Applies only for LGWebOS</a></li>
-<li><a class="reference internal" href="#args-for-ip-scanner-applies-only-for-netgear-routers">Args for ip_scanner - Applies only for Netgear routers</a></li>
-<li><a class="reference internal" href="#args-for-offline-communicator">Args for offline-communicator</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#env-variables">ENV Variables</a></li>
 <li><a class="reference internal" href="#automation-setup-optional">Automation Setup [Optional]</a></li>
 <li><a class="reference internal" href="#coding-standards">Coding Standards</a></li>
 <li><a class="reference internal" href="#linting">Linting</a></li>
