@@ -4,7 +4,6 @@ import random
 import re
 import sys
 from concurrent.futures import ThreadPoolExecutor
-from contextlib import closing
 from datetime import datetime, timedelta
 from difflib import SequenceMatcher
 from email import message_from_bytes
@@ -16,10 +15,9 @@ from multiprocessing.pool import ThreadPool
 from pathlib import Path
 from platform import platform
 from shutil import disk_usage
-from socket import (AF_INET, SO_REUSEADDR, SOCK_DGRAM, SOCK_STREAM, SOL_SOCKET,
-                    gethostbyname, gethostname, socket)
+from socket import AF_INET, SOCK_DGRAM, gethostbyname, gethostname, socket
 from ssl import create_default_context
-from string import ascii_letters, digits, punctuation
+from string import punctuation
 from struct import unpack_from
 from subprocess import PIPE, Popen, call, check_output, getoutput
 from threading import Thread, Timer
@@ -37,15 +35,12 @@ import requests
 import wikipedia as wiki
 import wordninja
 import yaml
-from aeosa.aem.aemsend import EventError
 from appscript import app as apple_script
-from appscript.reference import CommandError
 from dotenv import load_dotenv, set_key, unset_key
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
 from geopy.geocoders import Nominatim, options
 from gmailconnector.send_email import SendEmail
-from gmailconnector.send_sms import Messenger
 from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
 from holidays import CountryHoliday
@@ -86,6 +81,8 @@ from helper_functions.ip_scanner import LocalIPScan
 from helper_functions.keywords import Keywords
 from helper_functions.lights import MagicHomeApi
 from helper_functions.logger import logger
+from helper_functions.notify import notify
+from helper_functions.personal_cloud import PersonalCloud
 from helper_functions.preset_values import preset_values
 from helper_functions.robinhood import RobinhoodGatherer
 from helper_functions.temperature import Temperature
@@ -2069,32 +2066,6 @@ def github_controller(target: list) -> None:
         say(text=f"I found {len(target)} repositories sir! You may want to be more specific.")
 
 
-def notify(user: str, password: str, number: str, body: str, subject: str = None) -> None:
-    """Send text message through SMS gateway of destination number.
-
-    References:
-        Uses `gmail-connector <https://pypi.org/project/gmail-connector/>`__ to send the SMS.
-
-    Args:
-        user: Gmail username to authenticate SMTP lib.
-        password: Gmail password to authenticate SMTP lib.
-        number: Phone number stored as env var.
-        body: Content of the message.
-        subject: Takes subject as an optional argument.
-    """
-    if not any([phone_number, number]):
-        logger.error('No phone number was stored in env vars to trigger a notification.')
-        return
-    if not subject:
-        subject = "Message from Jarvis" if number == phone_number else "Jarvis::Message from Vignesh"
-    response = Messenger(gmail_user=user, gmail_pass=password, phone=number, subject=subject,
-                         message=body).send_sms()
-    if response.ok and response.status == 200:
-        logger.info('SMS notification has been sent.')
-    else:
-        logger.error(f'Unable to send SMS notification.\n{response.body}')
-
-
 def send_sms(phrase: str = None) -> None:
     """Sends a message to the number received.
 
@@ -3199,149 +3170,17 @@ def personal_cloud(phrase: str) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     phrase = phrase.lower()
+    pc_object = PersonalCloud()
     if 'enable' in phrase or 'initiate' in phrase or 'kick off' in phrase or \
             'start' in phrase:
-        Thread(target=PersonalCloud.enable).start()
+        Thread(target=pc_object.enable, args=[icloud_user]).start()
         say(text="Personal Cloud has been triggered sir! I will send the login details to your phone number "
                  "once the server is up and running.")
     elif 'disable' in phrase or 'stop' in phrase:
-        Thread(target=PersonalCloud.disable).start()
+        Thread(target=pc_object.disable).start()
         say(text=random.choice(ack))
     else:
         say(text="I didn't quite get that sir! Please tell me if I should enable or disable your server.")
-
-
-class PersonalCloud:
-    """Controller for `Personal Cloud <https://github.com/thevickypedia/personal_cloud>`__.
-
-    >>> PersonalCloud
-
-    References:
-        `PersonalCloud README.md <https://github.com/thevickypedia/personal_cloud/blob/main/README.md>`__
-
-    See Also:
-        PersonalCloud integration requires Admin previleages for the default ``Terminal``.
-
-        Step 1:
-            - macOS 10.14.* and higher - System Preferences -> Security & Privacy -> Privacy -> Full Disk Access
-            - macOS 10.13.* and lower - System Preferences -> Security & Privacy -> Privacy -> Accessibility
-        Step 2:
-            Unlock for admin privileges. Click on the "+" icon. Select Applications -> Utilities -> Terminal
-    """
-
-    @staticmethod
-    def get_port() -> int:
-        """Chooses a PORT number dynamically that is not being used to ensure we don't rely on a single port.
-
-        Instead of binding to a specific port, ``sock.bind(('', 0))`` is used to bind to 0.
-
-        See Also:
-            - The port number chosen can be found using ``sock.getsockname()[1]``
-            - Passing it on to the slaves so that they can connect back.
-            - ``sock`` is the socket that was created, returned by socket.socket.
-
-        Notes:
-            - Well-Known ports: 0 to 1023
-            - Registered ports: 1024 to 49151
-            - Dynamically available: 49152 to 65535
-            - The OS will then pick an available port.
-
-        Returns:
-            int:
-            Randomly chosen port number that is not in use.
-        """
-        with closing(socket(AF_INET, SOCK_STREAM)) as sock:
-            sock.bind(('', 0))
-            sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-            return sock.getsockname()[1]
-
-    @staticmethod
-    def delete_repo() -> None:
-        """Called during enable and disable to delete any existing bits for a clean start next time."""
-        os.system(f'rm -rf {home}/personal_cloud')  # delete repo for a fresh start
-
-    # noinspection PyUnresolvedReferences
-    @staticmethod
-    def enable() -> None:
-        """Enables `personal cloud <https://github.com/thevickypedia/personal_cloud>`__.
-
-        Notes:
-            - Clones ``personal_cloud`` repo in a dedicated Terminal.
-            - Creates a virtual env and installs the requirements within it (ETA: ~20 seconds)
-            - If ``personal_cloud_host`` env var is provided, Jarvis will mount the drive if connected to the device.
-            - Sets env vars required for the personal cloud.
-            - Generates random username and passphrase for login info.
-            - Triggers personal cloud using another Terminal session.
-            - Sends an SMS with ``endpoint``, ``username`` and ``password`` to the ``phone_number``.
-        """
-        personal_cloud.delete_repo()
-        initial_script = f"cd {home} && git clone -q https://github.com/thevickypedia/personal_cloud.git && " \
-                         f"cd personal_cloud && python3 -m venv venv && source venv/bin/activate && " \
-                         f"pip3 install -r requirements.txt"
-
-        try:
-            apple_script('Terminal').do_script(initial_script)
-        except (CommandError, EventError) as ps_error:
-            logger.error(ps_error)
-            notify(user=offline_user, password=offline_pass, number=phone_number,
-                   body="Sir! I was unable to trigger your personal cloud due to lack of permissions.\n"
-                        "Please check the log file.")
-            return
-
-        personal_cloud_port = personal_cloud.get_port()
-        personal_cloud_username = ''.join(random.choices(ascii_letters, k=10))
-        personal_cloud_password = ''.join(random.choices(ascii_letters + digits, k=10))
-        personal_cloud_host = f"'{os.environ.get('personal_cloud_host')}'"
-
-        # export PORT for both ngrok and exec scripts as they will be running in different Terminal sessions
-        ngrok_script = f"cd {home}/personal_cloud && export port={personal_cloud_port} && " \
-                       f"source venv/bin/activate && cd helper_functions && python3 ngrok.py"
-
-        exec_script = f"export host_path='{personal_cloud_host}'" if personal_cloud_host and \
-            os.path.isdir(personal_cloud_host) else ''
-        exec_script += f"export port={personal_cloud_port} && " \
-                       f"export username={personal_cloud_username} && " \
-                       f"export password={personal_cloud_password} && " \
-                       f"export gmail_user={gmail_user} && " \
-                       f"export gmail_pass={gmail_pass} && " \
-                       f"export recipient={icloud_user} && " \
-                       f"cd {home}/personal_cloud && source venv/bin/activate && python3 authserver.py"
-
-        cloned_path = f'{home}/personal_cloud'
-        while True:  # wait for the requirements to be installed after the repo was cloned
-            packages = [path.stem.split('-')[0] for path in Path(cloned_path).glob('**/site-packages/*')]
-            if packages and not [req for req in [pkg.partition('==')[0] for pkg in
-                                                 Path(f'{cloned_path}/requirements.txt').read_text().splitlines()] if
-                                 req not in packages]:
-                sleep(5)  # give some breathing time for indexing
-                apple_script('Terminal').do_script(exec_script)
-                apple_script('Terminal').do_script(ngrok_script)
-                break
-
-        while True:  # wait for the endpoint url (as file) to get generated within personal_cloud
-            if os.path.exists(f'{cloned_path}/helper_functions/url'):
-                with open(f'{cloned_path}/helper_functions/url', 'r') as file:
-                    url = file.read()  # commit # dfc37853dfe232e268843cbe53719bd9a09903c4 on personal_cloud
-                if url.startswith('http'):
-                    notify(user=offline_user, password=offline_pass, number=phone_number,
-                           body=f"URL: {url}\nUsername: {personal_cloud_username}\nPassword: {personal_cloud_password}")
-                else:
-                    notify(user=offline_user, password=offline_pass, number=phone_number,
-                           body="Unable to start ngrok! Please check the logs for more information.")
-                break
-
-    @staticmethod
-    def disable() -> None:
-        """Kills `authserver.py <https://git.io/JchR5>`__ and `ngrok.py <https://git.io/JchBu>`__ to stop hosting.
-
-        This eliminates the hassle of passing args and handling threads.
-        """
-        pid_check = check_output("ps -ef | grep 'authserver.py\\|ngrok.py'", shell=True)
-        pid_list = pid_check.decode('utf-8').split('\n')
-        for pid_info in pid_list:
-            if pid_info and 'Library' in pid_info and ('/bin/sh' not in pid_info or 'grep' not in pid_info):
-                os.system(f'kill -9 {pid_info.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
-        PersonalCloud.delete_repo()
 
 
 def vpn_server(phrase: str) -> None:
@@ -4133,7 +3972,7 @@ def starter() -> None:
         load_dotenv(dotenv_path='.env', verbose=True, override=True)  # loads the .env file
 
 
-def initiate_background_threads():
+def initiate_background_threads() -> None:
     """Initiate background threads.
 
     Methods

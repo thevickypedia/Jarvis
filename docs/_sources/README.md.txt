@@ -82,16 +82,16 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary>
 
-###### Default args
-###### - [Offline communicator helper](https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator):
+**Default args**
+**[Offline communicator helper](https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator):**
 - **offline_port** - Port number to initiate offline communicator on. Defaults to `4483`
 - **offline_phrase** - Secure phrase to be used for authentication purpose. Defaults to `jarvis`
 
-###### - Accurate Location: (Defaults to the location based on `Public IP`)
+**Accurate Location: (Defaults to the location based on `Public IP`)**
 - **icloud_user** - iCloud account username.
 - **icloud_pass** - iCloud account password.
 
-###### Additional args
+**Additional args**
 - **git_user** - GitHub Username
 - **git_pass** - GitHub Token
 - **weather_api** - API Key from [openweathermap](https://openweathermap.org/) 
@@ -110,19 +110,19 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 - **think_id** - API Key from wolfram alpha.
 - **root_password** - System password for your `mac` to get the system vitals.
 
-###### Args for [PersonalCloud](https://github.com/thevickypedia/personal_cloud) integration
+**Args for [PersonalCloud](https://github.com/thevickypedia/personal_cloud) integration**
 - **personal_cloud_host** - Directory path which has to shared through the internet.
 
-###### Args to control TV - Applies only for [LGWebOS](https://en.wikipedia.org/wiki/WebOS)
+**Args to control TV** - Applies only for [LGWebOS](https://en.wikipedia.org/wiki/WebOS)
 - **tv_client_key** - Client key to [control the TV](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/tv_controls.py) using `pywebostv` module.
 - **tv_mac** - Mac address of the TV which will be retrieved by the `arp` command but just in case.
 
-###### Args for [ip_scanner](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/ip_scanner.py) - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers)
+**Args for [ip_scanner](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/ip_scanner.py)** - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers)
 - **router_pass** - Router's admin password to get the available devices using `pynetgear` module.
      > Note that this may be done even without the module by simply scanning the whole network.
   > Using the module makes it easier since the devices are already connected to the router.
 
-###### Args for [offline-communicator](https://thevickypedia.com/jarvisoffline)
+**Args for [offline-communicator](https://thevickypedia.com/jarvisoffline)**
 > Built for a personalized usage.
 - **ngrok_auth_key** - Auth token from [ngrok](https://dashboard.ngrok.com/) - Only used for `offline_communicator`
 </details>
