@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.4.2 (01/30/2022)
+------------------
+- Move independent functions out of main module
+- Update README.md and docs
+
 5.4.1 (01/29/2022)
 ------------------
 - Update description of Jarvis API

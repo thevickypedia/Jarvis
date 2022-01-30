@@ -8,7 +8,7 @@ class LocalIPScan:
 
     """
 
-    def __init__(self, router_pass):
+    def __init__(self, router_pass: str):
         """Gets local host devices connected to the same network range.
 
         Args:

@@ -17,7 +17,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Platform Supported" href="README.html" /> 
+    <link rel="next" title="Jarvis" href="README.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -29,7 +29,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="README.html" title="Platform Supported"
+          <a href="README.html" title="Jarvis"
              accesskey="N">next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">Jarvis  documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Welcome to Jarvis’s documentation!</a></li> 
@@ -46,15 +46,7 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Read Me:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="README.html">Platform Supported</a></li>
-<li class="toctree-l1"><a class="reference internal" href="README.html#language-stats">Language Stats</a></li>
-<li class="toctree-l1"><a class="reference internal" href="README.html#repo-stats">Repo Stats</a></li>
-<li class="toctree-l1"><a class="reference internal" href="README.html#code-stats">Code Stats</a></li>
-<li class="toctree-l1"><a class="reference internal" href="README.html#deployments">Deployments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="README.html#activity">Activity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="README.html#development-and-maintenance">Development and Maintenance</a></li>
-<li class="toctree-l1"><a class="reference internal" href="README.html#reach-out">Reach Out</a></li>
-<li class="toctree-l1"><a class="reference internal" href="README.html#jarvis">Jarvis</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Jarvis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="README.html#setup">Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#env-variables">ENV Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#automation-setup-optional">Automation Setup [Optional]</a></li>
@@ -258,20 +250,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.celebrate">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">celebrate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.celebrate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to look if the current date is a holiday or a birthday.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A string of the event observed today.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.clear_logs">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">clear_logs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.clear_logs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deletes log files that were updated before 48 hours.</p>
@@ -377,30 +355,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.device_selector">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">device_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.device_selector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Selects a device using the received input string.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>Opens a html table with the index value and name of device.</p></li>
-<li><p>When chosen an index value, the device name will be returned.</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns the selected device from the class <code class="docutils literal notranslate"><span class="pre">AppleDevice</span></code></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>AppleDevice</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.directions">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">directions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_repeat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.directions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opens Google Maps for a route between starting and destination.</p>
@@ -454,57 +408,9 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.exit_message">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">exit_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.exit_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Variety of exit messages based on day of week and time of day.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A greeting bye message.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.exit_process">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">exit_process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.exit_process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function that holds the list of operations done upon exit.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.extract_nos">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">extract_nos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#jarvis.extract_nos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extracts number part from a string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input_</strong> – Takes string as an argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Float values.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.extract_str">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">extract_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.extract_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extracts strings from the received input.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input_</strong> – Takes a string as argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A string after removing special characters.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -523,54 +429,6 @@ A condition below assumes two different words as two places but not including tw
 <dt class="sig sig-object py" id="jarvis.flip_a_coin">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">flip_a_coin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.flip_a_coin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Says <code class="docutils literal notranslate"><span class="pre">heads</span></code> or <code class="docutils literal notranslate"><span class="pre">tails</span></code> from a random choice.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.format_nos">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">format_nos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.format_nos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes <code class="docutils literal notranslate"><span class="pre">.0</span></code> float values.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input_</strong> – Int if found, else returns the received float value.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Formatted integer.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.get_place_from_phrase">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">get_place_from_phrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.get_place_from_phrase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Looks for the name of a place in the phrase received.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase converted as an argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns the name of place if skimmed.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.get_ssid">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">get_ssid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.get_ssid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets SSID of the network connected.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Wi-Fi or Ethernet SSID.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -710,20 +568,6 @@ A condition below assumes two different words as two places but not including tw
 <li><p>If any speech is recognized or a face is detected, there will another thread triggered to send notifications.</p></li>
 <li><p>Notifications will be triggered only after 5 minutes of previous notification.</p></li>
 </ul>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.hosted_device_info">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">hosted_device_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#jarvis.hosted_device_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets basic information of the hosted device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A dictionary of key-value pairs with device type, operating system, os version.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>dict</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -899,26 +743,6 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lock_files">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">lock_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alarm_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reminder_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#jarvis.lock_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks for <code class="docutils literal notranslate"><span class="pre">*.lock</span></code> files within the <code class="docutils literal notranslate"><span class="pre">alarm</span></code> directory if present.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>alarm_files</strong> – Takes a boolean value to gather list of alarm lock files.</p></li>
-<li><p><strong>reminder_files</strong> – Takes a boolean value to gather list of reminder lock files.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of <code class="docutils literal notranslate"><span class="pre">*.lock</span></code> file names ignoring other hidden files.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.meaning">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meaning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.meaning" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets meaning for a word skimmed from the user statement using PyDictionary.</p>
@@ -927,12 +751,6 @@ A condition below assumes two different words as two places but not including tw
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.meeting_app_launcher">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meeting_app_launcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.meeting_app_launcher" title="Permalink to this definition">¶</a></dt>
-<dd><p>Launches either Calendar or Outlook application which is required to read meetings.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -953,25 +771,6 @@ A condition below assumes two different words as two places but not including tw
 <dt class="sig sig-object py" id="jarvis.meetings">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.meetings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controller for meetings.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.meetings_gatherer">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">meetings_gatherer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.meetings_gatherer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses <code class="docutils literal notranslate"><span class="pre">applescript</span></code> to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p>On success, returns a message saying which meeting is scheduled at what time.</p></li>
-<li><p>If no events, returns a message saying there are no events in the next 12 hours.</p></li>
-<li><p>On failure, returns a message saying Jarvis was unable to read calendar/outlook.</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1053,18 +852,6 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.offline_communicator_initiate">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">offline_communicator_initiate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.offline_communicator_initiate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Jarvis API and Ngrok for requests from external sources if they aren’t running already.</p>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">forever_ngrok.py</span></code> is a simple script that triggers ngrok connection in the port <code class="docutils literal notranslate"><span class="pre">4483</span></code>.</p></li>
-<li><p>The connection is tunneled through a public facing URL which is used to make <code class="docutils literal notranslate"><span class="pre">POST</span></code> requests to Jarvis API.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">uvicorn</span></code> command launches JarvisAPI <code class="docutils literal notranslate"><span class="pre">fast.py</span></code> using the same port <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>
-</ul>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.on_demand_offline_automation">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">on_demand_offline_automation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.on_demand_offline_automation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes a <code class="docutils literal notranslate"><span class="pre">POST</span></code> call to offline-communicator running on <code class="docutils literal notranslate"><span class="pre">localhost</span></code> to execute a said task.</p>
@@ -1077,20 +864,6 @@ A condition below assumes two different words as two places but not including tw
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.part_of_day">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">part_of_day</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.part_of_day" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the current hour to determine the part of day.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Morning, Afternoon, Evening or Night based on time of day.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1132,23 +905,6 @@ A condition below assumes two different words as two places but not including tw
 <dd class="field-odd"><p><strong>message</strong> – Takes the reminder message as an argument.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.remove_files">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">remove_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.remove_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function that deletes multiple files when called during exit operation.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<dl class="simple">
-<dt>Deletes:</dt><dd><ul class="simple">
-<li><p>all <code class="docutils literal notranslate"><span class="pre">.lock</span></code> files created for alarms and reminders.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">location.yaml</span></code> file, to recreate a new one next time around.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">meetings</span></code> file, to recreate a new one next time around.</p></li>
-</ul>
-</dd>
-</dl>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1309,23 +1065,6 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.size_converter">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">size_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">byte_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.size_converter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the current memory consumed and converts it to human friendly format.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>byte_size</strong> – Receives byte size as argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Converted understandable size.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.sleep_control">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">sleep_control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.sleep_control" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controls whether to stop listening or to put the host device on sleep.</p>
@@ -1388,12 +1127,6 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.stop_terminal">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">stop_terminal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.stop_terminal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses pid to kill terminals as terminals await user confirmation interrupting shutdown/restart.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.stopper">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">stopper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.stopper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the key of <code class="docutils literal notranslate"><span class="pre">STOPPER</span></code> flag to True.</p>
@@ -1408,7 +1141,7 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.system_info">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">system_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.system_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the system configuration.</p>
+<dd><p>Speaks the system information.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1442,51 +1175,6 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.terminator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">terminator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.terminator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.</p>
-<p>Using this, eliminates the hassle of forcing multiple threads to stop.</p>
-<p class="rubric">Examples</p>
-<ul class="simple">
-<li><p>os._exit(0)</p></li>
-<li><p>kill -15 <cite>PID</cite></p></li>
-</ul>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.threat_notify">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">threat_notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_extn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.threat_notify" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sends an SMS and email notification in case of a threat.</p>
-<p class="rubric">References</p>
-<p>Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> to send the SMS and email.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p></li>
-<li><p><strong>date_extn</strong> – Name of the attachment file which is the picture of the intruder.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.time_converter">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">time_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.time_converter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Modifies seconds to appropriate days/hours/minutes/seconds.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>seconds</strong> – Takes number of seconds as argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Seconds converted to days or hours or minutes or seconds.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.time_travel">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">time_travel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.time_travel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Triggered only from <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> to give a quick update on the user’s daily routine.</p>
@@ -1499,40 +1187,6 @@ A condition below assumes two different words as two places but not including tw
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>no_repeat</strong> – A placeholder flag switched during <code class="docutils literal notranslate"><span class="pre">recursion</span></code> so that, <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> doesn’t repeat himself.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.unrecognized_dumper">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">unrecognized_dumper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.unrecognized_dumper" title="Permalink to this definition">¶</a></dt>
-<dd><p>If none of the conditions are met, converted text is written to a yaml file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.vehicle">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">vehicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">car_email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#helper_functions.car_controller.Control" title="helper_functions.car_controller.Control"><span class="pre">helper_functions.car_controller.Control</span></a></span></span><a class="headerlink" href="#jarvis.vehicle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Establishes a connection with the car and returns an object to control the primary vehicle.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>car_email</strong> – Email to authenticate API.</p></li>
-<li><p><strong>car_pass</strong> – Password to authenticate API.</p></li>
-<li><p><strong>operation</strong> – Operation to be performed.</p></li>
-<li><p><strong>car_pin</strong> – Master PIN to perform operations.</p></li>
-<li><p><strong>temp</strong> – Temperature for climate control.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Control object to access the primary vehicle.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#helper_functions.car_controller.Control" title="helper_functions.car_controller.Control">Control</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1596,23 +1250,6 @@ A condition below assumes two different words as two places but not including tw
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.vpn_server_switch">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">vpn_server_switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.vpn_server_switch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Automator to <code class="docutils literal notranslate"><span class="pre">START</span></code> or <code class="docutils literal notranslate"><span class="pre">STOP</span></code> the VPN portal.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>operation</strong> – Takes <code class="docutils literal notranslate"><span class="pre">START</span></code> or <code class="docutils literal notranslate"><span class="pre">STOP</span></code> as an argument.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>Check Read Me in <a class="reference external" href="https://git.io/JzCbi">vpn-server</a> for more information.</p></li>
-</ul>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -2227,7 +1864,7 @@ name is specified, allow every event.</p>
 
 </section>
 <section id="module-helper_functions.car_connector">
-<span id="car-connector-module"></span><h1>Car - Connector Module<a class="headerlink" href="#module-helper_functions.car_connector" title="Permalink to this headline">¶</a></h1>
+<span id="car-connector"></span><h1>Car - Connector<a class="headerlink" href="#module-helper_functions.car_connector" title="Permalink to this headline">¶</a></h1>
 <p><strong>API Reference:</strong> <a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo">https://documenter.getpostman.com/view/6250319/RznBMzqo</a> for Jaguar LandRover InControl API.</p>
 <p><strong>Module Reference:</strong> <a class="reference external" href="https://github.com/ardevd/jlrpy">https://github.com/ardevd/jlrpy</a></p>
 <dl class="py class">
@@ -2365,7 +2002,7 @@ name is specified, allow every event.</p>
 
 </section>
 <section id="module-helper_functions.car_controller">
-<span id="car-controller-module"></span><h1>Car - Controller Module<a class="headerlink" href="#module-helper_functions.car_controller" title="Permalink to this headline">¶</a></h1>
+<span id="car-controller"></span><h1>Car - Controller<a class="headerlink" href="#module-helper_functions.car_controller" title="Permalink to this headline">¶</a></h1>
 <p><strong>API Reference:</strong> <a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo">https://documenter.getpostman.com/view/6250319/RznBMzqo</a> for Jaguar LandRover InControl API.</p>
 <p><strong>Module Reference:</strong> <a class="reference external" href="https://github.com/ardevd/jlrpy">https://github.com/ardevd/jlrpy</a></p>
 <dl class="py class">
@@ -2550,7 +2187,7 @@ name is specified, allow every event.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.car_controller.Control.enable_guardian_mode">
-<span class="sig-name descname"><span class="pre">enable_guardian_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1643588014</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.enable_guardian_mode" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">enable_guardian_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1643670627</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.enable_guardian_mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guardian Mode is a security feature that will generate alarms when vehicle interaction is detected.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2596,7 +2233,7 @@ name is specified, allow every event.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.car_controller.Control.enable_service_mode">
-<span class="sig-name descname"><span class="pre">enable_service_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1643588014</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.enable_service_mode" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">enable_service_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1643670627</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.enable_service_mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Service Mode will allow the vehicle to be serviced without InControl triggering a vehicle theft alarm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2616,7 +2253,7 @@ name is specified, allow every event.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helper_functions.car_controller.Control.enable_transport_mode">
-<span class="sig-name descname"><span class="pre">enable_transport_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1643588014</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.enable_transport_mode" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">enable_transport_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1643670627</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.enable_transport_mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allows the vehicle to be transported without InControl triggering a vehicle theft alarm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -3407,7 +3044,7 @@ Whites can have a value of None.</p>
 <span id="local-ip-scanner"></span><h1>Local IP Scanner<a class="headerlink" href="#module-helper_functions.ip_scanner" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="helper_functions.ip_scanner.LocalIPScan">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">helper_functions.ip_scanner.</span></span><span class="sig-name descname"><span class="pre">LocalIPScan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">router_pass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">helper_functions.ip_scanner.</span></span><span class="sig-name descname"><span class="pre">LocalIPScan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">router_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.ip_scanner.LocalIPScan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connector to scan devices in the same IP range using <code class="docutils literal notranslate"><span class="pre">Netgear</span> <span class="pre">API</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LocalIPScan</span>
 </pre></div>
@@ -3538,25 +3175,419 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
-<section id="module-helper_functions.notify">
-<span id="sms-notification"></span><h1>SMS Notification<a class="headerlink" href="#module-helper_functions.notify" title="Permalink to this headline">¶</a></h1>
+<section id="module-helper_functions.meetings_helper">
+<span id="meetings-helper"></span><h1>Meetings Helper<a class="headerlink" href="#module-helper_functions.meetings_helper" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="helper_functions.notify.notify">
-<span class="sig-prename descclassname"><span class="pre">helper_functions.notify.</span></span><span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.notify.notify" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send text message through SMS gateway of destination number.</p>
-<p class="rubric">References</p>
-<p>Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> to send the SMS.</p>
+<dt class="sig sig-object py" id="helper_functions.meetings_helper.meeting_app_launcher">
+<span class="sig-prename descclassname"><span class="pre">helper_functions.meetings_helper.</span></span><span class="sig-name descname"><span class="pre">meeting_app_launcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.meetings_helper.meeting_app_launcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launches either Calendar or Outlook application which is required to read meetings.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="helper_functions.meetings_helper.meetings_gatherer">
+<span class="sig-prename descclassname"><span class="pre">helper_functions.meetings_helper.</span></span><span class="sig-name descname"><span class="pre">meetings_gatherer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">logging.Logger</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.meetings_helper.meetings_gatherer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses <code class="docutils literal notranslate"><span class="pre">applescript</span></code> to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>On success, returns a message saying which meeting is scheduled at what time.</p></li>
+<li><p>If no events, returns a message saying there are no events in the next 12 hours.</p></li>
+<li><p>On failure, returns a message saying Jarvis was unable to read calendar/outlook.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-helper_functions.modules">
+<span id="modules"></span><h1>Modules<a class="headerlink" href="#module-helper_functions.modules" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">helper_functions.modules.</span></span><span class="sig-name descname"><span class="pre">Helper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">logging.Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.modules.Helper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for methods that support functions within Jarvis.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Helper</span>
+</pre></div>
+</div>
+<p>Instantiates the <code class="docutils literal notranslate"><span class="pre">Helper</span></code> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>logger</strong> – Logger module.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.celebrate">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">celebrate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.celebrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to look if the current date is a holiday or a birthday.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A string of the event observed today.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.device_selector">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">device_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">icloud_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icloud_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.device_selector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects a device using the received input string.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Opens a html table with the index value and name of device.</p></li>
+<li><p>When chosen an index value, the device name will be returned.</p></li>
+</ul>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user</strong> – Gmail username to authenticate SMTP lib.</p></li>
-<li><p><strong>password</strong> – Gmail password to authenticate SMTP lib.</p></li>
-<li><p><strong>number</strong> – Phone number stored as env var.</p></li>
-<li><p><strong>body</strong> – Content of the message.</p></li>
-<li><p><strong>subject</strong> – Takes subject as an optional argument.</p></li>
+<li><p><strong>icloud_user</strong> – Username for Apple iCloud account.</p></li>
+<li><p><strong>icloud_pass</strong> – Password for Apple iCloud account.</p></li>
+<li><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the selected device from the class <code class="docutils literal notranslate"><span class="pre">AppleDevice</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>AppleDevice</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.exit_message">
+<span class="sig-name descname"><span class="pre">exit_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.exit_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Variety of exit messages based on day of week and time of day.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A greeting bye message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.extract_nos">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_nos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.extract_nos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts number part from a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_</strong> – Takes string as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Float values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.extract_str">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.extract_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts strings from the received input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_</strong> – Takes a string as argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A string after removing special characters.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.format_nos">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_nos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.format_nos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes <code class="docutils literal notranslate"><span class="pre">.0</span></code> float values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_</strong> – Int if found, else returns the received float value.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Formatted integer.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.get_place_from_phrase">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_place_from_phrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.get_place_from_phrase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Looks for the name of a place in the phrase received.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase converted as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the name of place if skimmed.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.get_ssid">
+<span class="sig-name descname"><span class="pre">get_ssid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.get_ssid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets SSID of the network connected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Wi-Fi or Ethernet SSID.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.hosted_device_info">
+<span class="sig-name descname"><span class="pre">hosted_device_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.hosted_device_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets basic information of the hosted device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of key-value pairs with device type, operating system, os version.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.lock_files">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lock_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alarm_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reminder_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.lock_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for <code class="docutils literal notranslate"><span class="pre">*.lock</span></code> files within the <code class="docutils literal notranslate"><span class="pre">alarm</span></code> directory if present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alarm_files</strong> – Takes a boolean value to gather list of alarm lock files.</p></li>
+<li><p><strong>reminder_files</strong> – Takes a boolean value to gather list of reminder lock files.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of <code class="docutils literal notranslate"><span class="pre">*.lock</span></code> file names ignoring other hidden files.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.offline_communicator_initiate">
+<span class="sig-name descname"><span class="pre">offline_communicator_initiate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offline_host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offline_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">home</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.offline_communicator_initiate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates Jarvis API and Ngrok for requests from external sources if they aren’t running already.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">forever_ngrok.py</span></code> is a simple script that triggers ngrok connection in the port <code class="docutils literal notranslate"><span class="pre">4483</span></code>.</p></li>
+<li><p>The connection is tunneled through a public facing URL used to make <code class="docutils literal notranslate"><span class="pre">POST</span></code> requests to Jarvis API.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uvicorn</span></code> command launches JarvisAPI <code class="docutils literal notranslate"><span class="pre">fast.py</span></code> using the same port <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.part_of_day">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">part_of_day</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.part_of_day" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the current hour to determine the part of day.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Morning, Afternoon, Evening or Night based on time of day.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.remove_files">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.remove_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that deletes multiple files when called during exit operation.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<dl class="simple">
+<dt>Deletes:</dt><dd><ul class="simple">
+<li><p>all <code class="docutils literal notranslate"><span class="pre">.lock</span></code> files created for alarms and reminders.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">location.yaml</span></code> file, to recreate a new one next time around.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">meetings</span></code> file, to recreate a new one next time around.</p></li>
 </ul>
 </dd>
 </dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.size_converter">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">byte_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.size_converter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the current memory consumed and converts it to human friendly format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>byte_size</strong> – Receives byte size as argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Converted understandable size.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.stop_terminal">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_terminal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.stop_terminal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses pid to kill terminals as terminals await user confirmation interrupting shutdown/restart.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.system_info_gatherer">
+<span class="sig-name descname"><span class="pre">system_info_gatherer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.system_info_gatherer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the system configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A string with the message that has to be spoken.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.terminator">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">terminator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.terminator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.</p>
+<p>Using this, eliminates the hassle of forcing multiple threads to stop.</p>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li><p>os._exit(0)</p></li>
+<li><p>kill -15 <cite>PID</cite></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.threat_notify">
+<span class="sig-name descname"><span class="pre">threat_notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_extn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmail_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmail_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phone_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recipient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.threat_notify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends an SMS and email notification in case of a threat.</p>
+<p class="rubric">References</p>
+<p>Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> to send the SMS and email.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p></li>
+<li><p><strong>date_extn</strong> – Name of the attachment file which is the picture of the intruder.</p></li>
+<li><p><strong>gmail_user</strong> – Email address for the gmail account.</p></li>
+<li><p><strong>gmail_pass</strong> – Password of the gmail account.</p></li>
+<li><p><strong>phone_number</strong> – Phone number to send SMS.</p></li>
+<li><p><strong>recipient</strong> – Email address of the recipient.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.time_converter">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.time_converter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifies seconds to appropriate days/hours/minutes/seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>seconds</strong> – Takes number of seconds as argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Seconds converted to days or hours or minutes or seconds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.unrecognized_dumper">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unrecognized_dumper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.unrecognized_dumper" title="Permalink to this definition">¶</a></dt>
+<dd><p>If none of the conditions are met, converted text is written to a yaml file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.vehicle">
+<span class="sig-name descname"><span class="pre">vehicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">car_email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#helper_functions.car_controller.Control" title="helper_functions.car_controller.Control"><span class="pre">helper_functions.car_controller.Control</span></a></span></span><a class="headerlink" href="#helper_functions.modules.Helper.vehicle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Establishes a connection with the car and returns an object to control the primary vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>car_email</strong> – Email to authenticate API.</p></li>
+<li><p><strong>car_pass</strong> – Password to authenticate API.</p></li>
+<li><p><strong>operation</strong> – Operation to be performed.</p></li>
+<li><p><strong>car_pin</strong> – Master PIN to perform operations.</p></li>
+<li><p><strong>temp</strong> – Temperature for climate control.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Control object to access the primary vehicle.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#helper_functions.car_controller.Control" title="helper_functions.car_controller.Control">Control</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.vpn_checker">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vpn_checker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.vpn_checker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses simple check on network id to see if it is connected to local host or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Private IP address of host machine.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.modules.Helper.vpn_server_switch">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vpn_server_switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phone_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recipient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.modules.Helper.vpn_server_switch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automator to <code class="docutils literal notranslate"><span class="pre">START</span></code> or <code class="docutils literal notranslate"><span class="pre">STOP</span></code> the VPN portal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operation</strong> – Takes <code class="docutils literal notranslate"><span class="pre">START</span></code> or <code class="docutils literal notranslate"><span class="pre">STOP</span></code> as an argument.</p></li>
+<li><p><strong>phone_number</strong> – Phone number to which the notification has to be sent.</p></li>
+<li><p><strong>recipient</strong> – Email address to which the notification has to be sent.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Check Read Me in <a class="reference external" href="https://git.io/JzCbi">vpn-server</a> for more information.</p></li>
+</ul>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -3646,6 +3677,10 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
+<section id="module-restart">
+<span id="restart"></span><h1>Restart<a class="headerlink" href="#module-restart" title="Permalink to this headline">¶</a></h1>
+<p>This is a basic query to start Jarvis after 5 seconds triggered by the <code class="docutils literal notranslate"><span class="pre">restart()</span></code> function in main module.</p>
+</section>
 <section id="module-helper_functions.robinhood">
 <span id="robinhood-gatherer"></span><h1>Robinhood Gatherer<a class="headerlink" href="#module-helper_functions.robinhood" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -3669,6 +3704,28 @@ Whites can have a value of None.</p>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-helper_functions.notify">
+<span id="sms-notification"></span><h1>SMS Notification<a class="headerlink" href="#module-helper_functions.notify" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="helper_functions.notify.notify">
+<span class="sig-prename descclassname"><span class="pre">helper_functions.notify.</span></span><span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.notify.notify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send text message through SMS gateway of destination number.</p>
+<p class="rubric">References</p>
+<p>Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> to send the SMS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user</strong> – Gmail username to authenticate SMTP lib.</p></li>
+<li><p><strong>password</strong> – Gmail password to authenticate SMTP lib.</p></li>
+<li><p><strong>number</strong> – Phone number stored as env var.</p></li>
+<li><p><strong>body</strong> – Content of the message.</p></li>
+<li><p><strong>subject</strong> – Takes subject as an optional argument.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -4002,9 +4059,8 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 </dd></dl>
 
 </section>
-<section id="module-restart">
-<span id="restart"></span><h1>Restart<a class="headerlink" href="#module-restart" title="Permalink to this headline">¶</a></h1>
-<p>This is a basic query to start Jarvis after 5 seconds triggered by the <code class="docutils literal notranslate"><span class="pre">restart()</span></code> function in main module.</p>
+<section id="vpn-handler">
+<h1>VPN Handler<a class="headerlink" href="#vpn-handler" title="Permalink to this headline">¶</a></h1>
 </section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
@@ -4034,8 +4090,8 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 <li><a class="reference internal" href="#jarvis-api-models">Jarvis - API Models</a></li>
 <li><a class="reference internal" href="#module-api.report_gatherer">Jarvis - API Robinhood</a></li>
 <li><a class="reference internal" href="#jarvis-api-robinhood-helper">Jarvis - API Robinhood Helper</a></li>
-<li><a class="reference internal" href="#module-helper_functions.car_connector">Car - Connector Module</a></li>
-<li><a class="reference internal" href="#module-helper_functions.car_controller">Car - Controller Module</a></li>
+<li><a class="reference internal" href="#module-helper_functions.car_connector">Car - Connector</a></li>
+<li><a class="reference internal" href="#module-helper_functions.car_controller">Car - Controller</a></li>
 <li><a class="reference internal" href="#module-helper_functions.conversation">Conversation</a></li>
 <li><a class="reference internal" href="#module-helper_functions.database">Database</a></li>
 <li><a class="reference internal" href="#module-helper_functions.facial_recognition">Face Recognition</a></li>
@@ -4043,12 +4099,15 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 <li><a class="reference internal" href="#module-helper_functions.lights">Lights</a></li>
 <li><a class="reference internal" href="#module-helper_functions.ip_scanner">Local IP Scanner</a></li>
 <li><a class="reference internal" href="#module-helper_functions.logger">Logger</a></li>
-<li><a class="reference internal" href="#module-helper_functions.notify">SMS Notification</a></li>
+<li><a class="reference internal" href="#module-helper_functions.meetings_helper">Meetings Helper</a></li>
+<li><a class="reference internal" href="#module-helper_functions.modules">Modules</a></li>
 <li><a class="reference internal" href="#module-helper_functions.personal_cloud">Personal Cloud</a></li>
+<li><a class="reference internal" href="#module-restart">Restart</a></li>
 <li><a class="reference internal" href="#module-helper_functions.robinhood">Robinhood Gatherer</a></li>
+<li><a class="reference internal" href="#module-helper_functions.notify">SMS Notification</a></li>
 <li><a class="reference internal" href="#module-helper_functions.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-helper_functions.tv_controls">TV Connector</a></li>
-<li><a class="reference internal" href="#module-restart">Restart</a></li>
+<li><a class="reference internal" href="#vpn-handler">VPN Handler</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
@@ -4056,7 +4115,7 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
   <div>
     <h4>Next topic</h4>
     <p class="topless"><a href="README.html"
-                          title="next chapter">Platform Supported</a></p>
+                          title="next chapter">Jarvis</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
@@ -4089,7 +4148,7 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="README.html" title="Platform Supported"
+          <a href="README.html" title="Jarvis"
              >next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">Jarvis  documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Welcome to Jarvis’s documentation!</a></li> 
