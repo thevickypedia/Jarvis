@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+5.4.1 (01/29/2022)
+------------------
+- Update description of Jarvis API
+
 5.4.0 (01/29/2022)
 ------------------
 - FEATURE::Jarvis can now control a Jaguar or LandRover

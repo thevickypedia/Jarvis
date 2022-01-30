@@ -50,7 +50,9 @@ serve_file = 'robinhood.html'
 
 app = FastAPI(
     title="Jarvis API",
-    description="API to interact with Jarvis",
+    description="Handles offline communication with **Jarvis** and generates a one time auth token for **Robinhood**."
+                "\n\n"
+                "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)",
     version="v1.0"
 )
 
@@ -180,7 +182,7 @@ async def stop_robinhood() -> None:
 
 @app.get('/', response_class=RedirectResponse, include_in_schema=False)
 async def redirect_index() -> str:
-    """Redirect to documents.
+    """Redirect to docs in ``read-only`` mode.
 
     Returns:
         str:
@@ -300,7 +302,7 @@ async def robinhood(token: str = None) -> HTMLResponse:
         Renders the html page.
 
     See Also:
-        - This endpoint is secured behind two factor authentication.
+        - This endpoint is secured behind two-factor authentication.
         - Initial check is done by the function robinhood_auth behind the path "/robinhood-authenticate"
         - Once the auth succeeds, a one-time usable hashed-uuid is generated and stored as an environment variable.
         - This UUID is sent as response to the API endpoint behind ngrok tunnel.
