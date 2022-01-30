@@ -38,7 +38,7 @@ config.dictConfig(LogConfig().dict())
 offline_host = gethostbyname('localhost')
 offline_port = int(os.environ.get('offline_port', 4483))
 offline_phrase = os.environ.get('offline_phrase', 'jarvis')
-robinhood_auth = os.environ.get('robinhood_auth')
+robinhood_auth = os.environ.get('robinhood_auth', 'robinhood')
 
 offline_compatible = offline_compatible()
 

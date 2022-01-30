@@ -109,6 +109,8 @@ class Keywords:
 
     personal_cloud = ['personal cloud', 'private cloud', 'personal server', 'private server']
 
+    car = ['car', 'vehicle']
+
     ok = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
 
     restart_control = ['restart', 'reboot']

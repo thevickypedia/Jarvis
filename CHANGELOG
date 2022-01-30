@@ -1,7 +1,19 @@
 Change Log
 ==========
 
-5.3.7 (01/19/2022)
+5.4.0 (01/29/2022)
+------------------
+- FEATURE::Jarvis can now control a Jaguar or LandRover
+- Move env vars to module specific variables
+- Update README.md and docs
+
+5.3.9 (01/27/2022)
+------------------
+- Split notifications and personal cloud to its own modules
+- Handle empty list on watchlist
+- Update README.md
+
+5.3.8 (01/20/2022)
 ------------------
 - Redirect API root to read-only page
 
