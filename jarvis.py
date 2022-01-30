@@ -25,6 +25,7 @@ from time import perf_counter, sleep, time
 from traceback import format_exc
 from typing import Tuple, Union
 from unicodedata import normalize
+from urllib.error import HTTPError
 from urllib.request import urlopen
 from webbrowser import open as web_open
 
@@ -74,6 +75,8 @@ from wikipedia.exceptions import DisambiguationError, PageError
 from wolframalpha import Client as Think
 
 from api.controller import offline_compatible
+from helper_functions.car_connector import Connect
+from helper_functions.car_controller import Control
 from helper_functions.conversation import Conversation
 from helper_functions.database import TASKS_DB, Database
 from helper_functions.facial_recognition import Face
@@ -255,6 +258,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         bool:
         Boolean True only when asked to sleep for conditioned sleep message.
     """
+    conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
     logger.info(f'Request: {converted}')
     converted_lower = converted.lower()
     todo_checks = ['to do', 'to-do', 'todo']
@@ -323,6 +327,9 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     elif any(word in converted_lower for word in keywords.distance) and \
             not any(word in converted_lower for word in keywords.avoid):
         distance(phrase=converted)
+
+    elif any(word in converted_lower for word in keywords.car):
+        car(phrase=converted_lower)
 
     elif any(word in converted_lower for word in conversation.form):
         say(text="I am a program, I'm without form.")
@@ -748,8 +755,8 @@ def weather(phrase: str = None) -> None:
         city, state = location_info['city'], location_info['state']
         lat = current_lat
         lon = current_lon
-    api_endpoint = "https://api.openweathermap.org/data/2.5/"
-    weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={weather_api}'
+    weather_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,' \
+                  f'hourly&appid={weather_api}'
     r = urlopen(weather_url)  # sends request to the url created
     response = json.loads(r.read())  # loads the response in a json
 
@@ -835,8 +842,8 @@ def weather_condition(msg: str, place: str = None) -> None:
         city, state, = location_info['city'], location_info['state']
         lat = current_lat
         lon = current_lon
-    api_endpoint = "https://api.openweathermap.org/data/2.5/"
-    weather_url = f'{api_endpoint}onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={weather_api}'
+    weather_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,' \
+                  f'hourly&appid={weather_api}'
     r = urlopen(weather_url)  # sends request to the url created
     response = json.loads(r.read())  # loads the response in a json
     weather_location = f'{city} {state}' if city and state else place
@@ -953,7 +960,7 @@ def news(news_source: str = 'fox') -> None:
     Args:
         news_source: Source from where the news has to be fetched. Defaults to ``fox``.
     """
-    if not news_api:
+    if not (news_api := os.environ.get('news_api')):
         no_env_vars()
         return
 
@@ -1023,6 +1030,10 @@ def apps(phrase: str) -> None:
 
 def robinhood() -> None:
     """Gets investment details from robinhood API."""
+    robinhood_user = os.environ.get('robinhood_user')
+    robinhood_pass = os.environ.get('robinhood_pass')
+    robinhood_qr = os.environ.get('robinhood_qr')
+
     if not all([robinhood_user, robinhood_pass, robinhood_qr]):
         no_env_vars()
         return
@@ -1128,7 +1139,7 @@ def locate(phrase: str, no_repeat: bool = False) -> None:
                 device_model = stat['deviceDisplayName']
                 phone_name = stat['name']
                 say(text=f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
-            if icloud_recovery:
+            if icloud_recovery := os.environ.get('icloud_recovery'):
                 say(text="I can also enable lost mode. Would you like to do it?", run=True)
                 phrase_lost = listener(timeout=3, phrase_limit=3)
                 if any(word in phrase_lost.lower() for word in keywords.ok):
@@ -1909,7 +1920,7 @@ def google_maps(query: str) -> bool:
         bool:
         Boolean True if Google's maps API is unable to fetch consumable results.
     """
-    if not maps_api:
+    if not (maps_api := os.environ.get('maps_api')):
         return False
 
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
@@ -2003,6 +2014,8 @@ def github(phrase: str):
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
+    git_user = os.environ.get('git_user')
+    git_pass = os.environ.get('git_pass')
     if not all([git_user, git_pass]):
         no_env_vars()
         return
@@ -2111,6 +2124,7 @@ def television(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
+    tv_client_key = os.environ.get('tv_client_key')
     if not all([tv_ip, tv_mac, tv_client_key]):
         no_env_vars()
         return
@@ -2246,7 +2260,7 @@ def alpha(text: str) -> bool:
     References:
         `Error 1000 <https://products.wolframalpha.com/show-steps-api/documentation/#:~:text=(Error%201000)>`__
     """
-    if not think_id:
+    if not (think_id := os.environ.get('think_id')):
         return False
     alpha_client = Think(app_id=think_id)
     # noinspection PyBroadException
@@ -2746,7 +2760,7 @@ def celebrate() -> str:
         return in_holidays
     elif us_holidays and 'Observed' not in us_holidays:
         return us_holidays
-    elif birthday and today == birthday:
+    elif (birthday := os.environ.get('birthday')) and today == birthday:
         return 'Birthday'
 
 
@@ -2886,7 +2900,7 @@ def threat_notify(converted: str, date_extn: Union[str, None]) -> None:
     if date_extn:
         attachment_ = f'threat/{date_extn}.jpg'
         response_ = SendEmail(gmail_user=gmail_user, gmail_pass=gmail_pass,
-                              recipient=robinhood_user, subject=title_, body=body_, attachment=attachment_).send_email()
+                              recipient=icloud_user, subject=title_, body=body_, attachment=attachment_).send_email()
         if response_.ok:
             logger.info('Email has been sent!')
         else:
@@ -3081,7 +3095,7 @@ def system_vitals() -> None:
         - Jarvis will suggest a reboot if the system uptime is more than 2 days.
         - If confirmed, invokes `restart <https://thevickypedia.github.io/Jarvis/#jarvis.restart>`__ function.
     """
-    if not root_password:
+    if not (root_password := os.environ.get('root_password')):
         say(text="You haven't provided a root password for me to read system vitals sir! "
                  "Add the root password as an environment variable for me to read.")
         return
@@ -3214,9 +3228,11 @@ def vpn_server_switch(operation: str) -> None:
         - Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
     """
     os.environ['VPN_LIVE'] = 'True'
-    vpn_object = VPNServer(vpn_username=os.environ.get('VPN_USERNAME'), vpn_password=os.environ.get('VPN_PASSWORD'),
-                           gmail_user=offline_user, gmail_pass=offline_pass, phone=phone_number, recipient=icloud_user,
-                           log='FILE')
+    vpn_object = VPNServer(vpn_username=os.environ.get('vpn_username', os.environ.get('USER', 'openvpn')),
+                           vpn_password=os.environ.get('vpn_password', 'aws_vpn_2021'), log='FILE',
+                           gmail_user=os.environ.get('offline_user', os.environ.get('gmail_user')),
+                           gmail_pass=os.environ.get('offline_pass', os.environ.get('gmail_pass')),
+                           phone=phone_number, recipient=icloud_user)
     if operation == 'START':
         vpn_object.create_vpn_server()
     elif operation == 'STOP':
@@ -3315,7 +3331,7 @@ def on_demand_offline_automation(task: str) -> bool:
     }
 
     data = {
-        'phrase': offline_phrase,
+        'phrase': os.environ.get('offline_phrase', 'jarvis'),
         'command': task
     }
 
@@ -3356,6 +3372,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
         - The status for all automations can be set to either ``true`` or ``false``.
         - Jarvis will swap these flags as necessary, so that the execution doesn't repeat more than once in a minute.
     """
+    offline_list = offline_compatible()
     start_1 = start_2 = time()
     while True:
         if os.path.isfile('offline_request'):
@@ -3495,6 +3512,120 @@ def meeting_file_writer() -> None:
     if data.startswith('You'):
         with open('meetings', 'w') as gatherer:
             gatherer.write(data)
+
+
+def vehicle(car_email, car_pass, car_pin, operation: str, temp: int = None) -> Control:
+    """Establishes a connection with the car and returns an object to control the primary vehicle.
+
+    Args:
+        car_email: Email to authenticate API.
+        car_pass: Password to authenticate API.
+        operation: Operation to be performed.
+        car_pin: Master PIN to perform operations.
+        temp: Temperature for climate control.
+
+    Returns:
+        Control:
+        Control object to access the primary vehicle.
+    """
+    try:
+        control = Connect(username=car_email, password=car_pass, logger=logger).primary_vehicle
+        if operation == 'LOCK':
+            control.lock(pin=car_pin)
+        elif operation == 'UNLOCK':
+            control.unlock(pin=car_pin)
+        elif operation == 'START':
+            control.remote_engine_start(pin=car_pin, target_value=temp)
+        elif operation == 'STOP':
+            control.remote_engine_stop(pin=car_pin)
+        elif operation == 'SECURE':
+            control.enable_guardian_mode(pin=car_pin)
+        return os.environ.get('car_name', control.get_attributes().get('vehicleBrand', 'car'))
+    except HTTPError as error:
+        logger.error(error)
+
+
+def car(phrase: str) -> None:
+    """Controls the car to lock, unlock or remote start.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+
+    See Also:
+        API climate controls: 31 is LO, 57 is HOT
+        Car Climate controls: 58 is LO, 84 is HOT
+    """
+    car_email = os.environ.get('car_email')
+    car_pass = os.environ.get('car_pass')
+    car_pin = os.environ.get('car_pin')
+    if not all([car_email, car_pass, car_pin]):
+        no_env_vars()
+        return
+
+    disconnected = "I wasn't able to connect your car sir! Please check your environment variables and subscription " \
+                   "to connect your car."
+
+    if 'start' in phrase or 'set' in phrase or 'turn on' in phrase:
+        if climate := extract_nos(input_=phrase):
+            climate = int(climate)
+            if climate > 84:
+                target_temp = 57  # 83°F is the highest available temperature
+                climate = 83
+            elif climate < 58:
+                target_temp = 31  # 57°F is the lowest available temperature
+                climate = 57
+            else:
+                target_temp = climate - 26
+            extras = f'The climate setting has been configured to {climate}°F'
+        elif 'high' in phrase or 'highest' in phrase:
+            target_temp = 57
+            extras = f'The climate setting has been configured to {target_temp + 26}°F'
+        elif 'low' in phrase or 'lowest' in phrase:
+            target_temp = 31
+            extras = f'The climate setting has been configured to {target_temp + 26}°F'
+        else:
+            climate = int(round(temperature.k2f(arg=json.loads(urlopen(
+                url=f'https://api.openweathermap.org/data/2.5/onecall?lat={current_lat}&lon={current_lon}&exclude='
+                    f'minutely,hourly&appid={weather_api}'
+            ).read())['current']['feels_like']), 2))
+
+            if climate < 55:
+                target_temp = 57  # 83°F will be target temperature (highest)
+            elif climate > 75:
+                target_temp = 31  # 57°F will be target temperature (highest)
+            else:
+                target_temp = 38  # 64°F will be target temperature (average)
+
+            extras = f"The current temperature is {climate}°F, so I've configured the climate setting " \
+                     f"to {target_temp + 26}°F"
+
+        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='START', temp=target_temp,
+                               car_pin=car_pin):
+            say(text=f'Your {car_name} has been started sir. {extras}')
+        else:
+            say(text=disconnected)
+    elif 'turn off' in phrase or 'stop' in phrase:
+        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='STOP', car_pin=car_pin):
+            say(text=f'Your {car_name} has been turned off sir!')
+        else:
+            say(text=disconnected)
+    elif 'secure' in phrase:
+        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='SECURE', car_pin=car_pin):
+            say(text=f'Guardian mode has been enabled sir! Your {car_name} is now secure.')
+        else:
+            say(text=disconnected)
+    elif 'unlock' in phrase:
+        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='UNLOCK', car_pin=car_pin):
+            say(text=f'Your {car_name} has been unlocked sir!')
+        else:
+            say(text=disconnected)
+    elif 'lock' in phrase:
+        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='LOCK', car_pin=car_pin):
+            say(text=f'Your {car_name} has been locked sir!')
+        else:
+            say(text=disconnected)
+    else:
+        say(text="I didn't quite get that sir! What do you want me to do to your car?")
 
 
 class Activator:
@@ -3713,7 +3844,8 @@ def extract_nos(input_: str) -> float:
         float:
         Float values.
     """
-    return float('.'.join(re.findall(r"\d+", input_)))
+    if value := re.findall(r"\d+", input_):
+        return float('.'.join(value))
 
 
 def format_nos(input_: float) -> int:
@@ -4004,41 +4136,24 @@ if __name__ == '__main__':
     speaker = pyttsx3.init()  # initiates speaker
     recognizer = Recognizer()  # initiates recognizer that uses google's translation
     keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
-    conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
     database = Database()  # initiates Database() for TO-DO items
     temperature = Temperature()  # initiates Temperature() for temperature conversions
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 10)  # increases the recursion limit by 10 times
     home = os.path.expanduser('~')  # gets the path to current user profile
-    offline_list = offline_compatible()
 
     meeting_file = 'calendar.scpt'
-    offline_host = gethostbyname('localhost')
     starter()  # initiates crucial functions which needs to be called during start up
 
-    git_user = os.environ.get('git_user')
-    git_pass = os.environ.get('git_pass')
     weather_api = os.environ.get('weather_api')
-    news_api = os.environ.get('news_api')
-    maps_api = os.environ.get('maps_api')
     gmail_user = os.environ.get('gmail_user')
     gmail_pass = os.environ.get('gmail_pass')
-    robinhood_user = os.environ.get('robinhood_user')
-    robinhood_pass = os.environ.get('robinhood_pass')
-    robinhood_qr = os.environ.get('robinhood_qr')
-    birthday = os.environ.get('birthday')
-    offline_user = os.environ.get('offline_user')
-    offline_pass = os.environ.get('offline_pass')
-    offline_phrase = os.environ.get('offline_phrase', 'jarvis')
+    offline_host = gethostbyname('localhost')
     offline_port = int(os.environ.get('offline_port', 4483))
     icloud_user = os.environ.get('icloud_user')
     icloud_pass = os.environ.get('icloud_pass')
-    icloud_recovery = os.environ.get('icloud_recovery')
     phone_number = os.environ.get('phone_number')
-    think_id = os.environ.get('think_id')
     router_pass = os.environ.get('router_pass')
-    tv_client_key = os.environ.get('tv_client_key')
-    root_password = os.environ.get('root_password')
 
     if st := internet_checker():
         sys.stdout.write(f'\rINTERNET::Connected to {get_ssid()}. Scanning localhost for connected devices.')
@@ -4075,9 +4190,6 @@ if __name__ == '__main__':
             tv_ip, tv_mac = local_devices.tv()
         else:
             hallway_ip, kitchen_ip, bedroom_ip, tv_ip, tv_mac = None, None, None, None, None
-
-    if not root_password:
-        sys.stdout.write('\rROOT PASSWORD is not set!')
 
     # warm_light is initiated with an empty dict and the key status is set to True when requested to switch to yellow
     # greet_check is used in initialize() to greet only for the first run

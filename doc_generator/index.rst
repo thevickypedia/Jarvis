@@ -86,6 +86,22 @@ Jarvis - API Robinhood Helper
    :undoc-members:
    :exclude-members: hours
 
+Car - Connector Module
+======================
+
+.. automodule:: helper_functions.car_connector
+   :members:
+   :undoc-members:
+   :exclude-members: IFAS_BASE_URL, IFOP_BASE_URL, IF9_BASE_URL
+
+Car - Controller Module
+=======================
+
+.. automodule:: helper_functions.car_controller
+   :members:
+   :undoc-members:
+   :exclude-members: DEFAULT_CONTENT_TYPE
+
 Conversation
 ============
 

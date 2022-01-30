@@ -242,6 +242,22 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.car">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">car</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.car" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controls the car to lock, unlock or remote start.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>API climate controls: 31 is LO, 57 is HOT
+Car Climate controls: 58 is LO, 84 is HOT</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.celebrate">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">celebrate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.celebrate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to look if the current date is a holiday or a birthday.</p>
@@ -1499,6 +1515,29 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.vehicle">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">vehicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">car_email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#helper_functions.car_controller.Control" title="helper_functions.car_controller.Control"><span class="pre">helper_functions.car_controller.Control</span></a></span></span><a class="headerlink" href="#jarvis.vehicle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Establishes a connection with the car and returns an object to control the primary vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>car_email</strong> – Email to authenticate API.</p></li>
+<li><p><strong>car_pass</strong> – Password to authenticate API.</p></li>
+<li><p><strong>operation</strong> – Operation to be performed.</p></li>
+<li><p><strong>car_pin</strong> – Master PIN to perform operations.</p></li>
+<li><p><strong>temp</strong> – Temperature for climate control.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Control object to access the primary vehicle.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#helper_functions.car_controller.Control" title="helper_functions.car_controller.Control">Control</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.voice_changer">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">voice_changer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.voice_changer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Speaks to the user with available voices and prompts the user to choose one.</p>
@@ -2187,6 +2226,902 @@ name is specified, allow every event.</p>
 </dd></dl>
 
 </section>
+<section id="module-helper_functions.car_connector">
+<span id="car-connector-module"></span><h1>Car - Connector Module<a class="headerlink" href="#module-helper_functions.car_connector" title="Permalink to this headline">¶</a></h1>
+<p><strong>API Reference:</strong> <a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo">https://documenter.getpostman.com/view/6250319/RznBMzqo</a> for Jaguar LandRover InControl API.</p>
+<p><strong>Module Reference:</strong> <a class="reference external" href="https://github.com/ardevd/jlrpy">https://github.com/ardevd/jlrpy</a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="helper_functions.car_connector.Connect">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">helper_functions.car_connector.</span></span><span class="sig-name descname"><span class="pre">Connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">uuid.UUID</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refresh_token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">china_servers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">logging.Logger</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth_expiry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.car_connector.Connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates Connection object to connect to the Jaguar LandRover InControl Remote Car API.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connect</span>
+</pre></div>
+</div>
+<p>Initiates all the class variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> – Login email address.</p></li>
+<li><p><strong>password</strong> – Login password.</p></li>
+<li><p><strong>device_id</strong> – Car’s device ID. Defaults to UUID4.</p></li>
+<li><p><strong>refresh_token</strong> – Token to login instead of email and password.</p></li>
+<li><p><strong>china_servers</strong> – Boolean flag whether to use China servers.</p></li>
+<li><p><strong>logger</strong> – Logger module. Defaults to logging using stream handler.</p></li>
+<li><p><strong>auth_expiry</strong> – Duration (in seconds) to expire. Defaults to 0 forcing to re-authenticate.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_connector.Connect.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.car_connector.Connect.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authenticates device and establishes connection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_connector.Connect.get_user_info">
+<span class="sig-name descname"><span class="pre">get_user_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_connector.Connect.get_user_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a request to get the user information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns user information.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_connector.Connect.get_vehicles">
+<span class="sig-name descname"><span class="pre">get_vehicles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headers</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_connector.Connect.get_vehicles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a post request to get the vehicles registered under the account.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>headers</strong> – Headers for the post request.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Vehicles data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_connector.Connect.post_data">
+<span class="sig-name descname"><span class="pre">post_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_connector.Connect.post_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add header authorization and sends a post request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command</strong> – Command to frame the URL.</p></li>
+<li><p><strong>url</strong> – Base URL and its extension.</p></li>
+<li><p><strong>headers</strong> – Headers to passed.</p></li>
+<li><p><strong>data</strong> – Data for post request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON loaded response from post request.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_connector.Connect.refresh_tokens">
+<span class="sig-name descname"><span class="pre">refresh_tokens</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.car_connector.Connect.refresh_tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh the token, register the device and login.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_connector.Connect.reverse_geocode">
+<span class="sig-name descname"><span class="pre">reverse_geocode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitude</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.car_connector.Connect.reverse_geocode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses reverse geocoding to get the location from latitude and longitude.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>latitude</strong> – Latitude of location.</p></li>
+<li><p><strong>longitude</strong> – Longitude or location.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON loaded response from post request.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_connector.Connect.update_user_info">
+<span class="sig-name descname"><span class="pre">update_user_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_info_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.car_connector.Connect.update_user_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update user information to the profile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>user_info_data</strong> – User information to be posted in the post request.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="helper_functions.car_connector.logger_module">
+<span class="sig-prename descclassname"><span class="pre">helper_functions.car_connector.</span></span><span class="sig-name descname"><span class="pre">logger_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">logging.Logger</span></span></span><a class="headerlink" href="#helper_functions.car_connector.logger_module" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a custom logger using stream handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the logger module.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Logger</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-helper_functions.car_controller">
+<span id="car-controller-module"></span><h1>Car - Controller Module<a class="headerlink" href="#module-helper_functions.car_controller" title="Permalink to this headline">¶</a></h1>
+<p><strong>API Reference:</strong> <a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo">https://documenter.getpostman.com/view/6250319/RznBMzqo</a> for Jaguar LandRover InControl API.</p>
+<p><strong>Module Reference:</strong> <a class="reference external" href="https://github.com/ardevd/jlrpy">https://github.com/ardevd/jlrpy</a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">helper_functions.car_controller.</span></span><span class="sig-name descname"><span class="pre">Control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.car_controller.Control" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates Vehicle object to perform remote actions after connecting to the InControl API.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Control</span>
+</pre></div>
+</div>
+<p>Instantiates a super class with incoming data and existing connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Takes the vehicle data as a dictionary argument.</p></li>
+<li><p><strong>connection</strong> – Takes the connection object as an argument.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.add_charging_period">
+<span class="sig-name descname"><span class="pre">add_charging_period</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour_from</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minute_from</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minute_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.add_charging_period" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a time period for charging. The vehicle will prioritize charging during the specified period.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> – Identifier.</p></li>
+<li><p><strong>schedule</strong> – Which days of a week the departure timer should be active for.</p></li>
+<li><p><strong>hour_from</strong> – Starting hour.</p></li>
+<li><p><strong>minute_from</strong> – Starting minute.</p></li>
+<li><p><strong>hour_to</strong> – Ending hour.</p></li>
+<li><p><strong>minute_to</strong> – Ending minute.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>{‘friday’:True,’monday’:True,’saturday’:True,’sunday’:False,’thursday’:True,’tuesday’:True,’wednesday’:True}</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary response.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.add_departure_timer">
+<span class="sig-name descname"><span class="pre">add_departure_timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.add_departure_timer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a single departure timer for the specified vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> – Identifier.</p></li>
+<li><p><strong>year</strong> – Intended timer year.</p></li>
+<li><p><strong>month</strong> – Intended timer month.</p></li>
+<li><p><strong>day</strong> – Intended timer day.</p></li>
+<li><p><strong>hour</strong> – Intended timer hour.</p></li>
+<li><p><strong>minute</strong> – Intended timer minute.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>The departure timer is seemingly identifier by its numerical index value.</p></li>
+<li><p>A unique index timer value must be specified when creating the departure timer.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary response.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.add_repeated_departure_timer">
+<span class="sig-name descname"><span class="pre">add_repeated_departure_timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.add_repeated_departure_timer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add repeated departure timer for the specified vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> – Identifier.</p></li>
+<li><p><strong>schedule</strong> – Which days of a week the departure timer should be active for.</p></li>
+<li><p><strong>hour</strong> – Intended timer hour.</p></li>
+<li><p><strong>minute</strong> – Intended timer minute.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>{‘friday’:True,’monday’:True,’saturday’:True,’sunday’:False,’thursday’:True,’tuesday’:True,’wednesday’:True}</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A response dictionary.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.charging_start">
+<span class="sig-name descname"><span class="pre">charging_start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.charging_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start charging the EV.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.charging_stop">
+<span class="sig-name descname"><span class="pre">charging_stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.charging_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop charging the EV.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.climate_prioritize">
+<span class="sig-name descname"><span class="pre">climate_prioritize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.climate_prioritize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prioritize climate controls for either range or comfort.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>priority</strong> – Takes <code class="docutils literal notranslate"><span class="pre">PRIORITIZE_RANGE</span></code> or <code class="docutils literal notranslate"><span class="pre">PRIORITIZE_COMFORT</span></code> to prioritize either range or comfort.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary response.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.delete_departure_timer">
+<span class="sig-name descname"><span class="pre">delete_departure_timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.delete_departure_timer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete departure timers specified by their index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> – Index to be deleted.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary response.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.delete_wakeup_time">
+<span class="sig-name descname"><span class="pre">delete_wakeup_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.delete_wakeup_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel the wakeup timer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary response.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.disable_privacy_mode">
+<span class="sig-name descname"><span class="pre">disable_privacy_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.disable_privacy_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>The vehicle will resume journey information logging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pin</strong> – Master PIN of the vehicle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary response.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.enable_guardian_mode">
+<span class="sig-name descname"><span class="pre">enable_guardian_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1643587362</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.enable_guardian_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Guardian Mode is a security feature that will generate alarms when vehicle interaction is detected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pin</strong> – Master PIN of the vehicle.</p></li>
+<li><p><strong>expiration_time</strong> – Epoch value until when the guardian mode is to be disabled. Defaults to 24 hours.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Guardian Mode will only generate a single alert.</p></li>
+<li><p>The alert does not indicate what sort of interaction took place, just the timestamp.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary response.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.enable_privacy_mode">
+<span class="sig-name descname"><span class="pre">enable_privacy_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.enable_privacy_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>The vehicle will not log journey information as long as privacy mode is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pin</strong> – Master PIN of the vehicle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary response.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.enable_service_mode">
+<span class="sig-name descname"><span class="pre">enable_service_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1643587362</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.enable_service_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Service Mode will allow the vehicle to be serviced without InControl triggering a vehicle theft alarm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pin</strong> – Master PIN of the vehicle.</p></li>
+<li><p><strong>expiration_time</strong> – Epoch value until when the service mode is to be disabled. Defaults to 24 hours.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary response.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.enable_transport_mode">
+<span class="sig-name descname"><span class="pre">enable_transport_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1643587362</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.enable_transport_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows the vehicle to be transported without InControl triggering a vehicle theft alarm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pin</strong> – Master PIN of the vehicle.</p></li>
+<li><p><strong>expiration_time</strong> – Epoch value until when the transport mode is to be disabled. Defaults to 24 hours.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary response.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_attributes">
+<span class="sig-name descname"><span class="pre">get_attributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requests all vehicle attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of all attributes of the vehicle as key value pairs.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_contact_info">
+<span class="sig-name descname"><span class="pre">get_contact_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mcc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'+1'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_contact_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Road Side Assistance and Secure Vehicle Tracker contact information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mcc</strong> – Mobile Country Code. Defaults to +1 (USA).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of contact info.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_departure_timers">
+<span class="sig-name descname"><span class="pre">get_departure_timers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_departure_timers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get departure timers for specified vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of the departure timer information.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_guardian_mode_alarms">
+<span class="sig-name descname"><span class="pre">get_guardian_mode_alarms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_guardian_mode_alarms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all the scheduled Guardian mode time periods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns a list of Guardian Mode alarm schedules.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_guardian_mode_alerts">
+<span class="sig-name descname"><span class="pre">get_guardian_mode_alerts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.car_controller.Control.get_guardian_mode_alerts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the latest Guardian Mode alert for the specified vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the latest Guardian Mode alert for the specified vehicle.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_guardian_mode_settings_system">
+<span class="sig-name descname"><span class="pre">get_guardian_mode_settings_system</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_guardian_mode_settings_system" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alarm, SMS and push notification settings (User) for guardian mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of current settings.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_guardian_mode_settings_user">
+<span class="sig-name descname"><span class="pre">get_guardian_mode_settings_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_guardian_mode_settings_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alarm, SMS and push notification settings (System) for guardian mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of current settings.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_guardian_mode_status">
+<span class="sig-name descname"><span class="pre">get_guardian_mode_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_guardian_mode_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Guardian Mode status indicating whether Guardian Mode is active.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Status of guardian mode as a dictionary.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_health_status">
+<span class="sig-name descname"><span class="pre">get_health_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_health_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for the vehicle health status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of the status report.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_position">
+<span class="sig-name descname"><span class="pre">get_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current position of the vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of the current position of the vehicle.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_rcc_target_value">
+<span class="sig-name descname"><span class="pre">get_rcc_target_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.car_controller.Control.get_rcc_target_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get target temperature for the Vehicle climate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of the target temperature information.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_service_status">
+<span class="sig-name descname"><span class="pre">get_service_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_service_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a particular service information of the vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>service_id</strong> – ID of the particular service.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of the service information.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_services">
+<span class="sig-name descname"><span class="pre">get_services</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_services" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the service history of the vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of the service information.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_status">
+<span class="sig-name descname"><span class="pre">get_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ev</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a call to get the status of the vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ev</strong> – Takes a boolean flag if the vehicle is EV.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of the vehicle’s status information.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_subscription_packages">
+<span class="sig-name descname"><span class="pre">get_subscription_packages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_subscription_packages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get list of subscription packages for a specific vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of all subscription packages along with their status and expiration.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_trip">
+<span class="sig-name descname"><span class="pre">get_trip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trip_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_trip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data associated with a specific trip.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trip_id</strong> – A valid vehicle trip id should be passed.</p></li>
+<li><p><strong>page</strong> – Page ID.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of the trip information.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_trips">
+<span class="sig-name descname"><span class="pre">get_trips</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_trips" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the trips associated with the specified vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>count</strong> – Defaults to the last 1,000 trips.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of all trips information.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.get_wakeup_time">
+<span class="sig-name descname"><span class="pre">get_wakeup_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.get_wakeup_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get configured wakeup time for specified vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of wakeup time information.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.honk_blink">
+<span class="sig-name descname"><span class="pre">honk_blink</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.honk_blink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Honk the horn and flash the lights associated with the specified vehicle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.lock">
+<span class="sig-name descname"><span class="pre">lock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.lock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lock the vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pin</strong> – Master PIN of the vehicle.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.post_data">
+<span class="sig-name descname"><span class="pre">post_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.post_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Posts the data from <code class="docutils literal notranslate"><span class="pre">Control</span></code> module to <code class="docutils literal notranslate"><span class="pre">Connect</span></code> module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command</strong> – Command to be performed.</p></li>
+<li><p><strong>headers</strong> – Headers to be added in the outgoing request.</p></li>
+<li><p><strong>data</strong> – Data to be passed in the outgoing request.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.preconditioning_start">
+<span class="sig-name descname"><span class="pre">preconditioning_start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">celsius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.preconditioning_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the climate preconditioning at the specified temperature.</p>
+<p class="rubric">Notes</p>
+<p>Note the absence of the decimal sign. 210 equals 21.0C.
+Pass 155 for LO and 285 for HI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>celsius</strong> – Celsius without the decimal sign.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary response.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.preconditioning_stop">
+<span class="sig-name descname"><span class="pre">preconditioning_stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helper_functions.car_controller.Control.preconditioning_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the climate preconditioning immediately.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary response.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.remote_engine_start">
+<span class="sig-name descname"><span class="pre">remote_engine_start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.remote_engine_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the vehicle remotely.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pin</strong> – Master PIN of the vehicle.</p></li>
+<li><p><strong>target_temperature</strong> – Target temperature when started.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.remote_engine_stop">
+<span class="sig-name descname"><span class="pre">remote_engine_stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.remote_engine_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn off the vehicle remotely.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pin</strong> – Master PIN of the vehicle.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.reset_alarm">
+<span class="sig-name descname"><span class="pre">reset_alarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.reset_alarm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the vehicle alarm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pin</strong> – Master PIN of the vehicle.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.set_attributes">
+<span class="sig-name descname"><span class="pre">set_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nickname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">registration_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.set_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set attributes for the vehicle profile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nickname</strong> – Nickname for the vehicle.</p></li>
+<li><p><strong>registration_number</strong> – License plate number.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.set_max_soc">
+<span class="sig-name descname"><span class="pre">set_max_soc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_charge_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.set_max_soc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the maximum state of charge.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>max_charge_level</strong> – Maximum charge level in percentage.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The vehicle will never charge more than the specified charge level.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary response.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.set_one_off_max_soc">
+<span class="sig-name descname"><span class="pre">set_one_off_max_soc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_charge_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.set_one_off_max_soc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the one-off maximum state of charge.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>max_charge_level</strong> – Percentage of charge level.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>The vehicle will not charge more than the specified charge level for the current charging session.</p></li>
+<li><p>Will presumably reset to the previous value the next time the vehicle is connected to a charger.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary response.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.set_rcc_target_temperature">
+<span class="sig-name descname"><span class="pre">set_rcc_target_temperature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.set_rcc_target_temperature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set climate control with a target temperature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pin</strong> – Master PIN of the vehicle.</p></li>
+<li><p><strong>target_temperature</strong> – Target temperature that has to be set.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.set_wakeup_time">
+<span class="sig-name descname"><span class="pre">set_wakeup_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wakeup_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.set_wakeup_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set wakeup time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wakeup_time</strong> – Epoch value for wake up start time.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>The vehicle will enter a sleep mode after four days of inactivity.</p></li>
+<li><p>In order to use remote control features after this time a wakeup timer is required.</p></li>
+<li><p>Ensures vehicle is available for remote control for a period of time after the specified wakeup time.</p></li>
+<li><p>Wakeup timer for a specific time has to be set before the vehicle enters sleep mode.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary response.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="helper_functions.car_controller.Control.unlock">
+<span class="sig-name descname"><span class="pre">unlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helper_functions.car_controller.Control.unlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unlock the vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pin</strong> – Master PIN of the vehicle.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-helper_functions.conversation">
 <span id="conversation"></span><h1>Conversation<a class="headerlink" href="#module-helper_functions.conversation" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -2333,6 +3268,11 @@ None - NoneType if no face was recognized.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Keywords</span>
 </pre></div>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="helper_functions.keywords.Keywords.car">
+<span class="sig-name descname"><span class="pre">car</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['car',</span> <span class="pre">'vehicle']</span></em><a class="headerlink" href="#helper_functions.keywords.Keywords.car" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>
@@ -3094,6 +4034,8 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 <li><a class="reference internal" href="#jarvis-api-models">Jarvis - API Models</a></li>
 <li><a class="reference internal" href="#module-api.report_gatherer">Jarvis - API Robinhood</a></li>
 <li><a class="reference internal" href="#jarvis-api-robinhood-helper">Jarvis - API Robinhood Helper</a></li>
+<li><a class="reference internal" href="#module-helper_functions.car_connector">Car - Connector Module</a></li>
+<li><a class="reference internal" href="#module-helper_functions.car_controller">Car - Controller Module</a></li>
 <li><a class="reference internal" href="#module-helper_functions.conversation">Conversation</a></li>
 <li><a class="reference internal" href="#module-helper_functions.database">Database</a></li>
 <li><a class="reference internal" href="#module-helper_functions.facial_recognition">Face Recognition</a></li>

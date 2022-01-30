@@ -125,6 +125,14 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 **Args for [offline-communicator](https://thevickypedia.com/jarvisoffline)**
 > Built for a personalized usage.
 - **ngrok_auth_key** - Auth token from [ngrok](https://dashboard.ngrok.com/) - Only used for `offline_communicator`
+
+**Args for [car_connector](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/car_connector.py)**
+> The following arguments can be used only if the vehicle is a Jaguar or a LandRover using InControl API.
+- **car_email** - Email address to log in to InControl API.
+- **car_pass** - Password to authenticate InControl API.
+
+**Args for [car_controller](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/car_controller.py)**
+- **car_pin** - Master PIN for the vehicle.
 </details>
 
 ### Automation Setup [Optional]
