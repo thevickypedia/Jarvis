@@ -86,16 +86,16 @@ Jarvis - API Robinhood Helper
    :undoc-members:
    :exclude-members: hours
 
-Car - Connector Module
-======================
+Car - Connector
+===============
 
 .. automodule:: helper_functions.car_connector
    :members:
    :undoc-members:
    :exclude-members: IFAS_BASE_URL, IFOP_BASE_URL, IF9_BASE_URL
 
-Car - Controller Module
-=======================
+Car - Controller
+================
 
 .. automodule:: helper_functions.car_controller
    :members:
@@ -157,10 +157,17 @@ Logger
    :members:
    :undoc-members:
 
-SMS Notification
-================
+Meetings Helper
+===============
 
-.. automodule:: helper_functions.notify
+.. automodule:: helper_functions.meetings_helper
+   :members:
+   :undoc-members:
+
+Modules
+=======
+
+.. automodule:: helper_functions.modules
    :members:
    :undoc-members:
 
@@ -172,10 +179,24 @@ Personal Cloud
    :undoc-members:
    :exclude-members: HOME
 
+Restart
+=======
+
+.. automodule:: restart
+   :members:
+   :undoc-members:
+
 Robinhood Gatherer
 ==================
 
 .. automodule:: helper_functions.robinhood
+   :members:
+   :undoc-members:
+
+SMS Notification
+================
+
+.. automodule:: helper_functions.notify
    :members:
    :undoc-members:
 
@@ -193,10 +214,10 @@ TV Connector
    :members:
    :undoc-members:
 
-Restart
-=======
+VPN Handler
+===========
 
-.. automodule:: restart
+.. automodule:: helper_functions.vpn_handler
    :members:
    :undoc-members:
 

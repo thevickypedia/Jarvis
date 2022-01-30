@@ -5,27 +5,23 @@ import re
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
-from difflib import SequenceMatcher
 from email import message_from_bytes
 from email.header import decode_header, make_header
 from imaplib import IMAP4_SSL
-from math import ceil, floor, log, pow
+from math import ceil
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
-from platform import platform
-from shutil import disk_usage
-from socket import AF_INET, SOCK_DGRAM, gethostbyname, gethostname, socket
+from socket import gethostbyname, gethostname
 from ssl import create_default_context
 from string import punctuation
 from struct import unpack_from
-from subprocess import PIPE, Popen, call, check_output, getoutput
+from subprocess import call, check_output, getoutput
 from threading import Thread, Timer
 from time import perf_counter, sleep, time
 from traceback import format_exc
 from typing import Tuple, Union
 from unicodedata import normalize
-from urllib.error import HTTPError
 from urllib.request import urlopen
 from webbrowser import open as web_open
 
@@ -36,25 +32,21 @@ import requests
 import wikipedia as wiki
 import wordninja
 import yaml
-from appscript import app as apple_script
 from dotenv import load_dotenv, set_key, unset_key
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
 from geopy.geocoders import Nominatim, options
-from gmailconnector.send_email import SendEmail
 from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
-from holidays import CountryHoliday
 from inflect import engine
 from joke.jokes import chucknorris, geek, icanhazdad, icndb
 from newsapi import NewsApiClient, newsapi_exception
 from playsound import playsound
-from psutil import Process, boot_time, cpu_count, virtual_memory
+from psutil import Process, boot_time
 from pvporcupine import KEYWORD_PATHS, LIBRARY_PATH, MODEL_PATH, create
 from pyaudio import PyAudio, paInt16
 from pychromecast.error import ChromecastConnectionError
 from PyDictionary import PyDictionary
-from pyicloud import PyiCloudService
 from pyicloud.exceptions import (PyiCloudAPIResponseException,
                                  PyiCloudFailedLoginException)
 from pyicloud.services.findmyiphone import AppleDevice
@@ -69,14 +61,11 @@ from speech_recognition import (Microphone, Recognizer, RequestError,
                                 UnknownValueError, WaitTimeoutError)
 from speedtest import ConfigRetrievalError, Speedtest
 from timezonefinder import TimezoneFinder
-from vpn.controller import VPNServer
 from wakeonlan import send_magic_packet as wake
 from wikipedia.exceptions import DisambiguationError, PageError
 from wolframalpha import Client as Think
 
 from api.controller import offline_compatible
-from helper_functions.car_connector import Connect
-from helper_functions.car_controller import Control
 from helper_functions.conversation import Conversation
 from helper_functions.database import TASKS_DB, Database
 from helper_functions.facial_recognition import Face
@@ -84,6 +73,9 @@ from helper_functions.ip_scanner import LocalIPScan
 from helper_functions.keywords import Keywords
 from helper_functions.lights import MagicHomeApi
 from helper_functions.logger import logger
+from helper_functions.meetings_helper import (meeting_app_launcher,
+                                              meetings_gatherer)
+from helper_functions.modules import Helper
 from helper_functions.notify import notify
 from helper_functions.personal_cloud import PersonalCloud
 from helper_functions.preset_values import preset_values
@@ -166,29 +158,12 @@ def split(key: str, should_return: bool = False) -> bool:
     return exit_check
 
 
-def part_of_day() -> str:
-    """Checks the current hour to determine the part of day.
-
-    Returns:
-        str:
-        Morning, Afternoon, Evening or Night based on time of day.
-    """
-    current_hour = int(datetime.now().strftime("%H"))
-    if 5 <= current_hour <= 11:
-        return 'Morning'
-    if 12 <= current_hour <= 15:
-        return 'Afternoon'
-    if 16 <= current_hour <= 19:
-        return 'Evening'
-    return 'Night'
-
-
 def initialize() -> None:
     """Awakens from sleep mode. ``greet_check`` is to ensure greeting is given only for the first function call."""
     if greet_check.get('status'):
         say(text="What can I do for you?")
     else:
-        say(text=f'Good {part_of_day()}.')
+        say(text=f'Good {mod.part_of_day()}.')
         greet_check['status'] = True
     renew()
 
@@ -217,32 +192,6 @@ def renew() -> None:
             say(run=True)
         except (UnknownValueError, RequestError, WaitTimeoutError):
             pass
-
-
-def time_converter(seconds: float) -> str:
-    """Modifies seconds to appropriate days/hours/minutes/seconds.
-
-    Args:
-        seconds: Takes number of seconds as argument.
-
-    Returns:
-        str:
-        Seconds converted to days or hours or minutes or seconds.
-    """
-    days = round(seconds // 86400)
-    seconds = round(seconds % (24 * 3600))
-    hours = round(seconds // 3600)
-    seconds %= 3600
-    minutes = round(seconds // 60)
-    seconds %= 60
-    if days:
-        return f'{days} days, {hours} hours, {minutes} minutes, and {seconds} seconds'
-    elif hours:
-        return f'{hours} hours, {minutes} minutes, and {seconds} seconds'
-    elif minutes:
-        return f'{minutes} minutes, and {seconds} seconds'
-    elif seconds:
-        return f'{seconds} seconds'
 
 
 def conditions(converted: str, should_return: bool = False) -> bool:
@@ -467,7 +416,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
 
     else:
         logger.info(f'Received the unrecognized lookup parameter: {converted}')
-        Thread(target=unrecognized_dumper, args=[converted]).start()  # writes to training_data.yaml in a thread
+        Thread(target=mod.unrecognized_dumper, args=[converted]).start()  # writes to training_data.yaml in a thread
         if alpha(converted):
             if google_maps(converted):
                 if google(converted):
@@ -483,26 +432,6 @@ def conditions(converted: str, should_return: bool = False) -> bool:
                     web_open(unknown_url)
 
 
-def get_place_from_phrase(phrase: str) -> str:
-    """Looks for the name of a place in the phrase received.
-
-    Args:
-        phrase: Takes the phrase converted as an argument.
-
-    Returns:
-        str:
-        Returns the name of place if skimmed.
-    """
-    place = ''
-    for word in phrase.split():
-        if word[0].isupper():
-            place += word + ' '
-        elif '.' in word:
-            place += word + ' '
-    if place:
-        return place
-
-
 def ip_info(phrase: str) -> None:
     """Gets IP address of the host machine.
 
@@ -513,7 +442,7 @@ def ip_info(phrase: str) -> None:
         if not internet_checker():
             say(text="You are not connected to the internet sir!")
             return
-        if ssid := get_ssid():
+        if ssid := mod.get_ssid():
             ssid = f'for the connection {ssid} '
         else:
             ssid = ''
@@ -527,27 +456,6 @@ def ip_info(phrase: str) -> None:
         ip_address = vpn_checker().split(':')[-1]
         output = f"My local IP address for {gethostname()} is {ip_address}"
     say(text=output)
-
-
-def unrecognized_dumper(converted: str) -> None:
-    """If none of the conditions are met, converted text is written to a yaml file.
-
-    Args:
-        converted: Takes the voice recognized statement as argument.
-    """
-    train_file = {'Uncategorized': converted}
-    if os.path.isfile('training_data.yaml'):
-        content = open(r'training_data.yaml', 'r').read()
-        for key, value in train_file.items():
-            if str(value) not in content:  # avoids duplication in yaml file
-                dict_file = [{key: [value]}]
-                with open(r'training_data.yaml', 'a') as writer:
-                    yaml.dump(dict_file, writer)
-    else:
-        for key, value in train_file.items():
-            train_file = [{key: [value]}]
-        with open(r'training_data.yaml', 'w') as writer:
-            yaml.dump(train_file, writer)
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
@@ -568,7 +476,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
     try:
         # tries with icloud api to get your device's location for precise location services
         if not device:
-            if not (device := device_selector()):
+            if not (device := mod.device_selector(icloud_user=icloud_user, icloud_pass=icloud_pass)):
                 raise PyiCloudFailedLoginException
         raw_location = device.location()
         if not raw_location and sys._getframe(1).f_code.co_name == 'locate':
@@ -600,9 +508,9 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
         current_lat_, current_lon_ = None, None
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
         say(text="I was unable to connect to the internet. Please check your connection settings and retry.", run=True)
-        sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
-                         f"\nTotal runtime: {time_converter(perf_counter())}")
-        terminator()
+        sys.stdout.write(f"\rMemory consumed: {mod.size_converter(byte_size=0)}"
+                         f"\nTotal runtime: {mod.time_converter(seconds=perf_counter())}")
+        mod.terminator()
 
     try:
         # Uses the latitude and longitude information and converts to the required address.
@@ -633,7 +541,7 @@ def current_date() -> None:
     dt_string = datetime.now().strftime("%A, %B")
     date_ = engine().ordinal(datetime.now().strftime("%d"))
     year = datetime.now().strftime("%Y")
-    event = celebrate()
+    event = mod.celebrate()
     if time_travel.has_been_called:
         dt_string = dt_string + date_
     else:
@@ -653,7 +561,7 @@ def current_time(converted: str = None) -> None:
     Args:
         converted: Takes the phrase as an argument.
     """
-    place = get_place_from_phrase(phrase=converted) if converted else None
+    place = mod.get_place_from_phrase(phrase=converted) if converted else None
     if place and len(place) > 3:
         tf = TimezoneFinder()
         place_tz = geo_locator.geocode(place)
@@ -731,9 +639,9 @@ def weather(phrase: str = None) -> None:
 
     place = None
     if phrase:
-        weather_cond = ['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']
-        place = get_place_from_phrase(phrase=phrase) if phrase else None
-        if any(match_word in phrase.lower() for match_word in weather_cond):
+        place = mod.get_place_from_phrase(phrase=phrase) if phrase else None
+        if any(match_word in phrase.lower() for match_word in
+               ['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']):
             if place:
                 weather_condition(msg=phrase, place=place)
             else:
@@ -745,8 +653,7 @@ def weather(phrase: str = None) -> None:
         desired_location = geo_locator.geocode(place)
         coordinates = desired_location.latitude, desired_location.longitude
         located = geo_locator.reverse(coordinates, language='en')
-        data = located.raw
-        address = data['address']
+        address = located.raw['address']
         city = address['city'] if 'city' in address.keys() else None
         state = address['state'] if 'state' in address.keys() else None
         lat = located.latitude
@@ -757,19 +664,14 @@ def weather(phrase: str = None) -> None:
         lon = current_lon
     weather_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,' \
                   f'hourly&appid={weather_api}'
-    r = urlopen(weather_url)  # sends request to the url created
-    response = json.loads(r.read())  # loads the response in a json
+    response = json.loads(urlopen(weather_url).read())  # loads the response in a json
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
-    temp = response['current']['temp']
     condition = response['current']['weather'][0]['description']
-    feels_like = response['current']['feels_like']
-    maxi = response['daily'][0]['temp']['max']
-    high = int(round(temperature.k2f(maxi), 2))
-    mini = response['daily'][0]['temp']['min']
-    low = int(round(temperature.k2f(mini), 2))
-    temp_f = int(round(temperature.k2f(temp), 2))
-    temp_feel_f = int(round(temperature.k2f(feels_like), 2))
+    high = int(round(temperature.k2f(arg=response['daily'][0]['temp']['max']), 2))
+    low = int(round(temperature.k2f(arg=response['daily'][0]['temp']['min']), 2))
+    temp_f = int(round(temperature.k2f(arg=response['current']['temp']), 2))
+    temp_feel_f = int(round(temperature.k2f(arg=response['current']['feels_like']), 2))
     sunrise = datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p")
     if time_travel.has_been_called:
@@ -832,8 +734,7 @@ def weather_condition(msg: str, place: str = None) -> None:
         desired_location = geo_locator.geocode(place)
         coordinates = desired_location.latitude, desired_location.longitude
         located = geo_locator.reverse(coordinates, language='en')
-        data = located.raw
-        address = data['address']
+        address = located.raw['address']
         city = address['city'] if 'city' in address.keys() else None
         state = address['state'] if 'state' in address.keys() else None
         lat = located.latitude
@@ -883,42 +784,24 @@ def weather_condition(msg: str, place: str = None) -> None:
         end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
     else:
         alerts, start_alert, end_alert = None, None, None
-    temp = response['daily'][key]['temp'][when]
-    feels_like = response['daily'][key]['feels_like'][when]
     condition = response['daily'][key]['weather'][0]['description']
-    sunrise = response['daily'][key]['sunrise']
-    sunset = response['daily'][key]['sunset']
-    maxi = response['daily'][key]['temp']['max']
-    mini = response['daily'][1]['temp']['min']
-    high = int(round(temperature.k2f(maxi), 2))
-    low = int(round(temperature.k2f(mini), 2))
-    temp_f = int(round(temperature.k2f(temp), 2))
-    temp_feel_f = int(round(temperature.k2f(feels_like), 2))
-    sunrise = datetime.fromtimestamp(sunrise).strftime("%I:%M %p")
-    sunset = datetime.fromtimestamp(sunset).strftime("%I:%M %p")
-    output = f'The weather in {weather_location} {tell} would be {temp_f}°F, with a high ' \
-             f'of {high}, and a low of {low}. But due to {condition} it will fee like it is {temp_feel_f}°F. ' \
-             f'Sunrise at {sunrise}. Sunset at {sunset}. '
+    high = int(round(temperature.k2f(response['daily'][key]['temp']['max']), 2))
+    low = int(round(temperature.k2f(response['daily'][1]['temp']['min']), 2))
+    temp_f = int(round(temperature.k2f(response['daily'][key]['temp'][when]), 2))
+    temp_feel_f = int(round(temperature.k2f(response['daily'][key]['feels_like'][when]), 2))
+    sunrise = datetime.fromtimestamp(response['daily'][key]['sunrise']).strftime("%I:%M %p")
+    sunset = datetime.fromtimestamp(response['daily'][key]['sunset']).strftime("%I:%M %p")
+    output = f"The weather in {weather_location} {tell} would be {temp_f}°F, with a high of {high}, and a low of " \
+             f"{low}. But due to {condition} it will fee like it is {temp_feel_f}°F. Sunrise at {sunrise}. " \
+             f"Sunset at {sunset}. "
     if alerts and start_alert and end_alert:
         output += f'There is a weather alert for {alerts} between {start_alert} and {end_alert}'
     say(text=output)
 
 
 def system_info() -> None:
-    """Gets the system configuration."""
-    total, used, free = disk_usage("/")
-    total = size_converter(total)
-    used = size_converter(used)
-    free = size_converter(free)
-    ram = size_converter(virtual_memory().total).replace('.0', '')
-    ram_used = size_converter(virtual_memory().percent).replace(' B', ' %')
-    physical = cpu_count(logical=False)
-    logical = cpu_count(logical=True)
-    o_system = platform().split('.')[0]
-    sys_config = f"You're running {o_system}, with {physical} physical cores and {logical} logical cores. " \
-                 f"Your physical drive capacity is {total}. You have used up {used} of space. Your free space is " \
-                 f"{free}. Your RAM capacity is {ram}. You are currently utilizing {ram_used} of your memory."
-    say(text=sys_config)
+    """Speaks the system information."""
+    say(text=mod.system_info_gatherer())
 
 
 def wikipedia_() -> None:
@@ -1058,36 +941,6 @@ def repeat() -> None:
             say(text=f"I heard {keyword}")
 
 
-def device_selector(converted: str = None) -> Union[AppleDevice, None]:
-    """Selects a device using the received input string.
-
-    See Also:
-        - Opens a html table with the index value and name of device.
-        - When chosen an index value, the device name will be returned.
-
-    Args:
-        converted: Takes the voice recognized statement as argument.
-
-    Returns:
-        AppleDevice:
-        Returns the selected device from the class ``AppleDevice``
-    """
-    if not all([icloud_user, icloud_pass]):
-        return
-    icloud_api = PyiCloudService(icloud_user, icloud_pass)
-    devices = [device for device in icloud_api.devices]
-    if converted:
-        devices_str = [{str(device).split(':')[0].strip(): str(device).split(':')[1].strip()} for device in devices]
-        closest_match = [(SequenceMatcher(a=converted, b=key).ratio() + SequenceMatcher(a=converted, b=val).ratio()) / 2
-                         for device in devices_str for key, val in device.items()]
-        index = closest_match.index(max(closest_match))
-        target_device = icloud_api.devices[index]
-    else:
-        target_device = [device for device in devices if device.get('name') == gethostname() or
-                         gethostname() == device.get('name') + '.local'][0]
-    return target_device if target_device else icloud_api.iphone
-
-
 def location() -> None:
     """Gets the user's current location."""
     city, state, country = location_info['city'], location_info['state'], location_info['country']
@@ -1101,7 +954,7 @@ def locate(phrase: str, no_repeat: bool = False) -> None:
         no_repeat: A placeholder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
         phrase: Takes the voice recognized statement as argument and extracts device name from it.
     """
-    if not (target_device := device_selector(phrase)):
+    if not (target_device := mod.device_selector(icloud_user=icloud_user, icloud_pass=icloud_pass, converted=phrase)):
         no_env_vars()
         return
     sys.stdout.write(f"\rLocating your {target_device}")
@@ -1251,7 +1104,7 @@ def flip_a_coin() -> None:
 
 def facts() -> None:
     """Tells a random fact."""
-    say(text=getFact(False))
+    say(text=getFact(filter=False))
 
 
 def meaning(phrase: str) -> None:
@@ -1552,7 +1405,7 @@ def locate_places(phrase: str = None) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    place = get_place_from_phrase(phrase=phrase) if phrase else None
+    place = mod.get_place_from_phrase(phrase=phrase) if phrase else None
     # if no words found starting with an upper case letter, fetches word after the keyword 'is' eg: where is Chicago
     if not place:
         keyword = 'is'
@@ -1567,7 +1420,7 @@ def locate_places(phrase: str = None) -> None:
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 return
-            place = get_place_from_phrase(phrase=converted)
+            place = mod.get_place_from_phrase(phrase=converted)
             if not place:
                 keyword = 'is'
                 before_keyword, keyword, after_keyword = converted.partition(keyword)
@@ -1612,13 +1465,13 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
         phrase: Takes the phrase spoken as an argument.
         no_repeat: A placeholder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
     """
-    place = get_place_from_phrase(phrase=phrase)
+    place = mod.get_place_from_phrase(phrase=phrase)
     place = place.replace('I ', '').strip() if place else None
     if not place:
         say(text="You might want to give a location.", run=True)
         converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
-            place = get_place_from_phrase(phrase=phrase)
+            place = mod.get_place_from_phrase(phrase=phrase)
             place = place.replace('I ', '').strip()
             if not place:
                 if no_repeat:
@@ -1652,23 +1505,6 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
         else:
             say(text="You might need a flight to get there!")
     return
-
-
-def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> list:
-    """Checks for ``*.lock`` files within the ``alarm`` directory if present.
-
-    Args:
-        alarm_files: Takes a boolean value to gather list of alarm lock files.
-        reminder_files: Takes a boolean value to gather list of reminder lock files.
-
-    Returns:
-        list:
-        List of ``*.lock`` file names ignoring other hidden files.
-    """
-    if alarm_files:
-        return [f for f in os.listdir('alarm') if not f.startswith('.')] if os.path.isdir('alarm') else None
-    elif reminder_files:
-        return [f for f in os.listdir('reminder') if not f.startswith('.')] if os.path.isdir('reminder') else None
 
 
 def alarm(phrase: str) -> None:
@@ -1718,7 +1554,7 @@ def alarm(phrase: str) -> None:
 
 def kill_alarm() -> None:
     """Removes lock file to stop the alarm which rings only when the certain lock file is present."""
-    alarm_state = lock_files(alarm_files=True)
+    alarm_state = mod.lock_files(alarm_files=True)
     if not alarm_state:
         say(text="You have no alarms set sir!")
     elif len(alarm_state) == 1:
@@ -2454,8 +2290,8 @@ def speed_test() -> None:
     say(text=f"Starting speed test sir! I.S.P: {isp}. Location: {city} {state}", run=True)
     st.download() and st.upload()
     ping = round(st.results.ping)
-    download = size_converter(st.results.download)
-    upload = size_converter(st.results.upload)
+    download = mod.size_converter(byte_size=st.results.download)
+    upload = mod.size_converter(byte_size=st.results.upload)
     sys.stdout.write(f'\rPing: {ping}m/s\tDownload: {download}\tUpload: {upload}')
     say(text=f'Ping rate: {ping} milli seconds.')
     say(text=f'Download speed: {download} per second.')
@@ -2606,8 +2442,7 @@ def lights(phrase: str) -> None:
         Args:
             host: Takes target device IP address as an argument.
         """
-        controller = MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off')
-        controller.turn_off()
+        MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off').turn_off()
 
     def warm(host: str):
         """Sets lights to warm/yellow.
@@ -2615,8 +2450,8 @@ def lights(phrase: str) -> None:
         Args:
             host: Takes target device IP address as an argument.
         """
-        controller = MagicHomeApi(device_ip=host, device_type=1, operation='Warm Lights')
-        controller.update_device(r=0, g=0, b=0, warm_white=255)
+        MagicHomeApi(device_ip=host, device_type=1,
+                     operation='Warm Lights').update_device(r=0, g=0, b=0, warm_white=255)
 
     def cool(host: str):
         """Sets lights to cool/white.
@@ -2624,8 +2459,8 @@ def lights(phrase: str) -> None:
         Args:
             host: Takes target device IP address as an argument.
         """
-        controller = MagicHomeApi(device_ip=host, device_type=2, operation='Cool Lights')
-        controller.update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
+        MagicHomeApi(device_ip=host, device_type=2,
+                     operation='Cool Lights').update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
 
     def preset(host: str, value: int):
         """Changes light colors to preset values.
@@ -2634,8 +2469,8 @@ def lights(phrase: str) -> None:
             host: Takes target device IP address as an argument.
             value: Preset value extracted from list of verified values.
         """
-        controller = MagicHomeApi(device_ip=host, device_type=2, operation='Preset Values')
-        controller.send_preset_function(preset_number=value, speed=101)
+        MagicHomeApi(device_ip=host, device_type=2,
+                     operation='Preset Values').send_preset_function(preset_number=value, speed=101)
 
     def lumen(host: str, warm_lights: bool, rgb: int = 255):
         """Sets lights to custom brightness.
@@ -2645,12 +2480,10 @@ def lights(phrase: str) -> None:
             warm_lights: Boolean value if lights have been set to warm or cool.
             rgb: Red, Green andBlue values to alter the brightness.
         """
-        if warm_lights:
-            controller = MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness')
-            controller.update_device(r=255, g=255, b=255, warm_white=rgb)
-        else:
-            controller = MagicHomeApi(device_ip=host, device_type=2, operation='Custom Brightness')
-            controller.update_device(r=255, g=255, b=255, warm_white=rgb, cool_white=rgb)
+        args = {'r': 255, 'g': 255, 'b': 255, 'warm_white': rgb}
+        if not warm_lights:
+            args.update({'cool_white': rgb})
+        MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness').update_device(**args)
 
     if 'hallway' in phrase:
         if not (light_host_id := hallway_ip):
@@ -2693,18 +2526,11 @@ def lights(phrase: str) -> None:
         say(text=f'{random.choice(ack)}! Setting {lights_count} {plural} to yellow!') if 'yellow' in phrase else \
             say(text=f'Sure sir! Setting {lights_count} {plural} to warm!')
         Thread(target=thread_worker, args=[warm]).start()
-    elif 'red' in phrase:
+    elif any(word in phrase for word in list(preset_values.keys())):
         say(text=f"{random.choice(ack)}! I've changed {lights_count} {plural} to red!")
         for light_ip in light_host_id:
-            preset(host=light_ip, value=preset_values['red'])
-    elif 'blue' in phrase:
-        say(text=f"{random.choice(ack)}! I've changed {lights_count} {plural} to blue!")
-        for light_ip in light_host_id:
-            preset(host=light_ip, value=preset_values['blue'])
-    elif 'green' in phrase:
-        say(text=f"{random.choice(ack)}! I've changed {lights_count} {plural} to green!")
-        for light_ip in light_host_id:
-            preset(host=light_ip, value=preset_values['green'])
+            preset(host=light_ip,
+                   value=[preset_values[_type] for _type in list(preset_values.keys()) if _type in phrase][0])
     elif 'set' in phrase or 'percentage' in phrase or '%' in phrase or 'dim' in phrase \
             or 'bright' in phrase:
         if 'bright' in phrase:
@@ -2731,49 +2557,23 @@ def vpn_checker() -> str:
         str:
         Private IP address of host machine.
     """
-    socket_ = socket(AF_INET, SOCK_DGRAM)
-    socket_.connect(("8.8.8.8", 80))
-    ip_address = socket_.getsockname()[0]
-    socket_.close()
-    if not (ip_address.startswith('192') | ip_address.startswith('127')):
-        ip_address = 'VPN:' + ip_address
-        info = json.load(urlopen('https://ipinfo.io/json'))
-        sys.stdout.write(f"\rVPN connection is detected to {info.get('ip')} at {info.get('city')}, "
-                         f"{info.get('region')} maintained by {info.get('org')}")
+    ip_address = mod.vpn_checker()
+    if ip_address.startswith('VPN'):
         say(text="You have your VPN turned on. Details on your screen sir! Please note that none of the home "
                  "integrations will work with VPN enabled.")
     return ip_address
 
 
-def celebrate() -> str:
-    """Function to look if the current date is a holiday or a birthday.
-
-    Returns:
-        str:
-        A string of the event observed today.
-    """
-    day = datetime.today().date()
-    today = datetime.now().strftime("%d-%B")
-    us_holidays = CountryHoliday('US').get(day)  # checks if the current date is a US holiday
-    in_holidays = CountryHoliday('IND', prov='TN', state='TN').get(day)  # checks if Indian (esp TN) holiday
-    if in_holidays:
-        return in_holidays
-    elif us_holidays and 'Observed' not in us_holidays:
-        return us_holidays
-    elif (birthday := os.environ.get('birthday')) and today == birthday:
-        return 'Birthday'
-
-
 def time_travel() -> None:
     """Triggered only from ``initiator()`` to give a quick update on the user's daily routine."""
-    part_day = part_of_day()
+    part_day = mod.part_of_day()
     meeting = None
     if not os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
             ['Saturday', 'Sunday']:
-        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)
+        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer, kwds={'logger': logger})
     say(text=f"Good {part_day} Vignesh.")
     if part_day == 'Night':
-        if event := celebrate():
+        if event := mod.celebrate():
             say(text=f'Happy {event}!')
         return
     current_date()
@@ -2806,7 +2606,7 @@ def guard_enable() -> None:
     """
     logger.info('Enabled Security Mode')
     say(text=f"Enabled security mode sir! I will look out for potential threats and keep you posted. "
-             f"Have a nice {part_of_day()}, and enjoy yourself sir!", run=True)
+             f"Have a nice {mod.part_of_day()}, and enjoy yourself sir!", run=True)
 
     cam_source, cam = None, None
     for i in range(0, 3):
@@ -2840,7 +2640,7 @@ def guard_enable() -> None:
 
         if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable):
             logger.info('Disabled security mode')
-            say(text=f'Welcome back sir! Good {part_of_day()}.')
+            say(text=f'Welcome back sir! Good {mod.part_of_day()}.')
             if os.path.exists(f'threat/{date_extn}.jpg'):
                 say(text="We had a potential threat sir! Please check your email to confirm.")
             say(run=True)
@@ -2871,79 +2671,14 @@ def guard_enable() -> None:
         # if no notification was sent yet or if a phrase or face is detected notification thread will be triggered
         if (not notified or float(time() - notified) > 300) and (converted or date_extn):
             notified = time()
-            Thread(target=threat_notify, args=(converted, date_extn)).start()
-
-
-def threat_notify(converted: str, date_extn: Union[str, None]) -> None:
-    """Sends an SMS and email notification in case of a threat.
-
-    References:
-        Uses `gmail-connector <https://pypi.org/project/gmail-connector/>`__ to send the SMS and email.
-
-    Args:
-        converted: Takes the voice recognized statement as argument.
-        date_extn: Name of the attachment file which is the picture of the intruder.
-    """
-    dt_string = f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}"
-    title_ = f'Intruder Alert on {dt_string}'
-
-    if converted:
-        notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
-               body=f"{dt_string}\n{converted}")
-        body_ = f"""<html><head></head><body><h2>Conversation of Intruder:</h2><br>{converted}<br><br>
-                                    <h2>Attached is a photo of the intruder.</h2>"""
-    else:
-        notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
-               body=f"{dt_string}\nCheck your email for more information.")
-        body_ = """<html><head></head><body><h2>No conversation was recorded,
-                                but attached is a photo of the intruder.</h2>"""
-    if date_extn:
-        attachment_ = f'threat/{date_extn}.jpg'
-        response_ = SendEmail(gmail_user=gmail_user, gmail_pass=gmail_pass,
-                              recipient=icloud_user, subject=title_, body=body_, attachment=attachment_).send_email()
-        if response_.ok:
-            logger.info('Email has been sent!')
-        else:
-            logger.error(f"Email dispatch failed with response: {response_.body}\n")
-
-
-def offline_communicator_initiate() -> None:
-    """Initiates Jarvis API and Ngrok for requests from external sources if they aren't running already.
-
-    Notes:
-        - ``forever_ngrok.py`` is a simple script that triggers ngrok connection in the port ``4483``.
-        - The connection is tunneled through a public facing URL which is used to make ``POST`` requests to Jarvis API.
-        - ``uvicorn`` command launches JarvisAPI ``fast.py`` using the same port ``4483``
-    """
-    ngrok_status, api_status = False, False
-    targets = ['forever_ngrok.py', 'fast.py']
-    for target_script in targets:
-        pid_check = check_output(f"ps -ef | grep {target_script}", shell=True)
-        pid_list = pid_check.decode('utf-8').split('\n')
-        for id_ in pid_list:
-            if id_ and 'grep' not in id_ and '/bin/sh' not in id_:
-                if target_script == 'forever_ngrok.py':
-                    ngrok_status = True
-                    logger.info('An instance of ngrok connection for offline communicator is running already.')
-                elif target_script == 'fast.py':
-                    api_status = True
-                    logger.info('An instance of Jarvis API for offline communicator is running already.')
-
-    if not ngrok_status:
-        if os.path.exists(f"{home}/JarvisHelper"):
-            logger.info('Initiating ngrok connection for offline communicator.')
-            initiate = f'cd {home}/JarvisHelper && source venv/bin/activate && export ENV=1 && python {targets[0]}'
-            apple_script('Terminal').do_script(initiate)
-        else:
-            logger.error(f'JarvisHelper is not available to trigger an ngrok tunneling through {offline_port}')
-            endpoint = rf'http:\\{offline_host}:{offline_port}'
-            logger.error(f'However offline communicator can still be accessed via {endpoint}\\offline-communicator '
-                         f'for API calls and {endpoint}\\docs for docs.')
-
-    if not api_status:
-        logger.info('Initiating FastAPI for offline listener.')
-        offline_script = f'cd {os.getcwd()} && source venv/bin/activate && cd api && python fast.py'
-        apple_script('Terminal').do_script(offline_script)
+            Thread(target=mod.threat_notify, kwargs=({
+                "converted": converted,
+                "gmail_user": gmail_user,
+                "gmail_pass": gmail_pass,
+                "phone_number": phone_number,
+                "recipient": icloud_user,
+                "date_extn": date_extn
+            })).start()
 
 
 def offline_communicator(command: str = None, respond: bool = True) -> None:
@@ -3001,14 +2736,6 @@ def meeting_reader() -> None:
         say(text=meeting_info)
 
 
-def meeting_app_launcher() -> None:
-    """Launches either Calendar or Outlook application which is required to read meetings."""
-    if meeting_file == 'calendar.scpt':
-        os.system('open /System/Applications/Calendar.app > /dev/null 2>&1')
-    elif meeting_file == 'outlook.scpt':
-        os.system("open /Applications/'Microsoft Outlook.app' > /dev/null 2>&1")
-
-
 def meetings():
     """Controller for meetings."""
     if os.path.isfile('meetings'):
@@ -3017,75 +2744,13 @@ def meetings():
         if called_by_offline['status']:
             say(text="Meetings file is not ready yet. Please try again in a minute or two.")
             return False
-        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)
+        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer, kwds={'logger': logger})
         say(text="Please give me a moment sir! Let me check your calendar.", run=True)
         try:
             say(text=meeting.get(timeout=60), run=True)
         except ThreadTimeoutError:
             logger.error('Unable to read the calendar within 60 seconds.')
             say(text="I wasn't able to read your calendar within the set time limit sir!", run=True)
-
-
-def meetings_gatherer() -> str:
-    """Uses ``applescript`` to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.
-
-    Returns:
-        str:
-        - On success, returns a message saying which meeting is scheduled at what time.
-        - If no events, returns a message saying there are no events in the next 12 hours.
-        - On failure, returns a message saying Jarvis was unable to read calendar/outlook.
-    """
-    args = [1, 3]
-    source_app = meeting_file.replace('.scpt', '')
-    failure = None
-    process = Popen(['/usr/bin/osascript', meeting_file] + [str(arg) for arg in args], stdout=PIPE, stderr=PIPE)
-    out, err = process.communicate()
-    os.system(f'git checkout -- {meeting_file}')  # Undo the unspecified changes done by ScriptEditor
-    if error := process.returncode:  # stores process.returncode in error if process.returncode is not 0
-        err_msg = err.decode('UTF-8')
-        err_code = err_msg.split()[-1].strip()
-        if err_code == '(-1728)':  # If the calendar named 'Office' in unavailable in the calendar application
-            logger.error("Calendar, 'Office' is unavailable.")
-            return "The calendar Office is unavailable sir!"
-        elif err_code == '(-1712)':  # If an event takes 2+ minutes, the Apple Event Manager reports a time-out error.
-            failure = f"{source_app}/event took an unusually long time to respond/complete.\nInclude, " \
-                      f"'with timeout of 300 seconds' to your {meeting_file} right after the " \
-                      f"'tell application {source_app}' step and 'end timeout' before the 'end tell' step."
-        elif err_code in ['(-10810)', '(-609)', '(-600)']:  # If unable to launch the app or app terminates.
-            meeting_app_launcher()
-        if not failure:
-            failure = f"Unable to read {source_app} - [{error}]\n{err_msg}"
-        logger.error(failure)
-        failure = failure.replace('"', '')  # An identifier can’t go after this “"”
-        os.system(f"""osascript -e 'display notification "{failure}" with title "Jarvis"'""")
-        return f"I was unable to read your {source_app} sir! Please make sure it is in sync."
-
-    events = out.decode().strip()
-    if not events or events == ',':
-        return "You don't have any meetings in the next 12 hours sir!"
-
-    events = events.replace(', date ', ' rEpLaCInG ')
-    event_time = events.split('rEpLaCInG')[1:]
-    event_name = events.split('rEpLaCInG')[0].split(', ')
-    event_name = [i.strip() for n, i in enumerate(event_name) if i not in event_name[n + 1:]]  # remove duplicates
-    count = len(event_time)
-    [event_name.remove(e) for e in event_name if len(e) <= 5] if count != len(event_name) else None
-    meeting_status = f'You have {count} meetings in the next 12 hours sir! ' if count > 1 else ''
-    events = {}
-    for i in range(count):
-        if i < len(event_name):
-            event_time[i] = re.search(' at (.*)', event_time[i]).group(1).strip()
-            dt_string = datetime.strptime(event_time[i], '%I:%M:%S %p')
-            event_time[i] = dt_string.strftime('%I:%M %p')
-            events.update({event_name[i]: event_time[i]})
-    ordered_data = sorted(events.items(), key=lambda x: datetime.strptime(x[1], '%I:%M %p'))
-    for index, meeting in enumerate(ordered_data):
-        if count == 1:
-            meeting_status += f"You have a meeting at {meeting[1]} sir! {meeting[0].upper()}. "
-        else:
-            meeting_status += f"{meeting[0]} at {meeting[1]}, " if index + 1 < len(ordered_data) else \
-                f"{meeting[0]} at {meeting[1]}."
-    return meeting_status
 
 
 def system_vitals() -> None:
@@ -3124,22 +2789,23 @@ def system_vitals() -> None:
             '/tmp/spindump.txt;sudo rm /tmp/spindump.txt', shell=True).decode('utf-8')
 
     if cpu_temp:
-        cpu = f'Your current average CPU temperature is {format_nos(temperature.c2f(extract_nos(cpu_temp)))}°F. '
+        cpu = f'Your current average CPU temperature is ' \
+              f'{mod.format_nos(input_=temperature.c2f(arg=mod.extract_nos(input_=cpu_temp)))}°F. '
         output += cpu
         say(text=cpu)
     if gpu_temp:
-        gpu = f'GPU temperature is {format_nos(temperature.c2f(extract_nos(gpu_temp)))}°F. '
+        gpu = f'GPU temperature is {mod.format_nos(temperature.c2f(mod.extract_nos(gpu_temp)))}°F. '
         output += gpu
         say(text=gpu)
     if fan_speed:
-        fan = f'Current fan speed is {format_nos(extract_nos(fan_speed))} RPM. '
+        fan = f'Current fan speed is {mod.format_nos(mod.extract_nos(fan_speed))} RPM. '
         output += fan
         say(text=fan)
 
     restart_time = datetime.fromtimestamp(boot_time())
     second = (datetime.now() - restart_time).total_seconds()
     restart_time = datetime.strftime(restart_time, "%A, %B %d, at %I:%M %p")
-    restart_duration = time_converter(seconds=second)
+    restart_duration = mod.time_converter(seconds=second)
     output += f'Restarted on: {restart_time} - {restart_duration} ago from now.'
     if called_by_offline['status']:
         say(text=output)
@@ -3157,24 +2823,6 @@ def system_vitals() -> None:
             if any(word in response.lower() for word in keywords.ok):
                 logger.info(f'JARVIS::Restarting {hosted_device.get("device")}')
                 restart(target='PC_Proceed')
-
-
-def get_ssid() -> str:
-    """Gets SSID of the network connected.
-
-    Returns:
-        str:
-        Wi-Fi or Ethernet SSID.
-    """
-    process = Popen(
-        ['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'],
-        stdout=PIPE)
-    out, err = process.communicate()
-    if error := process.returncode:
-        logger.error(f"Failed to fetch SSID with exit code: {error}\n{err}")
-    # noinspection PyTypeChecker
-    return dict(map(str.strip, info.split(': ')) for info in out.decode('utf-8').splitlines()[:-1] if
-                len(info.split()) == 2).get('SSID')
 
 
 def personal_cloud(phrase: str) -> None:
@@ -3206,38 +2854,16 @@ def vpn_server(phrase: str) -> None:
     phrase = phrase.lower()
     if os.environ.get('VPN_LIVE'):
         say(text='An operation for VPN Server is already in progress sir! Please wait and retry.')
-    elif 'start' in phrase or 'trigger' in phrase or 'initiate' in phrase or \
-            'enable' in phrase or 'spin up' in phrase:
-        Thread(target=vpn_server_switch, args=['START']).start()
+    elif 'start' in phrase or 'trigger' in phrase or 'initiate' in phrase or 'enable' in phrase or 'spin up' in phrase:
+        Thread(target=mod.vpn_server_switch,
+               kwargs={'operation': 'START', 'phone_number': phone_number, 'recipient': icloud_user}).start()
         say(text='VPN Server has been initiated sir! Login details will be sent to you shortly.')
-    elif 'stop' in phrase or 'shut' in phrase or 'close' in phrase or \
-            'disable' in phrase:
-        Thread(target=vpn_server_switch, args=['STOP']).start()
+    elif 'stop' in phrase or 'shut' in phrase or 'close' in phrase or 'disable' in phrase:
+        Thread(target=mod.vpn_server_switch,
+               kwargs={'operation': 'STOP', 'phone_number': phone_number, 'recipient': icloud_user}).start()
         say(text='VPN Server will be shutdown sir!')
     else:
         say(text="I don't understand the request sir! You can ask me to enable or disable the VPN server.")
-
-
-def vpn_server_switch(operation: str) -> None:
-    """Automator to ``START`` or ``STOP`` the VPN portal.
-
-    Args:
-        operation: Takes ``START`` or ``STOP`` as an argument.
-
-    See Also:
-        - Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
-    """
-    os.environ['VPN_LIVE'] = 'True'
-    vpn_object = VPNServer(vpn_username=os.environ.get('vpn_username', os.environ.get('USER', 'openvpn')),
-                           vpn_password=os.environ.get('vpn_password', 'aws_vpn_2021'), log='FILE',
-                           gmail_user=os.environ.get('offline_user', os.environ.get('gmail_user')),
-                           gmail_pass=os.environ.get('offline_pass', os.environ.get('gmail_pass')),
-                           phone=phone_number, recipient=icloud_user)
-    if operation == 'START':
-        vpn_object.create_vpn_server()
-    elif operation == 'STOP':
-        vpn_object.delete_vpn_server()
-    del os.environ['VPN_LIVE']
 
 
 def internet_checker() -> Union[Speedtest, bool]:
@@ -3283,7 +2909,7 @@ def initiator(key_original: str, should_return: bool = False) -> None:
     key_split = key.split()
     if [word for word in key_split if word in time_of_day]:
         time_travel.has_been_called = True
-        if event := celebrate():
+        if event := mod.celebrate():
             say(text=f'Happy {event}!')
         if 'night' in key_split or 'goodnight' in key_split:
             Thread(target=pc_sleep).start()
@@ -3454,12 +3080,12 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
         if start_2 + every_2 <= time():
             start_2 = time()
             Thread(target=meeting_file_writer).start()
-        if alarm_state := lock_files(alarm_files=True):
+        if alarm_state := mod.lock_files(alarm_files=True):
             for each_alarm in alarm_state:
                 if each_alarm == datetime.now().strftime("%I_%M_%p.lock"):
                     Thread(target=alarm_executor).start()
                     os.remove(f'alarm/{each_alarm}')
-        if reminder_state := lock_files(reminder_files=True):
+        if reminder_state := mod.lock_files(reminder_files=True):
             for each_reminder in reminder_state:
                 remind_time, remind_msg = each_reminder.split('-')
                 remind_msg = remind_msg.rstrip('.lock')
@@ -3508,41 +3134,10 @@ def meeting_file_writer() -> None:
     """
     if os.path.isfile('meetings') and int(datetime.now().timestamp()) - int(os.stat('meetings').st_mtime) < 1_800:
         os.remove('meetings')  # removes the file if it is older than 30 minutes
-    data = meetings_gatherer()
+    data = meetings_gatherer(logger=logger)
     if data.startswith('You'):
         with open('meetings', 'w') as gatherer:
             gatherer.write(data)
-
-
-def vehicle(car_email, car_pass, car_pin, operation: str, temp: int = None) -> Control:
-    """Establishes a connection with the car and returns an object to control the primary vehicle.
-
-    Args:
-        car_email: Email to authenticate API.
-        car_pass: Password to authenticate API.
-        operation: Operation to be performed.
-        car_pin: Master PIN to perform operations.
-        temp: Temperature for climate control.
-
-    Returns:
-        Control:
-        Control object to access the primary vehicle.
-    """
-    try:
-        control = Connect(username=car_email, password=car_pass, logger=logger).primary_vehicle
-        if operation == 'LOCK':
-            control.lock(pin=car_pin)
-        elif operation == 'UNLOCK':
-            control.unlock(pin=car_pin)
-        elif operation == 'START':
-            control.remote_engine_start(pin=car_pin, target_value=temp)
-        elif operation == 'STOP':
-            control.remote_engine_stop(pin=car_pin)
-        elif operation == 'SECURE':
-            control.enable_guardian_mode(pin=car_pin)
-        return os.environ.get('car_name', control.get_attributes().get('vehicleBrand', 'car'))
-    except HTTPError as error:
-        logger.error(error)
 
 
 def car(phrase: str) -> None:
@@ -3566,7 +3161,7 @@ def car(phrase: str) -> None:
                    "to connect your car."
 
     if 'start' in phrase or 'set' in phrase or 'turn on' in phrase:
-        if climate := extract_nos(input_=phrase):
+        if climate := mod.extract_nos(input_=phrase):
             climate = int(climate)
             if climate > 84:
                 target_temp = 57  # 83°F is the highest available temperature
@@ -3599,28 +3194,28 @@ def car(phrase: str) -> None:
             extras = f"The current temperature is {climate}°F, so I've configured the climate setting " \
                      f"to {target_temp + 26}°F"
 
-        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='START', temp=target_temp,
-                               car_pin=car_pin):
+        if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='START', temp=target_temp,
+                                   car_pin=car_pin):
             say(text=f'Your {car_name} has been started sir. {extras}')
         else:
             say(text=disconnected)
     elif 'turn off' in phrase or 'stop' in phrase:
-        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='STOP', car_pin=car_pin):
+        if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='STOP', car_pin=car_pin):
             say(text=f'Your {car_name} has been turned off sir!')
         else:
             say(text=disconnected)
     elif 'secure' in phrase:
-        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='SECURE', car_pin=car_pin):
+        if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='SECURE', car_pin=car_pin):
             say(text=f'Guardian mode has been enabled sir! Your {car_name} is now secure.')
         else:
             say(text=disconnected)
     elif 'unlock' in phrase:
-        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='UNLOCK', car_pin=car_pin):
+        if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='UNLOCK', car_pin=car_pin):
             say(text=f'Your {car_name} has been unlocked sir!')
         else:
             say(text=disconnected)
     elif 'lock' in phrase:
-        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='LOCK', car_pin=car_pin):
+        if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='LOCK', car_pin=car_pin):
             say(text=f'Your {car_name} has been locked sir!')
         else:
             say(text=disconnected)
@@ -3695,7 +3290,7 @@ class Activator:
                 del os.environ['called_by_offline']
             else:
                 exit_process()
-                terminator()
+                mod.terminator()
 
     def stop(self) -> None:
         """Invoked when the run loop is exited or manual interrupt.
@@ -3713,98 +3308,13 @@ class Activator:
         self.py_audio.terminate()
 
 
-def size_converter(byte_size: int) -> str:
-    """Gets the current memory consumed and converts it to human friendly format.
-
-    Args:
-        byte_size: Receives byte size as argument.
-
-    Returns:
-        str:
-        Converted understandable size.
-    """
-    if not byte_size:
-        from resource import RUSAGE_SELF, getrusage
-        byte_size = getrusage(RUSAGE_SELF).ru_maxrss
-    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-    integer = int(floor(log(byte_size, 1024)))
-    power = pow(1024, integer)
-    size = round(byte_size / power, 2)
-    return f'{size} {size_name[integer]}'
-
-
-def exit_message() -> str:
-    """Variety of exit messages based on day of week and time of day.
-
-    Returns:
-        str:
-        A greeting bye message.
-    """
-    am_pm = datetime.now().strftime("%p")  # current part of day (AM/PM)
-    hour = datetime.now().strftime("%I")  # current hour
-    day = datetime.now().strftime("%A")  # current day
-
-    if am_pm == 'AM' and int(hour) < 10:
-        exit_msg = f"Have a nice day, and happy {day}."
-    elif am_pm == 'AM' and int(hour) >= 10:
-        exit_msg = f"Enjoy your {day}."
-    elif am_pm == 'PM' and (int(hour) == 12 or int(hour) < 3) and day in weekend:
-        exit_msg = "Have a nice afternoon, and enjoy your weekend."
-    elif am_pm == 'PM' and (int(hour) == 12 or int(hour) < 3):
-        exit_msg = "Have a nice afternoon."
-    elif am_pm == 'PM' and int(hour) < 6 and day in weekend:
-        exit_msg = "Have a nice evening, and enjoy your weekend."
-    elif am_pm == 'PM' and int(hour) < 6:
-        exit_msg = "Have a nice evening."
-    elif day in weekend:
-        exit_msg = "Have a nice night, and enjoy your weekend."
-    else:
-        exit_msg = "Have a nice night."
-
-    if event := celebrate():
-        exit_msg += f'\nAnd by the way, happy {event}'
-
-    return exit_msg
-
-
-def terminator() -> None:
-    """Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.
-
-    Using this, eliminates the hassle of forcing multiple threads to stop.
-
-    Examples:
-        - os._exit(0)
-        - kill -15 `PID`
-    """
-    pid_check = check_output("ps -ef | grep jarvis.py", shell=True)
-    pid_list = pid_check.decode('utf-8').splitlines()
-    for pid_info in pid_list:
-        if pid_info and 'grep' not in pid_info and '/bin/sh' not in pid_info:
-            os.system(f'kill -15 {pid_info.split()[1].strip()}')
-
-
-def remove_files() -> None:
-    """Function that deletes multiple files when called during exit operation.
-
-    Warnings:
-        Deletes:
-            - all ``.lock`` files created for alarms and reminders.
-            - ``location.yaml`` file, to recreate a new one next time around.
-            - ``meetings`` file, to recreate a new one next time around.
-    """
-    os.removedirs('alarm') if os.path.isdir('alarm') else None
-    os.removedirs('reminder') if os.path.isdir('reminder') else None
-    os.remove('location.yaml') if os.path.isfile('location.yaml') else None
-    os.remove('meetings') if os.path.isfile('meetings') else None
-
-
 def exit_process() -> None:
     """Function that holds the list of operations done upon exit."""
     STOPPER['status'] = True
     logger.info('JARVIS::Stopping Now::STOPPER flag has been set to True')
     reminders = {}
-    alarms = lock_files(alarm_files=True)
-    if reminder_files := lock_files(reminder_files=True):
+    alarms = mod.lock_files(alarm_files=True)
+    if reminder_files := mod.lock_files(reminder_files=True):
         for file in reminder_files:
             split_val = file.replace('.lock', '').split('-')
             reminders.update({split_val[0]: split_val[-1]})
@@ -3826,66 +3336,12 @@ def exit_process() -> None:
         say(text='This will be removed while shutting down!')
     say(text='Shutting down now sir!')
     try:
-        say(text=exit_message(), run=True)
+        say(text=mod.exit_message(), run=True)
     except RuntimeError:
         logger.error(f'Received a RuntimeError while self terminating.\n{format_exc()}')
-    remove_files()
-    sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
-                     f"\nTotal runtime: {time_converter(perf_counter())}")
-
-
-def extract_nos(input_: str) -> float:
-    """Extracts number part from a string.
-
-    Args:
-        input_: Takes string as an argument.
-
-    Returns:
-        float:
-        Float values.
-    """
-    if value := re.findall(r"\d+", input_):
-        return float('.'.join(value))
-
-
-def format_nos(input_: float) -> int:
-    """Removes ``.0`` float values.
-
-    Args:
-        input_: Int if found, else returns the received float value.
-
-    Returns:
-        int:
-        Formatted integer.
-    """
-    return int(input_) if isinstance(input_, float) and input_.is_integer() else input_
-
-
-def extract_str(input_: str) -> str:
-    """Extracts strings from the received input.
-
-    Args:
-        input_: Takes a string as argument.
-
-    Returns:
-        str:
-        A string after removing special characters.
-    """
-    return ''.join([i for i in input_ if not i.isdigit() and i not in [',', '.', '?', '-', ';', '!', ':']]).strip()
-
-
-def hosted_device_info() -> dict:
-    """Gets basic information of the hosted device.
-
-    Returns:
-        dict:
-        A dictionary of key-value pairs with device type, operating system, os version.
-    """
-    system_kernel = (check_output("sysctl hw.model", shell=True)).decode('utf-8').splitlines()  # gets model info
-    device = extract_str(system_kernel[0].split(':')[1])
-    platform_info = platform().split('-')
-    version = '.'.join(platform_info[1].split('.')[0:2])
-    return {'device': device, 'os_name': platform_info[0], 'os_version': float(version)}
+    mod.remove_files()
+    sys.stdout.write(f"\rMemory consumed: {mod.size_converter(0)}"
+                     f"\nTotal runtime: {mod.time_converter(perf_counter())}")
 
 
 def pc_sleep() -> None:
@@ -3895,15 +3351,6 @@ def pc_sleep() -> None:
     os.system("""osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'""")
     if not (report.has_been_called or time_travel.has_been_called):
         say(text=random.choice(ack))
-
-
-def stop_terminal() -> None:
-    """Uses pid to kill terminals as terminals await user confirmation interrupting shutdown/restart."""
-    pid_check = check_output("ps -ef | grep 'iTerm\\|Terminal'", shell=True)
-    pid_list = pid_check.decode('utf-8').split('\n')
-    for id_ in pid_list:
-        if id_ and 'Applications' in id_ and '/usr/bin/login' not in id_:
-            os.system(f'kill -9 {id_.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
 
 
 def sleep_control(phrase: str) -> bool:
@@ -3977,7 +3424,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
         else:
             converted = 'yes'
         if any(word in converted.lower() for word in keywords.ok):
-            stop_terminal()
+            mod.stop_terminal()
             call(['osascript', '-e', 'tell app "System Events" to restart'])
             raise KeyboardInterrupt
         else:
@@ -3986,7 +3433,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
     STOPPER['status'] = True
     logger.info('JARVIS::Restarting Now::STOPPER flag has been set.')
     logger.info(f'Called by {sys._getframe(1).f_code.co_name}')
-    sys.stdout.write(f"\rMemory consumed: {size_converter(0)}\tTotal runtime: {time_converter(perf_counter())}")
+    sys.stdout.write(f"\rMemory consumed: {mod.size_converter(0)}\tTotal runtime: {mod.time_converter(perf_counter())}")
     if not quiet:
         try:
             if not called_by_offline['status']:
@@ -4019,7 +3466,7 @@ def shutdown(proceed: bool = False) -> None:
         converted = 'yes'
     if converted != 'SR_ERROR':
         if any(word in converted.lower() for word in keywords.ok):
-            stop_terminal()
+            mod.stop_terminal()
             call(['osascript', '-e', 'tell app "System Events" to shut down'])
             raise KeyboardInterrupt
         else:
@@ -4037,7 +3484,7 @@ def voice_default(voice_model: str = 'Daniel') -> None:
     voices = speaker.getProperty("voices")  # gets the list of voices available
     for ind_d, voice_d in enumerate(voices):
         if voice_d.name == voice_model:
-            sys.stdout.write(f'\rVoice module has been re-configured to {ind_d}::{voice_d.name}')
+            sys.stdout.write(f'\rVoice module has been configured to {ind_d}::{voice_d.name}')
             speaker.setProperty("voice", voices[ind_d].id)
             return
 
@@ -4112,7 +3559,8 @@ def initiate_background_threads() -> None:
         - automator: Initiates automator that executes certain functions at said time.
         - playsound: Plays a start-up sound.
     """
-    Thread(target=offline_communicator_initiate).start()
+    Thread(target=mod.offline_communicator_initiate,
+           kwargs={'offline_host': offline_host, 'offline_port': offline_port, 'home': home}).start()
     Thread(target=automator).start()
     playsound(sound='indicators/initialize.mp3', block=False)
 
@@ -4123,7 +3571,8 @@ def stopper() -> None:
 
 
 if __name__ == '__main__':
-    hosted_device = hosted_device_info()
+    mod = Helper(logger=logger)
+    hosted_device = mod.hosted_device_info()
     if hosted_device.get('os_name') != 'macOS':
         exit('Unsupported Operating System.\nWindows support was recently deprecated. '
              'Refer https://github.com/thevickypedia/Jarvis/commit/cf54b69363440d20e21ba406e4972eb058af98fc')
@@ -4142,7 +3591,6 @@ if __name__ == '__main__':
     sys.setrecursionlimit(limit * 10)  # increases the recursion limit by 10 times
     home = os.path.expanduser('~')  # gets the path to current user profile
 
-    meeting_file = 'calendar.scpt'
     starter()  # initiates crucial functions which needs to be called during start up
 
     weather_api = os.environ.get('weather_api')
@@ -4155,15 +3603,16 @@ if __name__ == '__main__':
     phone_number = os.environ.get('phone_number')
     router_pass = os.environ.get('router_pass')
 
+    text_spoken = {'text': ''}
     if st := internet_checker():
-        sys.stdout.write(f'\rINTERNET::Connected to {get_ssid()}. Scanning localhost for connected devices.')
+        sys.stdout.write(f'\rINTERNET::Connected to {mod.get_ssid()}. Scanning router for connected devices.')
     else:
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
         say(text="I was unable to connect to the internet sir! Please check your connection settings and retry.",
             run=True)
-        sys.stdout.write(f"\rMemory consumed: {size_converter(0)}"
-                         f"\nTotal runtime: {time_converter(perf_counter())}")
-        terminator()
+        sys.stdout.write(f"\rMemory consumed: {mod.size_converter(0)}"
+                         f"\nTotal runtime: {mod.time_converter(perf_counter())}")
+        mod.terminator()
 
     # Retrieves devices IP by doing a local IP range scan using Netgear API
     # Note: This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)
@@ -4194,7 +3643,7 @@ if __name__ == '__main__':
     # warm_light is initiated with an empty dict and the key status is set to True when requested to switch to yellow
     # greet_check is used in initialize() to greet only for the first run
     # tv is set to an empty dict instead of TV() at the start to avoid turning on the TV unnecessarily
-    tv, warm_light, greet_check, text_spoken, STOPPER = None, {}, {}, {'text': ''}, {}
+    tv, warm_light, greet_check, STOPPER = None, {}, {}, {}
     called_by_offline = {'status': False}
 
     # stores necessary values for geolocation to receive the latitude, longitude and address
@@ -4210,7 +3659,8 @@ if __name__ == '__main__':
         location_info = location_details['address']
         current_tz = location_details['timezone']
     else:
-        current_lat, current_lon, location_info = location_services(device_selector())
+        current_lat, current_lon, location_info = location_services(mod.device_selector(icloud_user=icloud_user,
+                                                                                        icloud_pass=icloud_pass))
         current_tz = str(TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon))
         location_dumper = [{'timezone': current_tz}, {'latitude': current_lat}, {'longitude': current_lon},
                            {'address': location_info}]
@@ -4227,8 +3677,6 @@ if __name__ == '__main__':
     confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']
     ack = ['Check', 'Will do sir!', 'You got it sir!', 'Roger that!', 'Done sir!', 'By all means sir!', 'Indeed sir!',
            'Gladly sir!', 'Without fail sir!', 'Sure sir!', 'Buttoned up sir!', 'Executed sir!']
-
-    weekend = ['Friday', 'Saturday']
 
     # {function_name}.has_been_called is used to denote which function has triggered the other
     report.has_been_called, locate_places.has_been_called, directions.has_been_called, google_maps.has_been_called, \
