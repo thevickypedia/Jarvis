@@ -540,7 +540,7 @@ def current_date() -> None:
     """Says today's date and adds the current time in speaker queue if report or time_travel function was called."""
     dt_string = datetime.now().strftime("%A, %B")
     date_ = engine().ordinal(datetime.now().strftime("%d"))
-    year = datetime.now().strftime("%Y")
+    year = datetime.now().year
     event = mod.celebrate()
     if time_travel.has_been_called:
         dt_string = dt_string + date_
@@ -2882,8 +2882,7 @@ def internet_checker() -> Union[Speedtest, bool]:
 
 def morning() -> None:
     """Checks for the current time of the day and day of the week to trigger a series of morning messages."""
-    clock = datetime.now()
-    if clock.strftime('%A') not in ['Saturday', 'Sunday'] and int(clock.strftime('%S')) < 10:
+    if datetime.now().strftime('%A') not in ['Saturday', 'Sunday'] and int(datetime.now().second) < 10:
         say(text="Good Morning. It's 7 AM.")
         time_travel.has_been_called = True
         weather()
@@ -3005,7 +3004,6 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
             sleep(0.1)  # Read file after 0.1 second for the content to be written
             with open('offline_request') as off_request:
                 request = off_request.read()
-            logger.info(f'Received request: {request}')
             offline_communicator(command=request)
             sys.stdout.flush()
             sys.stdout.write('\r')
@@ -3194,27 +3192,32 @@ def car(phrase: str) -> None:
             extras = f"The current temperature is {climate}°F, so I've configured the climate setting " \
                      f"to {target_temp + 26}°F"
 
+        playsound(sound='indicators/exhaust.mp3', block=False)
         if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='START', temp=target_temp,
                                    car_pin=car_pin):
             say(text=f'Your {car_name} has been started sir. {extras}')
         else:
             say(text=disconnected)
     elif 'turn off' in phrase or 'stop' in phrase:
+        playsound(sound='indicators/exhaust.mp3', block=False)
         if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='STOP', car_pin=car_pin):
             say(text=f'Your {car_name} has been turned off sir!')
         else:
             say(text=disconnected)
     elif 'secure' in phrase:
+        playsound(sound='indicators/exhaust.mp3', block=False)
         if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='SECURE', car_pin=car_pin):
             say(text=f'Guardian mode has been enabled sir! Your {car_name} is now secure.')
         else:
             say(text=disconnected)
     elif 'unlock' in phrase:
+        playsound(sound='indicators/exhaust.mp3', block=False)
         if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='UNLOCK', car_pin=car_pin):
             say(text=f'Your {car_name} has been unlocked sir!')
         else:
             say(text=disconnected)
     elif 'lock' in phrase:
+        playsound(sound='indicators/exhaust.mp3', block=False)
         if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='LOCK', car_pin=car_pin):
             say(text=f'Your {car_name} has been locked sir!')
         else:

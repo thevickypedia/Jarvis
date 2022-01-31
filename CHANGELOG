@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.4.3 (01/30/2022)
+------------------
+- Play a sound when connecting to car module
+- Fix incorrect argument for remote engine start
+- Remove default value on expiration time
+
 5.4.2 (01/30/2022)
 ------------------
 - Move independent functions out of main module

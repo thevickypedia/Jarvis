@@ -711,7 +711,7 @@ class Control(dict):
         """
         return self._prov_command(pin=pin, expiration_time=expiration_time, mode="protectionStrategy_serviceMode")
 
-    def enable_guardian_mode(self, pin: int, expiration_time: Union[int, float] = int(time()) + 86_400) -> dict:
+    def enable_guardian_mode(self, pin: int, expiration_time: Union[int, float] = None) -> dict:
         """Guardian Mode is a security feature that will generate alarms when vehicle interaction is detected.
 
         Args:
@@ -729,7 +729,7 @@ class Control(dict):
         headers = self.connection.head.copy()
         headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.GuardianAlarmList-v1+json"
         gm_data = self._authenticate_service(pin=pin, service_name="GM")
-        gm_data["endTime"] = expiration_time
+        gm_data["endTime"] = expiration_time or int(time()) + 86_400
         gm_data["status"] = "ACTIVE"
         return self.post_data(command="gm/alarms", headers=headers, data=gm_data)
 
