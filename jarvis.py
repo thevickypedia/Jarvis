@@ -3156,41 +3156,29 @@ def car(phrase: str) -> None:
                    "to connect your car."
 
     if 'start' in phrase or 'set' in phrase or 'turn on' in phrase:
+        extras = ''
         if climate := mod.extract_nos(input_=phrase):
             climate = int(climate)
-            if climate > 84:
-                target_temp = 57  # 83°F is the highest available temperature
-                climate = 83
-            elif climate < 58:
-                target_temp = 31  # 57°F is the lowest available temperature
-                climate = 57
-            else:
-                target_temp = climate - 26
-            extras = f'The climate setting has been configured to {climate}°F'
         elif 'high' in phrase or 'highest' in phrase:
-            target_temp = 57
-            extras = f'The climate setting has been configured to {target_temp + 26}°F'
+            climate = 83
         elif 'low' in phrase or 'lowest' in phrase:
-            target_temp = 31
-            extras = f'The climate setting has been configured to {target_temp + 26}°F'
+            climate = 57
         else:
             climate = int(temperature.k2f(arg=json.loads(urlopen(
                 url=f'https://api.openweathermap.org/data/2.5/onecall?lat={current_lat}&lon={current_lon}&exclude='
                     f'minutely,hourly&appid={weather_api}'
             ).read())['current']['temp']))
+            extras += f'The current temperature is {climate}°F, so '
 
-            if climate < 55:
-                target_temp = 57  # 83°F will be target temperature (highest)
-            elif climate > 75:
-                target_temp = 31  # 57°F will be target temperature (highest)
-            else:
-                target_temp = 38  # 64°F will be target temperature (average)
+        if climate > 83:
+            climate = 83  #
+        elif climate < 57:
+            climate = 57
 
-            extras = f"The current temperature is {climate}°F, so I've configured the climate setting " \
-                     f"to {target_temp + 26}°F"
+        extras = f"I've configured the climate setting to {climate}°F"
 
         playsound(sound='indicators/exhaust.mp3', block=False) if not called_by_offline['status'] else None
-        if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='START', temp=target_temp,
+        if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='START', temp=climate - 26,
                                    car_pin=car_pin):
             say(text=f'Your {car_name} has been started sir. {extras}')
         else:

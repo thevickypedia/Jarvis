@@ -39,8 +39,8 @@ class CronScheduler:
         """Creates a crontab schedule to run every 30 minutes between the ``start`` and ``end`` time.
 
         Args:
-            start: Time when the schedule starts everyday.
-            end: Time when the schedule ends everyday.
+            start: Time when the schedule starts every day.
+            end: Time when the schedule ends every day.
         """
         self.logger.info('Creating a new cron schedule.')
         entry = f"cd {getcwd()} && source ../venv/bin/activate && python report_gatherer.py && deactivate"
