@@ -16,7 +16,7 @@ import logging
 from datetime import datetime
 from importlib import reload
 from logging.config import dictConfig
-from os import makedirs, path
+from os import getcwd, makedirs, path
 from time import struct_time, time
 
 from pytz import timezone, utc
@@ -26,12 +26,10 @@ dictConfig({
     'disable_existing_loggers': True,
 })
 
-directory = path.dirname(__file__)
+if not path.isdir(f'{getcwd()}/logs'):
+    makedirs(path.join(getcwd(), 'logs'))
 
-if not path.isdir(path.join(directory, '../logs')):
-    makedirs(path.join(directory, '../logs'))
-
-log_file = datetime.now().strftime(path.join(directory, '../logs/jarvis_%d-%m-%Y.log'))
+log_file = datetime.now().strftime(path.join(getcwd(), 'logs/jarvis_%d-%m-%Y.log'))
 write = ''.join(['*' for _ in range(120)])
 
 with open(log_file, 'a+') as file:
