@@ -1,7 +1,4 @@
-"""**API Reference:** https://documenter.getpostman.com/view/6250319/RznBMzqo for Jaguar LandRover InControl API.
-
-**Module Reference:** https://github.com/ardevd/jlrpy
-"""
+"""**API Reference:** https://documenter.getpostman.com/view/6250319/RznBMzqo for Jaguar LandRover InControl API."""
 
 import json
 from logging import DEBUG, Logger, StreamHandler, getLogger
@@ -12,7 +9,7 @@ from urllib.error import HTTPError
 from urllib.request import Request, build_opener
 from uuid import UUID, uuid4
 
-from helper_functions.car_controller import Control
+from modules.car.car_controller import Control
 
 
 def logger_module() -> Logger:

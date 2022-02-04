@@ -24,9 +24,9 @@ from pyicloud import PyiCloudService
 from pyicloud.services.findmyiphone import AppleDevice
 from vpn.controller import VPNServer
 
-from helper_functions.car_connector import Connect
-from helper_functions.car_controller import Control
-from helper_functions.notify import notify
+from modules.car.car_connector import Connect
+from modules.car.car_controller import Control
+from modules.notifications.notify import notify
 
 
 class Helper:

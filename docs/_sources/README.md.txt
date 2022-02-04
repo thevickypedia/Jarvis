@@ -122,10 +122,10 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 - **personal_cloud_host** - Directory path which has to shared through the internet.
 
 **Args to control TV** - Applies only for [LGWebOS](https://en.wikipedia.org/wiki/WebOS)
-- **tv_client_key** - Client key to [control the TV](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/tv_controls.py) using `pywebostv` module.
+- **tv_client_key** - Client key to [control the TV](https://github.com/thevickypedia/Jarvis/blob/master/modules/tv_controls.py) using `pywebostv` module.
 - **tv_mac** - Mac address of the TV which will be retrieved by the `arp` command but just in case.
 
-**Args for [ip_scanner](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/ip_scanner.py)** - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers)
+**Args for [ip_scanner](https://github.com/thevickypedia/Jarvis/blob/master/modules/ip_scanner.py)** - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers)
 - **router_pass** - Router's admin password to get the available devices using `pynetgear` module.
      > Note that this may be done even without the module by simply scanning the whole network.
   > Using the module makes it easier since the devices are already connected to the router.
@@ -134,12 +134,12 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 > Built for a personalized usage.
 - **ngrok_auth_key** - Auth token from [ngrok](https://dashboard.ngrok.com/) - Only used for `offline_communicator`
 
-**Args for [car_connector](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/car_connector.py)**
+**Args for [car_connector](https://github.com/thevickypedia/Jarvis/blob/master/modules/car_connector.py)**
 > The following arguments can be used only if the vehicle is a Jaguar or a LandRover using InControl API.
 - **car_email** - Email address to log in to InControl API.
 - **car_pass** - Password to authenticate InControl API.
 
-**Args for [car_controller](https://github.com/thevickypedia/Jarvis/blob/master/helper_functions/car_controller.py)**
+**Args for [car_controller](https://github.com/thevickypedia/Jarvis/blob/master/modules/car_controller.py)**
 - **car_pin** - Master PIN for the vehicle.
 </details>
 

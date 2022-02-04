@@ -78,103 +78,91 @@ Jarvis - API Robinhood Helper
 
 .. autoclass:: api.rh_helper.CustomTemplate
    :members:
-   :undoc-members:
    :exclude-members: source
 
 .. autoclass:: api.rh_helper.MarketHours
    :members:
-   :undoc-members:
    :exclude-members: hours
 
 Car - Connector
 ===============
 
-.. automodule:: helper_functions.car_connector
+.. automodule:: modules.car.car_connector
    :members:
-   :undoc-members:
    :exclude-members: IFAS_BASE_URL, IFOP_BASE_URL, IF9_BASE_URL
 
 Car - Controller
 ================
 
-.. automodule:: helper_functions.car_controller
+.. automodule:: modules.car.car_controller
    :members:
-   :undoc-members:
    :exclude-members: DEFAULT_CONTENT_TYPE
 
 Conversation
 ============
 
-.. automodule:: helper_functions.conversation
+.. automodule:: modules.conditions.conversation
    :members:
-   :undoc-members:
    :exclude-members: greeting, capabilities, languages, what, who, form, whats_up, about_me
+
+Keywords
+========
+
+.. automodule:: modules.conditions.keywords
+   :members:
+   :exclude-members: current_date, current_time, weather, system_info, ip_info, webpage, wikipedia_, news, report, robinhood, apps, repeat, location, locate, music, gmail, meaning, create_db, add_todo, delete_todo, delete_db, todo, distance, avoid, locate_places, directions, alarm, kill_alarm, reminder, google_home, jokes, notes, github, send_sms, google_search, television, volume, face_detection, speed_test, bluetooth, brightness, lights, guard_enable, guard_disable, flip_a_coin, facts, meetings, voice_changer, system_vitals, vpn_server, personal_cloud, ok, restart_control, exit, sleep_control, kill, car, shutdown
 
 Database
 ========
 
-.. automodule:: helper_functions.database
+.. automodule:: modules.database.database
    :members:
    :undoc-members:
 
 Face Recognition
 ================
 
-.. automodule:: helper_functions.facial_recognition
+.. automodule:: modules.face.facial_recognition
    :members:
    :exclude-members: cvtColor, imwrite
-
-Keywords
-========
-
-.. automodule:: helper_functions.keywords
-   :members:
-   :undoc-members:
-   :exclude-members: current_date, current_time, weather, system_info, ip_info, webpage, wikipedia_, news, report, robinhood, apps, repeat, location, locate, music, gmail, meaning, create_db, add_todo, delete_todo, delete_db, todo, distance, avoid, locate_places, directions, alarm, kill_alarm, reminder, google_home, jokes, notes, github, send_sms, google_search, television, volume, face_detection, speed_test, bluetooth, brightness, lights, guard_enable, guard_disable, flip_a_coin, facts, meetings, voice_changer, system_vitals, vpn_server, personal_cloud, ok, restart_control, exit, sleep_control, kill, shutdown
 
 Lights
 ======
 
-.. automodule:: helper_functions.lights
+.. automodule:: modules.lights.lights
    :members:
    :undoc-members:
 
-.. automodule:: helper_functions.preset_values
+.. automodule:: modules.lights.preset_values
    :members:
    :undoc-members:
+   :exclude-members: PRESET_VALUES
 
 Local IP Scanner
 ================
 
-.. automodule:: helper_functions.ip_scanner
+.. automodule:: modules.netgear.ip_scanner
    :members:
    :undoc-members:
 
 Logger
 ======
 
-.. automodule:: helper_functions.logger
+.. automodule:: modules.logger.logger
    :members:
    :undoc-members:
 
 Meetings Helper
 ===============
 
-.. automodule:: helper_functions.meetings_helper
-   :members:
-   :undoc-members:
-
-Modules
-=======
-
-.. automodule:: helper_functions.modules
+.. automodule:: modules.meeting.meetings_helper
    :members:
    :undoc-members:
 
 Personal Cloud
 ==============
 
-.. automodule:: helper_functions.personal_cloud
+.. automodule:: modules.personalcloud.personal_cloud
    :members:
    :undoc-members:
    :exclude-members: HOME
@@ -189,35 +177,35 @@ Restart
 Robinhood Gatherer
 ==================
 
-.. automodule:: helper_functions.robinhood
+.. automodule:: modules.robinhood.robinhood
    :members:
    :undoc-members:
 
 SMS Notification
 ================
 
-.. automodule:: helper_functions.notify
+.. automodule:: modules.notifications.notify
    :members:
    :undoc-members:
 
 Temperature
 ===========
 
-.. automodule:: helper_functions.temperature
+.. automodule:: modules.temperature.temperature
    :members:
    :undoc-members:
 
 TV Connector
 ============
 
-.. automodule:: helper_functions.tv_controls
+.. automodule:: modules.tv.tv_controls
    :members:
    :undoc-members:
 
-VPN Handler
-===========
+Helper
+=======
 
-.. automodule:: helper_functions.vpn_handler
+.. automodule:: helpers.support
    :members:
    :undoc-members:
 

@@ -103,9 +103,8 @@ class TestLogger:
         """This WILL NOT be logged as no logger level is set."""
         self.logger.debug('function 5')
 
-    # noinspection PyUnusedLocal
     @staticmethod
-    def custom_time(*args: logging.Formatter and time) -> struct_time:
+    def custom_time(*args: logging.Formatter and time) -> struct_time:  # noqa: 107
         """Creates custom timezone for ``logging`` which gets used only when invoked by ``Docker``.
 
         This is used only when triggered within a ``docker container`` as it uses UTC timezone.
