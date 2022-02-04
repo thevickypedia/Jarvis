@@ -16,8 +16,8 @@ def offline_compatible() -> list:
         Flat list from a matrix (list of lists) after removing the duplicates.
     """
     path.append('..')
-    from helper_functions.conversation import Conversation
-    from helper_functions.keywords import Keywords
+    from modules.conditions.conversation import Conversation
+    from modules.conditions.keywords import Keywords
     path.remove('..')
     keywords = Keywords
     conversation = Conversation

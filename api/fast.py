@@ -217,8 +217,6 @@ async def offline_communicator(input_data: GetData) -> None:
 
     See Also:
         - Include response_model only when the response should have same keys as arguments
-
-            - ``@app.post("/offline-communicator", response_model=GetData)``
         - Keeps waiting until Jarvis sends a response back by creating the offline_response file.
         - This response will be sent as raising a HTTPException with status code 200.
     """

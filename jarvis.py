@@ -2,6 +2,7 @@ import json
 import os
 import random
 import re
+import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
@@ -16,7 +17,6 @@ from socket import gethostbyname, gethostname
 from ssl import create_default_context
 from string import punctuation
 from struct import unpack_from
-from subprocess import call, check_output, getoutput
 from threading import Thread, Timer
 from time import perf_counter, sleep, time
 from traceback import format_exc
@@ -66,25 +66,24 @@ from wikipedia.exceptions import DisambiguationError, PageError
 from wolframalpha import Client as Think
 
 from api.controller import offline_compatible
-from helper_functions.conversation import Conversation
-from helper_functions.database import TASKS_DB, Database
-from helper_functions.facial_recognition import Face
-from helper_functions.ip_scanner import LocalIPScan
-from helper_functions.keywords import Keywords
-from helper_functions.lights import MagicHomeApi
-from helper_functions.logger import logger
-from helper_functions.meetings_helper import (meeting_app_launcher,
-                                              meetings_gatherer)
-from helper_functions.modules import Helper
-from helper_functions.notify import notify
-from helper_functions.personal_cloud import PersonalCloud
-from helper_functions.preset_values import preset_values
-from helper_functions.robinhood import RobinhoodGatherer
-from helper_functions.temperature import Temperature
-from helper_functions.tv_controls import TV
+from helpers.support import Helper
+from modules.conditions.conversation import Conversation
+from modules.conditions.keywords import Keywords
+from modules.database.database import TASKS_DB, Database
+from modules.face.facial_recognition import Face
+from modules.lights.lights import MagicHomeApi
+from modules.lights.preset_values import PresetValues
+from modules.logger.logger import logger
+from modules.meeting.meetings_helper import (meeting_app_launcher,
+                                             meetings_gatherer)
+from modules.netgear.ip_scanner import LocalIPScan
+from modules.notifications.notify import notify
+from modules.personalcloud.personal_cloud import PersonalCloud
+from modules.robinhood.robinhood import RobinhoodGatherer
+from modules.temperature.temperature import Temperature
+from modules.tv.tv_controls import TV
 
 
-# noinspection PyProtectedMember,PyUnresolvedReferences
 def say(text: str = None, run: bool = False) -> None:
     """Calls ``speaker.say`` to speak a statement from the received text.
 
@@ -96,7 +95,7 @@ def say(text: str = None, run: bool = False) -> None:
         speaker.say(text=text)
         text = text.replace('\n', '\t').strip()
         logger.info(f'Response: {text}')
-        logger.info(f'Speaker called by: {sys._getframe(1).f_code.co_name}')
+        logger.info(f'Speaker called by: {sys._getframe(1).f_code.co_name}')  # noqa: 97
         sys.stdout.write(f"\r{text}")
         text_spoken['text'] = text
     if run:
@@ -105,8 +104,7 @@ def say(text: str = None, run: bool = False) -> None:
 
 def no_env_vars():
     """Says a message about permissions when env vars are missing."""
-    # noinspection PyProtectedMember,PyUnresolvedReferences
-    logger.error(f'Called by: {sys._getframe(1).f_code.co_name}')
+    logger.error(f'Called by: {sys._getframe(1).f_code.co_name}')  # noqa: 106
     say(text="I don't have permissions sir! Please add the necessary environment variables and ask me to restart!")
 
 
@@ -207,7 +205,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         bool:
         Boolean True only when asked to sleep for conditioned sleep message.
     """
-    conversation = Conversation()  # stores Conversation() class from helper_functions/conversation.py
+    conversation = Conversation()  # stores Conversation() class from modules/conversation.py
     logger.info(f'Request: {converted}')
     converted_lower = converted.lower()
     todo_checks = ['to do', 'to-do', 'todo']
@@ -458,7 +456,6 @@ def ip_info(phrase: str) -> None:
     say(text=output)
 
 
-# noinspection PyUnresolvedReferences,PyProtectedMember
 def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, str or float, str]]:
     """Gets the current location of an Apple device.
 
@@ -479,7 +476,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
             if not (device := mod.device_selector(icloud_user=icloud_user, icloud_pass=icloud_pass)):
                 raise PyiCloudFailedLoginException
         raw_location = device.location()
-        if not raw_location and sys._getframe(1).f_code.co_name == 'locate':
+        if not raw_location and sys._getframe(1).f_code.co_name == 'locate':  # noqa: 478
             return 'None', 'None', 'None'
         elif not raw_location:
             raise PyiCloudAPIResponseException(reason=f'Unable to retrieve location for {device}')
@@ -490,7 +487,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException):
         if device:
             logger.error(f'Unable to retrieve location::{sys.exc_info()[0].__name__}\n{format_exc()}')  # traceback
-            caller = sys._getframe(1).f_code.co_name
+            caller = sys._getframe(1).f_code.co_name  # noqa: 489
             if caller == '<module>':
                 if os.path.isfile('pyicloud_error'):
                     logger.error(f'Exception raised by {caller} once again. Proceeding...')
@@ -888,8 +885,8 @@ def apps(phrase: str) -> None:
             say(text="I didn't quite get that. Try again.")
             return
 
-    all_apps = (check_output("ls /Applications/", shell=True))
-    apps_ = (all_apps.decode('utf-8').split('\n'))
+    all_apps = subprocess.check_output("ls /Applications/", shell=True)
+    apps_ = all_apps.decode('utf-8').split('\n')
 
     app_check = False
     for app in apps_:
@@ -1016,7 +1013,7 @@ def music(phrase: str = None) -> None:
         if phrase and 'speaker' in phrase:
             google_home(device=phrase, file=chosen)
         else:
-            call(["open", chosen])
+            subprocess.call(["open", chosen])
             sys.stdout.write("\r")
             say(text="Enjoy your music sir!")
     else:
@@ -1250,7 +1247,7 @@ def add_todo() -> None:
             if 'exit' in category or 'quit' in category or 'Xzibit' in category:
                 say(text='Your to-do list has been left intact sir.')
             else:
-                # passes the category and item to uploader() in helper_functions/database.py which updates the database
+                # passes the category and item to uploader() in modules/database.py which updates the database
                 response = database.uploader(category, item)
                 say(text=response)
                 say(text="Do you want to add anything else to your to-do list?", run=True)
@@ -1787,7 +1784,6 @@ def google_maps(query: str) -> bool:
         item['Address'] = item['Address'].replace(' N ', ' North ').replace(' S ', ' South ').replace(' E ', ' East ') \
             .replace(' W ', ' West ').replace(' Rd', ' Road').replace(' St', ' Street').replace(' Ave', ' Avenue') \
             .replace(' Blvd', ' Boulevard').replace(' Ct', ' Court')
-        # noinspection PyTypeChecker,PyUnresolvedReferences
         latitude, longitude = item['Location']['lat'], item['Location']['lng']
         end = f"{latitude},{longitude}"
         far = round(geodesic(start, end).miles)
@@ -1948,7 +1944,6 @@ def send_sms(phrase: str = None) -> None:
                 return
 
 
-# noinspection PyUnboundLocalVariable
 def television(phrase: str) -> None:
     """Controls all actions on a TV (LG Web OS).
 
@@ -2099,10 +2094,9 @@ def alpha(text: str) -> bool:
     if not (think_id := os.environ.get('think_id')):
         return False
     alpha_client = Think(app_id=think_id)
-    # noinspection PyBroadException
     try:
         res = alpha_client.query(text)
-    except Exception:
+    except Exception:  # noqa: 2103
         return True
     if res['@success'] == 'false':
         return True
@@ -2316,7 +2310,7 @@ def connector(phrase: str, targets: dict) -> bool:
             if any(re.search(line, target['name'], flags=re.IGNORECASE) for line in phrase.split()):
                 connection_attempt = True
                 if 'disconnect' in phrase:
-                    output = getoutput(f"blueutil --disconnect {target['address']}")
+                    output = subprocess.getoutput(cmd=f"blueutil --disconnect {target['address']}")
                     if not output:
                         sleep(2)  # included a sleep here, so it avoids voice swapping between devices
                         say(text=f"Disconnected from {target['name']} sir!")
@@ -2324,7 +2318,7 @@ def connector(phrase: str, targets: dict) -> bool:
                         say(text=f"I was unable to disconnect {target['name']} sir!. "
                                  f"Perhaps it was never connected.")
                 elif 'connect' in phrase:
-                    output = getoutput(f"blueutil --connect {target['address']}")
+                    output = subprocess.getoutput(cmd=f"blueutil --connect {target['address']}")
                     if not output:
                         sleep(2)  # included a sleep here, so it avoids voice swapping between devices
                         say(text=f"Connected to {target['name']} sir!")
@@ -2343,26 +2337,26 @@ def bluetooth(phrase: str) -> None:
     """
     phrase = phrase.lower()
     if 'turn off' in phrase or 'power off' in phrase:
-        call("blueutil --power 0", shell=True)
+        subprocess.call("blueutil --power 0", shell=True)
         sys.stdout.write('\rBluetooth has been turned off')
         say(text="Bluetooth has been turned off sir!")
     elif 'turn on' in phrase or 'power on' in phrase:
-        call("blueutil --power 1", shell=True)
+        subprocess.call("blueutil --power 1", shell=True)
         sys.stdout.write('\rBluetooth has been turned on')
         say(text="Bluetooth has been turned on sir!")
     elif 'disconnect' in phrase and ('bluetooth' in phrase or 'devices' in phrase):
-        call("blueutil --power 0", shell=True)
+        subprocess.call("blueutil --power 0", shell=True)
         sleep(2)
-        call("blueutil --power 1", shell=True)
+        subprocess.call("blueutil --power 1", shell=True)
         say(text='All bluetooth devices have been disconnected sir!')
     else:
         sys.stdout.write('\rScanning paired Bluetooth devices')
-        paired = getoutput("blueutil --paired --format json")
+        paired = subprocess.getoutput(cmd="blueutil --paired --format json")
         paired = json.loads(paired)
         if not connector(phrase=phrase, targets=paired):
             sys.stdout.write('\rScanning UN-paired Bluetooth devices')
             say(text='No connections were established sir, looking for un-paired devices.', run=True)
-            unpaired = getoutput("blueutil --inquiry --format json")
+            unpaired = subprocess.getoutput(cmd="blueutil --inquiry --format json")
             unpaired = json.loads(unpaired)
             connector(phrase=phrase, targets=unpaired) if unpaired else say(text='No un-paired devices found sir! '
                                                                                  'You may want to be more precise.')
@@ -2430,6 +2424,8 @@ def lights(phrase: str) -> None:
 
     if vpn_checker().startswith('VPN'):
         return
+
+    preset_values = PresetValues.PRESET_VALUES
 
     def light_switch():
         """Says a message if the physical switch is toggled off."""
@@ -2784,9 +2780,10 @@ def system_vitals() -> None:
             if 'Fan' in info:
                 fan_speed = info.strip('Fan: ').replace(' rpm', '').strip()
     else:
-        fan_speed = check_output(
+        fan_speed = subprocess.check_output(
             f'echo {root_password} | sudo -S spindump 1 1 -file /tmp/spindump.txt > /dev/null 2>&1;grep "Fan speed" '
-            '/tmp/spindump.txt;sudo rm /tmp/spindump.txt', shell=True).decode('utf-8')
+            '/tmp/spindump.txt;sudo rm /tmp/spindump.txt', shell=True
+        ).decode('utf-8')
 
     if cpu_temp:
         cpu = f'Your current average CPU temperature is ' \
@@ -2813,7 +2810,7 @@ def system_vitals() -> None:
     sys.stdout.write(f'\r{output}')
     say(text=f'Your {model} was last booted on {restart_time}. '
              f'Current boot time is: {restart_duration}.')
-    if second >= 172_800:
+    if second >= 259_200:  # 3 days
         if boot_extreme := re.search('(.*) days', restart_duration):
             warn = int(boot_extreme.group().replace(' days', '').strip())
             say(text=f'Sir! your {model} has been running continuously for more than {warn} days. You must '
@@ -3098,7 +3095,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
 def alarm_executor() -> None:
     """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
     volume(level=100)
-    call(["open", "indicators/alarm.mp3"])
+    subprocess.call(["open", "indicators/alarm.mp3"])
     sleep(200)
     volume(level=50)
 
@@ -3177,10 +3174,10 @@ def car(phrase: str) -> None:
             target_temp = 31
             extras = f'The climate setting has been configured to {target_temp + 26}°F'
         else:
-            climate = int(round(temperature.k2f(arg=json.loads(urlopen(
+            climate = int(temperature.k2f(arg=json.loads(urlopen(
                 url=f'https://api.openweathermap.org/data/2.5/onecall?lat={current_lat}&lon={current_lon}&exclude='
                     f'minutely,hourly&appid={weather_api}'
-            ).read())['current']['feels_like']), 2))
+            ).read())['current']['temp']))
 
             if climate < 55:
                 target_temp = 57  # 83°F will be target temperature (highest)
@@ -3192,32 +3189,32 @@ def car(phrase: str) -> None:
             extras = f"The current temperature is {climate}°F, so I've configured the climate setting " \
                      f"to {target_temp + 26}°F"
 
-        playsound(sound='indicators/exhaust.mp3', block=False)
+        playsound(sound='indicators/exhaust.mp3', block=False) if not called_by_offline['status'] else None
         if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='START', temp=target_temp,
                                    car_pin=car_pin):
             say(text=f'Your {car_name} has been started sir. {extras}')
         else:
             say(text=disconnected)
     elif 'turn off' in phrase or 'stop' in phrase:
-        playsound(sound='indicators/exhaust.mp3', block=False)
+        playsound(sound='indicators/exhaust.mp3', block=False) if not called_by_offline['status'] else None
         if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='STOP', car_pin=car_pin):
             say(text=f'Your {car_name} has been turned off sir!')
         else:
             say(text=disconnected)
     elif 'secure' in phrase:
-        playsound(sound='indicators/exhaust.mp3', block=False)
+        playsound(sound='indicators/exhaust.mp3', block=False) if not called_by_offline['status'] else None
         if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='SECURE', car_pin=car_pin):
             say(text=f'Guardian mode has been enabled sir! Your {car_name} is now secure.')
         else:
             say(text=disconnected)
     elif 'unlock' in phrase:
-        playsound(sound='indicators/exhaust.mp3', block=False)
+        playsound(sound='indicators/exhaust.mp3', block=False) if not called_by_offline['status'] else None
         if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='UNLOCK', car_pin=car_pin):
             say(text=f'Your {car_name} has been unlocked sir!')
         else:
             say(text=disconnected)
     elif 'lock' in phrase:
-        playsound(sound='indicators/exhaust.mp3', block=False)
+        playsound(sound='indicators/exhaust.mp3', block=False) if not called_by_offline['status'] else None
         if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='LOCK', car_pin=car_pin):
             say(text=f'Your {car_name} has been locked sir!')
         else:
@@ -3289,9 +3286,7 @@ class Activator:
                     restart(quiet=True)
         except KeyboardInterrupt:
             self.stop()
-            if called_by_offline['status']:
-                del os.environ['called_by_offline']
-            else:
+            if not called_by_offline['status']:
                 exit_process()
                 mod.terminator()
 
@@ -3391,7 +3386,6 @@ def restart_control(phrase: str):
             restart()
 
 
-# noinspection PyUnresolvedReferences,PyProtectedMember
 def restart(target: str = None, quiet: bool = False, quick: bool = False) -> None:
     """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
 
@@ -3428,14 +3422,14 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
             converted = 'yes'
         if any(word in converted.lower() for word in keywords.ok):
             mod.stop_terminal()
-            call(['osascript', '-e', 'tell app "System Events" to restart'])
+            subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
             raise KeyboardInterrupt
         else:
             say(text="Machine state is left intact sir!")
             return
     STOPPER['status'] = True
     logger.info('JARVIS::Restarting Now::STOPPER flag has been set.')
-    logger.info(f'Called by {sys._getframe(1).f_code.co_name}')
+    logger.info(f'Called by {sys._getframe(1).f_code.co_name}')  # noqa: 3429
     sys.stdout.write(f"\rMemory consumed: {mod.size_converter(0)}\tTotal runtime: {mod.time_converter(perf_counter())}")
     if not quiet:
         try:
@@ -3470,14 +3464,13 @@ def shutdown(proceed: bool = False) -> None:
     if converted != 'SR_ERROR':
         if any(word in converted.lower() for word in keywords.ok):
             mod.stop_terminal()
-            call(['osascript', '-e', 'tell app "System Events" to shut down'])
+            subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
             raise KeyboardInterrupt
         else:
             say(text="Machine state is left intact sir!")
             return
 
 
-# noinspection PyTypeChecker,PyUnresolvedReferences
 def voice_default(voice_model: str = 'Daniel') -> None:
     """Sets voice module to default.
 
@@ -3485,14 +3478,13 @@ def voice_default(voice_model: str = 'Daniel') -> None:
         voice_model: Defaults to ``Daniel`` in mac.
     """
     voices = speaker.getProperty("voices")  # gets the list of voices available
-    for ind_d, voice_d in enumerate(voices):
+    for ind_d, voice_d in enumerate(voices):  # noqa: 3478
         if voice_d.name == voice_model:
             sys.stdout.write(f'\rVoice module has been configured to {ind_d}::{voice_d.name}')
-            speaker.setProperty("voice", voices[ind_d].id)
+            speaker.setProperty("voice", voices[ind_d].id)  # noqa: 3481
             return
 
 
-# noinspection PyTypeChecker,PyUnresolvedReferences
 def voice_changer(phrase: str = None) -> None:
     """Speaks to the user with available voices and prompts the user to choose one.
 
@@ -3508,8 +3500,8 @@ def voice_changer(phrase: str = None) -> None:
                       "Here's an example of one of my other voices. Would you like me to use this one?",
                       'How about this one?']
 
-    for ind, voice in enumerate(voices):
-        speaker.setProperty("voice", voices[ind].id)
+    for ind, voice in enumerate(voices):  # noqa: 3500
+        speaker.setProperty("voice", voices[ind].id)  # noqa: 3501
         say(text=f'I am {voice.name} sir!')
         sys.stdout.write(f'\rVoice module has been re-configured to {ind}::{voice.name}')
         say(text=choices_to_say[ind]) if ind < len(choices_to_say) else say(text=random.choice(choices_to_say))
@@ -3530,8 +3522,8 @@ def voice_changer(phrase: str = None) -> None:
 
 def clear_logs() -> None:
     """Deletes log files that were updated before 48 hours."""
-    [os.remove(f"logs/{file}") for file in os.listdir('logs')
-     if int(datetime.now().timestamp()) - int(os.stat(f'logs/{file}').st_mtime) > 172_800]
+    [os.remove(f"logs/{file}") for file in os.listdir('logs') if int(datetime.now().timestamp()) - int(
+        os.stat(f'logs/{file}').st_mtime) > 172_800] if os.path.exists('logs') else None
 
 
 def starter() -> None:
@@ -3587,7 +3579,7 @@ if __name__ == '__main__':
     sys.stdout.write('\rVoice ID::Female: 1/17 Male: 0/7')  # Voice ID::reference
     speaker = pyttsx3.init()  # initiates speaker
     recognizer = Recognizer()  # initiates recognizer that uses google's translation
-    keywords = Keywords()  # stores Keywords() class from helper_functions/keywords.py
+    keywords = Keywords()  # stores Keywords() class from modules/keywords.py
     database = Database()  # initiates Database() for TO-DO items
     temperature = Temperature()  # initiates Temperature() for temperature conversions
     limit = sys.getrecursionlimit()  # fetches current recursion limit
@@ -3620,14 +3612,11 @@ if __name__ == '__main__':
     # Retrieves devices IP by doing a local IP range scan using Netgear API
     # Note: This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)
     # Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted
-    # noinspection is used since, variables declared after 'and' in walrus operator are recognized as unbound variables
     if (hallway_ip := os.environ.get('hallway_ip')) and (kitchen_ip := os.environ.get('kitchen_ip')) and \
             (bedroom_ip := os.environ.get('bedroom_ip')) and (tv_ip := os.environ.get('tv_ip')):
         hallway_ip = eval(hallway_ip)
-        # noinspection PyUnboundLocalVariable
-        kitchen_ip = eval(kitchen_ip)
-        # noinspection PyUnboundLocalVariable
-        bedroom_ip = eval(bedroom_ip)
+        kitchen_ip = eval(kitchen_ip)  # noqa: 3615
+        bedroom_ip = eval(bedroom_ip)  # noqa: 3616
         unset_key(dotenv_path='.env', key_to_unset='hallway_ip')
         unset_key(dotenv_path='.env', key_to_unset='kitchen_ip')
         unset_key(dotenv_path='.env', key_to_unset='bedroom_ip')

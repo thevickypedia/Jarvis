@@ -5,7 +5,7 @@ from socket import socket
 from struct import pack
 from sys import stdout
 
-from helper_functions.logger import logger
+from modules.logger.logger import logger
 
 
 class MagicHomeApi:
@@ -53,7 +53,6 @@ class MagicHomeApi:
         Returns:
             bytes:
             A signal to socket.
-
         """
         if self.device_type == 2:
             self.send_bytes(0x81, 0x8A, 0x8B, 0x96)
@@ -74,7 +73,6 @@ class MagicHomeApi:
             b: Values for the color Blue. [0-255]
             warm_white: RGB values for the warm white color.
             cool_white: RGB values for the cool white color.
-
         """
         if self.device_type <= 1:
             # Update an RGB or an RGB + WW device
@@ -137,7 +135,6 @@ class MagicHomeApi:
         Returns:
             int:
             An accepted number between 0 and 255.
-
         """
         if number < 0:
             return 0
@@ -152,7 +149,6 @@ class MagicHomeApi:
         Args:
             preset_number: Takes preset value as argument.
             speed: Rate at which the colors should change.
-
         """
         # Presets can range from 0x25 (int 37) to 0x38 (int 56)
         if preset_number < 37:
@@ -180,7 +176,6 @@ class MagicHomeApi:
         Returns:
             int:
             Checksum value for the given list value.
-
         """
         return sum(bytes_) & 0xFF
 
@@ -191,7 +186,6 @@ class MagicHomeApi:
 
         Args:
             *bytes_: Takes a tuple value as argument.
-
         """
         check_connection_time = (datetime.now() - self.latest_connection).total_seconds()
         try:

@@ -9,7 +9,7 @@ from pywebostv.connection import WebOSClient
 from pywebostv.controls import (ApplicationControl, MediaControl,
                                 SourceControl, SystemControl)
 
-from helper_functions.logger import logger
+from modules.logger.logger import logger
 
 
 class TV:
@@ -85,7 +85,6 @@ class TV:
         Returns:
             dict:
             A dictionary with key value pairs of scenario, volume and mute status.
-
         """
         self.system.notify(f"Jarvis::Current Volume: {self.media.get_volume()['volume']}%")
         return self.media.get_volume()['volume']
@@ -95,16 +94,12 @@ class TV:
 
         Args:
             target: Takes an integer as argument to set the volume.
-
         """
         self.media.set_volume(target)
         self.system.notify(f"Jarvis::Volume has been set to: {self.media.get_volume()['volume']}%")
 
     def mute(self) -> None:
-        """Mutes the TV.
-
-        status=True mutes the TV. status=False un-mutes it.
-        """
+        """Mutes the TV."""
         self.system.notify("Jarvis::Muted")
         self.media.mute(True)
 
@@ -139,7 +134,6 @@ class TV:
         Returns:
             list:
             List of available apps on the TV.
-
         """
         apps = self.app.list_apps()
         app_list = [app["title"] for app in apps]
@@ -154,7 +148,6 @@ class TV:
         Returns:
             dict:
             Makes call to the launch module and returns a dictionary of appId and sessionId.
-
         """
         app_launcher = [x for x in self.app.list_apps() if app_name.lower() in x["title"].lower()][0]
         return self.app.launch(app_launcher, content_id=None)
@@ -169,7 +162,6 @@ class TV:
         Returns:
             list:
             List of ``InputSource`` instances.
-
         """
         sources = self.source_control.list_sources()
         sources_list = [source['label'] for source in sources]
@@ -184,7 +176,6 @@ class TV:
         Returns:
             list:
             List of sources.
-
         """
         sources = self.source_control.list_sources()
         index = self.source().index(val)
@@ -196,8 +187,7 @@ class TV:
 
         Returns:
             str:
-            Title of te current app that is running
-
+            Title of the current app that is running
         """
         app_id = self.app.get_current()  # Returns the application ID (string) of the
         foreground_app = [x for x in self.app.list_apps() if app_id == x["id"]][0]
@@ -214,7 +204,6 @@ class TV:
         Returns:
             list:
             List of ``AudioOutputSource`` instances.
-
         """
         audio_outputs = self.media.list_audio_output_sources()
         stdout.write(f'{audio_outputs}')
@@ -222,8 +211,7 @@ class TV:
 
     def set_audio_output_source(self) -> None:
         """Sets to a particular AudioOutputSource instance."""
-        # noinspection PyUnresolvedReferences
-        self.media.set_audio_output(self.audio_output_source[0])
+        self.media.set_audio_output(self.audio_output_source[0])  # noqa: 214
 
     def shutdown(self) -> None:
         """Notifies the TV about shutdown and shuts down after 3 seconds."""

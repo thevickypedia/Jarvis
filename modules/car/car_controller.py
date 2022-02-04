@@ -1,7 +1,4 @@
-"""**API Reference:** https://documenter.getpostman.com/view/6250319/RznBMzqo for Jaguar LandRover InControl API.
-
-**Module Reference:** https://github.com/ardevd/jlrpy
-"""
+"""**API Reference:** https://documenter.getpostman.com/view/6250319/RznBMzqo for Jaguar LandRover InControl API."""
 
 from time import time
 from typing import Union
