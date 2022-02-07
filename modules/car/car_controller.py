@@ -263,7 +263,6 @@ class Control(dict):
         headers = self.connection.head.copy()
         headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"
         rdl_data = self._authenticate_service(pin=pin, service_name="RDL")
-
         self.post_data(command="lock", headers=headers, data=rdl_data)
 
     def unlock(self, pin: int) -> None:
@@ -274,7 +273,6 @@ class Control(dict):
         """
         headers = self.connection.head.copy()
         headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"
-
         self.post_data(command="unlock", headers=headers,
                        data=self._authenticate_service(pin=pin, service_name="RDU"))
 
@@ -287,7 +285,6 @@ class Control(dict):
         headers = self.connection.head.copy()
         headers["Content-Type"] = DEFAULT_CONTENT_TYPE
         headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json"
-
         self.post_data(command="unlock", headers=headers,
                        data=self._authenticate_service(pin=pin, service_name="ALOFF"))
 
@@ -296,7 +293,6 @@ class Control(dict):
         headers = self.connection.head.copy()
         headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json"
         headers["Content-Type"] = DEFAULT_CONTENT_TYPE
-
         self.post_data(command="honkBlink", headers=headers,
                        data=self._authenticate_vin_protected_service(service_name="HBLF"))
 
@@ -310,7 +306,6 @@ class Control(dict):
         headers = self.connection.head.copy()
         headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"
         self.set_rcc_target_temperature(pin=pin, target_temperature=target_temperature)
-
         self.post_data(command="engineOn", headers=headers,
                        data=self._authenticate_service(pin=pin, service_name="REON"))
 
@@ -322,7 +317,6 @@ class Control(dict):
         """
         headers = self.connection.head.copy()
         headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"
-
         self.post_data(command="engineOff", headers=headers,
                        data=self._authenticate_service(pin=pin, service_name="REOFF"))
 
@@ -340,7 +334,7 @@ class Control(dict):
             "value": str(target_temperature),
             "applied": 1
         }
-        self.post_data("settings", headers, service_parameters)
+        self.post_data(command="settings", headers=headers, data=service_parameters)
 
     def preconditioning_start(self, celsius: float) -> dict:
         """Start the climate preconditioning at the specified temperature.
@@ -366,7 +360,7 @@ class Control(dict):
                 "value": celsius
             }
         ]
-        return self._preconditioning_control(service_parameters)
+        return self._preconditioning_control(service_parameters=service_parameters)
 
     def preconditioning_stop(self):
         """Stop the climate preconditioning immediately.
@@ -381,7 +375,7 @@ class Control(dict):
                 "value": "STOP"
             }
         ]
-        return self._preconditioning_control(service_parameters)
+        return self._preconditioning_control(service_parameters=service_parameters)
 
     def climate_prioritize(self, priority: str) -> dict:
         """Prioritize climate controls for either range or comfort.
@@ -399,9 +393,9 @@ class Control(dict):
                 "value": priority
             }
         ]
-        return self._preconditioning_control(service_parameters)
+        return self._preconditioning_control(service_parameters=service_parameters)
 
-    def _preconditioning_control(self, service_parameters) -> dict:
+    def _preconditioning_control(self, service_parameters: Union[list, dict]) -> dict:
         """Initiates climate pre-conditioning.
 
         Args:
@@ -417,7 +411,7 @@ class Control(dict):
 
         ecc_data = self._authenticate_vin_protected_service(service_name="ECC")
         ecc_data['serviceParameters'] = service_parameters
-        return self.post_data("preconditioning", headers, ecc_data)
+        return self.post_data(command="preconditioning", headers=headers, data=ecc_data)
 
     def charging_stop(self) -> None:
         """Stop charging the EV."""
@@ -427,7 +421,7 @@ class Control(dict):
                 "value": "FORCE_OFF"
             }
         ]
-        self._charging_profile_control("serviceParameters", service_parameters)
+        self._charging_profile_control(service_parameter_key="serviceParameters", service_parameters=service_parameters)
 
     def charging_start(self) -> None:
         """Start charging the EV."""
@@ -437,8 +431,7 @@ class Control(dict):
                 "value": "FORCE_ON"
             }
         ]
-
-        self._charging_profile_control("serviceParameters", service_parameters)
+        self._charging_profile_control(service_parameter_key="serviceParameters", service_parameters=service_parameters)
 
     def set_max_soc(self, max_charge_level: Union[int, float]) -> dict:
         """Set the maximum state of charge.
@@ -459,7 +452,8 @@ class Control(dict):
                 "value": max_charge_level
             }
         ]
-        return self._charging_profile_control("serviceParameters", service_parameters)
+        return self._charging_profile_control(service_parameter_key="serviceParameters",
+                                              service_parameters=service_parameters)
 
     def set_one_off_max_soc(self, max_charge_level: Union[int, float]) -> dict:
         """Set the one-off maximum state of charge.
@@ -481,7 +475,8 @@ class Control(dict):
                 "value": max_charge_level
             }
         ]
-        return self._charging_profile_control("serviceParameters", service_parameters)
+        return self._charging_profile_control(service_parameter_key="serviceParameters",
+                                              service_parameters=service_parameters)
 
     def add_departure_timer(self, index: int, year: int, month: int, day: int, hour: int, minute: int) -> dict:
         """Add a single departure timer for the specified vehicle.
@@ -518,7 +513,8 @@ class Control(dict):
                 }
             ]
         }
-        return self._charging_profile_control("departureTimerSetting", departure_timer_setting)
+        return self._charging_profile_control(service_parameter_key="departureTimerSetting",
+                                              service_parameters=departure_timer_setting)
 
     def add_repeated_departure_timer(self, index: int, schedule: dict, hour: int, minute: int) -> dict:
         """Add repeated departure timer for the specified vehicle.
@@ -552,7 +548,8 @@ class Control(dict):
                 }
             ]
         }
-        return self._charging_profile_control("departureTimerSetting", departure_timer_setting)
+        return self._charging_profile_control(service_parameter_key="departureTimerSetting",
+                                              service_parameters=departure_timer_setting)
 
     def delete_departure_timer(self, index: int) -> dict:
         """Delete departure timers specified by their index.
@@ -646,10 +643,8 @@ class Control(dict):
         headers = self.connection.head.copy()
         headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json"
         headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf-8"
-
         cp_data = self._authenticate_vin_protected_service(service_name="CP")
         cp_data[service_parameter_key] = service_parameters
-
         return self.post_data(command="chargeProfile", headers=headers, data=cp_data)
 
     def set_wakeup_time(self, wakeup_time: int) -> dict:
@@ -695,7 +690,7 @@ class Control(dict):
         headers["Content-Type"] = DEFAULT_CONTENT_TYPE
         return self.post_data(command="swu", headers=headers, data=wakeup_data)
 
-    def enable_service_mode(self, pin: int, expiration_time: Union[int, float] = int(time()) + 86_400) -> dict:
+    def enable_service_mode(self, pin: int, expiration_time: Union[int, float] = None) -> dict:
         """Service Mode will allow the vehicle to be serviced without InControl triggering a vehicle theft alarm.
 
         Args:
@@ -706,7 +701,8 @@ class Control(dict):
             dict:
             A dictionary response.
         """
-        return self._prov_command(pin=pin, expiration_time=expiration_time, mode="protectionStrategy_serviceMode")
+        return self._prov_command(pin=pin, expiration_time=expiration_time or int(time()) + 86_400,
+                                  mode="protectionStrategy_serviceMode")
 
     def enable_guardian_mode(self, pin: int, expiration_time: Union[int, float] = None) -> dict:
         """Guardian Mode is a security feature that will generate alarms when vehicle interaction is detected.
@@ -730,7 +726,7 @@ class Control(dict):
         gm_data["status"] = "ACTIVE"
         return self.post_data(command="gm/alarms", headers=headers, data=gm_data)
 
-    def enable_transport_mode(self, pin: int, expiration_time: Union[int, float] = int(time()) + 86_400) -> dict:
+    def enable_transport_mode(self, pin: int, expiration_time: Union[int, float] = None) -> dict:
         """Allows the vehicle to be transported without InControl triggering a vehicle theft alarm.
 
         Args:
@@ -741,7 +737,8 @@ class Control(dict):
             dict:
             A dictionary response.
         """
-        return self._prov_command(pin=pin, expiration_time=expiration_time, mode="protectionStrategy_transportMode")
+        return self._prov_command(pin=pin, expiration_time=expiration_time or int(time()) + 86_400,
+                                  mode="protectionStrategy_transportMode")
 
     def enable_privacy_mode(self, pin: int) -> dict:
         """The vehicle will not log journey information as long as privacy mode is enabled.
@@ -816,7 +813,7 @@ class Control(dict):
         }
         headers = self.connection.head.copy()
         headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.AuthenticateRequest-v2+json; charset=utf-8"
-        return self.post_data(f"users/{self.connection.user_id}/authenticate", headers, data)
+        return self.post_data(command=f"users/{self.connection.user_id}/authenticate", headers=headers, data=data)
 
     def post_data(self, command: str, headers: dict, data: dict = None) -> Union[dict, list]:
         """Posts the data from ``Control`` module to ``Connect`` module.

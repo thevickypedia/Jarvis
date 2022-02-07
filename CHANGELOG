@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.4.6 (02/06/2022)
+------------------
+- Make adaptable temperature values during car startup
+- Increase iterations to turn on TV
+- Modify docstrings on car controller
+
 5.4.5 (02/03/2022)
 ------------------
 - Simplify climate setting for car start
