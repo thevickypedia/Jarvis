@@ -79,8 +79,8 @@ class Connect:
         self.connect()
 
         if hasattr(self, 'head'):
-            self.vehicles = [Control(vehicle, self) for vehicle in self.get_vehicles(self.head).get('vehicles') if
-                             vehicle]
+            self.vehicles = [Control(data=vehicle, connection=self) for vehicle in
+                             self.get_vehicles(self.head).get('vehicles') if vehicle]
             self.logger.debug(f"Number of vehicles associated: {len(self.vehicles)}") if self.vehicles else \
                 self.logger.error("No vehicles associated with this account")
             self.primary_vehicle = [vehicle for vehicle in self.vehicles if vehicle.get('role') == 'Primary'][0]
@@ -194,7 +194,7 @@ class Connect:
             "Content-Type": "application/json",
             "X-Device-Id": self.device_id
         }
-        return self._open(url, auth_headers, data)
+        return self._open(url=url, headers=auth_headers, data=data)
 
     def _register_device(self, headers: dict = None) -> dict:
         """Frames the url and data to post to register the device.
@@ -213,7 +213,7 @@ class Connect:
             "expires_in": "86400",
             "deviceID": self.device_id
         }
-        return self._open(url, headers, data)
+        return self._open(url=url, headers=headers, data=data)
 
     def _login_user(self, headers: dict) -> dict:
         """Login the user.
@@ -256,7 +256,7 @@ class Connect:
             Vehicles data.
         """
         url = f"{self.IF9_BASE_URL}/users/{self.user_id}/vehicles?primaryOnly=true"
-        return self._open(url, headers)
+        return self._open(url=url, headers=headers)
 
     def get_user_info(self) -> dict:
         """Makes a request to get the user information.

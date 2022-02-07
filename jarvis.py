@@ -1978,11 +1978,14 @@ def television(phrase: str) -> None:
         # speaks the message to buy some time while the TV is connecting to network
         say(text="Looks like your TV is powered off sir! Let me try to turn it back on!", run=True)
 
-    for i in range(3):
-        if tv_status() != 0 and i == 2:  # checks if the TV is turned ON (thrice) even before launching the TV connector
+    for i in range(5):
+        if tv_status():
+            break
+        elif i == 4:  # checks if the TV is turned ON (thrice) even before launching the TV connector
             say(text="I wasn't able to connect to your TV sir! Please make sure you are on the "
                      "same network as your TV, and your TV is connected to a power source.")
             return
+        sleep(1)
 
     if not tv:
         try:
@@ -3170,15 +3173,12 @@ def car(phrase: str) -> None:
             ).read())['current']['temp']))
             extras += f'The current temperature is {climate}°F, so '
 
-        if climate > 83:
-            climate = 83  #
-        elif climate < 57:
-            climate = 57
-
-        extras = f"I've configured the climate setting to {climate}°F"
+        # Custom temperature that has to be set in the vehicle
+        target_temp = 83 if climate < 45 else 57 if climate > 70 else 66
+        extras += f"I've configured the climate setting to {target_temp}°F"
 
         playsound(sound='indicators/exhaust.mp3', block=False) if not called_by_offline['status'] else None
-        if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='START', temp=climate - 26,
+        if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='START', temp=target_temp - 26,
                                    car_pin=car_pin):
             say(text=f'Your {car_name} has been started sir. {extras}')
         else:
