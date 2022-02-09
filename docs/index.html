@@ -1903,7 +1903,7 @@ name is specified, allow every event.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.car.car_connector.Connect.get_vehicles">
-<span class="sig-name descname"><span class="pre">get_vehicles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headers</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#modules.car.car_connector.Connect.get_vehicles" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_vehicles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#modules.car.car_connector.Connect.get_vehicles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes a post request to get the vehicles registered under the account.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1948,7 +1948,7 @@ name is specified, allow every event.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.car.car_connector.Connect.reverse_geocode">
-<span class="sig-name descname"><span class="pre">reverse_geocode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitude</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.car.car_connector.Connect.reverse_geocode" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">reverse_geocode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#modules.car.car_connector.Connect.reverse_geocode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses reverse geocoding to get the location from latitude and longitude.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1999,7 +1999,7 @@ name is specified, allow every event.</p>
 <p><strong>API Reference:</strong> <a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo">https://documenter.getpostman.com/view/6250319/RznBMzqo</a> for Jaguar LandRover InControl API.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.car.car_controller.Control">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.car.car_controller.</span></span><span class="sig-name descname"><span class="pre">Control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.car.car_controller.Control" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.car.car_controller.</span></span><span class="sig-name descname"><span class="pre">Control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modules.car.car_connector.Connect" title="modules.car.car_connector.Connect"><span class="pre">modules.car.car_connector.Connect</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.car.car_controller.Control" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates Vehicle object to perform remote actions after connecting to the InControl API.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Control</span>
 </pre></div>
@@ -2008,7 +2008,7 @@ name is specified, allow every event.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – Takes the vehicle data as a dictionary argument.</p></li>
+<li><p><strong>vin</strong> – Takes the vehicle’s VIN as an argument.</p></li>
 <li><p><strong>connection</strong> – Takes the connection object as an argument.</p></li>
 </ul>
 </dd>
@@ -2623,7 +2623,7 @@ Pass 155 for LO and 285 for HI.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.car.car_controller.Control.reset_alarm">
-<span class="sig-name descname"><span class="pre">reset_alarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.car.car_controller.Control.reset_alarm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">reset_alarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.car.car_controller.Control.reset_alarm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset the vehicle alarm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -3984,18 +3984,18 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helpers.support.Helper.unrecognized_dumper">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unrecognized_dumper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helpers.support.Helper.unrecognized_dumper" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unrecognized_dumper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#helpers.support.Helper.unrecognized_dumper" title="Permalink to this definition">¶</a></dt>
 <dd><p>If none of the conditions are met, converted text is written to a yaml file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p>
+<dd class="field-odd"><p><strong>train_data</strong> – Takes the dictionary that has to be written as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="helpers.support.Helper.vehicle">
-<span class="sig-name descname"><span class="pre">vehicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">car_email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modules.car.car_controller.Control" title="modules.car.car_controller.Control"><span class="pre">modules.car.car_controller.Control</span></a></span></span><a class="headerlink" href="#helpers.support.Helper.vehicle" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">vehicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">car_email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#helpers.support.Helper.vehicle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Establishes a connection with the car and returns an object to control the primary vehicle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+5.4.7 (02/08/2022)
+------------------
+- Restrict car unlock via offline communicator
+- Remove super class and inter module connections for car
+- Increase ping timeout for tv ip
+- Restructure unrecognized dumper
+- Set to restart Jarvis every 8 hours
+- Fix tv_mac being unset during quick restart
+- Change api logger to uvicorn to match the same format
+- Remove line numbers from noqa
+
 5.4.6 (02/06/2022)
 ------------------
 - Make adaptable temperature values during car startup
