@@ -44,7 +44,7 @@ offline_compatible = offline_compatible()
 
 getLogger("uvicorn.access").addFilter(EndpointFilter())
 getLogger("uvicorn.access").addFilter(InvestmentFilter())
-logger = getLogger('jarvis')
+logger = getLogger('uvicorn')
 
 serve_file = 'robinhood.html'
 

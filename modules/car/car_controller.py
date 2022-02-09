@@ -3,26 +3,27 @@
 from time import time
 from typing import Union
 
+from modules.car.car_connector import Connect
+
 DEFAULT_CONTENT_TYPE = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json; charset=utf-8"
 
 
-class Control(dict):
+class Control:
     """Initiates Vehicle object to perform remote actions after connecting to the InControl API.
 
     >>> Control
 
     """
 
-    def __init__(self, data: dict, connection):
+    def __init__(self, vin: str, connection: Connect):
         """Instantiates a super class with incoming data and existing connection.
 
         Args:
-            data: Takes the vehicle data as a dictionary argument.
+            vin: Takes the vehicle's VIN as an argument.
             connection: Takes the connection object as an argument.
         """
-        super().__init__(data)
         self.connection = connection
-        self.vin = data['vin']
+        self.vin = vin
         self.IF9_BASE_URL = f'https://if9.prod-row.jlrmotor.com/if9/jlr/vehicles/{self.vin}'
 
     def get_contact_info(self, mcc: str = '+1') -> dict:
@@ -276,7 +277,7 @@ class Control(dict):
         self.post_data(command="unlock", headers=headers,
                        data=self._authenticate_service(pin=pin, service_name="RDU"))
 
-    def reset_alarm(self, pin) -> None:
+    def reset_alarm(self, pin: int) -> None:
         """Reset the vehicle alarm.
 
         Args:
@@ -794,7 +795,7 @@ class Control(dict):
             dict:
             A dictionary response.
         """
-        return self._authenticate_service(pin=self.vin[-4:], service_name=service_name)
+        return self._authenticate_service(pin=int(self.vin[-4:]), service_name=service_name)
 
     def _authenticate_service(self, service_name: str, pin: int = None):
         """Authenticate a service.

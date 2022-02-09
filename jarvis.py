@@ -95,7 +95,7 @@ def say(text: str = None, run: bool = False) -> None:
         speaker.say(text=text)
         text = text.replace('\n', '\t').strip()
         logger.info(f'Response: {text}')
-        logger.info(f'Speaker called by: {sys._getframe(1).f_code.co_name}')  # noqa: 97
+        logger.info(f'Speaker called by: {sys._getframe(1).f_code.co_name}')  # noqa
         sys.stdout.write(f"\r{text}")
         text_spoken['text'] = text
     if run:
@@ -104,7 +104,7 @@ def say(text: str = None, run: bool = False) -> None:
 
 def no_env_vars():
     """Says a message about permissions when env vars are missing."""
-    logger.error(f'Called by: {sys._getframe(1).f_code.co_name}')  # noqa: 106
+    logger.error(f'Called by: {sys._getframe(1).f_code.co_name}')  # noqa
     say(text="I don't have permissions sir! Please add the necessary environment variables and ask me to restart!")
 
 
@@ -410,14 +410,17 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         shutdown()
 
     elif should_return:
+        Thread(target=mod.unrecognized_dumper,
+               args=[{datetime.now().strftime("%B %d, %Y %I:%M %p (UNCATEGORIZED_ACTIVATOR)"): converted}]).start()
         return False
 
     else:
         logger.info(f'Received the unrecognized lookup parameter: {converted}')
-        Thread(target=mod.unrecognized_dumper, args=[converted]).start()  # writes to training_data.yaml in a thread
-        if alpha(converted):
-            if google_maps(converted):
-                if google(converted):
+        Thread(target=mod.unrecognized_dumper,
+               args=[{datetime.now().strftime("%B %d, %Y %I:%M %p (UNCATEGORIZED_ELSE)"): converted}]).start()
+        if alpha(text=converted):
+            if google_maps(query=converted):
+                if google(query=converted):
                     # if none of the conditions above are met, opens a Google search on default browser
                     if google_maps.has_been_called:
                         google_maps.has_been_called = False
@@ -427,7 +430,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
                         say(text="I have opened a google search for your request.")
                     search_query = str(converted).replace(' ', '+')
                     unknown_url = f"https://www.google.com/search?q={search_query}"
-                    web_open(unknown_url)
+                    web_open(url=unknown_url)
 
 
 def ip_info(phrase: str) -> None:
@@ -476,7 +479,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
             if not (device := mod.device_selector(icloud_user=icloud_user, icloud_pass=icloud_pass)):
                 raise PyiCloudFailedLoginException
         raw_location = device.location()
-        if not raw_location and sys._getframe(1).f_code.co_name == 'locate':  # noqa: 478
+        if not raw_location and sys._getframe(1).f_code.co_name == 'locate':  # noqa
             return 'None', 'None', 'None'
         elif not raw_location:
             raise PyiCloudAPIResponseException(reason=f'Unable to retrieve location for {device}')
@@ -487,7 +490,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException):
         if device:
             logger.error(f'Unable to retrieve location::{sys.exc_info()[0].__name__}\n{format_exc()}')  # traceback
-            caller = sys._getframe(1).f_code.co_name  # noqa: 489
+            caller = sys._getframe(1).f_code.co_name  # noqa
             if caller == '<module>':
                 if os.path.isfile('pyicloud_error'):
                     logger.error(f'Exception raised by {caller} once again. Proceeding...')
@@ -1966,20 +1969,20 @@ def television(phrase: str) -> None:
     # 'tv_status = lambda: os.system(f"ping ....) #noqa' is an alternate but adhering to pep 8 best practice using a def
     def tv_status():
         """Pings the tv and returns the status. 0 if able to ping, 256 if unable to ping."""
-        return os.system(f"ping -c 1 -t 1 {tv_ip} >/dev/null")  # pings TV IP and returns 0 if host is reachable
+        return os.system(f"ping -c 1 -t 3 {tv_ip} >/dev/null")  # pings TV IP and returns 0 if host is reachable
 
     if vpn_checker().startswith('VPN'):
         return
     elif ('turn off' in phrase_lower or 'shutdown' in phrase_lower or 'shut down' in phrase_lower) and tv_status() != 0:
         say(text="I wasn't able to connect to your TV sir! I guess your TV is powered off already.")
         return
-    elif tv_status() != 0:
+    elif tv_status():
         Thread(target=wake, args=[tv_mac]).start()  # turns TV on in a thread
         # speaks the message to buy some time while the TV is connecting to network
         say(text="Looks like your TV is powered off sir! Let me try to turn it back on!", run=True)
 
     for i in range(5):
-        if tv_status():
+        if not tv_status():
             break
         elif i == 4:  # checks if the TV is turned ON (thrice) even before launching the TV connector
             say(text="I wasn't able to connect to your TV sir! Please make sure you are on the "
@@ -2011,7 +2014,7 @@ def television(phrase: str) -> None:
         elif 'mute' in phrase_lower:
             tv.mute()
             say(text=f'{random.choice(ack)}!')
-        elif 'pause' in phrase_lower or 'hold' in phrase_lower:
+        elif 'pause' in phrase_lower or 'boss' in phrase_lower or 'pass' in phrase_lower or 'hold' in phrase_lower:
             tv.pause()
             say(text=f'{random.choice(ack)}!')
         elif 'resume' in phrase_lower or 'play' in phrase_lower:
@@ -2099,7 +2102,7 @@ def alpha(text: str) -> bool:
     alpha_client = Think(app_id=think_id)
     try:
         res = alpha_client.query(text)
-    except Exception:  # noqa: 2103
+    except Exception:  # noqa
         return True
     if res['@success'] == 'false':
         return True
@@ -3155,8 +3158,7 @@ def car(phrase: str) -> None:
         no_env_vars()
         return
 
-    disconnected = "I wasn't able to connect your car sir! Please check your environment variables and subscription " \
-                   "to connect your car."
+    disconnected = "I wasn't able to connect your car sir! Please check the logs for more information."
 
     if 'start' in phrase or 'set' in phrase or 'turn on' in phrase:
         extras = ''
@@ -3196,7 +3198,10 @@ def car(phrase: str) -> None:
         else:
             say(text=disconnected)
     elif 'unlock' in phrase:
-        playsound(sound='indicators/exhaust.mp3', block=False) if not called_by_offline['status'] else None
+        if called_by_offline['status']:
+            say(text='Cannot unlock the car via offline communicator due to security reasons.')
+            return
+        playsound(sound='indicators/exhaust.mp3', block=False)
         if car_name := mod.vehicle(car_email=car_email, car_pass=car_pass, operation='UNLOCK', car_pin=car_pin):
             say(text=f'Your {car_name} has been unlocked sir!')
         else:
@@ -3417,7 +3422,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
             return
     STOPPER['status'] = True
     logger.info('JARVIS::Restarting Now::STOPPER flag has been set.')
-    logger.info(f'Called by {sys._getframe(1).f_code.co_name}')  # noqa: 3429
+    logger.info(f'Called by {sys._getframe(1).f_code.co_name}')  # noqa
     sys.stdout.write(f"\rMemory consumed: {mod.size_converter(0)}\tTotal runtime: {mod.time_converter(perf_counter())}")
     if not quiet:
         try:
@@ -3466,10 +3471,10 @@ def voice_default(voice_model: str = 'Daniel') -> None:
         voice_model: Defaults to ``Daniel`` in mac.
     """
     voices = speaker.getProperty("voices")  # gets the list of voices available
-    for ind_d, voice_d in enumerate(voices):  # noqa: 3478
+    for ind_d, voice_d in enumerate(voices):  # noqa
         if voice_d.name == voice_model:
             sys.stdout.write(f'\rVoice module has been configured to {ind_d}::{voice_d.name}')
-            speaker.setProperty("voice", voices[ind_d].id)  # noqa: 3481
+            speaker.setProperty("voice", voices[ind_d].id)  # noqa
             return
 
 
@@ -3488,8 +3493,8 @@ def voice_changer(phrase: str = None) -> None:
                       "Here's an example of one of my other voices. Would you like me to use this one?",
                       'How about this one?']
 
-    for ind, voice in enumerate(voices):  # noqa: 3500
-        speaker.setProperty("voice", voices[ind].id)  # noqa: 3501
+    for ind, voice in enumerate(voices):  # noqa
+        speaker.setProperty("voice", voices[ind].id)  # noqa
         say(text=f'I am {voice.name} sir!')
         sys.stdout.write(f'\rVoice module has been re-configured to {ind}::{voice.name}')
         say(text=choices_to_say[ind]) if ind < len(choices_to_say) else say(text=random.choice(choices_to_say))
@@ -3560,7 +3565,7 @@ if __name__ == '__main__':
         exit('Unsupported Operating System.\nWindows support was recently deprecated. '
              'Refer https://github.com/thevickypedia/Jarvis/commit/cf54b69363440d20e21ba406e4972eb058af98fc')
 
-    Timer(86400, stopper).start()  # Restarts every 24 hours
+    Timer(28_800, stopper).start()  # Restarts every 8 hours
 
     logger.info('JARVIS::Starting Now')
 
@@ -3601,10 +3606,11 @@ if __name__ == '__main__':
     # Note: This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)
     # Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted
     if (hallway_ip := os.environ.get('hallway_ip')) and (kitchen_ip := os.environ.get('kitchen_ip')) and \
-            (bedroom_ip := os.environ.get('bedroom_ip')) and (tv_ip := os.environ.get('tv_ip')):
+            (bedroom_ip := os.environ.get('bedroom_ip')) and (tv_ip := os.environ.get('tv_ip')) and \
+            (tv_mac := os.environ.get('tv_mac')):
         hallway_ip = eval(hallway_ip)
-        kitchen_ip = eval(kitchen_ip)  # noqa: 3615
-        bedroom_ip = eval(bedroom_ip)  # noqa: 3616
+        kitchen_ip = eval(kitchen_ip)  # noqa
+        bedroom_ip = eval(bedroom_ip)  # noqa
         unset_key(dotenv_path='.env', key_to_unset='hallway_ip')
         unset_key(dotenv_path='.env', key_to_unset='kitchen_ip')
         unset_key(dotenv_path='.env', key_to_unset='bedroom_ip')

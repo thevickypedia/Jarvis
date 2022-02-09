@@ -120,10 +120,11 @@ class Helper:
                         api_status = True
                         self.logger.info('An instance of Jarvis API for offline communicator is running already.')
 
+        activator = 'source venv/bin/activate'
         if not ngrok_status:
             if os.path.exists(f"{home}/JarvisHelper"):
                 self.logger.info('Initiating ngrok connection for offline communicator.')
-                initiate = f'cd {home}/JarvisHelper && source venv/bin/activate && export ENV=1 && python {targets[0]}'
+                initiate = f'cd {home}/JarvisHelper && {activator} && export port={offline_port} && python {targets[0]}'
                 apple_script('Terminal').do_script(initiate)
             else:
                 self.logger.error(f'JarvisHelper is not available to trigger an ngrok tunneling through {offline_port}')
@@ -133,7 +134,7 @@ class Helper:
 
         if not api_status:
             self.logger.info('Initiating FastAPI for offline listener.')
-            offline_script = f'cd {os.getcwd()} && source venv/bin/activate && cd api && python fast.py'
+            offline_script = f'cd {os.getcwd()} && {activator} && cd api && python {targets[1]}'
             apple_script('Terminal').do_script(offline_script)
 
     @staticmethod
@@ -219,25 +220,25 @@ class Helper:
             return place
 
     @staticmethod
-    def unrecognized_dumper(converted: str) -> None:
+    def unrecognized_dumper(train_data: dict) -> None:
         """If none of the conditions are met, converted text is written to a yaml file.
 
         Args:
-            converted: Takes the voice recognized statement as argument.
+            train_data: Takes the dictionary that has to be written as an argument.
         """
-        train_file = {'Uncategorized': converted}
+        # todo: Write unrecognized from activator in separate key-value pairs within the yaml file for training
         if os.path.isfile('training_data.yaml'):
             content = open(r'training_data.yaml', 'r').read()
-            for key, value in train_file.items():
+            for key, value in train_data.items():
                 if str(value) not in content:  # avoids duplication in yaml file
                     dict_file = [{key: [value]}]
                     with open(r'training_data.yaml', 'a') as writer:
                         yaml.dump(dict_file, writer)
         else:
-            for key, value in train_file.items():
-                train_file = [{key: [value]}]
+            for key, value in train_data.items():
+                train_data = [{key: [value]}]
             with open(r'training_data.yaml', 'w') as writer:
-                yaml.dump(train_file, writer)
+                yaml.dump(train_data, writer)
 
     @staticmethod
     def size_converter(byte_size: int) -> str:
@@ -473,7 +474,7 @@ class Helper:
 
         return exit_msg
 
-    def vehicle(self, car_email, car_pass, car_pin, operation: str, temp: int = None) -> Control:
+    def vehicle(self, car_email, car_pass, car_pin, operation: str, temp: int = None) -> Union[str, None]:
         """Establishes a connection with the car and returns an object to control the primary vehicle.
 
         Args:
@@ -488,18 +489,25 @@ class Helper:
             Control object to access the primary vehicle.
         """
         try:
-            control = Connect(username=car_email, password=car_pass, logger=self.logger).primary_vehicle
+            connection = Connect(username=car_email, password=car_pass, logger=self.logger)
+            connection.connect()
+            if not connection.head:
+                return
+            vehicles = connection.get_vehicles(headers=connection.head).get('vehicles')
+            primary_vehicle = [vehicle for vehicle in vehicles if vehicle.get('role') == 'Primary'][0]
+            controller = Control(vin=primary_vehicle.get('vin'), connection=connection)
+
             if operation == 'LOCK':
-                control.lock(pin=car_pin)
+                controller.lock(pin=car_pin)
             elif operation == 'UNLOCK':
-                control.unlock(pin=car_pin)
+                controller.unlock(pin=car_pin)
             elif operation == 'START':
-                control.remote_engine_start(pin=car_pin, target_temperature=temp)
+                controller.remote_engine_start(pin=car_pin, target_temperature=temp)
             elif operation == 'STOP':
-                control.remote_engine_stop(pin=car_pin)
+                controller.remote_engine_stop(pin=car_pin)
             elif operation == 'SECURE':
-                control.enable_guardian_mode(pin=car_pin)
-            return os.environ.get('car_name', control.get_attributes().get('vehicleBrand', 'car'))
+                controller.enable_guardian_mode(pin=car_pin)
+            return os.environ.get('car_name', controller.get_attributes().get('vehicleBrand', 'car'))
         except HTTPError as error:
             self.logger.error(error)
 

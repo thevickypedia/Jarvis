@@ -102,7 +102,7 @@ class TestLogger:
         self.logger.debug('function 5')
 
     @staticmethod
-    def custom_time(*args: logging.Formatter and time) -> struct_time:  # noqa: 107
+    def custom_time(*args: logging.Formatter and time) -> struct_time:  # noqa
         """Creates custom timezone for ``logging`` which gets used only when invoked by ``Docker``.
 
         This is used only when triggered within a ``docker container`` as it uses UTC timezone.

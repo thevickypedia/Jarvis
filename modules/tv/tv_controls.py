@@ -211,7 +211,7 @@ class TV:
 
     def set_audio_output_source(self) -> None:
         """Sets to a particular AudioOutputSource instance."""
-        self.media.set_audio_output(self.audio_output_source[0])  # noqa: 214
+        self.media.set_audio_output(self.audio_output_source[0])  # noqa
 
     def shutdown(self) -> None:
         """Notifies the TV about shutdown and shuts down after 3 seconds."""

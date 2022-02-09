@@ -9,8 +9,6 @@ from urllib.error import HTTPError
 from urllib.request import Request, build_opener
 from uuid import UUID, uuid4
 
-from modules.car.car_controller import Control
-
 
 def logger_module() -> Logger:
     """Creates a custom logger using stream handler.
@@ -72,20 +70,11 @@ class Connect:
                 "password": password
             }
 
+        self.head = {}
         self.device_id = str(device_id)
         self.logger = logger
         self.expiration = auth_expiry
         self.username = username
-        self.connect()
-
-        if hasattr(self, 'head'):
-            self.vehicles = [Control(data=vehicle, connection=self) for vehicle in
-                             self.get_vehicles(self.head).get('vehicles') if vehicle]
-            self.logger.debug(f"Number of vehicles associated: {len(self.vehicles)}") if self.vehicles else \
-                self.logger.error("No vehicles associated with this account")
-            self.primary_vehicle = [vehicle for vehicle in self.vehicles if vehicle.get('role') == 'Primary'][0]
-        else:
-            self.vehicles, self.primary_vehicle = [], None
 
     def post_data(self, command: str, url: str, headers: dict, data: dict = None) -> dict:
         """Add header authorization and sends a post request.
@@ -178,7 +167,7 @@ class Connect:
             "Content-Type": "application/json"
         }
 
-    def _authenticate(self, data=None) -> dict:
+    def _authenticate(self, data: dict = None) -> dict:
         """Makes a post call to the tokens end point.
 
         Args:
@@ -245,7 +234,7 @@ class Connect:
         self.logger.debug("Tokens refreshed")
         self._register_device_and_log_in()
 
-    def get_vehicles(self, headers) -> dict:
+    def get_vehicles(self, headers: dict) -> dict:
         """Makes a post request to get the vehicles registered under the account.
 
         Args:
@@ -278,7 +267,7 @@ class Connect:
         self.post_data(command=self.user_id, url=f"{self.IF9_BASE_URL}/users", headers=headers,
                        data=user_info_data)
 
-    def reverse_geocode(self, latitude, longitude):
+    def reverse_geocode(self, latitude: Union[float, str], longitude: Union[float, str]) -> dict:
         """Uses reverse geocoding to get the location from latitude and longitude.
 
         Args:
