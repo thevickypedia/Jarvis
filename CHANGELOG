@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+5.4.8 (02/09/2022)
+------------------
+- Create investment endpoints based on env vars
+- Remove custom log config
+- Increase usage of dumping unrecognized words into yaml file
+- Make the training file much more explanatory
+- Increase usage of get_capitalized method
+
 5.4.7 (02/08/2022)
 ------------------
 - Restrict car unlock via offline communicator

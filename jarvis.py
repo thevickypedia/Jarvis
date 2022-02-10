@@ -410,14 +410,12 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         shutdown()
 
     elif should_return:
-        Thread(target=mod.unrecognized_dumper,
-               args=[{datetime.now().strftime("%B %d, %Y %I:%M %p (UNCATEGORIZED_ACTIVATOR)"): converted}]).start()
+        Thread(target=mod.unrecognized_dumper, args=[{'ACTIVATOR': converted}]).start()
         return False
 
     else:
         logger.info(f'Received the unrecognized lookup parameter: {converted}')
-        Thread(target=mod.unrecognized_dumper,
-               args=[{datetime.now().strftime("%B %d, %Y %I:%M %p (UNCATEGORIZED_ELSE)"): converted}]).start()
+        Thread(target=mod.unrecognized_dumper, args=[{'CONDITIONS': converted}]).start()
         if alpha(text=converted):
             if google_maps(query=converted):
                 if google(query=converted):
@@ -561,7 +559,7 @@ def current_time(converted: str = None) -> None:
     Args:
         converted: Takes the phrase as an argument.
     """
-    place = mod.get_place_from_phrase(phrase=converted) if converted else None
+    place = mod.get_capitalized(phrase=converted) if converted else None
     if place and len(place) > 3:
         tf = TimezoneFinder()
         place_tz = geo_locator.geocode(place)
@@ -639,7 +637,7 @@ def weather(phrase: str = None) -> None:
 
     place = None
     if phrase:
-        place = mod.get_place_from_phrase(phrase=phrase) if phrase else None
+        place = mod.get_capitalized(phrase=phrase) if phrase else None
         if any(match_word in phrase.lower() for match_word in
                ['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']):
             if place:
@@ -900,6 +898,7 @@ def apps(phrase: str) -> None:
 
     if not app_check:
         say(text=f"I did not find the app {keyword}. Try again.")
+        Thread(target=mod.unrecognized_dumper, args=[{'APPLICATIONS': keyword}]).start()
         return
     else:
         app_status = os.system(f"open /Applications/'{keyword}' > /dev/null 2>&1")
@@ -1405,7 +1404,7 @@ def locate_places(phrase: str = None) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    place = mod.get_place_from_phrase(phrase=phrase) if phrase else None
+    place = mod.get_capitalized(phrase=phrase) if phrase else None
     # if no words found starting with an upper case letter, fetches word after the keyword 'is' eg: where is Chicago
     if not place:
         keyword = 'is'
@@ -1420,7 +1419,7 @@ def locate_places(phrase: str = None) -> None:
         if converted != 'SR_ERROR':
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 return
-            place = mod.get_place_from_phrase(phrase=converted)
+            place = mod.get_capitalized(phrase=converted)
             if not place:
                 keyword = 'is'
                 before_keyword, keyword, after_keyword = converted.partition(keyword)
@@ -1465,13 +1464,13 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
         phrase: Takes the phrase spoken as an argument.
         no_repeat: A placeholder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
     """
-    place = mod.get_place_from_phrase(phrase=phrase)
+    place = mod.get_capitalized(phrase=phrase)
     place = place.replace('I ', '').strip() if place else None
     if not place:
         say(text="You might want to give a location.", run=True)
         converted = listener(timeout=3, phrase_limit=4)
         if converted != 'SR_ERROR':
-            place = mod.get_place_from_phrase(phrase=phrase)
+            place = mod.get_capitalized(phrase=phrase)
             place = place.replace('I ', '').strip()
             if not place:
                 if no_repeat:
@@ -2043,12 +2042,10 @@ def television(phrase: str) -> None:
             say(text='App list on your screen sir!', run=True)
             sleep(5)
         elif 'open' in phrase_lower or 'launch' in phrase_lower:
-            app_name = ''
-            for word in phrase_exc.split():
-                if word[0].isupper():
-                    app_name += word + ' '
+            app_name = mod.get_capitalized(phrase=phrase_exc, dot=False)
             if not app_name:
-                say(text="I didn't quite get that.")
+                say(text="I'm not sure which application I should launch sir!")
+                Thread(target=mod.unrecognized_dumper, args=[{'TV_APPLICATION': phrase}])
             else:
                 try:
                     tv.launch_app(app_name.strip())
@@ -2058,12 +2055,10 @@ def television(phrase: str) -> None:
         elif "what's" in phrase_lower or 'currently' in phrase_lower:
             say(text=f'{tv.current_app()} is running on your TV.')
         elif 'change' in phrase_lower or 'source' in phrase_lower:
-            tv_source = ''
-            for word in phrase_exc.split():
-                if word[0].isupper():
-                    tv_source += word + ' '
+            tv_source = mod.get_capitalized(phrase=phrase_exc, dot=False)
             if not tv_source:
                 say(text="I didn't quite get that.")
+                Thread(target=mod.unrecognized_dumper, args=[{'TV_SOURCE': phrase}]).start()
             else:
                 try:
                     tv.set_source(tv_source.strip())
@@ -2076,6 +2071,7 @@ def television(phrase: str) -> None:
             tv = None
         else:
             say(text="I didn't quite get that.")
+            Thread(target=mod.unrecognized_dumper, args=[{'TV': phrase}]).start()
     else:
         phrase = phrase.replace('my', 'your').replace('please', '').replace('will you', '').strip()
         say(text=f"I'm sorry sir! I wasn't able to {phrase}, as the TV state is unknown!")
@@ -2550,6 +2546,7 @@ def lights(phrase: str) -> None:
             lumen(host=light_ip, warm_lights=warm_light.get('status'), rgb=level)
     else:
         say(text=f"I didn't quite get that sir! What do you want me to do to your {plural}?")
+        Thread(target=mod.unrecognized_dumper, args=[{'LIGHTS': phrase}]).start()
 
 
 def vpn_checker() -> str:
@@ -2846,6 +2843,7 @@ def personal_cloud(phrase: str) -> None:
         say(text=random.choice(ack))
     else:
         say(text="I didn't quite get that sir! Please tell me if I should enable or disable your server.")
+        Thread(target=mod.unrecognized_dumper, args=[{'PERSONAL_CLOUD': phrase}])
 
 
 def vpn_server(phrase: str) -> None:
@@ -2867,6 +2865,7 @@ def vpn_server(phrase: str) -> None:
         say(text='VPN Server will be shutdown sir!')
     else:
         say(text="I don't understand the request sir! You can ask me to enable or disable the VPN server.")
+        Thread(target=mod.unrecognized_dumper, args=[{'VPNServer': phrase}])
 
 
 def internet_checker() -> Union[Speedtest, bool]:
@@ -3214,6 +3213,7 @@ def car(phrase: str) -> None:
             say(text=disconnected)
     else:
         say(text="I didn't quite get that sir! What do you want me to do to your car?")
+        Thread(target=mod.unrecognized_dumper, args=[{'CAR': phrase}])
 
 
 class Activator:
