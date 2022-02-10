@@ -33,11 +33,15 @@ if os.path.isfile('../.env'):
 if not os.path.isdir('logs'):
     os.system('mkdir logs')
 
-config.dictConfig(LogConfig().dict())
+if os.environ.get('NEVER_MATCH'):
+    config.dictConfig(config=LogConfig().dict())
 
 offline_host = gethostbyname('localhost')
 offline_port = int(os.environ.get('offline_port', 4483))
 offline_phrase = os.environ.get('offline_phrase', 'jarvis')
+
+rh_env_vars = all([os.environ.get('robinhood_user'), os.environ.get('robinhood_pass'), os.environ.get('robinhood_qr')])
+robinhood_token = {'token': None}
 robinhood_auth = os.environ.get('robinhood_auth', 'robinhood')
 
 offline_compatible = offline_compatible()
@@ -74,14 +78,6 @@ def get_jarvis_status() -> bool:
     for pid_info in pid_list:
         if pid_info and 'grep' not in pid_info and '/bin/sh' not in pid_info:
             return True
-
-
-async def pre_check_robinhood() -> None:
-    """Checks if the env var ``robinhood_auth`` is present. Raises 500 if not."""
-    if not robinhood_auth:
-        raise HTTPException(status_code=500,
-                            detail='Accessing robinhood requires username, password and QR code in env-vars.\n'
-                                   'Please check the read me/wiki page for setup instructions.')
 
 
 def run_robinhood() -> None:
@@ -164,9 +160,8 @@ async def start_robinhood() -> None:
     """Initiates robinhood gatherer in a thread and adds a cron schedule if not present already."""
     await enable_cors()
     logger.info(f'Hosting at http://{offline_host}:{offline_port}')
-    if robinhood_auth:
-        # noinspection PyGlobalUndefined
-        global thread
+    if rh_env_vars:
+        global thread  # noqa
         thread = Thread(target=run_robinhood, daemon=True)
         thread.start()
         CronScheduler(logger=logger).controller()
@@ -186,9 +181,9 @@ async def redirect_index() -> str:
 
     Returns:
         str:
-        Redirects the root endpoint ``/`` url to ``/redoc``
+        Redirects the root endpoint ``/`` url to read-only docs location.
     """
-    return '/redoc'
+    return app.redoc_url
 
 
 @app.get('/status', include_in_schema=False)
@@ -255,73 +250,73 @@ async def get_favicon() -> FileResponse:
         return FileResponse('favicon.ico')
 
 
-@app.post("/robinhood-authenticate")
-async def authenticate_robinhood(feeder: GetPhrase) -> None:
-    """Authenticates the request. Uses a two-factor authentication by generating single use tokens.
+if rh_env_vars:
+    @app.post("/robinhood-authenticate")
+    async def authenticate_robinhood(feeder: GetPhrase) -> None:
+        """Authenticates the request. Uses a two-factor authentication by generating single use tokens.
 
-    Args:
-        feeder: Takes the following argument(s) as dataString instead of a QueryString.
+        Args:
+            feeder: Takes the following argument(s) as dataString instead of a QueryString.
 
-            - passphrase: Pass phrase for authentication.
+                - passphrase: Pass phrase for authentication.
 
-    Raises:
-        200: If initial auth is successful and returns the single-use token.
-        401: If request is not authorized.
+        Raises:
+            200: If initial auth is successful and returns the single-use token.
+            401: If request is not authorized.
 
-    See Also:
-        If basic auth (stored as an env var ``robinhood_auth``) succeeds:
+        See Also:
+            If basic auth (stored as an env var ``robinhood_auth``) succeeds:
 
-        - Returns ``?token=HASHED_UUID`` to access ``/investment`` which is used as ``/?investment?token=HASHED_UUID``
-        - Also stores the token as an env var ``robinhood_token`` which is verified in the path ``/investment``
-        - The token is deleted from env var as soon as it is verified, making page-refresh useless.
-    """
-    await pre_check_robinhood()
-    os.environ['robinhood_token'] = keygen()
-    passcode = feeder.phrase
-    if not passcode:
-        raise HTTPException(status_code=500, detail='Passcode was not received.')
-    if passcode.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
-        passcode = bytes(passcode, "utf-8").decode(encoding="unicode_escape")
-    if passcode == robinhood_auth:
-        raise HTTPException(status_code=200, detail=f"?token={os.environ.get('robinhood_token')}")
-    else:
-        raise HTTPException(status_code=401, detail='Request not authorized.')
+            - Returns ``?token=HASHED_UUID`` to access ``/investment`` accessed via ``/?investment?token=HASHED_UUID``
+            - Also stores the token as an env var ``robinhood_token`` which is verified in the path ``/investment``
+            - The token is deleted from env var as soon as it is verified, making page-refresh useless.
+        """
+        robinhood_token['token'] = keygen() or None
+        passcode = feeder.phrase
+        if not passcode:
+            raise HTTPException(status_code=500, detail='Passcode was not received.')
+        if passcode.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
+            passcode = bytes(passcode, "utf-8").decode(encoding="unicode_escape")
+        if passcode == robinhood_auth:
+            raise HTTPException(status_code=200, detail=f"?token={robinhood_token['token']}")
+        else:
+            raise HTTPException(status_code=401, detail='Request not authorized.')
 
 
-@app.get("/investment", response_class=HTMLResponse, include_in_schema=False)
-async def robinhood(token: str = None) -> HTMLResponse:
-    """Serves static file.
+if rh_env_vars:
+    @app.get("/investment", response_class=HTMLResponse, include_in_schema=False)
+    async def robinhood(token: str = None) -> HTMLResponse:
+        """Serves static file.
 
-    Args:
-        token: Takes custom auth token as an argument.
+        Args:
+            token: Takes custom auth token as an argument.
 
-    Returns:
-        HTMLResponse:
-        Renders the html page.
+        Returns:
+            HTMLResponse:
+            Renders the html page.
 
-    See Also:
-        - This endpoint is secured behind two-factor authentication.
-        - Initial check is done by the function robinhood_auth behind the path "/robinhood-authenticate"
-        - Once the auth succeeds, a one-time usable hashed-uuid is generated and stored as an environment variable.
-        - This UUID is sent as response to the API endpoint behind ngrok tunnel.
-        - The UUID is deleted from env var as soon as the argument is checked for the first time.
-        - Page refresh doesn't work because the env var is deleted as soon as it is authed once.
-    """
-    await pre_check_robinhood()
-    if not token:
-        raise HTTPException(status_code=400, detail='Request needs to be authorized with a single-use token.')
-    if token == os.environ.get('robinhood_token'):
-        if not os.path.isfile(serve_file):
-            raise HTTPException(status_code=404, detail='Static file was not found on server.')
-        del os.environ['robinhood_token']
-        with open(serve_file) as static_file:
-            html_content = static_file.read()
-        content_type, _ = guess_type(html_content)
-        return HTMLResponse(content=html_content, media_type=content_type)  # serves as a static webpage
-    else:
-        logger.warning('/investment was accessed with an expired token.')
-        raise HTTPException(status_code=401,
-                            detail='Session expired. Requires authentication since endpoint uses single-use token.')
+        See Also:
+            - This endpoint is secured behind two-factor authentication.
+            - Initial check is done by the function robinhood_auth behind the path "/robinhood-authenticate"
+            - Once the auth succeeds, a one-time usable hashed-uuid is generated and stored as an environment variable.
+            - This UUID is sent as response to the API endpoint behind ngrok tunnel.
+            - The UUID is deleted from env var as soon as the argument is checked for the first time.
+            - Page refresh doesn't work because the env var is deleted as soon as it is authed once.
+        """
+        if not token:
+            raise HTTPException(status_code=400, detail='Request needs to be authorized with a single-use token.')
+        if token == robinhood_token['token']:
+            robinhood_token['token'] = None
+            if not os.path.isfile(serve_file):
+                raise HTTPException(status_code=404, detail='Static file was not found on server.')
+            with open(serve_file) as static_file:
+                html_content = static_file.read()
+            content_type, _ = guess_type(html_content)
+            return HTMLResponse(content=html_content, media_type=content_type)  # serves as a static webpage
+        else:
+            logger.warning('/investment was accessed with an expired token.')
+            raise HTTPException(status_code=401,
+                                detail='Session expired. Requires authentication since endpoint uses single-use token.')
 
 
 if __name__ == '__main__':

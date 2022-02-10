@@ -200,45 +200,47 @@ class Helper:
             return f'{seconds} seconds'
 
     @staticmethod
-    def get_place_from_phrase(phrase: str) -> str:
-        """Looks for the name of a place in the phrase received.
+    def get_capitalized(phrase: str, dot: bool = True) -> str:
+        """Looks for words starting with an upper-case letter.
 
         Args:
-            phrase: Takes the phrase converted as an argument.
+            phrase: Takes input string as an argument.
+            dot: Takes a boolean flag whether to include words separated by (.) dot.
 
         Returns:
             str:
-            Returns the name of place if skimmed.
+            Returns the upper case words if skimmed.
         """
         place = ''
         for word in phrase.split():
             if word[0].isupper():
                 place += word + ' '
-            elif '.' in word:
+            elif '.' in word and dot:
                 place += word + ' '
         if place:
             return place
 
     @staticmethod
     def unrecognized_dumper(train_data: dict) -> None:
-        """If none of the conditions are met, converted text is written to a yaml file.
+        """If none of the conditions are met, converted text is written to a yaml file for training purpose.
 
         Args:
             train_data: Takes the dictionary that has to be written as an argument.
         """
-        # todo: Write unrecognized from activator in separate key-value pairs within the yaml file for training
+        dt_string = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
         if os.path.isfile('training_data.yaml'):
-            content = open(r'training_data.yaml', 'r').read()
+            with open('training_data.yaml') as reader:
+                data = yaml.safe_load(stream=reader) or {}
             for key, value in train_data.items():
-                if str(value) not in content:  # avoids duplication in yaml file
-                    dict_file = [{key: [value]}]
-                    with open(r'training_data.yaml', 'a') as writer:
-                        yaml.dump(dict_file, writer)
+                if data.get(key):
+                    data[key].update({dt_string: value})
+                else:
+                    data.update({key: {dt_string: value}})
         else:
-            for key, value in train_data.items():
-                train_data = [{key: [value]}]
-            with open(r'training_data.yaml', 'w') as writer:
-                yaml.dump(train_data, writer)
+            data = {key1: {dt_string: value1} for key1, value1 in train_data.items()}
+
+        with open('training_data.yaml', 'w') as writer:
+            yaml.dump(data=data, stream=writer)
 
     @staticmethod
     def size_converter(byte_size: int) -> str:
