@@ -39,7 +39,7 @@ class LogConfig(BaseModel):
         - ``LOG_FORMAT`` is set to match the format of ``uvicorn.access`` logs.
     """
 
-    LOGGER_NAME = "jarvis"
+    LOGGER_NAME = "uvicorn"
     LOG_FORMAT = '%(levelname)s:\t  %(message)s'
     LOG_LEVEL = "DEBUG"
     FILE_LOG = datetime.now().strftime('logs/%Y-%m-%d.log')
