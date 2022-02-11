@@ -1355,7 +1355,7 @@ A condition below assumes two different words as two places but not including tw
 <p>If basic auth (stored as an env var <code class="docutils literal notranslate"><span class="pre">robinhood_auth</span></code>) succeeds:</p>
 <ul class="simple">
 <li><p>Returns <code class="docutils literal notranslate"><span class="pre">?token=HASHED_UUID</span></code> to access <code class="docutils literal notranslate"><span class="pre">/investment</span></code> accessed via <code class="docutils literal notranslate"><span class="pre">/?investment?token=HASHED_UUID</span></code></p></li>
-<li><p>Also stores the token as an env var <code class="docutils literal notranslate"><span class="pre">robinhood_token</span></code> which is verified in the path <code class="docutils literal notranslate"><span class="pre">/investment</span></code></p></li>
+<li><p>Also stores the token in the dictionary <code class="docutils literal notranslate"><span class="pre">robinhood_token</span></code> which is verified in the path <code class="docutils literal notranslate"><span class="pre">/investment</span></code></p></li>
 <li><p>The token is deleted from env var as soon as it is verified, making page-refresh useless.</p></li>
 </ul>
 </div>

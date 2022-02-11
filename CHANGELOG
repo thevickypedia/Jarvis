@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+5.4.9 (02/10/2022)
+------------------
+- Change logging config to uvicorn style
+- Remove unnecessary exception handlers
+- Change location dumper to dict from list
+- Remove unnecessary variables
+
 5.4.8 (02/09/2022)
 ------------------
 - Create investment endpoints based on env vars

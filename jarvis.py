@@ -177,19 +177,18 @@ def renew() -> None:
     waiter = 0
     while waiter < 12:
         waiter += 1
-        try:
-            if waiter == 1:
-                converted = listener(timeout=3, phrase_limit=5)
-            else:
-                converted = listener(timeout=3, phrase_limit=5, sound=False)
-            remove = ['buddy', 'jarvis', 'hey', 'hello', 'sr_error']
-            converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
-            if converted:
-                if split(key=converted):  # should_return flag is not passed which will default to False
-                    break  # split() returns what conditions function returns. Condition() returns True only for sleep.
-            say(run=True)
-        except (UnknownValueError, RequestError, WaitTimeoutError):
-            pass
+        if waiter == 1:
+            converted = listener(timeout=3, phrase_limit=5)
+        else:
+            converted = listener(timeout=3, phrase_limit=5, sound=False)
+        if converted == 'SR_ERROR':
+            continue
+        remove = ['buddy', 'jarvis', 'hey', 'hello', 'sr_error']
+        converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
+        if converted:
+            if split(key=converted):  # should_return flag is not passed which will default to False
+                break  # split() returns what conditions function returns. Condition() returns True only for sleep.
+        say(run=True)
 
 
 def conditions(converted: str, should_return: bool = False) -> bool:
@@ -2629,14 +2628,12 @@ def guard_enable() -> None:
 
     while True:
         # Listens for any recognizable speech and saves it to a notes file
-        try:
-            sys.stdout.write("\rSECURITY MODE")
-            listened = recognizer.listen(source, timeout=3, phrase_time_limit=10)
-            converted = recognizer.recognize_google(listened)
-            converted = converted.replace('Jarvis', '').strip()
-        except (UnknownValueError, RequestError, WaitTimeoutError):
-            pass
+        sys.stdout.write("\rSECURITY MODE")
+        converted = listener(timeout=3, phrase_limit=10)
+        if converted == 'SR_ERROR':
+            continue
 
+        converted = converted.replace('Jarvis', '').strip()
         if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable):
             logger.info('Disabled security mode')
             say(text=f'Welcome back sir! Good {mod.part_of_day()}.')
@@ -2721,7 +2718,7 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
         if command and not response:
             with open('offline_request', 'w') as off_request:
                 off_request.write(command)
-        logger.error(f'Received a RuntimeError while executing offline request.\n{format_exc()}')
+        logger.fatal(f'Received a RuntimeError while executing offline request.\n{format_exc()}')
         restart(quiet=True, quick=True)
 
 
@@ -2904,11 +2901,9 @@ def initiator(key_original: str, should_return: bool = False) -> None:
     if key_original == 'SR_ERROR' and should_return:
         return
     sys.stdout.write("\r")
-    time_of_day = ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']
-    wake_up_words = ['look alive', 'wake up', 'wakeup', 'show time', 'showtime', 'time to work', 'spin up']
     key = key_original.lower()
     key_split = key.split()
-    if [word for word in key_split if word in time_of_day]:
+    if [word for word in key_split if word in ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']]:
         time_travel.has_been_called = True
         if event := mod.celebrate():
             say(text=f'Happy {event}!')
@@ -2918,7 +2913,7 @@ def initiator(key_original: str, should_return: bool = False) -> None:
     elif 'you there' in key:
         say(text=f'{random.choice(wake_up1)}')
         initialize()
-    elif any(word in key for word in wake_up_words):
+    elif any(word in key for word in ['look alive', 'wake up', 'wakeup', 'show time', 'showtime']):
         say(text=f'{random.choice(wake_up2)}')
         initialize()
     else:
@@ -3329,7 +3324,7 @@ def exit_process() -> None:
     try:
         say(text=mod.exit_message(), run=True)
     except RuntimeError:
-        logger.error(f'Received a RuntimeError while self terminating.\n{format_exc()}')
+        logger.fatal(format_exc())
     mod.remove_files()
     sys.stdout.write(f"\rMemory consumed: {mod.size_converter(0)}"
                      f"\nTotal runtime: {mod.time_converter(perf_counter())}")
@@ -3429,7 +3424,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
             if not called_by_offline['status']:
                 say(text='Restarting now sir! I will be up and running momentarily.', run=True)
         except RuntimeError:
-            logger.error(f'Received a RuntimeError while restarting.\n{format_exc()}')
+            logger.fatal(f'Received a RuntimeError while restarting.\n{format_exc()}')
     if quick:
         set_key(dotenv_path='.env', key_to_set='hallway_ip', value_to_set=str(hallway_ip)) if hallway_ip else None
         set_key(dotenv_path='.env', key_to_set='bedroom_ip', value_to_set=str(bedroom_ip)) if bedroom_ip else None
@@ -3647,12 +3642,10 @@ if __name__ == '__main__':
     else:
         current_lat, current_lon, location_info = location_services(mod.device_selector(icloud_user=icloud_user,
                                                                                         icloud_pass=icloud_pass))
-        current_tz = str(TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon))
-        location_dumper = [{'timezone': current_tz}, {'latitude': current_lat}, {'longitude': current_lon},
-                           {'address': location_info}]
         with open('location.yaml', 'w') as location_writer:
-            for dumper in location_dumper:
-                yaml.dump(dumper, location_writer, default_flow_style=False)
+            yaml.dump(data={'timezone': TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon),
+                            'latitude': current_lat, 'longitude': current_lon, 'address': location_info},
+                      stream=location_writer, default_flow_style=False)
 
     # different responses for different conditions in sentry mode
     wake_up1 = ['For you sir! Always!', 'At your service sir!']
@@ -3667,7 +3660,7 @@ if __name__ == '__main__':
     # {function_name}.has_been_called is used to denote which function has triggered the other
     report.has_been_called, locate_places.has_been_called, directions.has_been_called, google_maps.has_been_called, \
         time_travel.has_been_called = False, False, False, False, False
-    for functions in [delete_todo, todo, add_todo]:
+    for functions in [todo, add_todo]:
         functions.has_been_called = False
 
     sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")

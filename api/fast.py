@@ -268,7 +268,7 @@ if rh_env_vars:
             If basic auth (stored as an env var ``robinhood_auth``) succeeds:
 
             - Returns ``?token=HASHED_UUID`` to access ``/investment`` accessed via ``/?investment?token=HASHED_UUID``
-            - Also stores the token as an env var ``robinhood_token`` which is verified in the path ``/investment``
+            - Also stores the token in the dictionary ``robinhood_token`` which is verified in the path ``/investment``
             - The token is deleted from env var as soon as it is verified, making page-refresh useless.
         """
         robinhood_token['token'] = keygen() or None
