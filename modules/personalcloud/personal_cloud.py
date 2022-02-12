@@ -35,13 +35,13 @@ class PersonalCloud:
 
     def __init__(self, gmail_user: str = os.environ.get('gmail_user'), gmail_pass: str = os.environ.get('gmail_pass'),
                  offline_user: str = os.environ.get('offline_user'), offline_pass: str = os.environ.get('offline_pass'),
-                 phone_number: str = os.environ.get('phone_number'), home: str = os.path.expanduser('~')):
+                 phone_number: str = os.environ.get('phone_number'), home: str = None):
         self.gmail_user = gmail_user
         self.gmail_pass = gmail_pass
         self.offline_user = offline_user
         self.offline_pass = offline_pass
         self.phone_number = phone_number
-        self.home = home
+        self.home = home or os.path.expanduser('~')
 
     @staticmethod
     def get_port() -> int:

@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""This is a space for support functions used across different modules.
+
+>>> Support
+
+"""
+
 import json
 import os
 import re
@@ -207,6 +214,21 @@ def get_capitalized(phrase: str, dot: bool = True) -> str:
             place += word + ' '
     if place:
         return place
+
+
+def get_closest_match(text: str, match_list: list) -> str:
+    """Get the closest matching word from a list of words.
+
+    Args:
+        text: Text to look for in the matching list.
+        match_list: List to be compared against.
+
+    Returns:
+        str:
+        Returns the text that matches closest in the list.
+    """
+    closest_match = [{'key': key, 'val': SequenceMatcher(a=text, b=key).ratio()} for key in match_list]
+    return sorted(closest_match, key=lambda d: d['val'], reverse=True)[0].get('key')
 
 
 def unrecognized_dumper(train_data: dict) -> None:

@@ -1,4 +1,10 @@
-"""This is a basic query to start Jarvis after 5 seconds triggered by the ``restart()`` function in main module."""
+# noinspection PyUnresolvedReferences
+"""This is a basic query to start Jarvis after 5 seconds triggered by the ``restart()`` function in main module.
+
+>>> Restart
+
+"""
+
 from os import system
 from time import sleep
 

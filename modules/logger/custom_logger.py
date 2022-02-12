@@ -1,15 +1,10 @@
-"""Initiates logger to log start time, restart time, results from security mode and offline communicator.
+# noinspection PyUnresolvedReferences
+"""Initiates a custom logger to be accessed across modules.
 
-In order to use a common logger across multiple files, a dedicated logger has been created.
+>>> CustomLogger
 
 Disables loggers from imported modules, while using the root logger without having to load an external file.
 
-Writes ``*`` sign 120 times in a row to differentiate start up events in the log file within the same day.
-
-A condition check is in place to see if ``logger.py`` was triggered as part of ``pre-commit`` to avoid doing this.
-
-References:
-    https://git.io/J8Ejd
 """
 
 import logging

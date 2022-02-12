@@ -1,4 +1,9 @@
-"""Convert common temperature values used in the main module."""
+# noinspection PyUnresolvedReferences
+"""Convert common temperature values used in the main module.
+
+>>> Temperature
+
+"""
 
 
 def c2f(arg: float) -> float:
