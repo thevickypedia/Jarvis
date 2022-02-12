@@ -8,21 +8,18 @@ def offline_compatible() -> list:
 
     See Also:
         - ``offline_communicator`` cannot process commands that require an interaction with the user.
-        - This is because ``speaker.stop()`` will stop the ``speaker.runAndWait()`` in an interaction.
-        - This action will raise a ``RuntimeError`` since the ``speaker.endLoop()`` would have already started.
+        - This is because ``audio_driver.stop()`` will stop the ``audio_driver.runAndWait()`` in an interaction.
+        - This action will raise a ``RuntimeError`` since the ``audio_driver.endLoop()`` would have already started.
 
     Returns:
         list:
         Flat list from a matrix (list of lists) after removing the duplicates.
     """
     path.append('..')
-    from modules.conditions.conversation import Conversation
-    from modules.conditions.keywords import Keywords
+    from modules.conditions import conversation, keywords
     path.remove('..')
-    keywords = Keywords
-    conversation = Conversation
     offline_words = [keywords.sleep_control,
-                     keywords.exit,
+                     keywords.exit_,
                      keywords.alarm,
                      keywords.restart_control,
                      keywords.current_time,
@@ -55,6 +52,7 @@ def offline_compatible() -> list:
                      keywords.meaning,
                      keywords.meetings,
                      keywords.car,
+                     keywords.television,
                      conversation.about_me,
                      conversation.capabilities,
                      conversation.form,

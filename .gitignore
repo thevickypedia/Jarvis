@@ -59,6 +59,9 @@ api/robinhood.html
 # temporary file that indicates that jarvis should restart
 pyicloud_error
 
+# temporary file created and accessed during quick restart, may also be the source file
+smart_devices.yaml
+
 # future work
 temp.py
 test.py

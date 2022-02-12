@@ -3,7 +3,7 @@
 from time import time
 from typing import Union
 
-from modules.car.car_connector import Connect
+from modules.car.connector import Connect
 
 DEFAULT_CONTENT_TYPE = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json; charset=utf-8"
 

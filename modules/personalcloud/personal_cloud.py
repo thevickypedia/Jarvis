@@ -11,8 +11,8 @@ from aeosa.aem.aemsend import EventError
 from appscript import app as apple_script
 from appscript.reference import CommandError
 
-from modules.logger.logger import logger
-from modules.notifications.notify import notify
+from modules.gmail.sms import notify
+from modules.logger.custom_logger import logger
 
 
 class PersonalCloud:
