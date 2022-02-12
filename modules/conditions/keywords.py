@@ -1,4 +1,9 @@
-"""List of keywords for each variable which is condition matched in the main module."""
+# noinspection PyUnresolvedReferences
+"""List of keywords for each variable which is condition matched in the main module.
+
+>>> Keywords
+
+"""
 
 current_date = ['date']
 

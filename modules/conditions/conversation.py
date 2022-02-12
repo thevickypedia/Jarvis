@@ -1,4 +1,9 @@
-"""List of conversational keywords for each variable which is condition matched in main module."""
+# noinspection PyUnresolvedReferences
+"""List of conversational keywords for each variable which is condition matched in main module.
+
+>>> Conditions
+
+"""
 
 greeting = ['how are you', 'how are you doing', 'how have you been', 'how do you do']
 

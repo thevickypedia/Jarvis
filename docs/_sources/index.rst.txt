@@ -84,29 +84,34 @@ Jarvis - API Robinhood Helper
    :members:
    :exclude-members: hours
 
-Car - Connector
-===============
+Audio
+=====
 
-.. automodule:: modules.car.car_connector
+.. automodule:: modules.audio.speaker
+   :members:
+   :undoc-members:
+
+.. automodule:: modules.audio.listener
+   :members:
+   :undoc-members:
+
+Car
+===
+
+.. automodule:: modules.car.connector
    :members:
    :exclude-members: IFAS_BASE_URL, IFOP_BASE_URL, IF9_BASE_URL
 
-Car - Controller
-================
-
-.. automodule:: modules.car.car_controller
+.. automodule:: modules.car.controller
    :members:
    :exclude-members: DEFAULT_CONTENT_TYPE
 
-Conversation
-============
+Conditions
+==========
 
 .. automodule:: modules.conditions.conversation
    :members:
    :exclude-members: greeting, capabilities, languages, what, who, form, whats_up, about_me
-
-Keywords
-========
 
 .. automodule:: modules.conditions.keywords
    :members:
@@ -148,7 +153,7 @@ Local IP Scanner
 Logger
 ======
 
-.. automodule:: modules.logger.logger
+.. automodule:: modules.logger.custom_logger
    :members:
    :undoc-members:
 
@@ -184,7 +189,7 @@ Robinhood Gatherer
 SMS Notification
 ================
 
-.. automodule:: modules.notifications.notify
+.. automodule:: modules.gmail.sms
    :members:
    :undoc-members:
 
@@ -202,10 +207,14 @@ TV Connector
    :members:
    :undoc-members:
 
-Helper
-=======
+Utils
+=====
 
-.. automodule:: helpers.support
+.. automodule:: modules.utils.support
+   :members:
+   :undoc-members:
+
+.. automodule:: modules.utils.globals
    :members:
    :undoc-members:
 

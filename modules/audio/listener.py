@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module for speech recognition listener.
+
+>>> Listener
+
+"""
+
 import sys
 from threading import Thread
 

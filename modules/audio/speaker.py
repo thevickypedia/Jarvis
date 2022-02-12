@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module for speaker and voice options.
+
+>>> Speaker
+
+"""
+
 import random
 import sys
 from typing import Union

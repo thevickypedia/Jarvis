@@ -18,7 +18,6 @@ from socket import gethostbyname, gethostname
 from ssl import create_default_context
 from string import punctuation
 from threading import Thread, Timer
-from modules.utils.globals import vpn_status
 from time import perf_counter, sleep, time
 from traceback import format_exc
 from typing import Tuple, Union
@@ -28,6 +27,7 @@ from webbrowser import open as web_open
 
 import certifi
 import cv2
+import pvporcupine
 import requests
 import wikipedia as wiki
 import wordninja
@@ -43,7 +43,6 @@ from joke.jokes import chucknorris, geek, icanhazdad, icndb
 from newsapi import NewsApiClient, newsapi_exception
 from playsound import playsound
 from psutil import Process, boot_time
-import pvporcupine
 from pyaudio import PyAudio, paInt16
 from pychromecast.error import ChromecastConnectionError
 from PyDictionary import PyDictionary
@@ -80,7 +79,7 @@ from modules.personalcloud.personal_cloud import PersonalCloud
 from modules.robinhood import robinhood as rh_gatherer
 from modules.temperature import temperature
 from modules.tv.tv_controls import TV
-from modules.utils import support, globals
+from modules.utils import globals, support
 
 
 def no_env_vars():
@@ -1986,44 +1985,34 @@ def television(phrase: str) -> None:
         elif 'stop' in phrase_lower:
             tv.stop()
             speak(text=f'{random.choice(conversation.acknowledgement)}!')
-        elif 'set' in phrase_lower:
+        elif 'set' in phrase_lower and 'volume' in phrase_lower:
             vol = int(''.join([str(s) for s in re.findall(r'\b\d+\b', phrase_exc)]))
             if vol:
-                tv.set_volume(vol)
+                tv.set_volume(target=vol)
                 speak(text=f"I've set the volume to {vol}% sir.")
             else:
                 speak(text=f"{vol} doesn't match the right format sir!")
         elif 'volume' in phrase_lower:
             speak(text=f"The current volume on your TV is, {tv.get_volume()}%")
         elif 'app' in phrase_lower or 'application' in phrase_lower:
-            sys.stdout.write(f'\r{tv.list_apps()}')
+            sys.stdout.write(f'\r{tv.get_apps()}')
             speak(text='App list on your screen sir!', run=True)
             sleep(5)
         elif 'open' in phrase_lower or 'launch' in phrase_lower:
-            # todo: Remove using get capitalized and scan apps to word match from received phrase
-            app_name = support.get_capitalized(phrase=phrase_exc, dot=False)
-            if not app_name:
-                speak(text="I'm not sure which application I should launch sir!")
-                Thread(target=support.unrecognized_dumper, args=[{'TV_APPLICATION': phrase}])
-            else:
-                try:
-                    tv.launch_app(app_name.strip())
-                    speak(text=f"I've launched {app_name} on your TV sir!")
-                except ValueError:
-                    speak(text=f"I didn't find the app {app_name} on your TV sir!")
+            cleaned = ' '.join([w for w in phrase.split() if w not in ['launch', 'open', 'tv', 'on', 'my', 'the']])
+            app_name = support.get_closest_match(text=cleaned, match_list=tv.get_apps())
+            logger.info(f'{phrase} -> {app_name}')
+            tv.launch_app(app_name=app_name)
+            speak(text=f"I've launched {app_name} on your TV sir!")
         elif "what's" in phrase_lower or 'currently' in phrase_lower:
             speak(text=f'{tv.current_app()} is running on your TV.')
         elif 'change' in phrase_lower or 'source' in phrase_lower:
-            tv_source = support.get_capitalized(phrase=phrase_exc, dot=False)
-            if not tv_source:
-                speak(text="I didn't quite get that.")
-                Thread(target=support.unrecognized_dumper, args=[{'TV_SOURCE': phrase}]).start()
-            else:
-                try:
-                    tv.set_source(tv_source.strip())
-                    speak(text=f"I've changed the source to {tv_source}.")
-                except ValueError:
-                    speak(text=f"I didn't find the source {tv_source} on your TV sir!")
+            cleaned = ' '.join([word for word in phrase.split() if word not in ('set', 'the', 'source', 'on', 'my',
+                                                                                'of', 'to', 'tv')])
+            source = support.get_closest_match(text=cleaned, match_list=tv.get_sources())
+            logger.info(f'{phrase} -> {source}')
+            tv.set_source(val=source)
+            speak(text=f"I've changed the source to {source}.")
         elif 'shutdown' in phrase_lower or 'shut down' in phrase_lower or 'turn off' in phrase_lower:
             Thread(target=tv.shutdown).start()
             speak(text=f'{random.choice(conversation.acknowledgement)}! Turning your TV off.')
@@ -2072,7 +2061,7 @@ def alpha(text: str) -> bool:
             return True
 
 
-def google(query: str, suggestion_count: int = 0) -> bool:
+def google(query: str, suggestion_count: int = 0) -> None:
     """Uses Google's search engine parser and gets the first result that shows up on a Google search.
 
     Notes:
@@ -2085,17 +2074,12 @@ def google(query: str, suggestion_count: int = 0) -> bool:
     Args:
         suggestion_count: Integer value that keeps incrementing when ``Jarvis`` looks up for suggestions.
         query: Takes the voice recognized statement as argument.
-
-    Returns:
-        bool:
-        Boolean ``True`` if google search engine is unable to fetch consumable results.
     """
     search_engine = GoogleSearch()
     results = []
     try:
         google_results = search_engine.search(query, cache=False)
-        a = {"Google": google_results}
-        results = [result['titles'] for k, v in a.items() for result in v]
+        results = [result['titles'] for result in google_results]
     except NoResultsOrTrafficError:
         suggest_url = "https://suggestqueries.google.com/complete/search"
         params = {
@@ -2104,44 +2088,47 @@ def google(query: str, suggestion_count: int = 0) -> bool:
         }
         response = requests.get(suggest_url, params)
         if not response:
-            return True
+            return
         try:
             suggestion = response.json()[1][1]
             suggestion_count += 1
             if suggestion_count >= 3:  # avoids infinite suggestions over the same suggestion
                 speak(text=response.json()[1][0].replace('=', ''),
                       run=True)  # picks the closest match and Google's it
-                return False
+                return
             else:
                 google(suggestion, suggestion_count)
         except IndexError:
-            return True
-    if results:
-        [results.remove(result) for result in results if len(result.split()) < 3]  # Remove results with dummy words
-    else:
-        return False
-    if results:
-        results = results[0:3]  # picks top 3 (first appeared on Google)
-        results.sort(key=lambda x: len(x.split()), reverse=True)  # sorts in reverse by the word count of each sentence
-        output = results[0]  # picks the top most result
-        if '\n' in output:
-            required = output.split('\n')
-            modify = required[0].strip()
-            split_val = ' '.join(wordninja.split(modify.replace('.', 'rEpLaCInG')))
-            sentence = split_val.replace(' rEpLaCInG ', '.')
-            repeats = []
-            [repeats.append(word) for word in sentence.split() if word not in repeats]
-            refined = ' '.join(repeats)
-            output = refined + required[1] + '.' + required[2]
-        output = output.replace('\\', ' or ')
-        match_word = re.search(r'(\w{3},|\w{3}) (\d,|\d|\d{2},|\d{2}) \d{4}', output)
-        if match_word:
-            output = output.replace(match_word.group(), '')
-        output = output.replace('\\', ' or ')
-        speak(text=output, run=True)
-        return False
-    else:
-        return True
+            return
+
+    if not results:
+        return
+
+    for result in results:
+        if len(result.split()) < 3:
+            results.remove(result)
+
+    if not results:
+        return
+
+    results = results[0:3]  # picks top 3 (first appeared on Google)
+    results.sort(key=lambda x: len(x.split()), reverse=True)  # sorts in reverse by the word count of each sentence
+    output = results[0]  # picks the top most result
+    if '\n' in output:
+        required = output.split('\n')
+        modify = required[0].strip()
+        split_val = ' '.join(wordninja.split(modify.replace('.', 'rEpLaCInG')))
+        sentence = split_val.replace(' rEpLaCInG ', '.')
+        repeats = []  # Captures repeated words by adding them to the empty list
+        [repeats.append(word) for word in sentence.split() if word not in repeats]
+        refined = ' '.join(repeats)
+        output = refined + required[1] + '.' + required[2]
+    output = output.replace('\\', ' or ')
+    match_word = re.search(r'(\w{3},|\w{3}) (\d,|\d|\d{2},|\d{2}) \d{4}', output)
+    if match_word:
+        output = output.replace(match_word.group(), '')
+    output = output.replace('\\', ' or ')
+    speak(text=output, run=True)
 
 
 def google_search(phrase: str = None) -> None:
@@ -2812,7 +2799,7 @@ def vpn_server(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if status := vpn_status['active']:
+    if status := globals.vpn_status['active']:
         speak(text=f'VPN Server was recently {status}, and the process is still running sir! Please wait and retry.')
         return
 

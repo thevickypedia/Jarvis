@@ -141,6 +141,7 @@
 <li><p><strong>phone_number</strong> - To send SMS from Jarvis - Example: <code class="docutils literal notranslate"><span class="pre">+11234567890</span></code></p></li>
 <li><p><strong>think_id</strong> - API Key from wolfram alpha.</p></li>
 <li><p><strong>root_password</strong> - System password for your <code class="docutils literal notranslate"><span class="pre">mac</span></code> to get the system vitals.</p></li>
+<li><p><strong>meeting_app</strong> - Application where the meetings are listed. Can either be <code class="docutils literal notranslate"><span class="pre">calendar</span></code> or <code class="docutils literal notranslate"><span class="pre">outlook</span></code></p></li>
 </ul>
 <p><strong>Args for <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">PersonalCloud</a> integration</strong></p>
 <ul class="simple">
@@ -180,6 +181,14 @@ Using the module makes it easier since the devices are already connected to the 
 <li><p><strong>car_pin</strong> - Master PIN for the vehicle.</p></li>
 </ul>
 </details></section>
+<section id="smart-devices">
+<h2>Smart Devices<a class="headerlink" href="#smart-devices" title="Permalink to this headline">¶</a></h2>
+<p>A source file <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> can be used as a source for smart devices’ IPs. <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> supports <code class="docutils literal notranslate"><span class="pre">MagicHome</span></code> lights and <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> TVs.</p>
+<p>By using <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code>, the <code class="docutils literal notranslate"><span class="pre">Netgear</span></code> module can be avoided at the cost of manually updating the source file in case of IP changes.</p>
+<blockquote>
+<div><p>Note: Set a <code class="docutils literal notranslate"><span class="pre">SOURCE:</span> <span class="pre">True</span></code> flag in <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> otherwise the file will be removed in case of quick restarts.</p>
+</div></blockquote>
+</section>
 <section id="automation-setup-optional">
 <h2>Automation Setup [Optional]<a class="headerlink" href="#automation-setup-optional" title="Permalink to this headline">¶</a></h2>
 <p>Executes pre-defined tasks at pre-defined times without any user interaction. Uses an <code class="docutils literal notranslate"><span class="pre">automation.json</span></code> file as source.</p>
@@ -266,6 +275,7 @@ features’ overview and demo videos.</p>
 <li><a class="reference internal" href="#">Jarvis</a><ul>
 <li><a class="reference internal" href="#setup">Setup</a></li>
 <li><a class="reference internal" href="#env-variables">ENV Variables</a></li>
+<li><a class="reference internal" href="#smart-devices">Smart Devices</a></li>
 <li><a class="reference internal" href="#automation-setup-optional">Automation Setup [Optional]</a></li>
 <li><a class="reference internal" href="#coding-standards">Coding Standards</a></li>
 <li><a class="reference internal" href="#linting">Linting</a></li>

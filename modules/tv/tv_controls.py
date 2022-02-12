@@ -128,59 +128,50 @@ class TV:
         self.system.notify("Jarvis::Forward")
         self.media.fast_forward()
 
-    def list_apps(self) -> list:
+    def get_apps(self) -> list:
         """Checks the applications installed on the TV.
 
         Returns:
             list:
             List of available apps on the TV.
         """
-        apps = self.app.list_apps()
-        app_list = [app["title"] for app in apps]
-        return app_list
+        return [app["title"] for app in self.app.list_apps()]
 
-    def launch_app(self, app_name: str) -> dict:
+    def launch_app(self, app_name: str) -> None:
         """Launches an application.
 
         Args:
             app_name: Takes the application name as argument.
-
-        Returns:
-            dict:
-            Makes call to the launch module and returns a dictionary of appId and sessionId.
         """
         app_launcher = [x for x in self.app.list_apps() if app_name.lower() in x["title"].lower()][0]
-        return self.app.launch(app_launcher, content_id=None)
+        self.app.launch(app_launcher, content_id=None)
 
     def close_app(self, app_name: str) -> None:
-        """Closes a particular app using the launch_info received from launch_app method."""
+        """Closes a particular app using the launch_info received from launch_app method.
+
+        Args:
+            app_name: Application name that has to be closed.
+        """
         self.app.close(self.launch_app(app_name))
 
-    def source(self) -> list:
+    def get_sources(self) -> list:
         """Checks for the input sources on the TV.
 
         Returns:
             list:
             List of ``InputSource`` instances.
         """
-        sources = self.source_control.list_sources()
-        sources_list = [source['label'] for source in sources]
-        return sources_list
+        return [source['label'] for source in self.source_control.list_sources()]
 
-    def set_source(self, val: str) -> list:
+    def set_source(self, val: str) -> None:
         """Sets an ``InputSource`` instance.
 
         Args:
             val: Takes the input source instance value as argument.
-
-        Returns:
-            list:
-            List of sources.
         """
         sources = self.source_control.list_sources()
-        index = self.source().index(val)
+        index = self.get_sources().index(val)
         self.source_control.set_source(sources[index])
-        return sources
 
     def current_app(self) -> str:
         """Scans the current application running in foreground.
@@ -189,9 +180,8 @@ class TV:
             str:
             Title of the current app that is running
         """
-        app_id = self.app.get_current()  # Returns the application ID (string) of the
-        foreground_app = [x for x in self.app.list_apps() if app_id == x["id"]][0]
-        return foreground_app['title']
+        app_id = self.app.get_current()
+        return [x for x in self.app.list_apps() if app_id == x["id"]][0]['title']
 
     def audio_output(self) -> None:
         """Writes the currently used audio output source as AudioOutputSource instance on the screen."""

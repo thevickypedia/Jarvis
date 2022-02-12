@@ -1,4 +1,7 @@
+# noinspection PyUnresolvedReferences
 """Connector for ``Database`` to create and modify.
+
+>>> Database
 
 - ``create_db``: creates a database named 'tasks.db' with table as 'tasks'
 - ``downloader``: gets item and category stored in the table 'tasks'

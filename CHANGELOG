@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.5.1 (02/12/2022)
+------------------
+- Look for existing apps and sources in TV before launch
+- Resolve inconsistencies in google function and tv_controls.py
+- Update docs
+
 5.5.0 (02/12/2022)
 ------------------
 - Use microphone only when listeners are active

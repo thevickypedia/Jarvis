@@ -1,11 +1,11 @@
-from datetime import date, datetime
-from logging import Logger, config, getLogger
 import math
 import os
+from datetime import date, datetime
+from logging import Logger, config, getLogger
 from time import perf_counter
 
-import requests
 import jinja2
+import requests
 from pyrh import Robinhood
 
 
