@@ -1,6 +1,23 @@
 Change Log
 ==========
 
+5.5.0 (02/12/2022)
+------------------
+- Use microphone only when listeners are active
+- Open and close audio streams gracefully
+- Adjust to ambient noise in a dedicated thread
+- Rename car connectors and controllers
+- Add tv controls to offline communicator
+- Take source app for meetings from env vars
+- Set a global file to share dictionaries across modules
+- Split speaker and microphone modules from main module
+- Add progress of VPN Server creation vs deletion
+- Move wake words to conversation.py
+- Save smart devices IPs into smart_devices.yaml during quick restart
+- Remove unnecessary OOP from conversation.py, keywords.py and database.py
+- Update .gitignore and docs
+- Restructure code
+
 5.4.9 (02/10/2022)
 ------------------
 - Change logging config to uvicorn style

@@ -1,11 +1,11 @@
 from datetime import date, datetime
 from logging import Logger, config, getLogger
-from math import fsum
-from os import environ, path, system
+import math
+import os
 from time import perf_counter
 
 import requests
-from jinja2 import Template
+import jinja2
 from pyrh import Robinhood
 
 
@@ -40,8 +40,8 @@ class Investment:
             logger: Takes the class ``logging.Logger`` as an argument.
         """
         rh = Robinhood()
-        rh.login(username=environ.get('robinhood_user'), password=environ.get('robinhood_pass'),
-                 qr_code=environ.get('robinhood_qr'))
+        rh.login(username=os.environ.get('robinhood_user'), password=os.environ.get('robinhood_pass'),
+                 qr_code=os.environ.get('robinhood_qr'))
         raw_result = rh.positions()
         self.logger = logger
         self.result = raw_result['results']
@@ -89,8 +89,8 @@ class Investment:
                     f'\nGained ${difference:,}\n')
                 profit_total.append(difference)
 
-        lost = round(fsum(loss_total), 2)
-        gained = round(fsum(profit_total), 2)
+        lost = round(math.fsum(loss_total), 2)
+        gained = round(math.fsum(profit_total), 2)
         port_msg = f'\nTotal Profit: ${gained:,}\nTotal Loss: ${lost:,}\n\n' \
                    'The above values might differ from overall profit/loss if multiple shares ' \
                    'of the stock were purchased at different prices.'
@@ -98,7 +98,7 @@ class Investment:
         output = f'Total number of stocks purchased: {n:,}\n'
         output += f'Total number of shares owned: {n_:,}\n'
         output += f'\nCurrent value of your total investment is: ${net_worth:,}'
-        total_buy = round(fsum(shares_total), 2)
+        total_buy = round(math.fsum(shares_total), 2)
         output += f'\nValue of your total investment while purchase is: ${total_buy:,}'
         total_diff = round(float(net_worth - total_buy), 2)
         if total_diff < 0:
@@ -180,8 +180,8 @@ class Investment:
 
         from rh_helper import CustomTemplate
         template = CustomTemplate.source.strip()
-        rendered = Template(template).render(TITLE=title, SUMMARY=web_text, PROFIT=profit_web, LOSS=loss_web,
-                                             WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)
+        rendered = jinja2.Template(template).render(TITLE=title, SUMMARY=web_text, PROFIT=profit_web, LOSS=loss_web,
+                                                    WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)
         with open('robinhood.html', 'w') as static_file:
             static_file.write(rendered)
 
@@ -194,10 +194,10 @@ if __name__ == '__main__':
 
     config.dictConfig(LogConfig().dict())
 
-    if not path.isdir('logs'):
-        system('mkdir logs')
+    if not os.path.isdir('logs'):
+        os.system('mkdir logs')
 
-    if path.isfile('../.env'):
+    if os.path.isfile('../.env'):
         load_dotenv(dotenv_path='../.env')
 
     Investment(logger=getLogger('investment')).report_gatherer()

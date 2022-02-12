@@ -9,7 +9,7 @@ from pywebostv.connection import WebOSClient
 from pywebostv.controls import (ApplicationControl, MediaControl,
                                 SourceControl, SystemControl)
 
-from modules.logger.logger import logger
+from modules.logger.custom_logger import logger
 
 
 class TV:

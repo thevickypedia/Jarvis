@@ -4,7 +4,7 @@ from datetime import datetime
 from logging import Logger
 from subprocess import PIPE, Popen
 
-MEETING_FILE = 'calendar.scpt'
+MEETING_FILE = f"{os.environ.get('meeting_app', 'calendar')}.scpt"
 
 
 def meeting_app_launcher() -> None:
@@ -24,10 +24,11 @@ def meetings_gatherer(logger: Logger) -> str:
         - If no events, returns a message saying there are no events in the next 12 hours.
         - On failure, returns a message saying Jarvis was unable to read calendar/outlook.
     """
-    args = [1, 3]
     source_app = MEETING_FILE.replace('.scpt', '')
+    if not os.path.isfile(MEETING_FILE):
+        return f"I wasn't able to find the meetings script for your {source_app} sir!"
     failure = None
-    process = Popen(['/usr/bin/osascript', MEETING_FILE] + [str(arg) for arg in args], stdout=PIPE, stderr=PIPE)
+    process = Popen(['/usr/bin/osascript', MEETING_FILE] + [str(arg) for arg in [1, 3]], stdout=PIPE, stderr=PIPE)
     out, err = process.communicate()
     os.system(f'git checkout -- {MEETING_FILE}')  # Undo the unspecified changes done by ScriptEditor
     if error := process.returncode:  # stores non zero error

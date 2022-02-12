@@ -1,90 +1,85 @@
-class Temperature:
-    """Class to convert common temperature values used in the main module.
+"""Convert common temperature values used in the main module."""
 
-    >>> Temperature
+
+def c2f(arg: float) -> float:
+    """Converts ``Celcius`` to ``Farenheit``.
+
+    Args:
+        arg: Takes ``Celcius`` value as argument.
+
+    Returns:
+        float:
+        Converted ``Farenheit`` value.
 
     """
+    return round(((arg / 5) * 9) + 32, 2)
 
-    @staticmethod
-    def c2f(arg: float) -> float:
-        """Converts ``Celcius`` to ``Farenheit``.
 
-        Args:
-            arg: Takes ``Celcius`` value as argument.
+def f2c(arg: float) -> float:
+    """Converts ``Farenheit`` to ``Celcius``.
 
-        Returns:
-            float:
-            Converted ``Farenheit`` value.
+    Args:
+        arg: Takes ``Farenheit`` value as argument.
 
-        """
-        return round(((arg / 5) * 9) + 32, 2)
+    Returns:
+        float:
+        Converted ``Celcius`` value.
 
-    @staticmethod
-    def f2c(arg: float) -> float:
-        """Converts ``Farenheit`` to ``Celcius``.
+    """
+    return round(((arg - 32) / 9) * 5, 2)
 
-        Args:
-            arg: Takes ``Farenheit`` value as argument.
 
-        Returns:
-            float:
-            Converted ``Celcius`` value.
+def c2k(arg: float) -> float:
+    """Converts ``Celcius`` to ``Kelvin``.
 
-        """
-        return round(((arg - 32) / 9) * 5, 2)
+    Args:
+        arg: Takes ``Celcius`` value as argument.
 
-    @staticmethod
-    def c2k(arg: float) -> float:
-        """Converts ``Celcius`` to ``Kelvin``.
+    Returns:
+        float:
+        Converted ``Kelvin`` value.
 
-        Args:
-            arg: Takes ``Celcius`` value as argument.
+    """
+    return arg + 273.15
 
-        Returns:
-            float:
-            Converted ``Kelvin`` value.
 
-        """
-        return arg + 273.15
+def k2c(arg: float) -> float:
+    """Converts ``Kelvin`` to ``Celcius``.
 
-    @staticmethod
-    def k2c(arg: float) -> float:
-        """Converts ``Kelvin`` to ``Celcius``.
+    Args:
+        arg: Takes ``Kelvin`` value as argument.
 
-        Args:
-            arg: Takes ``Kelvin`` value as argument.
+    Returns:
+        float:
+        Converted ``Celcius`` value.
 
-        Returns:
-            float:
-            Converted ``Celcius`` value.
+    """
+    return arg - 273.15
 
-        """
-        return arg - 273.15
 
-    @staticmethod
-    def k2f(arg: float) -> float:
-        """Converts ``Kelvin`` to ``Celcius``.
+def k2f(arg: float) -> float:
+    """Converts ``Kelvin`` to ``Celcius``.
 
-        Args:
-            arg: Takes ``Kelvin`` value as argument.
+    Args:
+        arg: Takes ``Kelvin`` value as argument.
 
-        Returns:
-            float:
-            Converted ``Farenheit`` value.
+    Returns:
+        float:
+        Converted ``Farenheit`` value.
 
-        """
-        return round((arg * 1.8) - 459.69, 2)
+    """
+    return round((arg * 1.8) - 459.69, 2)
 
-    @staticmethod
-    def f2k(arg: float) -> float:
-        """Converts ``Farenheit`` to ``Kelvin``.
 
-        Args:
-            arg: Taken ``Farenheit`` value as argument.
+def f2k(arg: float) -> float:
+    """Converts ``Farenheit`` to ``Kelvin``.
 
-        Returns:
-            float:
-            Converted ``Kelvin`` value.
+    Args:
+        arg: Taken ``Farenheit`` value as argument.
 
-        """
-        return round((arg + 459.67) / 1.8, 2)
+    Returns:
+        float:
+        Converted ``Kelvin`` value.
+
+    """
+    return round((arg + 459.67) / 1.8, 2)

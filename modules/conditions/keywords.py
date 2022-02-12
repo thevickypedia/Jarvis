@@ -1,135 +1,120 @@
-class Keywords:
-    """List of keywords for each variable which is condition matched in the main module.
+"""List of keywords for each variable which is condition matched in the main module."""
 
-    >>> Keywords
+current_date = ['date']
 
-    """
+current_time = ['time']
 
-    current_date = ['date']
+weather = ['weather', 'temperature']
 
-    current_time = ['time']
+system_info = ['configuration']
 
-    weather = ['weather', 'temperature']
+ip_info = ['address']
 
-    system_info = ['configuration']
+webpage = ['website', 'webpage', 'web page', '.']
 
-    ip_info = ['address']
+wikipedia_ = ['wikipedia', 'info', 'information']
 
-    webpage = ['website', 'webpage', 'web page', '.']
+news = ['news']
 
-    wikipedia_ = ['wikipedia', 'info', 'information']
+report = ['report']
 
-    news = ['news']
+robinhood = ['robinhood', 'investment', 'portfolio', 'summary']
 
-    report = ['report']
+apps = ['launch']
 
-    robinhood = ['robinhood', 'investment', 'portfolio', 'summary']
+repeat = ['repeat', 'train']
 
-    apps = ['launch']
+location = ['location', 'where am i']
 
-    repeat = ['repeat', 'train']
+locate = ['locate', 'where is my', "where's my"]
 
-    location = ['location', 'where am i']
+music = ['music', 'songs', 'play']
 
-    locate = ['locate', 'where is my', "where's my"]
+gmail = ['email', 'mail']
 
-    music = ['music', 'songs', 'play']
+meaning = ['meaning', 'dictionary', 'definition']
 
-    gmail = ['email', 'mail']
+create_db = ['create a new database', 'create a new data base', 'create a database', 'create a data base']
 
-    meaning = ['meaning', 'dictionary', 'definition']
+add_todo = ['add']
 
-    create_db = ['create a new database', 'create a new data base', 'create a database', 'create a data base']
+delete_todo = ['remove', 'delete']
 
-    add_todo = ['add']
+delete_db = ['delete database', 'delete data base', 'delete my database', 'delete my data base']
 
-    delete_todo = ['remove', 'delete']
+todo = ['plan']
 
-    delete_db = ['delete database', 'delete data base', 'delete my database', 'delete my data base']
+distance = ['far', 'distance', 'miles']
 
-    todo = ['plan']
+avoid = ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
+         'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter', 'server',
+         'cloud']
 
-    distance = ['far', 'distance', 'miles']
+locate_places = ['where is', "where's", 'which city', 'which state', 'which country', 'which county']
 
-    avoid = ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
-             'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter', 'server',
-             'cloud']
+directions = ['take me', 'get directions']
 
-    locate_places = ['where is', "where's", 'which city', 'which state', 'which country', 'which county']
+alarm = ['alarm', 'wake me']
 
-    directions = ['take me', 'get directions']
+kill_alarm = ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off', 'stop another alarm']
 
-    alarm = ['alarm', 'wake me']
+reminder = ['remind', 'reminder']
 
-    kill_alarm = ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off', 'stop another alarm']
+google_home = ['google home', 'googlehome']
 
-    reminder = ['remind', 'reminder']
+jokes = ['joke', 'jokes', 'make me laugh']
 
-    google_home = ['google home', 'googlehome']
+notes = ['notes', 'note']
 
-    jokes = ['joke', 'jokes', 'make me laugh']
+github = ['git', 'github', 'clone', 'GitHub']
 
-    notes = ['notes', 'note']
+send_sms = ['message', 'text', 'messages']
 
-    github = ['git', 'github', 'clone', 'GitHub']
+google_search = ['google search']
 
-    send_sms = ['message', 'text', 'messages']
+television = ['tv', 'television']
 
-    google_search = ['google search']
+volume = ['volume', 'mute']
 
-    television = ['tv', 'television']
+face_detection = ['face', 'recognize', 'who am i', 'detect', 'facial', 'recognition', 'detection']
 
-    volume = ['volume', 'mute']
+speed_test = ['speed', 'fast']
 
-    face_detection = ['face', 'recognize', 'who am i', 'detect', 'facial', 'recognition', 'detection']
+bluetooth = ['bluetooth']
 
-    speed_test = ['speed', 'fast']
+brightness = ['brightness', 'bright', 'dim']
 
-    bluetooth = ['bluetooth']
+lights = ['light', 'hallway', 'kitchen', 'living room', 'bedroom']
 
-    brightness = ['brightness', 'bright', 'dim']
+guard_enable = ['take care', 'heading out', 'keep an eye', 'turn on security mode', 'enable security mode']
 
-    lights = ['light', 'hallway', 'kitchen', 'living room', 'bedroom']
+guard_disable = ["I'm back", 'I am back', 'turn off security mode', 'disable security mode']
 
-    guard_enable = ['take care', 'heading out', 'keep an eye', 'turn on security mode', 'enable security mode']
+flip_a_coin = ['head', 'tail', 'flip']
 
-    guard_disable = ["I'm back", 'I am back', 'turn off security mode', 'disable security mode']
+facts = ['fact', 'facts']
 
-    flip_a_coin = ['head', 'tail', 'flip']
+meetings = ['meeting', 'appointment', 'schedule']
 
-    facts = ['fact', 'facts']
+voice_changer = ['voice', 'module', 'audio']
 
-    meetings = ['meeting', 'appointment', 'schedule']
+system_vitals = ['vitals', 'statistics', 'readings', 'stats']
 
-    voice_changer = ['voice', 'module', 'audio']
+vpn_server = ['vpn']
 
-    system_vitals = ['vitals', 'statistics', 'readings', 'stats']
+personal_cloud = ['personal cloud', 'private cloud', 'personal server', 'private server']
 
-    vpn_server = ['vpn']
+car = ['car', 'vehicle']
 
-    personal_cloud = ['personal cloud', 'private cloud', 'personal server', 'private server']
+ok = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
 
-    car = ['car', 'vehicle']
+restart_control = ['restart', 'reboot']
 
-    ok = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
+exit_ = ['exit', 'quit', 'no', 'nope', 'thank you', 'Xzibit', 'bye', 'good bye', 'see you later', 'talk to you later',
+         "that's it", 'that is it']
 
-    restart_control = ['restart', 'reboot']
+sleep_control = ['exit', 'quit', 'lock', 'sleep', 'Xzibit', 'activate sentry mode']
 
-    exit = ['exit', 'quit', 'no', 'nope', 'thanks', 'thank you', 'Xzibit', 'bye', 'good bye', 'see you later',
-            'talk to you later', 'activate sentry mode', "that's it", 'that is it']
+kill = ['kill', 'terminate yourself', 'stop running']
 
-    sleep_control = ['exit', 'quit', 'lock', 'sleep', 'Xzibit', 'activate sentry mode']
-
-    kill = ['kill', 'terminate yourself', 'stop running']
-
-    shutdown = ['shutdown', 'shut down', 'terminate']
-
-
-if __name__ == '__main__':
-    from pprint import pprint
-    all_vars = {}
-    keywords = vars(Keywords)
-    for class_var in keywords:
-        if not class_var.startswith('_'):
-            all_vars.update({class_var: keywords[class_var]})
-    pprint(all_vars)
+shutdown = ['shutdown', 'shut down', 'terminate']

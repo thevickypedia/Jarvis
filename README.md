@@ -117,6 +117,7 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 - **phone_number** - To send SMS from Jarvis - Example: `+11234567890`
 - **think_id** - API Key from wolfram alpha.
 - **root_password** - System password for your `mac` to get the system vitals.
+- **meeting_app** - Application where the meetings are listed. Can either be `calendar` or `outlook`
 
 **Args for [PersonalCloud](https://github.com/thevickypedia/personal_cloud) integration**
 - **personal_cloud_host** - Directory path which has to shared through the internet.
@@ -142,6 +143,13 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 **Args for [car_controller](https://github.com/thevickypedia/Jarvis/blob/master/modules/car_controller.py)**
 - **car_pin** - Master PIN for the vehicle.
 </details>
+
+### Smart Devices
+A source file `smart_devices.yaml` can be used as a source for smart devices' IPs. `Jarvis` supports `MagicHome` lights and `LGWebOS` TVs.
+
+By using `smart_devices.yaml`, the `Netgear` module can be avoided at the cost of manually updating the source file in case of IP changes.
+
+> Note: Set a `SOURCE: True` flag in `smart_devices.yaml` otherwise the file will be removed in case of quick restarts.
 
 ### Automation Setup [Optional]
 Executes pre-defined tasks at pre-defined times without any user interaction. Uses an `automation.json` file as source.
