@@ -12,6 +12,8 @@ from playsound import playsound
 from speech_recognition import (Microphone, Recognizer, RequestError,
                                 UnknownValueError, WaitTimeoutError)
 
+from modules.utils import support
+
 recognizer = Recognizer()  # initiates recognizer that uses google's translation
 microphone = Microphone()  # initiates microphone as a source for audio
 
@@ -33,12 +35,12 @@ def listen(timeout: int, phrase_limit: int, sound: bool = True) -> str:
         ambient_noise_suppressor = Thread(target=recognizer.adjust_for_ambient_noise, args=[source])
         ambient_noise_suppressor.start()
         try:
-            sys.stdout.write("\rListener activated..")
-
             if sound:
                 playsound('indicators/start.mp3', block=False)
 
+            sys.stdout.write("\rListener activated..")
             listened = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_limit)
+            support.flush_screen()
 
             if sound:
                 playsound('indicators/end.mp3', block=False)

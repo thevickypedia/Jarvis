@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.5.2 (02/12/2022)
+------------------
+- Add a screen flush function to support.py
+- Remove webpage open feature
+- Upload to pypi on commit to master branch
+
 5.5.1 (02/12/2022)
 ------------------
 - Look for existing apps and sources in TV before launch

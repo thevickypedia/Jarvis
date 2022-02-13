@@ -22,6 +22,7 @@ from time import perf_counter, sleep, time
 from traceback import format_exc
 from typing import Tuple, Union
 from unicodedata import normalize
+from urllib.error import HTTPError
 from urllib.request import urlopen
 from webbrowser import open as web_open
 
@@ -143,6 +144,8 @@ def renew() -> None:
         if converted:
             if split(key=converted):  # should_return flag is not passed which will default to False
                 break  # split() returns what conditions function returns. Condition() returns True only for sleep.
+        elif any(word in converted.lower() for word in remove):
+            continue
         speak(run=True)
 
 
@@ -239,10 +242,6 @@ def conditions(converted: str, should_return: bool = False) -> bool:
 
     elif any(word in converted_lower for word in keywords.directions):
         directions(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.webpage) and \
-            not any(word in converted_lower for word in keywords.avoid):
-        webpage(phrase=converted)
 
     elif any(word in converted_lower for word in keywords.kill_alarm):
         kill_alarm()
@@ -398,11 +397,16 @@ def ip_info(phrase: str) -> None:
             ssid = f'for the connection {ssid} '
         else:
             ssid = ''
-        if public_ip := json.load(urlopen('https://ipinfo.io/json')).get('ip'):
-            output = f"My public IP {ssid}is {public_ip}"
-        elif public_ip := json.loads(urlopen('http://ip.jsontest.com').read()).get('ip'):
-            output = f"My public IP {ssid}is {public_ip}"
-        else:
+        output = None
+        try:
+            output = f"My public IP {ssid}is {json.load(urlopen('https://ipinfo.io/json')).get('ip')}"
+        except HTTPError as error:
+            logger.error(error)
+        try:
+            output = output or f"My public IP {ssid}is {json.loads(urlopen('http://ip.jsontest.com').read()).get('ip')}"
+        except HTTPError as error:
+            logger.error(error)
+        if not output:
             output = 'I was unable to fetch the public IP sir!'
     else:
         ip_address = vpn_checker().split(':')[-1]
@@ -492,12 +496,12 @@ def current_date() -> None:
     """Says today's date and adds the current time in speaker queue if report or time_travel function was called."""
     dt_string = datetime.now().strftime("%A, %B")
     date_ = engine().ordinal(datetime.now().strftime("%d"))
-    year = datetime.now().year
+    year = str(datetime.now().year)
     event = support.celebrate()
     if time_travel.has_been_called:
-        dt_string = dt_string + date_
+        dt_string = f'{dt_string} {date_}'
     else:
-        dt_string = dt_string + date_ + ', ' + year
+        dt_string = f'{dt_string} {date_}, {year}'
     speak(text=f"It's {dt_string}")
     if event and event == 'Birthday':
         speak(text=f"It's also your {event} sir!")
@@ -537,44 +541,6 @@ def current_time(converted: str = None) -> None:
     else:
         c_time = datetime.now().strftime("%I:%M %p")
         speak(text=f'{c_time}.')
-
-
-def webpage(phrase: str or list) -> None:
-    """Opens up a webpage using the default browser to the target host.
-
-    If no target received, will ask for user confirmation. If no '.' in the phrase heard, phrase will default to .com.
-
-    Args:
-        phrase: Receives the spoken phrase as an argument.
-    """
-    if isinstance(phrase, str):
-        converted = phrase.replace(' In', 'in').replace(' Co. Uk', 'co.uk')
-        target = (word for word in converted.split() if '.' in word)
-    else:
-        target = phrase
-    host = []
-    try:
-        [host.append(i) for i in target]
-    except TypeError:
-        host = None
-    if not host:
-        speak(text="Which website shall I open sir?", run=True)
-        converted = listen(timeout=3, phrase_limit=4)
-        if converted != 'SR_ERROR':
-            if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-                return
-            elif '.' in converted and len(list(converted)) == 1:
-                _target = (word for word in converted.split() if '.' in word)
-                webpage(_target)
-            else:
-                converted = converted.lower().replace(' ', '')
-                target_ = [f"{converted}" if '.' in converted else f"{converted}.com"]
-                webpage(target_)
-    else:
-        for web in host:
-            web_url = f"https://{web}"
-            web_open(web_url)
-        speak(text=f"I have opened {host}")
 
 
 def weather(phrase: str = None) -> None:
@@ -744,8 +710,10 @@ def weather_condition(msg: str, place: str = None) -> None:
     sunrise = datetime.fromtimestamp(response['daily'][key]['sunrise']).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(response['daily'][key]['sunset']).strftime("%I:%M %p")
     output = f"The weather in {weather_location} {tell} would be {temp_f}°F, with a high of {high}, and a low of " \
-             f"{low}. But due to {condition} it will fee like it is {temp_feel_f}°F. Sunrise at {sunrise}. " \
-             f"Sunset at {sunset}. "
+             f"{low}. "
+    if temp_feel_f != temp_f:
+        output += f"But due to {condition} it will fee like it is {temp_feel_f}°F. "
+    output += f"Sunrise at {sunrise}. Sunset at {sunset}. "
     if alerts and start_alert and end_alert:
         output += f'There is a weather alert for {alerts} between {start_alert} and {end_alert}'
     speak(text=output)
@@ -778,15 +746,11 @@ def wikipedia_() -> None:
                 return
             # stops with two sentences before reading whole passage
             formatted = '. '.join(result.split('. ')[0:2]) + '.'
-            speak(text=formatted)
-            speak(text="Do you want me to continue sir?", run=True)  # gets confirmation to read the whole passage
+            speak(text=f'{formatted}. Do you want me to continue sir?', run=True)
             response = listen(timeout=3, phrase_limit=3)
             if response != 'SR_ERROR':
                 if any(word in response.lower() for word in keywords.ok):
                     speak(text='. '.join(result.split('. ')[3:]))
-            else:
-                sys.stdout.write("\r")
-                speak(text="I'm sorry sir, I didn't get your response.")
 
 
 def news(news_source: str = 'fox') -> None:
@@ -813,7 +777,6 @@ def news(news_source: str = 'fox') -> None:
             speak(text=article['title'])
         if called_by_offline['status']:
             return
-        speak(text="That's the end of news around you.")
 
     if report.has_been_called or time_travel.has_been_called:
         speak(run=True)
@@ -970,7 +933,7 @@ def music(phrase: str = None) -> None:
             google_home(device=phrase, file=chosen)
         else:
             subprocess.call(["open", chosen])
-            sys.stdout.write("\r")
+            support.flush_screen()
             speak(text="Enjoy your music sir!")
     else:
         speak(text='No music files were found sir!')
@@ -1136,7 +1099,7 @@ def todo(no_repeat: bool = False) -> None:
         if key != 'SR_ERROR':
             if any(word in key.lower() for word in keywords.ok):
                 todo.has_been_called = True
-                sys.stdout.write("\r")
+                support.flush_screen()
                 create_db()
             else:
                 return
@@ -1154,7 +1117,7 @@ def todo(no_repeat: bool = False) -> None:
                 result.update({category: item})  # creates dict for category and item if category is not found in result
             else:
                 result[category] = result[category] + ', ' + item  # updates category if already found in result
-        sys.stdout.write("\r")
+        support.flush_screen()
         if result:
             if called_by_offline['status']:
                 speak(text=json.dumps(result))
@@ -1179,14 +1142,14 @@ def add_todo() -> None:
     sys.stdout.write("\rLooking for to-do database..")
     # if database file is not found calls create_db()
     if not os.path.isfile(database.TASKS_DB):
-        sys.stdout.write("\r")
+        support.flush_screen()
         speak(text="You don't have a database created for your to-do list sir.")
         speak(text="Would you like to spin up one now?", run=True)
         key = listen(timeout=3, phrase_limit=3)
         if key != 'SR_ERROR':
             if any(word in key.lower() for word in keywords.ok):
                 add_todo.has_been_called = True
-                sys.stdout.write("\r")
+                support.flush_screen()
                 create_db()
             else:
                 return
@@ -1327,6 +1290,9 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         end = desired_location.latitude, desired_location.longitude
     else:
         end = destination[0], destination[1]
+    if not all(isinstance(v, float) for v in start) or not all(isinstance(v, float) for v in end):
+        speak(text=f"I don't think {destination} exists sir!")
+        return
     miles = round(geodesic(start, end).miles)  # calculates miles from starting point to destination
     sys.stdout.write(f"** {desired_location.address} - {miles}")
     if directions.has_been_called:
@@ -1617,7 +1583,7 @@ def google_home(device: str = None, file: str = None) -> None:
     devices = dict([i for i in devices if i])  # removes None values and converts list to dictionary of name and ip pair
 
     if not device or not file:
-        sys.stdout.write("\r")
+        support.flush_screen()
         speak(text=f"You have {len(devices)} devices in your IP range sir! {comma_separator(list(devices.keys()))}. "
                    f"You can choose one and ask me to play some music on any of these.")
         return
@@ -1628,7 +1594,7 @@ def google_home(device: str = None, file: str = None) -> None:
             google_home()
         for target in chosen:
             file_url = serve_file(file, "audio/mp3")  # serves the file on local host and generates the play url
-            sys.stdout.write("\r")
+            support.flush_screen()
             sys.stdout = open(os.devnull, 'w')  # suppresses print statement from "googlehomepush/__init.py__"
             GoogleHome(host=target).play(file_url, "audio/mp3")
             sys.stdout = sys.__stdout__  # removes print statement's suppression above
@@ -2169,7 +2135,7 @@ def volume(phrase: str = None, level: int = None) -> None:
         else:
             level = re.findall(r'\b\d+\b', phrase)  # gets integers from string as a list
             level = int(level[0]) if level else 50  # converted to int for volume
-    sys.stdout.write("\r")
+    support.flush_screen()
     level = round((8 * level) / 100)
     os.system(f'osascript -e "set Volume {level}"')
     if phrase:
@@ -2178,7 +2144,7 @@ def volume(phrase: str = None, level: int = None) -> None:
 
 def face_detection() -> None:
     """Initiates face recognition script and looks for images stored in named directories within ``train`` directory."""
-    sys.stdout.write("\r")
+    support.flush_screen()
     train_dir = 'train'
     os.mkdir(train_dir) if not os.path.isdir(train_dir) else None
     speak(text='Initializing facial recognition. Please smile at the camera for me.', run=True)
@@ -2186,8 +2152,7 @@ def face_detection() -> None:
     try:
         result = Face().face_recognition()
     except BlockingIOError:
-        sys.stdout.flush()
-        sys.stdout.write('\r')
+        support.flush_screen()
         logger.error('Unable to access the camera.')
         speak(text="I was unable to access the camera. Facial recognition can work only when cameras are "
                    "present and accessible.")
@@ -2719,8 +2684,7 @@ def system_vitals() -> None:
         critical_info = [each.strip() for each in (os.popen(
             f'echo {root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
         )).read().split('\n') if each != '']
-        sys.stdout.flush()
-        sys.stdout.write('\r')
+        support.flush_screen()
 
         for info in critical_info:
             if 'CPU die temperature' in info:
@@ -2852,7 +2816,7 @@ def initiator(key_original: str, should_return: bool = False) -> None:
     """
     if key_original == 'SR_ERROR' and should_return:
         return
-    sys.stdout.write("\r")
+    support.flush_screen()
     key = key_original.lower()
     key_split = key.split()
     if [word for word in key_split if word in ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']]:
@@ -2954,8 +2918,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
             with open('offline_request') as off_request:
                 request = off_request.read()
             offline_communicator(command=request)
-            sys.stdout.flush()
-            sys.stdout.write('\r')
+            support.flush_screen()
         elif os.path.isfile(automation_file):
             with open(automation_file) as read_file:
                 try:
@@ -3016,8 +2979,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
                     continue
                 exec_task = exec_task.translate(str.maketrans('', '', punctuation))  # Remove punctuations from the str
                 offline_communicator(command=exec_task, respond=False)
-                sys.stdout.flush()
-                sys.stdout.write('\r')
+                support.flush_screen()
                 automation_data[automation_time]['status'] = True
                 rewrite_automator(filename=automation_file, json_object=automation_data)
 
