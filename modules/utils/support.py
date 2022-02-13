@@ -37,6 +37,12 @@ from modules.netgear.ip_scanner import LocalIPScan
 from modules.utils.globals import vpn_status
 
 
+def flush_screen():
+    """Flushes the screen output."""
+    sys.stdout.flush()
+    sys.stdout.write("\r")
+
+
 def get_ssid() -> str:
     """Gets SSID of the network connected.
 
@@ -287,7 +293,7 @@ def system_info_gatherer() -> str:
     ram_used = size_converter(byte_size=virtual_memory().percent).replace(' B', ' %')
     physical = cpu_count(logical=False)
     logical = cpu_count(logical=True)
-    return f"You're running {hosted_device_info().get('os_name')}, with {physical} physical cores and {logical} " \
+    return f"You're running {' '.join(platform().split('-')[0:2])}, with {physical} physical cores and {logical} " \
            f"logical cores. Your physical drive capacity is {total}. You have used up {used} of space. Your free " \
            f"space is {free}. Your RAM capacity is {ram}. You are currently utilizing {ram_used} of your memory."
 

@@ -15,8 +15,6 @@ system_info = ['configuration']
 
 ip_info = ['address']
 
-webpage = ['website', 'webpage', 'web page', '.']
-
 wikipedia_ = ['wikipedia', 'info', 'information']
 
 news = ['news']
