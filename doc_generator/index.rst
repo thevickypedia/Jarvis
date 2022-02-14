@@ -19,29 +19,31 @@ Jarvis - Main Module
    :members:
    :undoc-members:
 
-Jarvis - API Handler
-====================
+----------Jarvis API----------
+==============================
+API Handler
+===========
 
 .. automodule:: api.fast
    :members:
    :undoc-members:
 
-Jarvis - API CronTab
-====================
+API CronTab
+===========
 
 .. automodule:: api.cron
    :members:
    :undoc-members:
 
-Jarvis - API Controller
-=======================
+API Controller
+==============
 
 .. automodule:: api.controller
    :members:
    :undoc-members:
 
-Jarvis - API Log Filters
-========================
+API Log Filters
+===============
 
 .. autoclass:: api.filters.EndpointFilter(logging.Filter)
    :members:
@@ -66,15 +68,15 @@ Jarvis - API Models
    :members:
    :undoc-members:
 
-Jarvis - API Robinhood
-======================
+API Robinhood
+=============
 
 .. automodule:: api.report_gatherer
    :members:
    :undoc-members:
 
-Jarvis - API Robinhood Helper
-=============================
+API Robinhood Helper
+====================
 
 .. autoclass:: api.rh_helper.CustomTemplate
    :members:
@@ -84,6 +86,80 @@ Jarvis - API Robinhood Helper
    :members:
    :exclude-members: hours
 
+----------Executors----------
+=============================
+Car
+===
+
+.. automodule:: executors.car
+   :members:
+   :undoc-members:
+
+Logger
+======
+
+.. automodule:: executors.custom_logger
+   :members:
+   :undoc-members:
+
+Internet
+========
+
+.. automodule:: executors.internet
+   :members:
+   :undoc-members:
+
+Location
+========
+
+.. automodule:: executors.location
+   :members:
+   :undoc-members:
+
+Meetings
+========
+
+.. automodule:: executors.meetings
+   :members:
+   :undoc-members:
+
+Restart
+=======
+
+.. automodule:: executors.revive
+   :members:
+   :undoc-members:
+
+Robinhood
+=========
+
+.. automodule:: executors.robinhood
+   :members:
+   :undoc-members:
+
+SMS
+===
+
+.. automodule:: executors.sms
+   :members:
+   :undoc-members:
+
+Unconditional
+=============
+
+.. automodule:: executors.unconditional
+   :members:
+   :undoc-members:
+
+Wikipedia
+=========
+
+.. automodule:: executors.wiki
+   :members:
+   :undoc-members:
+
+----------Modules----------
+===========================
 Audio
 =====
 
@@ -92,6 +168,10 @@ Audio
    :undoc-members:
 
 .. automodule:: modules.audio.listener
+   :members:
+   :undoc-members:
+
+.. automodule:: modules.audio.voices
    :members:
    :undoc-members:
 
@@ -150,24 +230,10 @@ Local IP Scanner
    :members:
    :undoc-members:
 
-Logger
-======
-
-.. automodule:: modules.logger.custom_logger
-   :members:
-   :undoc-members:
-
-Meetings Helper
-===============
-
-.. automodule:: modules.meeting.meetings_helper
-   :members:
-   :undoc-members:
-
 Personal Cloud
 ==============
 
-.. automodule:: modules.personalcloud.personal_cloud
+.. automodule:: modules.personalcloud.pc_handler
    :members:
    :undoc-members:
    :exclude-members: HOME
@@ -176,20 +242,6 @@ Restart
 =======
 
 .. automodule:: restart
-   :members:
-   :undoc-members:
-
-Robinhood Gatherer
-==================
-
-.. automodule:: modules.robinhood.robinhood
-   :members:
-   :undoc-members:
-
-SMS Notification
-================
-
-.. automodule:: modules.gmail.sms
    :members:
    :undoc-members:
 
@@ -207,12 +259,15 @@ TV Connector
    :members:
    :undoc-members:
 
-Utils
-=====
+Utils - Support
+===============
 
 .. automodule:: modules.utils.support
    :members:
    :undoc-members:
+
+Utils - Globals
+===============
 
 .. automodule:: modules.utils.globals
    :members:

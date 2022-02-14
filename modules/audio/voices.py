@@ -1,0 +1,66 @@
+# noinspection PyUnresolvedReferences
+"""Module for voice changes.
+
+>>> Voices
+
+"""
+
+import random
+import sys
+from typing import Union
+
+from modules.audio import listener, speaker
+from modules.conditions import conversation, keywords
+
+
+def voice_default(voice_model: str = 'Daniel') -> None:
+    """Sets voice module to default.
+
+    Args:
+        voice_model: Defaults to ``Daniel`` in mac.
+    """
+    voices = speaker.audio_driver.getProperty("voices")  # gets the list of voices available
+    for ind_d, voice_d in enumerate(voices):  # noqa
+        if voice_d.name == voice_model:
+            sys.stdout.write(f'\rVoice module has been configured to {ind_d}::{voice_d.name}')
+            speaker.audio_driver.setProperty("voice", voices[ind_d].id)  # noqa
+            return
+
+
+def voice_changer(phrase: str = None) -> None:
+    """Speaks to the user with available voices and prompts the user to choose one.
+
+    Args:
+        phrase: Initiates changing voices with the model name. If none, defaults to ``Daniel``
+    """
+    if not phrase:
+        voice_default()
+        return
+
+    voices: Union[list, object] = speaker.audio_driver.getProperty("voices")  # gets the list of voices available
+
+    choices_to_say = ['My voice module has been reconfigured. Would you like me to retain this?',
+                      "Here's an example of one of my other voices. Would you like me to use this one?",
+                      'How about this one?']
+
+    for ind, voice in enumerate(voices):
+        speaker.audio_driver.setProperty("voice", voices[ind].id)
+        speaker.speak(text=f'I am {voice.name} sir!')
+        sys.stdout.write(f'\rVoice module has been re-configured to {ind}::{voice.name}')
+        if ind < len(choices_to_say):
+            speaker.speak(text=choices_to_say[ind])
+        else:
+            speaker.speak(text=random.choice(choices_to_say))
+        speaker.speak(run=True)
+        keyword = listener.listen(timeout=3, phrase_limit=3)
+        if keyword == 'SR_ERROR':
+            voice_default()
+            speaker.speak(text="Sorry sir! I had trouble understanding. I'm back to my default voice.")
+            return
+        elif 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
+            voice_default()
+            speaker.speak(text='Reverting the changes to default voice module sir!')
+            return
+        elif any(word in keyword.lower() for word in keywords.ok):
+            speaker.speak(text=random.choice(conversation.acknowledgement))
+            return

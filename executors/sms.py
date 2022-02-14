@@ -2,7 +2,7 @@ from os import environ
 
 from gmailconnector.send_sms import Messenger
 
-from modules.logger.custom_logger import logger
+from executors.custom_logger import logger
 
 phone_number = environ.get('phone_number')
 

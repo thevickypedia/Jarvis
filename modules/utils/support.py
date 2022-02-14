@@ -6,19 +6,18 @@
 """
 
 import json
+import math
 import os
 import re
+import shutil
+import subprocess
 import sys
 from datetime import datetime
 from difflib import SequenceMatcher
-from math import floor, log
 from platform import platform
 from resource import RUSAGE_SELF, getrusage
-from shutil import disk_usage
 from socket import AF_INET, SOCK_DGRAM, gethostname, socket
-from subprocess import PIPE, Popen, check_output
 from typing import Union
-from urllib.error import HTTPError
 from urllib.request import urlopen
 
 import yaml
@@ -30,35 +29,17 @@ from pyicloud import PyiCloudService
 from pyicloud.services.findmyiphone import AppleDevice
 from vpn.controller import VPNServer
 
-from modules.car import connector, controller
-from modules.gmail.sms import notify
-from modules.logger.custom_logger import logger
+from executors.custom_logger import logger
+from executors.sms import notify
+from modules.audio import speaker
 from modules.netgear.ip_scanner import LocalIPScan
-from modules.utils.globals import vpn_status
+from modules.utils import globals
 
 
 def flush_screen():
     """Flushes the screen output."""
     sys.stdout.flush()
     sys.stdout.write("\r")
-
-
-def get_ssid() -> str:
-    """Gets SSID of the network connected.
-
-    Returns:
-        str:
-        Wi-Fi or Ethernet SSID.
-    """
-    process = Popen(
-        ['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'],
-        stdout=PIPE)
-    out, err = process.communicate()
-    if error := process.returncode:
-        logger.error(f"Failed to fetch SSID with exit code: {error}\n{err}")
-    # noinspection PyTypeChecker
-    return dict(map(str.strip, info.split(': ')) for info in out.decode('utf-8').splitlines()[:-1] if
-                len(info.split()) == 2).get('SSID')
 
 
 def threat_notify(converted: str, date_extn: Union[str, None], gmail_user: str, gmail_pass: str,
@@ -110,7 +91,7 @@ def offline_communicator_initiate(offline_host: str, offline_port: int, home: st
     ngrok_status, api_status = False, False
     targets = ['forever_ngrok.py', 'fast.py']
     for target_script in targets:
-        pid_check = check_output(f"ps -ef | grep {target_script}", shell=True)
+        pid_check = subprocess.check_output(f"ps -ef | grep {target_script}", shell=True)
         pid_list = pid_check.decode('utf-8').split('\n')
         for id_ in pid_list:
             if id_ and 'grep' not in id_ and '/bin/sh' not in id_:
@@ -272,20 +253,18 @@ def size_converter(byte_size: int) -> str:
     if not byte_size:
         byte_size = getrusage(RUSAGE_SELF).ru_maxrss
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-    integer = int(floor(log(byte_size, 1024)))
-    power = pow(1024, integer)
-    size = round(byte_size / power, 2)
-    return f'{size} {size_name[integer]}'
+    index = int(math.floor(math.log(byte_size, 1024)))
+    return f'{round(byte_size / pow(1024, index), 2)} {size_name[index]}'
 
 
-def system_info_gatherer() -> str:
+def system_info() -> str:
     """Gets the system configuration.
 
     Returns:
         str:
         A string with the message that has to be spoken.
     """
-    total, used, free = disk_usage("/")
+    total, used, free = shutil.disk_usage("/")
     total = size_converter(byte_size=total)
     used = size_converter(byte_size=used)
     free = size_converter(byte_size=free)
@@ -305,7 +284,7 @@ def hosted_device_info() -> dict:
         dict:
         A dictionary of key-value pairs with device type, operating system, os version.
     """
-    system_kernel = (check_output("sysctl hw.model", shell=True)).decode('utf-8').splitlines()  # gets model info
+    system_kernel = (subprocess.check_output("sysctl hw.model", shell=True)).decode('utf-8').splitlines()
     device = extract_str(system_kernel[0].split(':')[1])
     platform_info = platform().split('-')
     version = '.'.join(platform_info[1].split('.')[0:2])
@@ -354,7 +333,7 @@ def extract_str(input_: str) -> str:
 
 def stop_terminal() -> None:
     """Uses pid to kill terminals as terminals await user confirmation interrupting shutdown/restart."""
-    pid_check = check_output("ps -ef | grep 'iTerm\\|Terminal'", shell=True)
+    pid_check = subprocess.check_output("ps -ef | grep 'iTerm\\|Terminal'", shell=True)
     pid_list = pid_check.decode('utf-8').split('\n')
     for id_ in pid_list:
         if id_ and 'Applications' in id_ and '/usr/bin/login' not in id_:
@@ -370,8 +349,8 @@ def remove_files() -> None:
             - ``location.yaml`` file, to recreate a new one next time around.
             - ``meetings`` file, to recreate a new one next time around.
     """
-    os.removedirs('alarm') if os.path.isdir('alarm') else None
-    os.removedirs('reminder') if os.path.isdir('reminder') else None
+    shutil.rmtree('alarm') if os.path.isdir('alarm') else None
+    shutil.rmtree('reminder') if os.path.isdir('reminder') else None
     os.remove('location.yaml') if os.path.isfile('location.yaml') else None
     os.remove('meetings') if os.path.isfile('meetings') else None
 
@@ -454,7 +433,7 @@ def terminator() -> None:
         - os._exit(0)
         - kill -15 `PID`
     """
-    pid_check = check_output("ps -ef | grep jarvis.py", shell=True)
+    pid_check = subprocess.check_output("ps -ef | grep jarvis.py", shell=True)
     pid_list = pid_check.decode('utf-8').splitlines()
     for pid_info in pid_list:
         if pid_info and 'grep' not in pid_info and '/bin/sh' not in pid_info:
@@ -495,44 +474,6 @@ def exit_message() -> str:
     return exit_msg
 
 
-def vehicle(car_email, car_pass, car_pin, operation: str, temp: int = None) -> Union[str, None]:
-    """Establishes a connection with the car and returns an object to control the primary vehicle.
-
-    Args:
-        car_email: Email to authenticate API.
-        car_pass: Password to authenticate API.
-        operation: Operation to be performed.
-        car_pin: Master PIN to perform operations.
-        temp: Temperature for climate control.
-
-    Returns:
-        Control:
-        Control object to access the primary vehicle.
-    """
-    try:
-        connection = connector.Connect(username=car_email, password=car_pass, logger=logger)
-        connection.connect()
-        if not connection.head:
-            return
-        vehicles = connection.get_vehicles(headers=connection.head).get('vehicles')
-        primary_vehicle = [each_vehicle for each_vehicle in vehicles if each_vehicle.get('role') == 'Primary'][0]
-        handler = controller.Control(vin=primary_vehicle.get('vin'), connection=connection)
-
-        if operation == 'LOCK':
-            handler.lock(pin=car_pin)
-        elif operation == 'UNLOCK':
-            handler.unlock(pin=car_pin)
-        elif operation == 'START':
-            handler.remote_engine_start(pin=car_pin, target_temperature=temp)
-        elif operation == 'STOP':
-            handler.remote_engine_stop(pin=car_pin)
-        elif operation == 'SECURE':
-            handler.enable_guardian_mode(pin=car_pin)
-        return os.environ.get('car_name', handler.get_attributes().get('vehicleBrand', 'car'))
-    except HTTPError as error:
-        logger.error(error)
-
-
 def vpn_server_switch(operation: str, phone_number: str, recipient: str) -> None:
     """Automator to ``START`` or ``STOP`` the VPN portal.
 
@@ -550,12 +491,12 @@ def vpn_server_switch(operation: str, phone_number: str, recipient: str) -> None
                            gmail_pass=os.environ.get('offline_pass', os.environ.get('gmail_pass')),
                            phone=phone_number, recipient=recipient)
     if operation == 'START':
-        vpn_status['active'] = 'enabled'
+        globals.vpn_status['active'] = 'enabled'
         vpn_object.create_vpn_server()
     elif operation == 'STOP':
-        vpn_status['active'] = 'disabled'
+        globals.vpn_status['active'] = 'disabled'
         vpn_object.delete_vpn_server()
-    vpn_status['active'] = False
+    globals.vpn_status['active'] = False
 
 
 def scan_smart_devices() -> dict:
@@ -583,3 +524,9 @@ def scan_smart_devices() -> dict:
             'tv_mac': tv_mac
         }
     return {}
+
+
+def no_env_vars():
+    """Says a message about permissions when env vars are missing."""
+    logger.error(f'Called by: {sys._getframe(1).f_code.co_name}')  # noqa
+    speaker.speak(text="I'm sorry sir! I lack the permissions!")

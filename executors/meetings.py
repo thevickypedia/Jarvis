@@ -1,10 +1,24 @@
 import os
 import re
 from datetime import datetime
-from logging import Logger
 from subprocess import PIPE, Popen
 
+from executors.custom_logger import logger
+
 MEETING_FILE = f"{os.environ.get('meeting_app', 'calendar')}.scpt"
+
+
+def meeting_file_writer() -> None:
+    """Gets return value from ``meetings()`` and writes it to file named ``meetings``.
+
+    This function runs in a dedicated thread every 30 minutes to avoid wait time when meetings information is requested.
+    """
+    if os.path.isfile('meetings') and int(datetime.now().timestamp()) - int(os.stat('meetings').st_mtime) < 1_800:
+        os.remove('meetings')  # removes the file if it is older than 30 minutes
+    data = meetings_gatherer()
+    if data.startswith('You'):
+        with open('meetings', 'w') as gatherer:
+            gatherer.write(data)
 
 
 def meeting_app_launcher() -> None:
@@ -15,7 +29,7 @@ def meeting_app_launcher() -> None:
         os.system("open /Applications/'Microsoft Outlook.app' > /dev/null 2>&1")
 
 
-def meetings_gatherer(logger: Logger) -> str:
+def meetings_gatherer() -> str:
     """Uses ``applescript`` to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.
 
     Returns:

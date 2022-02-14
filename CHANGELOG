@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+5.5.3 (02/13/2022)
+------------------
+- Remove ambient noise suppression
+- Remove OOP from personal cloud
+- Implement executors individually
+- More module re-factorization
+- Load current location into a global dict
+
 5.5.2 (02/12/2022)
 ------------------
 - Add a screen flush function to support.py

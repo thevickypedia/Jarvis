@@ -6,7 +6,6 @@
 """
 
 import sys
-from threading import Thread
 
 from playsound import playsound
 from speech_recognition import (Microphone, Recognizer, RequestError,
@@ -32,23 +31,14 @@ def listen(timeout: int, phrase_limit: int, sound: bool = True) -> str:
          - On failure, returns ``SR_ERROR`` as a string which is conditioned to respond appropriately.
     """
     with microphone as source:
-        ambient_noise_suppressor = Thread(target=recognizer.adjust_for_ambient_noise, args=[source])
-        ambient_noise_suppressor.start()
         try:
-            if sound:
-                playsound('indicators/start.mp3', block=False)
-
+            playsound('indicators/start.mp3', block=False) if sound else None
             sys.stdout.write("\rListener activated..")
             listened = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_limit)
             support.flush_screen()
-
-            if sound:
-                playsound('indicators/end.mp3', block=False)
-
+            playsound('indicators/end.mp3', block=False) if sound else None
             return_val = recognizer.recognize_google(listened)
             sys.stdout.write(f'\r{return_val}')
-
-            ambient_noise_suppressor.join(timeout=.5)
         except (UnknownValueError, RequestError, WaitTimeoutError):
             return_val = 'SR_ERROR'
 
