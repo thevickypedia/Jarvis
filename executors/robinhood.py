@@ -1,6 +1,13 @@
 """Initiates robinhood client to get the portfolio details."""
 
-from math import fsum
+import math
+import os
+import sys
+
+from pyrh import Robinhood
+
+from modules.audio import speaker
+from modules.utils import support
 
 
 def watcher(rh, result: list) -> str:
@@ -37,7 +44,7 @@ def watcher(rh, result: list) -> str:
             profit_total.append(difference)
 
     net_worth = round(rh.equity())
-    total_buy = round(fsum(shares_total))
+    total_buy = round(math.fsum(shares_total))
     total_diff = round(net_worth - total_buy)
 
     output = f'You have purchased {n} stocks and currently own {n_} shares sir. ' \
@@ -49,3 +56,22 @@ def watcher(rh, result: list) -> str:
         output += f'Currently we are on an overall profit of ${total_diff} sir.'
 
     return output
+
+
+def robinhood() -> None:
+    """Gets investment details from robinhood API."""
+    robinhood_user = os.environ.get('robinhood_user')
+    robinhood_pass = os.environ.get('robinhood_pass')
+    robinhood_qr = os.environ.get('robinhood_qr')
+
+    if not all([robinhood_user, robinhood_pass, robinhood_qr]):
+        support.no_env_vars()
+        return
+
+    sys.stdout.write('\rGetting your investment details.')
+    rh = Robinhood()
+    rh.login(username=robinhood_user, password=robinhood_pass, qr_code=robinhood_qr)
+    raw_result = rh.positions()
+    result = raw_result['results']
+    stock_value = watcher(rh, result)
+    speaker.speak(text=stock_value)

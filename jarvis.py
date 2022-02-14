@@ -5,6 +5,7 @@ import re
 import struct
 import subprocess
 import sys
+import webbrowser
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from email import message_from_bytes
@@ -13,80 +14,60 @@ from imaplib import IMAP4_SSL
 from math import ceil
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
-from pathlib import Path
-from socket import gethostbyname, gethostname
-from ssl import create_default_context
+from socket import gethostbyname
 from string import punctuation
 from threading import Thread, Timer
 from time import perf_counter, sleep, time
 from traceback import format_exc
-from typing import Tuple, Union
+from typing import Tuple
 from unicodedata import normalize
-from urllib.error import HTTPError
 from urllib.request import urlopen
-from webbrowser import open as web_open
 
-import certifi
 import cv2
+import psutil
 import pvporcupine
 import requests
-import wikipedia as wiki
-import wordninja
-import yaml
 from dotenv import load_dotenv
 from geopy.distance import geodesic
-from geopy.exc import GeocoderUnavailable, GeopyError
-from geopy.geocoders import Nominatim, options
 from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
 from inflect import engine
 from joke.jokes import chucknorris, geek, icanhazdad, icndb
 from newsapi import NewsApiClient, newsapi_exception
 from playsound import playsound
-from psutil import Process, boot_time
 from pyaudio import PyAudio, paInt16
 from pychromecast.error import ChromecastConnectionError
 from PyDictionary import PyDictionary
-from pyicloud.exceptions import (PyiCloudAPIResponseException,
-                                 PyiCloudFailedLoginException)
-from pyicloud.services.findmyiphone import AppleDevice
-from pyrh import Robinhood
 from pytz import timezone
 from randfacts import getFact
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import ConnectionError
-from search_engine_parser.core.engines.google import Search as GoogleSearch
-from search_engine_parser.core.exceptions import NoResultsOrTrafficError
-from speedtest import ConfigRetrievalError, Speedtest
 from timezonefinder import TimezoneFinder
 from wakeonlan import send_magic_packet as wake
-from wikipedia.exceptions import DisambiguationError, PageError
-from wolframalpha import Client as Think
 
 from api.controller import offline_compatible
+from executors import revive, sms
+from executors.car import vehicle
+from executors.custom_logger import logger
+from executors.internet import get_ssid, internet_checker, ip_info, vpn_checker
+from executors.location import current_location, geo_locator, location_services
+from executors.meetings import (meeting_app_launcher, meeting_file_writer,
+                                meetings_gatherer)
+from executors.robinhood import robinhood
+from executors.unconditional import alpha, google, google_maps
+from executors.wiki import wikipedia_
 from modules.audio.listener import listen
-from modules.audio.speaker import (audio_driver, speak, voice_changer,
-                                   voice_default)
+from modules.audio.speaker import audio_driver, speak
+from modules.audio.voices import voice_changer, voice_default
 from modules.conditions import conversation, keywords
 from modules.database import database
 from modules.face.facial_recognition import Face
-from modules.gmail.sms import notify
 from modules.lights.lights import MagicHomeApi
 from modules.lights.preset_values import PRESET_VALUES
-from modules.logger.custom_logger import logger
-from modules.meeting.meetings_helper import (meeting_app_launcher,
-                                             meetings_gatherer)
-from modules.personalcloud.personal_cloud import PersonalCloud
-from modules.robinhood import robinhood as rh_gatherer
+from modules.personalcloud import pc_handler
 from modules.temperature import temperature
 from modules.tv.tv_controls import TV
 from modules.utils import globals, support
-
-
-def no_env_vars():
-    """Says a message about permissions when env vars are missing."""
-    logger.error(f'Called by: {sys._getframe(1).f_code.co_name}')  # noqa
-    speak(text="I don't have permissions sir! Please add the necessary environment variables and ask me to restart!")
 
 
 def split(key: str, should_return: bool = False) -> bool:
@@ -372,110 +353,9 @@ def conditions(converted: str, should_return: bool = False) -> bool:
             if google_maps(query=converted):
                 if google(query=converted):
                     # if none of the conditions above are met, opens a Google search on default browser
-                    if google_maps.has_been_called:
-                        google_maps.has_been_called = False
-                        speak(text="I have also opened a google search for your request.")
-                    else:
-                        speak(text=f"I heard {converted}. Let me look that up.", run=True)
-                        speak(text="I have opened a google search for your request.")
                     search_query = str(converted).replace(' ', '+')
                     unknown_url = f"https://www.google.com/search?q={search_query}"
-                    web_open(url=unknown_url)
-
-
-def ip_info(phrase: str) -> None:
-    """Gets IP address of the host machine.
-
-    Args:
-        phrase: Takes the spoken phrase an argument and tells the public IP if requested.
-    """
-    if 'public' in phrase.lower():
-        if not internet_checker():
-            speak(text="You are not connected to the internet sir!")
-            return
-        if ssid := support.get_ssid():
-            ssid = f'for the connection {ssid} '
-        else:
-            ssid = ''
-        output = None
-        try:
-            output = f"My public IP {ssid}is {json.load(urlopen('https://ipinfo.io/json')).get('ip')}"
-        except HTTPError as error:
-            logger.error(error)
-        try:
-            output = output or f"My public IP {ssid}is {json.loads(urlopen('http://ip.jsontest.com').read()).get('ip')}"
-        except HTTPError as error:
-            logger.error(error)
-        if not output:
-            output = 'I was unable to fetch the public IP sir!'
-    else:
-        ip_address = vpn_checker().split(':')[-1]
-        output = f"My local IP address for {gethostname()} is {ip_address}"
-    speak(text=output)
-
-
-def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, str or float, str]]:
-    """Gets the current location of an Apple device.
-
-    Args:
-        device: Passed when locating a particular Apple device.
-
-    Returns:
-        None or Tuple[str or float, str or float, str or float]:
-        - On success, returns ``current latitude``, ``current longitude`` and ``location`` information as a ``dict``.
-        - On failure, calls the ``restart()`` or ``terminator()`` function depending on the error.
-
-    Raises:
-        PyiCloudFailedLoginException: Restarts if occurs once. Uses location by IP, if occurs once again.
-    """
-    try:
-        # tries with icloud api to get your device's location for precise location services
-        if not device:
-            if not (device := support.device_selector(icloud_user=icloud_user, icloud_pass=icloud_pass)):
-                raise PyiCloudFailedLoginException
-        raw_location = device.location()
-        if not raw_location and sys._getframe(1).f_code.co_name == 'locate':  # noqa
-            return 'None', 'None', 'None'
-        elif not raw_location:
-            raise PyiCloudAPIResponseException(reason=f'Unable to retrieve location for {device}')
-        else:
-            current_lat_ = raw_location['latitude']
-            current_lon_ = raw_location['longitude']
-        os.remove('pyicloud_error') if os.path.isfile('pyicloud_error') else None
-    except (PyiCloudAPIResponseException, PyiCloudFailedLoginException):
-        if device:
-            logger.error(f'Unable to retrieve location::{sys.exc_info()[0].__name__}\n{format_exc()}')  # traceback
-            caller = sys._getframe(1).f_code.co_name  # noqa
-            if caller == '<module>':
-                if os.path.isfile('pyicloud_error'):
-                    logger.error(f'Exception raised by {caller} once again. Proceeding...')
-                    os.remove('pyicloud_error')
-                else:
-                    logger.error(f'Exception raised by {caller}. Restarting.')
-                    Path('pyicloud_error').touch()
-                    restart(quiet=True)  # Restarts quietly if the error occurs when called from __main__
-        # uses latitude and longitude information from your IP's client when unable to connect to icloud
-        current_lat_ = st.results.client['lat']
-        current_lon_ = st.results.client['lon']
-        speak(text="I have trouble accessing the i-cloud API, so I'll be using your I.P address to get your "
-                   "location. Please note that this may not be accurate enough for location services.", run=True)
-    except ConnectionError:
-        current_lat_, current_lon_ = None, None
-        sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
-        speak(text="I was unable to connect to the internet. Please check your connection settings and retry.",
-              run=True)
-        sys.stdout.write(f"\rMemory consumed: {support.size_converter(byte_size=0)}"
-                         f"\nTotal runtime: {support.time_converter(seconds=perf_counter())}")
-        support.terminator()
-
-    try:
-        # Uses the latitude and longitude information and converts to the required address.
-        locator = geo_locator.reverse(f'{current_lat_}, {current_lon_}', language='en')
-        return float(current_lat_), float(current_lon_), locator.raw['address']
-    except (GeocoderUnavailable, GeopyError):
-        logger.error('Error retrieving address from latitude and longitude information. Initiating self reboot.')
-        speak(text='Received an error while retrieving your address sir! I think a restart should fix this.')
-        restart(quick=True)
+                    webbrowser.open(url=unknown_url)
 
 
 def report() -> None:
@@ -552,20 +432,12 @@ def weather(phrase: str = None) -> None:
         phrase: Takes the phrase as an optional argument.
     """
     if not weather_api:
-        no_env_vars()
+        support.no_env_vars()
         return
 
     place = None
     if phrase:
-        place = support.get_capitalized(phrase=phrase) if phrase else None
-        if any(match_word in phrase.lower() for match_word in
-               ['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']):
-            if place:
-                weather_condition(msg=phrase, place=place)
-            else:
-                weather_condition(msg=phrase)
-            return
-
+        place = support.get_capitalized(phrase=phrase)
     sys.stdout.write('\rGetting your weather info')
     if place:
         desired_location = geo_locator.geocode(place)
@@ -577,14 +449,71 @@ def weather(phrase: str = None) -> None:
         lat = located.latitude
         lon = located.longitude
     else:
-        city, state = location_info['city'], location_info['state']
-        lat = current_lat
-        lon = current_lon
+        city = globals.current_location_['location_info']['city']
+        state = globals.current_location_['location_info']['state']
+        lat = globals.current_location_['current_lat']
+        lon = globals.current_location_['current_lon']
     weather_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,' \
                   f'hourly&appid={weather_api}'
     response = json.loads(urlopen(weather_url).read())  # loads the response in a json
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
+
+    if any(match_word in phrase.lower() for match_word in
+           ['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']):
+        if 'tonight' in phrase:
+            key = 0
+            tell = 'tonight'
+        elif 'day after' in phrase:
+            key = 2
+            tell = 'day after tomorrow '
+        elif 'tomorrow' in phrase:
+            key = 1
+            tell = 'tomorrow '
+        elif 'next week' in phrase:
+            key = -1
+            next_week = datetime.fromtimestamp(response['daily'][-1]['dt']).strftime("%A, %B %d")
+            tell = f"on {' '.join(next_week.split()[0:-1])} {engine().ordinal(next_week.split()[-1])}"
+        else:
+            key = 0
+            tell = 'today '
+        if 'morning' in phrase:
+            when = 'morn'
+            tell += 'morning'
+        elif 'evening' in phrase:
+            when = 'eve'
+            tell += 'evening'
+        elif 'tonight' in phrase:
+            when = 'night'
+        elif 'night' in phrase:
+            when = 'night'
+            tell += 'night'
+        else:
+            when = 'day'
+            tell += ''
+        if 'alerts' in response:
+            alerts = response['alerts'][0]['event']
+            start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")
+            end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
+        else:
+            alerts, start_alert, end_alert = None, None, None
+        condition = response['daily'][key]['weather'][0]['description']
+        high = int(round(temperature.k2f(response['daily'][key]['temp']['max']), 2))
+        low = int(round(temperature.k2f(response['daily'][1]['temp']['min']), 2))
+        temp_f = int(round(temperature.k2f(response['daily'][key]['temp'][when]), 2))
+        temp_feel_f = int(round(temperature.k2f(response['daily'][key]['feels_like'][when]), 2))
+        sunrise = datetime.fromtimestamp(response['daily'][key]['sunrise']).strftime("%I:%M %p")
+        sunset = datetime.fromtimestamp(response['daily'][key]['sunset']).strftime("%I:%M %p")
+        output = f"The weather in {weather_location} {tell} would be {temp_f}°F, with a high of {high}, and a low of " \
+                 f"{low}. "
+        if temp_feel_f != temp_f:
+            output += f"But due to {condition} it will fee like it is {temp_feel_f}°F. "
+        output += f"Sunrise at {sunrise}. Sunset at {sunset}. "
+        if alerts and start_alert and end_alert:
+            output += f'There is a weather alert for {alerts} between {start_alert} and {end_alert}'
+        speak(text=output)
+        return
+
     condition = response['current']['weather'][0]['description']
     high = int(round(temperature.k2f(arg=response['daily'][0]['temp']['max']), 2))
     low = int(round(temperature.k2f(arg=response['daily'][0]['temp']['min']), 2))
@@ -638,119 +567,9 @@ def weather(phrase: str = None) -> None:
     speak(text=output)
 
 
-def weather_condition(msg: str, place: str = None) -> None:
-    """Weather report when phrase has conditions like tomorrow, day after, next week and specific part of the day etc.
-
-    Notes:
-        - ``weather_condition()`` uses conditional blocks to fetch keywords and determine the output.
-
-    Args:
-        place: Name of place where the weather information is needed.
-        msg: Takes the voice recognized statement as argument.
-    """
-    if place:
-        desired_location = geo_locator.geocode(place)
-        coordinates = desired_location.latitude, desired_location.longitude
-        located = geo_locator.reverse(coordinates, language='en')
-        address = located.raw['address']
-        city = address['city'] if 'city' in address.keys() else None
-        state = address['state'] if 'state' in address.keys() else None
-        lat = located.latitude
-        lon = located.longitude
-    else:
-        city, state, = location_info['city'], location_info['state']
-        lat = current_lat
-        lon = current_lon
-    weather_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,' \
-                  f'hourly&appid={weather_api}'
-    r = urlopen(weather_url)  # sends request to the url created
-    response = json.loads(r.read())  # loads the response in a json
-    weather_location = f'{city} {state}' if city and state else place
-    if 'tonight' in msg:
-        key = 0
-        tell = 'tonight'
-    elif 'day after' in msg:
-        key = 2
-        tell = 'day after tomorrow '
-    elif 'tomorrow' in msg:
-        key = 1
-        tell = 'tomorrow '
-    elif 'next week' in msg:
-        key = -1
-        next_week = datetime.fromtimestamp(response['daily'][-1]['dt']).strftime("%A, %B %d")
-        tell = f"on {' '.join(next_week.split()[0:-1])} {engine().ordinal(next_week.split()[-1])}"
-    else:
-        key = 0
-        tell = 'today '
-    if 'morning' in msg:
-        when = 'morn'
-        tell += 'morning'
-    elif 'evening' in msg:
-        when = 'eve'
-        tell += 'evening'
-    elif 'tonight' in msg:
-        when = 'night'
-    elif 'night' in msg:
-        when = 'night'
-        tell += 'night'
-    else:
-        when = 'day'
-        tell += ''
-    if 'alerts' in response:
-        alerts = response['alerts'][0]['event']
-        start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")
-        end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
-    else:
-        alerts, start_alert, end_alert = None, None, None
-    condition = response['daily'][key]['weather'][0]['description']
-    high = int(round(temperature.k2f(response['daily'][key]['temp']['max']), 2))
-    low = int(round(temperature.k2f(response['daily'][1]['temp']['min']), 2))
-    temp_f = int(round(temperature.k2f(response['daily'][key]['temp'][when]), 2))
-    temp_feel_f = int(round(temperature.k2f(response['daily'][key]['feels_like'][when]), 2))
-    sunrise = datetime.fromtimestamp(response['daily'][key]['sunrise']).strftime("%I:%M %p")
-    sunset = datetime.fromtimestamp(response['daily'][key]['sunset']).strftime("%I:%M %p")
-    output = f"The weather in {weather_location} {tell} would be {temp_f}°F, with a high of {high}, and a low of " \
-             f"{low}. "
-    if temp_feel_f != temp_f:
-        output += f"But due to {condition} it will fee like it is {temp_feel_f}°F. "
-    output += f"Sunrise at {sunrise}. Sunset at {sunset}. "
-    if alerts and start_alert and end_alert:
-        output += f'There is a weather alert for {alerts} between {start_alert} and {end_alert}'
-    speak(text=output)
-
-
 def system_info() -> None:
     """Speaks the system information."""
-    speak(text=support.system_info_gatherer())
-
-
-def wikipedia_() -> None:
-    """Gets any information from wikipedia using its API."""
-    speak(text="Please tell the keyword.", run=True)
-    keyword = listen(timeout=3, phrase_limit=5)
-    if keyword != 'SR_ERROR':
-        if any(word in keyword.lower() for word in keywords.exit_):
-            return
-        else:
-            sys.stdout.write(f'\rGetting your info from Wikipedia API for {keyword}')
-            try:
-                result = wiki.summary(keyword)
-            except DisambiguationError as e:  # checks for the right keyword in case of 1+ matches
-                sys.stdout.write(f'\r{e}')
-                speak(text='Your keyword has multiple results sir. Please pick any one displayed on your screen.',
-                      run=True)
-                keyword1 = listen(timeout=3, phrase_limit=5)
-                result = wiki.summary(keyword1) if keyword1 != 'SR_ERROR' else None
-            except PageError:
-                speak(text=f"I'm sorry sir! I didn't get a response for the phrase: {keyword}. Try again!")
-                return
-            # stops with two sentences before reading whole passage
-            formatted = '. '.join(result.split('. ')[0:2]) + '.'
-            speak(text=f'{formatted}. Do you want me to continue sir?', run=True)
-            response = listen(timeout=3, phrase_limit=3)
-            if response != 'SR_ERROR':
-                if any(word in response.lower() for word in keywords.ok):
-                    speak(text='. '.join(result.split('. ')[3:]))
+    speak(text=support.system_info())
 
 
 def news(news_source: str = 'fox') -> None:
@@ -760,7 +579,7 @@ def news(news_source: str = 'fox') -> None:
         news_source: Source from where the news has to be fetched. Defaults to ``fox``.
     """
     if not (news_api := os.environ.get('news_api')):
-        no_env_vars()
+        support.no_env_vars()
         return
 
     sys.stdout.write(f'\rGetting news from {news_source} news.')
@@ -775,7 +594,7 @@ def news(news_source: str = 'fox') -> None:
         speak(text="News around you!")
         for article in all_articles['articles']:
             speak(text=article['title'])
-        if called_by_offline['status']:
+        if globals.called_by_offline['status']:
             return
 
     if report.has_been_called or time_travel.has_been_called:
@@ -791,7 +610,7 @@ def apps(phrase: str) -> None:
     keyword = phrase.split()[-1] if phrase else None
     ignore = ['app', 'application']
     if not keyword or keyword in ignore:
-        if called_by_offline['status']:
+        if globals.called_by_offline['status']:
             speak(text='I need an app name to open sir!')
             return
         speak(text="Which app shall I open sir?", run=True)
@@ -827,25 +646,6 @@ def apps(phrase: str) -> None:
             speak(text=f"I have opened {keyword}")
 
 
-def robinhood() -> None:
-    """Gets investment details from robinhood API."""
-    robinhood_user = os.environ.get('robinhood_user')
-    robinhood_pass = os.environ.get('robinhood_pass')
-    robinhood_qr = os.environ.get('robinhood_qr')
-
-    if not all([robinhood_user, robinhood_pass, robinhood_qr]):
-        no_env_vars()
-        return
-
-    sys.stdout.write('\rGetting your investment details.')
-    rh = Robinhood()
-    rh.login(username=robinhood_user, password=robinhood_pass, qr_code=robinhood_qr)
-    raw_result = rh.positions()
-    result = raw_result['results']
-    stock_value = rh_gatherer.watcher(rh, result)
-    speak(text=stock_value)
-
-
 def repeat() -> None:
     """Repeats whatever is heard."""
     speak(text="Please tell me what to repeat.", run=True)
@@ -859,8 +659,9 @@ def repeat() -> None:
 
 def location() -> None:
     """Gets the user's current location."""
-    city, state, country = location_info['city'], location_info['state'], location_info['country']
-    speak(text=f"You're at {city} {state}, in {country}")
+    speak(text=f"You're at {globals.current_location_['location_info']['city']} "
+               f"{globals.current_location_['location_info']['state']}, "
+               f"in {globals.current_location_['location_info']['country']}")
 
 
 def locate(phrase: str, no_repeat: bool = False) -> None:
@@ -871,7 +672,7 @@ def locate(phrase: str, no_repeat: bool = False) -> None:
         phrase: Takes the voice recognized statement as argument and extracts device name from it.
     """
     if not (target_device := support.device_selector(icloud_user=icloud_user, icloud_pass=icloud_pass, phrase=phrase)):
-        no_env_vars()
+        support.no_env_vars()
         return
     sys.stdout.write(f"\rLocating your {target_device}")
     if no_repeat:
@@ -942,7 +743,7 @@ def music(phrase: str = None) -> None:
 def gmail() -> None:
     """Reads unread emails from the gmail account for which the credentials are stored in env variables."""
     if not all([gmail_user, gmail_pass]):
-        no_env_vars()
+        support.no_env_vars()
         return
 
     sys.stdout.write("\rFetching unread emails..")
@@ -966,7 +767,7 @@ def gmail() -> None:
         speak(text="You don't have any emails to catch up sir")
         return
     else:
-        if called_by_offline['status']:
+        if globals.called_by_offline['status']:
             speak(text=f'You have {n} unread emails sir.')
             return
         else:
@@ -1050,7 +851,7 @@ def meaning(phrase: str) -> None:
                 n += 1
                 mean = ', '.join(value[0:2])
                 speak(text=f'{keyword} is {repeated} {insert} {key}, which means {mean}.')
-            if called_by_offline['status']:
+            if globals.called_by_offline['status']:
                 return
             speak(text=f'Do you wanna know how {keyword} is spelled?', run=True)
             response = listen(timeout=3, phrase_limit=3)
@@ -1058,7 +859,7 @@ def meaning(phrase: str) -> None:
                 for letter in list(keyword.lower()):
                     speak(text=letter)
                 speak(run=True)
-        elif called_by_offline['status']:
+        elif globals.called_by_offline['status']:
             speak(text=f"I'm sorry sir! I was unable to get meaning for the word: {keyword}")
             return
         else:
@@ -1087,7 +888,7 @@ def todo(no_repeat: bool = False) -> None:
     if not os.path.isfile(database.TASKS_DB) and (time_travel.has_been_called or report.has_been_called):
         pass
     elif not os.path.isfile(database.TASKS_DB):
-        if called_by_offline['status']:
+        if globals.called_by_offline['status']:
             speak(text="Your don't have any items in your to-do list sir!")
             return
         if no_repeat:
@@ -1119,7 +920,7 @@ def todo(no_repeat: bool = False) -> None:
                 result[category] = result[category] + ', ' + item  # updates category if already found in result
         support.flush_screen()
         if result:
-            if called_by_offline['status']:
+            if globals.called_by_offline['status']:
                 speak(text=json.dumps(result))
                 return
             speak(text='Your to-do items are')
@@ -1263,7 +1064,7 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
     """
     if not destination:
         speak(text="Destination please?")
-        if called_by_offline['status']:
+        if globals.called_by_offline['status']:
             return
         speak(run=True)
         destination = listen(timeout=3, phrase_limit=4)
@@ -1282,7 +1083,7 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         start_check = None
     else:
         # else gets latitude and longitude information of current location
-        start = (current_lat, current_lon)
+        start = (globals.current_location_['current_lat'], globals.current_location_['current_lon'])
         start_check = 'My Location'
     sys.stdout.write("::TO::") if origin else sys.stdout.write("\r::TO::")
     desired_location = geo_locator.geocode(destination)
@@ -1331,7 +1132,7 @@ def locate_places(phrase: str = None) -> None:
         before_keyword, keyword, after_keyword = phrase.partition(keyword)
         place = after_keyword.replace(' in', '').strip()
     if not place:
-        if called_by_offline['status']:
+        if globals.called_by_offline['status']:
             speak(text='I need a location to get you the details sir!')
             return
         speak(text="Tell me the name of a place!", run=True)
@@ -1357,19 +1158,21 @@ def locate_places(phrase: str = None) -> None:
         if place in country:
             speak(text=f"{place} is a country")
         elif place in (city or county):
-            speak(text=f"{place} is in {state}" if country == location_info['country'] else
+            speak(text=f"{place} is in {state}" if country == globals.current_location_['location_info']['country'] else
                   f"{place} is in {state} in {country}")
         elif place in state:
             speak(text=f"{place} is a state in {country}")
         elif (city or county) and state and country:
-            speak(text=f"{place} is in {city or county}, {state}" if country == location_info['country'] else
-                  f"{place} is in {city or county}, {state}, in {country}")
-        if called_by_offline['status']:
+            if country == globals.current_location_['location_info']['country']:
+                speak(text=f"{place} is in {city or county}, {state}")
+            else:
+                speak(text=f"{place} is in {city or county}, {state}, in {country}")
+        if globals.called_by_offline['status']:
             return
         locate_places.has_been_called = True
     except (TypeError, AttributeError):
         speak(text=f"{place} is not a real place on Earth sir! Try again.")
-        if called_by_offline['status']:
+        if globals.called_by_offline['status']:
             return
         locate_places(phrase=None)
     distance_controller(origin=None, destination=place)
@@ -1412,10 +1215,10 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     end_country = address['country'] if 'country' in address else None
     end = f"{located.latitude},{located.longitude}"
 
-    start_country = location_info['country']
-    start = current_lat, current_lon
+    start_country = globals.current_location_['location_info']['country']
+    start = globals.current_location_['current_lat'], globals.current_location_['current_lon']
     maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
-    web_open(maps_url)
+    webbrowser.open(maps_url)
     speak(text="Directions on your screen sir!")
     if start_country and end_country:
         if re.match(start_country, end_country, flags=re.IGNORECASE):
@@ -1462,7 +1265,7 @@ def alarm(phrase: str) -> None:
                        f"I don't think a time like that exists on Earth.")
     else:
         speak(text='Please tell me a time sir!')
-        if called_by_offline['status']:
+        if globals.called_by_offline['status']:
             return
         speak(run=True)
         converted = listen(timeout=3, phrase_limit=4)
@@ -1551,7 +1354,7 @@ def google_home(device: str = None, file: str = None) -> None:
     if network_id.startswith('VPN'):
         return
 
-    if not called_by_offline['status']:
+    if not globals.called_by_offline['status']:
         speak(text='Scanning your IP range for Google Home devices sir!', run=True)
         sys.stdout.write('\rScanning your IP range for Google Home devices..')
     network_id = '.'.join(network_id.split('.')[0:3])
@@ -1627,7 +1430,7 @@ def reminder(phrase: str) -> None:
     extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or \
         re.findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', phrase) or re.findall(r'([0-9]+\s?(?:am|pm:?))', phrase)
     if not extracted_time:
-        if called_by_offline['status']:
+        if globals.called_by_offline['status']:
             speak(text='Reminder format should be::Remind me to do something, at some time.')
             return
         speak(text="When do you want to be reminded sir?", run=True)
@@ -1665,93 +1468,6 @@ def reminder(phrase: str) -> None:
     return
 
 
-def google_maps(query: str) -> bool:
-    """Uses google's places api to get places nearby or any particular destination.
-
-    This function is triggered when the words in user's statement doesn't match with any predefined functions.
-
-    Args:
-        query: Takes the voice recognized statement as argument.
-
-    Returns:
-        bool:
-        Boolean True if Google's maps API is unable to fetch consumable results.
-    """
-    if not (maps_api := os.environ.get('maps_api')):
-        return False
-
-    maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
-    response = requests.get(maps_url + 'query=' + query + '&key=' + maps_api)
-    collection = response.json()['results']
-    required = []
-    for element in range(len(collection)):
-        try:
-            name = collection[element]['name']
-            rating = collection[element]['rating']
-            full_address = collection[element]['formatted_address']
-            geometry = collection[element]['geometry']['location']
-            address = re.search('(.*)Rd|(.*)Ave|(.*)St |(.*)St,|(.*)Blvd|(.*)Ct', full_address)
-            address = address.group().replace(',', '')
-            new_dict = {"Name": name, "Rating": rating, "Address": address, "Location": geometry, "place": full_address}
-            required.append(new_dict)
-        except (AttributeError, KeyError):
-            pass
-    if required:
-        required = sorted(required, key=lambda sort: sort['Rating'], reverse=True)
-    else:
-        return True
-    results = len(required)
-    speak(text=f"I found {results} results sir!") if results != 1 else None
-    start = current_lat, current_lon
-    n = 0
-    for item in required:
-        item['Address'] = item['Address'].replace(' N ', ' North ').replace(' S ', ' South ').replace(' E ', ' East ') \
-            .replace(' W ', ' West ').replace(' Rd', ' Road').replace(' St', ' Street').replace(' Ave', ' Avenue') \
-            .replace(' Blvd', ' Boulevard').replace(' Ct', ' Court')
-        latitude, longitude = item['Location']['lat'], item['Location']['lng']
-        end = f"{latitude},{longitude}"
-        far = round(geodesic(start, end).miles)
-        miles = f'{far} miles' if far > 1 else f'{far} mile'
-        n += 1
-        if results == 1:
-            option = 'only option I found is'
-            next_val = "Do you want to head there sir?"
-        elif n <= 2:
-            option = f'{engine().ordinal(n)} option is'
-            next_val = "Do you want to head there sir?"
-        elif n <= 5:
-            option = 'next option would be'
-            next_val = "Would you like to try that?"
-        else:
-            option = 'other'
-            next_val = 'How about that?'
-        speak(text=f"The {option}, {item['Name']}, with {item['Rating']} rating, "
-                   f"on{''.join([j for j in item['Address'] if not j.isdigit()])}, which is approximately "
-                   f"{miles} away.")
-        speak(text=f"{next_val}", run=True)
-        sys.stdout.write(f"\r{item['Name']} -- {item['Rating']} -- "
-                         f"{''.join([j for j in item['Address'] if not j.isdigit()])}")
-        converted = listen(timeout=3, phrase_limit=3)
-        if converted != 'SR_ERROR':
-            if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-                break
-            elif any(word in converted.lower() for word in keywords.ok):
-                maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
-                web_open(maps_url)
-                speak(text="Directions on your screen sir!")
-                return False
-            elif results == 1:
-                return False
-            elif n == results:
-                speak(text="I've run out of options sir!")
-                return False
-            else:
-                continue
-        else:
-            google_maps.has_been_called = True
-            return False
-
-
 def notes() -> None:
     """Listens to the user and saves everything to a ``notes.txt`` file."""
     converted = listen(timeout=5, phrase_limit=10)
@@ -1773,7 +1489,7 @@ def github(phrase: str):
     git_user = os.environ.get('git_user')
     git_pass = os.environ.get('git_pass')
     if not all([git_user, git_pass]):
-        no_env_vars()
+        support.no_env_vars()
         return
     auth = HTTPBasicAuth(git_user, git_pass)
     response = requests.get('https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
@@ -1846,7 +1562,7 @@ def send_sms(phrase: str = None) -> None:
     number = '-'.join([str(s) for s in re.findall(r'\b\d+\b', phrase)]) if phrase else None
     if not number:
         speak(text="Please tell me a number sir!", run=True)
-        number = listen(timeout=3, phrase_limit=5)
+        number = listen(timeout=3, phrase_limit=7)
         if number != 'SR_ERROR':
             if 'exit' in number or 'quit' in number or 'Xzibit' in number:
                 return
@@ -1860,11 +1576,11 @@ def send_sms(phrase: str = None) -> None:
             speak(text=f'{body} to {number}. Do you want me to proceed?', run=True)
             converted = listen(timeout=3, phrase_limit=3)
             if converted != 'SR_ERROR':
-                if not any(word in converted.lower() for word in keywords.ok):
-                    speak(text="Message will not be sent sir!")
-                else:
-                    notify(user=gmail_user, password=gmail_pass, number=number, body=body)
+                if any(word in converted.lower() for word in keywords.ok):
+                    sms.notify(user=gmail_user, password=gmail_pass, number=number, body=body)
                     speak(text="Message has been sent sir!")
+                else:
+                    speak(text="Message will not be sent sir!")
                 return
 
 
@@ -1880,8 +1596,8 @@ def television(phrase: str) -> None:
         phrase: Takes the voice recognized statement as argument.
     """
     tv_client_key = os.environ.get('tv_client_key')
-    if not all([smart_devices.get('tv_ip'), smart_devices.get('tv_mac'), tv_client_key]):
-        no_env_vars()
+    if not all([globals.smart_devices.get('tv_ip'), globals.smart_devices.get('tv_mac'), tv_client_key]):
+        support.no_env_vars()
         return
     global tv
     phrase_exc = phrase.replace('TV', '')
@@ -1889,7 +1605,7 @@ def television(phrase: str) -> None:
 
     def tv_status() -> int:
         """Pings the tv and returns the status. 0 if able to ping, 256 if unable to ping."""
-        return os.system(f"ping -c 1 -t 3 {smart_devices.get('tv_ip')} >/dev/null")
+        return os.system(f"ping -c 1 -t 3 {globals.smart_devices.get('tv_ip')} >/dev/null")
 
     if vpn_checker().startswith('VPN'):
         return
@@ -1897,10 +1613,10 @@ def television(phrase: str) -> None:
         speak(text="I wasn't able to connect to your TV sir! I guess your TV is powered off already.")
         return
     elif tv_status():
-        if called_by_offline['status']:
-            wake(smart_devices.get('tv_mac'))
+        if globals.called_by_offline['status']:
+            wake(globals.smart_devices.get('tv_mac'))
         else:
-            Thread(target=wake, args=[smart_devices.get('tv_mac')]).start()
+            Thread(target=wake, args=[globals.smart_devices.get('tv_mac')]).start()
             speak(text="Looks like your TV is powered off sir! Let me try to turn it back on!", run=True)
 
     for i in range(5):
@@ -1914,7 +1630,7 @@ def television(phrase: str) -> None:
 
     if not tv:
         try:
-            tv = TV(ip_address=smart_devices.get('tv_ip'), client_key=tv_client_key)
+            tv = TV(ip_address=globals.smart_devices.get('tv_ip'), client_key=tv_client_key)
         except ConnectionResetError as error:
             logger.error(f"Failed to connect to the TV. {error}")
             speak(text="I was unable to connect to the TV sir! It appears to be a connection issue. "
@@ -1991,112 +1707,6 @@ def television(phrase: str) -> None:
         speak(text=f"I'm sorry sir! I wasn't able to {phrase}, as the TV state is unknown!")
 
 
-def alpha(text: str) -> bool:
-    """Uses wolfram alpha API to fetch results for uncategorized phrases heard.
-
-    Args:
-        text: Takes the voice recognized statement as argument.
-
-    Notes:
-        Handles broad ``Exception`` clause raised when Full Results API did not find an input parameter while parsing.
-
-    Returns:
-        bool:
-        Boolean True if wolfram alpha API is unable to fetch consumable results.
-
-    References:
-        `Error 1000 <https://products.wolframalpha.com/show-steps-api/documentation/#:~:text=(Error%201000)>`__
-    """
-    if not (think_id := os.environ.get('think_id')):
-        return False
-    alpha_client = Think(app_id=think_id)
-    try:
-        res = alpha_client.query(text)
-    except Exception:  # noqa
-        return True
-    if res['@success'] == 'false':
-        return True
-    else:
-        try:
-            response = next(res.results).text.splitlines()[0]
-            response = re.sub(r'(([0-9]+) \|)', '', response).replace(' |', ':').strip()
-            if response == '(no data available)':
-                return True
-            speak(text=response)
-        except (StopIteration, AttributeError):
-            return True
-
-
-def google(query: str, suggestion_count: int = 0) -> None:
-    """Uses Google's search engine parser and gets the first result that shows up on a Google search.
-
-    Notes:
-        - If it is unable to get the result, Jarvis sends a request to ``suggestqueries.google.com``
-        - This is to rephrase the query and then looks up using the search engine parser once again.
-        - ``suggestion_count`` is used to limit the number of times suggestions are used.
-        - ``suggestion_count`` is also used to make sure the suggestions and parsing don't run on an infinite loop.
-        - This happens when ``google`` gets the exact search as suggested ones which failed to fetch results earlier.
-
-    Args:
-        suggestion_count: Integer value that keeps incrementing when ``Jarvis`` looks up for suggestions.
-        query: Takes the voice recognized statement as argument.
-    """
-    search_engine = GoogleSearch()
-    results = []
-    try:
-        google_results = search_engine.search(query, cache=False)
-        results = [result['titles'] for result in google_results]
-    except NoResultsOrTrafficError:
-        suggest_url = "https://suggestqueries.google.com/complete/search"
-        params = {
-            "client": "firefox",
-            "q": query,
-        }
-        response = requests.get(suggest_url, params)
-        if not response:
-            return
-        try:
-            suggestion = response.json()[1][1]
-            suggestion_count += 1
-            if suggestion_count >= 3:  # avoids infinite suggestions over the same suggestion
-                speak(text=response.json()[1][0].replace('=', ''),
-                      run=True)  # picks the closest match and Google's it
-                return
-            else:
-                google(suggestion, suggestion_count)
-        except IndexError:
-            return
-
-    if not results:
-        return
-
-    for result in results:
-        if len(result.split()) < 3:
-            results.remove(result)
-
-    if not results:
-        return
-
-    results = results[0:3]  # picks top 3 (first appeared on Google)
-    results.sort(key=lambda x: len(x.split()), reverse=True)  # sorts in reverse by the word count of each sentence
-    output = results[0]  # picks the top most result
-    if '\n' in output:
-        required = output.split('\n')
-        modify = required[0].strip()
-        split_val = ' '.join(wordninja.split(modify.replace('.', 'rEpLaCInG')))
-        sentence = split_val.replace(' rEpLaCInG ', '.')
-        repeats = []  # Captures repeated words by adding them to the empty list
-        [repeats.append(word) for word in sentence.split() if word not in repeats]
-        refined = ' '.join(repeats)
-        output = refined + required[1] + '.' + required[2]
-    output = output.replace('\\', ' or ')
-    match_word = re.search(r'(\w{3},|\w{3}) (\d,|\d|\d{2},|\d{2}) \d{4}', output)
-    if match_word:
-        output = output.replace(match_word.group(), '')
-    output = output.replace('\\', ' or ')
-    speak(text=output, run=True)
-
-
 def google_search(phrase: str = None) -> None:
     """Opens up a Google search for the phrase received. If nothing was received, gets phrase from user.
 
@@ -2115,7 +1725,7 @@ def google_search(phrase: str = None) -> None:
             phrase = converted.lower()
     search_query = str(phrase).replace(' ', '+')
     unknown_url = f"https://www.google.com/search?q={search_query}"
-    web_open(unknown_url)
+    webbrowser.open(unknown_url)
     speak(text=f"I've opened up a google search for: {phrase}.")
 
 
@@ -2190,20 +1800,32 @@ def face_detection() -> None:
 
 
 def speed_test() -> None:
-    """Initiates speed test and says the ping rate, download and upload speed."""
+    """Initiates speed test and says the ping rate, download and upload speed.
+
+    References:
+        Number of threads per core: https://psutil.readthedocs.io/en/latest/#psutil.cpu_count
+    """
     client_locator = geo_locator.reverse(st.lat_lon, language='en')
     client_location = client_locator.raw['address']
-    city, state = client_location.get('city'), client_location.get('state')
+    city = client_location.get('city') or client_location.get('residential') or \
+        client_location.get('hamlet') or client_location.get('county')
+    state = client_location.get('state')
     isp = st.results.client.get('isp').replace(',', '').replace('.', '')
+    threads_per_core = int(psutil.cpu_count() / psutil.cpu_count(logical=False))
+    upload_thread = Thread(target=st.upload, kwargs={'threads': threads_per_core})
+    download_thread = Thread(target=st.download, kwargs={'threads': threads_per_core})
+    upload_thread.start()
+    download_thread.start()
     speak(text=f"Starting speed test sir! I.S.P: {isp}. Location: {city} {state}", run=True)
-    st.download() and st.upload()
+    upload_thread.join()
+    download_thread.join()
     ping = round(st.results.ping)
     download = support.size_converter(byte_size=st.results.download)
     upload = support.size_converter(byte_size=st.results.upload)
     sys.stdout.write(f'\rPing: {ping}m/s\tDownload: {download}\tUpload: {upload}')
-    speak(text=f'Ping rate: {ping} milli seconds.')
-    speak(text=f'Download speed: {download} per second.')
-    speak(text=F'Upload speed: {upload} per second.')
+    speak(text=f'Ping rate: {ping} milli seconds. '
+               f'Download speed: {download} per second. '
+               f'Upload speed: {upload} per second.')
 
 
 def connector(phrase: str, targets: dict) -> bool:
@@ -2332,8 +1954,9 @@ def lights(phrase: str) -> None:
         phrase: Takes the voice recognized statement as argument.
     """
     phrase = phrase.lower()
-    if not any([smart_devices.get('hallway_ip'), smart_devices.get('kitchen_ip'), smart_devices.get('bedroom_ip')]):
-        no_env_vars()
+    if not any([globals.smart_devices.get('hallway_ip'), globals.smart_devices.get('kitchen_ip'),
+                globals.smart_devices.get('bedroom_ip')]):
+        support.no_env_vars()
         return
 
     if vpn_checker().startswith('VPN'):
@@ -2394,19 +2017,21 @@ def lights(phrase: str) -> None:
         MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness').update_device(**args)
 
     if 'hallway' in phrase:
-        if not (host_ip := smart_devices.get('hallway_ip')):
+        if not (host_ip := globals.smart_devices.get('hallway_ip')):
             light_switch()
             return
     elif 'kitchen' in phrase:
-        if not (host_ip := smart_devices.get('kitchen_ip')):
+        if not (host_ip := globals.smart_devices.get('kitchen_ip')):
             light_switch()
             return
     elif 'bedroom' in phrase:
-        if not (host_ip := smart_devices.get('bedroom_ip')):
+        if not (host_ip := globals.smart_devices.get('bedroom_ip')):
             light_switch()
             return
     else:
-        host_ip = smart_devices.get('hallway_ip') + smart_devices.get('kitchen_ip') + smart_devices.get('bedroom_ip')
+        host_ip = globals.smart_devices.get('hallway_ip') + \
+                  globals.smart_devices.get('kitchen_ip') + \
+                  globals.smart_devices.get('bedroom_ip')  # noqa: E126
 
     lights_count = len(host_ip)
 
@@ -2461,20 +2086,6 @@ def lights(phrase: str) -> None:
     else:
         speak(text=f"I didn't quite get that sir! What do you want me to do to your {plural}?")
         Thread(target=support.unrecognized_dumper, args=[{'LIGHTS': phrase}]).start()
-
-
-def vpn_checker() -> str:
-    """Uses simple check on network id to see if it is connected to local host or not.
-
-    Returns:
-        str:
-        Private IP address of host machine.
-    """
-    ip_address = support.vpn_checker()
-    if ip_address.startswith('VPN'):
-        speak(text="You have your VPN turned on. Details on your screen sir! Please note that none of the home "
-                   "integrations will work with VPN enabled.")
-    return ip_address
 
 
 def time_travel() -> None:
@@ -2533,8 +2144,8 @@ def guard_enable() -> None:
     if cam_source is None:
         cam_error = 'Guarding mode disabled as I was unable to access any of the cameras.'
         logger.error(cam_error)
-        notify(user=gmail_user, password=gmail_pass, number=phone_number, body=cam_error,
-               subject="IMPORTANT::Guardian mode faced an exception.")
+        sms.notify(user=gmail_user, password=gmail_pass, number=phone_number, body=cam_error,
+                   subject="IMPORTANT::Guardian mode faced an exception.")
         return
 
     scale_factor = 1.1  # Parameter specifying how much the image size is reduced at each image scale.
@@ -2587,7 +2198,7 @@ def guard_enable() -> None:
                 "gmail_user": gmail_user,
                 "gmail_pass": gmail_pass,
                 "phone_number": phone_number,
-                "recipient": icloud_user,
+                "recipient": recipient,
                 "date_extn": date_extn
             })).start()
 
@@ -2618,9 +2229,9 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
     try:
         if command:
             os.remove('offline_request') if respond else None
-            called_by_offline['status'] = True
+            globals.called_by_offline['status'] = True
             split(command)
-            called_by_offline['status'] = False
+            globals.called_by_offline['status'] = False
             response = globals.text_spoken.get('text')
         else:
             response = 'Received a null request. Please resend it.'
@@ -2634,7 +2245,7 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
             with open('offline_request', 'w') as off_request:
                 off_request.write(command)
         logger.fatal(f'Received a RuntimeError while executing offline request.\n{format_exc()}')
-        restart(quiet=True, quick=True)
+        revive.restart(quiet=True, quick=True)
 
 
 def meeting_reader() -> None:
@@ -2652,10 +2263,10 @@ def meetings():
     if os.path.isfile('meetings'):
         meeting_reader()
     else:
-        if called_by_offline['status']:
+        if globals.called_by_offline['status']:
             speak(text="Meetings file is not ready yet. Please try again in a minute or two.")
             return False
-        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer, kwds={'logger': logger})
+        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)  # Runs parallely and awaits completion
         speak(text="Please give me a moment sir! Let me check your calendar.", run=True)
         try:
             speak(text=meeting.get(timeout=60), run=True)
@@ -2676,8 +2287,8 @@ def system_vitals() -> None:
                    "Add the root password as an environment variable for me to read.")
         return
 
-    version = hosted_device.get('os_version')
-    model = hosted_device.get('device')
+    version = globals.hosted_device.get('os_version')
+    model = globals.hosted_device.get('device')
 
     cpu_temp, gpu_temp, fan_speed, output = None, None, None, ""
     if version >= 10.14:  # Tested on 10.13, 10.14 and 11.6 versions
@@ -2713,12 +2324,12 @@ def system_vitals() -> None:
         output += fan
         speak(text=fan)
 
-    restart_time = datetime.fromtimestamp(boot_time())
+    restart_time = datetime.fromtimestamp(psutil.boot_time())
     second = (datetime.now() - restart_time).total_seconds()
     restart_time = datetime.strftime(restart_time, "%A, %B %d, at %I:%M %p")
     restart_duration = support.time_converter(seconds=second)
     output += f'Restarted on: {restart_time} - {restart_duration} ago from now.'
-    if called_by_offline['status']:
+    if globals.called_by_offline['status']:
         speak(text=output)
         return
     sys.stdout.write(f'\r{output}')
@@ -2732,8 +2343,8 @@ def system_vitals() -> None:
                   run=True)
             response = listen(timeout=3, phrase_limit=3)
             if any(word in response.lower() for word in keywords.ok):
-                logger.info(f'JARVIS::Restarting {hosted_device.get("device")}')
-                restart(target='PC_Proceed')
+                logger.info(f'JARVIS::Restarting {globals.hosted_device.get("device")}')
+                revive.restart(target='PC_Proceed')
 
 
 def personal_cloud(phrase: str) -> None:
@@ -2742,15 +2353,16 @@ def personal_cloud(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
+    # todo: Get rid of this by making personal cloud a pypi package
     phrase = phrase.lower()
-    pc_object = PersonalCloud()
-    if 'enable' in phrase or 'initiate' in phrase or 'kick off' in phrase or \
-            'start' in phrase:
-        Thread(target=pc_object.enable, args=[icloud_user]).start()
+    if 'enable' in phrase or 'initiate' in phrase or 'kick off' in phrase or 'start' in phrase:
+        Thread(target=pc_handler.enable,
+               kwargs={"target_path": home, "username": gmail_user, "password": gmail_pass,
+                       "phone_number": phone_number, "recipient": recipient}).start()
         speak(text="Personal Cloud has been triggered sir! I will send the login details to your phone number "
                    "once the server is up and running.")
     elif 'disable' in phrase or 'stop' in phrase:
-        Thread(target=pc_object.disable).start()
+        Thread(target=pc_handler.disable, args=[home]).start()
         speak(text=random.choice(conversation.acknowledgement))
     else:
         speak(text="I didn't quite get that sir! Please tell me if I should enable or disable your server.")
@@ -2770,29 +2382,15 @@ def vpn_server(phrase: str) -> None:
     phrase = phrase.lower()
     if 'start' in phrase or 'trigger' in phrase or 'initiate' in phrase or 'enable' in phrase or 'spin up' in phrase:
         Thread(target=support.vpn_server_switch,
-               kwargs={'operation': 'START', 'phone_number': phone_number, 'recipient': icloud_user}).start()
+               kwargs={'operation': 'START', 'phone_number': phone_number, 'recipient': recipient}).start()
         speak(text='VPN Server has been initiated sir! Login details will be sent to you shortly.')
     elif 'stop' in phrase or 'shut' in phrase or 'close' in phrase or 'disable' in phrase:
         Thread(target=support.vpn_server_switch,
-               kwargs={'operation': 'STOP', 'phone_number': phone_number, 'recipient': icloud_user}).start()
+               kwargs={'operation': 'STOP', 'phone_number': phone_number, 'recipient': recipient}).start()
         speak(text='VPN Server will be shutdown sir!')
     else:
         speak(text="I don't understand the request sir! You can ask me to enable or disable the VPN server.")
         Thread(target=support.unrecognized_dumper, args=[{'VPNServer': phrase}])
-
-
-def internet_checker() -> Union[Speedtest, bool]:
-    """Uses speed test api to check for internet connection.
-
-    Returns:
-        ``Speedtest`` or bool:
-        - On success, returns Speedtest module.
-        - On failure, returns boolean False.
-    """
-    try:
-        return Speedtest()
-    except ConfigRetrievalError:
-        return False
 
 
 def morning() -> None:
@@ -3001,7 +2599,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
                 if remind_time == datetime.now().strftime("%I_%M_%p"):
                     Thread(target=reminder_executor, args=[remind_msg]).start()
                     os.remove(f'reminder/{each_reminder}')
-        if STOPPER.get('status'):
+        if globals.STOPPER['status']:
             logger.warning('Exiting automator since the STOPPER flag was set.')
             break
 
@@ -3020,7 +2618,7 @@ def reminder_executor(message: str) -> None:
     Args:
         message: Takes the reminder message as an argument.
     """
-    notify(user=gmail_user, password=gmail_pass, number=phone_number, body=message, subject="REMINDER from Jarvis")
+    sms.notify(user=gmail_user, password=gmail_pass, number=phone_number, body=message, subject="REMINDER from Jarvis")
     os.system(f"""osascript -e 'display notification "{message}" with title "REMINDER from Jarvis"'""")
 
 
@@ -3034,19 +2632,6 @@ def switch_volumes() -> None:
         volume(level=20)
         Thread(target=decrease_brightness).start()
         os.system(locker)
-
-
-def meeting_file_writer() -> None:
-    """Gets return value from ``meetings()`` and writes it to file named ``meetings``.
-
-    This function runs in a dedicated thread every 30 minutes to avoid wait time when meetings information is requested.
-    """
-    if os.path.isfile('meetings') and int(datetime.now().timestamp()) - int(os.stat('meetings').st_mtime) < 1_800:
-        os.remove('meetings')  # removes the file if it is older than 30 minutes
-    data = meetings_gatherer(logger=logger)
-    if data.startswith('You'):
-        with open('meetings', 'w') as gatherer:
-            gatherer.write(data)
 
 
 def car(phrase: str) -> None:
@@ -3063,7 +2648,7 @@ def car(phrase: str) -> None:
     car_pass = os.environ.get('car_pass')
     car_pin = os.environ.get('car_pin')
     if not all([car_email, car_pass, car_pin]):
-        no_env_vars()
+        support.no_env_vars()
         return
 
     disconnected = "I wasn't able to connect your car sir! Please check the logs for more information."
@@ -3078,8 +2663,8 @@ def car(phrase: str) -> None:
             climate = 57
         else:
             climate = int(temperature.k2f(arg=json.loads(urlopen(
-                url=f'https://api.openweathermap.org/data/2.5/onecall?lat={current_lat}&lon={current_lon}&exclude='
-                    f'minutely,hourly&appid={weather_api}'
+                url=f"https://api.openweathermap.org/data/2.5/onecall?lat={globals.current_location_['current_lat']}&"
+                    f"lon={globals.current_location_['current_lon']}&exclude=minutely,hourly&appid={weather_api}"
             ).read())['current']['temp']))
             extras += f'The current temperature is {climate}°F, so '
 
@@ -3087,36 +2672,36 @@ def car(phrase: str) -> None:
         target_temp = 83 if climate < 45 else 57 if climate > 70 else 66
         extras += f"I've configured the climate setting to {target_temp}°F"
 
-        playsound(sound='indicators/exhaust.mp3', block=False) if not called_by_offline['status'] else None
-        if car_name := support.vehicle(car_email=car_email, car_pass=car_pass, car_pin=car_pin,
-                                       operation='START', temp=target_temp - 26):
+        playsound(sound='indicators/exhaust.mp3', block=False) if not globals.called_by_offline['status'] else None
+        if car_name := vehicle(car_email=car_email, car_pass=car_pass, car_pin=car_pin,
+                               operation='START', temp=target_temp - 26):
             speak(text=f'Your {car_name} has been started sir. {extras}')
         else:
             speak(text=disconnected)
     elif 'turn off' in phrase or 'stop' in phrase:
-        playsound(sound='indicators/exhaust.mp3', block=False) if not called_by_offline['status'] else None
-        if car_name := support.vehicle(car_email=car_email, car_pass=car_pass, operation='STOP', car_pin=car_pin):
+        playsound(sound='indicators/exhaust.mp3', block=False) if not globals.called_by_offline['status'] else None
+        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='STOP', car_pin=car_pin):
             speak(text=f'Your {car_name} has been turned off sir!')
         else:
             speak(text=disconnected)
     elif 'secure' in phrase:
-        playsound(sound='indicators/exhaust.mp3', block=False) if not called_by_offline['status'] else None
-        if car_name := support.vehicle(car_email=car_email, car_pass=car_pass, operation='SECURE', car_pin=car_pin):
+        playsound(sound='indicators/exhaust.mp3', block=False) if not globals.called_by_offline['status'] else None
+        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='SECURE', car_pin=car_pin):
             speak(text=f'Guardian mode has been enabled sir! Your {car_name} is now secure.')
         else:
             speak(text=disconnected)
     elif 'unlock' in phrase:
-        if called_by_offline['status']:
+        if globals.called_by_offline['status']:
             speak(text='Cannot unlock the car via offline communicator due to security reasons.')
             return
         playsound(sound='indicators/exhaust.mp3', block=False)
-        if car_name := support.vehicle(car_email=car_email, car_pass=car_pass, operation='UNLOCK', car_pin=car_pin):
+        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='UNLOCK', car_pin=car_pin):
             speak(text=f'Your {car_name} has been unlocked sir!')
         else:
             speak(text=disconnected)
     elif 'lock' in phrase:
-        playsound(sound='indicators/exhaust.mp3', block=False) if not called_by_offline['status'] else None
-        if car_name := support.vehicle(car_email=car_email, car_pass=car_pass, operation='LOCK', car_pin=car_pin):
+        playsound(sound='indicators/exhaust.mp3', block=False) if not globals.called_by_offline['status'] else None
+        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='LOCK', car_pin=car_pin):
             speak(text=f'Your {car_name} has been locked sir!')
         else:
             speak(text=disconnected)
@@ -3198,12 +2783,12 @@ class Activator:
                     initiator(key_original=listen(timeout=timeout, phrase_limit=phrase_limit, sound=False),
                               should_return=True)
                     speak(run=True)
-                elif STOPPER.get('status'):
+                elif globals.STOPPER['status']:
                     self.stop()
-                    restart(quiet=True)
+                    revive.restart(quiet=True)
         except KeyboardInterrupt:
             self.stop()
-            if not called_by_offline['status']:
+            if not globals.called_by_offline['status']:
                 exit_process()
                 support.terminator()
 
@@ -3226,7 +2811,7 @@ class Activator:
 
 def exit_process() -> None:
     """Function that holds the list of operations done upon exit."""
-    STOPPER['status'] = True
+    globals.STOPPER['status'] = True
     logger.info('JARVIS::Stopping Now::STOPPER flag has been set to True')
     reminders = {}
     alarms = support.lock_files(alarm_files=True)
@@ -3294,73 +2879,14 @@ def restart_control(phrase: str):
     """
     phrase = phrase.lower()
     if 'pc' in phrase or 'computer' in phrase or 'imac' in phrase:
-        logger.info(f'JARVIS::Restart for {hosted_device.get("device")} has been requested.')
-        restart(target='PC')
+        logger.info(f'JARVIS::Restart for {globals.hosted_device.get("device")} has been requested.')
+        revive.restart(target='PC')
     else:
         logger.info('JARVIS::Self reboot has been requested.')
         if 'quick' in phrase or 'fast' in phrase:
-            restart(quick=True)
+            revive.restart(quick=True)
         else:
-            restart()
-
-
-def restart(target: str = None, quiet: bool = False, quick: bool = False) -> None:
-    """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
-
-    Notes:
-        - Doing this changes the PID to avoid any Fatal Errors occurred by long-running threads.
-        - restart(PC) will restart the machine after getting confirmation.
-
-    Warnings:
-        - | Restarts the machine without approval when ``uptime`` is more than 2 days as the confirmation is requested
-          | in `system_vitals <https://thevickypedia.github.io/Jarvis/#jarvis.system_vitals>`__.
-        - This is done ONLY when the system vitals are read, and the uptime is more than 2 days.
-
-    Args:
-        target:
-            - ``None``: Restarts Jarvis to reset PID
-            - ``PC``: Restarts the machine after getting confirmation.
-        quiet: If a boolean ``True`` is passed, a silent restart will be performed.
-        quick: If a boolean ``True`` is passed, smart device IPs are stored in ``smart_devices.yaml`` for quick re-use.
-
-    Raises:
-        KeyboardInterrupt: To stop Jarvis' PID.
-    """
-    if target:
-        if called_by_offline['status']:
-            logger.warning(f"ERROR::Cannot restart {hosted_device.get('device')} via offline communicator.")
-            return
-        if target == 'PC':
-            speak(text=f"{random.choice(conversation.confirmation)} restart your {hosted_device.get('device')}?",
-                  run=True)
-            converted = listen(timeout=3, phrase_limit=3)
-        else:
-            converted = 'yes'
-        if any(word in converted.lower() for word in keywords.ok):
-            support.stop_terminal()
-            subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
-            raise KeyboardInterrupt
-        else:
-            speak(text="Machine state is left intact sir!")
-            return
-    STOPPER['status'] = True
-    logger.info('JARVIS::Restarting Now::STOPPER flag has been set.')
-    logger.info(f'Called by {sys._getframe(1).f_code.co_name}')  # noqa
-    sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}\t"
-                     f"Total runtime: {support.time_converter(perf_counter())}")
-    if not quiet:
-        try:
-            if not called_by_offline['status']:
-                speak(text='Restarting now sir! I will be up and running momentarily.', run=True)
-        except RuntimeError:
-            logger.fatal(f'Received a RuntimeError while restarting.\n{format_exc()}')
-    if quick:
-        if not smart_devices.get('SOURCE'):
-            smart_devices.update({'restart': True})  # Set restart flag so the source file will be deleted after restart
-        with open('smart_devices.yaml', 'w') as file:
-            yaml.dump(stream=file, data=smart_devices)
-    os.system('python3 restart.py')
-    exit(1)
+            revive.restart()
 
 
 def shutdown(proceed: bool = False) -> None:
@@ -3421,7 +2947,7 @@ def initiate_background_threads() -> None:
         - automator: Initiates automator that executes certain functions at said time.
         - playsound: Plays a start-up sound.
     """
-    Timer(interval=RESTART_INTERVAL, function=stopper).start()
+    Timer(interval=globals.RESTART_INTERVAL, function=stopper).start()
     Thread(target=support.offline_communicator_initiate,
            kwargs={'offline_host': offline_host, 'offline_port': offline_port, 'home': home}).start()
     Thread(target=automator).start()
@@ -3430,16 +2956,14 @@ def initiate_background_threads() -> None:
 
 def stopper() -> None:
     """Sets the key of ``STOPPER`` flag to True."""
-    STOPPER['status'] = True
+    globals.STOPPER['status'] = True
 
 
 if __name__ == '__main__':
-    hosted_device = support.hosted_device_info()
-    if hosted_device.get('os_name') != 'macOS':
+    globals.hosted_device = support.hosted_device_info()
+    if globals.hosted_device.get('os_name') != 'macOS':
         exit('Unsupported Operating System.\nWindows support was deprecated. '
              'Refer https://github.com/thevickypedia/Jarvis/commit/cf54b69363440d20e21ba406e4972eb058af98fc')
-
-    RESTART_INTERVAL = int(os.environ.get('restart_interval', 28_800))  # 8 hours
 
     logger.info('JARVIS::Starting Now')
 
@@ -3449,11 +2973,11 @@ if __name__ == '__main__':
     home = os.path.expanduser('~')  # gets the path to current user profile
 
     starter()  # initiates crucial functions which needs to be called during start up
-    smart_devices = support.scan_smart_devices()
 
     weather_api = os.environ.get('weather_api')
     gmail_user = os.environ.get('gmail_user')
     gmail_pass = os.environ.get('gmail_pass')
+    recipient = os.environ.get('recipient')
     offline_host = gethostbyname('localhost')
     offline_port = int(os.environ.get('offline_port', 4483))
     icloud_user = os.environ.get('icloud_user')
@@ -3461,7 +2985,7 @@ if __name__ == '__main__':
     phone_number = os.environ.get('phone_number')
 
     if st := internet_checker():
-        sys.stdout.write(f'\rINTERNET::Connected to {support.get_ssid()}. Scanning router for connected devices.')
+        sys.stdout.write(f'\rINTERNET::Connected to {get_ssid()}. Scanning router for connected devices.')
     else:
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
         speak(text="I was unable to connect to the internet sir! Please check your connection settings and retry.",
@@ -3473,28 +2997,10 @@ if __name__ == '__main__':
     # warm_light is initiated with an empty dict and the key status is set to True when requested to switch to yellow
     # greet_check is used in initialize() to greet only for the first run
     # tv is set to an empty dict instead of TV() at the start to avoid turning on the TV unnecessarily
-    tv, warm_light, greet_check, STOPPER = None, {}, {}, {}
-    called_by_offline = {'status': False}
+    tv, warm_light, greet_check = None, {}, {}
 
-    # stores necessary values for geolocation to receive the latitude, longitude and address
-    options.default_ssl_context = create_default_context(cafile=certifi.where())
-    geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
-
-    # checks modified time of location.yaml (if exists) and uses the data only if it was modified less than 72 hours ago
-    if os.path.isfile('location.yaml') and \
-            int(datetime.now().timestamp()) - int(os.stat('location.yaml').st_mtime) < RESTART_INTERVAL + 300:
-        location_details = yaml.load(open('location.yaml'), Loader=yaml.FullLoader)
-        current_lat = location_details['latitude']
-        current_lon = location_details['longitude']
-        location_info = location_details['address']
-        current_tz = location_details['timezone']
-    else:
-        current_lat, current_lon, location_info = location_services(support.device_selector(icloud_user=icloud_user,
-                                                                                            icloud_pass=icloud_pass))
-        with open('location.yaml', 'w') as location_writer:
-            yaml.dump(data={'timezone': TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon),
-                            'latitude': current_lat, 'longitude': current_lon, 'address': location_info},
-                      stream=location_writer, default_flow_style=False)
+    globals.current_location_ = current_location()
+    globals.smart_devices = support.scan_smart_devices()
 
     # {function_name}.has_been_called is used to denote which function has triggered the other
     report.has_been_called, locate_places.has_been_called, directions.has_been_called, google_maps.has_been_called, \
@@ -3502,7 +3008,7 @@ if __name__ == '__main__':
     for functions in [todo, add_todo]:
         functions.has_been_called = False
 
-    sys.stdout.write(f"\rCurrent Process ID: {Process(os.getpid()).pid}\tCurrent Volume: 50%")
+    sys.stdout.write(f"\rCurrent Process ID: {psutil.Process(os.getpid()).pid}\tCurrent Volume: 50%")
 
     initiate_background_threads()
 
