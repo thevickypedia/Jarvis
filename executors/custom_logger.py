@@ -8,23 +8,21 @@ Disables loggers from imported modules, while using the root logger without havi
 """
 
 import logging
+import os
 from datetime import datetime
 from importlib import reload
 from logging.config import dictConfig
-from os import getcwd, makedirs, path
 from time import struct_time, time
 
 from pytz import timezone, utc
 
-dictConfig({
-    'version': 1,
-    'disable_existing_loggers': True,
-})
+if not os.path.isdir('logs'):
+    os.makedirs('logs')
 
-if not path.isdir(f'{getcwd()}/logs'):
-    makedirs(path.join(getcwd(), 'logs'))
+if not os.path.isdir('logs/api'):
+    os.makedirs('logs/api')
 
-log_file = datetime.now().strftime(path.join(getcwd(), 'logs/jarvis_%d-%m-%Y.log'))
+log_file = datetime.now().strftime('logs/jarvis_%d-%m-%Y.log')
 write = ''.join(['*' for _ in range(120)])
 
 with open(log_file, 'a+') as file:
@@ -35,13 +33,16 @@ with open(log_file, 'a+') as file:
         file.write(f"\n{write}\n")
 
 reload(logging)
+dictConfig({
+    'version': 1,
+    'disable_existing_loggers': True,
+})
 logging.basicConfig(
     filename=log_file, filemode='a', level=logging.INFO,
     format='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s',
     datefmt='%b-%d-%Y %I:%M:%S %p'
 )
-
-logger = logging.getLogger('jarvis.py')
+logger = logging.getLogger('jarvis')
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
@@ -118,6 +119,7 @@ class TestLogger:
 
 if __name__ == '__main__':
     import sys
+
     test_logger = TestLogger()
     test_logger.function3()
     test_logger.function4()

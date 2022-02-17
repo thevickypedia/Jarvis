@@ -53,6 +53,7 @@ def offline_compatible() -> list:
                      keywords.meetings,
                      keywords.car,
                      keywords.television,
+                     keywords.automation,
                      conversation.about_me,
                      conversation.capabilities,
                      conversation.form,

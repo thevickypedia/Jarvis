@@ -65,6 +65,7 @@ smart_devices.yaml
 # future work
 temp.py
 test.py
+test_voices.py
 
 # pypi package files
 jarvis_ironman.egg-info

@@ -14,7 +14,7 @@ from imaplib import IMAP4_SSL
 from math import ceil
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
-from socket import gethostbyname
+from pathlib import PurePath
 from string import punctuation
 from threading import Thread, Timer
 from time import perf_counter, sleep, time
@@ -27,7 +27,6 @@ import cv2
 import psutil
 import pvporcupine
 import requests
-from dotenv import load_dotenv
 from geopy.distance import geodesic
 from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
@@ -41,14 +40,16 @@ from PyDictionary import PyDictionary
 from pytz import timezone
 from randfacts import getFact
 from requests.auth import HTTPBasicAuth
-from requests.exceptions import ConnectionError
 from timezonefinder import TimezoneFinder
 from wakeonlan import send_magic_packet as wake
 
 from api.controller import offline_compatible
+from api.server import trigger_api
 from executors import revive, sms
+from executors.automation import automation_handler
 from executors.car import vehicle
 from executors.custom_logger import logger
+from executors.display_functions import brightness, decrease_brightness
 from executors.internet import get_ssid, internet_checker, ip_info, vpn_checker
 from executors.location import current_location, geo_locator, location_services
 from executors.meetings import (meeting_app_launcher, meeting_file_writer,
@@ -59,6 +60,7 @@ from executors.wiki import wikipedia_
 from modules.audio.listener import listen
 from modules.audio.speaker import audio_driver, speak
 from modules.audio.voices import voice_changer, voice_default
+from modules.audio.volume import switch_volumes, volume
 from modules.conditions import conversation, keywords
 from modules.database import database
 from modules.face.facial_recognition import Face
@@ -302,6 +304,9 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     elif any(word in converted_lower for word in keywords.personal_cloud):
         personal_cloud(phrase=converted)
 
+    elif any(word in converted_lower for word in keywords.automation):
+        automation_handler(phrase=converted_lower)
+
     elif any(word in converted_lower for word in conversation.greeting):
         speak(text='I am spectacular. I hope you are doing fine too.')
 
@@ -431,7 +436,7 @@ def weather(phrase: str = None) -> None:
     Args:
         phrase: Takes the phrase as an optional argument.
     """
-    if not weather_api:
+    if not env.weather_api:
         support.no_env_vars()
         return
 
@@ -454,7 +459,7 @@ def weather(phrase: str = None) -> None:
         lat = globals.current_location_['current_lat']
         lon = globals.current_location_['current_lon']
     weather_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,' \
-                  f'hourly&appid={weather_api}'
+                  f'hourly&appid={env.weather_api}'
     response = json.loads(urlopen(weather_url).read())  # loads the response in a json
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
@@ -578,12 +583,12 @@ def news(news_source: str = 'fox') -> None:
     Args:
         news_source: Source from where the news has to be fetched. Defaults to ``fox``.
     """
-    if not (news_api := os.environ.get('news_api')):
+    if not env.news_api:
         support.no_env_vars()
         return
 
     sys.stdout.write(f'\rGetting news from {news_source} news.')
-    news_client = NewsApiClient(api_key=news_api)
+    news_client = NewsApiClient(api_key=env.news_api)
     try:
         all_articles = news_client.get_top_headlines(sources=f'{news_source}-news')
     except newsapi_exception.NewsAPIException:
@@ -671,7 +676,8 @@ def locate(phrase: str, no_repeat: bool = False) -> None:
         no_repeat: A placeholder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
         phrase: Takes the voice recognized statement as argument and extracts device name from it.
     """
-    if not (target_device := support.device_selector(icloud_user=icloud_user, icloud_pass=icloud_pass, phrase=phrase)):
+    if not (target_device := support.device_selector(icloud_user=env.icloud_user, icloud_pass=env.icloud_pass,
+                                                     phrase=phrase)):
         support.no_env_vars()
         return
     sys.stdout.write(f"\rLocating your {target_device}")
@@ -709,12 +715,12 @@ def locate(phrase: str, no_repeat: bool = False) -> None:
                 device_model = stat['deviceDisplayName']
                 phone_name = stat['name']
                 speak(text=f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
-            if icloud_recovery := os.environ.get('icloud_recovery'):
+            if env.icloud_recovery:
                 speak(text="I can also enable lost mode. Would you like to do it?", run=True)
                 phrase_lost = listen(timeout=3, phrase_limit=3)
                 if any(word in phrase_lost.lower() for word in keywords.ok):
                     message = 'Return my phone immediately.'
-                    target_device.lost_device(number=icloud_recovery, text=message)
+                    target_device.lost_device(number=env.icloud_recovery, text=message)
                     speak(text="I've enabled lost mode on your phone.")
                 else:
                     speak(text="No action taken sir!")
@@ -742,14 +748,14 @@ def music(phrase: str = None) -> None:
 
 def gmail() -> None:
     """Reads unread emails from the gmail account for which the credentials are stored in env variables."""
-    if not all([gmail_user, gmail_pass]):
+    if not all([env.gmail_user, env.gmail_pass]):
         support.no_env_vars()
         return
 
     sys.stdout.write("\rFetching unread emails..")
     try:
         mail = IMAP4_SSL('imap.gmail.com')  # connects to imaplib
-        mail.login(gmail_user, gmail_pass)
+        mail.login(env.gmail_user, env.gmail_pass)
         mail.list()
         mail.select('inbox')  # choose inbox
     except TimeoutError as TimeOut:
@@ -1486,12 +1492,10 @@ def github(phrase: str):
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    git_user = os.environ.get('git_user')
-    git_pass = os.environ.get('git_pass')
-    if not all([git_user, git_pass]):
+    if not all([env.git_user, env.git_pass]):
         support.no_env_vars()
         return
-    auth = HTTPBasicAuth(git_user, git_pass)
+    auth = HTTPBasicAuth(env.git_user, env.git_pass)
     response = requests.get('https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
     result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
     for i in range(len(response)):
@@ -1577,7 +1581,7 @@ def send_sms(phrase: str = None) -> None:
             converted = listen(timeout=3, phrase_limit=3)
             if converted != 'SR_ERROR':
                 if any(word in converted.lower() for word in keywords.ok):
-                    sms.notify(user=gmail_user, password=gmail_pass, number=number, body=body)
+                    sms.notify(user=env.gmail_user, password=env.gmail_pass, number=number, body=body)
                     speak(text="Message has been sent sir!")
                 else:
                     speak(text="Message will not be sent sir!")
@@ -1595,8 +1599,7 @@ def television(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
-    tv_client_key = os.environ.get('tv_client_key')
-    if not all([globals.smart_devices.get('tv_ip'), globals.smart_devices.get('tv_mac'), tv_client_key]):
+    if not all([globals.smart_devices.get('tv_ip'), globals.smart_devices.get('tv_mac'), env.tv_client_key]):
         support.no_env_vars()
         return
     global tv
@@ -1630,7 +1633,7 @@ def television(phrase: str) -> None:
 
     if not tv:
         try:
-            tv = TV(ip_address=globals.smart_devices.get('tv_ip'), client_key=tv_client_key)
+            tv = TV(ip_address=globals.smart_devices.get('tv_ip'), client_key=env.tv_client_key)
         except ConnectionResetError as error:
             logger.error(f"Failed to connect to the TV. {error}")
             speak(text="I was unable to connect to the TV sir! It appears to be a connection issue. "
@@ -1727,29 +1730,6 @@ def google_search(phrase: str = None) -> None:
     unknown_url = f"https://www.google.com/search?q={search_query}"
     webbrowser.open(unknown_url)
     speak(text=f"I've opened up a google search for: {phrase}.")
-
-
-def volume(phrase: str = None, level: int = None) -> None:
-    """Controls volume from the numbers received. Defaults to 50%.
-
-    Args:
-        phrase: Takes the phrase spoken as an argument.
-        level: Level of volume to which the system has to set.
-    """
-    if not level:
-        phrase_lower = phrase.lower()
-        if 'mute' in phrase_lower:
-            level = 0
-        elif 'max' in phrase_lower or 'full' in phrase_lower:
-            level = 100
-        else:
-            level = re.findall(r'\b\d+\b', phrase)  # gets integers from string as a list
-            level = int(level[0]) if level else 50  # converted to int for volume
-    support.flush_screen()
-    level = round((8 * level) / 100)
-    os.system(f'osascript -e "set Volume {level}"')
-    if phrase:
-        speak(text=f"{random.choice(conversation.acknowledgement)}!")
 
 
 def face_detection() -> None:
@@ -1896,55 +1876,6 @@ def bluetooth(phrase: str) -> None:
             unpaired = json.loads(unpaired)
             connector(phrase=phrase, targets=unpaired) if unpaired else speak(text='No un-paired devices found sir! '
                                                                                    'You may want to be more precise.')
-
-
-def brightness(phrase: str):
-    """Pre-process to check the phrase received and call the appropriate brightness function as necessary.
-
-    Args:
-        phrase: Takes the phrase spoken as an argument.
-    """
-    phrase = phrase.lower()
-    speak(text=random.choice(conversation.acknowledgement))
-    if 'set' in phrase or re.findall(r'\b\d+\b', phrase):
-        level = re.findall(r'\b\d+\b', phrase)  # gets integers from string as a list
-        if not level:
-            level = ['50']  # pass as list for brightness, as args must be iterable
-        Thread(target=set_brightness, args=level).start()
-    elif 'decrease' in phrase or 'reduce' in phrase or 'lower' in phrase or \
-            'dark' in phrase or 'dim' in phrase:
-        Thread(target=decrease_brightness).start()
-    elif 'increase' in phrase or 'bright' in phrase or 'max' in phrase or \
-            'brighten' in phrase or 'light up' in phrase:
-        Thread(target=increase_brightness).start()
-
-
-def increase_brightness() -> None:
-    """Increases the brightness to maximum in macOS."""
-    for _ in range(32):
-        os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
-
-
-def decrease_brightness() -> None:
-    """Decreases the brightness to bare minimum in macOS."""
-    for _ in range(32):
-        os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
-
-
-def set_brightness(level: int) -> None:
-    """Set brightness to a custom level.
-
-    - | Since Jarvis uses in-built apple script, the only way to achieve this is to set the brightness to absolute
-      | minimum/maximum and increase/decrease the required % from there.
-
-    Args:
-        level: Percentage of brightness to be set.
-    """
-    level = round((32 * int(level)) / 100)
-    for _ in range(32):
-        os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
-    for _ in range(level):
-        os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
 
 
 def lights(phrase: str) -> None:
@@ -2144,7 +2075,7 @@ def guard_enable() -> None:
     if cam_source is None:
         cam_error = 'Guarding mode disabled as I was unable to access any of the cameras.'
         logger.error(cam_error)
-        sms.notify(user=gmail_user, password=gmail_pass, number=phone_number, body=cam_error,
+        sms.notify(user=env.gmail_user, password=env.gmail_pass, number=env.phone_number, body=cam_error,
                    subject="IMPORTANT::Guardian mode faced an exception.")
         return
 
@@ -2193,14 +2124,9 @@ def guard_enable() -> None:
         # if no notification was sent yet or if a phrase or face is detected notification thread will be triggered
         if (not notified or float(time() - notified) > 300) and (converted or date_extn):
             notified = time()
-            Thread(target=support.threat_notify, kwargs=({
-                "converted": converted,
-                "gmail_user": gmail_user,
-                "gmail_pass": gmail_pass,
-                "phone_number": phone_number,
-                "recipient": recipient,
-                "date_extn": date_extn
-            })).start()
+            Thread(target=support.threat_notify, kwargs=({"converted": converted, "phone_number": env.phone_number,
+                                                          "gmail_user": env.gmail_user, "gmail_pass": env.gmail_pass,
+                                                          "recipient": env.recipient, "date_extn": date_extn})).start()
 
 
 def offline_communicator(command: str = None, respond: bool = True) -> None:
@@ -2211,7 +2137,7 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
         respond: Takes the argument to decide whether to create the ``offline_response`` file.
 
     Env Vars:
-        - ``offline_phrase`` - Phrase to authenticate the requests to API. Defaults to ``jarvis``
+        - ``offline_pass`` - Phrase to authenticate the requests to API. Defaults to ``jarvis``
 
     Notes:
         More cool stuff (Done by ``JarvisHelper``):
@@ -2282,7 +2208,7 @@ def system_vitals() -> None:
         - Jarvis will suggest a reboot if the system uptime is more than 2 days.
         - If confirmed, invokes `restart <https://thevickypedia.github.io/Jarvis/#jarvis.restart>`__ function.
     """
-    if not (root_password := os.environ.get('root_password')):
+    if not env.root_password:
         speak(text="You haven't provided a root password for me to read system vitals sir! "
                    "Add the root password as an environment variable for me to read.")
         return
@@ -2293,7 +2219,7 @@ def system_vitals() -> None:
     cpu_temp, gpu_temp, fan_speed, output = None, None, None, ""
     if version >= 10.14:  # Tested on 10.13, 10.14 and 11.6 versions
         critical_info = [each.strip() for each in (os.popen(
-            f'echo {root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
+            f'echo {env.root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
         )).read().split('\n') if each != '']
         support.flush_screen()
 
@@ -2306,8 +2232,8 @@ def system_vitals() -> None:
                 fan_speed = info.strip('Fan: ').replace(' rpm', '').strip()
     else:
         fan_speed = subprocess.check_output(
-            f'echo {root_password} | sudo -S spindump 1 1 -file /tmp/spindump.txt > /dev/null 2>&1;grep "Fan speed" '
-            '/tmp/spindump.txt;sudo rm /tmp/spindump.txt', shell=True
+            f'echo {env.root_password} | sudo -S spindump 1 1 -file /tmp/spindump.txt > /dev/null 2>&1;grep '
+            f'"Fan speed" /tmp/spindump.txt;sudo rm /tmp/spindump.txt', shell=True
         ).decode('utf-8')
 
     if cpu_temp:
@@ -2357,8 +2283,8 @@ def personal_cloud(phrase: str) -> None:
     phrase = phrase.lower()
     if 'enable' in phrase or 'initiate' in phrase or 'kick off' in phrase or 'start' in phrase:
         Thread(target=pc_handler.enable,
-               kwargs={"target_path": home, "username": gmail_user, "password": gmail_pass,
-                       "phone_number": phone_number, "recipient": recipient}).start()
+               kwargs={"target_path": home, "username": env.gmail_user, "password": env.gmail_pass,
+                       "phone_number": env.phone_number, "recipient": env.recipient}).start()
         speak(text="Personal Cloud has been triggered sir! I will send the login details to your phone number "
                    "once the server is up and running.")
     elif 'disable' in phrase or 'stop' in phrase:
@@ -2382,27 +2308,15 @@ def vpn_server(phrase: str) -> None:
     phrase = phrase.lower()
     if 'start' in phrase or 'trigger' in phrase or 'initiate' in phrase or 'enable' in phrase or 'spin up' in phrase:
         Thread(target=support.vpn_server_switch,
-               kwargs={'operation': 'START', 'phone_number': phone_number, 'recipient': recipient}).start()
+               kwargs={'operation': 'START', 'phone_number': env.phone_number, 'recipient': env.recipient}).start()
         speak(text='VPN Server has been initiated sir! Login details will be sent to you shortly.')
     elif 'stop' in phrase or 'shut' in phrase or 'close' in phrase or 'disable' in phrase:
         Thread(target=support.vpn_server_switch,
-               kwargs={'operation': 'STOP', 'phone_number': phone_number, 'recipient': recipient}).start()
+               kwargs={'operation': 'STOP', 'phone_number': env.phone_number, 'recipient': env.recipient}).start()
         speak(text='VPN Server will be shutdown sir!')
     else:
         speak(text="I don't understand the request sir! You can ask me to enable or disable the VPN server.")
         Thread(target=support.unrecognized_dumper, args=[{'VPNServer': phrase}])
-
-
-def morning() -> None:
-    """Checks for the current time of the day and day of the week to trigger a series of morning messages."""
-    if datetime.now().strftime('%A') not in ['Saturday', 'Sunday'] and int(datetime.now().second) < 10:
-        speak(text="Good Morning. It's 7 AM.")
-        time_travel.has_been_called = True
-        weather()
-        time_travel.has_been_called = False
-        volume(level=100)
-        speak(run=True)
-        volume(level=50)
 
 
 def initiator(key_original: str, should_return: bool = False) -> None:
@@ -2467,11 +2381,11 @@ def on_demand_offline_automation(task: str) -> bool:
     }
 
     data = {
-        'phrase': os.environ.get('offline_phrase', 'jarvis'),
+        'phrase': env.offline_pass,
         'command': task
     }
 
-    offline_endpoint = f"http://{offline_host}:{offline_port}/offline-communicator"
+    offline_endpoint = f"http://{env.offline_host}:{env.offline_port}/offline-communicator"
     try:
         response = requests.post(url=offline_endpoint, headers=headers, data=json.dumps(data))
     except ConnectionError:
@@ -2618,20 +2532,9 @@ def reminder_executor(message: str) -> None:
     Args:
         message: Takes the reminder message as an argument.
     """
-    sms.notify(user=gmail_user, password=gmail_pass, number=phone_number, body=message, subject="REMINDER from Jarvis")
+    sms.notify(user=env.gmail_user, password=env.gmail_pass, number=env.phone_number, body=message,
+               subject="REMINDER from Jarvis")
     os.system(f"""osascript -e 'display notification "{message}" with title "REMINDER from Jarvis"'""")
-
-
-def switch_volumes() -> None:
-    """Automatically puts the Mac on sleep and sets the volume to 25% at 9 PM and 50% at 6 AM."""
-    hour = int(datetime.now().strftime('%H'))
-    locker = """osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'"""
-    if 20 >= hour >= 7:
-        volume(level=50)
-    elif hour >= 21 or hour <= 6:
-        volume(level=20)
-        Thread(target=decrease_brightness).start()
-        os.system(locker)
 
 
 def car(phrase: str) -> None:
@@ -2644,10 +2547,7 @@ def car(phrase: str) -> None:
         API climate controls: 31 is LO, 57 is HOT
         Car Climate controls: 58 is LO, 84 is HOT
     """
-    car_email = os.environ.get('car_email')
-    car_pass = os.environ.get('car_pass')
-    car_pin = os.environ.get('car_pin')
-    if not all([car_email, car_pass, car_pin]):
+    if not all([env.car_email, env.car_pass, env.car_pin]):
         support.no_env_vars()
         return
 
@@ -2664,7 +2564,7 @@ def car(phrase: str) -> None:
         else:
             climate = int(temperature.k2f(arg=json.loads(urlopen(
                 url=f"https://api.openweathermap.org/data/2.5/onecall?lat={globals.current_location_['current_lat']}&"
-                    f"lon={globals.current_location_['current_lon']}&exclude=minutely,hourly&appid={weather_api}"
+                    f"lon={globals.current_location_['current_lon']}&exclude=minutely,hourly&appid={env.weather_api}"
             ).read())['current']['temp']))
             extras += f'The current temperature is {climate}°F, so '
 
@@ -2673,20 +2573,20 @@ def car(phrase: str) -> None:
         extras += f"I've configured the climate setting to {target_temp}°F"
 
         playsound(sound='indicators/exhaust.mp3', block=False) if not globals.called_by_offline['status'] else None
-        if car_name := vehicle(car_email=car_email, car_pass=car_pass, car_pin=car_pin,
+        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, car_pin=env.car_pin,
                                operation='START', temp=target_temp - 26):
             speak(text=f'Your {car_name} has been started sir. {extras}')
         else:
             speak(text=disconnected)
     elif 'turn off' in phrase or 'stop' in phrase:
         playsound(sound='indicators/exhaust.mp3', block=False) if not globals.called_by_offline['status'] else None
-        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='STOP', car_pin=car_pin):
+        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation='STOP', car_pin=env.car_pin):
             speak(text=f'Your {car_name} has been turned off sir!')
         else:
             speak(text=disconnected)
     elif 'secure' in phrase:
         playsound(sound='indicators/exhaust.mp3', block=False) if not globals.called_by_offline['status'] else None
-        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='SECURE', car_pin=car_pin):
+        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation='SECURE', car_pin=env.car_pin):
             speak(text=f'Guardian mode has been enabled sir! Your {car_name} is now secure.')
         else:
             speak(text=disconnected)
@@ -2695,13 +2595,13 @@ def car(phrase: str) -> None:
             speak(text='Cannot unlock the car via offline communicator due to security reasons.')
             return
         playsound(sound='indicators/exhaust.mp3', block=False)
-        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='UNLOCK', car_pin=car_pin):
+        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation='UNLOCK', car_pin=env.car_pin):
             speak(text=f'Your {car_name} has been unlocked sir!')
         else:
             speak(text=disconnected)
     elif 'lock' in phrase:
         playsound(sound='indicators/exhaust.mp3', block=False) if not globals.called_by_offline['status'] else None
-        if car_name := vehicle(car_email=car_email, car_pass=car_pass, operation='LOCK', car_pin=car_pin):
+        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation='LOCK', car_pin=env.car_pin):
             speak(text=f'Your {car_name} has been locked sir!')
         else:
             speak(text=disconnected)
@@ -2736,9 +2636,8 @@ class Activator:
         References:
             - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
         """
-        sensitivity = float(os.environ.get('sensitivity', 0.5))
-        logger.info(f'Initiating model with sensitivity: {sensitivity}')
-        keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in ['jarvis']]
+        logger.info(f'Initiating model with sensitivity: {env.sensitivity}')
+        keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in [PurePath(__file__).stem]]
         self.input_device_index = input_device_index
 
         self.py_audio = PyAudio()
@@ -2746,7 +2645,7 @@ class Activator:
             library_path=pvporcupine.LIBRARY_PATH,
             model_path=pvporcupine.MODEL_PATH,
             keyword_paths=keyword_paths,
-            sensitivities=[sensitivity]
+            sensitivities=[env.sensitivity]
         )
         self.audio_stream = None
 
@@ -2768,8 +2667,6 @@ class Activator:
 
     def start(self) -> None:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
-        timeout = int(os.environ.get('timeout', 3))
-        phrase_limit = int(os.environ.get('phrase_limit', 3))
         try:
             while True:
                 sys.stdout.write('\rSentry Mode')
@@ -2780,7 +2677,7 @@ class Activator:
                 if self.detector.process(pcm=pcm) >= 0:
                     self.close_stream()
                     playsound(sound='indicators/acknowledgement.mp3', block=False)
-                    initiator(key_original=listen(timeout=timeout, phrase_limit=phrase_limit, sound=False),
+                    initiator(key_original=listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
                               should_return=True)
                     speak(run=True)
                 elif globals.STOPPER['status']:
@@ -2934,22 +2831,21 @@ def starter() -> None:
     clear_logs()
     meeting_app_launcher()
 
-    if os.path.isfile('.env'):
-        logger.info('Loading .env file.')
-        load_dotenv(dotenv_path='.env', verbose=True, override=True)  # loads the .env file
-
 
 def initiate_background_threads() -> None:
     """Initiate background threads.
 
     Methods
-        - offline_communicator_initiate: Initiates ngrok tunnel and Jarvis API.
+        - stopper: Initiates stopper to restart after a set time using ``threading.Timer``
+        - initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
+        - trigger_api: Initiates Jarvis API using uvicorn server in a thread.
         - automator: Initiates automator that executes certain functions at said time.
         - playsound: Plays a start-up sound.
     """
-    Timer(interval=globals.RESTART_INTERVAL, function=stopper).start()
-    Thread(target=support.offline_communicator_initiate,
-           kwargs={'offline_host': offline_host, 'offline_port': offline_port, 'home': home}).start()
+    Timer(interval=env.restart_interval, function=stopper).start()
+    Thread(target=support.initiate_tunneling,
+           kwargs={'offline_host': env.offline_host, 'offline_port': env.offline_port, 'home': home}).start()
+    trigger_api()
     Thread(target=automator).start()
     playsound(sound='indicators/initialize.mp3', block=False)
 
@@ -2960,6 +2856,7 @@ def stopper() -> None:
 
 
 if __name__ == '__main__':
+    env = globals.ENV
     globals.hosted_device = support.hosted_device_info()
     if globals.hosted_device.get('os_name') != 'macOS':
         exit('Unsupported Operating System.\nWindows support was deprecated. '
@@ -2973,16 +2870,6 @@ if __name__ == '__main__':
     home = os.path.expanduser('~')  # gets the path to current user profile
 
     starter()  # initiates crucial functions which needs to be called during start up
-
-    weather_api = os.environ.get('weather_api')
-    gmail_user = os.environ.get('gmail_user')
-    gmail_pass = os.environ.get('gmail_pass')
-    recipient = os.environ.get('recipient')
-    offline_host = gethostbyname('localhost')
-    offline_port = int(os.environ.get('offline_port', 4483))
-    icloud_user = os.environ.get('icloud_user')
-    icloud_pass = os.environ.get('icloud_pass')
-    phone_number = os.environ.get('phone_number')
 
     if st := internet_checker():
         sys.stdout.write(f'\rINTERNET::Connected to {get_ssid()}. Scanning router for connected devices.')

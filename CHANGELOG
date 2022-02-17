@@ -1,6 +1,20 @@
 Change Log
 ==========
 
+5.5.4 (02/16/2022)
+------------------
+- Create an `APIServer` to override `uvicorn.Server`
+- Handle install signal handlers to run uvicorn server in a thread
+- Kill PID listening on offline port if un-reachable
+- Set up an option to enable and disable the automation execution
+- Add automation controller to offline communication compatible
+- Reload logging module since there are multiple loggers
+- Split off tasks with display to its own executors
+- Remove endpoint filters for logging in API
+- Load all env vars in a class within globals.py
+- Add a pytest file for basic server config
+- Update requirements.txt, README.md, .gitignore, and docs
+
 5.5.3 (02/13/2022)
 ------------------
 - Remove ambient noise suppression

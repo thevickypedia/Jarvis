@@ -28,13 +28,6 @@ API Handler
    :members:
    :undoc-members:
 
-API CronTab
-===========
-
-.. automodule:: api.cron
-   :members:
-   :undoc-members:
-
 API Controller
 ==============
 
@@ -42,12 +35,22 @@ API Controller
    :members:
    :undoc-members:
 
-API Log Filters
-===============
+API Server
+==========
 
-.. autoclass:: api.filters.EndpointFilter(logging.Filter)
+.. automodule:: api.server
    :members:
    :undoc-members:
+
+API CronTab
+===========
+
+.. automodule:: api.cron
+   :members:
+   :undoc-members:
+
+API Log Filters
+===============
 
 .. autoclass:: api.filters.InvestmentFilter(logging.Filter)
    :members:
@@ -88,6 +91,13 @@ API Robinhood Helper
 
 ----------Executors----------
 =============================
+Automation
+==========
+
+.. automodule:: executors.automation
+   :members:
+   :undoc-members:
+
 Car
 ===
 
@@ -99,6 +109,13 @@ Logger
 ======
 
 .. automodule:: executors.custom_logger
+   :members:
+   :undoc-members:
+
+DisplayFunctions
+================
+
+.. automodule:: executors.display_functions
    :members:
    :undoc-members:
 

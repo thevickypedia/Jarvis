@@ -1,4 +1,3 @@
-import os
 import re
 import sys
 import webbrowser
@@ -14,6 +13,8 @@ from search_engine_parser.core.exceptions import NoResultsOrTrafficError
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.utils import globals
+
+env = globals.ENV
 
 
 def alpha(text: str) -> bool:
@@ -32,9 +33,9 @@ def alpha(text: str) -> bool:
     References:
         `Error 1000 <https://products.wolframalpha.com/show-steps-api/documentation/#:~:text=(Error%201000)>`__
     """
-    if not (think_id := os.environ.get('think_id')):
+    if not env.wolfram_api_key:
         return False
-    alpha_client = wolframalpha.Client(app_id=think_id)
+    alpha_client = wolframalpha.Client(app_id=env.wolfram_api_key)
     try:
         res = alpha_client.query(text)
     except Exception:  # noqa
@@ -133,11 +134,11 @@ def google_maps(query: str) -> bool:
         bool:
         Boolean True if Google's maps API is unable to fetch consumable results.
     """
-    if not (maps_api := os.environ.get('maps_api')):
+    if not env.maps_api:
         return False
 
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
-    response = requests.get(maps_url + 'query=' + query + '&key=' + maps_api)
+    response = requests.get(maps_url + 'query=' + query + '&key=' + env.maps_api)
     collection = response.json()['results']
     required = []
     for element in range(len(collection)):
@@ -183,8 +184,7 @@ def google_maps(query: str) -> bool:
             next_val = 'How about that?'
         speaker.speak(text=f"The {option}, {item['Name']}, with {item['Rating']} rating, "
                            f"on{''.join([j for j in item['Address'] if not j.isdigit()])}, which is approximately "
-                           f"{miles} away.")
-        speaker.speak(text=f"{next_val}", run=True)
+                           f"{miles} away. {next_val}", run=True)
         sys.stdout.write(f"\r{item['Name']} -- {item['Rating']} -- "
                          f"{''.join([j for j in item['Address'] if not j.isdigit()])}")
         converted = listener.listen(timeout=3, phrase_limit=3)

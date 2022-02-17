@@ -17,12 +17,22 @@ repos:
       -
         id: isort
 
+  - repo: local
+    hooks:
+      -
+        id: pytest
+        name: pytest
+        entry: cd tests pytest
+        language: system
+        pass_filenames: false
+        always_run: true
+
   -
     repo: local
     hooks:
       -
-        id: build_docs
-        name: build_html
+        id: docs
+        name: docs
         entry: /bin/bash gen_docs.sh
         language: system
         pass_filenames: false

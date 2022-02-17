@@ -109,6 +109,8 @@ personal_cloud = ['personal cloud', 'private cloud', 'personal server', 'private
 
 car = ['car', 'vehicle']
 
+automation = ['automation']
+
 ok = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
 
 restart_control = ['restart', 'reboot']

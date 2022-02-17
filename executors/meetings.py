@@ -4,8 +4,11 @@ from datetime import datetime
 from subprocess import PIPE, Popen
 
 from executors.custom_logger import logger
+from modules.utils import globals
 
-MEETING_FILE = f"{os.environ.get('meeting_app', 'calendar')}.scpt"
+env = globals.ENV
+
+MEETING_FILE = f"{env.meeting_app}.scpt"
 
 
 def meeting_file_writer() -> None:
