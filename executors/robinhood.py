@@ -1,13 +1,14 @@
 """Initiates robinhood client to get the portfolio details."""
 
 import math
-import os
 import sys
 
 from pyrh import Robinhood
 
 from modules.audio import speaker
-from modules.utils import support
+from modules.utils import globals, support
+
+env = globals.ENV
 
 
 def watcher(rh, result: list) -> str:
@@ -60,17 +61,13 @@ def watcher(rh, result: list) -> str:
 
 def robinhood() -> None:
     """Gets investment details from robinhood API."""
-    robinhood_user = os.environ.get('robinhood_user')
-    robinhood_pass = os.environ.get('robinhood_pass')
-    robinhood_qr = os.environ.get('robinhood_qr')
-
-    if not all([robinhood_user, robinhood_pass, robinhood_qr]):
+    if not all([env.robinhood_user, env.robinhood_pass, env.robinhood_qr]):
         support.no_env_vars()
         return
 
     sys.stdout.write('\rGetting your investment details.')
     rh = Robinhood()
-    rh.login(username=robinhood_user, password=robinhood_pass, qr_code=robinhood_qr)
+    rh.login(username=env.robinhood_user, password=env.robinhood_pass, qr_code=env.robinhood_qr)
     raw_result = rh.positions()
     result = raw_result['results']
     stock_value = watcher(rh, result)

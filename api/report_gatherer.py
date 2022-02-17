@@ -8,6 +8,11 @@ import jinja2
 import requests
 from pyrh import Robinhood
 
+try:
+    from api.rh_helper import CustomTemplate
+except ModuleNotFoundError:
+    from rh_helper import CustomTemplate
+
 
 def market_status() -> bool:
     """Checks if the stock market is open today.
@@ -178,11 +183,10 @@ class Investment:
         s2 = s2.replace('\n', '\n\t\t\t')
         s1 = s1.replace('\n', '\n\t\t\t')
 
-        from rh_helper import CustomTemplate
         template = CustomTemplate.source.strip()
         rendered = jinja2.Template(template).render(TITLE=title, SUMMARY=web_text, PROFIT=profit_web, LOSS=loss_web,
                                                     WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)
-        with open('robinhood.html', 'w') as static_file:
+        with open('api/robinhood.html', 'w') as static_file:
             static_file.write(rendered)
 
         self.logger.info(f'Static file generated in {round(float(perf_counter()), 2)}s')
@@ -190,18 +194,18 @@ class Investment:
 
 if __name__ == '__main__':
     from dotenv import load_dotenv
-    from models import LogConfig
+    from models import CronConfig
 
-    config.dictConfig(LogConfig().dict())
+    config.dictConfig(CronConfig().dict())
 
     if not os.path.isdir('logs'):
         os.system('mkdir logs')
 
-    if os.path.isfile('../.env'):
-        load_dotenv(dotenv_path='../.env')
+    if os.path.isfile('.env'):
+        load_dotenv(dotenv_path='.env')
 
     Investment(logger=getLogger('investment')).report_gatherer()
 
-    with open(LogConfig().FILE_LOG, 'a') as file:
+    with open(CronConfig().FILE_LOG, 'a') as file:
         file.seek(0)
         file.write('\n')

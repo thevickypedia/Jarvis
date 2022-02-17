@@ -5,7 +5,6 @@
 
 """
 
-import json
 import math
 import os
 import re
@@ -16,9 +15,8 @@ from datetime import datetime
 from difflib import SequenceMatcher
 from platform import platform
 from resource import RUSAGE_SELF, getrusage
-from socket import AF_INET, SOCK_DGRAM, gethostname, socket
+from socket import gethostname
 from typing import Union
-from urllib.request import urlopen
 
 import yaml
 from appscript import app as apple_script
@@ -34,6 +32,8 @@ from executors.sms import notify
 from modules.audio import speaker
 from modules.netgear.ip_scanner import LocalIPScan
 from modules.utils import globals
+
+env = globals.ENV
 
 
 def flush_screen():
@@ -80,44 +80,34 @@ def threat_notify(converted: str, date_extn: Union[str, None], gmail_user: str, 
             logger.error(f"Email dispatch failed with response: {response_.body}\n")
 
 
-def offline_communicator_initiate(offline_host: str, offline_port: int, home: str) -> None:
-    """Initiates Jarvis API and Ngrok for requests from external sources if they aren't running already.
+def initiate_tunneling(offline_host: str, offline_port: int, home: str) -> None:
+    """Initiates Ngrok to tunnel requests from external sources if they aren't running already.
 
     Notes:
         - ``forever_ngrok.py`` is a simple script that triggers ngrok connection in the port ``4483``.
         - The connection is tunneled through a public facing URL used to make ``POST`` requests to Jarvis API.
-        - ``uvicorn`` command launches JarvisAPI ``fast.py`` using the same port ``4483``
     """
-    ngrok_status, api_status = False, False
-    targets = ['forever_ngrok.py', 'fast.py']
-    for target_script in targets:
-        pid_check = subprocess.check_output(f"ps -ef | grep {target_script}", shell=True)
-        pid_list = pid_check.decode('utf-8').split('\n')
-        for id_ in pid_list:
-            if id_ and 'grep' not in id_ and '/bin/sh' not in id_:
-                if target_script == 'forever_ngrok.py':
-                    ngrok_status = True
-                    logger.info('An instance of ngrok connection for offline communicator is running already.')
-                elif target_script == 'fast.py':
-                    api_status = True
-                    logger.info('An instance of Jarvis API for offline communicator is running already.')
-
+    ngrok_status = False
+    target_script = 'forever_ngrok.py'
     activator = 'source venv/bin/activate'
+
+    pid_check = subprocess.check_output(f"ps -ef | grep {target_script}", shell=True)
+    pid_list = pid_check.decode('utf-8').split('\n')
+    for id_ in pid_list:
+        if id_ and 'grep' not in id_ and '/bin/sh' not in id_:
+            if target_script == 'forever_ngrok.py':
+                ngrok_status = True
+                logger.info('An instance of ngrok connection for offline communicator is running already.')
     if not ngrok_status:
         if os.path.exists(f"{home}/JarvisHelper"):
             logger.info('Initiating ngrok connection for offline communicator.')
-            initiate = f'cd {home}/JarvisHelper && {activator} && export port={offline_port} && python {targets[0]}'
+            initiate = f'cd {home}/JarvisHelper && {activator} && export port={offline_port} && python {target_script}'
             apple_script('Terminal').do_script(initiate)
         else:
             logger.error(f'JarvisHelper is not available to trigger an ngrok tunneling through {offline_port}')
             endpoint = rf'http:\\{offline_host}:{offline_port}'
             logger.error(f'However offline communicator can still be accessed via '
                          f'{endpoint}\\offline-communicator for API calls and {endpoint}\\docs for docs.')
-
-    if not api_status:
-        logger.info('Initiating FastAPI for offline listener.')
-        offline_script = f'cd {os.getcwd()} && {activator} && cd api && python {targets[1]}'
-        apple_script('Terminal').do_script(offline_script)
 
 
 def celebrate() -> str:
@@ -355,25 +345,6 @@ def remove_files() -> None:
     os.remove('meetings') if os.path.isfile('meetings') else None
 
 
-def vpn_checker() -> str:
-    """Uses simple check on network id to see if it is connected to local host or not.
-
-    Returns:
-        str:
-        Private IP address of host machine.
-    """
-    socket_ = socket(AF_INET, SOCK_DGRAM)
-    socket_.connect(("8.8.8.8", 80))
-    ip_address = socket_.getsockname()[0]
-    socket_.close()
-    if not (ip_address.startswith('192') | ip_address.startswith('127')):
-        ip_address = 'VPN:' + ip_address
-        info = json.load(urlopen('https://ipinfo.io/json'))
-        sys.stdout.write(f"\rVPN connection is detected to {info.get('ip')} at {info.get('city')}, "
-                         f"{info.get('region')} maintained by {info.get('org')}")
-    return ip_address
-
-
 def device_selector(icloud_user: str, icloud_pass: str, phrase: str = None) -> Union[AppleDevice, None]:
     """Selects a device using the received input string.
 
@@ -398,7 +369,8 @@ def device_selector(icloud_user: str, icloud_pass: str, phrase: str = None) -> U
         devices_str = [{str(device).split(':')[0].strip(): str(device).split(':')[1].strip()} for device in devices]
         closest_match = [
             (SequenceMatcher(a=phrase, b=key).ratio() + SequenceMatcher(a=phrase, b=val).ratio()) / 2
-            for device in devices_str for key, val in device.items()]
+            for device in devices_str for key, val in device.items()
+        ]
         index = closest_match.index(max(closest_match))
         target_device = icloud_api.devices[index]
     else:
@@ -487,8 +459,8 @@ def vpn_server_switch(operation: str, phone_number: str, recipient: str) -> None
     """
     vpn_object = VPNServer(vpn_username=os.environ.get('vpn_username', os.environ.get('USER', 'openvpn')),
                            vpn_password=os.environ.get('vpn_password', 'aws_vpn_2021'), log='FILE',
-                           gmail_user=os.environ.get('offline_user', os.environ.get('gmail_user')),
-                           gmail_pass=os.environ.get('offline_pass', os.environ.get('gmail_pass')),
+                           gmail_user=os.environ.get('alt_gmail_user', os.environ.get('gmail_user')),
+                           gmail_pass=os.environ.get('alt_gmail_pass', os.environ.get('gmail_pass')),
                            phone=phone_number, recipient=recipient)
     if operation == 'START':
         globals.vpn_status['active'] = 'enabled'

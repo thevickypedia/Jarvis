@@ -1,4 +1,3 @@
-import os
 from typing import Union
 from urllib.error import HTTPError
 
@@ -39,6 +38,6 @@ def vehicle(car_email, car_pass, car_pin, operation: str, temp: int = None) -> U
             handler.remote_engine_stop(pin=car_pin)
         elif operation == 'SECURE':
             handler.enable_guardian_mode(pin=car_pin)
-        return os.environ.get('car_name', handler.get_attributes().get('vehicleBrand', 'car'))
+        return handler.get_attributes().get('vehicleBrand', 'car')
     except HTTPError as error:
         logger.error(error)

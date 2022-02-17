@@ -19,13 +19,12 @@ from executors import custom_logger, internet, revive
 from modules.audio import speaker
 from modules.utils import globals, support
 
-icloud_user = os.environ.get('icloud_user')
-icloud_pass = os.environ.get('icloud_pass')
 # stores necessary values for geolocation to receive the latitude, longitude and address
 options.default_ssl_context = create_default_context(cafile=certifi.where())
 geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
 
 st = internet.internet_checker()
+env = globals.ENV
 
 
 def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, str or float, str]]:
@@ -45,7 +44,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
     try:
         # tries with icloud api to get your device's location for precise location services
         if not device:
-            if not (device := support.device_selector(icloud_user=icloud_user, icloud_pass=icloud_pass)):
+            if not (device := support.device_selector(icloud_user=env.icloud_user, icloud_pass=env.icloud_pass)):
                 raise PyiCloudFailedLoginException
         raw_location = device.location()
         if not raw_location and sys._getframe(1).f_code.co_name == 'locate':  # noqa
@@ -53,8 +52,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
         elif not raw_location:
             raise PyiCloudAPIResponseException(reason=f'Unable to retrieve location for {device}')
         else:
-            current_lat_ = raw_location['latitude']
-            current_lon_ = raw_location['longitude']
+            current_lat_, current_lon_ = raw_location['latitude'], raw_location['longitude']
         os.remove('pyicloud_error') if os.path.isfile('pyicloud_error') else None
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException) as error:
         if device:
@@ -101,7 +99,7 @@ def current_location():
         Checks modified time of location.yaml (if exists) and uses the data only if it was modified less than 72 hours.
     """
     if os.path.isfile('location.yaml') and \
-            int(datetime.now().timestamp()) - int(os.stat('location.yaml').st_mtime) < globals.RESTART_INTERVAL + 300:
+            int(datetime.now().timestamp()) - int(os.stat('location.yaml').st_mtime) < env.restart_interval + 300:
         location_details = yaml.load(open('location.yaml'), Loader=yaml.FullLoader)
         return {
             'current_lat': location_details['latitude'],
@@ -110,8 +108,9 @@ def current_location():
             'current_tz': location_details['timezone']
         }
     else:
-        current_lat, current_lon, location_info = location_services(support.device_selector(icloud_user=icloud_user,
-                                                                                            icloud_pass=icloud_pass))
+        current_lat, current_lon, location_info = location_services(
+            support.device_selector(icloud_user=env.icloud_user, icloud_pass=env.icloud_pass)
+        )
         current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
         with open('location.yaml', 'w') as location_writer:
             yaml.dump(data={'timezone': current_tz,

@@ -93,7 +93,7 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 **Default args**
 **[Offline communicator helper](https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator):**
 - **offline_port** - Port number to initiate offline communicator on. Defaults to `4483`
-- **offline_phrase** - Secure phrase to be used for authentication purpose. Defaults to `jarvis`
+- **offline_pass** - Secure phrase to be used for authentication purpose. Defaults to `jarvis`
 
 **Accurate Location: (Defaults to the location based on `Public IP`)**
 - **icloud_user** - iCloud account username.
@@ -107,17 +107,17 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 - **maps_api** - API Key for maps from [google](https://developers.google.com/maps/documentation/maps-static/get-api-key)
 - **gmail_user** - Gmail account username to send and read emails.
 - **gmail_pass** - Gmail account password to send and read emails.
-- **offline_user** - Alternate gmail account username to send an SMS. (`gmail_user` can be re-used)
-- **offline_pass** - Alternate gmail account password to send an SMS. (`gmail_pass` can be re-used)
+- **alt_gmail_user** - Alternate gmail account username to send an SMS. (`gmail_user` can be re-used)
+- **alt_gmail_pass** - Alternate gmail account password to send an SMS. (`gmail_pass` can be re-used)
 - **robinhood_user** - Robinhood account username.
 - **robinhood_pass** - Robinhood account password.
 - **robinhood_qr** - Robinhood login [QR code](https://robinhood.com/account/settings)
 - **birthday** - Birth date in the format DD-MM - Example: `24-April`
 - **icloud_recovery** - Recovery phone number to activate lost mode on a target device - Example: `+11234567890`
 - **phone_number** - To send SMS from Jarvis - Example: `+11234567890`
-- **think_id** - API Key from wolfram alpha.
 - **root_password** - System password for your `mac` to get the system vitals.
 - **meeting_app** - Application where the meetings are listed. Can either be `calendar` or `outlook`
+- **wolfram_api_key** - API Key from wolfram alpha.
 
 **Args for [PersonalCloud](https://github.com/thevickypedia/personal_cloud) integration**
 - **personal_cloud_host** - Directory path which has to shared through the internet.

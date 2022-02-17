@@ -3,6 +3,8 @@ from os import environ, getcwd
 
 from crontab import CronTab
 
+from api.rh_helper import MarketHours
+
 
 class CronScheduler:
     """Initiates CronScheduler object to check for existing schedule and add if not.
@@ -10,6 +12,8 @@ class CronScheduler:
     >>> CronScheduler
 
     """
+
+    COMMAND = f"cd {getcwd()} && source venv/bin/activate && python api/report_gatherer.py && deactivate"
 
     def __init__(self, logger):
         """Instantiates ``CronTab`` object and ``Logger`` class.
@@ -31,23 +35,26 @@ class CronScheduler:
             self.logger.warning(f"No crontab was found for {environ.get('USER')}.")
             return False
         for job in self.cron:
-            if job.is_enabled() and 'report_gatherer.py' in str(job):
+            if job.is_enabled() and job.command == self.COMMAND:
                 self.logger.info(f"Existing crontab schedule found for {environ.get('USER')}")
                 return True
 
-    def scheduler(self, start: int, end: int) -> None:
+    def scheduler(self, start: int, end: int, weekend: bool = False) -> None:
         """Creates a crontab schedule to run every 30 minutes between the ``start`` and ``end`` time.
 
         Args:
             start: Time when the schedule starts every day.
             end: Time when the schedule ends every day.
+            weekend: Takes a boolean flag to decide whether the cron has to be scheduled for weekends.
         """
         self.logger.info('Creating a new cron schedule.')
-        entry = f"cd {getcwd()} && source ../venv/bin/activate && python report_gatherer.py && deactivate"
-        job = self.cron.new(command=entry)
+        job = self.cron.new(command=self.COMMAND)
         job.minute.every(30)
         job.hours.during(vfrom=start, vto=end)
-        job.dow.during(vfrom=1, vto=5)
+        if weekend:
+            job.dow.during(vfrom=0, vto=6)  # Week starts on Sunday which is 0 and ends on Saturday which is 6
+        else:
+            job.dow.during(vfrom=1, vto=5)
         self.cron.write()
 
     def controller(self, hours_type: str = 'EXTENDED') -> None:
@@ -58,7 +65,6 @@ class CronScheduler:
         """
         if self.checker():
             return
-        from rh_helper import MarketHours
         self.logger.info(f'Type: {hours_type} market hours.')
         tz = datetime.utcnow().astimezone().tzname()
         data = MarketHours.hours

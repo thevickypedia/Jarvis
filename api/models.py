@@ -29,30 +29,20 @@ class GetPhrase(BaseModel):
     phrase: str = None
 
 
-class LogConfig(BaseModel):
-    """Custom log configuration.
+class CronConfig(BaseModel):
+    """Custom log configuration for the cron schedule.
 
-    >>> LogConfig
+    >>> CronConfig
 
-    See Also:
-        - ``LOGGER_NAME`` should match the name passed to ``getLogger`` when this class is used for ``dictConfig``
-        - ``LOG_FORMAT`` is set to match the format of ``uvicorn.access`` logs.
     """
 
-    LOGGER_NAME = "uvicorn"
-    LOG_FORMAT = '%(levelname)s:\t  %(message)s'
     LOG_LEVEL = "DEBUG"
-    FILE_LOG = datetime.now().strftime('logs/%Y-%m-%d.log')
+    FILE_LOG = datetime.now().strftime('logs/cron_%Y-%m-%d.log')
     FILE_LOG_FORMAT = '%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
 
     version = 1
-    disable_existing_loggers = False
+    disable_existing_loggers = True
     formatters = {
-        "default": {
-            "()": "uvicorn.logging.DefaultFormatter",
-            "fmt": LOG_FORMAT,
-            "datefmt": None,
-        },
         "investment": {
             "format": FILE_LOG_FORMAT,
             "filename": FILE_LOG,
@@ -60,11 +50,6 @@ class LogConfig(BaseModel):
         },
     }
     handlers = {
-        "default": {
-            "formatter": "default",
-            "class": "logging.StreamHandler",
-            "stream": "ext://sys.stderr",
-        },
         "investment": {
             "formatter": "investment",
             "class": "logging.FileHandler",
@@ -72,6 +57,72 @@ class LogConfig(BaseModel):
         }
     }
     loggers = {
-        "jarvis": {"handlers": ["default"], "level": LOG_LEVEL},
         "investment": {"handlers": ["investment"], "level": LOG_LEVEL, "filename": FILE_LOG}
+    }
+
+
+class LogConfig:
+    """Custom log configuration to redirect uvicorn logs to a log file.
+
+    >>> LogConfig
+
+    """
+
+    LOG_LEVEL = "INFO"
+
+    ACCESS_LOG_FILENAME = datetime.now().strftime('logs/api/access_%Y-%m-%d.log')
+    DEFAULT_LOG_FILENAME = datetime.now().strftime('logs/api/default_%Y-%m-%d.log')
+
+    DEFAULT_LOG_FORMAT = '%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
+    ACCESS_LOG_FORMAT = '%(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'
+    ERROR_LOG_FORMAT = '%(levelname)s\t %(message)s'
+
+    LOGGING_CONFIG = {
+        "version": 1,
+        "disable_existing_loggers": True,
+        "formatters": {
+            "default": {
+                "()": "uvicorn.logging.DefaultFormatter",
+                "fmt": DEFAULT_LOG_FORMAT,
+                "use_colors": False,
+            },
+            "access": {
+                "()": "uvicorn.logging.AccessFormatter",
+                "fmt": ACCESS_LOG_FORMAT,
+                "use_colors": False,
+            },
+            "error": {
+                "()": "uvicorn.logging.DefaultFormatter",
+                "fmt": ERROR_LOG_FORMAT,
+                "use_colors": False,
+            },
+        },
+        "handlers": {
+            "default": {
+                "formatter": "default",
+                "class": "logging.FileHandler",
+                "filename": DEFAULT_LOG_FILENAME
+            },
+            "access": {
+                "formatter": "access",
+                "class": "logging.FileHandler",
+                "filename": ACCESS_LOG_FILENAME
+            },
+            "error": {
+                "formatter": "error",
+                "class": "logging.FileHandler",
+                "filename": DEFAULT_LOG_FILENAME
+            }
+        },
+        "loggers": {
+            "uvicorn": {
+                "handlers": ["default"], "level": LOG_LEVEL
+            },
+            "uvicorn.error": {
+                "handlers": ["error"], "level": LOG_LEVEL, "propagate": True  # Since FastAPI is running in a thread
+            },
+            "uvicorn.access": {
+                "handlers": ["access"], "level": LOG_LEVEL
+            },
+        },
     }
