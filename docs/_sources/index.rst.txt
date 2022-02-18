@@ -91,10 +91,24 @@ API Robinhood Helper
 
 ----------Executors----------
 =============================
+Alarm
+=====
+
+.. automodule:: executors.alarm
+   :members:
+   :undoc-members:
+
 Automation
 ==========
 
 .. automodule:: executors.automation
+   :members:
+   :undoc-members:
+
+Bluetooth
+=========
+
+.. automodule:: executors.bluetooth
    :members:
    :undoc-members:
 
@@ -105,17 +119,31 @@ Car
    :members:
    :undoc-members:
 
-Logger
-======
-
-.. automodule:: executors.custom_logger
-   :members:
-   :undoc-members:
-
 DisplayFunctions
 ================
 
 .. automodule:: executors.display_functions
+   :members:
+   :undoc-members:
+
+Face
+====
+
+.. automodule:: executors.face
+   :members:
+   :undoc-members:
+
+GitHub
+======
+
+.. automodule:: executors.github
+   :members:
+   :undoc-members:
+
+Guard
+=====
+
+.. automodule:: executors.guard
    :members:
    :undoc-members:
 
@@ -126,6 +154,13 @@ Internet
    :members:
    :undoc-members:
 
+Lights
+======
+
+.. automodule:: executors.lights
+   :members:
+   :undoc-members:
+
 Location
 ========
 
@@ -133,10 +168,31 @@ Location
    :members:
    :undoc-members:
 
+Logger
+======
+
+.. automodule:: executors.custom_logger
+   :members:
+   :undoc-members:
+
 Meetings
 ========
 
 .. automodule:: executors.meetings
+   :members:
+   :undoc-members:
+
+Others
+======
+
+.. automodule:: executors.others
+   :members:
+   :undoc-members:
+
+Remind
+======
+
+.. automodule:: executors.remind
    :members:
    :undoc-members:
 
@@ -161,10 +217,38 @@ SMS
    :members:
    :undoc-members:
 
+System
+======
+
+.. automodule:: executors.system
+   :members:
+   :undoc-members:
+
+Time
+====
+
+.. automodule:: executors.currenttime
+   :members:
+   :undoc-members:
+
+TV
+==
+
+.. automodule:: executors.tv
+   :members:
+   :undoc-members:
+
 Unconditional
 =============
 
 .. automodule:: executors.unconditional
+   :members:
+   :undoc-members:
+
+VPN Server
+==========
+
+.. automodule:: executors.vpn_server
    :members:
    :undoc-members:
 
@@ -231,7 +315,7 @@ Face Recognition
 Lights
 ======
 
-.. automodule:: modules.lights.lights
+.. automodule:: modules.lights.smart_lights
    :members:
    :undoc-members:
 

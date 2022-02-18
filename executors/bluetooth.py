@@ -1,0 +1,79 @@
+import json
+import re
+import subprocess
+import sys
+from time import sleep
+from unicodedata import normalize
+
+from modules.audio import speaker
+
+
+def connector(phrase: str, targets: dict) -> bool:
+    """Scans bluetooth devices in range and establishes connection with the matching device in phrase.
+
+    Args:
+        phrase: Takes the spoken phrase as an argument.
+        targets: Takes a dictionary of scanned devices as argument.
+
+    Returns:
+        bool:
+        Boolean True or False based on connection status.
+    """
+    connection_attempt = False
+    for target in targets:
+        if target['name']:
+            target['name'] = normalize("NFKD", target['name'])
+            if any(re.search(line, target['name'], flags=re.IGNORECASE) for line in phrase.split()):
+                connection_attempt = True
+                if 'disconnect' in phrase:
+                    output = subprocess.getoutput(cmd=f"blueutil --disconnect {target['address']}")
+                    if not output:
+                        sleep(2)  # included a sleep here, so it avoids voice swapping between devices
+                        speaker.speak(text=f"Disconnected from {target['name']} sir!")
+                    else:
+                        speaker.speak(text=f"I was unable to disconnect {target['name']} sir!. "
+                                           f"Perhaps it was never connected.")
+                elif 'connect' in phrase:
+                    output = subprocess.getoutput(cmd=f"blueutil --connect {target['address']}")
+                    if not output:
+                        sleep(2)  # included a sleep here, so it avoids voice swapping between devices
+                        speaker.speak(text=f"Connected to {target['name']} sir!")
+                    else:
+                        speaker.speak(text=f"Unable to connect {target['name']} sir!, please make sure the device is "
+                                           f"turned on and ready to pair.")
+                break
+    return connection_attempt
+
+
+def bluetooth(phrase: str) -> None:
+    """Find and connect to bluetooth devices nearby.
+
+    Args:
+        phrase: Takes the voice recognized statement as argument.
+    """
+    phrase = phrase.lower()
+    if 'turn off' in phrase or 'power off' in phrase:
+        subprocess.call("blueutil --power 0", shell=True)
+        sys.stdout.write('\rBluetooth has been turned off')
+        speaker.speak(text="Bluetooth has been turned off sir!")
+    elif 'turn on' in phrase or 'power on' in phrase:
+        subprocess.call("blueutil --power 1", shell=True)
+        sys.stdout.write('\rBluetooth has been turned on')
+        speaker.speak(text="Bluetooth has been turned on sir!")
+    elif 'disconnect' in phrase and ('bluetooth' in phrase or 'devices' in phrase):
+        subprocess.call("blueutil --power 0", shell=True)
+        sleep(2)
+        subprocess.call("blueutil --power 1", shell=True)
+        speaker.speak(text='All bluetooth devices have been disconnected sir!')
+    else:
+        sys.stdout.write('\rScanning paired Bluetooth devices')
+        paired = subprocess.getoutput(cmd="blueutil --paired --format json")
+        paired = json.loads(paired)
+        if not connector(phrase=phrase, targets=paired):
+            sys.stdout.write('\rScanning UN-paired Bluetooth devices')
+            speaker.speak(text='No connections were established sir, looking for un-paired devices.', run=True)
+            unpaired = subprocess.getoutput(cmd="blueutil --inquiry --format json")
+            unpaired = json.loads(unpaired)
+            connector(phrase=phrase, targets=unpaired) if unpaired else speaker.speak(
+                text='No un-paired devices found sir! '
+                     'You may want to be more precise.')

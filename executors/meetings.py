@@ -1,9 +1,12 @@
 import os
 import re
 from datetime import datetime
+from multiprocessing.context import TimeoutError as ThreadTimeoutError
+from multiprocessing.pool import ThreadPool
 from subprocess import PIPE, Popen
 
 from executors.custom_logger import logger
+from modules.audio import speaker
 from modules.utils import globals
 
 env = globals.ENV
@@ -93,3 +96,30 @@ def meetings_gatherer() -> str:
             meeting_status += f"{meeting[0]} at {meeting[1]}, " if index + 1 < len(ordered_data) else \
                 f"{meeting[0]} at {meeting[1]}."
     return meeting_status
+
+
+def meeting_reader() -> None:
+    """Speaks meeting information that ``meeting_gatherer()`` stored in a file named 'meetings'.
+
+    If the file is not available, meeting information is directly fetched from the ``meetings()`` function.
+    """
+    with open('meetings', 'r') as meeting:
+        meeting_info = meeting.read()
+        speaker.speak(text=meeting_info)
+
+
+def meetings():
+    """Controller for meetings."""
+    if os.path.isfile('meetings'):
+        meeting_reader()
+    else:
+        if globals.called_by_offline['status']:
+            speaker.speak(text="Meetings file is not ready yet. Please try again in a minute or two.")
+            return False
+        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)  # Runs parallely and awaits completion
+        speaker.speak(text="Please give me a moment sir! Let me check your calendar.", run=True)
+        try:
+            speaker.speak(text=meeting.get(timeout=60), run=True)
+        except ThreadTimeoutError:
+            logger.error('Unable to read the calendar within 60 seconds.')
+            speaker.speak(text="I wasn't able to read your calendar within the set time limit sir!", run=True)

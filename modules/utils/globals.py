@@ -20,6 +20,8 @@ vpn_status = {'active': False}
 called_by_offline = {'status': False}
 smart_devices = {}
 hosted_device = {}
+warm_light = {}
+tv = None
 
 
 class ENV:
@@ -29,6 +31,7 @@ class ENV:
 
     """
 
+    home = os.path.expanduser('~')
     weather_api = os.environ.get('weather_api')
     gmail_user = os.environ.get('gmail_user')
     gmail_pass = os.environ.get('gmail_pass')

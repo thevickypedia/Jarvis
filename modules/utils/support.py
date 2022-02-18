@@ -13,22 +13,13 @@ import subprocess
 import sys
 from datetime import datetime
 from difflib import SequenceMatcher
-from platform import platform
 from resource import RUSAGE_SELF, getrusage
-from socket import gethostname
-from typing import Union
 
 import yaml
 from appscript import app as apple_script
-from gmailconnector.send_email import SendEmail
 from holidays import CountryHoliday
-from psutil import cpu_count, virtual_memory
-from pyicloud import PyiCloudService
-from pyicloud.services.findmyiphone import AppleDevice
-from vpn.controller import VPNServer
 
 from executors.custom_logger import logger
-from executors.sms import notify
 from modules.audio import speaker
 from modules.netgear.ip_scanner import LocalIPScan
 from modules.utils import globals
@@ -40,44 +31,6 @@ def flush_screen():
     """Flushes the screen output."""
     sys.stdout.flush()
     sys.stdout.write("\r")
-
-
-def threat_notify(converted: str, date_extn: Union[str, None], gmail_user: str, gmail_pass: str,
-                  phone_number: str, recipient: str) -> None:
-    """Sends an SMS and email notification in case of a threat.
-
-    References:
-        Uses `gmail-connector <https://pypi.org/project/gmail-connector/>`__ to send the SMS and email.
-
-    Args:
-        converted: Takes the voice recognized statement as argument.
-        date_extn: Name of the attachment file which is the picture of the intruder.
-        gmail_user: Email address for the gmail account.
-        gmail_pass: Password of the gmail account.
-        phone_number: Phone number to send SMS.
-        recipient: Email address of the recipient.
-    """
-    dt_string = f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}"
-    title_ = f'Intruder Alert on {dt_string}'
-
-    if converted:
-        notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
-               body=f"{dt_string}\n{converted}")
-        body_ = f"""<html><head></head><body><h2>Conversation of Intruder:</h2><br>{converted}<br><br>
-                                    <h2>Attached is a photo of the intruder.</h2>"""
-    else:
-        notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
-               body=f"{dt_string}\nCheck your email for more information.")
-        body_ = """<html><head></head><body><h2>No conversation was recorded,
-                                but attached is a photo of the intruder.</h2>"""
-    if date_extn:
-        attachment_ = f'threat/{date_extn}.jpg'
-        response_ = SendEmail(gmail_user=gmail_user, gmail_pass=gmail_pass,
-                              recipient=recipient, subject=title_, body=body_, attachment=attachment_).send_email()
-        if response_.ok:
-            logger.info('Email has been sent!')
-        else:
-            logger.error(f"Email dispatch failed with response: {response_.body}\n")
 
 
 def initiate_tunneling(offline_host: str, offline_port: int, home: str) -> None:
@@ -247,38 +200,17 @@ def size_converter(byte_size: int) -> str:
     return f'{round(byte_size / pow(1024, index), 2)} {size_name[index]}'
 
 
-def system_info() -> str:
-    """Gets the system configuration.
+def comma_separator(list_: list) -> str:
+    """Separates commas using simple ``.join()`` function and analysis based on length of the list taken as argument.
+
+    Args:
+        list_: Takes a list of elements as an argument.
 
     Returns:
         str:
-        A string with the message that has to be spoken.
+        Comma separated list of elements.
     """
-    total, used, free = shutil.disk_usage("/")
-    total = size_converter(byte_size=total)
-    used = size_converter(byte_size=used)
-    free = size_converter(byte_size=free)
-    ram = size_converter(byte_size=virtual_memory().total).replace('.0', '')
-    ram_used = size_converter(byte_size=virtual_memory().percent).replace(' B', ' %')
-    physical = cpu_count(logical=False)
-    logical = cpu_count(logical=True)
-    return f"You're running {' '.join(platform().split('-')[0:2])}, with {physical} physical cores and {logical} " \
-           f"logical cores. Your physical drive capacity is {total}. You have used up {used} of space. Your free " \
-           f"space is {free}. Your RAM capacity is {ram}. You are currently utilizing {ram_used} of your memory."
-
-
-def hosted_device_info() -> dict:
-    """Gets basic information of the hosted device.
-
-    Returns:
-        dict:
-        A dictionary of key-value pairs with device type, operating system, os version.
-    """
-    system_kernel = (subprocess.check_output("sysctl hw.model", shell=True)).decode('utf-8').splitlines()
-    device = extract_str(system_kernel[0].split(':')[1])
-    platform_info = platform().split('-')
-    version = '.'.join(platform_info[1].split('.')[0:2])
-    return {'device': device, 'os_name': platform_info[0], 'os_version': float(version)}
+    return ', and '.join([', '.join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
 
 
 def extract_nos(input_: str) -> float:
@@ -343,40 +275,6 @@ def remove_files() -> None:
     shutil.rmtree('reminder') if os.path.isdir('reminder') else None
     os.remove('location.yaml') if os.path.isfile('location.yaml') else None
     os.remove('meetings') if os.path.isfile('meetings') else None
-
-
-def device_selector(icloud_user: str, icloud_pass: str, phrase: str = None) -> Union[AppleDevice, None]:
-    """Selects a device using the received input string.
-
-    See Also:
-        - Opens a html table with the index value and name of device.
-        - When chosen an index value, the device name will be returned.
-
-    Args:
-        icloud_user: Username for Apple iCloud account.
-        icloud_pass: Password for Apple iCloud account.
-        phrase: Takes the voice recognized statement as argument.
-
-    Returns:
-        AppleDevice:
-        Returns the selected device from the class ``AppleDevice``
-    """
-    if not all([icloud_user, icloud_pass]):
-        return
-    icloud_api = PyiCloudService(icloud_user, icloud_pass)
-    devices = [device for device in icloud_api.devices]
-    if phrase:
-        devices_str = [{str(device).split(':')[0].strip(): str(device).split(':')[1].strip()} for device in devices]
-        closest_match = [
-            (SequenceMatcher(a=phrase, b=key).ratio() + SequenceMatcher(a=phrase, b=val).ratio()) / 2
-            for device in devices_str for key, val in device.items()
-        ]
-        index = closest_match.index(max(closest_match))
-        target_device = icloud_api.devices[index]
-    else:
-        target_device = [device for device in devices if device.get('name') == gethostname() or
-                         gethostname() == device.get('name') + '.local'][0]
-    return target_device if target_device else icloud_api.iphone
 
 
 def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> list:
@@ -444,31 +342,6 @@ def exit_message() -> str:
         exit_msg += f'\nAnd by the way, happy {event}'
 
     return exit_msg
-
-
-def vpn_server_switch(operation: str, phone_number: str, recipient: str) -> None:
-    """Automator to ``START`` or ``STOP`` the VPN portal.
-
-    Args:
-        operation: Takes ``START`` or ``STOP`` as an argument.
-        phone_number: Phone number to which the notification has to be sent.
-        recipient: Email address to which the notification has to be sent.
-
-    See Also:
-        - Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
-    """
-    vpn_object = VPNServer(vpn_username=os.environ.get('vpn_username', os.environ.get('USER', 'openvpn')),
-                           vpn_password=os.environ.get('vpn_password', 'aws_vpn_2021'), log='FILE',
-                           gmail_user=os.environ.get('alt_gmail_user', os.environ.get('gmail_user')),
-                           gmail_pass=os.environ.get('alt_gmail_pass', os.environ.get('gmail_pass')),
-                           phone=phone_number, recipient=recipient)
-    if operation == 'START':
-        globals.vpn_status['active'] = 'enabled'
-        vpn_object.create_vpn_server()
-    elif operation == 'STOP':
-        globals.vpn_status['active'] = 'disabled'
-        vpn_object.delete_vpn_server()
-    globals.vpn_status['active'] = False
 
 
 def scan_smart_devices() -> dict:

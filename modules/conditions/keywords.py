@@ -57,7 +57,7 @@ locate_places = ['where is', "where's", 'which city', 'which state', 'which coun
 
 directions = ['take me', 'get directions']
 
-alarm = ['alarm', 'wake me']
+set_alarm = ['alarm', 'wake me']
 
 kill_alarm = ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off', 'stop another alarm']
 

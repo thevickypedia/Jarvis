@@ -96,10 +96,12 @@ def kill_existing(port: int, protocol: str = 'tcp') -> bool:
         active_sessions = subprocess.check_output(f"lsof -i {protocol}:{port}", shell=True).decode('utf-8').splitlines()
         for each in active_sessions:
             if each.split()[0] == 'Python':
-                proc = psutil.Process(int(each.split()[1]))
+                pid = int(each.split()[1])
+                proc = psutil.Process(pid=pid)
                 connection = proc.connections()
                 if connection[0].laddr.ip == env.offline_host or connection[0].laddr.ip == ip_address():
                     proc.terminate()
+                    logger.info(f'Killed inactive process with PID {pid} running on port: {port}')
                     return True
     except (subprocess.SubprocessError, subprocess.CalledProcessError) as error:
         logger.fatal(error)
