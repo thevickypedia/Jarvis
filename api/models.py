@@ -37,7 +37,7 @@ class CronConfig(BaseModel):
     """
 
     LOG_LEVEL = "DEBUG"
-    FILE_LOG = datetime.now().strftime('logs/cron_%Y-%m-%d.log')
+    FILE_LOG = datetime.now().strftime('logs/cron_%d-%m-%Y.log')
     FILE_LOG_FORMAT = '%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
 
     version = 1
@@ -70,8 +70,8 @@ class LogConfig:
 
     LOG_LEVEL = "INFO"
 
-    ACCESS_LOG_FILENAME = datetime.now().strftime('logs/api/access_%Y-%m-%d.log')
-    DEFAULT_LOG_FILENAME = datetime.now().strftime('logs/api/default_%Y-%m-%d.log')
+    ACCESS_LOG_FILENAME = datetime.now().strftime('logs/api/access_%d-%m-%Y.log')
+    DEFAULT_LOG_FILENAME = datetime.now().strftime('logs/api/default_%d-%m-%Y.log')
 
     DEFAULT_LOG_FORMAT = '%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
     ACCESS_LOG_FORMAT = '%(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'

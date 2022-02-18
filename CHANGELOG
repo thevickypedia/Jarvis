@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.5.5 (02/17/2022)
+------------------
+- Split modules into more executors
+- Update docs
+
 5.5.4 (02/16/2022)
 ------------------
 - Create an `APIServer` to override `uvicorn.Server`

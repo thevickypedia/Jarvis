@@ -2,14 +2,18 @@ import json
 import subprocess
 import sys
 from socket import AF_INET, SOCK_DGRAM, gethostname, socket
+from threading import Thread
 from typing import Union
 from urllib.error import HTTPError
 from urllib.request import urlopen
 
+import psutil
 from speedtest import ConfigRetrievalError, Speedtest
 
 from executors.custom_logger import logger
-from modules.audio.speaker import speak
+from executors.location import geo_locator
+from modules.audio import speaker
+from modules.utils import support
 
 
 def ip_address() -> str:
@@ -41,8 +45,8 @@ def vpn_checker() -> str:
                          f"{info.get('region')} maintained by {info.get('org')}")
 
     if ip_addr.startswith('VPN'):
-        speak(text="You have your VPN turned on. Details on your screen sir! Please note that none of the home "
-                   "integrations will work with VPN enabled.")
+        speaker.speak(text="You have your VPN turned on. Details on your screen sir! Please note that none of the home "
+                           "integrations will work with VPN enabled.")
     return ip_addr
 
 
@@ -68,7 +72,7 @@ def ip_info(phrase: str) -> None:
     """
     if 'public' in phrase.lower():
         if not internet_checker():
-            speak(text="You are not connected to the internet sir!")
+            speaker.speak(text="You are not connected to the internet sir!")
             return
         if ssid := get_ssid():
             ssid = f'for the connection {ssid} '
@@ -88,7 +92,7 @@ def ip_info(phrase: str) -> None:
     else:
         ip_addr = ip_address().split(':')[-1]
         output = f"My local IP address for {gethostname()} is {ip_addr}"
-    speak(text=output)
+    speaker.speak(text=output)
 
 
 def get_ssid() -> str:
@@ -107,3 +111,35 @@ def get_ssid() -> str:
     # noinspection PyTypeChecker
     return dict(map(str.strip, info.split(': ')) for info in out.decode('utf-8').splitlines()[:-1] if
                 len(info.split()) == 2).get('SSID')
+
+
+def speed_test() -> None:
+    """Initiates speed test and says the ping rate, download and upload speed.
+
+    References:
+        Number of threads per core: https://psutil.readthedocs.io/en/latest/#psutil.cpu_count
+    """
+    if not (st := internet_checker()):
+        speaker.speak(text="You're not connected to the internet sir!")
+        return
+    client_locator = geo_locator.reverse(st.lat_lon, language='en')
+    client_location = client_locator.raw['address']
+    city = client_location.get('city') or client_location.get('residential') or \
+        client_location.get('hamlet') or client_location.get('county')
+    state = client_location.get('state')
+    isp = st.results.client.get('isp').replace(',', '').replace('.', '')
+    threads_per_core = int(psutil.cpu_count() / psutil.cpu_count(logical=False))
+    upload_thread = Thread(target=st.upload, kwargs={'threads': threads_per_core})
+    download_thread = Thread(target=st.download, kwargs={'threads': threads_per_core})
+    upload_thread.start()
+    download_thread.start()
+    speaker.speak(text=f"Starting speed test sir! I.S.P: {isp}. Location: {city} {state}", run=True)
+    upload_thread.join()
+    download_thread.join()
+    ping = round(st.results.ping)
+    download = support.size_converter(byte_size=st.results.download)
+    upload = support.size_converter(byte_size=st.results.upload)
+    sys.stdout.write(f'\rPing: {ping}m/s\tDownload: {download}\tUpload: {upload}')
+    speaker.speak(text=f'Ping rate: {ping} milli seconds. '
+                       f'Download speed: {download} per second. '
+                       f'Upload speed: {upload} per second.')

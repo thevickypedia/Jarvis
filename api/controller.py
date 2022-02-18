@@ -20,7 +20,7 @@ def offline_compatible() -> list:
     path.remove('..')
     offline_words = [keywords.sleep_control,
                      keywords.exit_,
-                     keywords.alarm,
+                     keywords.set_alarm,
                      keywords.restart_control,
                      keywords.current_time,
                      keywords.apps,

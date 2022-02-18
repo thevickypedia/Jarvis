@@ -134,6 +134,7 @@ def google_maps(query: str) -> bool:
         bool:
         Boolean True if Google's maps API is unable to fetch consumable results.
     """
+    # todo: remove appends
     if not env.maps_api:
         return False
 
@@ -205,3 +206,24 @@ def google_maps(query: str) -> bool:
                 continue
         else:
             return False
+
+
+def google_search(phrase: str = None) -> None:
+    """Opens up a Google search for the phrase received. If nothing was received, gets phrase from user.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+    """
+    phrase = phrase.split('for')[-1] if 'for' in phrase else None
+    if not phrase:
+        speaker.speak(text="Please tell me the search phrase.", run=True)
+        converted = listener.listen(timeout=3, phrase_limit=5)
+        if converted == 'SR_ERROR' or 'exit' in converted or 'quit' in converted or 'xzibit' in converted or 'cancel' \
+                in converted:
+            return
+        else:
+            phrase = converted.lower()
+    search_query = str(phrase).replace(' ', '+')
+    unknown_url = f"https://www.google.com/search?q={search_query}"
+    webbrowser.open(unknown_url)
+    speaker.speak(text=f"I've opened up a google search for: {phrase}.")

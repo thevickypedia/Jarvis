@@ -1,4 +1,5 @@
 from datetime import datetime
+from logging import Logger
 from os import environ, getcwd
 
 from crontab import CronTab
@@ -15,7 +16,7 @@ class CronScheduler:
 
     COMMAND = f"cd {getcwd()} && source venv/bin/activate && python api/report_gatherer.py && deactivate"
 
-    def __init__(self, logger):
+    def __init__(self, logger: Logger):
         """Instantiates ``CronTab`` object and ``Logger`` class.
 
         Args:
