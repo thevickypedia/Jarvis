@@ -5,7 +5,7 @@ from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from subprocess import PIPE, Popen
 
-from executors.custom_logger import logger
+from executors.logger import logger
 from modules.audio import speaker
 from modules.utils import globals
 

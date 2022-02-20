@@ -2,7 +2,7 @@ import os
 import sys
 from datetime import datetime
 
-from executors.custom_logger import logger
+from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.face.facial_recognition import Face
 from modules.utils import support

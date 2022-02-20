@@ -5,7 +5,7 @@ from socket import socket
 from struct import pack
 from sys import stdout
 
-from executors.custom_logger import logger
+from executors.logger import logger
 
 
 class MagicHomeApi:

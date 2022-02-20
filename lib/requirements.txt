@@ -8,7 +8,6 @@ pyrh==2.0
 pytz==2020.1
 pyicloud==0.9.7
 geopy==2.0.0
-PyDictionary==2.0.1
 PyYAML==5.4.1
 googlehomepush==0.1.0
 axju-jokes==1.0.3
@@ -38,3 +37,4 @@ requests>=2.26.0
 setuptools>=57.0.0
 psutil>=5.8.0
 pytest>=7.0.1
+bs4>=0.0.1

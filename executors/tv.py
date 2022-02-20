@@ -7,8 +7,8 @@ from time import sleep
 
 from wakeonlan import send_magic_packet
 
-from executors.custom_logger import logger
 from executors.internet import vpn_checker
+from executors.logger import logger
 from modules.audio import speaker
 from modules.conditions import conversation
 from modules.tv.tv_controls import TV

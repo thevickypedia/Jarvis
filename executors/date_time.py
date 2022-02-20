@@ -1,11 +1,12 @@
 from datetime import datetime
 
+from inflect import engine
 from pytz import timezone
 from timezonefinder import TimezoneFinder
 
 from executors.location import geo_locator
 from modules.audio import speaker
-from modules.utils import support
+from modules.utils import globals, support
 
 
 def current_time(converted: str = None) -> None:
@@ -38,3 +39,22 @@ def current_time(converted: str = None) -> None:
     else:
         c_time = datetime.now().strftime("%I:%M %p")
         speaker.speak(text=f'{c_time}.')
+
+
+def current_date() -> None:
+    """Says today's date and adds the current time in speaker queue if report or time_travel function was called."""
+    dt_string = datetime.now().strftime("%A, %B")
+    date_ = engine().ordinal(datetime.now().strftime("%d"))
+    year = str(datetime.now().year)
+    event = support.celebrate()
+    if globals.called['time_travel']:
+        dt_string = f'{dt_string} {date_}'
+    else:
+        dt_string = f'{dt_string} {date_}, {year}'
+    speaker.speak(text=f"It's {dt_string}")
+    if event and event == 'Birthday':
+        speaker.speak(text=f"It's also your {event} sir!")
+    elif event:
+        speaker.speak(text=f"It's also {event} sir!")
+    if globals.called['report'] or globals.called['time_travel']:
+        speaker.speak(text='The current time is, ')

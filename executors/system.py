@@ -8,8 +8,8 @@ from platform import platform
 
 import psutil
 
-from executors.custom_logger import logger
-from executors.revive import restart
+from executors.controls import restart
+from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.temperature import temperature

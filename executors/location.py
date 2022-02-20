@@ -1,5 +1,8 @@
+import math
 import os
+import re
 import sys
+import webbrowser
 from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -10,6 +13,7 @@ from typing import Tuple, Union
 
 import certifi
 import yaml
+from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
 from geopy.geocoders import Nominatim, options
 from pyicloud import PyiCloudService
@@ -19,7 +23,7 @@ from pyicloud.services.findmyiphone import AppleDevice
 from speedtest import Speedtest
 from timezonefinder import TimezoneFinder
 
-from executors import custom_logger, revive
+from executors import controls, logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.utils import globals, support
@@ -94,16 +98,16 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
         os.remove('pyicloud_error') if os.path.isfile('pyicloud_error') else None
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException) as error:
         if device:
-            custom_logger.logger.error(f'Unable to retrieve location::{error}')  # traceback
+            logger.logger.error(f'Unable to retrieve location::{error}')  # traceback
             caller = sys._getframe(1).f_code.co_name  # noqa
             if caller == '<module>':
                 if os.path.isfile('pyicloud_error'):
-                    custom_logger.logger.error(f'Exception raised by {caller} once again. Proceeding...')
+                    logger.logger.error(f'Exception raised by {caller} once again. Proceeding...')
                     os.remove('pyicloud_error')
                 else:
-                    custom_logger.logger.error(f'Exception raised by {caller}. Restarting.')
+                    logger.logger.error(f'Exception raised by {caller}. Restarting.')
                     Path('pyicloud_error').touch()
-                    revive.restart(quiet=True)  # Restarts quietly if the error occurs when called from __main__
+                    controls.restart(quiet=True)  # Restarts quietly if the error occurs when called from __main__
         # uses latitude and longitude information from your IP's client when unable to connect to icloud
         st = Speedtest()
         current_lat_, current_lon_ = st.results.client['lat'], st.results.client['lon']
@@ -124,10 +128,9 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
         locator = geo_locator.reverse(f'{current_lat_}, {current_lon_}', language='en')
         return float(current_lat_), float(current_lon_), locator.raw['address']
     except (GeocoderUnavailable, GeopyError):
-        custom_logger.logger.error('Error retrieving address from latitude and longitude information. '
-                                   'Initiating self reboot.')
+        logger.logger.error('Error retrieving address from latitude and longitude information. Initiating self reboot.')
         speaker.speak(text='Received an error while retrieving your address sir! I think a restart should fix this.')
-        revive.restart(quick=True)
+        controls.restart(quick=True)
 
 
 def current_location():
@@ -224,3 +227,221 @@ def locate(phrase: str, no_repeat: bool = False) -> None:
                     speaker.speak(text="I've enabled lost mode on your phone.")
                 else:
                     speaker.speak(text="No action taken sir!")
+
+
+def distance(phrase):
+    """Extracts the start and end location to get the distance for it.
+
+    Args:
+        phrase:Takes the phrase spoken as an argument.
+
+    See Also:
+        A loop differentiates between two-worded places and one-worded place.
+        A condition below assumes two different words as two places but not including two words starting upper case
+    right next to each other
+
+    Examples:
+        New York will be considered as one word and New York and Las Vegas will be considered as two words.
+    """
+    check = phrase.split()  # str to list
+    places = []
+    for word in check:
+        if word[0].isupper() or '.' in word:  # looks for words that start with uppercase
+            try:
+                next_word = check[check.index(word) + 1]  # looks if words after an uppercase word is also one
+                if next_word[0].isupper():
+                    places.append(f"{word + ' ' + check[check.index(word) + 1]}")
+                else:
+                    if word not in ' '.join(places):
+                        places.append(word)
+            except IndexError:  # catches exception on lowercase word after an upper case word
+                if word not in ' '.join(places):
+                    places.append(word)
+
+    if len(places) >= 2:
+        start = places[0]
+        end = places[1]
+    elif len(places) == 1:
+        start = None
+        end = places[0]
+    else:
+        start, end = None, None
+    distance_controller(start, end)
+
+
+def distance_controller(origin: str = None, destination: str = None) -> None:
+    """Calculates distance between two locations.
+
+    Args:
+        origin: Takes the starting place name as an optional argument.
+        destination: Takes the destination place name as optional argument.
+
+    Notes:
+        - If ``origin`` is None, Jarvis takes the current location as ``origin``.
+        - If ``destination`` is None, Jarvis will ask for a destination from the user.
+    """
+    if not destination:
+        speaker.speak(text="Destination please?")
+        if globals.called_by_offline['status']:
+            return
+        speaker.speak(run=True)
+        destination = listener.listen(timeout=3, phrase_limit=4)
+        if destination != 'SR_ERROR':
+            if len(destination.split()) > 2:
+                speaker.speak(text="I asked for a destination sir, not a sentence. Try again.")
+                distance_controller()
+            if 'exit' in destination or 'quit' in destination or 'Xzibit' in destination:
+                return
+
+    if origin:
+        # if starting_point is received gets latitude and longitude of that location
+        desired_start = geo_locator.geocode(origin)
+        sys.stdout.write(f"\r{desired_start.address} **")
+        start = desired_start.latitude, desired_start.longitude
+        start_check = None
+    else:
+        # else gets latitude and longitude information of current location
+        start = (globals.current_location_['current_lat'], globals.current_location_['current_lon'])
+        start_check = 'My Location'
+    sys.stdout.write("::TO::") if origin else sys.stdout.write("\r::TO::")
+    desired_location = geo_locator.geocode(destination)
+    if desired_location:
+        end = desired_location.latitude, desired_location.longitude
+    else:
+        end = destination[0], destination[1]
+    if not all(isinstance(v, float) for v in start) or not all(isinstance(v, float) for v in end):
+        speaker.speak(text=f"I don't think {destination} exists sir!")
+        return
+    miles = round(geodesic(start, end).miles)  # calculates miles from starting point to destination
+    sys.stdout.write(f"** {desired_location.address} - {miles}")
+    if globals.called['directions']:
+        # calculates drive time using d = s/t and distance calculation is only if location is same country
+        globals.called['directions'] = False
+        avg_speed = 60
+        t_taken = miles / avg_speed
+        if miles < avg_speed:
+            drive_time = int(t_taken * 60)
+            speaker.speak(text=f"It might take you about {drive_time} minutes to get there sir!")
+        else:
+            drive_time = math.ceil(t_taken)
+            if drive_time == 1:
+                speaker.speak(text=f"It might take you about {drive_time} hour to get there sir!")
+            else:
+                speaker.speak(text=f"It might take you about {drive_time} hours to get there sir!")
+    elif start_check:
+        speaker.speak(text=f"Sir! You're {miles} miles away from {destination}.")
+        if not globals.called['locate_places']:
+            speaker.speak(text=f"You may also ask where is {destination}")
+    else:
+        speaker.speak(text=f"{origin} is {miles} miles away from {destination}.")
+    return
+
+
+def locate_places(phrase: str = None) -> None:
+    """Gets location details of a place.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+    """
+    place = support.get_capitalized(phrase=phrase) if phrase else None
+    # if no words found starting with an upper case letter, fetches word after the keyword 'is' eg: where is Chicago
+    if not place:
+        keyword = 'is'
+        before_keyword, keyword, after_keyword = phrase.partition(keyword)
+        place = after_keyword.replace(' in', '').strip()
+    if not place:
+        if globals.called_by_offline['status']:
+            speaker.speak(text='I need a location to get you the details sir!')
+            return
+        speaker.speak(text="Tell me the name of a place!", run=True)
+        converted = listener.listen(timeout=3, phrase_limit=4)
+        if converted != 'SR_ERROR':
+            if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+                return
+            place = support.get_capitalized(phrase=converted)
+            if not place:
+                keyword = 'is'
+                before_keyword, keyword, after_keyword = converted.partition(keyword)
+                place = after_keyword.replace(' in', '').strip()
+    try:
+        destination_location = geo_locator.geocode(place)
+        coordinates = destination_location.latitude, destination_location.longitude
+        located = geo_locator.reverse(coordinates, language='en')
+        data = located.raw
+        address = data['address']
+        county = address['county'] if 'county' in address else None
+        city = address['city'] if 'city' in address.keys() else None
+        state = address['state'] if 'state' in address.keys() else None
+        country = address['country'] if 'country' in address else None
+        if place in country:
+            speaker.speak(text=f"{place} is a country")
+        elif place in (city or county):
+            speaker.speak(
+                text=f"{place} is in {state}" if country == globals.current_location_['location_info']['country'] else
+                f"{place} is in {state} in {country}")
+        elif place in state:
+            speaker.speak(text=f"{place} is a state in {country}")
+        elif (city or county) and state and country:
+            if country == globals.current_location_['location_info']['country']:
+                speaker.speak(text=f"{place} is in {city or county}, {state}")
+            else:
+                speaker.speak(text=f"{place} is in {city or county}, {state}, in {country}")
+        if globals.called_by_offline['status']:
+            return
+        globals.called['locate_places'] = True
+    except (TypeError, AttributeError):
+        speaker.speak(text=f"{place} is not a real place on Earth sir! Try again.")
+        if globals.called_by_offline['status']:
+            return
+        locate_places(phrase=None)
+    distance_controller(origin=None, destination=place)
+
+
+def directions(phrase: str = None, no_repeat: bool = False) -> None:
+    """Opens Google Maps for a route between starting and destination.
+
+    Uses reverse geocoding to calculate latitude and longitude for both start and destination.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+        no_repeat: A placeholder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
+    """
+    place = support.get_capitalized(phrase=phrase)
+    place = place.replace('I ', '').strip() if place else None
+    if not place:
+        speaker.speak(text="You might want to give a location.", run=True)
+        converted = listener.listen(timeout=3, phrase_limit=4)
+        if converted != 'SR_ERROR':
+            place = support.get_capitalized(phrase=phrase)
+            place = place.replace('I ', '').strip()
+            if not place:
+                if no_repeat:
+                    return
+                speaker.speak(text="I can't take you to anywhere without a location sir!")
+                directions(phrase=None, no_repeat=True)
+            if 'exit' in place or 'quit' in place or 'Xzibit' in place:
+                return
+    destination_location = geo_locator.geocode(place)
+    if not destination_location:
+        return
+    try:
+        coordinates = destination_location.latitude, destination_location.longitude
+    except AttributeError:
+        return
+    located = geo_locator.reverse(coordinates, language='en')
+    data = located.raw
+    address = data['address']
+    end_country = address['country'] if 'country' in address else None
+    end = f"{located.latitude},{located.longitude}"
+
+    start_country = globals.current_location_['location_info']['country']
+    start = globals.current_location_['current_lat'], globals.current_location_['current_lon']
+    maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
+    webbrowser.open(maps_url)
+    speaker.speak(text="Directions on your screen sir!")
+    if start_country and end_country:
+        if re.match(start_country, end_country, flags=re.IGNORECASE):
+            globals.called['directions'] = True
+            distance_controller(origin=None, destination=place)
+        else:
+            speaker.speak(text="You might need a flight to get there!")

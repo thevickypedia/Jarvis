@@ -9,7 +9,7 @@ import sys
 
 import pyttsx3
 
-from executors.custom_logger import logger
+from executors.logger import logger
 from modules.utils.globals import text_spoken
 
 audio_driver = pyttsx3.init()

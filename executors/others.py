@@ -12,14 +12,15 @@ from typing import Tuple
 from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
 from joke.jokes import chucknorris, geek, icanhazdad, icndb
+from newsapi import NewsApiClient, newsapi_exception
 from playsound import playsound
 from pychromecast.error import ChromecastConnectionError
-from PyDictionary import PyDictionary
 from randfacts import getFact
 
 from executors.internet import vpn_checker
 from modules.audio import listener, speaker
 from modules.conditions import keywords
+from modules.dictionary import dictionary
 from modules.utils import globals, support
 
 env = globals.ENV
@@ -209,13 +210,12 @@ def facts() -> None:
 
 
 def meaning(phrase: str) -> None:
-    """Gets meaning for a word skimmed from the user statement using PyDictionary.
+    """Gets meaning for a word skimmed from the user statement.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
     keyword = phrase.split()[-1] if phrase else None
-    dictionary = PyDictionary()
     if not keyword or keyword == 'word':
         speaker.speak(text="Please tell a keyword.", run=True)
         response = listener.listen(timeout=3, phrase_limit=3)
@@ -225,7 +225,7 @@ def meaning(phrase: str) -> None:
             else:
                 meaning(phrase=response)
     else:
-        definition = dictionary.meaning(keyword)
+        definition = dictionary.meaning(term=keyword)
         if definition:
             n = 0
             vowel = ['A', 'E', 'I', 'O', 'U']
@@ -243,12 +243,8 @@ def meaning(phrase: str) -> None:
                 for letter in list(keyword.lower()):
                     speaker.speak(text=letter)
                 speaker.speak(run=True)
-        elif globals.called_by_offline['status']:
-            speaker.speak(text=f"I'm sorry sir! I was unable to get meaning for the word: {keyword}")
-            return
         else:
-            speaker.speak(text="Keyword should be a single word sir! Try again")
-    return
+            speaker.speak(text=f"I'm sorry sir! I was unable to get meaning for the word: {keyword}")
 
 
 def notes() -> None:
@@ -261,3 +257,32 @@ def notes() -> None:
             with open(r'notes.txt', 'a') as writer:
                 writer.write(f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"
                              f"{converted}\n")
+
+
+def news(news_source: str = 'fox') -> None:
+    """Says news around the user's location.
+
+    Args:
+        news_source: Source from where the news has to be fetched. Defaults to ``fox``.
+    """
+    if not env.news_api:
+        support.no_env_vars()
+        return
+
+    sys.stdout.write(f'\rGetting news from {news_source} news.')
+    news_client = NewsApiClient(api_key=env.news_api)
+    try:
+        all_articles = news_client.get_top_headlines(sources=f'{news_source}-news')
+    except newsapi_exception.NewsAPIException:
+        all_articles = None
+        speaker.speak(text="I wasn't able to get the news sir! I think the News API broke, you may try after sometime.")
+
+    if all_articles:
+        speaker.speak(text="News around you!")
+        for article in all_articles['articles']:
+            speaker.speak(text=article['title'])
+        if globals.called_by_offline['status']:
+            return
+
+    if globals.called['report'] or globals.called['time_travel']:
+        speaker.speak(run=True)

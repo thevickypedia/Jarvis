@@ -1,8 +1,7 @@
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 [![ForTheBadge built-with-swag](http://ForTheBadge.com/images/badges/built-with-swag.svg)](https://github.com/thevickypedia/Jarvis)
 
-[![Python 3.8](https://img.shields.io/badge/python-3.8-orange.svg)](https://www.python.org/downloads/release/python-385/)
-[![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-391/)
+![Python](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10-blue)
 
 **Platform Supported**
 
@@ -42,7 +41,7 @@
 
 **Deployments**
 
-[![docs](https://github.com/thevickypedia/Jarvis/actions/workflows/docs.yml/badge.svg)](https://github.com/thevickypedia/Jarvis/actions/workflows/docs.yml)
+[![pages-build-deployment](https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment)
 [![pypi](https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml/badge.svg)](https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml)
 
 [![Pypi-format](https://img.shields.io/pypi/format/jarvis-ironman)](https://pypi.org/project/jarvis-ironman/#files)
@@ -109,6 +108,7 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 - **gmail_pass** - Gmail account password to send and read emails.
 - **alt_gmail_user** - Alternate gmail account username to send an SMS. (`gmail_user` can be re-used)
 - **alt_gmail_pass** - Alternate gmail account password to send an SMS. (`gmail_pass` can be re-used)
+- **recipient** - Email address to which the emails from jarvis have to be received.
 - **robinhood_user** - Robinhood account username.
 - **robinhood_pass** - Robinhood account password.
 - **robinhood_qr** - Robinhood login [QR code](https://robinhood.com/account/settings)

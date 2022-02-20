@@ -32,7 +32,7 @@ def offline_compatible() -> list:
                      keywords.jokes,
                      keywords.todo,
                      keywords.locate_places,
-                     keywords.gmail,
+                     keywords.read_gmail,
                      keywords.google_home,
                      keywords.guard_enable,
                      keywords.guard_disable,
