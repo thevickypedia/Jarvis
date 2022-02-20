@@ -20,8 +20,19 @@ vpn_status = {'active': False}
 called_by_offline = {'status': False}
 smart_devices = {}
 hosted_device = {}
+greet_check = {}
 warm_light = {}
 tv = None
+
+called = {
+    'report': False,
+    'locate_places': False,
+    'directions': False,
+    'google_maps': False,
+    'time_travel': False,
+    'todo': False,
+    'add_todo': False
+}
 
 
 class ENV:
@@ -35,7 +46,9 @@ class ENV:
     weather_api = os.environ.get('weather_api')
     gmail_user = os.environ.get('gmail_user')
     gmail_pass = os.environ.get('gmail_pass')
-    recipient = os.environ.get('recipient')
+    alt_gmail_user = os.environ.get('alt_gmail_user', gmail_user)
+    alt_gmail_pass = os.environ.get('alt_gmail_pass', gmail_pass)
+    recipient = os.environ.get('recipient', gmail_user)
     offline_host = gethostbyname('localhost')
     offline_port = int(os.environ.get('offline_port', 4483))
     icloud_user = os.environ.get('icloud_user')
@@ -56,6 +69,8 @@ class ENV:
     git_pass = os.environ.get('git_pass')
     tv_client_key = os.environ.get('tv_client_key')
     root_password = os.environ.get('root_password')
+    vpn_username = os.environ.get('vpn_username')
+    vpn_password = os.environ.get('vpn_password')
     car_email = os.environ.get('car_email')
     car_pass = os.environ.get('car_pass')
     car_pin = os.environ.get('car_pin')

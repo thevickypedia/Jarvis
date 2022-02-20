@@ -1,11 +1,43 @@
+import sys
+
+from gmailconnector.read_email import ReadEmail
 from gmailconnector.send_sms import Messenger
 
-from executors.custom_logger import logger
+from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.utils import globals, support
 
 env = globals.ENV
+
+
+def read_gmail() -> None:
+    """Reads unread emails from the gmail account for which the credentials are stored in env variables."""
+    if not all([env.gmail_user, env.gmail_pass]):
+        support.no_env_vars()
+        return
+    sys.stdout.write("\rFetching unread emails..")
+    reader = ReadEmail(gmail_user=env.gmail_user, gmail_pass=env.gmail_pass)
+    response = reader.instantiate()
+    if response.ok:
+        if globals.called_by_offline['status']:
+            speaker.speak(text=f'You have {response.count} unread email sir.') if response.count == 1 else \
+                speaker.speak(text=f'You have {response.count} unread emails sir.')
+            return
+        speaker.speak(text=f'You have {response.count} unread emails sir. Do you want me to check it?', run=True)
+        confirmation = listener.listen(timeout=3, phrase_limit=3)
+        if confirmation == 'SR_ERROR':
+            return
+        if not any(word in confirmation.lower() for word in keywords.ok):
+            return
+        unread_emails = reader.read_email(response.body)
+        for mail in list(unread_emails):
+            speaker.speak(text=f"You have an email from, {mail.get('sender').strip()}, with subject, "
+                               f"{mail.get('subject').strip()}, {mail.get('datetime').strip()}", run=True)
+    elif response.status == 204:
+        speaker.speak(text="You don't have any emails to catch up sir!")
+    else:
+        speaker.speak(text="I was unable to read your email sir!")
 
 
 def send_sms(phrase: str) -> None:
@@ -65,7 +97,3 @@ def notify(user: str, password: str, number: str, body: str, subject: str = None
         logger.info('SMS notification has been sent.')
     else:
         logger.error(f'Unable to send SMS notification.\n{response.body}')
-
-
-if __name__ == '__main__':
-    send_sms(phrase='send a message to 4174500189')

@@ -33,7 +33,7 @@ locate = ['locate', 'where is my', "where's my"]
 
 music = ['music', 'songs', 'play']
 
-gmail = ['email', 'mail']
+read_gmail = ['email', 'mail']
 
 meaning = ['meaning', 'dictionary', 'definition']
 

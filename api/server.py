@@ -8,8 +8,8 @@ import requests
 import uvicorn
 from requests.exceptions import ConnectionError, Timeout
 
-from executors.custom_logger import logger
 from executors.internet import ip_address
+from executors.logger import logger
 from modules.utils import globals
 
 env = globals.ENV

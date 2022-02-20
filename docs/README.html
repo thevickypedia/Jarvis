@@ -43,8 +43,7 @@
             
   <p><a class="reference external" href="https://www.python.org/"><img alt="forthebadge made-with-python" src="http://ForTheBadge.com/images/badges/made-with-python.svg" /></a>
 <a class="reference external" href="https://github.com/thevickypedia/Jarvis"><img alt="ForTheBadge built-with-swag" src="http://ForTheBadge.com/images/badges/built-with-swag.svg" /></a></p>
-<p><a class="reference external" href="https://www.python.org/downloads/release/python-385/"><img alt="Python 3.8" src="https://img.shields.io/badge/python-3.8-orange.svg" /></a>
-<a class="reference external" href="https://www.python.org/downloads/release/python-391/"><img alt="Python 3.9" src="https://img.shields.io/badge/python-3.9-blue.svg" /></a></p>
+<p><img alt="Python" src="https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10-blue" /></p>
 <p><strong>Platform Supported</strong></p>
 <p><img alt="Generic badge" src="https://img.shields.io/badge/Platform-MacOS-1f425f.svg" /></p>
 <p><strong>Language Stats</strong></p>
@@ -72,7 +71,7 @@
 <img alt="AppleScript" src="https://img.shields.io/github/search/thevickypedia/Jarvis/.scpt" />
 <img alt="Make" src="https://img.shields.io/github/search/thevickypedia/Jarvis/Makefile" /></p>
 <p><strong>Deployments</strong></p>
-<p><a class="reference external" href="https://github.com/thevickypedia/Jarvis/actions/workflows/docs.yml"><img alt="docs" src="https://github.com/thevickypedia/Jarvis/actions/workflows/docs.yml/badge.svg" /></a>
+<p><a class="reference external" href="https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment"><img alt="pages-build-deployment" src="https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment/badge.svg" /></a>
 <a class="reference external" href="https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml"><img alt="pypi" src="https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml/badge.svg" /></a></p>
 <p><a class="reference external" href="https://pypi.org/project/jarvis-ironman/#files"><img alt="Pypi-format" src="https://img.shields.io/pypi/format/jarvis-ironman" /></a>
 <a class="reference external" href="https://pypi.org/project/jarvis-ironman"><img alt="Pypi-status" src="https://img.shields.io/pypi/status/jarvis-ironman" /></a>
@@ -133,6 +132,7 @@
 <li><p><strong>gmail_pass</strong> - Gmail account password to send and read emails.</p></li>
 <li><p><strong>alt_gmail_user</strong> - Alternate gmail account username to send an SMS. (<code class="docutils literal notranslate"><span class="pre">gmail_user</span></code> can be re-used)</p></li>
 <li><p><strong>alt_gmail_pass</strong> - Alternate gmail account password to send an SMS. (<code class="docutils literal notranslate"><span class="pre">gmail_pass</span></code> can be re-used)</p></li>
+<li><p><strong>recipient</strong> - Email address to which the emails from jarvis have to be received.</p></li>
 <li><p><strong>robinhood_user</strong> - Robinhood account username.</p></li>
 <li><p><strong>robinhood_pass</strong> - Robinhood account password.</p></li>
 <li><p><strong>robinhood_qr</strong> - Robinhood login <a class="reference external" href="https://robinhood.com/account/settings">QR code</a></p></li>
@@ -199,27 +199,27 @@ Using the module makes it easier since the devices are already connected to the 
 <blockquote>
 <div><p>Not having the key <code class="docutils literal notranslate"><span class="pre">day</span></code> will run the automation daily.</p>
 </div></blockquote>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;6:00 AM&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;day&quot;</span><span class="p">:</span> <span class="s2">&quot;weekday&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 50%&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
-  <span class="p">},</span>
-  <span class="nt">&quot;6:30 AM&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;day&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Monday&quot;</span><span class="p">,</span> <span class="s2">&quot;wednesday&quot;</span><span class="p">,</span> <span class="s2">&quot;FRIDAY&quot;</span><span class="p">],</span>
-    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 100%&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
-  <span class="p">},</span>
-  <span class="nt">&quot;8:00 AM&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;day&quot;</span><span class="p">:</span> <span class="s2">&quot;weekend&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 100%&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
-  <span class="p">},</span>
-  <span class="nt">&quot;9:00 PM&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;set my bedroom lights to 5%&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="kc">false</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;6:00 AM&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;day&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;weekday&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;task&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;set my bedroom lights to 50%&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;6:30 AM&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;day&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Monday&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;wednesday&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;FRIDAY&quot;</span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;task&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;set my bedroom lights to 100%&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;8:00 AM&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;day&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;weekend&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;task&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;set my bedroom lights to 100%&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;9:00 PM&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;task&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;set my bedroom lights to 5%&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </details></section>

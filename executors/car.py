@@ -6,7 +6,7 @@ from urllib.request import urlopen
 
 from playsound import playsound
 
-from executors.custom_logger import logger
+from executors.logger import logger
 from modules.audio import speaker
 from modules.car import connector, controller
 from modules.temperature import temperature

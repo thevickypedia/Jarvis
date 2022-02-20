@@ -1,4 +1,5 @@
 # noinspection PyUnresolvedReferences
+# TODO: Get rid of this by making personal cloud a pypi package
 """Controller for `Personal Cloud <https://github.com/thevickypedia/personal_cloud>`__.
 
 >>> PersonalCloud
@@ -29,8 +30,8 @@ from aeosa.aem.aemsend import EventError
 from appscript import app as apple_script
 from appscript.reference import CommandError
 
-from executors.custom_logger import logger
-from executors.sms import notify
+from executors.communicator import notify
+from executors.logger import logger
 
 
 def get_port() -> int:

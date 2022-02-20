@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+5.5.6 (02/19/2022)
+------------------
+- Use read email feature from `gmailconnector` module
+- Split modules into more executors
+- Remove usage of pydictionary module due to breakage
+- Remove .has_been_called and add it to globals as a dict
+- Rename certain modules
+- Disable docs workflow
+
 5.5.5 (02/17/2022)
 ------------------
 - Split modules into more executors

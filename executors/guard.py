@@ -8,9 +8,8 @@ from typing import Union
 import cv2
 from gmailconnector.send_email import SendEmail
 
-from executors import sms
-from executors.custom_logger import logger
-from executors.sms import notify
+from executors import communicator
+from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.utils import globals, support
@@ -41,8 +40,8 @@ def guard_enable() -> None:
     if cam_source is None:
         cam_error = 'Guarding mode disabled as I was unable to access any of the cameras.'
         logger.error(cam_error)
-        sms.notify(user=env.gmail_user, password=env.gmail_pass, number=env.phone_number, body=cam_error,
-                   subject="IMPORTANT::Guardian mode faced an exception.")
+        communicator.notify(user=env.gmail_user, password=env.gmail_pass, number=env.phone_number, body=cam_error,
+                            subject="IMPORTANT::Guardian mode faced an exception.")
         return
 
     scale_factor = 1.1  # Parameter specifying how much the image size is reduced at each image scale.
@@ -114,13 +113,13 @@ def threat_notify(converted: str, date_extn: Union[str, None], gmail_user: str, 
     title_ = f'Intruder Alert on {dt_string}'
 
     if converted:
-        notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
-               body=f"{dt_string}\n{converted}")
+        communicator.notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
+                            body=f"{dt_string}\n{converted}")
         body_ = f"""<html><head></head><body><h2>Conversation of Intruder:</h2><br>{converted}<br><br>
                                     <h2>Attached is a photo of the intruder.</h2>"""
     else:
-        notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
-               body=f"{dt_string}\nCheck your email for more information.")
+        communicator.notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
+                            body=f"{dt_string}\nCheck your email for more information.")
         body_ = """<html><head></head><body><h2>No conversation was recorded,
                                 but attached is a photo of the intruder.</h2>"""
     if date_extn:

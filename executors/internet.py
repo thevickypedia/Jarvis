@@ -10,8 +10,8 @@ from urllib.request import urlopen
 import psutil
 from speedtest import ConfigRetrievalError, Speedtest
 
-from executors.custom_logger import logger
 from executors.location import geo_locator
+from executors.logger import logger
 from modules.audio import speaker
 from modules.utils import support
 

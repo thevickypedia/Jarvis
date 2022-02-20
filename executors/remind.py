@@ -3,7 +3,7 @@ import random
 import re
 import sys
 
-from executors import sms
+from executors import communicator
 from modules.audio import listener, speaker
 from modules.conditions import conversation
 from modules.utils import globals
@@ -72,6 +72,6 @@ def reminder_executor(message: str) -> None:
     Args:
         message: Takes the reminder message as an argument.
     """
-    sms.notify(user=env.gmail_user, password=env.gmail_pass, number=env.phone_number, body=message,
-               subject="REMINDER from Jarvis")
+    communicator.notify(user=env.gmail_user, password=env.gmail_pass, number=env.phone_number, body=message,
+                        subject="REMINDER from Jarvis")
     os.system(f"""osascript -e 'display notification "{message}" with title "REMINDER from Jarvis"'""")

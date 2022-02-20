@@ -119,6 +119,27 @@ Car
    :members:
    :undoc-members:
 
+Communicator
+============
+
+.. automodule:: executors.communicator
+   :members:
+   :undoc-members:
+
+Controls
+========
+
+.. automodule:: executors.controls
+   :members:
+   :undoc-members:
+
+DateTime
+========
+
+.. automodule:: executors.date_time
+   :members:
+   :undoc-members:
+
 DisplayFunctions
 ================
 
@@ -171,7 +192,7 @@ Location
 Logger
 ======
 
-.. automodule:: executors.custom_logger
+.. automodule:: executors.logger
    :members:
    :undoc-members:
 
@@ -182,10 +203,24 @@ Meetings
    :members:
    :undoc-members:
 
+Offline
+=======
+
+.. automodule:: executors.offline
+   :members:
+   :undoc-members:
+
 Others
 ======
 
 .. automodule:: executors.others
+   :members:
+   :undoc-members:
+
+Personal Cloud
+==============
+
+.. automodule:: executors.personalcloud
    :members:
    :undoc-members:
 
@@ -196,24 +231,10 @@ Remind
    :members:
    :undoc-members:
 
-Restart
-=======
-
-.. automodule:: executors.revive
-   :members:
-   :undoc-members:
-
 Robinhood
 =========
 
 .. automodule:: executors.robinhood
-   :members:
-   :undoc-members:
-
-SMS
-===
-
-.. automodule:: executors.sms
    :members:
    :undoc-members:
 
@@ -224,10 +245,10 @@ System
    :members:
    :undoc-members:
 
-Time
-====
+To Do
+=====
 
-.. automodule:: executors.currenttime
+.. automodule:: executors.todo_list
    :members:
    :undoc-members:
 
@@ -249,6 +270,13 @@ VPN Server
 ==========
 
 .. automodule:: executors.vpn_server
+   :members:
+   :undoc-members:
+
+Weather
+=======
+
+.. automodule:: executors.weather
    :members:
    :undoc-members:
 
@@ -328,6 +356,13 @@ Local IP Scanner
 ================
 
 .. automodule:: modules.netgear.ip_scanner
+   :members:
+   :undoc-members:
+
+Meanings
+========
+
+.. automodule:: modules.dictionary.dictionary
    :members:
    :undoc-members:
 
