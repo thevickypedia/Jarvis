@@ -165,7 +165,7 @@ class Investment:
         """Gathers all the necessary information and creates an ``index.html`` using a ``Jinja`` template."""
         current_time = datetime.now()
         if not market_status():
-            self.logger.warning(f'{current_time.strftime("%B %d, %Y")}: The markets are closed today.')
+            self.logger.info(f'{current_time.strftime("%B %d, %Y")}: The markets are closed today.')
             return
 
         port_head, profit, loss, overall_result = self.watcher()

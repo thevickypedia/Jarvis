@@ -43,7 +43,6 @@ def offline_compatible() -> list:
                      keywords.brightness,
                      keywords.news,
                      keywords.location,
-                     keywords.personal_cloud,
                      keywords.vpn_server,
                      keywords.reminder,
                      keywords.system_info,

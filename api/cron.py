@@ -1,10 +1,13 @@
+import os
 from datetime import datetime
 from logging import Logger
-from os import environ, getcwd
 
 from crontab import CronTab
 
 from api.rh_helper import MarketHours
+from modules.utils import globals
+
+env = globals.ENV
 
 
 class CronScheduler:
@@ -14,7 +17,7 @@ class CronScheduler:
 
     """
 
-    COMMAND = f"cd {getcwd()} && source venv/bin/activate && python api/report_gatherer.py && deactivate"
+    COMMAND = f"cd {os.getcwd()} && source venv/bin/activate && python api/report_gatherer.py && deactivate"
 
     def __init__(self, logger: Logger):
         """Instantiates ``CronTab`` object and ``Logger`` class.
@@ -33,11 +36,11 @@ class CronScheduler:
             True if an existing schedule is found.
         """
         if not self.cron:
-            self.logger.warning(f"No crontab was found for {environ.get('USER')}.")
+            self.logger.warning(f"No crontab was found for {env.root_user}.")
             return False
         for job in self.cron:
             if job.is_enabled() and job.command == self.COMMAND:
-                self.logger.info(f"Existing crontab schedule found for {environ.get('USER')}")
+                self.logger.info(f"Existing crontab schedule found for {env.root_user}")
                 return True
 
     def scheduler(self, start: int, end: int, weekend: bool = False) -> None:

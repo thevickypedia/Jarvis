@@ -47,7 +47,7 @@ API CronTab
 
 .. automodule:: api.cron
    :members:
-   :undoc-members:
+   :exclude-members: COMMAND
 
 API Log Filters
 ===============
@@ -217,10 +217,10 @@ Others
    :members:
    :undoc-members:
 
-Personal Cloud
-==============
+Port Handler
+============
 
-.. automodule:: executors.personalcloud
+.. automodule:: executors.port_handler
    :members:
    :undoc-members:
 
@@ -320,11 +320,11 @@ Conditions
 
 .. automodule:: modules.conditions.conversation
    :members:
-   :exclude-members: greeting, capabilities, languages, what, who, form, whats_up, about_me
+   :exclude-members: about_me, acknowledgement, capabilities, confirmation, form, greeting, languages, wake_up1, wake_up2, wake_up3, what, whats_up, who
 
 .. automodule:: modules.conditions.keywords
    :members:
-   :exclude-members: current_date, current_time, weather, system_info, ip_info, webpage, wikipedia_, news, report, robinhood, apps, repeat, location, locate, music, gmail, meaning, create_db, add_todo, delete_todo, delete_db, todo, distance, avoid, locate_places, directions, alarm, kill_alarm, reminder, google_home, jokes, notes, github, send_sms, google_search, television, volume, face_detection, speed_test, bluetooth, brightness, lights, guard_enable, guard_disable, flip_a_coin, facts, meetings, voice_changer, system_vitals, vpn_server, personal_cloud, ok, restart_control, exit, sleep_control, kill, car, shutdown
+   :exclude-members: add_todo, apps, automation, avoid, bluetooth, brightness, car, create_db, current_date, current_time, delete_db, delete_todo, directions, distance, exit_, face_detection, facts, flip_a_coin, github, google_home, google_search, guard_disable, guard_enable, ip_info, jokes, kill, kill_alarm, lights, locate, locate_places, location, meaning, meetings, music, news, notes, ok, read_gmail, reminder, repeat, report, restart_control, robinhood, send_sms, set_alarm, shutdown, sleep_control, speed_test, system_info, system_vitals, television, todo, voice_changer, volume, vpn_server, weather, wikipedia_
 
 Database
 ========
@@ -365,14 +365,6 @@ Meanings
 .. automodule:: modules.dictionary.dictionary
    :members:
    :undoc-members:
-
-Personal Cloud
-==============
-
-.. automodule:: modules.personalcloud.pc_handler
-   :members:
-   :undoc-members:
-   :exclude-members: HOME
 
 Restart
 =======

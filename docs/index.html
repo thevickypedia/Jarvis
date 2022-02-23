@@ -511,7 +511,7 @@
 <span id="api-server"></span><h1>API Server<a class="headerlink" href="#module-api.server" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="api.server.APIServer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.server.</span></span><span class="sig-name descname"><span class="pre">APIServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.server.APIServer" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.server.</span></span><span class="sig-name descname"><span class="pre">APIServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">uvicorn.config.Config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.server.APIServer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shared servers state that is available between all protocol instances.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">APIServer</span>
 </pre></div>
@@ -537,37 +537,6 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="api.server.is_port_in_use">
-<span class="sig-prename descclassname"><span class="pre">api.server.</span></span><span class="sig-name descname"><span class="pre">is_port_in_use</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.server.is_port_in_use" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connect to a remote socket at address.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>port</strong> – Takes the port number as an argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A boolean flag to indicate whether a port is open.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.server.kill_existing">
-<span class="sig-prename descclassname"><span class="pre">api.server.</span></span><span class="sig-name descname"><span class="pre">kill_existing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'tcp'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.server.kill_existing" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses List all open files <code class="docutils literal notranslate"><span class="pre">lsof</span></code> to get the PID of the process that is listening on the given port.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>port</strong> – Port number on which the running process has to be stopped.</p></li>
-<li><p><strong>protocol</strong> – Protocol that has to be used to list. Defaults to <code class="docutils literal notranslate"><span class="pre">TCP</span></code></p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="api.server.trigger_api">
 <span class="sig-prename descclassname"><span class="pre">api.server.</span></span><span class="sig-name descname"><span class="pre">trigger_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.server.trigger_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates the fast API in a thread using uvicorn server.</p>
@@ -589,11 +558,6 @@
 <dd class="field-odd"><p><strong>logger</strong> – Takes the class <code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code> as an argument.</p>
 </dd>
 </dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.cron.CronScheduler.COMMAND">
-<span class="sig-name descname"><span class="pre">COMMAND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cd</span> <span class="pre">/Users/vicky/Desktop/git/Jarvis/doc_generator</span> <span class="pre">&amp;&amp;</span> <span class="pre">source</span> <span class="pre">venv/bin/activate</span> <span class="pre">&amp;&amp;</span> <span class="pre">python</span> <span class="pre">api/report_gatherer.py</span> <span class="pre">&amp;&amp;</span> <span class="pre">deactivate'</span></em><a class="headerlink" href="#api.cron.CronScheduler.COMMAND" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="api.cron.CronScheduler.checker">
 <span class="sig-name descname"><span class="pre">checker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.cron.CronScheduler.checker" title="Permalink to this definition">¶</a></dt>
@@ -738,7 +702,7 @@ name is specified, allow every event.</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="api.models.LogConfig.ACCESS_LOG_FILENAME">
-<span class="sig-name descname"><span class="pre">ACCESS_LOG_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'logs/api/access_19-02-2022.log'</span></em><a class="headerlink" href="#api.models.LogConfig.ACCESS_LOG_FILENAME" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">ACCESS_LOG_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'logs/api/access_23-02-2022.log'</span></em><a class="headerlink" href="#api.models.LogConfig.ACCESS_LOG_FILENAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -748,7 +712,7 @@ name is specified, allow every event.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="api.models.LogConfig.DEFAULT_LOG_FILENAME">
-<span class="sig-name descname"><span class="pre">DEFAULT_LOG_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'logs/api/default_19-02-2022.log'</span></em><a class="headerlink" href="#api.models.LogConfig.DEFAULT_LOG_FILENAME" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DEFAULT_LOG_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'logs/api/default_23-02-2022.log'</span></em><a class="headerlink" href="#api.models.LogConfig.DEFAULT_LOG_FILENAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -763,7 +727,7 @@ name is specified, allow every event.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="api.models.LogConfig.LOGGING_CONFIG">
-<span class="sig-name descname"><span class="pre">LOGGING_CONFIG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'disable_existing_loggers':</span> <span class="pre">True,</span> <span class="pre">'formatters':</span> <span class="pre">{'access':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.AccessFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(levelprefix)s</span> <span class="pre">%(client_addr)s</span> <span class="pre">-</span> <span class="pre">&quot;%(request_line)s&quot;</span> <span class="pre">%(status_code)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False},</span> <span class="pre">'default':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.DefaultFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s</span> <span class="pre">-</span> <span class="pre">[%(module)s:%(lineno)d]</span> <span class="pre">-</span> <span class="pre">%(funcName)s</span> <span class="pre">-</span> <span class="pre">%(message)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False},</span> <span class="pre">'error':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.DefaultFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(levelname)s\t</span> <span class="pre">%(message)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False}},</span> <span class="pre">'handlers':</span> <span class="pre">{'access':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/access_19-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'access'},</span> <span class="pre">'default':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/default_19-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'default'},</span> <span class="pre">'error':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/default_19-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'error'}},</span> <span class="pre">'loggers':</span> <span class="pre">{'uvicorn':</span> <span class="pre">{'handlers':</span> <span class="pre">['default'],</span> <span class="pre">'level':</span> <span class="pre">'INFO'},</span> <span class="pre">'uvicorn.access':</span> <span class="pre">{'handlers':</span> <span class="pre">['access'],</span> <span class="pre">'level':</span> <span class="pre">'INFO'},</span> <span class="pre">'uvicorn.error':</span> <span class="pre">{'handlers':</span> <span class="pre">['error'],</span> <span class="pre">'level':</span> <span class="pre">'INFO',</span> <span class="pre">'propagate':</span> <span class="pre">True}},</span> <span class="pre">'version':</span> <span class="pre">1}</span></em><a class="headerlink" href="#api.models.LogConfig.LOGGING_CONFIG" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">LOGGING_CONFIG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'disable_existing_loggers':</span> <span class="pre">True,</span> <span class="pre">'formatters':</span> <span class="pre">{'access':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.AccessFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(levelprefix)s</span> <span class="pre">%(client_addr)s</span> <span class="pre">-</span> <span class="pre">&quot;%(request_line)s&quot;</span> <span class="pre">%(status_code)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False},</span> <span class="pre">'default':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.DefaultFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s</span> <span class="pre">-</span> <span class="pre">[%(module)s:%(lineno)d]</span> <span class="pre">-</span> <span class="pre">%(funcName)s</span> <span class="pre">-</span> <span class="pre">%(message)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False},</span> <span class="pre">'error':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.DefaultFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(levelname)s\t</span> <span class="pre">%(message)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False}},</span> <span class="pre">'handlers':</span> <span class="pre">{'access':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/access_23-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'access'},</span> <span class="pre">'default':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/default_23-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'default'},</span> <span class="pre">'error':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/default_23-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'error'}},</span> <span class="pre">'loggers':</span> <span class="pre">{'uvicorn':</span> <span class="pre">{'handlers':</span> <span class="pre">['default'],</span> <span class="pre">'level':</span> <span class="pre">'INFO'},</span> <span class="pre">'uvicorn.access':</span> <span class="pre">{'handlers':</span> <span class="pre">['access'],</span> <span class="pre">'level':</span> <span class="pre">'INFO'},</span> <span class="pre">'uvicorn.error':</span> <span class="pre">{'handlers':</span> <span class="pre">['error'],</span> <span class="pre">'level':</span> <span class="pre">'INFO',</span> <span class="pre">'propagate':</span> <span class="pre">True}},</span> <span class="pre">'version':</span> <span class="pre">1}</span></em><a class="headerlink" href="#api.models.LogConfig.LOGGING_CONFIG" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1829,15 +1793,71 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 </section>
-<section id="module-executors.personalcloud">
-<span id="personal-cloud"></span><h1>Personal Cloud<a class="headerlink" href="#module-executors.personalcloud" title="Permalink to this headline">¶</a></h1>
+<section id="module-executors.port_handler">
+<span id="port-handler"></span><h1>Port Handler<a class="headerlink" href="#module-executors.port_handler" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.personalcloud.personal_cloud">
-<span class="sig-prename descclassname"><span class="pre">executors.personalcloud.</span></span><span class="sig-name descname"><span class="pre">personal_cloud</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.personalcloud.personal_cloud" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enables or disables personal cloud.</p>
+<dt class="sig sig-object py" id="executors.port_handler.get_port">
+<span class="sig-prename descclassname"><span class="pre">executors.port_handler.</span></span><span class="sig-name descname"><span class="pre">get_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#executors.port_handler.get_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chooses a PORT number dynamically that is not being used to ensure we don’t rely on a single port.</p>
+<p>Instead of binding to a specific port, <code class="docutils literal notranslate"><span class="pre">sock.bind(('',</span> <span class="pre">0))</span></code> is used to bind to 0.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>The port number chosen can be found using <code class="docutils literal notranslate"><span class="pre">sock.getsockname()[1]</span></code></p></li>
+<li><p>Passing it on to the slaves so that they can connect back.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sock</span></code> is the socket that was created, returned by socket.socket.</p></li>
+</ul>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Well-Known ports: 0 to 1023</p></li>
+<li><p>Registered ports: 1024 to 49151</p></li>
+<li><p>Dynamically available: 49152 to 65535</p></li>
+<li><p>The OS will then pick an available port.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Randomly chosen port number that is not in use.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.port_handler.is_port_in_use">
+<span class="sig-prename descclassname"><span class="pre">executors.port_handler.</span></span><span class="sig-name descname"><span class="pre">is_port_in_use</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.port_handler.is_port_in_use" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to a remote socket at address.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+<dd class="field-odd"><p><strong>port</strong> – Takes the port number as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean flag to indicate whether a port is open.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.port_handler.kill_existing">
+<span class="sig-prename descclassname"><span class="pre">executors.port_handler.</span></span><span class="sig-name descname"><span class="pre">kill_existing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'tcp'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.port_handler.kill_existing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses List all open files <code class="docutils literal notranslate"><span class="pre">lsof</span></code> to get the PID of the process that is listening on the given port.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>port</strong> – Port number on which the running process has to be stopped.</p></li>
+<li><p><strong>protocol</strong> – Protocol that has to be used to list. Defaults to <code class="docutils literal notranslate"><span class="pre">TCP</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Flag to indicate whether the process was killed successfully.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3436,98 +3456,6 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
-<section id="id3">
-<h1>Personal Cloud<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="module-modules.personalcloud.pc_handler"></span><p>Controller for <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">Personal Cloud</a>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PersonalCloud</span>
-</pre></div>
-</div>
-<p class="rubric">References</p>
-<p><a class="reference external" href="https://github.com/thevickypedia/personal_cloud/blob/main/README.md">PersonalCloud README.md</a></p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>PersonalCloud integration requires Admin previleages for the default <code class="docutils literal notranslate"><span class="pre">Terminal</span></code>.</p>
-<dl class="simple">
-<dt>Step 1:</dt><dd><ul class="simple">
-<li><p>macOS 10.14.* and higher - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Full Disk Access</p></li>
-<li><p>macOS 10.13.* and lower - System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Accessibility</p></li>
-</ul>
-</dd>
-<dt>Step 2:</dt><dd><p>Unlock for admin privileges. Click on the “+” icon. Select Applications -&gt; Utilities -&gt; Terminal</p>
-</dd>
-</dl>
-</div>
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.personalcloud.pc_handler.delete_repo">
-<span class="sig-prename descclassname"><span class="pre">modules.personalcloud.pc_handler.</span></span><span class="sig-name descname"><span class="pre">delete_repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.personalcloud.pc_handler.delete_repo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Called during enable and disable to delete any existing bits for a clean start next time.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.personalcloud.pc_handler.disable">
-<span class="sig-prename descclassname"><span class="pre">modules.personalcloud.pc_handler.</span></span><span class="sig-name descname"><span class="pre">disable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.personalcloud.pc_handler.disable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Kills <a class="reference external" href="https://git.io/JchR5">authserver.py</a> and <a class="reference external" href="https://git.io/JchBu">ngrok.py</a> to stop hosting.</p>
-<p>This eliminates the hassle of passing args and handling threads.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.personalcloud.pc_handler.enable">
-<span class="sig-prename descclassname"><span class="pre">modules.personalcloud.pc_handler.</span></span><span class="sig-name descname"><span class="pre">enable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recipient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phone_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.personalcloud.pc_handler.enable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enables <a class="reference external" href="https://github.com/thevickypedia/personal_cloud">personal cloud</a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>target_path</strong> – Path where the repository should be cloned.</p></li>
-<li><p><strong>recipient</strong> – Email address to which the notification has to be sent.</p></li>
-<li><p><strong>username</strong> – Username to authenticate <code class="docutils literal notranslate"><span class="pre">gmail-connector</span></code>.</p></li>
-<li><p><strong>password</strong> – Password to authenticate <code class="docutils literal notranslate"><span class="pre">gmail-connector</span></code>.</p></li>
-<li><p><strong>phone_number</strong> – Phone number to which the SMS has to be sent.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>Clones <code class="docutils literal notranslate"><span class="pre">personal_cloud</span></code> repo in a dedicated Terminal.</p></li>
-<li><p>Creates a virtual env and installs the requirements within it (ETA: ~20 seconds)</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">personal_cloud_host</span></code> env var is provided, Jarvis will mount the drive if connected to the device.</p></li>
-<li><p>Sets env vars required for the personal cloud.</p></li>
-<li><p>Generates random username and passphrase for login info.</p></li>
-<li><p>Triggers personal cloud using another Terminal session.</p></li>
-<li><p>Sends an SMS with <code class="docutils literal notranslate"><span class="pre">endpoint</span></code>, <code class="docutils literal notranslate"><span class="pre">username</span></code> and <code class="docutils literal notranslate"><span class="pre">password</span></code> to the <code class="docutils literal notranslate"><span class="pre">phone_number</span></code>.</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.personalcloud.pc_handler.get_port">
-<span class="sig-prename descclassname"><span class="pre">modules.personalcloud.pc_handler.</span></span><span class="sig-name descname"><span class="pre">get_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#modules.personalcloud.pc_handler.get_port" title="Permalink to this definition">¶</a></dt>
-<dd><p>Chooses a PORT number dynamically that is not being used to ensure we don’t rely on a single port.</p>
-<p>Instead of binding to a specific port, <code class="docutils literal notranslate"><span class="pre">sock.bind(('',</span> <span class="pre">0))</span></code> is used to bind to 0.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>The port number chosen can be found using <code class="docutils literal notranslate"><span class="pre">sock.getsockname()[1]</span></code></p></li>
-<li><p>Passing it on to the slaves so that they can connect back.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sock</span></code> is the socket that was created, returned by socket.socket.</p></li>
-</ul>
-</div>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>Well-Known ports: 0 to 1023</p></li>
-<li><p>Registered ports: 1024 to 49151</p></li>
-<li><p>Dynamically available: 49152 to 65535</p></li>
-<li><p>The OS will then pick an available port.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Randomly chosen port number that is not in use.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="module-restart">
 <span id="restart"></span><h1>Restart<a class="headerlink" href="#module-restart" title="Permalink to this headline">¶</a></h1>
 <p>This is a basic query to start Jarvis after 5 seconds triggered by the <code class="docutils literal notranslate"><span class="pre">restart()</span></code> function in main module.</p>
@@ -4001,6 +3929,26 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.keygen">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">keygen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">punctuation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.support.keygen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates random key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>length</strong> – Length of the keygen.</p></li>
+<li><p><strong>punctuation</strong> – A boolean flag to include punctuation in the keygen.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>10 digit random key as a string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.lock_files">
 <span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">lock_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alarm_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reminder_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.utils.support.lock_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for <code class="docutils literal notranslate"><span class="pre">*.lock</span></code> files within the <code class="docutils literal notranslate"><span class="pre">alarm</span></code> directory if present.</p>
@@ -4156,6 +4104,11 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.utils.globals.ENV.birthday">
+<span class="sig-name descname"><span class="pre">birthday</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.birthday" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.utils.globals.ENV.car_email">
 <span class="sig-name descname"><span class="pre">car_email</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.car_email" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4286,6 +4239,11 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.utils.globals.ENV.root_user">
+<span class="sig-name descname"><span class="pre">root_user</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'vicky'</span></em><a class="headerlink" href="#modules.utils.globals.ENV.root_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.utils.globals.ENV.sensitivity">
 <span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.5</span></em><a class="headerlink" href="#modules.utils.globals.ENV.sensitivity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4307,7 +4265,7 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.utils.globals.ENV.vpn_username">
-<span class="sig-name descname"><span class="pre">vpn_username</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.vpn_username" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">vpn_username</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'vicky'</span></em><a class="headerlink" href="#modules.utils.globals.ENV.vpn_username" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4377,7 +4335,7 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 <li><a class="reference internal" href="#module-executors.meetings">Meetings</a></li>
 <li><a class="reference internal" href="#module-executors.offline">Offline</a></li>
 <li><a class="reference internal" href="#module-executors.others">Others</a></li>
-<li><a class="reference internal" href="#module-executors.personalcloud">Personal Cloud</a></li>
+<li><a class="reference internal" href="#module-executors.port_handler">Port Handler</a></li>
 <li><a class="reference internal" href="#module-executors.remind">Remind</a></li>
 <li><a class="reference internal" href="#module-executors.robinhood">Robinhood</a></li>
 <li><a class="reference internal" href="#module-executors.system">System</a></li>
@@ -4396,7 +4354,6 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 <li><a class="reference internal" href="#id2">Lights</a></li>
 <li><a class="reference internal" href="#module-modules.netgear.ip_scanner">Local IP Scanner</a></li>
 <li><a class="reference internal" href="#module-modules.dictionary.dictionary">Meanings</a></li>
-<li><a class="reference internal" href="#id3">Personal Cloud</a></li>
 <li><a class="reference internal" href="#module-restart">Restart</a></li>
 <li><a class="reference internal" href="#module-modules.temperature.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-modules.tv.tv_controls">TV Connector</a></li>

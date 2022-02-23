@@ -9,7 +9,7 @@ from version import version_info
 print('.'.join(str(c) for c in version_info))
 "
 
-read_jarvis_version() {
+read_module_version() {
   local python_file=$1; shift
   local varname
   for varname; do
@@ -17,16 +17,17 @@ read_jarvis_version() {
   done < <(python -c "$python_script" "$python_file" "${@%%:*}")
 }
 
-read_jarvis_version version.py version_info:version  # Reads var $2 from file $1 and assigns it to the var version
-statement="RUNNING THIS WILL BUILD V$version OF 'Jarvis-Ironman' IN PYPI AND MAY FAIL THE BUILD ON GITHUB ACTIONS"
+read_module_version version.py version_info:version  # Reads var $2 from file $1 and assigns it to the var version
+statement="RUNNING THIS WILL BUILD v$version OF ${PWD##*/} IN PYPI AND MAY FAIL THE AUTOMATIC BUILD ON GITHUB ACTIONS"
 echo -e "\n**********************************************************************************************************"
 echo -e $statement
 echo -e "**********************************************************************************************************\n"
 read -p "Are you sure you want to continue? <Y/N> " prompt
 if [[ $prompt =~ [yY](es)* ]]
 then
-  changelog
   python -m pip install --upgrade pip
+  pip install changelog-generator
+  changelog reverse
   pip install setuptools wheel twine
   python setup.py bdist_wheel --universal
   python setup.py sdist

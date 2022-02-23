@@ -7,8 +7,10 @@
 
 import math
 import os
+import random
 import re
 import shutil
+import string
 import subprocess
 import sys
 from datetime import datetime
@@ -16,7 +18,7 @@ from difflib import SequenceMatcher
 from resource import RUSAGE_SELF, getrusage
 
 import yaml
-from holidays import CountryHoliday
+from holidays import country_holidays
 
 from executors.logger import logger
 from modules.audio import speaker
@@ -40,14 +42,13 @@ def celebrate() -> str:
         A string of the event observed today.
     """
     day = datetime.today().date()
-    today = datetime.now().strftime("%d-%B")
-    us_holidays = CountryHoliday('US').get(day)  # checks if the current date is a US holiday
-    in_holidays = CountryHoliday('IND', prov='TN', state='TN').get(day)  # checks if Indian (esp TN) holiday
+    us_holidays = country_holidays('US').get(day)  # checks if the current date is a US holiday
+    in_holidays = country_holidays('IND', prov='TN', state='TN').get(day)  # checks if Indian (esp TN) holiday
     if in_holidays:
         return in_holidays
     elif us_holidays and 'Observed' not in us_holidays:
         return us_holidays
-    elif (birthday := os.environ.get('birthday')) and today == birthday:
+    elif env.birthday == datetime.now().strftime("%d-%B"):
         return 'Birthday'
 
 
@@ -344,3 +345,22 @@ def no_env_vars():
     """Says a message about permissions when env vars are missing."""
     logger.error(f'Called by: {sys._getframe(1).f_code.co_name}')  # noqa
     speaker.speak(text="I'm sorry sir! I lack the permissions!")
+
+
+def keygen(length: int, punctuation: bool = False) -> str:
+    """Generates random key.
+
+    Args:
+        length: Length of the keygen.
+        punctuation: A boolean flag to include punctuation in the keygen.
+
+    Returns:
+        str:
+        10 digit random key as a string.
+    """
+    if punctuation:
+        required_str = string.ascii_letters + string.digits + string.punctuation
+    else:
+        required_str = string.ascii_letters + string.digits
+    key = "".join(random.choices(required_str, k=length))
+    return key
