@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
     from dotenv import load_dotenv
 
-    env_file_path = '../.env'
+    env_file_path = '../../.env'
     load_dotenv(dotenv_path=env_file_path)
 
     pprint(LocalIPScan(router_pass=environ.get('router_pass')).attached_devices)

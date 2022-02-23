@@ -37,7 +37,6 @@ from executors.meetings import (meeting_file_writer, meeting_reader, meetings,
                                 meetings_gatherer)
 from executors.others import (apps, facts, flip_a_coin, google_home, jokes,
                               meaning, music, news, notes, repeat)
-from executors.personalcloud import personal_cloud
 from executors.remind import reminder, reminder_executor
 from executors.robinhood import robinhood
 from executors.system import hosted_device_info, system_info, system_vitals
@@ -285,9 +284,6 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     elif any(word in converted_lower for word in keywords.vpn_server):
         vpn_server(phrase=converted)
 
-    elif any(word in converted_lower for word in keywords.personal_cloud):
-        personal_cloud(phrase=converted)
-
     elif any(word in converted_lower for word in keywords.automation):
         automation_handler(phrase=converted_lower)
 
@@ -419,14 +415,14 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
     response = None
     try:
         if command:
-            os.remove('offline_request') if respond else None
+            os.remove('offline_request') if respond else None  # file will be unavailable when called by automator
             globals.called_by_offline['status'] = True
             split(command)
             globals.called_by_offline['status'] = False
             response = globals.text_spoken.get('text')
         else:
             response = 'Received a null request. Please resend it.'
-        if 'restart' not in command and respond:
+        if 'restart' not in command and respond:  # response will not be written when called by automator
             with open('offline_response', 'w') as off_response:
                 off_response.write(response)
         audio_driver.stop()
@@ -507,7 +503,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
             sleep(0.1)  # Read file after 0.1 second for the content to be written
             with open('offline_request') as off_request:
                 request = off_request.read()
-            Thread(target=offline_communicator, kwargs={'command': request}).start()
+            offline_communicator(command=request)
             support.flush_screen()
         if os.path.isfile(automation_file):
             with ThreadPoolExecutor() as executor:
@@ -532,7 +528,7 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
                     Thread(target=reminder_executor, args=[remind_msg]).start()
                     os.remove(f'reminder/{each_reminder}')
         if globals.STOPPER['status']:
-            logger.warning('Exiting automator since the STOPPER flag was set.')
+            logger.info('Exiting automator since the STOPPER flag was set.')
             break
 
 
@@ -607,6 +603,7 @@ class Activator:
                               should_return=True)
                     speak(run=True)
                 elif globals.STOPPER['status']:
+                    logger.info('Exiting sentry mode since the STOPPER flag was set.')
                     self.stop()
                     controls.restart(quiet=True)
         except KeyboardInterrupt:

@@ -105,8 +105,6 @@ system_vitals = ['vitals', 'statistics', 'readings', 'stats']
 
 vpn_server = ['vpn']
 
-personal_cloud = ['personal cloud', 'private cloud', 'personal server', 'private server']
-
 car = ['car', 'vehicle']
 
 automation = ['automation']

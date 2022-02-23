@@ -5,8 +5,9 @@
 
 """
 
+import getpass
 import os
-from socket import gethostbyname
+import socket
 
 import dotenv
 
@@ -49,12 +50,12 @@ class ENV:
     alt_gmail_user = os.environ.get('alt_gmail_user', gmail_user)
     alt_gmail_pass = os.environ.get('alt_gmail_pass', gmail_pass)
     recipient = os.environ.get('recipient', gmail_user)
-    offline_host = gethostbyname('localhost')
+    phone_number = os.environ.get('phone_number')
+    offline_host = socket.gethostbyname('localhost')
     offline_port = int(os.environ.get('offline_port', 4483))
+    offline_pass = os.environ.get('offline_pass')
     icloud_user = os.environ.get('icloud_user')
     icloud_pass = os.environ.get('icloud_pass')
-    phone_number = os.environ.get('phone_number')
-    offline_pass = os.environ.get('offline_pass')
     robinhood_user = os.environ.get('robinhood_user')
     robinhood_pass = os.environ.get('robinhood_pass')
     robinhood_qr = os.environ.get('robinhood_qr')
@@ -68,9 +69,11 @@ class ENV:
     git_user = os.environ.get('git_user')
     git_pass = os.environ.get('git_pass')
     tv_client_key = os.environ.get('tv_client_key')
+    root_user = os.environ.get('USER', getpass.getuser())
     root_password = os.environ.get('root_password')
-    vpn_username = os.environ.get('vpn_username')
-    vpn_password = os.environ.get('vpn_password')
+    vpn_username = os.environ.get('vpn_username', root_user)
+    vpn_password = os.environ.get('vpn_password', root_password)
+    birthday = os.environ.get('birthday')
     car_email = os.environ.get('car_email')
     car_pass = os.environ.get('car_pass')
     car_pin = os.environ.get('car_pin')

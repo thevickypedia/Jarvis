@@ -15,7 +15,7 @@ from joke.jokes import chucknorris, geek, icanhazdad, icndb
 from newsapi import NewsApiClient, newsapi_exception
 from playsound import playsound
 from pychromecast.error import ChromecastConnectionError
-from randfacts import getFact
+from randfacts import get_fact
 
 from executors.internet import vpn_checker
 from modules.audio import listener, speaker
@@ -206,7 +206,7 @@ def flip_a_coin() -> None:
 
 def facts() -> None:
     """Tells a random fact."""
-    speaker.speak(text=getFact(filter=False))
+    speaker.speak(text=get_fact(filter_enabled=False))
 
 
 def meaning(phrase: str) -> None:
