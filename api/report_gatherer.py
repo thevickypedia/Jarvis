@@ -199,7 +199,7 @@ if __name__ == '__main__':
     config.dictConfig(CronConfig().dict())
 
     if not os.path.isdir('logs'):
-        os.system('mkdir logs')
+        os.mkdir('logs')
 
     if os.path.isfile('.env'):
         load_dotenv(dotenv_path='.env')

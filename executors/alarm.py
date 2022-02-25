@@ -3,6 +3,7 @@ import random
 import re
 import subprocess
 import sys
+from pathlib import Path
 from time import sleep
 
 from modules.audio import listener, speaker, volume
@@ -34,7 +35,9 @@ def set_alarm(phrase: str) -> None:
         hour, minute = f"{hour:02}", f"{minute:02}"
         am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
         if int(hour) <= 12 and int(minute) <= 59:
-            os.system(f'mkdir -p alarm && touch alarm/{hour}_{minute}_{am_pm}.lock')
+            if not os.path.isdir('alarm'):
+                os.mkdir('alarm')
+            Path(f'alarm/{hour}_{minute}_{am_pm}.lock').touch()
             if 'wake' in phrase.strip():
                 speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
                                    f"I will wake you up at {hour}:{minute} {am_pm}.")

@@ -11,24 +11,26 @@ import random
 import re
 import shutil
 import string
-import subprocess
 import sys
+import time
 from datetime import datetime
 from difflib import SequenceMatcher
 from resource import RUSAGE_SELF, getrusage
 
+import psutil
 import yaml
 from holidays import country_holidays
 
+from executors import display_functions
 from executors.logger import logger
-from modules.audio import speaker
+from modules.audio import speaker, volume
 from modules.netgear.ip_scanner import LocalIPScan
 from modules.utils import globals
 
 env = globals.ENV
 
 
-def flush_screen():
+def flush_screen() -> None:
     """Flushes the screen output."""
     sys.stdout.flush()
     sys.stdout.write("\r")
@@ -137,7 +139,7 @@ def unrecognized_dumper(train_data: dict) -> None:
     Args:
         train_data: Takes the dictionary that has to be written as an argument.
     """
-    dt_string = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
+    dt_string = datetime.now().strftime("%B %d, %Y %H:%M:%S")
     if os.path.isfile('training_data.yaml'):
         with open('training_data.yaml') as reader:
             data = yaml.safe_load(stream=reader) or {}
@@ -223,13 +225,19 @@ def extract_str(input_: str) -> str:
     return ''.join([i for i in input_ if not i.isdigit() and i not in [',', '.', '?', '-', ';', '!', ':']]).strip()
 
 
-def stop_terminal() -> None:
-    """Uses pid to kill terminals as terminals await user confirmation interrupting shutdown/restart."""
-    pid_check = subprocess.check_output("ps -ef | grep 'iTerm\\|Terminal'", shell=True)
-    pid_list = pid_check.decode('utf-8').split('\n')
-    for id_ in pid_list:
-        if id_ and 'Applications' in id_ and '/usr/bin/login' not in id_:
-            os.system(f'kill -9 {id_.split()[1]} >/dev/null 2>&1')  # redirects stderr output to stdout
+def stop_processes(deep: bool = False, apps: tuple = ('iterm', 'terminal', 'pycharm')) -> None:
+    """Stops background processes.
+
+    Args:
+        deep: Takes a boolean value indicating whether to kill the process or gracefully terminate it.
+        apps: Default apps that have to be shutdown when ``deep`` argument is not set.
+    """
+    for proc in psutil.process_iter():
+        if any(word in proc.name().lower() for word in apps):
+            proc.terminate()
+            time.sleep(5e-01)
+            if deep and proc.is_running():
+                proc.kill()
 
 
 def remove_files() -> None:
@@ -268,16 +276,14 @@ def terminator() -> None:
     """Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.
 
     Using this, eliminates the hassle of forcing multiple threads to stop.
-
-    Examples:
-        - os._exit(0)
-        - kill -15 `PID`
     """
-    pid_check = subprocess.check_output("ps -ef | grep jarvis.py", shell=True)
-    pid_list = pid_check.decode('utf-8').splitlines()
-    for pid_info in pid_list:
-        if pid_info and 'grep' not in pid_info and '/bin/sh' not in pid_info:
-            os.system(f'kill -15 {pid_info.split()[1].strip()}')
+    pid = os.getpid()
+    proc = psutil.Process(pid=pid)
+    logger.info(f'Terminating process: {pid}')
+    proc.terminate()
+    if proc.is_running():
+        logger.info(f'{pid} is still running. Killing it.')
+        proc.kill()
 
 
 def exit_message() -> str:
@@ -314,34 +320,42 @@ def exit_message() -> str:
     return exit_msg
 
 
-def scan_smart_devices() -> dict:
+def scan_smart_devices() -> None:
     """Retrieves devices IP by doing a local IP range scan using Netgear API.
 
     See Also:
         This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)
         Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted.
     """
-    if os.path.isfile('smart_devices.yaml'):
-        with open('smart_devices.yaml') as file:
-            data = yaml.load(stream=file, Loader=yaml.FullLoader)
-        if data and data.get('restart'):
-            os.remove('smart_devices.yaml')
-        elif data:
-            return data
-    if router_pass := os.environ.get('router_pass'):
-        local_devices = LocalIPScan(router_pass=router_pass)
+    # todo: Write to a DB instead of dumping in an yaml file
+    # if router_pass := os.environ.get('router_pass'):
+    if env.router_pass:
+        logger.info('Scanning smart devices using netgear module.')
+        local_devices = LocalIPScan(router_pass=env.router_pass)
         tv_ip, tv_mac = local_devices.tv()
-        return {
-            'hallway_ip': list(local_devices.hallway()),
-            'kitchen_ip': list(local_devices.kitchen()),
-            'bedroom_ip': list(local_devices.bedroom()),
-            'tv_ip': tv_ip,
-            'tv_mac': tv_mac
-        }
-    return {}
+        with open('smart_devices.yaml', 'w') as file:
+            yaml.dump(stream=file, data={
+                'hallway_ip': list(local_devices.hallway()),
+                'kitchen_ip': list(local_devices.kitchen()),
+                'bedroom_ip': list(local_devices.bedroom()),
+                'tv_ip': tv_ip,
+                'tv_mac': tv_mac
+            })
 
 
-def no_env_vars():
+def daytime_nighttime_swapper() -> None:
+    """Automatically puts the Mac on sleep and sets the volume to 25% after 9 PM and 50% after 6 AM."""
+    hour = int(datetime.now().strftime('%H'))
+    locker = """osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'"""
+    if 20 >= hour >= 7:
+        volume.volume(level=50)
+    elif hour >= 21 or hour <= 6:
+        volume.volume(level=30)
+        display_functions.decrease_brightness()
+        os.system(locker)
+
+
+def no_env_vars() -> None:
     """Says a message about permissions when env vars are missing."""
     logger.error(f'Called by: {sys._getframe(1).f_code.co_name}')  # noqa
     speaker.speak(text="I'm sorry sir! I lack the permissions!")

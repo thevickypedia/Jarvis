@@ -3,15 +3,14 @@ import random
 import struct
 import sys
 import webbrowser
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from multiprocessing import Process
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from pathlib import PurePath
-from threading import Thread, Timer
+from threading import Thread
 from time import perf_counter, sleep, time
 
-import psutil
 import pvporcupine
 from playsound import playsound
 from pyaudio import PyAudio, paInt16
@@ -30,8 +29,8 @@ from executors.github import github
 from executors.guard import guard_enable
 from executors.internet import get_ssid, internet_checker, ip_info, speed_test
 from executors.lights import lights
-from executors.location import (current_location, directions, distance, locate,
-                                locate_places, location)
+from executors.location import (directions, distance, get_current_location,
+                                locate, locate_places, location)
 from executors.logger import logger
 from executors.meetings import (meeting_file_writer, meeting_reader, meetings,
                                 meetings_gatherer)
@@ -50,7 +49,7 @@ from executors.wiki import wikipedia_
 from modules.audio.listener import listen
 from modules.audio.speaker import audio_driver, speak
 from modules.audio.voices import voice_changer, voice_default
-from modules.audio.volume import switch_volumes, volume
+from modules.audio.volume import volume
 from modules.conditions import conversation, keywords
 from modules.utils import globals, support
 
@@ -432,7 +431,7 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
             with open('offline_request', 'w') as off_request:
                 off_request.write(command)
         logger.fatal(f'Received a RuntimeError while executing offline request.\n{error}')
-        controls.restart(quiet=True, quick=True)
+        controls.restart(quiet=True)
 
 
 def initiator(key_original: str, should_return: bool = False) -> None:
@@ -469,17 +468,17 @@ def initiator(key_original: str, should_return: bool = False) -> None:
             initialize()
 
 
-def automator(automation_file: str = 'automation.json', every_1: int = 1_800, every_2: int = 3_600) -> None:
+def automator(every_1: int = 1_800, every_2: int = 3_600) -> None:
     """Place for long-running background threads.
 
     Args:
-        automation_file: Takes the automation filename as an argument.
-        every_1: Triggers every 30 minutes in a dedicated thread, to switch volumes to time based levels.
-        every_2: Triggers every 60 minutes in a dedicated thread, to initiate ``meeting_file_writer``.
+        every_1: Triggers every 30 minutes in a dedicated process, to switch volumes to time based levels.
+        every_2: Triggers every 60 minutes in a dedicated process, to initiate
+            ``meeting_file_writer`` and ``scan_smart_devices``.
 
     See Also:
         - Keeps looking for the ``offline_request`` file, and invokes ``offline_communicator`` with content as the arg.
-        - The ``automation_file`` should be a JSON file of dictionary within a dictionary that looks like the below:
+        - The ``automation.json`` should be a JSON file of dictionary within a dictionary that looks like the below:
 
             .. code-block:: json
 
@@ -497,28 +496,32 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
         - The status for all automations can be set to either ``true`` or ``false``.
         - Jarvis will swap these flags as necessary, so that the execution doesn't repeat more than once in a minute.
     """
+    # todo: Write and read from DB and add an option to run a task at certain intervals
     start_1 = start_2 = time()
+    dry_run = True
     while True:
         if os.path.isfile('offline_request'):
             sleep(0.1)  # Read file after 0.1 second for the content to be written
             with open('offline_request') as off_request:
-                request = off_request.read()
-            offline_communicator(command=request)
+                offline_communicator(command=off_request.read())
             support.flush_screen()
-        if os.path.isfile(automation_file):
-            with ThreadPoolExecutor() as executor:
-                if exec_task := executor.submit(auto_helper, automation_file).result():
-                    Thread(target=offline_communicator, kwargs={'command': exec_task, 'respond': False}).start()
-        if start_1 + every_1 <= time():
+
+        if os.path.isfile('automation.json'):
+            if exec_task := auto_helper():
+                offline_communicator(command=exec_task, respond=False)
+
+        if dry_run or start_1 + every_1 <= time():
             start_1 = time()
-            Thread(target=switch_volumes).start()
-        if start_2 + every_2 <= time():
+            Process(target=support.daytime_nighttime_swapper).start()
+        if dry_run or start_2 + every_2 <= time():
             start_2 = time()
-            Thread(target=meeting_file_writer).start()
+            Process(target=meeting_file_writer).start()
+            Process(target=support.scan_smart_devices).start()
+
         if alarm_state := support.lock_files(alarm_files=True):
             for each_alarm in alarm_state:
                 if each_alarm == datetime.now().strftime("%I_%M_%p.lock"):
-                    Thread(target=alarm_executor).start()
+                    Process(target=alarm_executor).start()
                     os.remove(f'alarm/{each_alarm}')
         if reminder_state := support.lock_files(reminder_files=True):
             for each_reminder in reminder_state:
@@ -527,9 +530,12 @@ def automator(automation_file: str = 'automation.json', every_1: int = 1_800, ev
                 if remind_time == datetime.now().strftime("%I_%M_%p"):
                     Thread(target=reminder_executor, args=[remind_msg]).start()
                     os.remove(f'reminder/{each_reminder}')
+
         if globals.STOPPER['status']:
             logger.info('Exiting automator since the STOPPER flag was set.')
             break
+
+        dry_run = False
 
 
 class Activator:
@@ -630,20 +636,19 @@ class Activator:
 
 
 def initiate_background_threads() -> None:
-    """Initiate background threads.
+    """Initiate multiple processes to achieve parallelization.
 
     Methods
-        - stopper: Initiates stopper to restart after a set time using ``threading.Timer``
         - initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
         - trigger_api: Initiates Jarvis API using uvicorn server in a thread.
         - automator: Initiates automator that executes certain functions at said time.
         - playsound: Plays a start-up sound.
     """
-    Timer(interval=env.restart_interval, function=controls.stopper).start()
-    Thread(target=offline.initiate_tunneling,
-           kwargs={'offline_host': env.offline_host, 'offline_port': env.offline_port, 'home': env.home}).start()
-    trigger_api()
-    Thread(target=automator).start()
+    Process(target=offline.initiate_tunneling,
+            kwargs={'offline_host': env.offline_host, 'offline_port': env.offline_port, 'home': env.home}).start()
+    Process(target=get_current_location).start()
+    Process(target=trigger_api).start()
+    Process(target=automator).start()
     playsound(sound='indicators/initialize.mp3', block=False)
 
 
@@ -669,10 +674,7 @@ if __name__ == '__main__':
                          f"\nTotal runtime: {support.time_converter(perf_counter())}")
         support.terminator()
 
-    globals.current_location_ = current_location()
-    globals.smart_devices = support.scan_smart_devices()
-
-    sys.stdout.write(f"\rCurrent Process ID: {psutil.Process(os.getpid()).pid}\tCurrent Volume: 50%")
+    sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: 50%")
 
     initiate_background_threads()
 

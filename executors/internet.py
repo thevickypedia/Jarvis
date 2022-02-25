@@ -1,8 +1,8 @@
 import json
 import subprocess
 import sys
+from multiprocessing import Process
 from socket import AF_INET, SOCK_DGRAM, gethostname, socket
-from threading import Thread
 from typing import Union
 from urllib.error import HTTPError
 from urllib.request import urlopen
@@ -129,13 +129,13 @@ def speed_test() -> None:
     state = client_location.get('state')
     isp = st.results.client.get('isp').replace(',', '').replace('.', '')
     threads_per_core = int(psutil.cpu_count() / psutil.cpu_count(logical=False))
-    upload_thread = Thread(target=st.upload, kwargs={'threads': threads_per_core})
-    download_thread = Thread(target=st.download, kwargs={'threads': threads_per_core})
-    upload_thread.start()
-    download_thread.start()
+    upload_process = Process(target=st.upload, kwargs={'threads': threads_per_core})
+    download_process = Process(target=st.download, kwargs={'threads': threads_per_core})
+    upload_process.start()
+    download_process.start()
     speaker.speak(text=f"Starting speed test sir! I.S.P: {isp}. Location: {city} {state}", run=True)
-    upload_thread.join()
-    download_thread.join()
+    upload_process.join()
+    download_process.join()
     ping = round(st.results.ping)
     download = support.size_converter(byte_size=st.results.download)
     upload = support.size_converter(byte_size=st.results.upload)

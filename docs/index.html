@@ -134,14 +134,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.automator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">automator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">automation_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'automation.json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">every_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1800</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">every_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3600</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.automator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">automator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">every_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1800</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">every_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3600</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.automator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Place for long-running background threads.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>automation_file</strong> – Takes the automation filename as an argument.</p></li>
-<li><p><strong>every_1</strong> – Triggers every 30 minutes in a dedicated thread, to switch volumes to time based levels.</p></li>
-<li><p><strong>every_2</strong> – Triggers every 60 minutes in a dedicated thread, to initiate <code class="docutils literal notranslate"><span class="pre">meeting_file_writer</span></code>.</p></li>
+<li><p><strong>every_1</strong> – Triggers every 30 minutes in a dedicated process, to switch volumes to time based levels.</p></li>
+<li><p><strong>every_2</strong> – Triggers every 60 minutes in a dedicated process, to initiate
+<code class="docutils literal notranslate"><span class="pre">meeting_file_writer</span></code> and <code class="docutils literal notranslate"><span class="pre">scan_smart_devices</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -149,7 +149,7 @@
 <p class="admonition-title">See also</p>
 <ul>
 <li><p>Keeps looking for the <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file, and invokes <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code> with content as the arg.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">automation_file</span></code> should be a JSON file of dictionary within a dictionary that looks like the below:</p>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">automation.json</span></code> should be a JSON file of dictionary within a dictionary that looks like the below:</p>
 <blockquote>
 <div><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="nt">&quot;6:00 AM&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -201,10 +201,9 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.initiate_background_threads">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiate_background_threads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.initiate_background_threads" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiate background threads.</p>
+<dd><p>Initiate multiple processes to achieve parallelization.</p>
 <dl class="simple">
 <dt>Methods</dt><dd><ul class="simple">
-<li><p>stopper: Initiates stopper to restart after a set time using <code class="docutils literal notranslate"><span class="pre">threading.Timer</span></code></p></li>
 <li><p>initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
 <li><p>trigger_api: Initiates Jarvis API using uvicorn server in a thread.</p></li>
 <li><p>automator: Initiates automator that executes certain functions at said time.</p></li>
@@ -365,20 +364,6 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="api.fast.get_jarvis_status">
-<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">get_jarvis_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.fast.get_jarvis_status" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks process information to see if Jarvis is running.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A boolean True flag is jarvis.py is found in the list of current PIDs.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="api.fast.offline_communicator">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.GetData" title="api.models.GetData"><span class="pre">api.models.GetData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.offline_communicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Offline Communicator for Jarvis.</p>
@@ -421,13 +406,13 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.run_robinhood">
 <span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">run_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.run_robinhood" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs in a dedicated thread during startup, if the file was modified earlier than the past hour.</p>
+<dd><p>Runs in a dedicated process during startup, if the file was modified earlier than the past hour.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.start_robinhood">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">start_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.start_robinhood" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates robinhood gatherer in a thread and adds a cron schedule if not present already.</p>
+<dd><p>Initiates robinhood gatherer in a process and adds a cron schedule if not present already.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -442,12 +427,6 @@
 <dd class="field-even"><p>dict</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.fast.stop_robinhood">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">stop_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.stop_robinhood" title="Permalink to this definition">¶</a></dt>
-<dd><p>If active, stops the thread that creates robinhood static file in the background.</p>
 </dd></dl>
 
 </section>
@@ -529,9 +508,9 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="api.server.APIServer.run_in_thread">
-<span class="sig-name descname"><span class="pre">run_in_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.server.APIServer.run_in_thread" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">Server.run</span></code> in a thread.</p>
+<dt class="sig sig-object py" id="api.server.APIServer.run_in_parallel">
+<span class="sig-name descname"><span class="pre">run_in_parallel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.server.APIServer.run_in_parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">Server.run</span></code> in a dedicated process.</p>
 </dd></dl>
 
 </dd></dl>
@@ -539,7 +518,14 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="api.server.trigger_api">
 <span class="sig-prename descclassname"><span class="pre">api.server.</span></span><span class="sig-name descname"><span class="pre">trigger_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.server.trigger_api" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates the fast API in a thread using uvicorn server.</p>
+<dd><p>Initiates the fast API in a dedicated process using uvicorn server.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Checks if the port is being used. If so, makes a <code class="docutils literal notranslate"><span class="pre">GET</span></code> request to the endpoint.</p></li>
+<li><p>Attempts to kill the process listening to the port, if the endpoint doesn’t respond.</p></li>
+</ul>
+</div>
 </dd></dl>
 
 </section>
@@ -702,7 +688,7 @@ name is specified, allow every event.</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="api.models.LogConfig.ACCESS_LOG_FILENAME">
-<span class="sig-name descname"><span class="pre">ACCESS_LOG_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'logs/api/access_23-02-2022.log'</span></em><a class="headerlink" href="#api.models.LogConfig.ACCESS_LOG_FILENAME" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">ACCESS_LOG_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'logs/api/access_24-02-2022.log'</span></em><a class="headerlink" href="#api.models.LogConfig.ACCESS_LOG_FILENAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -712,7 +698,7 @@ name is specified, allow every event.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="api.models.LogConfig.DEFAULT_LOG_FILENAME">
-<span class="sig-name descname"><span class="pre">DEFAULT_LOG_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'logs/api/default_23-02-2022.log'</span></em><a class="headerlink" href="#api.models.LogConfig.DEFAULT_LOG_FILENAME" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DEFAULT_LOG_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'logs/api/default_24-02-2022.log'</span></em><a class="headerlink" href="#api.models.LogConfig.DEFAULT_LOG_FILENAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -727,7 +713,7 @@ name is specified, allow every event.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="api.models.LogConfig.LOGGING_CONFIG">
-<span class="sig-name descname"><span class="pre">LOGGING_CONFIG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'disable_existing_loggers':</span> <span class="pre">True,</span> <span class="pre">'formatters':</span> <span class="pre">{'access':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.AccessFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(levelprefix)s</span> <span class="pre">%(client_addr)s</span> <span class="pre">-</span> <span class="pre">&quot;%(request_line)s&quot;</span> <span class="pre">%(status_code)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False},</span> <span class="pre">'default':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.DefaultFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s</span> <span class="pre">-</span> <span class="pre">[%(module)s:%(lineno)d]</span> <span class="pre">-</span> <span class="pre">%(funcName)s</span> <span class="pre">-</span> <span class="pre">%(message)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False},</span> <span class="pre">'error':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.DefaultFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(levelname)s\t</span> <span class="pre">%(message)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False}},</span> <span class="pre">'handlers':</span> <span class="pre">{'access':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/access_23-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'access'},</span> <span class="pre">'default':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/default_23-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'default'},</span> <span class="pre">'error':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/default_23-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'error'}},</span> <span class="pre">'loggers':</span> <span class="pre">{'uvicorn':</span> <span class="pre">{'handlers':</span> <span class="pre">['default'],</span> <span class="pre">'level':</span> <span class="pre">'INFO'},</span> <span class="pre">'uvicorn.access':</span> <span class="pre">{'handlers':</span> <span class="pre">['access'],</span> <span class="pre">'level':</span> <span class="pre">'INFO'},</span> <span class="pre">'uvicorn.error':</span> <span class="pre">{'handlers':</span> <span class="pre">['error'],</span> <span class="pre">'level':</span> <span class="pre">'INFO',</span> <span class="pre">'propagate':</span> <span class="pre">True}},</span> <span class="pre">'version':</span> <span class="pre">1}</span></em><a class="headerlink" href="#api.models.LogConfig.LOGGING_CONFIG" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">LOGGING_CONFIG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'disable_existing_loggers':</span> <span class="pre">True,</span> <span class="pre">'formatters':</span> <span class="pre">{'access':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.AccessFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(levelprefix)s</span> <span class="pre">%(client_addr)s</span> <span class="pre">-</span> <span class="pre">&quot;%(request_line)s&quot;</span> <span class="pre">%(status_code)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False},</span> <span class="pre">'default':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.DefaultFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s</span> <span class="pre">-</span> <span class="pre">[%(module)s:%(lineno)d]</span> <span class="pre">-</span> <span class="pre">%(funcName)s</span> <span class="pre">-</span> <span class="pre">%(message)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False},</span> <span class="pre">'error':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.DefaultFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(levelname)s\t</span> <span class="pre">%(message)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False}},</span> <span class="pre">'handlers':</span> <span class="pre">{'access':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/access_24-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'access'},</span> <span class="pre">'default':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/default_24-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'default'},</span> <span class="pre">'error':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/default_24-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'error'}},</span> <span class="pre">'loggers':</span> <span class="pre">{'uvicorn':</span> <span class="pre">{'handlers':</span> <span class="pre">['default'],</span> <span class="pre">'level':</span> <span class="pre">'INFO'},</span> <span class="pre">'uvicorn.access':</span> <span class="pre">{'handlers':</span> <span class="pre">['access'],</span> <span class="pre">'level':</span> <span class="pre">'INFO'},</span> <span class="pre">'uvicorn.error':</span> <span class="pre">{'handlers':</span> <span class="pre">['error'],</span> <span class="pre">'level':</span> <span class="pre">'INFO',</span> <span class="pre">'propagate':</span> <span class="pre">True}},</span> <span class="pre">'version':</span> <span class="pre">1}</span></em><a class="headerlink" href="#api.models.LogConfig.LOGGING_CONFIG" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -865,17 +851,14 @@ name is specified, allow every event.</p>
 <span id="automation"></span><h1>Automation<a class="headerlink" href="#module-executors.automation" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.automation.auto_helper">
-<span class="sig-prename descclassname"><span class="pre">executors.automation.</span></span><span class="sig-name descname"><span class="pre">auto_helper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">automation_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.automation.auto_helper" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.automation.</span></span><span class="sig-name descname"><span class="pre">auto_helper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.automation.auto_helper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs in a thread to help the automator function in the main module.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>automation_file</strong> – Source file for automation.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Task to be executed.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Task to be executed.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -893,14 +876,11 @@ name is specified, allow every event.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.automation.rewrite_automator">
-<span class="sig-prename descclassname"><span class="pre">executors.automation.</span></span><span class="sig-name descname"><span class="pre">rewrite_automator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.automation.rewrite_automator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rewrites the <code class="docutils literal notranslate"><span class="pre">automation_file</span></code> with the updated json object.</p>
+<span class="sig-prename descclassname"><span class="pre">executors.automation.</span></span><span class="sig-name descname"><span class="pre">rewrite_automator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.automation.rewrite_automator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rewrites the <code class="docutils literal notranslate"><span class="pre">'automation.json'</span></code> with the updated json object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> – Name of the automation source file.</p></li>
-<li><p><strong>json_object</strong> – Takes the new json object as a dictionary.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>json_object</strong> – Takes the new json object as a dictionary.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1044,7 +1024,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.controls.restart">
-<span class="sig-prename descclassname"><span class="pre">executors.controls.</span></span><span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quick</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.controls.restart" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.controls.</span></span><span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.controls.restart" title="Permalink to this definition">¶</a></dt>
 <dd><p>Restart triggers <code class="docutils literal notranslate"><span class="pre">restart.py</span></code> which in turn starts Jarvis after 5 seconds.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
@@ -1072,7 +1052,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </ul>
 </li>
 <li><p><strong>quiet</strong> – If a boolean <code class="docutils literal notranslate"><span class="pre">True</span></code> is passed, a silent restart will be performed.</p></li>
-<li><p><strong>quick</strong> – If a boolean <code class="docutils literal notranslate"><span class="pre">True</span></code> is passed, smart device IPs are stored in <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> for quick re-use.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -1381,18 +1360,8 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <section id="module-executors.location">
 <span id="location"></span><h1>Location<a class="headerlink" href="#module-executors.location" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.location.current_location">
-<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">current_location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#executors.location.current_location" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extracts location information from either an <code class="docutils literal notranslate"><span class="pre">AppleDevice</span></code> or the public IP address.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>Checks modified time of location.yaml (if exists) and uses the data only if it was modified less than 72 hours.</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="executors.location.device_selector">
-<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">device_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">icloud_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icloud_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.location.device_selector" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">device_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.location.device_selector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selects a device using the received input string.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1403,11 +1372,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>icloud_user</strong> – Username for Apple iCloud account.</p></li>
-<li><p><strong>icloud_pass</strong> – Password for Apple iCloud account.</p></li>
-<li><p><strong>phrase</strong> – Takes the voice recognized statement as argument.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Returns the selected device from the class <code class="docutils literal notranslate"><span class="pre">AppleDevice</span></code></p>
@@ -1472,15 +1437,18 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="executors.location.get_current_location">
+<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">get_current_location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#executors.location.get_current_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts location information from either an <code class="docutils literal notranslate"><span class="pre">AppleDevice</span></code> or the public IP address.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="executors.location.locate">
-<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">locate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_repeat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.location.locate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">locate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.location.locate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Locates an Apple device using icloud api for python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>no_repeat</strong> – A placeholder flag switched during <code class="docutils literal notranslate"><span class="pre">recursion</span></code> so that, <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> doesn’t repeat himself.</p></li>
-<li><p><strong>phrase</strong> – Takes the voice recognized statement as argument and extracts device name from it.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument and extracts device name from it.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1796,8 +1764,8 @@ A condition below assumes two different words as two places but not including tw
 <section id="module-executors.port_handler">
 <span id="port-handler"></span><h1>Port Handler<a class="headerlink" href="#module-executors.port_handler" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.port_handler.get_port">
-<span class="sig-prename descclassname"><span class="pre">executors.port_handler.</span></span><span class="sig-name descname"><span class="pre">get_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#executors.port_handler.get_port" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="executors.port_handler.get_free_port">
+<span class="sig-prename descclassname"><span class="pre">executors.port_handler.</span></span><span class="sig-name descname"><span class="pre">get_free_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#executors.port_handler.get_free_port" title="Permalink to this definition">¶</a></dt>
 <dd><p>Chooses a PORT number dynamically that is not being used to ensure we don’t rely on a single port.</p>
 <p>Instead of binding to a specific port, <code class="docutils literal notranslate"><span class="pre">sock.bind(('',</span> <span class="pre">0))</span></code> is used to bind to 0.</p>
 <div class="admonition seealso">
@@ -1828,7 +1796,7 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.port_handler.is_port_in_use">
 <span class="sig-prename descclassname"><span class="pre">executors.port_handler.</span></span><span class="sig-name descname"><span class="pre">is_port_in_use</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.port_handler.is_port_in_use" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connect to a remote socket at address.</p>
+<dd><p>Connect to a remote socket at address, to identify if the port is currently being used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>port</strong> – Takes the port number as an argument.</p>
@@ -1843,21 +1811,33 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.port_handler.kill_existing">
-<span class="sig-prename descclassname"><span class="pre">executors.port_handler.</span></span><span class="sig-name descname"><span class="pre">kill_existing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'tcp'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.port_handler.kill_existing" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses List all open files <code class="docutils literal notranslate"><span class="pre">lsof</span></code> to get the PID of the process that is listening on the given port.</p>
+<dt class="sig sig-object py" id="executors.port_handler.kill_port_pid">
+<span class="sig-prename descclassname"><span class="pre">executors.port_handler.</span></span><span class="sig-name descname"><span class="pre">kill_port_pid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'tcp'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.port_handler.kill_port_pid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses List all open files <code class="docutils literal notranslate"><span class="pre">lsof</span></code> to get the PID of the process that is listening on the given port and kills it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>port</strong> – Port number on which the running process has to be stopped.</p></li>
-<li><p><strong>protocol</strong> – Protocol that has to be used to list. Defaults to <code class="docutils literal notranslate"><span class="pre">TCP</span></code></p></li>
+<li><p><strong>port</strong> – Port number which the application is listening on.</p></li>
+<li><p><strong>protocol</strong> – Protocol serving the port. Defaults to <code class="docutils literal notranslate"><span class="pre">TCP</span></code></p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Flag to indicate whether the process was killed successfully.</p>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Use only when the application listening to given port runs as a dedicated/child process with a different PID</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>This function will kill the process that is using the given port.</p></li>
+<li><p>If the PID is the same as that of <code class="docutils literal notranslate"><span class="pre">MainProcess</span></code>, triggers a warning without terminating the process.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Flag to indicate whether the process was terminated successfully.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3577,13 +3557,13 @@ Whites can have a value of None.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.tv.tv_controls.</span></span><span class="sig-name descname"><span class="pre">TV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.tv.tv_controls.TV" title="Permalink to this definition">¶</a></dt>
-<dd><p>All the TV controls wrapped in dedicated functions.</p>
+<dd><p>All the TV controls wrapped in dedicated methods.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TV</span>
 </pre></div>
 </div>
 <p>Client key will be logged and stored as SSM param when you accept the connection for the first time.</p>
 <p>Store the dict value as an env variable and use it as below. Using TV’s ip makes the initial
-response much quicker but it looks for the TV’s ip if an ip is not found.</p>
+response much quicker, but it also scans the network for the TV’s ip if ip arg is not received.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -3818,6 +3798,12 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.daytime_nighttime_swapper">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">daytime_nighttime_swapper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.daytime_nighttime_swapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically puts the Mac on sleep and sets the volume to 25% after 9 PM and 50% after 6 AM.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.exit_message">
 <span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">exit_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.support.exit_message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Variety of exit messages based on day of week and time of day.</p>
@@ -3867,7 +3853,7 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.flush_screen">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">flush_screen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.utils.support.flush_screen" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">flush_screen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.flush_screen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flushes the screen output.</p>
 </dd></dl>
 
@@ -3970,7 +3956,7 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.no_env_vars">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">no_env_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.utils.support.no_env_vars" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">no_env_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.no_env_vars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Says a message about permissions when env vars are missing.</p>
 </dd></dl>
 
@@ -4007,7 +3993,7 @@ response much quicker but it looks for the TV’s ip if an ip is not found.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.scan_smart_devices">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">scan_smart_devices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#modules.utils.support.scan_smart_devices" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">scan_smart_devices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.scan_smart_devices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves devices IP by doing a local IP range scan using Netgear API.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -4034,9 +4020,17 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="modules.utils.support.stop_terminal">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">stop_terminal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.stop_terminal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses pid to kill terminals as terminals await user confirmation interrupting shutdown/restart.</p>
+<dt class="sig sig-object py" id="modules.utils.support.stop_processes">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">stop_processes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">('iterm',</span> <span class="pre">'terminal',</span> <span class="pre">'pycharm')</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.stop_processes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops background processes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deep</strong> – Takes a boolean value indicating whether to kill the process or gracefully terminate it.</p></li>
+<li><p><strong>apps</strong> – Default apps that have to be shutdown when <code class="docutils literal notranslate"><span class="pre">deep</span></code> argument is not set.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -4044,11 +4038,6 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 <span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">terminator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.terminator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.</p>
 <p>Using this, eliminates the hassle of forcing multiple threads to stop.</p>
-<p class="rubric">Examples</p>
-<ul class="simple">
-<li><p>os._exit(0)</p></li>
-<li><p>kill -15 <cite>PID</cite></p></li>
-</ul>
 </dd></dl>
 
 <dl class="py function">
@@ -4209,11 +4198,6 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.restart_interval">
-<span class="sig-name descname"><span class="pre">restart_interval</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">28800</span></em><a class="headerlink" href="#modules.utils.globals.ENV.restart_interval" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.utils.globals.ENV.robinhood_endpoint_auth">
 <span class="sig-name descname"><span class="pre">robinhood_endpoint_auth</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.robinhood_endpoint_auth" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4241,6 +4225,11 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.utils.globals.ENV.root_user">
 <span class="sig-name descname"><span class="pre">root_user</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'vicky'</span></em><a class="headerlink" href="#modules.utils.globals.ENV.root_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.utils.globals.ENV.router_pass">
+<span class="sig-name descname"><span class="pre">router_pass</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.router_pass" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

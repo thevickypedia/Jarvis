@@ -5,6 +5,7 @@ import sys
 from threading import Thread
 from time import sleep
 
+import yaml
 from wakeonlan import send_magic_packet
 
 from executors.internet import vpn_checker
@@ -28,7 +29,17 @@ def television(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
-    if not all([globals.smart_devices.get('tv_ip'), globals.smart_devices.get('tv_mac'), env.tv_client_key]):
+    if not os.path.isfile('smart_devices.yaml'):
+        support.no_env_vars()
+        return
+
+    if vpn_checker().startswith('VPN'):
+        return
+
+    with open('smart_devices.yaml') as file:
+        smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader)
+
+    if not all([smart_devices.get('tv_ip'), smart_devices.get('tv_mac'), env.tv_client_key]):
         support.no_env_vars()
         return
 
@@ -37,18 +48,16 @@ def television(phrase: str) -> None:
 
     def tv_status() -> int:
         """Pings the tv and returns the status. 0 if able to ping, 256 if unable to ping."""
-        return os.system(f"ping -c 1 -t 3 {globals.smart_devices.get('tv_ip')} >/dev/null")
+        return os.system(f"ping -c 1 -t 3 {smart_devices.get('tv_ip')} >/dev/null")
 
-    if vpn_checker().startswith('VPN'):
-        return
-    elif ('turn off' in phrase_lower or 'shutdown' in phrase_lower or 'shut down' in phrase_lower) and tv_status() != 0:
+    if ('turn off' in phrase_lower or 'shutdown' in phrase_lower or 'shut down' in phrase_lower) and tv_status() != 0:
         speaker.speak(text="I wasn't able to connect to your TV sir! I guess your TV is powered off already.")
         return
     elif tv_status():
         if globals.called_by_offline['status']:
-            send_magic_packet(globals.smart_devices.get('tv_mac'))
+            send_magic_packet(smart_devices.get('tv_mac'))
         else:
-            Thread(target=send_magic_packet, args=[globals.smart_devices.get('tv_mac')]).start()
+            Thread(target=send_magic_packet, args=[smart_devices.get('tv_mac')]).start()
             speaker.speak(text="Looks like your TV is powered off sir! Let me try to turn it back on!", run=True)
 
     for i in range(5):
@@ -62,7 +71,7 @@ def television(phrase: str) -> None:
 
     if not globals.tv:
         try:
-            globals.tv = TV(ip_address=globals.smart_devices.get('tv_ip'), client_key=env.tv_client_key)
+            globals.tv = TV(ip_address=smart_devices.get('tv_ip'), client_key=env.tv_client_key)
         except ConnectionResetError as error:
             logger.error(f"Failed to connect to the TV. {error}")
             speaker.speak(text="I was unable to connect to the TV sir! It appears to be a connection issue. "

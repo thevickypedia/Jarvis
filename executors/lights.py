@@ -1,7 +1,10 @@
+import os.path
 import random
 import re
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread
+
+import yaml
 
 from executors.internet import vpn_checker
 from modules.audio import speaker
@@ -16,14 +19,22 @@ def lights(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
-    phrase = phrase.lower()
-    if not any([globals.smart_devices.get('hallway_ip'), globals.smart_devices.get('kitchen_ip'),
-                globals.smart_devices.get('bedroom_ip')]):
+    if not os.path.isfile('smart_devices.yaml'):
+        support.no_env_vars()
+        return
+
+    with open('smart_devices.yaml') as file:
+        smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader)
+
+    if not any([smart_devices.get('hallway_ip'), smart_devices.get('kitchen_ip'),
+                smart_devices.get('bedroom_ip')]):
         support.no_env_vars()
         return
 
     if vpn_checker().startswith('VPN'):
         return
+
+    phrase = phrase.lower()
 
     def light_switch():
         """Says a message if the physical switch is toggled off."""
@@ -81,21 +92,21 @@ def lights(phrase: str) -> None:
         smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness').update_device(**args)
 
     if 'hallway' in phrase:
-        if not (host_ip := globals.smart_devices.get('hallway_ip')):
+        if not (host_ip := smart_devices.get('hallway_ip')):
             light_switch()
             return
     elif 'kitchen' in phrase:
-        if not (host_ip := globals.smart_devices.get('kitchen_ip')):
+        if not (host_ip := smart_devices.get('kitchen_ip')):
             light_switch()
             return
     elif 'bedroom' in phrase:
-        if not (host_ip := globals.smart_devices.get('bedroom_ip')):
+        if not (host_ip := smart_devices.get('bedroom_ip')):
             light_switch()
             return
     else:
-        host_ip = globals.smart_devices.get('hallway_ip') + \
-                  globals.smart_devices.get('kitchen_ip') + \
-                  globals.smart_devices.get('bedroom_ip')  # noqa: E126
+        host_ip = smart_devices.get('hallway_ip') + \
+                  smart_devices.get('kitchen_ip') + \
+                  smart_devices.get('bedroom_ip')  # noqa: E126
 
     lights_count = len(host_ip)
 
@@ -124,14 +135,14 @@ def lights(phrase: str) -> None:
     elif 'warm' in phrase or 'yellow' in phrase:
         globals.warm_light['status'] = True
         if 'yellow' in phrase:
-            speaker.speak(
-                text=f'{random.choice(conversation.acknowledgement)}! Setting {lights_count} {plural} to yellow!')
+            speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! '
+                               f'Setting {lights_count} {plural} to yellow!')
         else:
             speaker.speak(text=f'Sure sir! Setting {lights_count} {plural} to warm!')
         Thread(target=thread_worker, args=[warm]).start()
     elif any(word in phrase for word in list(preset_values.PRESET_VALUES.keys())):
-        speaker.speak(
-            text=f"{random.choice(conversation.acknowledgement)}! I've changed {lights_count} {plural} to red!")
+        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
+                           f"I've changed {lights_count} {plural} to red!")
         for light_ip in host_ip:
             preset(host=light_ip,
                    value=[preset_values.PRESET_VALUES[_type] for _type in
@@ -147,8 +158,8 @@ def lights(phrase: str) -> None:
                 level = int(level[0])
             else:
                 level = 100
-        speaker.speak(
-            text=f"{random.choice(conversation.acknowledgement)}! I've set {lights_count} {plural} to {level}%!")
+        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
+                           f"I've set {lights_count} {plural} to {level}%!")
         level = round((255 * level) / 100)
         for light_ip in host_ip:
             lumen(host=light_ip, warm_lights=globals.warm_light.get('status'), rgb=level)
