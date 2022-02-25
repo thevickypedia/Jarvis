@@ -2,12 +2,12 @@ import math
 import os
 import re
 import sys
+import time
 import webbrowser
 from difflib import SequenceMatcher
 from pathlib import Path
 from socket import gethostname
 from ssl import create_default_context
-from time import perf_counter
 from typing import Tuple, Union
 
 import certifi
@@ -117,7 +117,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
         speaker.speak(text="I was unable to connect to the internet. Please check your connection settings and retry.",
                       run=True)
         sys.stdout.write(f"\rMemory consumed: {support.size_converter(byte_size=0)}"
-                         f"\nTotal runtime: {support.time_converter(seconds=perf_counter())}")
+                         f"\nTotal runtime: {support.time_converter(seconds=time.perf_counter())}")
         support.terminator()
 
     try:
@@ -130,9 +130,12 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
         controls.restart()
 
 
-def get_current_location():
+def write_current_location():
     """Extracts location information from either an ``AppleDevice`` or the public IP address."""
     # todo: Write to a DB instead of dumping in an yaml file
+    if os.path.isfile('location.yaml') and int(time.time() - os.stat('location.yaml').st_mtime) < 3_600:
+        logger.logger.info('location.yaml was generated within the hour.')
+        return
     current_lat, current_lon, location_info = location_services(device=device_selector())
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
     with open('location.yaml', 'w') as location_writer:

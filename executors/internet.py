@@ -90,8 +90,7 @@ def ip_info(phrase: str) -> None:
         if not output:
             output = 'I was unable to fetch the public IP sir!'
     else:
-        ip_addr = ip_address().split(':')[-1]
-        output = f"My local IP address for {gethostname()} is {ip_addr}"
+        output = f"My local IP address for {gethostname()} is {ip_address()}"
     speaker.speak(text=output)
 
 
@@ -104,7 +103,8 @@ def get_ssid() -> str:
     """
     process = subprocess.Popen(
         ['/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', '-I'],
-        stdout=subprocess.PIPE)
+        stdout=subprocess.PIPE
+    )
     out, err = process.communicate()
     if error := process.returncode:
         logger.error(f"Failed to fetch SSID with exit code: {error}\n{err}")

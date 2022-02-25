@@ -1,3 +1,5 @@
+"""Runs once during API startup and continues to run in a cron scheduler as per market hours."""
+
 import math
 import os
 from datetime import date, datetime
@@ -10,7 +12,7 @@ from pyrh import Robinhood
 
 try:
     from api.rh_helper import CustomTemplate
-except ModuleNotFoundError:
+except ModuleNotFoundError:  # Expected when script is started by cron schedule
     from rh_helper import CustomTemplate
 
 

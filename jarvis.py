@@ -2,6 +2,7 @@ import os
 import random
 import struct
 import sys
+import time
 import webbrowser
 from datetime import datetime
 from multiprocessing import Process
@@ -9,7 +10,7 @@ from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from pathlib import PurePath
 from threading import Thread
-from time import perf_counter, sleep, time
+from typing import List
 
 import pvporcupine
 from playsound import playsound
@@ -29,8 +30,8 @@ from executors.github import github
 from executors.guard import guard_enable
 from executors.internet import get_ssid, internet_checker, ip_info, speed_test
 from executors.lights import lights
-from executors.location import (directions, distance, get_current_location,
-                                locate, locate_places, location)
+from executors.location import (directions, distance, locate, locate_places,
+                                location, write_current_location)
 from executors.logger import logger
 from executors.meetings import (meeting_file_writer, meeting_reader, meetings,
                                 meetings_gatherer)
@@ -468,53 +469,39 @@ def initiator(key_original: str, should_return: bool = False) -> None:
             initialize()
 
 
-def automator(every_1: int = 1_800, every_2: int = 3_600) -> None:
+def automator() -> None:
     """Place for long-running background threads.
 
-    Args:
-        every_1: Triggers every 30 minutes in a dedicated process, to switch volumes to time based levels.
-        every_2: Triggers every 60 minutes in a dedicated process, to initiate
-            ``meeting_file_writer`` and ``scan_smart_devices``.
-
     See Also:
+        - Initiates ``meeting_file_writer`` and ``scan_smart_devices`` every hour in a dedicated process.
         - Keeps looking for the ``offline_request`` file, and invokes ``offline_communicator`` with content as the arg.
-        - The ``automation.json`` should be a JSON file of dictionary within a dictionary that looks like the below:
+        - The ``automation.yaml`` should be a dictionary within a dictionary that looks like the below:
 
-            .. code-block:: json
+            .. code-block:: yaml
 
-                {
-                  "6:00 AM": {
-                    "task": "set my bedroom lights to 50%",
-                    "status": false
-                  },
-                  "9:00 PM": {
-                    "task": "set my bedroom lights to 5%",
-                    "status": false
-                  }
-                }
+                6:00 AM:
+                  task: set my bedroom lights to 50%
+                9:00 PM:
+                  task: set my bedroom lights to 5%
 
-        - The status for all automations can be set to either ``true`` or ``false``.
-        - Jarvis will swap these flags as necessary, so that the execution doesn't repeat more than once in a minute.
+        - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't execute a task repeatedly.
     """
     # todo: Write and read from DB and add an option to run a task at certain intervals
-    start_1 = start_2 = time()
+    start = time.time()
     dry_run = True
     while True:
         if os.path.isfile('offline_request'):
-            sleep(0.1)  # Read file after 0.1 second for the content to be written
+            time.sleep(0.1)  # Read file after 0.1 second for the content to be written
             with open('offline_request') as off_request:
                 offline_communicator(command=off_request.read())
             support.flush_screen()
 
-        if os.path.isfile('automation.json'):
+        if os.path.isfile('automation.yaml'):
             if exec_task := auto_helper():
                 offline_communicator(command=exec_task, respond=False)
 
-        if dry_run or start_1 + every_1 <= time():
-            start_1 = time()
-            Process(target=support.daytime_nighttime_swapper).start()
-        if dry_run or start_2 + every_2 <= time():
-            start_2 = time()
+        if dry_run or start + 3_600 <= time.time():  # Executes every hour
+            start = time.time()
             Process(target=meeting_file_writer).start()
             Process(target=support.scan_smart_devices).start()
 
@@ -612,6 +599,7 @@ class Activator:
                     logger.info('Exiting sentry mode since the STOPPER flag was set.')
                     self.stop()
                     controls.restart(quiet=True)
+                    break
         except KeyboardInterrupt:
             self.stop()
             if not globals.called_by_offline['status']:
@@ -622,10 +610,18 @@ class Activator:
         """Invoked when the run loop is exited or manual interrupt.
 
         See Also:
+            - Terminates/Kills all the background processes.
             - Releases resources held by porcupine.
             - Closes audio stream.
             - Releases port audio resources.
         """
+        for process in globals.processes:
+            if process.is_alive():
+                logger.info(f'Terminating process [SIGTERM]: {process.pid}')
+                process.terminate()
+                if process.is_alive():
+                    logger.info(f'Killing process [SIGKILL]: {process.pid}')
+                    process.kill()
         logger.info('Releasing resources acquired by Porcupine.')
         self.detector.delete()
         if self.audio_stream and self.audio_stream.is_active():
@@ -635,20 +631,24 @@ class Activator:
         self.py_audio.terminate()
 
 
-def initiate_background_threads() -> None:
-    """Initiate multiple processes to achieve parallelization.
+def initiate_background_processes() -> List[Process]:
+    """Initiate multiple background processes to achieve parallelization.
 
     Methods
         - initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
-        - trigger_api: Initiates Jarvis API using uvicorn server in a thread.
-        - automator: Initiates automator that executes certain functions at said time.
+        - write_current_location: Writes current location details into a yaml file.
+        - trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.
+        - automator: Initiates automator that executes offline commands and certain functions at said time.
         - playsound: Plays a start-up sound.
     """
-    Process(target=offline.initiate_tunneling,
-            kwargs={'offline_host': env.offline_host, 'offline_port': env.offline_port, 'home': env.home}).start()
-    Process(target=get_current_location).start()
-    Process(target=trigger_api).start()
-    Process(target=automator).start()
+    processes = [Process(target=offline.initiate_tunneling,
+                         kwargs={'offline_host': env.offline_host, 'offline_port': env.offline_port, 'home': env.home}),
+                 Process(target=write_current_location),
+                 Process(target=trigger_api),
+                 Process(target=automator)]
+    for process in processes:
+        process.start()
+        yield process
     playsound(sound='indicators/initialize.mp3', block=False)
 
 
@@ -664,18 +664,18 @@ if __name__ == '__main__':
     sys.stdout.write('\rVoice ID::Female: 1/17 Male: 0/7')  # Voice ID::reference
     controls.starter()  # initiates crucial functions which needs to be called during start up
 
-    if st := internet_checker():
+    if internet_checker():
         sys.stdout.write(f'\rINTERNET::Connected to {get_ssid()}. Scanning router for connected devices.')
     else:
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
         speak(text="I was unable to connect to the internet sir! Please check your connection settings and retry.",
               run=True)
         sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
-                         f"\nTotal runtime: {support.time_converter(perf_counter())}")
+                         f"\nTotal runtime: {support.time_converter(time.perf_counter())}")
         support.terminator()
 
     sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: 50%")
 
-    initiate_background_threads()
+    globals.processes = list(initiate_background_processes())
 
     Activator().start()

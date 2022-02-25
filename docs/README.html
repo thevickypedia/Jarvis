@@ -191,35 +191,28 @@ Using the module makes it easier since the devices are already connected to the 
 </section>
 <section id="automation-setup-optional">
 <h2>Automation Setup [Optional]<a class="headerlink" href="#automation-setup-optional" title="Permalink to this headline">¶</a></h2>
-<p>Executes pre-defined tasks at pre-defined times without any user interaction. Uses an <code class="docutils literal notranslate"><span class="pre">automation.json</span></code> file as source.</p>
+<p>Executes pre-defined tasks at pre-defined times without any user interaction. Uses an <code class="docutils literal notranslate"><span class="pre">automation.yaml</span></code> file as source.</p>
 <details>
-<summary><strong>Setup Instructions</strong></summary><p>The JSON file should be a dictionary within a dictionary that looks like the below.</p>
+<summary><strong>Setup Instructions</strong></summary><p>The YAML file should be a dictionary within a dictionary that looks like the below.</p>
 <p><strong>OPTIONAL:</strong> The key, <code class="docutils literal notranslate"><span class="pre">day</span></code> can be a <code class="docutils literal notranslate"><span class="pre">list</span></code> of days, or a <code class="docutils literal notranslate"><span class="pre">str</span></code> of a specific day or simply a <code class="docutils literal notranslate"><span class="pre">str</span></code> saying <code class="docutils literal notranslate"><span class="pre">weekday</span></code> or
 <code class="docutils literal notranslate"><span class="pre">weekend</span></code> when the particular automation should be executed.</p>
 <blockquote>
 <div><p>Not having the key <code class="docutils literal notranslate"><span class="pre">day</span></code> will run the automation daily.</p>
 </div></blockquote>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;6:00 AM&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;day&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;weekday&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;task&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;set my bedroom lights to 50%&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
-<span class="w">  </span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;6:30 AM&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;day&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Monday&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;wednesday&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;FRIDAY&quot;</span><span class="p">],</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;task&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;set my bedroom lights to 100%&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
-<span class="w">  </span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;8:00 AM&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;day&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;weekend&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;task&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;set my bedroom lights to 100%&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
-<span class="w">  </span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;9:00 PM&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;task&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;set my bedroom lights to 5%&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">6:00 AM</span><span class="p p-Indicator">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">day</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weekday</span><span class="w">  </span><span class="c1"># Runs only between Monday and Friday</span><span class="w"></span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 50%</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">6:30 AM</span><span class="p p-Indicator">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">day</span><span class="p">:</span><span class="w">  </span><span class="c1"># Runs only on Monday, Wednesday and Friday</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Monday</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wednesday</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FRIDAY</span><span class="w"></span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 100%</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">8:00 AM</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="c1"># Runs only on Saturday and Sunday</span><span class="w"></span>
+<span class="w">  </span><span class="nt">day</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weekend</span><span class="w"></span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 100%</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">9:00 PM</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="c1"># Runs daily</span><span class="w"></span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 5%</span><span class="w"></span>
 </pre></div>
 </div>
 </details></section>

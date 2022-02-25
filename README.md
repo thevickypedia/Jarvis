@@ -152,40 +152,33 @@ By using `smart_devices.yaml`, the `Netgear` module can be avoided at the cost o
 > Note: Set a `SOURCE: True` flag in `smart_devices.yaml` otherwise the file will be removed in case of quick restarts.
 
 ### Automation Setup [Optional]
-Executes pre-defined tasks at pre-defined times without any user interaction. Uses an `automation.json` file as source.
+Executes pre-defined tasks at pre-defined times without any user interaction. Uses an `automation.yaml` file as source.
 
 <details>
 <summary><strong>Setup Instructions</strong></summary>
 
-The JSON file should be a dictionary within a dictionary that looks like the below.
+The YAML file should be a dictionary within a dictionary that looks like the below.
 
 **OPTIONAL:** The key, `day` can be a `list` of days, or a `str` of a specific day or simply a `str` saying `weekday` or
 `weekend` when the particular automation should be executed.
 
 > Not having the key `day` will run the automation daily.
 
-```json
-{
-  "6:00 AM": {
-    "day": "weekday",
-    "task": "set my bedroom lights to 50%",
-    "status": false
-  },
-  "6:30 AM": {
-    "day": ["Monday", "wednesday", "FRIDAY"],
-    "task": "set my bedroom lights to 100%",
-    "status": false
-  },
-  "8:00 AM": {
-    "day": "weekend",
-    "task": "set my bedroom lights to 100%",
-    "status": false
-  },
-  "9:00 PM": {
-    "task": "set my bedroom lights to 5%",
-    "status": false
-  }
-}
+```yaml
+6:00 AM:
+  day: weekday  # Runs only between Monday and Friday
+  task: set my bedroom lights to 50%
+6:30 AM:
+  day:  # Runs only on Monday, Wednesday and Friday
+  - Monday
+  - wednesday
+  - FRIDAY
+  task: set my bedroom lights to 100%
+8:00 AM:  # Runs only on Saturday and Sunday
+  day: weekend
+  task: set my bedroom lights to 100%
+9:00 PM:  # Runs daily
+  task: set my bedroom lights to 5%
 ```
 </details>
 
