@@ -91,7 +91,7 @@ def car(phrase: str) -> None:
         Thread(target=support.unrecognized_dumper, args=[{'CAR': phrase}])
 
 
-def vehicle(car_email, car_pass, car_pin, operation: str, temp: int = None) -> Union[str, None]:
+def vehicle(car_email: str, car_pass: str, car_pin: int, operation: str, temp: int = None) -> Union[str, None]:
     """Establishes a connection with the car and returns an object to control the primary vehicle.
 
     Args:

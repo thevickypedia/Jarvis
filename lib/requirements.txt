@@ -23,7 +23,7 @@ randfacts==0.15.0
 appscript==1.1.2
 wolframalpha==5.0.0
 pynetgear==0.9.1
-fastapi==0.74.0
+fastapi==0.74.1
 uvicorn==0.17.5
 aiofiles==0.8.0
 pydantic==1.9.0
@@ -37,3 +37,4 @@ requests==2.27.1
 psutil==5.9.0
 pytest==7.0.1
 bs4==0.0.1
+Pillow==9.0.1

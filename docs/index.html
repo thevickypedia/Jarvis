@@ -123,6 +123,7 @@
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
+<li><p>Terminates/Kills all the background processes.</p></li>
 <li><p>Releases resources held by porcupine.</p></li>
 <li><p>Closes audio stream.</p></li>
 <li><p>Releases port audio resources.</p></li>
@@ -134,39 +135,24 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.automator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">automator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">every_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1800</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">every_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3600</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.automator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">automator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.automator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Place for long-running background threads.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>every_1</strong> – Triggers every 30 minutes in a dedicated process, to switch volumes to time based levels.</p></li>
-<li><p><strong>every_2</strong> – Triggers every 60 minutes in a dedicated process, to initiate
-<code class="docutils literal notranslate"><span class="pre">meeting_file_writer</span></code> and <code class="docutils literal notranslate"><span class="pre">scan_smart_devices</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul>
+<li><p>Initiates <code class="docutils literal notranslate"><span class="pre">meeting_file_writer</span></code> and <code class="docutils literal notranslate"><span class="pre">scan_smart_devices</span></code> every hour in a dedicated process.</p></li>
 <li><p>Keeps looking for the <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file, and invokes <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code> with content as the arg.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">automation.json</span></code> should be a JSON file of dictionary within a dictionary that looks like the below:</p>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">automation.yaml</span></code> should be a dictionary within a dictionary that looks like the below:</p>
 <blockquote>
-<div><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;6:00 AM&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;task&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;set my bedroom lights to 50%&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
-<span class="w">  </span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;9:00 PM&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;task&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;set my bedroom lights to 5%&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">6:00 AM</span><span class="p p-Indicator">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 50%</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">9:00 PM</span><span class="p p-Indicator">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 5%</span><span class="w"></span>
 </pre></div>
 </div>
 </div></blockquote>
 </li>
-<li><p>The status for all automations can be set to either <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p></li>
-<li><p>Jarvis will swap these flags as necessary, so that the execution doesn’t repeat more than once in a minute.</p></li>
+<li><p>Jarvis creates/swaps a <code class="docutils literal notranslate"><span class="pre">status</span></code> flag upon execution, so that it doesn’t execute a task repeatedly.</p></li>
 </ul>
 </div>
 </dd></dl>
@@ -199,14 +185,15 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.initiate_background_threads">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiate_background_threads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.initiate_background_threads" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiate multiple processes to achieve parallelization.</p>
+<dt class="sig sig-object py" id="jarvis.initiate_background_processes">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiate_background_processes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">multiprocessing.context.Process</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.initiate_background_processes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiate multiple background processes to achieve parallelization.</p>
 <dl class="simple">
 <dt>Methods</dt><dd><ul class="simple">
 <li><p>initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
-<li><p>trigger_api: Initiates Jarvis API using uvicorn server in a thread.</p></li>
-<li><p>automator: Initiates automator that executes certain functions at said time.</p></li>
+<li><p>write_current_location: Writes current location details into a yaml file.</p></li>
+<li><p>trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.</p></li>
+<li><p>automator: Initiates automator that executes offline commands and certain functions at said time.</p></li>
 <li><p>playsound: Plays a start-up sound.</p></li>
 </ul>
 </dd>
@@ -686,46 +673,12 @@ name is specified, allow every event.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LogConfig</span>
 </pre></div>
 </div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.LogConfig.ACCESS_LOG_FILENAME">
-<span class="sig-name descname"><span class="pre">ACCESS_LOG_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'logs/api/access_24-02-2022.log'</span></em><a class="headerlink" href="#api.models.LogConfig.ACCESS_LOG_FILENAME" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.LogConfig.ACCESS_LOG_FORMAT">
-<span class="sig-name descname"><span class="pre">ACCESS_LOG_FORMAT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'%(levelprefix)s</span> <span class="pre">%(client_addr)s</span> <span class="pre">-</span> <span class="pre">&quot;%(request_line)s&quot;</span> <span class="pre">%(status_code)s'</span></em><a class="headerlink" href="#api.models.LogConfig.ACCESS_LOG_FORMAT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.LogConfig.DEFAULT_LOG_FILENAME">
-<span class="sig-name descname"><span class="pre">DEFAULT_LOG_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'logs/api/default_24-02-2022.log'</span></em><a class="headerlink" href="#api.models.LogConfig.DEFAULT_LOG_FILENAME" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.LogConfig.DEFAULT_LOG_FORMAT">
-<span class="sig-name descname"><span class="pre">DEFAULT_LOG_FORMAT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s</span> <span class="pre">-</span> <span class="pre">[%(module)s:%(lineno)d]</span> <span class="pre">-</span> <span class="pre">%(funcName)s</span> <span class="pre">-</span> <span class="pre">%(message)s'</span></em><a class="headerlink" href="#api.models.LogConfig.DEFAULT_LOG_FORMAT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.LogConfig.ERROR_LOG_FORMAT">
-<span class="sig-name descname"><span class="pre">ERROR_LOG_FORMAT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'%(levelname)s\t</span> <span class="pre">%(message)s'</span></em><a class="headerlink" href="#api.models.LogConfig.ERROR_LOG_FORMAT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.LogConfig.LOGGING_CONFIG">
-<span class="sig-name descname"><span class="pre">LOGGING_CONFIG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'disable_existing_loggers':</span> <span class="pre">True,</span> <span class="pre">'formatters':</span> <span class="pre">{'access':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.AccessFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(levelprefix)s</span> <span class="pre">%(client_addr)s</span> <span class="pre">-</span> <span class="pre">&quot;%(request_line)s&quot;</span> <span class="pre">%(status_code)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False},</span> <span class="pre">'default':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.DefaultFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s</span> <span class="pre">-</span> <span class="pre">[%(module)s:%(lineno)d]</span> <span class="pre">-</span> <span class="pre">%(funcName)s</span> <span class="pre">-</span> <span class="pre">%(message)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False},</span> <span class="pre">'error':</span> <span class="pre">{'()':</span> <span class="pre">'uvicorn.logging.DefaultFormatter',</span> <span class="pre">'fmt':</span> <span class="pre">'%(levelname)s\t</span> <span class="pre">%(message)s',</span> <span class="pre">'use_colors':</span> <span class="pre">False}},</span> <span class="pre">'handlers':</span> <span class="pre">{'access':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/access_24-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'access'},</span> <span class="pre">'default':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/default_24-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'default'},</span> <span class="pre">'error':</span> <span class="pre">{'class':</span> <span class="pre">'logging.FileHandler',</span> <span class="pre">'filename':</span> <span class="pre">'logs/api/default_24-02-2022.log',</span> <span class="pre">'formatter':</span> <span class="pre">'error'}},</span> <span class="pre">'loggers':</span> <span class="pre">{'uvicorn':</span> <span class="pre">{'handlers':</span> <span class="pre">['default'],</span> <span class="pre">'level':</span> <span class="pre">'INFO'},</span> <span class="pre">'uvicorn.access':</span> <span class="pre">{'handlers':</span> <span class="pre">['access'],</span> <span class="pre">'level':</span> <span class="pre">'INFO'},</span> <span class="pre">'uvicorn.error':</span> <span class="pre">{'handlers':</span> <span class="pre">['error'],</span> <span class="pre">'level':</span> <span class="pre">'INFO',</span> <span class="pre">'propagate':</span> <span class="pre">True}},</span> <span class="pre">'version':</span> <span class="pre">1}</span></em><a class="headerlink" href="#api.models.LogConfig.LOGGING_CONFIG" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.LogConfig.LOG_LEVEL">
-<span class="sig-name descname"><span class="pre">LOG_LEVEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INFO'</span></em><a class="headerlink" href="#api.models.LogConfig.LOG_LEVEL" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </section>
 <section id="module-api.report_gatherer">
 <span id="api-robinhood"></span><h1>API Robinhood<a class="headerlink" href="#module-api.report_gatherer" title="Permalink to this headline">¶</a></h1>
+<p>Runs once during API startup and continues to run in a cron scheduler as per market hours.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="api.report_gatherer.Investment">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.report_gatherer.</span></span><span class="sig-name descname"><span class="pre">Investment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">logging.Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.report_gatherer.Investment" title="Permalink to this definition">¶</a></dt>
@@ -876,11 +829,11 @@ name is specified, allow every event.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.automation.rewrite_automator">
-<span class="sig-prename descclassname"><span class="pre">executors.automation.</span></span><span class="sig-name descname"><span class="pre">rewrite_automator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.automation.rewrite_automator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rewrites the <code class="docutils literal notranslate"><span class="pre">'automation.json'</span></code> with the updated json object.</p>
+<span class="sig-prename descclassname"><span class="pre">executors.automation.</span></span><span class="sig-name descname"><span class="pre">rewrite_automator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">write_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.automation.rewrite_automator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rewrites the <code class="docutils literal notranslate"><span class="pre">'automation.yaml'</span></code> with the updated dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>json_object</strong> – Takes the new json object as a dictionary.</p>
+<dd class="field-odd"><p><strong>write_data</strong> – Takes the new dictionary as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -940,7 +893,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.car.vehicle">
-<span class="sig-prename descclassname"><span class="pre">executors.car.</span></span><span class="sig-name descname"><span class="pre">vehicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">car_email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.car.vehicle" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.car.</span></span><span class="sig-name descname"><span class="pre">vehicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">car_email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.car.vehicle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Establishes a connection with the car and returns an object to control the primary vehicle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1437,12 +1390,6 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.location.get_current_location">
-<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">get_current_location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#executors.location.get_current_location" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extracts location information from either an <code class="docutils literal notranslate"><span class="pre">AppleDevice</span></code> or the public IP address.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="executors.location.locate">
 <span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">locate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.location.locate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Locates an Apple device using icloud api for python.</p>
@@ -1492,6 +1439,12 @@ A condition below assumes two different words as two places but not including tw
 <dd class="field-even"><p><strong>PyiCloudFailedLoginException</strong> – Restarts if occurs once. Uses location by IP, if occurs once again.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.location.write_current_location">
+<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">write_current_location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#executors.location.write_current_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts location information from either an <code class="docutils literal notranslate"><span class="pre">AppleDevice</span></code> or the public IP address.</p>
 </dd></dl>
 
 </section>
@@ -4082,196 +4035,6 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ENV</span>
 </pre></div>
 </div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.alt_gmail_pass">
-<span class="sig-name descname"><span class="pre">alt_gmail_pass</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.alt_gmail_pass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.alt_gmail_user">
-<span class="sig-name descname"><span class="pre">alt_gmail_user</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.alt_gmail_user" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.birthday">
-<span class="sig-name descname"><span class="pre">birthday</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.birthday" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.car_email">
-<span class="sig-name descname"><span class="pre">car_email</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.car_email" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.car_pass">
-<span class="sig-name descname"><span class="pre">car_pass</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.car_pass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.car_pin">
-<span class="sig-name descname"><span class="pre">car_pin</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.car_pin" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.git_pass">
-<span class="sig-name descname"><span class="pre">git_pass</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.git_pass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.git_user">
-<span class="sig-name descname"><span class="pre">git_user</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.git_user" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.gmail_pass">
-<span class="sig-name descname"><span class="pre">gmail_pass</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.gmail_pass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.gmail_user">
-<span class="sig-name descname"><span class="pre">gmail_user</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.gmail_user" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.home">
-<span class="sig-name descname"><span class="pre">home</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky'</span></em><a class="headerlink" href="#modules.utils.globals.ENV.home" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.icloud_pass">
-<span class="sig-name descname"><span class="pre">icloud_pass</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.icloud_pass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.icloud_recovery">
-<span class="sig-name descname"><span class="pre">icloud_recovery</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.icloud_recovery" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.icloud_user">
-<span class="sig-name descname"><span class="pre">icloud_user</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.icloud_user" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.maps_api">
-<span class="sig-name descname"><span class="pre">maps_api</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.maps_api" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.meeting_app">
-<span class="sig-name descname"><span class="pre">meeting_app</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'calendar'</span></em><a class="headerlink" href="#modules.utils.globals.ENV.meeting_app" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.news_api">
-<span class="sig-name descname"><span class="pre">news_api</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.news_api" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.offline_host">
-<span class="sig-name descname"><span class="pre">offline_host</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'127.0.0.1'</span></em><a class="headerlink" href="#modules.utils.globals.ENV.offline_host" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.offline_pass">
-<span class="sig-name descname"><span class="pre">offline_pass</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.offline_pass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.offline_port">
-<span class="sig-name descname"><span class="pre">offline_port</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4483</span></em><a class="headerlink" href="#modules.utils.globals.ENV.offline_port" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.phone_number">
-<span class="sig-name descname"><span class="pre">phone_number</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.phone_number" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.phrase_limit">
-<span class="sig-name descname"><span class="pre">phrase_limit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#modules.utils.globals.ENV.phrase_limit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.recipient">
-<span class="sig-name descname"><span class="pre">recipient</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.recipient" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.robinhood_endpoint_auth">
-<span class="sig-name descname"><span class="pre">robinhood_endpoint_auth</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.robinhood_endpoint_auth" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.robinhood_pass">
-<span class="sig-name descname"><span class="pre">robinhood_pass</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.robinhood_pass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.robinhood_qr">
-<span class="sig-name descname"><span class="pre">robinhood_qr</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.robinhood_qr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.robinhood_user">
-<span class="sig-name descname"><span class="pre">robinhood_user</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.robinhood_user" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.root_password">
-<span class="sig-name descname"><span class="pre">root_password</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.root_password" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.root_user">
-<span class="sig-name descname"><span class="pre">root_user</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'vicky'</span></em><a class="headerlink" href="#modules.utils.globals.ENV.root_user" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.router_pass">
-<span class="sig-name descname"><span class="pre">router_pass</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.router_pass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.sensitivity">
-<span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.5</span></em><a class="headerlink" href="#modules.utils.globals.ENV.sensitivity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.timeout">
-<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#modules.utils.globals.ENV.timeout" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.tv_client_key">
-<span class="sig-name descname"><span class="pre">tv_client_key</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.tv_client_key" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.vpn_password">
-<span class="sig-name descname"><span class="pre">vpn_password</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.vpn_password" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.vpn_username">
-<span class="sig-name descname"><span class="pre">vpn_username</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'vicky'</span></em><a class="headerlink" href="#modules.utils.globals.ENV.vpn_username" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.weather_api">
-<span class="sig-name descname"><span class="pre">weather_api</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.weather_api" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.website">
-<span class="sig-name descname"><span class="pre">website</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'thevickypedia.com'</span></em><a class="headerlink" href="#modules.utils.globals.ENV.website" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV.wolfram_api_key">
-<span class="sig-name descname"><span class="pre">wolfram_api_key</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.utils.globals.ENV.wolfram_api_key" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </section>

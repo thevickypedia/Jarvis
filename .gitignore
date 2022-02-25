@@ -51,7 +51,7 @@ offline_request
 offline_response
 
 # automation setup
-automation.json
+automation.yaml
 
 # robinhood report file generated to be accessed from API endpoint
 api/robinhood.html

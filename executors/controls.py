@@ -2,7 +2,7 @@ import os
 import random
 import subprocess
 import sys
-from datetime import datetime
+import time
 from threading import Thread
 from time import perf_counter
 
@@ -171,8 +171,10 @@ def shutdown(proceed: bool = False) -> None:
 
 def clear_logs() -> None:
     """Deletes log files that were updated before 48 hours."""
-    [os.remove(f"logs/{file}") for file in os.listdir('logs') if int(datetime.now().timestamp()) - int(
-        os.stat(f'logs/{file}').st_mtime) > 172_800] if os.path.exists('logs') else None
+    for __path, __directory, __file in os.walk('logs'):
+        for file_ in __file:
+            if int(time.time() - os.stat(f'{__path}/{file_}').st_mtime) > 172_800:
+                os.remove(f'{__path}/{file_}')
 
 
 def starter() -> None:

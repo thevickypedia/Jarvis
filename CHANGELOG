@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+5.5.9 (02/25/2022)
+------------------
+- Use YAML instead of JSON file for automation setup
+- Remove status flag from automation file and set when needed
+- Update clear_logs to scan files within the logs/api dir
+- Gracefully terminate background processes when shutdown
+- Remove default args from automation function
+- Bump fastapi version and add Pillow to requirements.txt
+- Exclude env vars from docs
+
 5.5.8 (02/24/2022)
 ------------------
 - Use ``Process`` instead of ``Thread`` for long-running tasks

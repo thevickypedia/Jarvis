@@ -69,7 +69,7 @@ Jarvis - API Models
 
 .. autoclass:: api.models.LogConfig(pydantic.BaseModel)
    :members:
-   :undoc-members:
+   :exclude-members: ACCESS_LOG_FILENAME, ACCESS_LOG_FORMAT, DEFAULT_LOG_FILENAME, DEFAULT_LOG_FORMAT, ERROR_LOG_FORMAT, LOGGING_CONFIG, LOG_LEVEL
 
 API Robinhood
 =============
@@ -399,7 +399,7 @@ Utils - Globals
 
 .. automodule:: modules.utils.globals
    :members:
-   :undoc-members:
+   :exclude-members: alt_gmail_pass, alt_gmail_user, birthday, car_email, car_pass, car_pin, git_pass, git_user, gmail_pass, gmail_user, home, icloud_pass, icloud_recovery, icloud_user, maps_api, meeting_app, news_api, offline_host, offline_pass, offline_port, phone_number, phrase_limit, recipient, robinhood_endpoint_auth, robinhood_pass, robinhood_qr, robinhood_user, root_password, root_user, router_pass, sensitivity, timeout, tv_client_key, vpn_password, vpn_username, weather_api, website, wolfram_api_key
 
 Indices and tables
 ==================

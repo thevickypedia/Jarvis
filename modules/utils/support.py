@@ -328,7 +328,6 @@ def scan_smart_devices() -> None:
         Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted.
     """
     # todo: Write to a DB instead of dumping in an yaml file
-    # if router_pass := os.environ.get('router_pass'):
     if env.router_pass:
         logger.info('Scanning smart devices using netgear module.')
         local_devices = LocalIPScan(router_pass=env.router_pass)

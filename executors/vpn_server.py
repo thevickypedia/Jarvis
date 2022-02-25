@@ -41,10 +41,9 @@ def vpn_server_switch(operation: str) -> None:
     See Also:
         - Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
     """
-    vpn_object = VPNServer(vpn_username=env.vpn_username or env.root_user or 'openvpn',
-                           vpn_password=env.vpn_password or 'aws_vpn_2021', log='FILE',
+    vpn_object = VPNServer(vpn_username=env.vpn_username, vpn_password=env.vpn_password,
                            gmail_user=env.alt_gmail_user, gmail_pass=env.alt_gmail_pass,
-                           phone=env.phone_number, recipient=env.recipient)
+                           phone=env.phone_number, recipient=env.recipient, log='FILE')
     if operation == 'START':
         globals.vpn_status['active'] = 'enabled'
         vpn_object.create_vpn_server()
