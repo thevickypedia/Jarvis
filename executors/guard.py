@@ -51,17 +51,16 @@ def guard_enable() -> None:
     while True:
         # Listens for any recognizable speech and saves it to a notes file
         sys.stdout.write("\rSECURITY MODE")
-        converted = listener.listen(timeout=3, phrase_limit=10)
+        converted = listener.listen(timeout=3, phrase_limit=10, sound=False)
         if converted == 'SR_ERROR':
             continue
 
-        converted = converted.replace('Jarvis', '').strip()
         if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable):
-            logger.info('Disabled security mode')
             speaker.speak(text=f'Welcome back sir! Good {support.part_of_day()}.')
             if os.path.exists(f'threat/{date_extn}.jpg'):
                 speaker.speak(text="We had a potential threat sir! Please check your email to confirm.")
             speaker.speak(run=True)
+            logger.info('Disabled security mode')
             sys.stdout.write('\rDisabled Security Mode')
             break
         elif converted:

@@ -15,11 +15,9 @@ if os.path.isfile('.env'):
     dotenv.load_dotenv(dotenv_path='.env', verbose=True, override=True)  # loads the .env file
 
 STOPPER = {'status': False}
-current_location_ = {}
 text_spoken = {'text': ''}
 vpn_status = {'active': False}
 called_by_offline = {'status': False}
-smart_devices = {}
 hosted_device = {}
 greet_check = {}
 warm_light = {}
@@ -71,6 +69,7 @@ class ENV:
     tv_client_key = os.environ.get('tv_client_key')
     root_user = os.environ.get('USER', getpass.getuser())
     root_password = os.environ.get('root_password')
+    router_pass = os.environ.get('router_pass')
     vpn_username = os.environ.get('vpn_username', root_user)
     vpn_password = os.environ.get('vpn_password', root_password)
     birthday = os.environ.get('birthday')
@@ -80,4 +79,3 @@ class ENV:
     sensitivity = float(os.environ.get('sensitivity', 0.5))
     timeout = int(os.environ.get('timeout', 3))
     phrase_limit = int(os.environ.get('phrase_limit', 3))
-    restart_interval = int(os.environ.get('restart_interval', 28_800))  # 8 hours

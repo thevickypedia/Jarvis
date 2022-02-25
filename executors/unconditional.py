@@ -6,6 +6,7 @@ import inflect
 import requests
 import wolframalpha
 import wordninja
+import yaml
 from geopy.distance import geodesic
 from search_engine_parser.core.engines.google import Search as GoogleSearch
 from search_engine_parser.core.exceptions import NoResultsOrTrafficError
@@ -158,9 +159,13 @@ def google_maps(query: str) -> bool:
         required = sorted(required, key=lambda sort: sort['Rating'], reverse=True)
     else:
         return True
+
+    with open('location.yaml') as file:
+        current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+
     results = len(required)
     speaker.speak(text=f"I found {results} results sir!") if results != 1 else None
-    start = globals.current_location_['current_lat'], globals.current_location_['current_lon']
+    start = current_location['latitude'], current_location['longitude']
     n = 0
     for item in required:
         item['Address'] = item['Address'].replace(' N ', ' North ').replace(' S ', ' South ').replace(' E ', ' East ') \

@@ -3,6 +3,7 @@ import sys
 from datetime import datetime
 from urllib.request import urlopen
 
+import yaml
 from inflect import engine
 
 from executors.location import geo_locator
@@ -39,10 +40,13 @@ def weather(phrase: str = None) -> None:
         lat = located.latitude
         lon = located.longitude
     else:
-        city = globals.current_location_['location_info']['city']
-        state = globals.current_location_['location_info']['state']
-        lat = globals.current_location_['current_lat']
-        lon = globals.current_location_['current_lon']
+        with open('location.yaml') as file:
+            current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+
+        city = current_location['address']['city']
+        state = current_location['address']['state']
+        lat = current_location['latitude']
+        lon = current_location['longitude']
     weather_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,' \
                   f'hourly&appid={env.weather_api}'
     response = json.loads(urlopen(weather_url).read())  # loads the response in a json

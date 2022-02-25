@@ -4,6 +4,7 @@ from typing import Union
 from urllib.error import HTTPError
 from urllib.request import urlopen
 
+import yaml
 from playsound import playsound
 
 from executors.logger import logger
@@ -40,9 +41,11 @@ def car(phrase: str) -> None:
         elif 'low' in phrase or 'lowest' in phrase:
             climate = 57
         else:
+            with open('location.yaml') as file:
+                current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
             climate = int(temperature.k2f(arg=json.loads(urlopen(
-                url=f"https://api.openweathermap.org/data/2.5/onecall?lat={globals.current_location_['current_lat']}&"
-                    f"lon={globals.current_location_['current_lon']}&exclude=minutely,hourly&appid={env.weather_api}"
+                url=f"https://api.openweathermap.org/data/2.5/onecall?lat={current_location['latitude']}&"
+                    f"lon={current_location['longitude']}&exclude=minutely,hourly&appid={env.weather_api}"
             ).read())['current']['temp']))
             extras += f'The current temperature is {climate}°F, so '
 

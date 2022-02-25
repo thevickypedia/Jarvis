@@ -3,7 +3,6 @@ import os
 import re
 import sys
 import webbrowser
-from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
 from socket import gethostname
@@ -35,7 +34,7 @@ geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
 env = globals.ENV
 
 
-def device_selector(icloud_user: str, icloud_pass: str, phrase: str = None) -> Union[AppleDevice, None]:
+def device_selector(phrase: str = None) -> Union[AppleDevice, None]:
     """Selects a device using the received input string.
 
     See Also:
@@ -43,17 +42,15 @@ def device_selector(icloud_user: str, icloud_pass: str, phrase: str = None) -> U
         - When chosen an index value, the device name will be returned.
 
     Args:
-        icloud_user: Username for Apple iCloud account.
-        icloud_pass: Password for Apple iCloud account.
         phrase: Takes the voice recognized statement as argument.
 
     Returns:
         AppleDevice:
         Returns the selected device from the class ``AppleDevice``
     """
-    if not all([icloud_user, icloud_pass]):
+    if not all([env.icloud_user, env.icloud_pass]):
         return
-    icloud_api = PyiCloudService(icloud_user, icloud_pass)
+    icloud_api = PyiCloudService(env.icloud_user, env.icloud_pass)
     devices = [device for device in icloud_api.devices]
     if phrase:
         devices_str = [{str(device).split(':')[0].strip(): str(device).split(':')[1].strip()} for device in devices]
@@ -86,7 +83,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
     try:
         # tries with icloud api to get your device's location for precise location services
         if not device:
-            if not (device := device_selector(icloud_user=env.icloud_user, icloud_pass=env.icloud_pass)):
+            if not (device := device_selector()):
                 raise PyiCloudFailedLoginException
         raw_location = device.location()
         if not raw_location and sys._getframe(1).f_code.co_name == 'locate':  # noqa
@@ -130,103 +127,75 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
     except (GeocoderUnavailable, GeopyError):
         logger.logger.error('Error retrieving address from latitude and longitude information. Initiating self reboot.')
         speaker.speak(text='Received an error while retrieving your address sir! I think a restart should fix this.')
-        controls.restart(quick=True)
+        controls.restart()
 
 
-def current_location():
-    """Extracts location information from either an ``AppleDevice`` or the public IP address.
-
-    See Also:
-        Checks modified time of location.yaml (if exists) and uses the data only if it was modified less than 72 hours.
-    """
-    if os.path.isfile('location.yaml') and \
-            int(datetime.now().timestamp()) - int(os.stat('location.yaml').st_mtime) < env.restart_interval + 300:
-        location_details = yaml.load(open('location.yaml'), Loader=yaml.FullLoader)
-        return {
-            'current_lat': location_details['latitude'],
-            'current_lon': location_details['longitude'],
-            'location_info': location_details['address'],
-            'current_tz': location_details['timezone']
-        }
-    else:
-        current_lat, current_lon, location_info = location_services(
-            device_selector(icloud_user=env.icloud_user, icloud_pass=env.icloud_pass)
-        )
-        current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
-        with open('location.yaml', 'w') as location_writer:
-            yaml.dump(data={'timezone': current_tz,
-                            'latitude': current_lat, 'longitude': current_lon, 'address': location_info},
-                      stream=location_writer, default_flow_style=False)
-        return {
-            'current_lat': current_lat,
-            'current_lon': current_lon,
-            'location_info': location_info,
-            'current_tz': current_tz
-        }
+def get_current_location():
+    """Extracts location information from either an ``AppleDevice`` or the public IP address."""
+    # todo: Write to a DB instead of dumping in an yaml file
+    current_lat, current_lon, location_info = location_services(device=device_selector())
+    current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
+    with open('location.yaml', 'w') as location_writer:
+        yaml.dump(data={'timezone': current_tz,
+                        'latitude': current_lat, 'longitude': current_lon, 'address': location_info},
+                  stream=location_writer, default_flow_style=False)
 
 
 def location() -> None:
     """Gets the user's current location."""
-    speaker.speak(text=f"You're at {globals.current_location_['location_info']['city']} "
-                       f"{globals.current_location_['location_info']['state']}, "
-                       f"in {globals.current_location_['location_info']['country']}")
+    with open('location.yaml') as file:
+        current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+    speaker.speak(text=f"You're at {current_location['address']['city']} "
+                       f"{current_location['address']['state']}, "
+                       f"in {current_location['address']['country']}")
 
 
-def locate(phrase: str, no_repeat: bool = False) -> None:
+def locate(phrase: str) -> None:
     """Locates an Apple device using icloud api for python.
 
     Args:
-        no_repeat: A placeholder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
         phrase: Takes the voice recognized statement as argument and extracts device name from it.
     """
-    if not (target_device := device_selector(icloud_user=env.icloud_user, icloud_pass=env.icloud_pass,
-                                             phrase=phrase)):
+    if not (target_device := device_selector(phrase=phrase)):
         support.no_env_vars()
         return
     sys.stdout.write(f"\rLocating your {target_device}")
-    if no_repeat:
-        speaker.speak(text="Would you like to get the location details?")
+    target_device.play_sound()
+    before_keyword, keyword, after_keyword = str(target_device).partition(':')  # partitions the hostname info
+    if before_keyword == 'Accessory':
+        after_keyword = after_keyword.replace("Vignesh’s", "").replace("Vignesh's", "").strip()
+        speaker.speak(text=f"I've located your {after_keyword} sir!")
     else:
-        target_device.play_sound()
-        before_keyword, keyword, after_keyword = str(target_device).partition(':')  # partitions the hostname info
-        if before_keyword == 'Accessory':
-            after_keyword = after_keyword.replace("Vignesh’s", "").replace("Vignesh's", "").strip()
-            speaker.speak(text=f"I've located your {after_keyword} sir!")
-        else:
-            speaker.speak(text=f"Your {before_keyword} should be ringing now sir!")
-        speaker.speak(text="Would you like to get the location details?")
-    speaker.speak(run=True)
+        speaker.speak(text=f"Your {before_keyword} should be ringing now sir!")
+    speaker.speak(text="Would you like to get the location details?", run=True)
     phrase_location = listener.listen(timeout=3, phrase_limit=3)
-    if phrase_location == 'SR_ERROR':
-        if no_repeat:
-            return
-        speaker.speak(text="I didn't quite get that. Try again.")
-        locate(phrase=phrase, no_repeat=True)
+
+    if phrase_location == 'SR_ERROR' and not any(word in phrase_location.lower() for word in keywords.ok):
+        return
+
+    ignore_lat, ignore_lon, location_info_ = location_services(target_device)
+    lookup = str(target_device).split(':')[0].strip()
+    if location_info_ == 'None':
+        speaker.speak(text=f"I wasn't able to locate your {lookup} sir! It is probably offline.")
     else:
-        if any(word in phrase_location.lower() for word in keywords.ok):
-            ignore_lat, ignore_lon, location_info_ = location_services(target_device)
-            lookup = str(target_device).split(':')[0].strip()
-            if location_info_ == 'None':
-                speaker.speak(text=f"I wasn't able to locate your {lookup} sir! It is probably offline.")
-            else:
-                post_code = '"'.join(list(location_info_['postcode'].split('-')[0]))
-                iphone_location = f"Your {lookup} is near {location_info_['road']}, {location_info_['city']} " \
-                                  f"{location_info_['state']}. Zipcode: {post_code}, {location_info_['country']}"
-                speaker.speak(text=iphone_location)
-                stat = target_device.status()
-                bat_percent = f"Battery: {round(stat['batteryLevel'] * 100)} %, " if stat['batteryLevel'] else ''
-                device_model = stat['deviceDisplayName']
-                phone_name = stat['name']
-                speaker.speak(text=f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
-            if env.icloud_recovery:
-                speaker.speak(text="I can also enable lost mode. Would you like to do it?", run=True)
-                phrase_lost = listener.listen(timeout=3, phrase_limit=3)
-                if any(word in phrase_lost.lower() for word in keywords.ok):
-                    message = 'Return my phone immediately.'
-                    target_device.lost_device(number=env.icloud_recovery, text=message)
-                    speaker.speak(text="I've enabled lost mode on your phone.")
-                else:
-                    speaker.speak(text="No action taken sir!")
+        post_code = '"'.join(list(location_info_['postcode'].split('-')[0]))
+        iphone_location = f"Your {lookup} is near {location_info_['road']}, {location_info_['city']} " \
+                          f"{location_info_['state']}. Zipcode: {post_code}, {location_info_['country']}"
+        speaker.speak(text=iphone_location)
+        stat = target_device.status()
+        bat_percent = f"Battery: {round(stat['batteryLevel'] * 100)} %, " if stat['batteryLevel'] else ''
+        device_model = stat['deviceDisplayName']
+        phone_name = stat['name']
+        speaker.speak(text=f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
+    if env.icloud_recovery:
+        speaker.speak(text="I can also enable lost mode. Would you like to do it?", run=True)
+        phrase_lost = listener.listen(timeout=3, phrase_limit=3)
+        if any(word in phrase_lost.lower() for word in keywords.ok):
+            message = 'Return my phone immediately.'
+            target_device.lost_device(number=env.icloud_recovery, text=message)
+            speaker.speak(text="I've enabled lost mode on your phone.")
+        else:
+            speaker.speak(text="No action taken sir!")
 
 
 def distance(phrase):
@@ -300,8 +269,9 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         start = desired_start.latitude, desired_start.longitude
         start_check = None
     else:
-        # else gets latitude and longitude information of current location
-        start = (globals.current_location_['current_lat'], globals.current_location_['current_lon'])
+        with open('location.yaml') as file:
+            current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+        start = (current_location['latitude'], current_location['longitude'])
         start_check = 'My Location'
     sys.stdout.write("::TO::") if origin else sys.stdout.write("\r::TO::")
     desired_location = geo_locator.geocode(destination)
@@ -363,6 +333,9 @@ def locate_places(phrase: str = None) -> None:
                 keyword = 'is'
                 before_keyword, keyword, after_keyword = converted.partition(keyword)
                 place = after_keyword.replace(' in', '').strip()
+
+    with open('location.yaml') as file:
+        current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
     try:
         destination_location = geo_locator.geocode(place)
         coordinates = destination_location.latitude, destination_location.longitude
@@ -377,12 +350,12 @@ def locate_places(phrase: str = None) -> None:
             speaker.speak(text=f"{place} is a country")
         elif place in (city or county):
             speaker.speak(
-                text=f"{place} is in {state}" if country == globals.current_location_['location_info']['country'] else
+                text=f"{place} is in {state}" if country == current_location['address']['country'] else
                 f"{place} is in {state} in {country}")
         elif place in state:
             speaker.speak(text=f"{place} is a state in {country}")
         elif (city or county) and state and country:
-            if country == globals.current_location_['location_info']['country']:
+            if country == current_location['address']['country']:
                 speaker.speak(text=f"{place} is in {city or county}, {state}")
             else:
                 speaker.speak(text=f"{place} is in {city or county}, {state}, in {country}")
@@ -434,8 +407,11 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     end_country = address['country'] if 'country' in address else None
     end = f"{located.latitude},{located.longitude}"
 
-    start_country = globals.current_location_['location_info']['country']
-    start = globals.current_location_['current_lat'], globals.current_location_['current_lon']
+    with open('location.yaml') as file:
+        current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+
+    start_country = current_location['address']['country']
+    start = current_location['latitude'], current_location['longitude']
     maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
     webbrowser.open(maps_url)
     speaker.speak(text="Directions on your screen sir!")

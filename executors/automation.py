@@ -33,39 +33,34 @@ def automation_handler(phrase: str) -> None:
             speaker.speak(text="I couldn't not find the source file to disable automation sir!")
 
 
-def rewrite_automator(filename: str, json_object: dict) -> None:
-    """Rewrites the ``automation_file`` with the updated json object.
+def rewrite_automator(json_object: dict) -> None:
+    """Rewrites the ``'automation.json'`` with the updated json object.
 
     Args:
-        filename: Name of the automation source file.
         json_object: Takes the new json object as a dictionary.
     """
-    with open(filename, 'w') as file:
+    with open('automation.json', 'w') as file:
         logger.warning('Data has been modified. Rewriting automation data into JSON file.')
         json.dump(json_object, file, indent=2)
 
 
-def auto_helper(automation_file: str) -> Union[str, None]:
+def auto_helper() -> Union[str, None]:
     """Runs in a thread to help the automator function in the main module.
-
-    Args:
-        automation_file: Source file for automation.
 
     Returns:
         str:
         Task to be executed.
     """
     offline_list = offline_compatible()
-    with open(automation_file) as read_file:
+    with open('automation.json') as read_file:
         try:
             automation_data = json.load(read_file)
         except json.JSONDecodeError:
-            logger.error('Invalid file format. '
-                         'Logging automation data and removing the file to avoid endless errors.\n'
-                         f'{"".join(["*" for _ in range(120)])}\n\n'
-                         f'{open(automation_file).read()}\n\n'
-                         f'{"".join(["*" for _ in range(120)])}')
-            os.remove(automation_file)
+            logger.error(f"Invalid file format. "
+                         f"Logging automation data and removing the file to avoid endless errors.\n"
+                         f"{''.join(['*' for _ in range(120)])}\n\n{open('automation.json').read()}\n\n"
+                         f"{''.join(['*' for _ in range(120)])}")
+            os.remove('automation.json')
             return
 
     for automation_time, automation_info in automation_data.items():
@@ -75,7 +70,7 @@ def auto_helper(automation_file: str) -> Union[str, None]:
             logger.error("Following entry doesn't have a task or the task is not a part of offline compatible.")
             logger.error(f'{automation_time} - {automation_info}')
             automation_data.pop(automation_time)
-            rewrite_automator(filename=automation_file, json_object=automation_data)
+            rewrite_automator(json_object=automation_data)
             break  # Using break instead of continue as python doesn't like dict size change in-between a loop
         try:
             datetime.strptime(automation_time, "%I:%M %p")
@@ -84,7 +79,7 @@ def auto_helper(automation_file: str) -> Union[str, None]:
                          'Datetime string should be in the format: 6:00 AM. '
                          'Removing the key-value from automation.json')
             automation_data.pop(automation_time)
-            rewrite_automator(filename=automation_file, json_object=automation_data)
+            rewrite_automator(json_object=automation_data)
             break  # Using break instead of continue as python doesn't like dict size change in-between a loop
 
         if day := automation_info.get('day'):
@@ -108,12 +103,12 @@ def auto_helper(automation_file: str) -> Union[str, None]:
             if exec_status:
                 logger.info(f"Reverting execution status flag for task: {exec_task} runs at {automation_time}")
                 automation_data[automation_time]['status'] = False
-                rewrite_automator(filename=automation_file, json_object=automation_data)
+                rewrite_automator(json_object=automation_data)
             continue
 
         if exec_status:
             continue
         exec_task = exec_task.translate(str.maketrans('', '', punctuation))  # Remove punctuations from the str
         automation_data[automation_time]['status'] = True
-        rewrite_automator(filename=automation_file, json_object=automation_data)
+        rewrite_automator(json_object=automation_data)
         return exec_task

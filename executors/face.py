@@ -1,6 +1,9 @@
 import os
+import shutil
 import sys
 from datetime import datetime
+
+from PIL import Image
 
 from executors.logger import logger
 from modules.audio import listener, speaker
@@ -34,7 +37,7 @@ def face_detection() -> None:
             return
         sys.stdout.write('\rNew face has been detected. Like to give it a name?')
         speaker.speak(text='I was able to detect a face, but was unable to recognize it.')
-        os.system('open cv2_open.jpg')
+        Image.open('cv2_open.jpg').show()
         speaker.speak(text="I've taken a photo of you. Preview on your screen. Would you like to give it a name, "
                            "so that I can add it to my database of known list? If you're ready, please tell me a name, "
                            "or simply say exit.", run=True)
@@ -44,13 +47,13 @@ def face_detection() -> None:
             speaker.speak(text="I've deleted the image.", run=True)
         else:
             phrase = phrase.replace(' ', '_')
-            # creates a named directory if it is not found already else simply ignores
-            os.system(f'cd {train_dir} && mkdir {phrase}') if not os.path.exists(f'{train_dir}/{phrase}') else None
+            # creates a named directory if it is not found already
+            if not os.path.exists(f'{train_dir}/{phrase}'):
+                os.makedirs(f'{train_dir}/{phrase}')
             c_time = datetime.now().strftime("%I_%M_%p")
             img_name = f"{phrase}_{c_time}.jpg"  # adds current time to image name to avoid overwrite
             os.rename('cv2_open.jpg', img_name)  # renames the files
-            os.system(f"mv {img_name} {train_dir}/{phrase}")  # move files into named directory within train_dir
-            speaker.speak(
-                text=f"Image has been saved as {img_name}. I will be able to recognize {phrase} in the future.")
+            shutil.move(src=img_name, dst=f'{train_dir}/{phrase}')  # move files into named directory within train_dir
+            speaker.speak(text=f"Image has been saved as {img_name}. I will be able to recognize {phrase} in future.")
     else:
         speaker.speak(text=f'Hi {result}! How can I be of service to you?')

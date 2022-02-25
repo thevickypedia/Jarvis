@@ -118,11 +118,11 @@ class LogConfig:
             "uvicorn": {
                 "handlers": ["default"], "level": LOG_LEVEL
             },
-            "uvicorn.error": {
-                "handlers": ["error"], "level": LOG_LEVEL, "propagate": True  # Since FastAPI is running in a thread
-            },
             "uvicorn.access": {
                 "handlers": ["access"], "level": LOG_LEVEL
             },
-        },
+            "uvicorn.error": {
+                "handlers": ["error"], "level": LOG_LEVEL, "propagate": True  # Since FastAPI is running in a thread
+            }
+        }
     }

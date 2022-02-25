@@ -53,7 +53,7 @@ def github_controller(target: list) -> None:
         target: Takes repository name as argument which has to be cloned.
     """
     if len(target) == 1:
-        os.system(f"cd {env.home}")
+        os.system(f"cd {env.home} && git clone -q {target[0]}")
         cloned = target[0].split('/')[-1].replace('.git', '')
         speaker.speak(text=f"I've cloned {cloned} on your home directory sir!")
         return

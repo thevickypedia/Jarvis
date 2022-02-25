@@ -1,12 +1,11 @@
 import contextlib
-from threading import Thread
 
 import requests
 import uvicorn
 from requests.exceptions import ConnectionError, Timeout
 
 from executors.logger import logger
-from executors.port_handler import is_port_in_use
+from executors.port_handler import is_port_in_use, kill_port_pid
 from modules.utils import globals
 
 env = globals.ENV
@@ -29,23 +28,18 @@ class APIServer(uvicorn.Server):
         pass
 
     @contextlib.contextmanager
-    def run_in_thread(self):
-        """Initiates ``Server.run`` in a thread."""
-        thread = Thread(target=self.run, daemon=True)
-        thread.start()
-
-        # # Include the block below, to run only when needed.
-        # try:
-        #     while not self.started:
-        #         sleep(1e-3)
-        #     yield
-        # finally:
-        #     self.should_exit = True
-        #     thread.join()
+    def run_in_parallel(self):
+        """Initiates ``Server.run`` in a dedicated process."""
+        self.run()
 
 
 def trigger_api() -> None:
-    """Initiates the fast API in a thread using uvicorn server."""
+    """Initiates the fast API in a dedicated process using uvicorn server.
+
+    See Also:
+        - Checks if the port is being used. If so, makes a ``GET`` request to the endpoint.
+        - Attempts to kill the process listening to the port, if the endpoint doesn't respond.
+    """
     url = f'http://{env.offline_host}:{env.offline_port}'
 
     if is_port_in_use(port=env.offline_port):
@@ -60,9 +54,8 @@ def trigger_api() -> None:
         except (ConnectionError, Timeout):  # Catching Timeout catches both ConnectTimeout and ReadTimeout errors
             logger.error('Unable to connect to existing uvicorn server.')
 
-        # # TODO: Un-comment the below when switching from "Thread" to "Process"
-        # if not kill_existing(port=env.offline_port):  # This might terminate Jarvis
-        #     logger.fatal('Failed to kill existing PID. Attempting to re-create session.')
+        if not kill_port_pid(port=env.offline_port):  # This might terminate Jarvis
+            logger.fatal('Failed to kill existing PID. Attempting to re-create session.')
 
     argument_dict = {
         "app": "api.fast:app",
@@ -72,12 +65,4 @@ def trigger_api() -> None:
     }
 
     config = uvicorn.Config(**argument_dict)
-    server = APIServer(config=config)
-    server.run_in_thread()
-
-    # # Thread runs only until the action within this block.
-    # with server.run_in_thread():
-    #     # Server is started.
-    #     ...
-    #     # Server will be stopped once code put here is completed
-    #     ...
+    APIServer(config=config).run_in_parallel()

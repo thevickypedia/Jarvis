@@ -226,8 +226,6 @@
 </li>
       <li><a href="index.html#executors.date_time.current_date">current_date() (in module executors.date_time)</a>
 </li>
-      <li><a href="index.html#executors.location.current_location">current_location() (in module executors.location)</a>
-</li>
       <li><a href="index.html#executors.date_time.current_time">current_time() (in module executors.date_time)</a>
 </li>
       <li><a href="index.html#executors.logger.TestLogger.custom_time">custom_time() (executors.logger.TestLogger static method)</a>
@@ -240,6 +238,8 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#modules.utils.support.daytime_nighttime_swapper">daytime_nighttime_swapper() (in module modules.utils.support)</a>
+</li>
       <li><a href="index.html#executors.display_functions.decrease_brightness">decrease_brightness() (in module executors.display_functions)</a>
 </li>
       <li><a href="index.html#modules.tv.tv_controls.TV.decrease_volume">decrease_volume() (modules.tv.tv_controls.TV method)</a>
@@ -558,9 +558,13 @@
 </li>
       <li><a href="index.html#modules.car.controller.Control.get_contact_info">get_contact_info() (modules.car.controller.Control method)</a>
 </li>
+      <li><a href="index.html#executors.location.get_current_location">get_current_location() (in module executors.location)</a>
+</li>
       <li><a href="index.html#modules.car.controller.Control.get_departure_timers">get_departure_timers() (modules.car.controller.Control method)</a>
 </li>
       <li><a href="index.html#api.fast.get_favicon">get_favicon() (in module api.fast)</a>
+</li>
+      <li><a href="index.html#executors.port_handler.get_free_port">get_free_port() (in module executors.port_handler)</a>
 </li>
       <li><a href="index.html#modules.car.controller.Control.get_guardian_mode_alarms">get_guardian_mode_alarms() (modules.car.controller.Control method)</a>
 </li>
@@ -573,10 +577,6 @@
       <li><a href="index.html#modules.car.controller.Control.get_guardian_mode_status">get_guardian_mode_status() (modules.car.controller.Control method)</a>
 </li>
       <li><a href="index.html#modules.car.controller.Control.get_health_status">get_health_status() (modules.car.controller.Control method)</a>
-</li>
-      <li><a href="index.html#api.fast.get_jarvis_status">get_jarvis_status() (in module api.fast)</a>
-</li>
-      <li><a href="index.html#executors.port_handler.get_port">get_port() (in module executors.port_handler)</a>
 </li>
       <li><a href="index.html#modules.car.controller.Control.get_position">get_position() (modules.car.controller.Control method)</a>
 </li>
@@ -733,7 +733,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#executors.alarm.kill_alarm">kill_alarm() (in module executors.alarm)</a>
 </li>
-      <li><a href="index.html#executors.port_handler.kill_existing">kill_existing() (in module executors.port_handler)</a>
+      <li><a href="index.html#executors.port_handler.kill_port_pid">kill_port_pid() (in module executors.port_handler)</a>
 </li>
       <li><a href="index.html#modules.netgear.ip_scanner.LocalIPScan.kitchen">kitchen() (modules.netgear.ip_scanner.LocalIPScan method)</a>
 </li>
@@ -1168,8 +1168,6 @@
 </li>
       <li><a href="index.html#executors.controls.restart_control">restart_control() (in module executors.controls)</a>
 </li>
-      <li><a href="index.html#modules.utils.globals.ENV.restart_interval">restart_interval (modules.utils.globals.ENV attribute)</a>
-</li>
       <li><a href="index.html#modules.car.connector.Connect.reverse_geocode">reverse_geocode() (modules.car.connector.Connect method)</a>
 </li>
       <li><a href="index.html#modules.tv.tv_controls.TV.rewind">rewind() (modules.tv.tv_controls.TV method)</a>
@@ -1190,7 +1188,9 @@
 </li>
       <li><a href="index.html#modules.utils.globals.ENV.root_user">root_user (modules.utils.globals.ENV attribute)</a>
 </li>
-      <li><a href="index.html#api.server.APIServer.run_in_thread">run_in_thread() (api.server.APIServer method)</a>
+      <li><a href="index.html#modules.utils.globals.ENV.router_pass">router_pass (modules.utils.globals.ENV attribute)</a>
+</li>
+      <li><a href="index.html#api.server.APIServer.run_in_parallel">run_in_parallel() (api.server.APIServer method)</a>
 </li>
       <li><a href="index.html#api.fast.run_robinhood">run_robinhood() (in module api.fast)</a>
 </li>
@@ -1232,14 +1232,14 @@
 </li>
       <li><a href="index.html#modules.car.controller.Control.set_wakeup_time">set_wakeup_time() (modules.car.controller.Control method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#executors.controls.shutdown">shutdown() (in module executors.controls)</a>
 
       <ul>
         <li><a href="index.html#modules.tv.tv_controls.TV.shutdown">(modules.tv.tv_controls.TV method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#modules.utils.support.size_converter">size_converter() (in module modules.utils.support)</a>
 </li>
       <li><a href="index.html#executors.controls.sleep_control">sleep_control() (in module executors.controls)</a>
@@ -1264,9 +1264,7 @@
         <li><a href="index.html#modules.tv.tv_controls.TV.stop">(modules.tv.tv_controls.TV method)</a>
 </li>
       </ul></li>
-      <li><a href="index.html#api.fast.stop_robinhood">stop_robinhood() (in module api.fast)</a>
-</li>
-      <li><a href="index.html#modules.utils.support.stop_terminal">stop_terminal() (in module modules.utils.support)</a>
+      <li><a href="index.html#modules.utils.support.stop_processes">stop_processes() (in module modules.utils.support)</a>
 </li>
       <li><a href="index.html#executors.controls.stopper">stopper() (in module executors.controls)</a>
 </li>

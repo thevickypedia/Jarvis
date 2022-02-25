@@ -1,6 +1,5 @@
 from socket import gaierror
 from sys import stdout
-from threading import Thread
 from time import sleep
 
 from dotenv import set_key
@@ -13,7 +12,7 @@ from executors.logger import logger
 
 
 class TV:
-    """All the TV controls wrapped in dedicated functions.
+    """All the TV controls wrapped in dedicated methods.
 
     >>> TV
 
@@ -26,7 +25,7 @@ class TV:
         """Client key will be logged and stored as SSM param when you accept the connection for the first time.
 
         Store the dict value as an env variable and use it as below. Using TV's ip makes the initial
-        response much quicker but it looks for the TV's ip if an ip is not found.
+        response much quicker, but it also scans the network for the TV's ip if ip arg is not received.
 
         Args:
             ip_address: IP address of the TV.
@@ -39,7 +38,7 @@ class TV:
             self.client.connect()
         except (gaierror, ConnectionRefusedError, ConnectionResetError):  # when IP or client key is None or incorrect
             self.reconnect = True
-            Thread(target=playsound, args=['indicators/tv_scan.mp3']).start()
+            playsound(sound='indicators/tv_scan.mp3', block=False)
             scan_msg = "The TV's IP has either changed or unreachable. Scanning your IP range."
             stdout.write(f"\r{scan_msg}")
             logger.error(scan_msg)
@@ -52,7 +51,7 @@ class TV:
             if status == WebOSClient.REGISTERED and not self._init_status:
                 stdout.write('\rConnected to the TV.')
             elif status == WebOSClient.PROMPTED:
-                Thread(target=playsound, args=['indicators/tv_connect.mp3']).start()
+                playsound(sound='indicators/tv_connect.mp3', block=False)
                 self.reconnect = True
                 stdout.write('\rPlease accept the connection request on your TV.')
 

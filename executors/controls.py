@@ -6,8 +6,6 @@ from datetime import datetime
 from threading import Thread
 from time import perf_counter
 
-import yaml
-
 from executors import meetings
 from executors.display_functions import decrease_brightness
 from executors.logger import logger
@@ -16,7 +14,7 @@ from modules.conditions import conversation, keywords
 from modules.utils import globals, support
 
 
-def restart(target: str = None, quiet: bool = False, quick: bool = False) -> None:
+def restart(target: str = None, quiet: bool = False) -> None:
     """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
 
     Notes:
@@ -33,7 +31,6 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
             - ``None``: Restarts Jarvis to reset PID
             - ``PC``: Restarts the machine after getting confirmation.
         quiet: If a boolean ``True`` is passed, a silent restart will be performed.
-        quick: If a boolean ``True`` is passed, smart device IPs are stored in ``smart_devices.yaml`` for quick re-use.
 
     Raises:
         KeyboardInterrupt: To stop Jarvis' PID.
@@ -50,7 +47,7 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
         else:
             converted = 'yes'
         if any(word in converted.lower() for word in keywords.ok):
-            support.stop_terminal()
+            support.stop_processes()
             subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
             raise KeyboardInterrupt
         else:
@@ -67,12 +64,6 @@ def restart(target: str = None, quiet: bool = False, quick: bool = False) -> Non
                 speaker.speak(text='Restarting now sir! I will be up and running momentarily.', run=True)
         except RuntimeError as error:
             logger.fatal(error)
-    if quick:
-        if not globals.smart_devices.get('SOURCE'):
-            # Set restart flag so the source file will be deleted after restart
-            globals.smart_devices.update({'restart': True})
-        with open('smart_devices.yaml', 'w') as file:
-            yaml.dump(stream=file, data=globals.smart_devices)
     os.system('python3 restart.py')
     exit(1)
 
@@ -151,10 +142,7 @@ def restart_control(phrase: str):
         restart(target='PC')
     else:
         logger.info('JARVIS::Self reboot has been requested.')
-        if 'quick' in phrase or 'fast' in phrase:
-            restart(quick=True)
-        else:
-            restart()
+        restart()
 
 
 def shutdown(proceed: bool = False) -> None:
@@ -173,7 +161,7 @@ def shutdown(proceed: bool = False) -> None:
         converted = 'yes'
     if converted != 'SR_ERROR':
         if any(word in converted.lower() for word in keywords.ok):
-            support.stop_terminal()
+            support.stop_processes(deep=True)
             subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
             raise KeyboardInterrupt
         else:

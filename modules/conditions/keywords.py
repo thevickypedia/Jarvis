@@ -91,7 +91,7 @@ lights = ['light', 'hallway', 'kitchen', 'living room', 'bedroom']
 
 guard_enable = ['take care', 'heading out', 'keep an eye', 'turn on security mode', 'enable security mode']
 
-guard_disable = ["I'm back", 'I am back', 'turn off security mode', 'disable security mode']
+guard_disable = ["I'm back", 'I am back', 'turn off security mode', 'disable security mode', 'jarvis']
 
 flip_a_coin = ['head', 'tail', 'flip']
 

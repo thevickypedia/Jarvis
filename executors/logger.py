@@ -12,25 +12,24 @@ import os
 from datetime import datetime
 from importlib import reload
 from logging.config import dictConfig
+from multiprocessing import current_process
 from time import struct_time, time
 
 from pytz import timezone, utc
 
-if not os.path.isdir('logs'):
-    os.makedirs('logs')
-
 if not os.path.isdir('logs/api'):
-    os.makedirs('logs/api')
+    os.makedirs('logs/api')  # Recursively creates both logs and api directories if unavailable
 
 log_file = datetime.now().strftime('logs/jarvis_%d-%m-%Y.log')
 write = ''.join(['*' for _ in range(120)])
 
-with open(log_file, 'a+') as file:
-    file.seek(0)
-    if not file.read():
-        file.write(f"{write}\n")
-    else:
-        file.write(f"\n{write}\n")
+if current_process().name == 'MainProcess':
+    with open(log_file, 'a+') as file:
+        file.seek(0)
+        if not file.read():
+            file.write(f"{write}\n")
+        else:
+            file.write(f"\n{write}\n")
 
 reload(logging)
 dictConfig({

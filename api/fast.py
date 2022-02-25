@@ -1,20 +1,17 @@
+import importlib
 import logging
+import mimetypes
 import os
-from datetime import datetime
-from importlib import reload
-from logging import config
-from mimetypes import guess_type
+import string
+import time
+from datetime import datetime, timezone
+from logging.config import dictConfig
+from multiprocessing import Process
 from pathlib import Path
-from string import punctuation
-from subprocess import check_output
-from threading import Thread
-from time import sleep
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
-from pytz import timezone
-from yaml import FullLoader, load
 
 from api import cron, filters
 from api.controller import keygen, offline_compatible
@@ -31,11 +28,16 @@ if not os.path.isfile(LogConfig.ACCESS_LOG_FILENAME):
 if not os.path.isfile(LogConfig.DEFAULT_LOG_FILENAME):
     Path(LogConfig.DEFAULT_LOG_FILENAME).touch()
 
+LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
+
 offline_compatible = offline_compatible()
 
-reload(module=logging)
-config.dictConfig(config=LogConfig.LOGGING_CONFIG)
-logging.getLogger("uvicorn.access").addFilter(filters.InvestmentFilter())
+importlib.reload(module=logging)
+dictConfig(config=LogConfig.LOGGING_CONFIG)
+
+logging.getLogger("uvicorn.access").addFilter(filters.InvestmentFilter())  # Adds token filter to the access logger
+logging.getLogger("uvicorn.access").propagate = False  # Disables access logger in default logger to log independently
+
 logger = logging.getLogger('uvicorn.default')
 
 serve_file = 'api/robinhood.html'
@@ -48,28 +50,9 @@ app = FastAPI(
     version="v1.0"
 )
 
-zone = None
-if os.path.isfile('../location.yaml'):
-    location_details = load(open('../location.yaml'), Loader=FullLoader)
-    zone = timezone(location_details.get('timezone'))
-
-
-def get_jarvis_status() -> bool:
-    """Checks process information to see if Jarvis is running.
-
-    Returns:
-        bool:
-        A boolean True flag is jarvis.py is found in the list of current PIDs.
-    """
-    pid_check = check_output("ps -ef | grep jarvis.py", shell=True)
-    pid_list = pid_check.decode('utf-8').splitlines()
-    for pid_info in pid_list:
-        if pid_info and 'grep' not in pid_info and '/bin/sh' not in pid_info:
-            return True
-
 
 def run_robinhood() -> None:
-    """Runs in a dedicated thread during startup, if the file was modified earlier than the past hour."""
+    """Runs in a dedicated process during startup, if the file was modified earlier than the past hour."""
     if os.path.isfile(serve_file):
         modified = int(os.stat(serve_file).st_mtime)
         logger.info(f"{serve_file} was generated on {datetime.fromtimestamp(modified).strftime('%c')}.")
@@ -104,9 +87,6 @@ async def auth_offline_communicator(passphrase: str, command: str) -> bool:
         passphrase = bytes(passphrase, "utf-8").decode(encoding="unicode_escape")
     if passphrase != env.offline_pass:
         raise HTTPException(status_code=401, detail='Request not authorized.')
-    if not get_jarvis_status():
-        logger.error(f'Received offline request: {command}, but Jarvis is not running.')
-        raise HTTPException(status_code=503, detail='Jarvis is currently un-reachable.')
     if command_lower == 'test':
         raise HTTPException(status_code=200, detail='Test message received.')
     if 'and' in command_split or 'also' in command_split:
@@ -143,22 +123,12 @@ async def enable_cors() -> None:
 
 @app.on_event(event_type='startup')
 async def start_robinhood() -> None:
-    """Initiates robinhood gatherer in a thread and adds a cron schedule if not present already."""
+    """Initiates robinhood gatherer in a process and adds a cron schedule if not present already."""
     await enable_cors()
     logger.info(f'Hosting at http://{env.offline_host}:{env.offline_port}')
     if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
-        global thread  # noqa
-        thread = Thread(target=run_robinhood, daemon=True)
-        thread.start()
+        Process(target=run_robinhood).start()
         cron.CronScheduler(logger=logger).controller()
-
-
-@app.on_event(event_type='shutdown')
-async def stop_robinhood() -> None:
-    """If active, stops the thread that creates robinhood static file in the background."""
-    if thread.is_alive():
-        logger.warning(f'Hanging thread: {thread.ident}')
-        thread.join(timeout=3)
 
 
 @app.get('/', response_class=RedirectResponse, include_in_schema=False)
@@ -203,18 +173,19 @@ async def offline_communicator(input_data: GetData) -> None:
     """
     passphrase = input_data.phrase
     command = input_data.command
-    command = command.translate(str.maketrans('', '', punctuation))  # Remove punctuations from the str
+    command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from the str
     await auth_offline_communicator(passphrase=passphrase, command=command)
 
     with open('offline_request', 'w') as off_request:
         off_request.write(command)
-    dt_string = datetime.now(zone).strftime("%A, %B %d, %Y %I:%M:%S %p")
+
+    dt_string = datetime.now().astimezone(tz=LOCAL_TIMEZONE).strftime("%A, %B %d, %Y %H:%M:%S")
     if 'restart' in command:
         raise HTTPException(status_code=200,
                             detail='Restarting now sir! I will be up and running momentarily.')
     while True:
         if os.path.isfile('offline_response'):
-            sleep(0.1)  # Read file after 0.1 second for the content to be written
+            time.sleep(0.1)  # Read file after 0.1 second for the content to be written
             with open('offline_response') as off_response:
                 response = off_response.read()
             if response:
@@ -296,7 +267,7 @@ if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
                 raise HTTPException(status_code=404, detail='Static file was not found on server.')
             with open(serve_file) as static_file:
                 html_content = static_file.read()
-            content_type, _ = guess_type(html_content)
+            content_type, _ = mimetypes.guess_type(html_content)
             return HTMLResponse(content=html_content, media_type=content_type)  # serves as a static webpage
         else:
             logger.warning('/investment was accessed with an expired token.')

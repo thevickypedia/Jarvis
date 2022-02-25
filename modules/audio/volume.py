@@ -1,25 +1,10 @@
 import os
 import random
 import re
-from datetime import datetime
-from threading import Thread
 
-from executors import display_functions
 from modules.audio import speaker
 from modules.conditions import conversation
 from modules.utils import support
-
-
-def switch_volumes() -> None:
-    """Automatically puts the Mac on sleep and sets the volume to 25% at 9 PM and 50% at 6 AM."""
-    hour = int(datetime.now().strftime('%H'))
-    locker = """osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'"""
-    if 20 >= hour >= 7:
-        volume(level=50)
-    elif hour >= 21 or hour <= 6:
-        volume(level=30)
-        Thread(target=display_functions.decrease_brightness).start()
-        os.system(locker)
 
 
 def volume(phrase: str = None, level: int = None) -> None:

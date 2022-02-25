@@ -1,3 +1,4 @@
+from multiprocessing import Process
 from threading import Thread
 
 from vpn.controller import VPNServer
@@ -21,10 +22,10 @@ def vpn_server(phrase: str) -> None:
 
     phrase = phrase.lower()
     if 'start' in phrase or 'trigger' in phrase or 'initiate' in phrase or 'enable' in phrase or 'spin up' in phrase:
-        Thread(target=vpn_server_switch, kwargs={'operation': 'START'}).start()
+        Process(target=vpn_server_switch, kwargs={'operation': 'START'}).start()
         speaker.speak(text='VPN Server has been initiated sir! Login details will be sent to you shortly.')
     elif 'stop' in phrase or 'shut' in phrase or 'close' in phrase or 'disable' in phrase:
-        Thread(target=vpn_server_switch, kwargs={'operation': 'STOP'}).start()
+        Process(target=vpn_server_switch, kwargs={'operation': 'STOP'}).start()
         speaker.speak(text='VPN Server will be shutdown sir!')
     else:
         speaker.speak(text="I don't understand the request sir! You can ask me to enable or disable the VPN server.")
