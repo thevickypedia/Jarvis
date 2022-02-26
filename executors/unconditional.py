@@ -13,9 +13,9 @@ from search_engine_parser.core.exceptions import NoResultsOrTrafficError
 
 from modules.audio import listener, speaker
 from modules.conditions import keywords
-from modules.utils import globals
+from modules.models import models
 
-env = globals.ENV
+env = models.env
 
 
 def alpha(text: str) -> bool:

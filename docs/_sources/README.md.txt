@@ -18,7 +18,7 @@
 [![GitHub Repo forks](https://img.shields.io/github/forks/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
 [![GitHub Repo watchers](https://img.shields.io/github/watchers/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
 
-[![GitHub](https://img.shields.io/github/license/thevickypedia/Jarvis)](LICENSE)
+[![GitHub](https://img.shields.io/github/license/thevickypedia/Jarvis)](https://github.com/thevickypedia/Jarvis/blob/master/LICENSE)
 [![GitHub repo size](https://img.shields.io/github/repo-size/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
 [![GitHub code size](https://img.shields.io/github/languages/code-size/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
 [![LOC](https://img.shields.io/tokei/lines/github/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)

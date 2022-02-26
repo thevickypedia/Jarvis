@@ -7,9 +7,10 @@ from requests.auth import HTTPBasicAuth
 
 from modules.audio import listener, speaker
 from modules.conditions import keywords
-from modules.utils import globals, support
+from modules.models import models
+from modules.utils import support
 
-env = globals.ENV
+env = models.env
 
 
 def github(phrase: str):

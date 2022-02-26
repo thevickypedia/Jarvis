@@ -6,9 +6,10 @@ from gmailconnector.send_sms import Messenger
 from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
+from modules.models import models
 from modules.utils import globals, support
 
-env = globals.ENV
+env = models.env
 
 
 def read_gmail() -> None:

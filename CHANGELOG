@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+5.6.0 (02/26/2022)
+------------------
+- Load env vars using `pydantic` to validate during startup
+- Pre-check VPN Server config file before initiating process
+- Log background process name and PID
+- Catch car connection error
+- Move database.py to tasks.py
+- Change arg name in offline communicator
+- Set robinhood_token dict to an empty string
+- Remove unnecessary path appends
+
 5.5.9 (02/25/2022)
 ------------------
 - Use YAML instead of JSON file for automation setup

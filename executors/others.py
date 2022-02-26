@@ -21,9 +21,10 @@ from executors.internet import vpn_checker
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.dictionary import dictionary
+from modules.models import models
 from modules.utils import globals, support
 
-env = globals.ENV
+env = models.env
 
 
 def repeat() -> None:

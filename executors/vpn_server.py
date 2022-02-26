@@ -1,12 +1,14 @@
+import os
 from multiprocessing import Process
 from threading import Thread
 
 from vpn.controller import VPNServer
 
 from modules.audio import speaker
+from modules.models import models
 from modules.utils import globals, support
 
-env = globals.ENV
+env = models.env
 
 
 def vpn_server(phrase: str) -> None:
@@ -25,6 +27,10 @@ def vpn_server(phrase: str) -> None:
         Process(target=vpn_server_switch, kwargs={'operation': 'START'}).start()
         speaker.speak(text='VPN Server has been initiated sir! Login details will be sent to you shortly.')
     elif 'stop' in phrase or 'shut' in phrase or 'close' in phrase or 'disable' in phrase:
+        if not os.path.isfile('vpn_info.json'):
+            speaker.speak(text='Input file for VPN Server is missing sir! '
+                               'The VPN Server might have been shut down already.')
+            return
         Process(target=vpn_server_switch, kwargs={'operation': 'STOP'}).start()
         speaker.speak(text='VPN Server will be shutdown sir!')
     else:
@@ -41,9 +47,12 @@ def vpn_server_switch(operation: str) -> None:
     See Also:
         - Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
     """
-    vpn_object = VPNServer(vpn_username=env.vpn_username, vpn_password=env.vpn_password,
-                           gmail_user=env.alt_gmail_user, gmail_pass=env.alt_gmail_pass,
-                           phone=env.phone_number, recipient=env.recipient, log='FILE')
+    vpn_object = VPNServer(vpn_username=env.vpn_username or env.root_user or 'openvpn',
+                           vpn_password=env.vpn_password or env.root_pass or 'aws_vpn_2021',
+                           gmail_user=env.alt_gmail_user or env.gmail_user,
+                           gmail_pass=env.alt_gmail_pass or env.gmail_pass,
+                           recipient=env.recipient or env.alt_gmail_user or env.gmail_user,
+                           phone=env.phone_number, log='FILE')
     if operation == 'START':
         globals.vpn_status['active'] = 'enabled'
         vpn_object.create_vpn_server()

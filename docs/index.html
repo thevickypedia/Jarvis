@@ -185,8 +185,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.initiate_background_processes">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiate_background_processes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">multiprocessing.context.Process</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.initiate_background_processes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.initiate_processes">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiate_processes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">multiprocessing.context.Process</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.initiate_processes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiate multiple background processes to achieve parallelization.</p>
 <dl class="simple">
 <dt>Methods</dt><dd><ul class="simple">
@@ -303,12 +303,12 @@
 <span id="api-handler"></span><h1>API Handler<a class="headerlink" href="#module-api.fast" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.auth_offline_communicator">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">auth_offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">passphrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.fast.auth_offline_communicator" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">auth_offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.fast.auth_offline_communicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs pre-checks before letting office_communicator to proceed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>passphrase</strong> – Takes the password as one of the arguments.</p></li>
+<li><p><strong>phrase</strong> – Takes the password as one of the arguments.</p></li>
 <li><p><strong>command</strong> – Takes the command to be processed as another argument.</p></li>
 </ul>
 </dd>
@@ -359,7 +359,7 @@
 <dd class="field-odd"><p><strong>- input_data</strong> – Takes the following arguments as data instead of a QueryString.</p>
 <ul class="simple">
 <li><p>command: The task which Jarvis has to do.</p></li>
-<li><p>passphrase: Pass phrase for authentication.</p></li>
+<li><p>phrase: Pass phrase for authentication.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -3052,85 +3052,6 @@ Pass 155 for LO and 285 for HI.</p>
 </pre></div>
 </div>
 </section>
-<section id="module-modules.database.database">
-<span id="database"></span><h1>Database<a class="headerlink" href="#module-modules.database.database" title="Permalink to this headline">¶</a></h1>
-<p>Connector for <code class="docutils literal notranslate"><span class="pre">Database</span></code> to create and modify.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Database</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">create_db</span></code>: creates a database named ‘tasks.db’ with table as ‘tasks’</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">downloader</span></code>: gets item and category stored in the table ‘tasks’</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">uploader</span></code>: adds new item and category to the table ‘tasks’ and groups with existing category if found</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">deleter</span></code>: removes items from the table ‘tasks’ when the item or category name is matched.</p></li>
-</ul>
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.database.database.create_db">
-<span class="sig-prename descclassname"><span class="pre">modules.database.database.</span></span><span class="sig-name descname"><span class="pre">create_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.database.database.create_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a database with the set <code class="docutils literal notranslate"><span class="pre">filename:</span> <span class="pre">tasks.db</span></code> and a <code class="docutils literal notranslate"><span class="pre">table:</span> <span class="pre">tasks</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A success message on DB and table creation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.database.database.deleter">
-<span class="sig-prename descclassname"><span class="pre">modules.database.database.</span></span><span class="sig-name descname"><span class="pre">deleter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.database.database.deleter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deletes a particular record from the table.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>keyword</strong> – Takes the item that has to be removed as an argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>On success, returns a string indicating the item has been deleted.
-On failure, returns a string indicating the item was not found.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.database.database.downloader">
-<span class="sig-prename descclassname"><span class="pre">modules.database.database.</span></span><span class="sig-name descname"><span class="pre">downloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.database.database.downloader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Downloads the rows and columns in the table.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The downloaded table information.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.database.database.uploader">
-<span class="sig-prename descclassname"><span class="pre">modules.database.database.</span></span><span class="sig-name descname"><span class="pre">uploader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.database.database.uploader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates the table: tasks with new rows.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>category</strong> – Category under which a task falls. (Eg: Groceries)</p></li>
-<li><p><strong>item</strong> – Item which has to be added to the category. (Eg: Water can)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A string indicating the item and category that it was added to.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="module-modules.face.facial_recognition">
 <span id="face-recognition"></span><h1>Face Recognition<a class="headerlink" href="#module-modules.face.facial_recognition" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -3395,6 +3316,85 @@ Whites can have a value of None.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Restart</span>
 </pre></div>
 </div>
+</section>
+<section id="module-modules.tasks.tasks">
+<span id="tasks"></span><h1>Tasks<a class="headerlink" href="#module-modules.tasks.tasks" title="Permalink to this headline">¶</a></h1>
+<p>Connector for <code class="docutils literal notranslate"><span class="pre">Tasks</span></code> to create and modify.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Tasks</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">create_db</span></code>: creates a database named ‘tasks.db’ with table as ‘tasks’</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">downloader</span></code>: gets item and category stored in the table ‘tasks’</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uploader</span></code>: adds new item and category to the table ‘tasks’ and groups with existing category if found</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deleter</span></code>: removes items from the table ‘tasks’ when the item or category name is matched.</p></li>
+</ul>
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.tasks.tasks.create_db">
+<span class="sig-prename descclassname"><span class="pre">modules.tasks.tasks.</span></span><span class="sig-name descname"><span class="pre">create_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.tasks.tasks.create_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a database with the set <code class="docutils literal notranslate"><span class="pre">filename:</span> <span class="pre">tasks.db</span></code> and a <code class="docutils literal notranslate"><span class="pre">table:</span> <span class="pre">tasks</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A success message on DB and table creation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.tasks.tasks.deleter">
+<span class="sig-prename descclassname"><span class="pre">modules.tasks.tasks.</span></span><span class="sig-name descname"><span class="pre">deleter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.tasks.tasks.deleter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a particular record from the table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>keyword</strong> – Takes the item that has to be removed as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, returns a string indicating the item has been deleted.
+On failure, returns a string indicating the item was not found.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.tasks.tasks.downloader">
+<span class="sig-prename descclassname"><span class="pre">modules.tasks.tasks.</span></span><span class="sig-name descname"><span class="pre">downloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.tasks.tasks.downloader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads the rows and columns in the table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The downloaded table information.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.tasks.tasks.uploader">
+<span class="sig-prename descclassname"><span class="pre">modules.tasks.tasks.</span></span><span class="sig-name descname"><span class="pre">uploader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.tasks.tasks.uploader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the table: tasks with new rows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>category</strong> – Category under which a task falls. (Eg: Groceries)</p></li>
+<li><p><strong>item</strong> – Item which has to be added to the category. (Eg: Water can)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A string indicating the item and category that it was added to.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-modules.temperature.temperature">
 <span id="temperature"></span><h1>Temperature<a class="headerlink" href="#module-modules.temperature.temperature" title="Permalink to this headline">¶</a></h1>
@@ -4028,15 +4028,6 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Globals</span>
 </pre></div>
 </div>
-<dl class="py class">
-<dt class="sig sig-object py" id="modules.utils.globals.ENV">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.utils.globals.</span></span><span class="sig-name descname"><span class="pre">ENV</span></span><a class="headerlink" href="#modules.utils.globals.ENV" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to load all env vars to share across modules.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ENV</span>
-</pre></div>
-</div>
-</dd></dl>
-
 </section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
@@ -4101,12 +4092,12 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 <li><a class="reference internal" href="#module-modules.audio.speaker">Audio</a></li>
 <li><a class="reference internal" href="#id1">Car</a></li>
 <li><a class="reference internal" href="#module-modules.conditions.conversation">Conditions</a></li>
-<li><a class="reference internal" href="#module-modules.database.database">Database</a></li>
 <li><a class="reference internal" href="#module-modules.face.facial_recognition">Face Recognition</a></li>
 <li><a class="reference internal" href="#id2">Lights</a></li>
 <li><a class="reference internal" href="#module-modules.netgear.ip_scanner">Local IP Scanner</a></li>
 <li><a class="reference internal" href="#module-modules.dictionary.dictionary">Meanings</a></li>
 <li><a class="reference internal" href="#module-restart">Restart</a></li>
+<li><a class="reference internal" href="#module-modules.tasks.tasks">Tasks</a></li>
 <li><a class="reference internal" href="#module-modules.temperature.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-modules.tv.tv_controls">TV Connector</a></li>
 <li><a class="reference internal" href="#module-modules.utils.support">Utils - Support</a></li>

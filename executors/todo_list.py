@@ -5,13 +5,13 @@ import sys
 
 from modules.audio import listener, speaker
 from modules.conditions import conversation, keywords
-from modules.database import database
+from modules.tasks import tasks
 from modules.utils import globals, support
 
 
 def create_db() -> None:
     """Creates a database for to-do list by calling the ``create_db`` function in ``database`` module."""
-    speaker.speak(text=database.create_db())
+    speaker.speak(text=tasks.create_db())
     if globals.called['todo']:
         globals.called['todo'] = False
         todo()
@@ -27,9 +27,9 @@ def todo(no_repeat: bool = False) -> None:
         no_repeat: A placeholder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
     """
     sys.stdout.write("\rLooking for to-do database..")
-    if not os.path.isfile(database.TASKS_DB) and (globals.called['time_travel'] or globals.called['report']):
+    if not os.path.isfile(tasks.TASKS_DB) and (globals.called['time_travel'] or globals.called['report']):
         pass
-    elif not os.path.isfile(database.TASKS_DB):
+    elif not os.path.isfile(tasks.TASKS_DB):
         if globals.called_by_offline['status']:
             speaker.speak(text="Your don't have any items in your to-do list sir!")
             return
@@ -55,7 +55,7 @@ def todo(no_repeat: bool = False) -> None:
     else:
         sys.stdout.write("\rQuerying DB for to-do list..")
         result = {}
-        for category, item in database.downloader():
+        for category, item in tasks.downloader():
             # condition below makes sure one category can have multiple items without repeating category for each item
             if category not in result:
                 result.update({category: item})  # creates dict for category and item if category is not found in result
@@ -85,7 +85,7 @@ def add_todo() -> None:
     """Adds new items to the to-do list."""
     sys.stdout.write("\rLooking for to-do database..")
     # if database file is not found calls create_db()
-    if not os.path.isfile(database.TASKS_DB):
+    if not os.path.isfile(tasks.TASKS_DB):
         support.flush_screen()
         speaker.speak(text="You don't have a database created for your to-do list sir.")
         speaker.speak(text="Would you like to spin up one now?", run=True)
@@ -111,7 +111,7 @@ def add_todo() -> None:
                 speaker.speak(text='Your to-do list has been left intact sir.')
             else:
                 # passes the category and item to uploader() in modules/database.py which updates the database
-                response = database.uploader(category, item)
+                response = tasks.uploader(category, item)
                 speaker.speak(text=response)
                 speaker.speak(text="Do you want to add anything else to your to-do list?", run=True)
                 category_continue = listener.listen(timeout=3, phrase_limit=3)
@@ -124,7 +124,7 @@ def add_todo() -> None:
 def delete_todo() -> None:
     """Deletes items from an existing to-do list."""
     sys.stdout.write("\rLooking for to-do database..")
-    if not os.path.isfile(database.TASKS_DB):
+    if not os.path.isfile(tasks.TASKS_DB):
         speaker.speak(text="You don't have a database created for your to-do list sir.")
         return
     speaker.speak(text="Which one should I remove sir?", run=True)
@@ -132,14 +132,14 @@ def delete_todo() -> None:
     if item != 'SR_ERROR':
         if 'exit' in item or 'quit' in item or 'Xzibit' in item:
             return
-        response = database.deleter(keyword=item.lower())
+        response = tasks.deleter(keyword=item.lower())
         # if the return message from database starts with 'Looks' it means that the item wasn't matched for deletion
         speaker.speak(text=response, run=True)
 
 
 def delete_db() -> None:
     """Deletes the ``tasks.db`` database file after getting confirmation."""
-    if not os.path.isfile(database.TASKS_DB):
+    if not os.path.isfile(tasks.TASKS_DB):
         speaker.speak(text='I did not find any database sir.')
         return
     else:
@@ -147,7 +147,7 @@ def delete_db() -> None:
         response = listener.listen(timeout=3, phrase_limit=3)
         if response != 'SR_ERROR':
             if any(word in response.lower() for word in keywords.ok):
-                os.remove(database.TASKS_DB)
+                os.remove(tasks.TASKS_DB)
                 speaker.speak(text="I've removed your database sir.")
             else:
                 speaker.speak(text="Your database has been left intact sir.")

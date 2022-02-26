@@ -10,10 +10,11 @@ from playsound import playsound
 from executors.logger import logger
 from modules.audio import speaker
 from modules.car import connector, controller
+from modules.models import models
 from modules.temperature import temperature
 from modules.utils import globals, support
 
-env = globals.ENV
+env = models.env
 
 
 def car(phrase: str) -> None:
@@ -127,3 +128,4 @@ def vehicle(car_email: str, car_pass: str, car_pin: int, operation: str, temp: i
         return handler.get_attributes().get('vehicleBrand', 'car')
     except HTTPError as error:
         logger.error(error)
+        logger.error(f'Failed to connect {error.url} with error code: {error.code}')

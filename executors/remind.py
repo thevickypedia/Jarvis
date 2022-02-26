@@ -6,9 +6,10 @@ import sys
 from executors import communicator
 from modules.audio import listener, speaker
 from modules.conditions import conversation
+from modules.models import models
 from modules.utils import globals
 
-env = globals.ENV
+env = models.env
 
 
 def reminder(phrase: str) -> None:

@@ -8,9 +8,6 @@ from socket import AF_INET, SO_REUSEADDR, SOCK_STREAM, SOL_SOCKET, socket
 from typing import Union
 
 from executors.logger import logger
-from modules.utils import globals
-
-env = globals.ENV
 
 
 def get_free_port() -> int:

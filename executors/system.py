@@ -12,10 +12,11 @@ from executors.controls import restart
 from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
+from modules.models import models
 from modules.temperature import temperature
 from modules.utils import globals, support
 
-env = globals.ENV
+env = models.env
 
 
 def system_info() -> None:

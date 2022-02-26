@@ -7,10 +7,10 @@ from subprocess import PIPE, Popen
 
 from executors.logger import logger
 from modules.audio import speaker
+from modules.models import models
 from modules.utils import globals
 
-env = globals.ENV
-
+env = models.env
 MEETING_FILE = f"{env.meeting_app}.scpt"
 
 

@@ -6,9 +6,10 @@ import sys
 from pyrh import Robinhood
 
 from modules.audio import speaker
-from modules.utils import globals, support
+from modules.models import models
+from modules.utils import support
 
-env = globals.ENV
+env = models.env
 
 
 def watcher(rh, result: list) -> str:

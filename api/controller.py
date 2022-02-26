@@ -1,6 +1,7 @@
-from hashlib import sha1
-from sys import path
-from uuid import UUID, uuid4
+import hashlib
+import uuid
+
+from modules.conditions import conversation, keywords
 
 
 def offline_compatible() -> list:
@@ -15,9 +16,6 @@ def offline_compatible() -> list:
         list:
         Flat list from a matrix (list of lists) after removing the duplicates.
     """
-    path.append('..')
-    from modules.conditions import conversation, keywords
-    path.remove('..')
     offline_words = [keywords.sleep_control,
                      keywords.exit_,
                      keywords.set_alarm,
@@ -65,7 +63,7 @@ def offline_compatible() -> list:
     return [i.strip() for n, i in enumerate(matrix_to_list) if i not in matrix_to_list[n + 1:]]  # remove dupes
 
 
-def hashed(key: UUID) -> str:
+def hashed(key: uuid.UUID) -> str:
     """Generates sha from UUID.
 
     Args:
@@ -75,7 +73,7 @@ def hashed(key: UUID) -> str:
         str:
         Hashed value of the UUID received.
     """
-    return sha1(key.bytes + bytes(key.hex, "utf-8")).digest().hex()
+    return hashlib.sha1(key.bytes + bytes(key.hex, "utf-8")).digest().hex()
 
 
 def keygen() -> str:
@@ -85,4 +83,4 @@ def keygen() -> str:
         str:
         Returns hashed UUID as a string.
     """
-    return hashed(key=uuid4())
+    return hashed(key=uuid.uuid4())
