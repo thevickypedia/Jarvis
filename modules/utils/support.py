@@ -24,10 +24,10 @@ from holidays import country_holidays
 from executors import display_functions
 from executors.logger import logger
 from modules.audio import speaker, volume
+from modules.models import models
 from modules.netgear.ip_scanner import LocalIPScan
-from modules.utils import globals
 
-env = globals.ENV
+env = models.env
 
 
 def flush_screen() -> None:

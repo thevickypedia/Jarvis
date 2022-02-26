@@ -8,10 +8,11 @@ from inflect import engine
 
 from executors.location import geo_locator
 from modules.audio import speaker
+from modules.models import models
 from modules.temperature import temperature
 from modules.utils import globals, support
 
-env = globals.ENV
+env = models.env
 
 
 def weather(phrase: str = None) -> None:

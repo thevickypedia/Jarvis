@@ -10,7 +10,7 @@ from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from pathlib import PurePath
 from threading import Thread
-from typing import List
+from typing import Dict
 
 import pvporcupine
 from playsound import playsound
@@ -52,7 +52,10 @@ from modules.audio.speaker import audio_driver, speak
 from modules.audio.voices import voice_changer, voice_default
 from modules.audio.volume import volume
 from modules.conditions import conversation, keywords
+from modules.models import models
 from modules.utils import globals, support
+
+env = models.env
 
 
 def split(key: str, should_return: bool = False) -> bool:
@@ -615,12 +618,12 @@ class Activator:
             - Closes audio stream.
             - Releases port audio resources.
         """
-        for process in globals.processes:
+        for func, process in globals.processes.items():
             if process.is_alive():
-                logger.info(f'Terminating process [SIGTERM]: {process.pid}')
+                logger.info(f'Terminating {func} sending [SIGTERM] signal: {process.pid}')
                 process.terminate()
                 if process.is_alive():
-                    logger.info(f'Killing process [SIGKILL]: {process.pid}')
+                    logger.info(f'Killing {func} sending [SIGKILL] signal: {process.pid}')
                     process.kill()
         logger.info('Releasing resources acquired by Porcupine.')
         self.detector.delete()
@@ -631,7 +634,7 @@ class Activator:
         self.py_audio.terminate()
 
 
-def initiate_background_processes() -> List[Process]:
+def initiate_processes() -> Dict[str, Process]:
     """Initiate multiple background processes to achieve parallelization.
 
     Methods
@@ -641,19 +644,21 @@ def initiate_background_processes() -> List[Process]:
         - automator: Initiates automator that executes offline commands and certain functions at said time.
         - playsound: Plays a start-up sound.
     """
-    processes = [Process(target=offline.initiate_tunneling,
+    processes = {
+        'ngrok': Process(target=offline.initiate_tunneling,
                          kwargs={'offline_host': env.offline_host, 'offline_port': env.offline_port, 'home': env.home}),
-                 Process(target=write_current_location),
-                 Process(target=trigger_api),
-                 Process(target=automator)]
-    for process in processes:
+        'location': Process(target=write_current_location),
+        'api': Process(target=trigger_api),
+        'automator': Process(target=automator)
+    }
+    for func, process in processes.items():
         process.start()
-        yield process
+        logger.info(f'Started function: {func} {process.sentinel} with PID: {process.pid}')
     playsound(sound='indicators/initialize.mp3', block=False)
+    return processes
 
 
 if __name__ == '__main__':
-    env = globals.ENV
     globals.hosted_device = hosted_device_info()
     if globals.hosted_device.get('os_name') != 'macOS':
         exit('Unsupported Operating System.\nWindows support was deprecated. '
@@ -676,6 +681,6 @@ if __name__ == '__main__':
 
     sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: 50%")
 
-    globals.processes = list(initiate_background_processes())
+    globals.processes = initiate_processes()
 
     Activator().start()

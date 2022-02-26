@@ -5,9 +5,9 @@ from logging import Logger
 from crontab import CronTab
 
 from api.rh_helper import MarketHours
-from modules.utils import globals
+from modules.models import models
 
-env = globals.ENV
+env = models.env
 
 
 class CronScheduler:

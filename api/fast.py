@@ -17,10 +17,11 @@ from api import cron, filters
 from api.controller import keygen, offline_compatible
 from api.models import GetData, GetPhrase, LogConfig
 from api.report_gatherer import Investment
-from modules.utils import globals
+from modules.models import models
 
-env = globals.ENV
-robinhood_token = {'token': None}
+env = models.env
+
+robinhood_token = {'token': ''}
 
 if not os.path.isfile(LogConfig.ACCESS_LOG_FILENAME):
     Path(LogConfig.ACCESS_LOG_FILENAME).touch()
@@ -41,6 +42,7 @@ logging.getLogger("uvicorn.access").propagate = False  # Disables access logger 
 logger = logging.getLogger('uvicorn.default')
 
 serve_file = 'api/robinhood.html'
+
 
 app = FastAPI(
     title="Jarvis API",
@@ -63,11 +65,11 @@ def run_robinhood() -> None:
         Investment(logger=logger).report_gatherer()
 
 
-async def auth_offline_communicator(passphrase: str, command: str) -> bool:
+async def auth_offline_communicator(phrase: str, command: str) -> bool:
     """Runs pre-checks before letting office_communicator to proceed.
 
     Args:
-        passphrase: Takes the password as one of the arguments.
+        phrase: Takes the password as one of the arguments.
         command: Takes the command to be processed as another argument.
 
     Raises:
@@ -83,9 +85,9 @@ async def auth_offline_communicator(passphrase: str, command: str) -> bool:
     """
     command_lower = command.lower()
     command_split = command.split()
-    if passphrase.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
-        passphrase = bytes(passphrase, "utf-8").decode(encoding="unicode_escape")
-    if passphrase != env.offline_pass:
+    if phrase.startswith('\\'):  # Since phrase is converted to Hexadecimal using a JavaScript in JarvisHelper
+        phrase = bytes(phrase, "utf-8").decode(encoding="unicode_escape")
+    if phrase != env.offline_pass:
         raise HTTPException(status_code=401, detail='Request not authorized.')
     if command_lower == 'test':
         raise HTTPException(status_code=200, detail='Test message received.')
@@ -161,7 +163,7 @@ async def offline_communicator(input_data: GetData) -> None:
         - input_data: Takes the following arguments as data instead of a QueryString.
 
             - command: The task which Jarvis has to do.
-            - passphrase: Pass phrase for authentication.
+            - phrase: Pass phrase for authentication.
 
     Raises:
         200: A dictionary with the command requested and the response for it from Jarvis.
@@ -171,10 +173,10 @@ async def offline_communicator(input_data: GetData) -> None:
         - Keeps waiting until Jarvis sends a response back by creating the offline_response file.
         - This response will be sent as raising a HTTPException with status code 200.
     """
-    passphrase = input_data.phrase
+    phrase = input_data.phrase
     command = input_data.command
     command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from the str
-    await auth_offline_communicator(passphrase=passphrase, command=command)
+    await auth_offline_communicator(phrase=phrase, command=command)
 
     with open('offline_request', 'w') as off_request:
         off_request.write(command)
@@ -215,7 +217,7 @@ if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
         Args:
             feeder: Takes the following argument(s) as dataString instead of a QueryString.
 
-                - passphrase: Pass phrase for authentication.
+                - phrase: Pass phrase for authentication.
 
         Raises:
             200: If initial auth is successful and returns the single-use token.
@@ -228,11 +230,11 @@ if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
             - Also stores the token in the dictionary ``robinhood_token`` which is verified in the path ``/investment``
             - The token is deleted from env var as soon as it is verified, making page-refresh useless.
         """
-        robinhood_token['token'] = keygen() or None
+        robinhood_token['token'] = keygen()
         passcode = feeder.phrase
         if not passcode:
             raise HTTPException(status_code=500, detail='Passcode was not received.')
-        if passcode.startswith('\\'):  # Since passphrase is converted to Hexadecimal using a JavaScript in JarvisHelper
+        if passcode.startswith('\\'):  # Since phrase is converted to Hexadecimal using a JavaScript in JarvisHelper
             passcode = bytes(passcode, "utf-8").decode(encoding="unicode_escape")
         if passcode == env.robinhood_endpoint_auth:
             raise HTTPException(status_code=200, detail=f"?token={robinhood_token['token']}")
@@ -262,7 +264,7 @@ if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
         if not token:
             raise HTTPException(status_code=400, detail='Request needs to be authorized with a single-use token.')
         if token == robinhood_token['token']:
-            robinhood_token['token'] = None
+            robinhood_token['token'] = ''
             if not os.path.isfile(serve_file):
                 raise HTTPException(status_code=404, detail='Static file was not found on server.')
             with open(serve_file) as static_file:

@@ -6,9 +6,9 @@ from requests.exceptions import ConnectionError, Timeout
 
 from executors.logger import logger
 from executors.port_handler import is_port_in_use, kill_port_pid
-from modules.utils import globals
+from modules.models import models
 
-env = globals.ENV
+env = models.env
 
 
 class APIServer(uvicorn.Server):

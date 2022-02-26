@@ -131,11 +131,7 @@ class Connect:
         if data:
             request.data = bytes(json.dumps(data), encoding="utf8")
 
-        try:
-            response = build_opener().open(request)
-        except HTTPError as error:
-            self.logger.error(f'Failed to connect {error.url} with error code: {error.code}')
-            return {}
+        response = build_opener().open(request)
 
         if not 200 <= response.code <= 300:
             raise HTTPError(code=response.code, msg='HTTPError', url=url, hdrs=response.headers, fp=response.fp)

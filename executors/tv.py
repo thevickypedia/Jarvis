@@ -12,10 +12,11 @@ from executors.internet import vpn_checker
 from executors.logger import logger
 from modules.audio import speaker
 from modules.conditions import conversation
+from modules.models import models
 from modules.tv.tv_controls import TV
 from modules.utils import globals, support
 
-env = globals.ENV
+env = models.env
 
 
 def television(phrase: str) -> None:

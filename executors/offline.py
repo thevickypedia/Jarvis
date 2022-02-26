@@ -6,9 +6,9 @@ import requests
 from appscript import app as apple_script
 
 from executors.logger import logger
-from modules.utils import globals
+from modules.models import models
 
-env = globals.ENV
+env = models.env
 
 
 def initiate_tunneling(offline_host: str, offline_port: int, home: str) -> None:

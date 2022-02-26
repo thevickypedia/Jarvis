@@ -25,13 +25,14 @@ from timezonefinder import TimezoneFinder
 from executors import controls, logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
+from modules.models import models
 from modules.utils import globals, support
+
+env = models.env
 
 # stores necessary values for geolocation to receive the latitude, longitude and address
 options.default_ssl_context = create_default_context(cafile=certifi.where())
 geo_locator = Nominatim(scheme='http', user_agent='test/1', timeout=3)
-
-env = globals.ENV
 
 
 def device_selector(phrase: str = None) -> Union[AppleDevice, None]:

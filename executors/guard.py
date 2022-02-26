@@ -12,9 +12,10 @@ from executors import communicator
 from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
-from modules.utils import globals, support
+from modules.models import models
+from modules.utils import support
 
-env = globals.ENV
+env = models.env
 
 
 def guard_enable() -> None:
@@ -90,7 +91,8 @@ def guard_enable() -> None:
             notified = time()
             Thread(target=threat_notify, kwargs=({"converted": converted, "phone_number": env.phone_number,
                                                   "gmail_user": env.gmail_user, "gmail_pass": env.gmail_pass,
-                                                  "recipient": env.recipient, "date_extn": date_extn})).start()
+                                                  "recipient": env.recipient or env.alt_gmail_user or env.gmail_user,
+                                                  "date_extn": date_extn})).start()
 
 
 def threat_notify(converted: str, date_extn: Union[str, None], gmail_user: str, gmail_pass: str,
