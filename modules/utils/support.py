@@ -9,7 +9,6 @@ import math
 import os
 import random
 import re
-import shutil
 import string
 import sys
 import time
@@ -238,21 +237,6 @@ def stop_processes(deep: bool = False, apps: tuple = ('iterm', 'terminal', 'pych
             time.sleep(5e-01)
             if deep and proc.is_running():
                 proc.kill()
-
-
-def remove_files() -> None:
-    """Function that deletes multiple files when called during exit operation.
-
-    Warnings:
-        Deletes:
-            - all ``.lock`` files created for alarms and reminders.
-            - ``location.yaml`` file, to recreate a new one next time around.
-            - ``meetings`` file, to recreate a new one next time around.
-    """
-    shutil.rmtree('alarm') if os.path.isdir('alarm') else None
-    shutil.rmtree('reminder') if os.path.isdir('reminder') else None
-    os.remove('location.yaml') if os.path.isfile('location.yaml') else None
-    os.remove('meetings') if os.path.isfile('meetings') else None
 
 
 def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> list:

@@ -10,23 +10,9 @@ class GetData(BaseModel):
 
     See Also:
         - ``command``: Offline command sent via API which ``Jarvis`` has to perform.
-        - ``phrase``: Secret phrase to authenticate the request sent to the API.
     """
 
-    phrase: str = None
     command: str = None
-
-
-class GetPhrase(BaseModel):
-    """BaseModel that handles input data for the API which is treated as members for the class ``GetPhrase``.
-
-    >>> GetPhrase
-
-    See Also:
-        - ``phrase``: Secret phrase to authenticate the request sent to the API.
-    """
-
-    phrase: str = None
 
 
 class CronConfig(BaseModel):
