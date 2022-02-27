@@ -88,18 +88,16 @@ def exit_process() -> None:
             speaker.speak(text=f"{value.replace('_', ' ')} at "
                                f"{key.replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')}")
     if alarms:
-        logger.info(f'JARVIS::Deleting Alarms - {alarms}')
         alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
         alarms = alarms.replace('.lock', '').replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')
         speaker.speak(text=f'You have a pending alarm at {alarms} sir!')
     if reminders or alarms:
-        speaker.speak(text='This will be removed while shutting down!')
+        speaker.speak(text="This will not be executed while I'm asleep!")
     speaker.speak(text='Shutting down now sir!')
     try:
         speaker.speak(text=support.exit_message(), run=True)
     except RuntimeError as error:
         logger.fatal(f'Received a RuntimeError while self terminating.\n{error}')
-    support.remove_files()
     sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
                      f"\nTotal runtime: {support.time_converter(perf_counter())}")
 

@@ -35,6 +35,13 @@ API Controller
    :members:
    :undoc-members:
 
+API Authenticator
+=================
+
+.. automodule:: api.authenticator
+   :members:
+   :undoc-members:
+
 API Server
 ==========
 
@@ -60,10 +67,6 @@ Jarvis - API Models
 ===================
 
 .. autoclass:: api.models.GetData(pydantic.BaseModel)
-   :members:
-   :undoc-members:
-
-.. autoclass:: api.models.GetPhrase(pydantic.BaseModel)
    :members:
    :undoc-members:
 

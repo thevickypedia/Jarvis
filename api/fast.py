@@ -9,17 +9,18 @@ from logging.config import dictConfig
 from multiprocessing import Process
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
-from api import cron, filters
+from api import authenticator, cron, filters
 from api.controller import keygen, offline_compatible
-from api.models import GetData, GetPhrase, LogConfig
+from api.models import GetData, LogConfig
 from api.report_gatherer import Investment
-from modules.models import models
+from modules.models.models import env
 
-env = models.env
+OFFLINE_PROTECTOR = [Depends(dependency=authenticator.offline_has_access)]
+ROBINHOOD_PROTECTOR = [Depends(dependency=authenticator.robinhood_has_access)]
 
 robinhood_token = {'token': ''}
 
@@ -65,42 +66,6 @@ def run_robinhood() -> None:
         Investment(logger=logger).report_gatherer()
 
 
-async def auth_offline_communicator(phrase: str, command: str) -> bool:
-    """Runs pre-checks before letting office_communicator to proceed.
-
-    Args:
-        phrase: Takes the password as one of the arguments.
-        command: Takes the command to be processed as another argument.
-
-    Raises:
-        401: If auth failed.
-        503: If Jarvis is not running.
-        413: If request command has 'and' or 'also' in the phrase.
-        422: If the request is not part of offline compatible words.
-        200: If phrase is test.
-
-    Returns:
-        bool:
-        If all the pre-checks have been successful.
-    """
-    command_lower = command.lower()
-    command_split = command.split()
-    if phrase.startswith('\\'):  # Since phrase is converted to Hexadecimal using a JavaScript in JarvisHelper
-        phrase = bytes(phrase, "utf-8").decode(encoding="unicode_escape")
-    if phrase != env.offline_pass:
-        raise HTTPException(status_code=401, detail='Request not authorized.')
-    if command_lower == 'test':
-        raise HTTPException(status_code=200, detail='Test message received.')
-    if 'and' in command_split or 'also' in command_split:
-        raise HTTPException(status_code=413,
-                            detail='Jarvis can only process one command at a time via offline communicator.')
-    if not any(word in command_lower for word in offline_compatible):
-        raise HTTPException(status_code=422,
-                            detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
-                                   'Please try an instruction that does not require an user interaction.')
-    return True
-
-
 async def enable_cors() -> None:
     """Allow ``CORS: Cross-Origin Resource Sharing`` to allow restricted resources on the API."""
     logger.info('Setting CORS policy.')
@@ -144,18 +109,13 @@ async def redirect_index() -> str:
     return app.redoc_url
 
 
-@app.get('/status', include_in_schema=False)
-async def status() -> dict:
-    """Health Check for OfflineCommunicator.
-
-    Returns:
-        dict:
-        Health status in a dictionary.
-    """
-    return {'Message': 'Healthy'}
+@app.get('/health', include_in_schema=False)
+async def health() -> None:
+    """Health Check for OfflineCommunicator."""
+    raise HTTPException(status_code=200, detail=status.HTTP_200_OK)
 
 
-@app.post("/offline-communicator")
+@app.post("/offline-communicator", dependencies=OFFLINE_PROTECTOR)
 async def offline_communicator(input_data: GetData) -> None:
     """Offline Communicator for Jarvis.
 
@@ -163,21 +123,29 @@ async def offline_communicator(input_data: GetData) -> None:
         - input_data: Takes the following arguments as data instead of a QueryString.
 
             - command: The task which Jarvis has to do.
-            - phrase: Pass phrase for authentication.
 
     Raises:
-        200: A dictionary with the command requested and the response for it from Jarvis.
+        - 200: A dictionary with the command requested and the response for it from Jarvis.
+        - 413: If request command has 'and' or 'also' in the phrase.
+        - 422: If the request is not part of offline compatible words.
 
     See Also:
-        - Include response_model only when the response should have same keys as arguments
-        - Keeps waiting until Jarvis sends a response back by creating the offline_response file.
-        - This response will be sent as raising a HTTPException with status code 200.
+        - Keeps waiting until Jarvis sends a response back by creating the ``offline_response`` file.
+        - This response will be sent as raising a ``HTTPException`` with status code 200.
     """
-    phrase = input_data.phrase
-    command = input_data.command
-    command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from the str
-    await auth_offline_communicator(phrase=phrase, command=command)
+    if not (command := input_data.command.strip()):
+        raise HTTPException(status_code=204, detail='Empy requests cannot be processed.')
 
+    command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
+    if command.lower() == 'test':
+        raise HTTPException(status_code=200, detail='Test message received.')
+    if 'and' in command.split() or 'also' in command.split():
+        raise HTTPException(status_code=413,
+                            detail='Jarvis can only process one command at a time via offline communicator.')
+    if not any(word in command.lower() for word in offline_compatible):
+        raise HTTPException(status_code=422,
+                            detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
+                                   'Please try an instruction that does not require an user interaction.')
     with open('offline_request', 'w') as off_request:
         off_request.write(command)
 
@@ -210,18 +178,12 @@ async def get_favicon() -> FileResponse:
 
 
 if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
-    @app.post("/robinhood-authenticate")
-    async def authenticate_robinhood(feeder: GetPhrase) -> None:
+    @app.post("/robinhood-authenticate", dependencies=ROBINHOOD_PROTECTOR)
+    async def authenticate_robinhood() -> None:
         """Authenticates the request. Uses a two-factor authentication by generating single use tokens.
-
-        Args:
-            feeder: Takes the following argument(s) as dataString instead of a QueryString.
-
-                - phrase: Pass phrase for authentication.
 
         Raises:
             200: If initial auth is successful and returns the single-use token.
-            401: If request is not authorized.
 
         See Also:
             If basic auth (stored as an env var ``robinhood_endpoint_auth``) succeeds:
@@ -231,15 +193,7 @@ if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
             - The token is deleted from env var as soon as it is verified, making page-refresh useless.
         """
         robinhood_token['token'] = keygen()
-        passcode = feeder.phrase
-        if not passcode:
-            raise HTTPException(status_code=500, detail='Passcode was not received.')
-        if passcode.startswith('\\'):  # Since phrase is converted to Hexadecimal using a JavaScript in JarvisHelper
-            passcode = bytes(passcode, "utf-8").decode(encoding="unicode_escape")
-        if passcode == env.robinhood_endpoint_auth:
-            raise HTTPException(status_code=200, detail=f"?token={robinhood_token['token']}")
-        else:
-            raise HTTPException(status_code=401, detail='Request not authorized.')
+        raise HTTPException(status_code=200, detail=f"?token={robinhood_token['token']}")
 
 if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
     @app.get("/investment", response_class=HTMLResponse, include_in_schema=False)
@@ -273,5 +227,5 @@ if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
             return HTMLResponse(content=html_content, media_type=content_type)  # serves as a static webpage
         else:
             logger.warning('/investment was accessed with an expired token.')
-            raise HTTPException(status_code=401,
+            raise HTTPException(status_code=419,
                                 detail='Session expired. Requires authentication since endpoint uses single-use token.')

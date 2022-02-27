@@ -187,35 +187,6 @@
 <section id="module-api.fast">
 <span id="api-handler"></span><h1>API Handler<a class="headerlink" href="#module-api.fast" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="api.fast.auth_offline_communicator">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">auth_offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.fast.auth_offline_communicator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs pre-checks before letting office_communicator to proceed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>phrase</strong> – Takes the password as one of the arguments.</p></li>
-<li><p><strong>command</strong> – Takes the command to be processed as another argument.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>401</strong> – If auth failed.</p></li>
-<li><p><strong>503</strong> – If Jarvis is not running.</p></li>
-<li><p><strong>413</strong> – If request command has ‘and’ or ‘also’ in the phrase.</p></li>
-<li><p><strong>422</strong> – If the request is not part of offline compatible words.</p></li>
-<li><p><strong>200</strong> – If phrase is test.</p></li>
-</ul>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>If all the pre-checks have been successful.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="api.fast.enable_cors">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">enable_cors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.enable_cors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allow <code class="docutils literal notranslate"><span class="pre">CORS:</span> <span class="pre">Cross-Origin</span> <span class="pre">Resource</span> <span class="pre">Sharing</span></code> to allow restricted resources on the API.</p>
@@ -236,6 +207,12 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="api.fast.health">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">health</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.health" title="Permalink to this definition">¶</a></dt>
+<dd><p>Health Check for OfflineCommunicator.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="api.fast.offline_communicator">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.GetData" title="api.models.GetData"><span class="pre">api.models.GetData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.offline_communicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Offline Communicator for Jarvis.</p>
@@ -244,19 +221,21 @@
 <dd class="field-odd"><p><strong>- input_data</strong> – Takes the following arguments as data instead of a QueryString.</p>
 <ul class="simple">
 <li><p>command: The task which Jarvis has to do.</p></li>
-<li><p>phrase: Pass phrase for authentication.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>200</strong> – A dictionary with the command requested and the response for it from Jarvis.</p>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>- 200</strong> – A dictionary with the command requested and the response for it from Jarvis.</p></li>
+<li><p><strong>- 413</strong> – If request command has ‘and’ or ‘also’ in the phrase.</p></li>
+<li><p><strong>- 422</strong> – If the request is not part of offline compatible words.</p></li>
+</ul>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>Include response_model only when the response should have same keys as arguments</p></li>
-<li><p>Keeps waiting until Jarvis sends a response back by creating the offline_response file.</p></li>
-<li><p>This response will be sent as raising a HTTPException with status code 200.</p></li>
+<li><p>Keeps waiting until Jarvis sends a response back by creating the <code class="docutils literal notranslate"><span class="pre">offline_response</span></code> file.</p></li>
+<li><p>This response will be sent as raising a <code class="docutils literal notranslate"><span class="pre">HTTPException</span></code> with status code 200.</p></li>
 </ul>
 </div>
 </dd></dl>
@@ -285,20 +264,6 @@
 <dt class="sig sig-object py" id="api.fast.start_robinhood">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">start_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.start_robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates robinhood gatherer in a process and adds a cron schedule if not present already.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="api.fast.status">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#api.fast.status" title="Permalink to this definition">¶</a></dt>
-<dd><p>Health Check for OfflineCommunicator.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Health status in a dictionary.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>dict</p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
@@ -353,6 +318,31 @@
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-api.authenticator">
+<span id="api-authenticator"></span><h1>API Authenticator<a class="headerlink" href="#module-api.authenticator" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.authenticator.offline_has_access">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.authenticator.</span></span><span class="sig-name descname"><span class="pre">offline_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">fastapi.security.http.HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.authenticator.offline_has_access" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates the token if mentioned as a dependency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>token</strong> – Takes the authorization header token as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.authenticator.robinhood_has_access">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.authenticator.</span></span><span class="sig-name descname"><span class="pre">robinhood_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">fastapi.security.http.HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.authenticator.robinhood_has_access" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates the token if mentioned as a dependency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>token</strong> – Takes the authorization header token as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -512,7 +502,6 @@ name is specified, allow every event.</p>
 <p class="admonition-title">See also</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">command</span></code>: Offline command sent via API which <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> has to perform.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">phrase</span></code>: Secret phrase to authenticate the request sent to the API.</p></li>
 </ul>
 </div>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
@@ -520,33 +509,6 @@ name is specified, allow every event.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="api.models.GetData.command">
 <span class="sig-name descname"><span class="pre">command</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#api.models.GetData.command" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.GetData.phrase">
-<span class="sig-name descname"><span class="pre">phrase</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#api.models.GetData.phrase" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="api.models.GetPhrase">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">GetPhrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.GetPhrase" title="Permalink to this definition">¶</a></dt>
-<dd><p>BaseModel that handles input data for the API which is treated as members for the class <code class="docutils literal notranslate"><span class="pre">GetPhrase</span></code>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">GetPhrase</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">phrase</span></code>: Secret phrase to authenticate the request sent to the API.</p></li>
-</ul>
-</div>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.GetPhrase.phrase">
-<span class="sig-name descname"><span class="pre">phrase</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#api.models.GetPhrase.phrase" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -3934,23 +3896,6 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="modules.utils.support.remove_files">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">remove_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.remove_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function that deletes multiple files when called during exit operation.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<dl class="simple">
-<dt>Deletes:</dt><dd><ul class="simple">
-<li><p>all <code class="docutils literal notranslate"><span class="pre">.lock</span></code> files created for alarms and reminders.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">location.yaml</span></code> file, to recreate a new one next time around.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">meetings</span></code> file, to recreate a new one next time around.</p></li>
-</ul>
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.scan_smart_devices">
 <span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">scan_smart_devices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.scan_smart_devices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves devices IP by doing a local IP range scan using Netgear API.</p>
@@ -4061,6 +4006,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#jarvis-api">———-Jarvis API———-</a></li>
 <li><a class="reference internal" href="#module-api.fast">API Handler</a></li>
 <li><a class="reference internal" href="#module-api.controller">API Controller</a></li>
+<li><a class="reference internal" href="#module-api.authenticator">API Authenticator</a></li>
 <li><a class="reference internal" href="#module-api.server">API Server</a></li>
 <li><a class="reference internal" href="#module-api.cron">API CronTab</a></li>
 <li><a class="reference internal" href="#api-log-filters">API Log Filters</a></li>
