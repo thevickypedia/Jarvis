@@ -126,6 +126,13 @@ Communicator
    :members:
    :undoc-members:
 
+Conditions
+==========
+
+.. automodule:: executors.conditions
+   :members:
+   :undoc-members:
+
 Controls
 ========
 
@@ -235,6 +242,13 @@ Robinhood
 =========
 
 .. automodule:: executors.robinhood
+   :members:
+   :undoc-members:
+
+Splitter
+========
+
+.. automodule:: executors.splitter
    :members:
    :undoc-members:
 

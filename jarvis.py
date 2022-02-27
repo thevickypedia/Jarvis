@@ -3,11 +3,7 @@ import random
 import struct
 import sys
 import time
-import webbrowser
-from datetime import datetime
 from multiprocessing import Process
-from multiprocessing.context import TimeoutError as ThreadTimeoutError
-from multiprocessing.pool import ThreadPool
 from pathlib import PurePath
 from threading import Thread
 from typing import Dict
@@ -17,76 +13,28 @@ from playsound import playsound
 from pyaudio import PyAudio, paInt16
 
 from api.server import trigger_api
-from executors import controls, offline
-from executors.alarm import alarm_executor, kill_alarm, set_alarm
-from executors.automation import auto_helper, automation_handler
-from executors.bluetooth import bluetooth
-from executors.car import car
-from executors.communicator import read_gmail, send_sms
-from executors.date_time import current_date, current_time
-from executors.display_functions import brightness
-from executors.face import face_detection
-from executors.github import github
-from executors.guard import guard_enable
-from executors.internet import get_ssid, internet_checker, ip_info, speed_test
-from executors.lights import lights
-from executors.location import (directions, distance, locate, locate_places,
-                                location, write_current_location)
+from executors.controls import exit_process, pc_sleep, restart, starter
+from executors.internet import get_ssid, internet_checker
+from executors.location import write_current_location
 from executors.logger import logger
-from executors.meetings import (meeting_file_writer, meeting_reader, meetings,
-                                meetings_gatherer)
-from executors.others import (apps, facts, flip_a_coin, google_home, jokes,
-                              meaning, music, news, notes, repeat)
-from executors.remind import reminder, reminder_executor
-from executors.robinhood import robinhood
-from executors.system import hosted_device_info, system_info, system_vitals
-from executors.todo_list import (add_todo, create_db, delete_db, delete_todo,
-                                 todo)
-from executors.tv import television
-from executors.unconditional import alpha, google, google_maps, google_search
-from executors.vpn_server import vpn_server
-from executors.weather import weather
-from executors.wiki import wikipedia_
-from modules.audio.listener import listen
-from modules.audio.speaker import audio_driver, speak
-from modules.audio.voices import voice_changer, voice_default
-from modules.audio.volume import volume
-from modules.conditions import conversation, keywords
+from executors.offline import automator, initiate_tunneling
+from executors.others import time_travel
+from executors.splitter import split_phrase
+from executors.system import hosted_device_info
+from modules.audio import listener, speaker
+from modules.conditions import conversation
 from modules.models import models
 from modules.utils import globals, support
 
 env = models.env
 
 
-def split(key: str, should_return: bool = False) -> bool:
-    """Splits the input at 'and' or 'also' and makes it multiple commands to execute if found in statement.
-
-    Args:
-        key: Takes the voice recognized statement as argument.
-        should_return: A boolean flag sent to ``conditions`` to indicate that the ``else`` part shouldn't be executed.
-
-    Returns:
-        bool:
-        Return value from ``conditions()``
-    """
-    exit_check = False  # this is specifically to catch the sleep command which should break the while loop in renew()
-    if ' and ' in key and not any(word in key.lower() for word in keywords.avoid):
-        for each in key.split(' and '):
-            exit_check = conditions(converted=each.strip(), should_return=should_return)
-    elif ' also ' in key and not any(word in key.lower() for word in keywords.avoid):
-        for each in key.split(' also '):
-            exit_check = conditions(converted=each.strip(), should_return=should_return)
-    else:
-        exit_check = conditions(converted=key.strip(), should_return=should_return)
-    return exit_check
-
-
 def initialize() -> None:
     """Awakens from sleep mode. ``greet_check`` is to ensure greeting is given only for the first function call."""
     if globals.greet_check.get('status'):
-        speak(text="What can I do for you?")
+        speaker.speak(text="What can I do for you?")
     else:
-        speak(text=f'Good {support.part_of_day()}.')
+        speaker.speak(text=f'Good {support.part_of_day()}.')
         globals.greet_check['status'] = True
     renew()
 
@@ -96,346 +44,26 @@ def renew() -> None:
 
     Notes:
         - This function runs only for a minute.
-        - split(converted) is a condition so that, loop breaks when if sleep in ``conditions()`` returns True.
+        - split_phrase(converted) is a condition so that, loop breaks when if sleep in ``conditions()`` returns True.
     """
-    speak(run=True)
+    speaker.speak(run=True)
     waiter = 0
     while waiter < 12:
         waiter += 1
         if waiter == 1:
-            converted = listen(timeout=3, phrase_limit=5)
+            converted = listener.listen(timeout=3, phrase_limit=5)
         else:
-            converted = listen(timeout=3, phrase_limit=5, sound=False)
+            converted = listener.listen(timeout=3, phrase_limit=5, sound=False)
         if converted == 'SR_ERROR':
             continue
         remove = ['buddy', 'jarvis', 'hey', 'hello', 'sr_error']
         converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
         if converted:
-            if split(key=converted):  # should_return flag is not passed which will default to False
-                break  # split() returns what conditions function returns. Condition() returns True only for sleep.
+            if split_phrase(key=converted):  # should_return flag is not passed which will default to False
+                break  # split_phrase() returns a boolean flag from conditions. conditions return True only for sleep
         elif any(word in converted.lower() for word in remove):
             continue
-        speak(run=True)
-
-
-def conditions(converted: str, should_return: bool = False) -> bool:
-    """Conditions function is used to check the message processed.
-
-    Uses the keywords to do a regex match and trigger the appropriate function which has dedicated task.
-
-    Args:
-        converted: Takes the voice recognized statement as argument.
-        should_return: A boolean flag sent by ``Activator`` to indicate that the ``else`` part shouldn't be executed.
-
-    Returns:
-        bool:
-        Boolean True only when asked to sleep for conditioned sleep message.
-    """
-    logger.info(f'Request: {converted}')
-    converted_lower = converted.lower()
-    todo_checks = ['to do', 'to-do', 'todo']
-    if any(word in converted_lower for word in keywords.current_date) and \
-            not any(word in converted_lower for word in keywords.avoid):
-        current_date()
-
-    elif any(word in converted_lower for word in keywords.current_time) and \
-            not any(word in converted_lower for word in keywords.avoid):
-        current_time()
-
-    elif any(word in converted_lower for word in keywords.weather) and \
-            not any(word in converted_lower for word in keywords.avoid):
-        weather(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.system_info):
-        system_info()
-
-    elif any(word in converted for word in keywords.ip_info) or 'IP' in converted.split():
-        ip_info(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.wikipedia_):
-        wikipedia_()
-
-    elif any(word in converted_lower for word in keywords.news):
-        news()
-
-    elif any(word in converted_lower for word in keywords.report):
-        report()
-
-    elif any(word in converted_lower for word in keywords.robinhood):
-        robinhood()
-
-    elif any(word in converted_lower for word in keywords.repeat):
-        repeat()
-
-    elif any(word in converted_lower for word in keywords.location):
-        location()
-
-    elif any(word in converted_lower for word in keywords.locate):
-        locate(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.read_gmail):
-        read_gmail()
-
-    elif any(word in converted_lower for word in keywords.meaning):
-        meaning(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.delete_todo) and \
-            any(word in converted_lower for word in todo_checks):
-        delete_todo()
-
-    elif any(word in converted_lower for word in keywords.todo):
-        todo()
-
-    elif any(word in converted_lower for word in keywords.add_todo) and \
-            any(word in converted_lower for word in todo_checks):
-        add_todo()
-
-    elif any(word in converted_lower for word in keywords.delete_db):
-        delete_db()
-
-    elif any(word in converted_lower for word in keywords.create_db):
-        create_db()
-
-    elif any(word in converted_lower for word in keywords.distance) and \
-            not any(word in converted_lower for word in keywords.avoid):
-        distance(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.car):
-        car(phrase=converted_lower)
-
-    elif any(word in converted_lower for word in conversation.form):
-        speak(text="I am a program, I'm without form.")
-
-    elif any(word in converted_lower for word in keywords.locate_places):
-        locate_places(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.directions):
-        directions(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.kill_alarm):
-        kill_alarm()
-
-    elif any(word in converted_lower for word in keywords.set_alarm):
-        set_alarm(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.google_home):
-        google_home()
-
-    elif any(word in converted_lower for word in keywords.jokes):
-        jokes()
-
-    elif any(word in converted_lower for word in keywords.reminder):
-        reminder(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.notes):
-        notes()
-
-    elif any(word in converted_lower for word in keywords.github):
-        github(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.send_sms):
-        send_sms(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.google_search):
-        google_search(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.television):
-        television(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.apps):
-        apps(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.music):
-        music(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.volume):
-        volume(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.face_detection):
-        face_detection()
-
-    elif any(word in converted_lower for word in keywords.speed_test):
-        speed_test()
-
-    elif any(word in converted_lower for word in keywords.bluetooth):
-        bluetooth(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.brightness) and 'lights' not in converted_lower:
-        brightness(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.lights):
-        lights(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.guard_enable):
-        guard_enable()
-
-    elif any(word in converted_lower for word in keywords.flip_a_coin):
-        flip_a_coin()
-
-    elif any(word in converted_lower for word in keywords.facts):
-        facts()
-
-    elif any(word in converted_lower for word in keywords.meetings):
-        meetings()
-
-    elif any(word in converted_lower for word in keywords.voice_changer):
-        voice_changer(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.system_vitals):
-        system_vitals()
-
-    elif any(word in converted_lower for word in keywords.vpn_server):
-        vpn_server(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.automation):
-        automation_handler(phrase=converted_lower)
-
-    elif any(word in converted_lower for word in conversation.greeting):
-        speak(text='I am spectacular. I hope you are doing fine too.')
-
-    elif any(word in converted_lower for word in conversation.capabilities):
-        speak(text='There is a lot I can do. For example: I can get you the weather at any location, news around '
-                   'you, meanings of words, launch applications, create a to-do list, check your emails, get your '
-                   'system configuration, tell your investment details, locate your phone, find distance between '
-                   'places, set an alarm, play music on smart devices around you, control your TV, tell a joke, send'
-                   ' a message, set reminders, scan and clone your GitHub repositories, and much more. Time to ask,.')
-
-    elif any(word in converted_lower for word in conversation.languages):
-        speak(text="Tricky question!. I'm configured in python, and I can speak English.")
-
-    elif any(word in converted_lower for word in conversation.whats_up):
-        speak(text="My listeners are up. There is nothing I cannot process. So ask me anything..")
-
-    elif any(word in converted_lower for word in conversation.what):
-        speak(text="I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
-
-    elif any(word in converted_lower for word in conversation.who):
-        speak(text="I am Jarvis. A virtual assistant designed by Mr.Raauv.")
-
-    elif any(word in converted_lower for word in conversation.about_me):
-        speak(text="I am Jarvis. A virtual assistant designed by Mr.Raauv.")
-        speak(text="I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
-        speak(text="I can seamlessly take care of your daily tasks, and also help with most of your work!")
-
-    elif any(word in converted_lower for word in keywords.sleep_control):
-        return controls.sleep_control(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.restart_control):
-        controls.restart_control(phrase=converted)
-
-    elif any(word in converted_lower for word in keywords.kill) and \
-            not any(word in converted_lower for word in keywords.avoid):
-        raise KeyboardInterrupt
-
-    elif any(word in converted_lower for word in keywords.shutdown):
-        controls.shutdown()
-
-    elif should_return:
-        Thread(target=support.unrecognized_dumper, args=[{'ACTIVATOR': converted}]).start()
-        return False
-
-    else:
-        logger.info(f'Received the unrecognized lookup parameter: {converted}')
-        Thread(target=support.unrecognized_dumper, args=[{'CONDITIONS': converted}]).start()
-        if alpha(text=converted):
-            if google_maps(query=converted):
-                if google(query=converted):
-                    # if none of the conditions above are met, opens a Google search on default browser
-                    search_query = str(converted).replace(' ', '+')
-                    unknown_url = f"https://www.google.com/search?q={search_query}"
-                    webbrowser.open(url=unknown_url)
-
-
-def report() -> None:
-    """Initiates a list of functions, that I tend to check first thing in the morning."""
-    sys.stdout.write("\rStarting today's report")
-    globals.called['report'] = True
-    current_date()
-    current_time()
-    weather()
-    todo()
-    read_gmail()
-    robinhood()
-    news()
-    globals.called['report'] = False
-
-
-def time_travel() -> None:
-    """Triggered only from ``initiator()`` to give a quick update on the user's daily routine."""
-    part_day = support.part_of_day()
-    meeting = None
-    if not os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
-            ['Saturday', 'Sunday']:
-        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer, kwds={'logger': logger})
-    speak(text=f"Good {part_day} Vignesh.")
-    if part_day == 'Night':
-        if event := support.celebrate():
-            speak(text=f'Happy {event}!')
-        return
-    current_date()
-    current_time()
-    weather()
-    speak(run=True)
-    if os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
-            ['Saturday', 'Sunday']:
-        meeting_reader()
-    elif meeting:
-        try:
-            speak(text=meeting.get(timeout=30))
-        except ThreadTimeoutError:
-            pass  # skip terminate, close and join thread since the motive is to skip meetings info in case of a timeout
-    todo()
-    read_gmail()
-    speak(text='Would you like to hear the latest news?', run=True)
-    phrase = listen(timeout=3, phrase_limit=3)
-    if any(word in phrase.lower() for word in keywords.ok):
-        news()
-    globals.called['time_travel'] = False
-
-
-def offline_communicator(command: str = None, respond: bool = True) -> None:
-    """Reads ``offline_request`` file generated by `fast.py <https://git.io/JBPFQ>`__ containing request sent via API.
-
-    Args:
-        command: Takes the command that has to be executed as an argument.
-        respond: Takes the argument to decide whether to create the ``offline_response`` file.
-
-    Env Vars:
-        - ``offline_pass`` - Phrase to authenticate the requests to API. Defaults to ``jarvis``
-
-    Notes:
-        More cool stuff (Done by ``JarvisHelper``):
-            - Run ``ngrok http`` on port 4483 or any desired port set as an env var ``offline_port``.
-            - I have linked the ngrok ``public_url`` tunnelling the FastAPI to a JavaScript on my webpage.
-            - When a request is submitted, the JavaScript makes a POST call to the API.
-            - The API does the authentication and creates the ``offline_request`` file if authenticated.
-            - Check it out: `JarvisOffline <https://thevickypedia.com/jarvisoffline>`__
-
-    Warnings:
-        - Restarts ``Jarvis`` quietly in case of a ``RuntimeError`` however, the offline request will still be executed.
-        - This happens when ``speaker`` is stopped while another loop of speaker is in progress by regular interaction.
-    """
-    response = None
-    try:
-        if command:
-            os.remove('offline_request') if respond else None  # file will be unavailable when called by automator
-            globals.called_by_offline['status'] = True
-            split(command)
-            globals.called_by_offline['status'] = False
-            response = globals.text_spoken.get('text')
-        else:
-            response = 'Received a null request. Please resend it.'
-        if 'restart' not in command and respond:  # response will not be written when called by automator
-            with open('offline_response', 'w') as off_response:
-                off_response.write(response)
-        audio_driver.stop()
-        voice_default()
-    except RuntimeError as error:
-        if command and not response:
-            with open('offline_request', 'w') as off_request:
-                off_request.write(command)
-        logger.fatal(f'Received a RuntimeError while executing offline request.\n{error}')
-        controls.restart(quiet=True)
+        speaker.speak(run=True)
 
 
 def initiator(key_original: str, should_return: bool = False) -> None:
@@ -453,79 +81,23 @@ def initiator(key_original: str, should_return: bool = False) -> None:
     if [word for word in key_split if word in ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']]:
         globals.called['time_travel'] = True
         if event := support.celebrate():
-            speak(text=f'Happy {event}!')
+            speaker.speak(text=f'Happy {event}!')
         if 'night' in key_split or 'goodnight' in key_split:
-            Thread(target=controls.pc_sleep).start()
+            Thread(target=pc_sleep).start()
         time_travel()
     elif 'you there' in key:
-        speak(text=f'{random.choice(conversation.wake_up1)}')
+        speaker.speak(text=f'{random.choice(conversation.wake_up1)}')
         initialize()
     elif any(word in key for word in ['look alive', 'wake up', 'wakeup', 'show time', 'showtime']):
-        speak(text=f'{random.choice(conversation.wake_up2)}')
+        speaker.speak(text=f'{random.choice(conversation.wake_up2)}')
         initialize()
     else:
         converted = ' '.join([i for i in key_original.split() if i.lower() not in ['buddy', 'jarvis', 'sr_error']])
         if converted:
-            split(key=converted.strip(), should_return=should_return)
+            split_phrase(key=converted.strip(), should_return=should_return)
         else:
-            speak(text=f'{random.choice(conversation.wake_up3)}')
+            speaker.speak(text=f'{random.choice(conversation.wake_up3)}')
             initialize()
-
-
-def automator() -> None:
-    """Place for long-running background threads.
-
-    See Also:
-        - Initiates ``meeting_file_writer`` and ``scan_smart_devices`` every hour in a dedicated process.
-        - Keeps looking for the ``offline_request`` file, and invokes ``offline_communicator`` with content as the arg.
-        - The ``automation.yaml`` should be a dictionary within a dictionary that looks like the below:
-
-            .. code-block:: yaml
-
-                6:00 AM:
-                  task: set my bedroom lights to 50%
-                9:00 PM:
-                  task: set my bedroom lights to 5%
-
-        - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't execute a task repeatedly.
-    """
-    # todo: Write and read from DB and add an option to run a task at certain intervals
-    start = time.time()
-    dry_run = True
-    while True:
-        if os.path.isfile('offline_request'):
-            time.sleep(0.1)  # Read file after 0.1 second for the content to be written
-            with open('offline_request') as off_request:
-                offline_communicator(command=off_request.read())
-            support.flush_screen()
-
-        if os.path.isfile('automation.yaml'):
-            if exec_task := auto_helper():
-                offline_communicator(command=exec_task, respond=False)
-
-        if dry_run or start + 3_600 <= time.time():  # Executes every hour
-            start = time.time()
-            Process(target=meeting_file_writer).start()
-            Process(target=support.scan_smart_devices).start()
-
-        if alarm_state := support.lock_files(alarm_files=True):
-            for each_alarm in alarm_state:
-                if each_alarm == datetime.now().strftime("%I_%M_%p.lock"):
-                    Process(target=alarm_executor).start()
-                    os.remove(f'alarm/{each_alarm}')
-        if reminder_state := support.lock_files(reminder_files=True):
-            for each_reminder in reminder_state:
-                remind_time, remind_msg = each_reminder.split('-')
-                remind_msg = remind_msg.rstrip('.lock')
-                if remind_time == datetime.now().strftime("%I_%M_%p"):
-                    Thread(target=reminder_executor, args=[remind_msg]).start()
-                    os.remove(f'reminder/{each_reminder}')
-
-        if globals.STOPPER['status']:
-            logger.info('Exiting automator since the STOPPER flag was set.')
-            break
-
-        dry_run = False
 
 
 class Activator:
@@ -535,7 +107,7 @@ class Activator:
 
     See Also:
         - Creates an input audio stream from a microphone, monitors it, and detects the specified wake word.
-        - Once detected, Jarvis triggers the ``listen()`` function with an ``acknowledgement`` sound played.
+        - Once detected, Jarvis triggers the ``listener.listen()`` function with an ``acknowledgement`` sound played.
         - After processing the phrase, the converted text is sent as response to ``initiator()`` with a ``return`` flag.
         - The ``should_return`` flag ensures, the user is not disturbed when accidentally woke up by wake work engine.
     """
@@ -595,18 +167,19 @@ class Activator:
                 if self.detector.process(pcm=pcm) >= 0:
                     self.close_stream()
                     playsound(sound='indicators/acknowledgement.mp3', block=False)
-                    initiator(key_original=listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
+                    initiator(key_original=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit,
+                                                           sound=False),
                               should_return=True)
-                    speak(run=True)
+                    speaker.speak(run=True)
                 elif globals.STOPPER['status']:
                     logger.info('Exiting sentry mode since the STOPPER flag was set.')
                     self.stop()
-                    controls.restart(quiet=True)
+                    restart(quiet=True)
                     break
         except KeyboardInterrupt:
             self.stop()
             if not globals.called_by_offline['status']:
-                controls.exit_process()
+                exit_process()
                 support.terminator()
 
     def stop(self) -> None:
@@ -645,7 +218,7 @@ def initiate_processes() -> Dict[str, Process]:
         - playsound: Plays a start-up sound.
     """
     processes = {
-        'ngrok': Process(target=offline.initiate_tunneling,
+        'ngrok': Process(target=initiate_tunneling,
                          kwargs={'offline_host': env.offline_host, 'offline_port': env.offline_port, 'home': env.home}),
         'location': Process(target=write_current_location),
         'api': Process(target=trigger_api),
@@ -667,14 +240,14 @@ if __name__ == '__main__':
     logger.info('JARVIS::Starting Now')
 
     sys.stdout.write('\rVoice ID::Female: 1/17 Male: 0/7')  # Voice ID::reference
-    controls.starter()  # initiates crucial functions which needs to be called during start up
+    starter()  # initiates crucial functions which needs to be called during start up
 
     if internet_checker():
         sys.stdout.write(f'\rINTERNET::Connected to {get_ssid()}. Scanning router for connected devices.')
     else:
         sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
-        speak(text="I was unable to connect to the internet sir! Please check your connection settings and retry.",
-              run=True)
+        speaker.speak(text="I was unable to connect to the internet sir! Please check your connection and retry.",
+                      run=True)
         sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
                          f"\nTotal runtime: {support.time_converter(time.perf_counter())}")
         support.terminator()

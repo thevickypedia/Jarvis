@@ -75,7 +75,7 @@
 <p class="admonition-title">See also</p>
 <ul class="simple">
 <li><p>Creates an input audio stream from a microphone, monitors it, and detects the specified wake word.</p></li>
-<li><p>Once detected, Jarvis triggers the <code class="docutils literal notranslate"><span class="pre">listen()</span></code> function with an <code class="docutils literal notranslate"><span class="pre">acknowledgement</span></code> sound played.</p></li>
+<li><p>Once detected, Jarvis triggers the <code class="docutils literal notranslate"><span class="pre">listener.listen()</span></code> function with an <code class="docutils literal notranslate"><span class="pre">acknowledgement</span></code> sound played.</p></li>
 <li><p>After processing the phrase, the converted text is sent as response to <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> with a <code class="docutils literal notranslate"><span class="pre">return</span></code> flag.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">should_return</span></code> flag ensures, the user is not disturbed when accidentally woke up by wake work engine.</p></li>
 </ul>
@@ -134,51 +134,6 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.automator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">automator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.automator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Place for long-running background threads.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul>
-<li><p>Initiates <code class="docutils literal notranslate"><span class="pre">meeting_file_writer</span></code> and <code class="docutils literal notranslate"><span class="pre">scan_smart_devices</span></code> every hour in a dedicated process.</p></li>
-<li><p>Keeps looking for the <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file, and invokes <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code> with content as the arg.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">automation.yaml</span></code> should be a dictionary within a dictionary that looks like the below:</p>
-<blockquote>
-<div><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">6:00 AM</span><span class="p p-Indicator">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 50%</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">9:00 PM</span><span class="p p-Indicator">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 5%</span><span class="w"></span>
-</pre></div>
-</div>
-</div></blockquote>
-</li>
-<li><p>Jarvis creates/swaps a <code class="docutils literal notranslate"><span class="pre">status</span></code> flag upon execution, so that it doesn’t execute a task repeatedly.</p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.conditions">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.conditions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Conditions function is used to check the message processed.</p>
-<p>Uses the keywords to do a regex match and trigger the appropriate function which has dedicated task.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p></li>
-<li><p><strong>should_return</strong> – A boolean flag sent by <code class="docutils literal notranslate"><span class="pre">Activator</span></code> to indicate that the <code class="docutils literal notranslate"><span class="pre">else</span></code> part shouldn’t be executed.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean True only when asked to sleep for conditioned sleep message.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.initialize">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.initialize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Awakens from sleep mode. <code class="docutils literal notranslate"><span class="pre">greet_check</span></code> is to ensure greeting is given only for the first function call.</p>
@@ -215,84 +170,14 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.offline_communicator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">respond</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.offline_communicator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file generated by <a class="reference external" href="https://git.io/JBPFQ">fast.py</a> containing request sent via API.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>command</strong> – Takes the command that has to be executed as an argument.</p></li>
-<li><p><strong>respond</strong> – Takes the argument to decide whether to create the <code class="docutils literal notranslate"><span class="pre">offline_response</span></code> file.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="simple">
-<dt>Env Vars:</dt><dd><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">offline_pass</span></code> - Phrase to authenticate the requests to API. Defaults to <code class="docutils literal notranslate"><span class="pre">jarvis</span></code></p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<dl class="simple">
-<dt>More cool stuff (Done by <code class="docutils literal notranslate"><span class="pre">JarvisHelper</span></code>):</dt><dd><ul class="simple">
-<li><p>Run <code class="docutils literal notranslate"><span class="pre">ngrok</span> <span class="pre">http</span></code> on port 4483 or any desired port set as an env var <code class="docutils literal notranslate"><span class="pre">offline_port</span></code>.</p></li>
-<li><p>I have linked the ngrok <code class="docutils literal notranslate"><span class="pre">public_url</span></code> tunnelling the FastAPI to a JavaScript on my webpage.</p></li>
-<li><p>When a request is submitted, the JavaScript makes a POST call to the API.</p></li>
-<li><p>The API does the authentication and creates the <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file if authenticated.</p></li>
-<li><p>Check it out: <a class="reference external" href="https://thevickypedia.com/jarvisoffline">JarvisOffline</a></p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<ul class="simple">
-<li><p>Restarts <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> quietly in case of a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> however, the offline request will still be executed.</p></li>
-<li><p>This happens when <code class="docutils literal notranslate"><span class="pre">speaker</span></code> is stopped while another loop of speaker is in progress by regular interaction.</p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.renew">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">renew</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.renew" title="Permalink to this definition">¶</a></dt>
 <dd><p>Keeps listening and sends the response to <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> function.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>This function runs only for a minute.</p></li>
-<li><p>split(converted) is a condition so that, loop breaks when if sleep in <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> returns True.</p></li>
+<li><p>split_phrase(converted) is a condition so that, loop breaks when if sleep in <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> returns True.</p></li>
 </ul>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.report">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.report" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates a list of functions, that I tend to check first thing in the morning.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.split">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.split" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits the input at ‘and’ or ‘also’ and makes it multiple commands to execute if found in statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> – Takes the voice recognized statement as argument.</p></li>
-<li><p><strong>should_return</strong> – A boolean flag sent to <code class="docutils literal notranslate"><span class="pre">conditions</span></code> to indicate that the <code class="docutils literal notranslate"><span class="pre">else</span></code> part shouldn’t be executed.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Return value from <code class="docutils literal notranslate"><span class="pre">conditions()</span></code></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.time_travel">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">time_travel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.time_travel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Triggered only from <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> to give a quick update on the user’s daily routine.</p>
 </dd></dl>
 
 </section>
@@ -955,6 +840,30 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
+<section id="module-executors.conditions">
+<span id="conditions"></span><h1>Conditions<a class="headerlink" href="#module-executors.conditions" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.conditions.conditions">
+<span class="sig-prename descclassname"><span class="pre">executors.conditions.</span></span><span class="sig-name descname"><span class="pre">conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.conditions.conditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conditions function is used to check the message processed.</p>
+<p>Uses the keywords to match pre-defined conditions and trigger the appropriate function which has dedicated task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p></li>
+<li><p><strong>should_return</strong> – A boolean flag sent by <code class="docutils literal notranslate"><span class="pre">Activator</span></code> to indicate that the <code class="docutils literal notranslate"><span class="pre">else</span></code> part shouldn’t be executed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean True only when asked to sleep for conditioned sleep message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-executors.controls">
 <span id="controls"></span><h1>Controls<a class="headerlink" href="#module-executors.controls" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
@@ -1567,6 +1476,30 @@ A condition below assumes two different words as two places but not including tw
 <section id="module-executors.offline">
 <span id="offline"></span><h1>Offline<a class="headerlink" href="#module-executors.offline" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="executors.offline.automator">
+<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">automator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.offline.automator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Place for long-running background threads.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul>
+<li><p>Initiates <code class="docutils literal notranslate"><span class="pre">meeting_file_writer</span></code> and <code class="docutils literal notranslate"><span class="pre">scan_smart_devices</span></code> every hour in a dedicated process.</p></li>
+<li><p>Keeps looking for the <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file, and invokes <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code> with content as the arg.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">automation.yaml</span></code> should be a dictionary within a dictionary that looks like the below:</p>
+<blockquote>
+<div><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">6:00 AM</span><span class="p p-Indicator">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 50%</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">9:00 PM</span><span class="p p-Indicator">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 5%</span><span class="w"></span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Jarvis creates/swaps a <code class="docutils literal notranslate"><span class="pre">status</span></code> flag upon execution, so that it doesn’t execute a task repeatedly.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="executors.offline.initiate_tunneling">
 <span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">initiate_tunneling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offline_host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offline_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">home</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.offline.initiate_tunneling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates Ngrok to tunnel requests from external sources if they aren’t running already.</p>
@@ -1575,6 +1508,44 @@ A condition below assumes two different words as two places but not including tw
 <li><p><code class="docutils literal notranslate"><span class="pre">forever_ngrok.py</span></code> is a simple script that triggers ngrok connection in the port <code class="docutils literal notranslate"><span class="pre">4483</span></code>.</p></li>
 <li><p>The connection is tunneled through a public facing URL used to make <code class="docutils literal notranslate"><span class="pre">POST</span></code> requests to Jarvis API.</p></li>
 </ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.offline.offline_communicator">
+<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">respond</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.offline.offline_communicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file generated by <a class="reference external" href="https://git.io/JBPFQ">fast.py</a> containing request sent via API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command</strong> – Takes the command that has to be executed as an argument.</p></li>
+<li><p><strong>respond</strong> – Takes the argument to decide whether to create the <code class="docutils literal notranslate"><span class="pre">offline_response</span></code> file.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Env Vars:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">offline_pass</span></code> - Phrase to authenticate the requests to API. Defaults to <code class="docutils literal notranslate"><span class="pre">jarvis</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<dl class="simple">
+<dt>More cool stuff (Done by <code class="docutils literal notranslate"><span class="pre">JarvisHelper</span></code>):</dt><dd><ul class="simple">
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">ngrok</span> <span class="pre">http</span></code> on port 4483 or any desired port set as an env var <code class="docutils literal notranslate"><span class="pre">offline_port</span></code>.</p></li>
+<li><p>I have linked the ngrok <code class="docutils literal notranslate"><span class="pre">public_url</span></code> tunnelling the FastAPI to a JavaScript on my webpage.</p></li>
+<li><p>When a request is submitted, the JavaScript makes a POST call to the API.</p></li>
+<li><p>The API does the authentication and creates the <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file if authenticated.</p></li>
+<li><p>Check it out: <a class="reference external" href="https://thevickypedia.com/jarvisoffline">JarvisOffline</a></p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>Restarts <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> quietly in case of a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> however, the offline request will still be executed.</p></li>
+<li><p>This happens when <code class="docutils literal notranslate"><span class="pre">speaker</span></code> is stopped while another loop of speaker is in progress by regular interaction.</p></li>
+</ul>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1713,6 +1684,18 @@ A condition below assumes two different words as two places but not including tw
 <dd><p>Repeats whatever is heard.</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.others.report">
+<span class="sig-prename descclassname"><span class="pre">executors.others.</span></span><span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.others.report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates a list of functions, that I tend to check first thing in the morning.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.others.time_travel">
+<span class="sig-prename descclassname"><span class="pre">executors.others.</span></span><span class="sig-name descname"><span class="pre">time_travel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.others.time_travel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Triggered only from <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> to give a quick update on the user’s daily routine.</p>
+</dd></dl>
+
 </section>
 <section id="module-executors.port_handler">
 <span id="port-handler"></span><h1>Port Handler<a class="headerlink" href="#module-executors.port_handler" title="Permalink to this headline">¶</a></h1>
@@ -1840,6 +1823,29 @@ A condition below assumes two different words as two places but not including tw
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-executors.splitter">
+<span id="splitter"></span><h1>Splitter<a class="headerlink" href="#module-executors.splitter" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.splitter.split_phrase">
+<span class="sig-prename descclassname"><span class="pre">executors.splitter.</span></span><span class="sig-name descname"><span class="pre">split_phrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.splitter.split_phrase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits the input at ‘and’ or ‘also’ and makes it multiple commands to execute if found in statement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – Takes the voice recognized statement as argument.</p></li>
+<li><p><strong>should_return</strong> – A boolean flag sent to <code class="docutils literal notranslate"><span class="pre">conditions</span></code> to indicate that the <code class="docutils literal notranslate"><span class="pre">else</span></code> part shouldn’t be executed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return value from <code class="docutils literal notranslate"><span class="pre">conditions()</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3041,9 +3047,9 @@ Pass 155 for LO and 285 for HI.</p>
 </dd></dl>
 
 </section>
-<section id="module-modules.conditions.conversation">
-<span id="conditions"></span><h1>Conditions<a class="headerlink" href="#module-modules.conditions.conversation" title="Permalink to this headline">¶</a></h1>
-<p>List of conversational keywords for each variable which is condition matched in main module.</p>
+<section id="id2">
+<h1>Conditions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-modules.conditions.conversation"></span><p>List of conversational keywords for each variable which is condition matched in main module.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Conditions</span>
 </pre></div>
 </div>
@@ -3093,8 +3099,8 @@ None - NoneType if no face was recognized.</p>
 </dd></dl>
 
 </section>
-<section id="id2">
-<h1>Lights<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h1>
+<section id="id3">
+<h1>Lights<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="module-modules.lights.smart_lights"></span><dl class="py class">
 <dt class="sig sig-object py" id="modules.lights.smart_lights.MagicHomeApi">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.lights.smart_lights.</span></span><span class="sig-name descname"><span class="pre">MagicHomeApi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi" title="Permalink to this definition">¶</a></dt>
@@ -3950,8 +3956,10 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <dd><p>Retrieves devices IP by doing a local IP range scan using Netgear API.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)
-Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted.</p>
+<ul class="simple">
+<li><p>This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)</p></li>
+<li><p>Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted.</p></li>
+</ul>
 </div>
 </dd></dl>
 
@@ -4065,6 +4073,7 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 <li><a class="reference internal" href="#module-executors.bluetooth">Bluetooth</a></li>
 <li><a class="reference internal" href="#module-executors.car">Car</a></li>
 <li><a class="reference internal" href="#module-executors.communicator">Communicator</a></li>
+<li><a class="reference internal" href="#module-executors.conditions">Conditions</a></li>
 <li><a class="reference internal" href="#module-executors.controls">Controls</a></li>
 <li><a class="reference internal" href="#module-executors.date_time">DateTime</a></li>
 <li><a class="reference internal" href="#module-executors.display_functions">DisplayFunctions</a></li>
@@ -4081,6 +4090,7 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 <li><a class="reference internal" href="#module-executors.port_handler">Port Handler</a></li>
 <li><a class="reference internal" href="#module-executors.remind">Remind</a></li>
 <li><a class="reference internal" href="#module-executors.robinhood">Robinhood</a></li>
+<li><a class="reference internal" href="#module-executors.splitter">Splitter</a></li>
 <li><a class="reference internal" href="#module-executors.system">System</a></li>
 <li><a class="reference internal" href="#module-executors.todo_list">To Do</a></li>
 <li><a class="reference internal" href="#module-executors.tv">TV</a></li>
@@ -4091,9 +4101,9 @@ Using Netgear API will avoid the manual change required to rotate the IPs whenev
 <li><a class="reference internal" href="#modules">———-Modules———-</a></li>
 <li><a class="reference internal" href="#module-modules.audio.speaker">Audio</a></li>
 <li><a class="reference internal" href="#id1">Car</a></li>
-<li><a class="reference internal" href="#module-modules.conditions.conversation">Conditions</a></li>
+<li><a class="reference internal" href="#id2">Conditions</a></li>
 <li><a class="reference internal" href="#module-modules.face.facial_recognition">Face Recognition</a></li>
-<li><a class="reference internal" href="#id2">Lights</a></li>
+<li><a class="reference internal" href="#id3">Lights</a></li>
 <li><a class="reference internal" href="#module-modules.netgear.ip_scanner">Local IP Scanner</a></li>
 <li><a class="reference internal" href="#module-modules.dictionary.dictionary">Meanings</a></li>
 <li><a class="reference internal" href="#module-restart">Restart</a></li>

@@ -22,7 +22,8 @@ from pyicloud.services.findmyiphone import AppleDevice
 from speedtest import Speedtest
 from timezonefinder import TimezoneFinder
 
-from executors import controls, logger
+from executors import controls
+from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
@@ -96,14 +97,14 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
         os.remove('pyicloud_error') if os.path.isfile('pyicloud_error') else None
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException) as error:
         if device:
-            logger.logger.error(f'Unable to retrieve location::{error}')  # traceback
+            logger.error(f'Unable to retrieve location::{error}')  # traceback
             caller = sys._getframe(1).f_code.co_name  # noqa
             if caller == '<module>':
                 if os.path.isfile('pyicloud_error'):
-                    logger.logger.error(f'Exception raised by {caller} once again. Proceeding...')
+                    logger.error(f'Exception raised by {caller} once again. Proceeding...')
                     os.remove('pyicloud_error')
                 else:
-                    logger.logger.error(f'Exception raised by {caller}. Restarting.')
+                    logger.error(f'Exception raised by {caller}. Restarting.')
                     Path('pyicloud_error').touch()
                     controls.restart(quiet=True)  # Restarts quietly if the error occurs when called from __main__
         # uses latitude and longitude information from your IP's client when unable to connect to icloud
@@ -126,7 +127,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
         locator = geo_locator.reverse(f'{current_lat_}, {current_lon_}', language='en')
         return float(current_lat_), float(current_lon_), locator.raw['address']
     except (GeocoderUnavailable, GeopyError):
-        logger.logger.error('Error retrieving address from latitude and longitude information. Initiating self reboot.')
+        logger.error('Error retrieving address from latitude and longitude information. Initiating self reboot.')
         speaker.speak(text='Received an error while retrieving your address sir! I think a restart should fix this.')
         controls.restart()
 
@@ -135,10 +136,11 @@ def write_current_location():
     """Extracts location information from either an ``AppleDevice`` or the public IP address."""
     # todo: Write to a DB instead of dumping in an yaml file
     if os.path.isfile('location.yaml') and int(time.time() - os.stat('location.yaml').st_mtime) < 3_600:
-        logger.logger.info('location.yaml was generated within the hour.')
+        logger.info('location.yaml was generated within the hour.')
         return
     current_lat, current_lon, location_info = location_services(device=device_selector())
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
+    logger.info('Writing location.yaml...')
     with open('location.yaml', 'w') as location_writer:
         yaml.dump(data={'timezone': current_tz,
                         'latitude': current_lat, 'longitude': current_lon, 'address': location_info},

@@ -324,8 +324,8 @@ def scan_smart_devices() -> None:
     """Retrieves devices IP by doing a local IP range scan using Netgear API.
 
     See Also:
-        This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)
-        Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted.
+        - This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)
+        - Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted.
     """
     # todo: Write to a DB instead of dumping in an yaml file
     if env.router_pass:
