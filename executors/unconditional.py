@@ -135,7 +135,6 @@ def google_maps(query: str) -> bool:
         bool:
         Boolean True if Google's maps API is unable to fetch consumable results.
     """
-    # todo: remove appends
     if not env.maps_api:
         return False
 
@@ -145,14 +144,13 @@ def google_maps(query: str) -> bool:
     required = []
     for element in range(len(collection)):
         try:
-            name = collection[element]['name']
-            rating = collection[element]['rating']
-            full_address = collection[element]['formatted_address']
-            geometry = collection[element]['geometry']['location']
-            address = re.search('(.*)Rd|(.*)Ave|(.*)St |(.*)St,|(.*)Blvd|(.*)Ct', full_address)
-            address = address.group().replace(',', '')
-            new_dict = {"Name": name, "Rating": rating, "Address": address, "Location": geometry, "place": full_address}
-            required.append(new_dict)
+            required.append({
+                "Name": collection[element]['name'],
+                "Rating": collection[element]['rating'],
+                "Location": collection[element]['geometry']['location'],
+                "Address": re.search('(.*)Rd|(.*)Ave|(.*)St |(.*)St,|(.*)Blvd|(.*)Ct',
+                                     collection[element]['formatted_address']).group().replace(',', '')
+            })
         except (AttributeError, KeyError):
             pass
     if required:

@@ -5,6 +5,8 @@ import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from multiprocessing.context import TimeoutError as ThreadTimeoutError
+from multiprocessing.pool import ThreadPool
 from threading import Thread
 from time import sleep
 from typing import Tuple
@@ -17,8 +19,17 @@ from playsound import playsound
 from pychromecast.error import ChromecastConnectionError
 from randfacts import get_fact
 
+from executors.communicator import read_gmail
+from executors.date_time import current_date, current_time
 from executors.internet import vpn_checker
+from executors.logger import logger
+from executors.meetings import meeting_reader, meetings_gatherer
+from executors.robinhood import robinhood
+from executors.todo_list import todo
+from executors.weather import weather
 from modules.audio import listener, speaker
+from modules.audio.listener import listen
+from modules.audio.speaker import speak
 from modules.conditions import keywords
 from modules.dictionary import dictionary
 from modules.models import models
@@ -287,3 +298,50 @@ def news(news_source: str = 'fox') -> None:
 
     if globals.called['report'] or globals.called['time_travel']:
         speaker.speak(run=True)
+
+
+def report() -> None:
+    """Initiates a list of functions, that I tend to check first thing in the morning."""
+    sys.stdout.write("\rStarting today's report")
+    globals.called['report'] = True
+    current_date()
+    current_time()
+    weather()
+    todo()
+    read_gmail()
+    robinhood()
+    news()
+    globals.called['report'] = False
+
+
+def time_travel() -> None:
+    """Triggered only from ``initiator()`` to give a quick update on the user's daily routine."""
+    part_day = support.part_of_day()
+    meeting = None
+    if not os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
+            ['Saturday', 'Sunday']:
+        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer, kwds={'logger': logger})
+    speak(text=f"Good {part_day} Vignesh.")
+    if part_day == 'Night':
+        if event := support.celebrate():
+            speak(text=f'Happy {event}!')
+        return
+    current_date()
+    current_time()
+    weather()
+    speak(run=True)
+    if os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
+            ['Saturday', 'Sunday']:
+        meeting_reader()
+    elif meeting:
+        try:
+            speak(text=meeting.get(timeout=30))
+        except ThreadTimeoutError:
+            pass  # skip terminate, close and join thread since the motive is to skip meetings info in case of a timeout
+    todo()
+    read_gmail()
+    speak(text='Would you like to hear the latest news?', run=True)
+    phrase = listen(timeout=3, phrase_limit=3)
+    if any(word in phrase.lower() for word in keywords.ok):
+        news()
+    globals.called['time_travel'] = False

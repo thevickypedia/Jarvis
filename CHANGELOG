@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.6.1 (02/26/2022)
+------------------
+- Split conditions out of main module
+- Create a dedicated module for splitter
+- Add missing requirement in requirements.txt
+
 5.6.0 (02/26/2022)
 ------------------
 - Load env vars using `pydantic` to validate during startup
