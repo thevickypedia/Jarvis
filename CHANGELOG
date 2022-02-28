@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.6.3 (02/27/2022)
+------------------
+- Move all spoken phrase handlers to commander.py
+- Offline commands go directly to conditions
+- Avoid 0 metrics in time_converter
+
 5.6.2 (02/27/2022)
 ------------------
 - Change API `Authorization` from data to `Header`

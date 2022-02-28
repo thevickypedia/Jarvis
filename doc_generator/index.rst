@@ -136,6 +136,13 @@ Conditions
    :members:
    :undoc-members:
 
+Commander
+=========
+
+.. automodule:: executors.commander
+   :members:
+   :undoc-members:
+
 Controls
 ========
 
@@ -245,13 +252,6 @@ Robinhood
 =========
 
 .. automodule:: executors.robinhood
-   :members:
-   :undoc-members:
-
-Splitter
-========
-
-.. automodule:: executors.splitter
    :members:
    :undoc-members:
 
