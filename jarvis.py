@@ -1,11 +1,9 @@
 import os
-import random
 import struct
 import sys
 import time
 from multiprocessing import Process
 from pathlib import PurePath
-from threading import Thread
 from typing import Dict
 
 import pvporcupine
@@ -13,91 +11,16 @@ from playsound import playsound
 from pyaudio import PyAudio, paInt16
 
 from api.server import trigger_api
-from executors.controls import exit_process, pc_sleep, restart, starter
+from executors.commander import initiator
+from executors.controls import exit_process, restart, starter
 from executors.internet import get_ssid, internet_checker
 from executors.location import write_current_location
 from executors.logger import logger
 from executors.offline import automator, initiate_tunneling
-from executors.others import time_travel
-from executors.splitter import split_phrase
 from executors.system import hosted_device_info
 from modules.audio import listener, speaker
-from modules.conditions import conversation
-from modules.models import models
+from modules.models.models import env
 from modules.utils import globals, support
-
-env = models.env
-
-
-def initialize() -> None:
-    """Awakens from sleep mode. ``greet_check`` is to ensure greeting is given only for the first function call."""
-    if globals.greet_check.get('status'):
-        speaker.speak(text="What can I do for you?")
-    else:
-        speaker.speak(text=f'Good {support.part_of_day()}.')
-        globals.greet_check['status'] = True
-    renew()
-
-
-def renew() -> None:
-    """Keeps listening and sends the response to ``conditions()`` function.
-
-    Notes:
-        - This function runs only for a minute.
-        - split_phrase(converted) is a condition so that, loop breaks when if sleep in ``conditions()`` returns True.
-    """
-    speaker.speak(run=True)
-    waiter = 0
-    while waiter < 12:
-        waiter += 1
-        if waiter == 1:
-            converted = listener.listen(timeout=3, phrase_limit=5)
-        else:
-            converted = listener.listen(timeout=3, phrase_limit=5, sound=False)
-        if converted == 'SR_ERROR':
-            continue
-        remove = ['buddy', 'jarvis', 'hey', 'hello', 'sr_error']
-        converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
-        if converted:
-            if split_phrase(key=converted):  # should_return flag is not passed which will default to False
-                break  # split_phrase() returns a boolean flag from conditions. conditions return True only for sleep
-        elif any(word in converted.lower() for word in remove):
-            continue
-        speaker.speak(run=True)
-
-
-def initiator(key_original: str, should_return: bool = False) -> None:
-    """When invoked by ``Activator``, checks for the right keyword to wake up and gets into action.
-
-    Args:
-        key_original: Takes the processed string from ``SentryMode`` as input.
-        should_return: Flag to return the function if nothing is heard.
-    """
-    if key_original == 'SR_ERROR' and should_return:
-        return
-    support.flush_screen()
-    key = key_original.lower()
-    key_split = key.split()
-    if [word for word in key_split if word in ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']]:
-        globals.called['time_travel'] = True
-        if event := support.celebrate():
-            speaker.speak(text=f'Happy {event}!')
-        if 'night' in key_split or 'goodnight' in key_split:
-            Thread(target=pc_sleep).start()
-        time_travel()
-    elif 'you there' in key:
-        speaker.speak(text=f'{random.choice(conversation.wake_up1)}')
-        initialize()
-    elif any(word in key for word in ['look alive', 'wake up', 'wakeup', 'show time', 'showtime']):
-        speaker.speak(text=f'{random.choice(conversation.wake_up2)}')
-        initialize()
-    else:
-        converted = ' '.join([i for i in key_original.split() if i.lower() not in ['buddy', 'jarvis', 'sr_error']])
-        if converted:
-            split_phrase(key=converted.strip(), should_return=should_return)
-        else:
-            speaker.speak(text=f'{random.choice(conversation.wake_up3)}')
-            initialize()
 
 
 class Activator:

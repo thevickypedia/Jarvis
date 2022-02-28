@@ -134,12 +134,6 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.initialize">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.initialize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Awakens from sleep mode. <code class="docutils literal notranslate"><span class="pre">greet_check</span></code> is to ensure greeting is given only for the first function call.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.initiate_processes">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiate_processes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">multiprocessing.context.Process</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.initiate_processes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiate multiple background processes to achieve parallelization.</p>
@@ -153,31 +147,6 @@
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.initiator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_original</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.initiator" title="Permalink to this definition">¶</a></dt>
-<dd><p>When invoked by <code class="docutils literal notranslate"><span class="pre">Activator</span></code>, checks for the right keyword to wake up and gets into action.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key_original</strong> – Takes the processed string from <code class="docutils literal notranslate"><span class="pre">SentryMode</span></code> as input.</p></li>
-<li><p><strong>should_return</strong> – Flag to return the function if nothing is heard.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.renew">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">renew</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.renew" title="Permalink to this definition">¶</a></dt>
-<dd><p>Keeps listening and sends the response to <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> function.</p>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>This function runs only for a minute.</p></li>
-<li><p>split_phrase(converted) is a condition so that, loop breaks when if sleep in <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> returns True.</p></li>
-</ul>
 </dd></dl>
 
 </section>
@@ -818,6 +787,108 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Boolean True only when asked to sleep for conditioned sleep message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-executors.commander">
+<span id="commander"></span><h1>Commander<a class="headerlink" href="#module-executors.commander" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.commander.delay_calculator">
+<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">delay_calculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.commander.delay_calculator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the delay in phrase (if any).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Seconds of delay.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.commander.delay_condition">
+<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">delay_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.commander.delay_condition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delays the execution after sleeping for the said time, after which it is sent to <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
+<li><p><strong>delay</strong> – Sleeps for the number of seconds.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.commander.initialize">
+<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.commander.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Awakens from sleep mode. <code class="docutils literal notranslate"><span class="pre">greet_check</span></code> is to ensure greeting is given only for the first function call.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.commander.initiator">
+<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">initiator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_original</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.commander.initiator" title="Permalink to this definition">¶</a></dt>
+<dd><p>When invoked by <code class="docutils literal notranslate"><span class="pre">Activator</span></code>, checks for the right keyword to wake up and gets into action.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_original</strong> – Takes the processed string from <code class="docutils literal notranslate"><span class="pre">SentryMode</span></code> as input.</p></li>
+<li><p><strong>should_return</strong> – Flag to return the function if nothing is heard.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.commander.renew">
+<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">renew</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.commander.renew" title="Permalink to this definition">¶</a></dt>
+<dd><p>Keeps listening and sends the response to <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> function.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>This function runs only for a minute.</p></li>
+<li><p>split_phrase(converted) is a condition so that, loop breaks when if sleep in <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> returns True.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.commander.split_phrase">
+<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">split_phrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.commander.split_phrase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits the input at ‘and’ or ‘also’ and makes it multiple commands to execute if found in statement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – Takes the phrase spoken as an argument.</p></li>
+<li><p><strong>should_return</strong> – A boolean flag sent to <code class="docutils literal notranslate"><span class="pre">conditions</span></code> to indicate that the <code class="docutils literal notranslate"><span class="pre">else</span></code> part shouldn’t be executed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return value from <code class="docutils literal notranslate"><span class="pre">conditions()</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.commander.timed_delay">
+<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">timed_delay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.commander.timed_delay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks pre-conditions if a delay is necessary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a boolean flag whether the time delay should be applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
@@ -1790,29 +1861,6 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 </section>
-<section id="module-executors.splitter">
-<span id="splitter"></span><h1>Splitter<a class="headerlink" href="#module-executors.splitter" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.splitter.split_phrase">
-<span class="sig-prename descclassname"><span class="pre">executors.splitter.</span></span><span class="sig-name descname"><span class="pre">split_phrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.splitter.split_phrase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits the input at ‘and’ or ‘also’ and makes it multiple commands to execute if found in statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> – Takes the voice recognized statement as argument.</p></li>
-<li><p><strong>should_return</strong> – A boolean flag sent to <code class="docutils literal notranslate"><span class="pre">conditions</span></code> to indicate that the <code class="docutils literal notranslate"><span class="pre">else</span></code> part shouldn’t be executed.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Return value from <code class="docutils literal notranslate"><span class="pre">conditions()</span></code></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="module-executors.system">
 <span id="system"></span><h1>System<a class="headerlink" href="#module-executors.system" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
@@ -2024,7 +2072,7 @@ A condition below assumes two different words as two places but not including tw
 <p>Says weather at current location by getting IP using reverse geocoding if no place is received.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase as an optional argument.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4020,6 +4068,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#module-executors.car">Car</a></li>
 <li><a class="reference internal" href="#module-executors.communicator">Communicator</a></li>
 <li><a class="reference internal" href="#module-executors.conditions">Conditions</a></li>
+<li><a class="reference internal" href="#module-executors.commander">Commander</a></li>
 <li><a class="reference internal" href="#module-executors.controls">Controls</a></li>
 <li><a class="reference internal" href="#module-executors.date_time">DateTime</a></li>
 <li><a class="reference internal" href="#module-executors.display_functions">DisplayFunctions</a></li>
@@ -4036,7 +4085,6 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#module-executors.port_handler">Port Handler</a></li>
 <li><a class="reference internal" href="#module-executors.remind">Remind</a></li>
 <li><a class="reference internal" href="#module-executors.robinhood">Robinhood</a></li>
-<li><a class="reference internal" href="#module-executors.splitter">Splitter</a></li>
 <li><a class="reference internal" href="#module-executors.system">System</a></li>
 <li><a class="reference internal" href="#module-executors.todo_list">To Do</a></li>
 <li><a class="reference internal" href="#module-executors.tv">TV</a></li>

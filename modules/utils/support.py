@@ -86,13 +86,25 @@ def time_converter(seconds: float) -> str:
     seconds %= 3600
     minutes = round(seconds // 60)
     seconds %= 60
-    if days:
+    if days and hours and minutes and seconds:
         return f'{days} days, {hours} hours, {minutes} minutes, and {seconds} seconds'
-    elif hours:
+    elif days and hours and minutes:
+        return f'{days} days, {hours} hours, and {minutes} minutes'
+    elif days and hours:
+        return f'{days} days, and {hours} hours'
+    elif days:
+        return f'{days} days'
+    elif hours and minutes and seconds:
         return f'{hours} hours, {minutes} minutes, and {seconds} seconds'
-    elif minutes:
+    elif hours and minutes:
+        return f'{hours} hours, and {minutes} minutes'
+    elif hours:
+        return f'{hours} hours'
+    elif minutes and seconds:
         return f'{minutes} minutes, and {seconds} seconds'
-    elif seconds:
+    elif minutes:
+        return f'{minutes} minutes'
+    else:
         return f'{seconds} seconds'
 
 

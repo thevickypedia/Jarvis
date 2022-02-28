@@ -11,11 +11,11 @@ from appscript import app as apple_script
 
 from executors.alarm import alarm_executor
 from executors.automation import auto_helper
+from executors.conditions import conditions
 from executors.controls import restart
 from executors.logger import logger
 from executors.meetings import meeting_file_writer
 from executors.remind import reminder_executor
-from executors.splitter import split_phrase
 from modules.audio.speaker import audio_driver
 from modules.audio.voices import voice_default
 from modules.models import models
@@ -166,7 +166,7 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
         if command:
             os.remove('offline_request') if respond else None  # file will be unavailable when called by automator
             globals.called_by_offline['status'] = True
-            split_phrase(key=command)
+            conditions(converted=command)
             globals.called_by_offline['status'] = False
             response = globals.text_spoken.get('text')
         else:

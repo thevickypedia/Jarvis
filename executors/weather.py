@@ -21,7 +21,7 @@ def weather(phrase: str = None) -> None:
     Says weather at current location by getting IP using reverse geocoding if no place is received.
 
     Args:
-        phrase: Takes the phrase as an optional argument.
+        phrase: Takes the phrase spoken as an argument.
     """
     if not env.weather_api:
         support.no_env_vars()
