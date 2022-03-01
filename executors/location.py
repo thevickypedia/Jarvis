@@ -135,14 +135,22 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
 def write_current_location():
     """Extracts location information from either an ``AppleDevice`` or the public IP address."""
     # todo: Write to a DB instead of dumping in an yaml file
-    if os.path.isfile('location.yaml') and int(time.time() - os.stat('location.yaml').st_mtime) < 3_600:
-        logger.info('location.yaml was generated within the hour.')
-        return
+    if os.path.isfile('location.yaml'):
+        with open('location.yaml') as file:
+            location_data = yaml.load(stream=file, Loader=yaml.FullLoader)
+        if (timestamp := location_data.get('timestamp')) and int(time.time()) - timestamp <= 3_600:
+            gen_time = time.strftime('on %B %d, %Y at %I:%M %p', time.localtime(timestamp))
+            logger.info(f'Re-using location data since, location.yaml was generated {gen_time}')
+            return
+        elif timestamp:
+            gen_time = time.strftime('on %B %d, %Y at %I:%M %p', time.localtime(timestamp))
+            logger.info(f'Re-generating location data since, location.yaml was generated {gen_time}')
+
     current_lat, current_lon, location_info = location_services(device=device_selector())
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
     logger.info('Writing location.yaml...')
     with open('location.yaml', 'w') as location_writer:
-        yaml.dump(data={'timezone': current_tz,
+        yaml.dump(data={'timezone': current_tz, 'timestamp': int(time.time()),
                         'latitude': current_lat, 'longitude': current_lon, 'address': location_info},
                   stream=location_writer, default_flow_style=False)
 

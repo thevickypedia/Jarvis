@@ -6,6 +6,8 @@ import time
 from threading import Thread
 from time import perf_counter
 
+import yaml
+
 from executors import meetings
 from executors.display_functions import decrease_brightness
 from executors.logger import logger
@@ -64,6 +66,12 @@ def restart(target: str = None, quiet: bool = False) -> None:
                 speaker.speak(text='Restarting now sir! I will be up and running momentarily.', run=True)
         except RuntimeError as error:
             logger.fatal(error)
+    if os.path.isfile('location.yaml'):
+        with open('location.yaml') as file:
+            data = yaml.load(stream=file, Loader=yaml.FullLoader)
+        data.update({'timestamp': int(time.time())})
+        with open('location.yaml', 'w') as file:
+            yaml.dump(stream=file, data=data)
     os.system('python3 restart.py')
     exit(1)
 
