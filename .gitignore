@@ -32,6 +32,15 @@ threat
 # Storage for location details to reuse
 location.yaml
 
+# Storage for automation setup
+automation.yaml
+
+# Storage for frequently called functions/methods
+frequent.yaml
+
+# Storage for smart devices if found using Netgear module or hard-coded
+smart_devices.yaml
+
 # .keep files for Alarms and Reminders
 alarm
 reminder
@@ -50,17 +59,11 @@ meetings
 offline_request
 offline_response
 
-# automation setup
-automation.yaml
-
 # robinhood report file generated to be accessed from API endpoint
 api/robinhood.html
 
 # temporary file that indicates that jarvis should restart
 pyicloud_error
-
-# temporary file created and accessed during quick restart, may also be the source file
-smart_devices.yaml
 
 # future work
 temp.py

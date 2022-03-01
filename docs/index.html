@@ -2097,6 +2097,23 @@ A condition below assumes two different words as two places but not including tw
 </pre></div>
 </div>
 <dl class="py function">
+<dt class="sig sig-object py" id="modules.audio.speaker.frequently_used">
+<span class="sig-prename descclassname"><span class="pre">modules.audio.speaker.</span></span><span class="sig-name descname"><span class="pre">frequently_used</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.audio.speaker.frequently_used" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the function called and the number of times into a yaml file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>function_name</strong> – Name of the function that called the speaker.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>This function does not have purpose, but to analyze and re-order the conditions’ module at a later time.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="modules.audio.speaker.speak">
 <span class="sig-prename descclassname"><span class="pre">modules.audio.speaker.</span></span><span class="sig-name descname"><span class="pre">speak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.audio.speaker.speak" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls <code class="docutils literal notranslate"><span class="pre">audio_driver.say</span></code> to speak a statement from the received text.</p>

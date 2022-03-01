@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.6.4 (02/28/2022)
+------------------
+- Introduce `timestamp` in `location.yaml` to reuse upon restart
+- Validate timestamp in location.yaml to re-write or re-use
+- Create a new function for frequently called methods to re-arrange conditions block
+
 5.6.3 (02/27/2022)
 ------------------
 - Move all spoken phrase handlers to commander.py
