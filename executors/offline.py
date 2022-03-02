@@ -47,8 +47,9 @@ def automator() -> None:
     while True:
         if os.path.isfile('offline_request'):
             time.sleep(0.1)  # Read file after 0.1 second for the content to be written
-            with open('offline_request') as off_request:
-                offline_communicator(command=off_request.read())
+            with open('offline_request') as off_file:
+                off_request = off_file.read()
+            offline_communicator(command=off_request)
             support.flush_screen()
 
         if os.path.isfile('automation.yaml'):

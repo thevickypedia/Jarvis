@@ -17,7 +17,9 @@ from api import authenticator, cron, filters
 from api.controller import keygen, offline_compatible
 from api.models import GetData, LogConfig
 from api.report_gatherer import Investment
-from modules.models.models import env
+from modules.models import models
+
+env = models.env
 
 OFFLINE_PROTECTOR = [Depends(dependency=authenticator.offline_has_access)]
 ROBINHOOD_PROTECTOR = [Depends(dependency=authenticator.robinhood_has_access)]

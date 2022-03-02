@@ -1,26 +1,41 @@
 """**API Reference:** https://documenter.getpostman.com/view/6250319/RznBMzqo for Jaguar LandRover InControl API."""
 
 import json
-from logging import DEBUG, Logger, StreamHandler, getLogger
-from os import environ
+import os
 from time import time
 from typing import Union
 from urllib.error import HTTPError
 from urllib.request import Request, build_opener
 from uuid import UUID, uuid4
 
+from executors.logger import logger
 
-def logger_module() -> Logger:
-    """Creates a custom logger using stream handler.
+
+def _open(url: str, headers: dict = None, data: dict = None) -> dict:
+    """Open a connection to post the request.
+
+    Args:
+        url: URL to which the request has to be posted.
+        headers: Headers for the request.
+        data: Data to be posted.
 
     Returns:
-        Logger:
-        Returns the logger module.
+        dict:
+        JSON loaded response from post request.
     """
-    logger = getLogger(__name__)
-    logger.addHandler(hdlr=StreamHandler())
-    logger.setLevel(level=DEBUG)
-    return logger
+    request = Request(url=url, headers=headers)
+    if data:
+        request.data = bytes(json.dumps(data), encoding="utf8")
+
+    response = build_opener().open(request)
+
+    if not 200 <= response.code <= 300:
+        logger.debug(f'Response: {response.code}')
+        raise HTTPError(code=response.code, msg='HTTPError', url=url, hdrs=response.headers, fp=response.fp)
+
+    charset = response.info().get('charset', 'utf-8')
+    if resp_data := response.read().decode(charset):
+        return json.loads(resp_data)
 
 
 class Connect:
@@ -34,9 +49,9 @@ class Connect:
     IFOP_BASE_URL = "https://ifop.prod-row.jlrmotor.com/ifop/jlr"
     IF9_BASE_URL = "https://if9.prod-row.jlrmotor.com/if9/jlr"
 
-    def __init__(self, username: str = environ.get('USERNAME'), password: str = environ.get('PASSWORD'),
-                 device_id: Union[UUID, str] = None, refresh_token=environ.get('TOKEN'),
-                 china_servers: bool = False, logger: Logger = None, auth_expiry: int = 0):
+    def __init__(self, username: str = os.environ.get('USERNAME'), password: str = os.environ.get('PASSWORD'),
+                 device_id: Union[UUID, str] = None, refresh_token=os.environ.get('TOKEN'),
+                 china_servers: bool = False, auth_expiry: int = 0):
         """Initiates all the class variables.
 
         Args:
@@ -45,13 +60,10 @@ class Connect:
             device_id: Car's device ID. Defaults to UUID4.
             refresh_token: Token to login instead of email and password.
             china_servers: Boolean flag whether to use China servers.
-            logger: Logger module. Defaults to logging using stream handler.
             auth_expiry: Duration (in seconds) to expire. Defaults to 0 forcing to re-authenticate.
         """
         if not device_id:
             device_id = uuid4()
-        if not logger:
-            logger = logger_module()
 
         if china_servers:
             self.IFAS_BASE_URL = "https://ifas.prod-chn.jlrmotor.com/ifas/jlr"
@@ -72,7 +84,6 @@ class Connect:
 
         self.head = {}
         self.device_id = str(device_id)
-        self.logger = logger
         self.expiration = auth_expiry
         self.username = username
 
@@ -90,55 +101,30 @@ class Connect:
             JSON loaded response from post request.
         """
         if time() > self.expiration:
-            self.logger.debug('Authentication expired, reconnecting.')
+            logger.debug('Authentication expired, reconnecting.')
             self.connect()
             if headers['Authorization']:
                 headers['Authorization'] = self.head['Authorization']
-        return self._open(url=f"{url}/{command}", headers=headers, data=data)
+        return _open(url=f"{url}/{command}", headers=headers, data=data)
 
     def connect(self) -> None:
         """Authenticates device and establishes connection."""
-        self.logger.debug("Connecting...")
+        logger.debug("Connecting...")
         auth = self._authenticate(data=self.oauth)
         self._register_auth(auth=auth)
         if token := auth.get('access_token'):
             self._set_header(access_token=token)
-            self.logger.debug("Authenticated")
+            logger.debug("Authenticated")
             self._register_device_and_log_in()
         else:
-            self.logger.error("Unauthenticated")
+            logger.error("Unauthenticated")
 
     def _register_device_and_log_in(self) -> None:
         """Registers device and log in the user."""
         self._register_device(headers=self.head)
-        self.logger.debug(f"Device ID: {self.device_id} registered.")
+        logger.debug(f"Device ID: {self.device_id} registered.")
         self._login_user(headers=self.head)
-        self.logger.debug(f"User ID: {self.user_id} logged in.")
-
-    def _open(self, url: str, headers: dict = None, data: dict = None) -> dict:
-        """Open a connection to post the request.
-
-        Args:
-            url: URL to which the request has to be posted.
-            headers: Headers for the request.
-            data: Data to be posted.
-
-        Returns:
-            dict:
-            JSON loaded response from post request.
-        """
-        request = Request(url=url, headers=headers)
-        if data:
-            request.data = bytes(json.dumps(data), encoding="utf8")
-
-        response = build_opener().open(request)
-
-        if not 200 <= response.code <= 300:
-            raise HTTPError(code=response.code, msg='HTTPError', url=url, hdrs=response.headers, fp=response.fp)
-
-        charset = response.info().get('charset', 'utf-8')
-        if resp_data := response.read().decode(charset):
-            return json.loads(resp_data)
+        logger.debug(f"User ID: {self.user_id} logged in.")
 
     def _register_auth(self, auth: dict) -> None:
         """Assigns authentication header values to class variables.
@@ -179,7 +165,7 @@ class Connect:
             "Content-Type": "application/json",
             "X-Device-Id": self.device_id
         }
-        return self._open(url=url, headers=auth_headers, data=data)
+        return _open(url=url, headers=auth_headers, data=data)
 
     def _register_device(self, headers: dict = None) -> dict:
         """Frames the url and data to post to register the device.
@@ -198,7 +184,7 @@ class Connect:
             "expires_in": "86400",
             "deviceID": self.device_id
         }
-        return self._open(url=url, headers=headers, data=data)
+        return _open(url=url, headers=headers, data=data)
 
     def _login_user(self, headers: dict) -> dict:
         """Login the user.
@@ -214,7 +200,7 @@ class Connect:
         user_login_header = headers.copy()
         user_login_header["Accept"] = "application/vnd.wirelesscar.ngtp.if9.User-v3+json"
 
-        user_data = self._open(url, user_login_header)
+        user_data = _open(url, user_login_header)
         self.user_id = user_data.get('userId')
         return user_data
 
@@ -227,7 +213,7 @@ class Connect:
         auth = self._authenticate(self.oauth)
         self._register_auth(auth)
         self._set_header(auth['access_token'])
-        self.logger.debug("Tokens refreshed")
+        logger.debug("Tokens refreshed")
         self._register_device_and_log_in()
 
     def get_vehicles(self, headers: dict) -> dict:
@@ -241,7 +227,7 @@ class Connect:
             Vehicles data.
         """
         url = f"{self.IF9_BASE_URL}/users/{self.user_id}/vehicles?primaryOnly=true"
-        return self._open(url=url, headers=headers)
+        return _open(url=url, headers=headers)
 
     def get_user_info(self) -> dict:
         """Makes a request to get the user information.
