@@ -1,8 +1,9 @@
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBasicCredentials, HTTPBearer
 
-from modules.models.models import env
+from modules.models import models
 
+env = models.env
 security = HTTPBearer()
 
 

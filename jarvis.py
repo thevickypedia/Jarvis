@@ -19,7 +19,7 @@ from executors.logger import logger
 from executors.offline import automator, initiate_tunneling
 from executors.system import hosted_device_info
 from modules.audio import listener, speaker
-from modules.models.models import env
+from modules.models import models
 from modules.utils import globals, support
 
 
@@ -155,6 +155,7 @@ def initiate_processes() -> Dict[str, Process]:
 
 
 if __name__ == '__main__':
+    env = models.env
     globals.hosted_device = hosted_device_info()
     if globals.hosted_device.get('os_name') != 'macOS':
         exit('Unsupported Operating System.\nWindows support was deprecated. '

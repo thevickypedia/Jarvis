@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+5.6.5 (03/01/2022)
+------------------
+- Add an option to update `Jarvis` without manual interrupt
+- Set timeout to wait on terminate process and kill it
+- Reload env vars upon restart
+- Use github module instead of cli tool to perform git pull
+- Use default logging for car connector
+
 5.6.4 (02/28/2022)
 ------------------
 - Introduce `timestamp` in `location.yaml` to reuse upon restart

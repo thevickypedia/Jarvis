@@ -276,7 +276,10 @@ def terminator() -> None:
     pid = os.getpid()
     proc = psutil.Process(pid=pid)
     logger.info(f'Terminating process: {pid}')
-    proc.terminate()
+    try:
+        proc.wait(timeout=5)
+    except psutil.TimeoutExpired:
+        logger.warning(f'Failed to terminate process in 5 seconds: {pid}')
     if proc.is_running():
         logger.info(f'{pid} is still running. Killing it.')
         proc.kill()

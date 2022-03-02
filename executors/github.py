@@ -2,9 +2,11 @@ import os
 import re
 import sys
 
+import git
 import requests
 from requests.auth import HTTPBasicAuth
 
+from executors.controls import restart
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
@@ -19,6 +21,10 @@ def github(phrase: str):
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
+    if 'update yourself' in phrase or 'update your self' in phrase:
+        update()
+        return
+
     if not all([env.git_user, env.git_pass]):
         support.no_env_vars()
         return
@@ -81,3 +87,25 @@ def github_controller(target: list) -> None:
             speaker.speak(text=f"I've cloned {cloned} on your home directory sir!")
     else:
         speaker.speak(text=f"I found {len(target)} repositories sir! You may want to be more specific.")
+
+
+def update() -> None:
+    """Pulls the latest version of ``Jarvis`` and restarts if there were any changes."""
+    output = git.cmd.Git('Jarvis').pull()
+    if not output:
+        speaker.speak(text="I was not able to update myself sir!")
+        return
+
+    if output.strip() == 'Already up to date.':
+        speaker.speak(text="I'm already running on the latest version sir!")
+        return
+
+    status = None
+    for each in output.splitlines():
+        if 'files changed' in each:
+            status = each.split(',')[0].strip()
+            break
+    speaker.speak(text="I've updated myself to the latest version sir!")
+    if status:
+        speaker.speak(text=status)
+    restart()

@@ -12,6 +12,8 @@ import socket
 from pydantic import (BaseSettings, DirectoryPath, EmailStr, Field,
                       PositiveFloat, PositiveInt)
 
+from executors.logger import logger
+
 
 class EnvConfigValidated(BaseSettings):
     """Configure all env vars and validate using ``pydantic`` to share across modules.
@@ -114,6 +116,8 @@ class EnvConfigUnvalidated:
 
 
 if os.path.isfile('.env'):
+    logger.info('Using .env file to load the env vars.')
     env = EnvConfigValidated()
 else:
+    logger.warning('.env file was not found, so env vars will be loaded without required validations.')
     env = EnvConfigUnvalidated
