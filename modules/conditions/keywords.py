@@ -51,7 +51,7 @@ distance = ['far', 'distance', 'miles']
 
 avoid = ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
          'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter', 'server',
-         'cloud']
+         'cloud', 'update']
 
 locate_places = ['where is', "where's", 'which city', 'which state', 'which country', 'which county']
 
