@@ -93,10 +93,10 @@ def weather(phrase: str = None) -> None:
         else:
             alerts, start_alert, end_alert = None, None, None
         condition = response['daily'][key]['weather'][0]['description']
-        high = int(round(temperature.k2f(response['daily'][key]['temp']['max']), 2))
-        low = int(round(temperature.k2f(response['daily'][1]['temp']['min']), 2))
-        temp_f = int(round(temperature.k2f(response['daily'][key]['temp'][when]), 2))
-        temp_feel_f = int(round(temperature.k2f(response['daily'][key]['feels_like'][when]), 2))
+        high = int(temperature.k2f(response['daily'][key]['temp']['max']))
+        low = int(temperature.k2f(response['daily'][1]['temp']['min']))
+        temp_f = int(temperature.k2f(response['daily'][key]['temp'][when]))
+        temp_feel_f = int(temperature.k2f(response['daily'][key]['feels_like'][when]))
         sunrise = datetime.fromtimestamp(response['daily'][key]['sunrise']).strftime("%I:%M %p")
         sunset = datetime.fromtimestamp(response['daily'][key]['sunset']).strftime("%I:%M %p")
         output = f"The weather in {weather_location} {tell} would be {temp_f}°F, with a high of {high}, and a low of " \
@@ -110,26 +110,26 @@ def weather(phrase: str = None) -> None:
         return
 
     condition = response['current']['weather'][0]['description']
-    high = int(round(temperature.k2f(arg=response['daily'][0]['temp']['max']), 2))
-    low = int(round(temperature.k2f(arg=response['daily'][0]['temp']['min']), 2))
-    temp_f = int(round(temperature.k2f(arg=response['current']['temp']), 2))
-    temp_feel_f = int(round(temperature.k2f(arg=response['current']['feels_like']), 2))
+    high = int(temperature.k2f(arg=response['daily'][0]['temp']['max']))
+    low = int(temperature.k2f(arg=response['daily'][0]['temp']['min']))
+    temp_f = int(temperature.k2f(arg=response['current']['temp']))
+    temp_feel_f = int(temperature.k2f(arg=response['current']['feels_like']))
     sunrise = datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p")
     if globals.called['time_travel']:
         if 'rain' in condition or 'showers' in condition:
             feeling = 'rainy'
             weather_suggest = 'You might need an umbrella" if you plan to head out.'
-        elif temp_feel_f < 40:
+        elif temp_feel_f <= 40:
             feeling = 'freezing'
             weather_suggest = 'Perhaps" it is time for winter clothing.'
-        elif temp_feel_f in range(41, 60):
+        elif 41 <= temp_feel_f <= 60:
             feeling = 'cool'
             weather_suggest = 'I think a lighter jacket would suffice" if you plan to head out.'
-        elif temp_feel_f in range(61, 75):
+        elif 61 <= temp_feel_f <= 75:
             feeling = 'optimal'
             weather_suggest = 'It might be a perfect weather for a hike, or perhaps a walk.'
-        elif temp_feel_f in range(75, 85):
+        elif 76 <= temp_feel_f <= 85:
             feeling = 'warm'
             weather_suggest = 'It is a perfect weather for some outdoor entertainment.'
         elif temp_feel_f > 85:
@@ -139,10 +139,10 @@ def weather(phrase: str = None) -> None:
             feeling, weather_suggest = '', ''
         wind_speed = response['current']['wind_speed']
         if wind_speed > 10:
-            output = f'The weather in {city} is a {feeling} {temp_f}°, but due to the current wind conditions ' \
+            output = f'The weather in {city} is {feeling} {temp_f}°, but due to the current wind conditions ' \
                      f'(which is {wind_speed} miles per hour), it feels like {temp_feel_f}°. {weather_suggest}'
         else:
-            output = f'The weather in {city} is a {feeling} {temp_f}°, and it currently feels like {temp_feel_f}°. ' \
+            output = f'The weather in {city} is {feeling} {temp_f}°, and it currently feels like {temp_feel_f}°. ' \
                      f'{weather_suggest}'
     elif place or not globals.called['report']:
         output = f'The weather in {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \

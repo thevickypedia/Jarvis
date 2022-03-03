@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.6.6 (03/03/2022)
+------------------
+- Add `update` keyword to avoidable
+- Convert str to int directly instead of including float in the loop
+
 5.6.5 (03/01/2022)
 ------------------
 - Add an option to update `Jarvis` without manual interrupt
