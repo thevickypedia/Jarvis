@@ -9,57 +9,54 @@ import getpass
 import os.path
 import socket
 
-from pydantic import (BaseSettings, DirectoryPath, EmailStr, Field,
-                      PositiveFloat, PositiveInt)
-
-from executors.logger import logger
+from pydantic import BaseSettings, DirectoryPath, EmailStr, Field, PositiveInt
 
 
-class EnvConfigValidated(BaseSettings):
+class EnvConfig(BaseSettings):
     """Configure all env vars and validate using ``pydantic`` to share across modules.
 
-    >>> EnvConfigValidated
+    >>> EnvConfig
 
     """
 
-    home: DirectoryPath = Field(default=os.path.expanduser('~'), env='home')
-    weather_api: str = Field(default=None, env='weather_api')
-    gmail_user: EmailStr = Field(default=None, env='gmail_user')
-    gmail_pass: str = Field(default=None, env='gmail_pass')
-    alt_gmail_user: EmailStr = Field(default=None, env='alt_gmail_user')
-    alt_gmail_pass: str = Field(default=None, env='alt_gmail_pass')
-    recipient: EmailStr = Field(default=None, env='recipient')
-    phone_number: str = Field(default=None, env='phone_number')
-    offline_host: str = Field(default=socket.gethostbyname('localhost'), env='offline_host')
-    offline_port: PositiveInt = Field(default=4483, env='offline_port')
-    offline_pass: str = Field(default='OfflineComm', env='offline_pass')
-    icloud_user: EmailStr = Field(default=None, env='icloud_user')
-    icloud_pass: str = Field(default=None, env='icloud_pass')
-    robinhood_user: EmailStr = Field(default=None, env='robinhood_user')
-    robinhood_pass: str = Field(default=None, env='robinhood_pass')
-    robinhood_qr: str = Field(default=None, env='robinhood_qr')
-    robinhood_endpoint_auth: str = Field(default=None, env='robinhood_endpoint_auth')
-    meeting_app: str = Field(default='calendar', env='meeting_app')
-    website: str = Field(default='thevickypedia.com', env='website')
-    wolfram_api_key: str = Field(default=None, env='wolfram_api_key')
-    maps_api: str = Field(default=None, env='maps_api')
-    news_api: str = Field(default=None, env='news_api')
-    icloud_recovery: str = Field(default=None, env='icloud_recovery')
-    git_user: str = Field(default=None, env='git_user')
-    git_pass: str = Field(default=None, env='git_pass')
-    tv_client_key: str = Field(default=None, env='tv_client_key')
+    home: DirectoryPath = Field(default=os.path.expanduser('~'), env='HOME')
+    weather_api: str = Field(default=None, env='WEATHER_API')
+    gmail_user: EmailStr = Field(default=None, env='GMAIL_USER')
+    gmail_pass: str = Field(default=None, env='GMAIL_PASS')
+    alt_gmail_user: EmailStr = Field(default=None, env='ALT_GMAIL_USER')
+    alt_gmail_pass: str = Field(default=None, env='ALT_GMAIL_PASS')
+    recipient: EmailStr = Field(default=None, env='RECIPIENT')
+    phone_number: str = Field(default=None, env='PHONE_NUMBER')
+    offline_host: str = Field(default=socket.gethostbyname('localhost'), env='OFFLINE_HOST')
+    offline_port: PositiveInt = Field(default=4483, env='OFFLINE_PORT')
+    offline_pass: str = Field(default='OfflineComm', env='OFFLINE_PASS')
+    icloud_user: EmailStr = Field(default=None, env='ICLOUD_USER')
+    icloud_pass: str = Field(default=None, env='ICLOUD_PASS')
+    icloud_recovery: str = Field(default=None, env='ICLOUD_RECOVERY')
+    robinhood_user: EmailStr = Field(default=None, env='ROBINHOOD_USER')
+    robinhood_pass: str = Field(default=None, env='ROBINHOOD_PASS')
+    robinhood_qr: str = Field(default=None, env='ROBINHOOD_QR')
+    robinhood_endpoint_auth: str = Field(default=None, env='ROBINHOOD_ENDPOINT_AUTH')
+    meeting_app: str = Field(default='calendar', env='MEETING_APP')
+    website: str = Field(default='vigneshrao.com', env='WEBSITE')
+    wolfram_api_key: str = Field(default=None, env='WOLFRAM_API_KEY')
+    maps_api: str = Field(default=None, env='MAPS_API')
+    news_api: str = Field(default=None, env='NEWS_API')
+    git_user: str = Field(default=None, env='GIT_USER')
+    git_pass: str = Field(default=None, env='GIT_PASS')
+    tv_client_key: str = Field(default=None, env='TV_CLIENT_KEY')
     root_user: str = Field(default=getpass.getuser(), env='USER')
-    root_password: str = Field(default=None, env='root_password')
-    router_pass: str = Field(default=None, env='router_pass')
-    vpn_username: str = Field(default=None, env='vpn_username')
-    vpn_password: str = Field(default=None, env='vpn_password')
-    birthday: str = Field(default=None, env='birthday')
-    car_email: EmailStr = Field(default=None, env='car_email')
-    car_pass: str = Field(default=None, env='car_pass')
-    car_pin: PositiveInt = Field(default=None, env='car_pin')
-    sensitivity: PositiveFloat = Field(default=0.5, env='sensitivity')
-    timeout: PositiveInt = Field(default=3, env='timeout')
-    phrase_limit: PositiveInt = Field(default=3, env='phrase_limit')
+    root_password: str = Field(default=None, env='ROOT_PASSWORD')
+    router_pass: str = Field(default=None, env='ROUTER_PASS')
+    vpn_username: str = Field(default=None, env='VPN_USERNAME')
+    vpn_password: str = Field(default=None, env='VPN_PASSWORD')
+    birthday: str = Field(default=None, env='BIRTHDAY')
+    car_email: EmailStr = Field(default=None, env='CAR_EMAIL')
+    car_pass: str = Field(default=None, env='CAR_PASS')
+    car_pin: str = Field(default=None, regex="\\d{4}$", env='CAR_PIN')
+    sensitivity: float = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
+    timeout: PositiveInt = Field(default=3, env='TIMEOUT')
+    phrase_limit: PositiveInt = Field(default=3, env='PHRASE_LIMIT')
 
     class Config:
         """Environment variables configuration."""
@@ -68,56 +65,4 @@ class EnvConfigValidated(BaseSettings):
         env_file = '.env'
 
 
-class EnvConfigUnvalidated:
-    """Class to load all env vars to share across modules.
-
-    >>> EnvConfigUnvalidated
-
-    """
-
-    home = os.path.expanduser('~')
-    weather_api = os.environ.get('weather_api')
-    gmail_user = os.environ.get('gmail_user')
-    gmail_pass = os.environ.get('gmail_pass')
-    alt_gmail_user = os.environ.get('alt_gmail_user', gmail_user)
-    alt_gmail_pass = os.environ.get('alt_gmail_pass', gmail_pass)
-    recipient = os.environ.get('recipient', gmail_user)
-    phone_number = os.environ.get('phone_number')
-    offline_host = socket.gethostbyname('localhost')
-    offline_port = int(os.environ.get('offline_port', 4483))
-    offline_pass = os.environ.get('offline_pass')
-    icloud_user = os.environ.get('icloud_user')
-    icloud_pass = os.environ.get('icloud_pass')
-    robinhood_user = os.environ.get('robinhood_user')
-    robinhood_pass = os.environ.get('robinhood_pass')
-    robinhood_qr = os.environ.get('robinhood_qr')
-    robinhood_endpoint_auth = os.environ.get('robinhood_endpoint_auth')
-    meeting_app = os.environ.get('meeting_app', 'calendar')
-    website = os.environ.get('website', 'thevickypedia.com')
-    wolfram_api_key = os.environ.get('wolfram_api_key')
-    maps_api = os.environ.get('maps_api')
-    news_api = os.environ.get('news_api')
-    icloud_recovery = os.environ.get('icloud_recovery')
-    git_user = os.environ.get('git_user')
-    git_pass = os.environ.get('git_pass')
-    tv_client_key = os.environ.get('tv_client_key')
-    root_user = os.environ.get('USER', getpass.getuser())
-    root_password = os.environ.get('root_password')
-    router_pass = os.environ.get('router_pass')
-    vpn_username = os.environ.get('vpn_username', root_user or 'openvpn')
-    vpn_password = os.environ.get('vpn_password', root_password or 'aws_vpn_2021')
-    birthday = os.environ.get('birthday')
-    car_email = os.environ.get('car_email')
-    car_pass = os.environ.get('car_pass')
-    car_pin = os.environ.get('car_pin')
-    sensitivity = float(os.environ.get('sensitivity', 0.5))
-    timeout = int(os.environ.get('timeout', 3))
-    phrase_limit = int(os.environ.get('phrase_limit', 3))
-
-
-if os.path.isfile('.env'):
-    logger.info('Using .env file to load the env vars.')
-    env = EnvConfigValidated()
-else:
-    logger.warning('.env file was not found, so env vars will be loaded without required validations.')
-    env = EnvConfigUnvalidated
+env = EnvConfig()

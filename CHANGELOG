@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+5.6.7 (03/05/2022)
+------------------
+- Create a `database` for offline interaction
+- Remove unexpected arg from car.py
+- Offline communication to use database instead of files
+- Remove secondary class to load env vars
+- Load robinhood env vars during class instantiation
+
 5.6.6 (03/03/2022)
 ------------------
 - Add `update` keyword to avoidable

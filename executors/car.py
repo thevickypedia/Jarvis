@@ -107,7 +107,7 @@ def vehicle(car_email: str, car_pass: str, car_pin: int, operation: str, temp: i
         Control object to access the primary vehicle.
     """
     try:
-        connection = connector.Connect(username=car_email, password=car_pass, logger=logger)
+        connection = connector.Connect(username=car_email, password=car_pass)
         connection.connect()
         if not connection.head:
             return

@@ -41,6 +41,9 @@ frequent.yaml
 # Storage for smart devices if found using Netgear module or hard-coded
 smart_devices.yaml
 
+# Storage for offline communications
+database.db
+
 # .keep files for Alarms and Reminders
 alarm
 reminder
@@ -54,10 +57,6 @@ meetings
 
 # credentials stored locally
 .env
-
-# temporary files that will created when an offline request is received
-offline_request
-offline_response
 
 # robinhood report file generated to be accessed from API endpoint
 api/robinhood.html

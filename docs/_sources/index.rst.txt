@@ -63,8 +63,8 @@ API Log Filters
    :members:
    :undoc-members:
 
-Jarvis - API Models
-===================
+API Models
+==========
 
 .. autoclass:: api.models.GetData(pydantic.BaseModel)
    :members:
@@ -342,6 +342,13 @@ Conditions
 .. automodule:: modules.conditions.keywords
    :members:
    :exclude-members: add_todo, apps, automation, avoid, bluetooth, brightness, car, create_db, current_date, current_time, delete_db, delete_todo, directions, distance, exit_, face_detection, facts, flip_a_coin, github, google_home, google_search, guard_disable, guard_enable, ip_info, jokes, kill, kill_alarm, lights, locate, locate_places, location, meaning, meetings, music, news, notes, ok, read_gmail, reminder, repeat, report, restart_control, robinhood, send_sms, set_alarm, shutdown, sleep_control, speed_test, system_info, system_vitals, television, todo, voice_changer, volume, vpn_server, weather, wikipedia_
+
+Database
+========
+
+.. automodule:: modules.database.database
+   :members:
+   :undoc-members:
 
 Face Recognition
 ================
