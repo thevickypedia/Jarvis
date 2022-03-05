@@ -8,6 +8,7 @@
 - ``uploader``: adds new item and category to the table 'tasks' and groups with existing category if found
 - ``deleter``: removes items from the table 'tasks' when the item or category name is matched.
 """
+# TODO: Create a table in the existing base database and use that instead.
 
 from os.path import isfile
 from sqlite3 import connect

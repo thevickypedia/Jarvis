@@ -40,15 +40,20 @@ class Investment:
 
     """
 
-    def __init__(self, logger: Logger):
+    def __init__(self, logger: Logger,
+                 robinhood_user: str = os.environ.get('robinhood_user'),
+                 robinhood_pass: str = os.environ.get('robinhood_pass'),
+                 robinhood_qr: str = os.environ.get('robinhood_qr')):
         """Authenticates Robinhood object and gathers the portfolio information to store it in a variable.
 
         Args:
             logger: Takes the class ``logging.Logger`` as an argument.
+            robinhood_user: Username to log in to robinhood.
+            robinhood_pass: Password to authenticate session.
+            robinhood_qr: QR code to bypass multi-factor authentication.
         """
         rh = Robinhood()
-        rh.login(username=os.environ.get('robinhood_user'), password=os.environ.get('robinhood_pass'),
-                 qr_code=os.environ.get('robinhood_qr'))
+        rh.login(username=robinhood_user, password=robinhood_pass, qr_code=robinhood_qr)
         raw_result = rh.positions()
         self.logger = logger
         self.result = raw_result['results']

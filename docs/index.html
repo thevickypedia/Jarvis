@@ -203,7 +203,7 @@
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>Keeps waiting until Jarvis sends a response back by creating the <code class="docutils literal notranslate"><span class="pre">offline_response</span></code> file.</p></li>
+<li><p>Keeps waiting for the record <code class="docutils literal notranslate"><span class="pre">response</span></code> in the database table <code class="docutils literal notranslate"><span class="pre">offline</span></code></p></li>
 <li><p>This response will be sent as raising a <code class="docutils literal notranslate"><span class="pre">HTTPException</span></code> with status code 200.</p></li>
 </ul>
 </div>
@@ -458,8 +458,8 @@ name is specified, allow every event.</p>
 </dd></dl>
 
 </section>
-<section id="jarvis-api-models">
-<h1>Jarvis - API Models<a class="headerlink" href="#jarvis-api-models" title="Permalink to this headline">¶</a></h1>
+<section id="api-models">
+<h1>API Models<a class="headerlink" href="#api-models" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="api.models.GetData">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">GetData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.GetData" title="Permalink to this definition">¶</a></dt>
@@ -497,7 +497,7 @@ name is specified, allow every event.</p>
 <p>Runs once during API startup and continues to run in a cron scheduler as per market hours.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="api.report_gatherer.Investment">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.report_gatherer.</span></span><span class="sig-name descname"><span class="pre">Investment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">logging.Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.report_gatherer.Investment" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.report_gatherer.</span></span><span class="sig-name descname"><span class="pre">Investment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">logging.Logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robinhood_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robinhood_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robinhood_qr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.report_gatherer.Investment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">Investment</span></code> which gathers portfolio information.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Investment</span>
 </pre></div>
@@ -505,7 +505,12 @@ name is specified, allow every event.</p>
 <p>Authenticates Robinhood object and gathers the portfolio information to store it in a variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>logger</strong> – Takes the class <code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code> as an argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> – Takes the class <code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code> as an argument.</p></li>
+<li><p><strong>robinhood_user</strong> – Username to log in to robinhood.</p></li>
+<li><p><strong>robinhood_pass</strong> – Password to authenticate session.</p></li>
+<li><p><strong>robinhood_qr</strong> – QR code to bypass multi-factor authentication.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py method">
@@ -1522,7 +1527,7 @@ A condition below assumes two different words as two places but not including tw
 <p class="admonition-title">See also</p>
 <ul>
 <li><p>Initiates <code class="docutils literal notranslate"><span class="pre">meeting_file_writer</span></code> and <code class="docutils literal notranslate"><span class="pre">scan_smart_devices</span></code> every hour in a dedicated process.</p></li>
-<li><p>Keeps looking for the <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file, and invokes <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code> with content as the arg.</p></li>
+<li><p>Keeps waiting for the record <code class="docutils literal notranslate"><span class="pre">request</span></code> in the database table <code class="docutils literal notranslate"><span class="pre">offline</span></code> to invoke <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code></p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">automation.yaml</span></code> should be a dictionary within a dictionary that looks like the below:</p>
 <blockquote>
 <div><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">6:00 AM</span><span class="p p-Indicator">:</span><span class="w"></span>
@@ -1552,37 +1557,20 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.offline.offline_communicator">
 <span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">respond</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.offline.offline_communicator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file generated by <a class="reference external" href="https://git.io/JBPFQ">fast.py</a> containing request sent via API.</p>
+<dd><p>Initiates a task and writes the spoken text into the record <code class="docutils literal notranslate"><span class="pre">response</span></code> in the database table <code class="docutils literal notranslate"><span class="pre">offline</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>command</strong> – Takes the command that has to be executed as an argument.</p></li>
-<li><p><strong>respond</strong> – Takes the argument to decide whether to create the <code class="docutils literal notranslate"><span class="pre">offline_response</span></code> file.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="simple">
-<dt>Env Vars:</dt><dd><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">offline_pass</span></code> - Phrase to authenticate the requests to API. Defaults to <code class="docutils literal notranslate"><span class="pre">jarvis</span></code></p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<dl class="simple">
-<dt>More cool stuff (Done by <code class="docutils literal notranslate"><span class="pre">JarvisHelper</span></code>):</dt><dd><ul class="simple">
-<li><p>Run <code class="docutils literal notranslate"><span class="pre">ngrok</span> <span class="pre">http</span></code> on port 4483 or any desired port set as an env var <code class="docutils literal notranslate"><span class="pre">offline_port</span></code>.</p></li>
-<li><p>I have linked the ngrok <code class="docutils literal notranslate"><span class="pre">public_url</span></code> tunnelling the FastAPI to a JavaScript on my webpage.</p></li>
-<li><p>When a request is submitted, the JavaScript makes a POST call to the API.</p></li>
-<li><p>The API does the authentication and creates the <code class="docutils literal notranslate"><span class="pre">offline_request</span></code> file if authenticated.</p></li>
-<li><p>Check it out: <a class="reference external" href="https://thevickypedia.com/jarvisoffline">JarvisOffline</a></p></li>
+<li><p><strong>respond</strong> – Flag to create a <code class="docutils literal notranslate"><span class="pre">response</span></code> record in the database table <code class="docutils literal notranslate"><span class="pre">offline</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <ul class="simple">
-<li><p>Restarts <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> quietly in case of a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> however, the offline request will still be executed.</p></li>
-<li><p>This happens when <code class="docutils literal notranslate"><span class="pre">speaker</span></code> is stopped while another loop of speaker is in progress by regular interaction.</p></li>
+<li><p>Handles <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> and logs it.</p></li>
+<li><p>Excepted when the <code class="docutils literal notranslate"><span class="pre">speaker</span></code> is stopped while another loop of speaker is in progress by regular interaction.</p></li>
 </ul>
 </div>
 </dd></dl>
@@ -3076,6 +3064,51 @@ Pass 155 for LO and 285 for HI.</p>
 </pre></div>
 </div>
 </section>
+<section id="module-modules.database.database">
+<span id="database"></span><h1>Database<a class="headerlink" href="#module-modules.database.database" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.database.database.Database">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.database.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.database.database.Database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a connection to the base DB.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Database</span>
+</pre></div>
+</div>
+<p>Instantiates the class <code class="docutils literal notranslate"><span class="pre">Database</span></code> to create a connection and a cursor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> – Name of the table that has to be created.</p></li>
+<li><p><strong>columns</strong> – List of columns that has to be created.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.database.database.Database.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.database.database.Database.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Placeholder method for reference.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.database.database.Database.download">
+<span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#modules.database.database.Database.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Placeholder method for reference.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.database.database.Database.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AnyStr</span></span></span><a class="headerlink" href="#modules.database.database.Database.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Placeholder method for reference.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.database.database.Database.upload">
+<span class="sig-name descname"><span class="pre">upload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.database.database.Database.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Placeholder method for reference.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-modules.face.facial_recognition">
 <span id="face-recognition"></span><h1>Face Recognition<a class="headerlink" href="#module-modules.face.facial_recognition" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -4066,7 +4099,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#module-api.server">API Server</a></li>
 <li><a class="reference internal" href="#module-api.cron">API CronTab</a></li>
 <li><a class="reference internal" href="#api-log-filters">API Log Filters</a></li>
-<li><a class="reference internal" href="#jarvis-api-models">Jarvis - API Models</a></li>
+<li><a class="reference internal" href="#api-models">API Models</a></li>
 <li><a class="reference internal" href="#module-api.report_gatherer">API Robinhood</a></li>
 <li><a class="reference internal" href="#api-robinhood-helper">API Robinhood Helper</a></li>
 <li><a class="reference internal" href="#executors">———-Executors———-</a></li>
@@ -4104,6 +4137,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#module-modules.audio.speaker">Audio</a></li>
 <li><a class="reference internal" href="#id1">Car</a></li>
 <li><a class="reference internal" href="#id2">Conditions</a></li>
+<li><a class="reference internal" href="#module-modules.database.database">Database</a></li>
 <li><a class="reference internal" href="#module-modules.face.facial_recognition">Face Recognition</a></li>
 <li><a class="reference internal" href="#id3">Lights</a></li>
 <li><a class="reference internal" href="#module-modules.netgear.ip_scanner">Local IP Scanner</a></li>

@@ -3,7 +3,6 @@ import logging
 import mimetypes
 import os
 import string
-import time
 from datetime import datetime, timezone
 from logging.config import dictConfig
 from multiprocessing import Process
@@ -17,9 +16,11 @@ from api import authenticator, cron, filters
 from api.controller import keygen, offline_compatible
 from api.models import GetData, LogConfig
 from api.report_gatherer import Investment
+from modules.database import database
 from modules.models import models
 
 env = models.env
+db = database.Database(table_name='offline', columns=['key', 'value'])
 
 OFFLINE_PROTECTOR = [Depends(dependency=authenticator.offline_has_access)]
 ROBINHOOD_PROTECTOR = [Depends(dependency=authenticator.robinhood_has_access)]
@@ -46,7 +47,6 @@ logger = logging.getLogger('uvicorn.default')
 
 serve_file = 'api/robinhood.html'
 
-
 app = FastAPI(
     title="Jarvis API",
     description="Handles offline communication with **Jarvis** and generates a one time auth token for **Robinhood**."
@@ -61,11 +61,12 @@ def run_robinhood() -> None:
     if os.path.isfile(serve_file):
         modified = int(os.stat(serve_file).st_mtime)
         logger.info(f"{serve_file} was generated on {datetime.fromtimestamp(modified).strftime('%c')}.")
-        if int(datetime.now().timestamp()) - modified > 3_600:
-            Investment(logger=logger).report_gatherer()
+        if int(datetime.now().timestamp()) - modified < 3_600:
+            return
     else:
         logger.info('Initiated robinhood gatherer.')
-        Investment(logger=logger).report_gatherer()
+    Investment(logger=logger, robinhood_user=env.robinhood_user, robinhood_pass=env.robinhood_pass,
+               robinhood_qr=env.robinhood_qr).report_gatherer()
 
 
 async def enable_cors() -> None:
@@ -132,7 +133,7 @@ async def offline_communicator(input_data: GetData) -> None:
         - 422: If the request is not part of offline compatible words.
 
     See Also:
-        - Keeps waiting until Jarvis sends a response back by creating the ``offline_response`` file.
+        - Keeps waiting for the record ``response`` in the database table ``offline``
         - This response will be sent as raising a ``HTTPException`` with status code 200.
     """
     if not (command := input_data.command.strip()):
@@ -148,23 +149,19 @@ async def offline_communicator(input_data: GetData) -> None:
         raise HTTPException(status_code=422,
                             detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
                                    'Please try an instruction that does not require an user interaction.')
-    with open('offline_request', 'w') as off_request:
-        off_request.write(command)
+    db.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES ('request','{command}')")
+    db.connection.commit()
 
     dt_string = datetime.now().astimezone(tz=LOCAL_TIMEZONE).strftime("%A, %B %d, %Y %H:%M:%S")
     if 'restart' in command:
         raise HTTPException(status_code=200,
                             detail='Restarting now sir! I will be up and running momentarily.')
     while True:
-        if os.path.isfile('offline_response'):
-            time.sleep(0.1)  # Read file after 0.1 second for the content to be written
-            with open('offline_response') as off_response:
-                response = off_response.read()
-            if response:
-                os.remove('offline_response')
-                raise HTTPException(status_code=200, detail=f'{dt_string}\n\n{response}')
-            else:
-                raise HTTPException(status_code=409, detail='Received empty payload from Jarvis.')
+        if response := db.cursor.execute("SELECT value from offline WHERE key=?", ('response',)).fetchone():
+            db.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
+                              {'key': 'response', 'value': response[0]})
+            db.connection.commit()
+            raise HTTPException(status_code=200, detail=f'{dt_string}\n\n{response[0]}')
 
 
 @app.get("/favicon.ico", include_in_schema=False)

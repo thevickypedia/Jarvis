@@ -91,65 +91,80 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 
 **Default args**
 **[Offline communicator helper](https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator):**
-- **offline_port** - Port number to initiate offline communicator on. Defaults to `4483`
-- **offline_pass** - Secure phrase to be used for authentication purpose. Defaults to `jarvis`
+- **OFFLINE_PORT** - Port number to initiate offline communicator on. Defaults to `4483`
+- **OFFLINE_PASS** - Secure phrase to be used for authentication purpose. Defaults to `jarvis`
 
 **Accurate Location: (Defaults to the location based on `Public IP`)**
-- **icloud_user** - iCloud account username.
-- **icloud_pass** - iCloud account password.
+- **ICLOUD_USER** - iCloud account username.
+- **ICLOUD_PASS** - iCloud account password.
 
 **Additional args**
-- **git_user** - GitHub Username
-- **git_pass** - GitHub Token
-- **weather_api** - API Key from [openweathermap](https://openweathermap.org/) 
-- **news_api** - API Key from [newsapi](https://newsapi.org/docs/client-libraries/python)
-- **maps_api** - API Key for maps from [google](https://developers.google.com/maps/documentation/maps-static/get-api-key)
-- **gmail_user** - Gmail account username to send and read emails.
-- **gmail_pass** - Gmail account password to send and read emails.
-- **alt_gmail_user** - Alternate gmail account username to send an SMS. (`gmail_user` can be re-used)
-- **alt_gmail_pass** - Alternate gmail account password to send an SMS. (`gmail_pass` can be re-used)
-- **recipient** - Email address to which the emails from jarvis have to be received.
-- **robinhood_user** - Robinhood account username.
-- **robinhood_pass** - Robinhood account password.
-- **robinhood_qr** - Robinhood login [QR code](https://robinhood.com/account/settings)
-- **birthday** - Birth date in the format DD-MM - Example: `24-April`
-- **icloud_recovery** - Recovery phone number to activate lost mode on a target device - Example: `+11234567890`
-- **phone_number** - To send SMS from Jarvis - Example: `+11234567890`
-- **root_password** - System password for your `mac` to get the system vitals.
-- **meeting_app** - Application where the meetings are listed. Can either be `calendar` or `outlook`
-- **wolfram_api_key** - API Key from wolfram alpha.
+- **GIT_USER** - GitHub Username
+- **GIT_PASS** - GitHub Token
+- **WEATHER_API** - API Key from [openweathermap](https://openweathermap.org/) 
+- **NEWS_API** - API Key from [newsapi](https://newsapi.org/docs/client-libraries/python)
+- **MAPS_API** - API Key for maps from [google](https://developers.google.com/maps/documentation/maps-static/get-api-key)
+- **GMAIL_USER** - Gmail account username to send and read emails.
+- **GMAIL_PASS** - Gmail account password to send and read emails.
+- **ALT_GMAIL_USER** - Alternate gmail account username to send an SMS. (`gmail_user` can be re-used)
+- **ALT_GMAIL_PASS** - Alternate gmail account password to send an SMS. (`gmail_pass` can be re-used)
+- **RECIPIENT** - Email address to which the emails from jarvis have to be received.
+- **ROBINHOOD_USER** - Robinhood account username.
+- **ROBINHOOD_PASS** - Robinhood account password.
+- **ROBINHOOD_QR** - Robinhood login [QR code](https://robinhood.com/account/settings)
+- **BIRTHDAY** - Birth date in the format DD-MM - Example: `24-April`
+- **ICLOUD_RECOVERY** - Recovery phone number to activate lost mode on a target device - Example: `+11234567890`
+- **PHONE_NUMBER** - To send SMS from Jarvis - Example: `+11234567890`
+- **ROOT_PASSWORD** - System password for your `mac` to get the system vitals.
+- **MEETING_APP** - Application where the meetings are listed. Defaults to `calendar` but value can be `calendar` or `outlook`
+- **WOLFRAM_API_KEY** - API Key from wolfram alpha.
 
-**Args for [PersonalCloud](https://github.com/thevickypedia/personal_cloud) integration**
-- **personal_cloud_host** - Directory path which has to shared through the internet.
+**Args for [VPNServer](https://github.com/thevickypedia/vpn-server) integration**
+- **VPN_USERNAME** - Username to create vpn-server. Defaults to profile username or `openvpn`
+- **VPN_PASSWORD** - Password to authenticate vpn-server. Defaults to profile password or `aws_vpn_2021`
 
 **Args to control TV** - Applies only for [LGWebOS](https://en.wikipedia.org/wiki/WebOS)
-- **tv_client_key** - Client key to [control the TV](https://github.com/thevickypedia/Jarvis/blob/master/modules/tv_controls.py) using `pywebostv` module.
-- **tv_mac** - Mac address of the TV which will be retrieved by the `arp` command but just in case.
+- **TV_CLIENT_KEY** - Client key to [control the TV](https://github.com/thevickypedia/Jarvis/blob/master/modules/tv_controls.py) using `pywebostv` module.
 
 **Args for [ip_scanner](https://github.com/thevickypedia/Jarvis/blob/master/modules/ip_scanner.py)** - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers)
-- **router_pass** - Router's admin password to get the available devices using `pynetgear` module.
+- **ROUTER_PASS** - Router's admin password to get the available devices using `pynetgear` module.
      > Note that this may be done even without the module by simply scanning the whole network.
   > Using the module makes it easier since the devices are already connected to the router.
 
-**Args for [offline-communicator](https://thevickypedia.com/jarvisoffline)**
+**Args for [offline-communicator](https://vigneshrao.com/jarvisoffline)**
 > Built for a personalized usage.
-- **ngrok_auth_key** - Auth token from [ngrok](https://dashboard.ngrok.com/) - Only used for `offline_communicator`
+- **OFFLINE_PASS** - Password to authenticate offline requests. Defaults to `OfflineComm`
 
 **Args for [car_connector](https://github.com/thevickypedia/Jarvis/blob/master/modules/car_connector.py)**
 > The following arguments can be used only if the vehicle is a Jaguar or a LandRover using InControl API.
-- **car_email** - Email address to log in to InControl API.
-- **car_pass** - Password to authenticate InControl API.
+- **CAR_EMAIL** - Email address to log in to InControl API.
+- **CAR_PASS** - Password to authenticate InControl API.
 
 **Args for [car_controller](https://github.com/thevickypedia/Jarvis/blob/master/modules/car_controller.py)**
-- **car_pin** - Master PIN for the vehicle.
+- **CAR_PIN** - Master PIN for the vehicle.
 </details>
 
 ### Smart Devices
 A source file `smart_devices.yaml` can be used as a source for smart devices' IPs. `Jarvis` supports `MagicHome` lights and `LGWebOS` TVs.
 
+<details>
+<summary><strong>Manual Setup</strong></summary>
+
 By using `smart_devices.yaml`, the `Netgear` module can be avoided at the cost of manually updating the source file in case of IP changes.
 
-> Note: Set a `SOURCE: True` flag in `smart_devices.yaml` otherwise the file will be removed in case of quick restarts.
+- The source file should be as following:
+
+```yaml
+bedroom_ip:
+- LOCAL_IP_ADDRESS
+hallway_ip:
+- LOCAL_IP_ADDRESS
+kitchen_ip:
+- LOCAL_IP_ADDRESS
+tv_ip: LOCAL_IP_ADDRESS
+tv_mac: TV_MAC_ADDRESS
+```
+</details>
 
 ### Automation Setup [Optional]
 Executes pre-defined tasks at pre-defined times without any user interaction. Uses an `automation.yaml` file as source.
