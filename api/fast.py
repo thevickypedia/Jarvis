@@ -149,7 +149,7 @@ async def offline_communicator(input_data: GetData) -> None:
         raise HTTPException(status_code=422,
                             detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
                                    'Please try an instruction that does not require an user interaction.')
-    db.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES ('request','{command}')")
+    db.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('request', command)}")
     db.connection.commit()
 
     dt_string = datetime.now().astimezone(tz=LOCAL_TIMEZONE).strftime("%A, %B %d, %Y %H:%M:%S")

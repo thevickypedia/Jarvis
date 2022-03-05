@@ -23,8 +23,7 @@ from executors.others import (apps, facts, flip_a_coin, google_home, jokes,
 from executors.remind import reminder
 from executors.robinhood import robinhood
 from executors.system import system_info, system_vitals
-from executors.todo_list import (add_todo, create_db, delete_db, delete_todo,
-                                 todo)
+from executors.todo_list import add_todo, delete_todo, delete_todo_items, todo
 from executors.tv import television
 from executors.unconditional import alpha, google, google_maps, google_search
 from executors.vpn_server import vpn_server
@@ -98,9 +97,9 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     elif any(word in converted_lower for word in keywords.meaning):
         meaning(phrase=converted)
 
-    elif any(word in converted_lower for word in keywords.delete_todo) and \
+    elif any(word in converted_lower for word in keywords.delete_todo) and 'items' in converted_lower and \
             any(word in converted_lower for word in todo_checks):
-        delete_todo()
+        delete_todo_items()
 
     elif any(word in converted_lower for word in keywords.todo):
         todo()
@@ -109,11 +108,8 @@ def conditions(converted: str, should_return: bool = False) -> bool:
             any(word in converted_lower for word in todo_checks):
         add_todo()
 
-    elif any(word in converted_lower for word in keywords.delete_db):
-        delete_db()
-
-    elif any(word in converted_lower for word in keywords.create_db):
-        create_db()
+    elif any(word in converted_lower for word in keywords.delete_todo):
+        delete_todo()
 
     elif any(word in converted_lower for word in keywords.distance) and \
             not any(word in converted_lower for word in keywords.avoid):

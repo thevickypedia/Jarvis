@@ -158,12 +158,12 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
         globals.called_by_offline['status'] = False
         response = globals.text_spoken.get('text')
         if 'restart' not in command and respond:
-            db.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES ('response','{response}')")
+            db.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('response', response)}")
             db.connection.commit()
         audio_driver.stop()
         voice_default()
     except RuntimeError as error:
         if command and not response:
-            db.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES ('request','{command}')")
+            db.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('request', command)}")
             db.connection.commit()
         logger.fatal(f'Received a RuntimeError while executing offline request.\n{error}')
