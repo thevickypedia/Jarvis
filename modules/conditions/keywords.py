@@ -37,13 +37,9 @@ read_gmail = ['email', 'mail']
 
 meaning = ['meaning', 'dictionary', 'definition']
 
-create_db = ['create a new database', 'create a new data base', 'create a database', 'create a data base']
-
 add_todo = ['add']
 
 delete_todo = ['remove', 'delete']
-
-delete_db = ['delete database', 'delete data base', 'delete my database', 'delete my data base']
 
 todo = ['plan']
 

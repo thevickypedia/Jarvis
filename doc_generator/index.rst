@@ -390,13 +390,6 @@ Restart
    :members:
    :undoc-members:
 
-Tasks
-=====
-
-.. automodule:: modules.tasks.tasks
-   :members:
-   :undoc-members:
-
 Temperature
 ===========
 

@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+5.6.8 (03/05/2022)
+------------------
+- Use base database for todo list
+- Remove keywords for create and delete todo list
+- Remove todo list module
+- Fix issues with inserting records in the database
+
 5.6.7 (03/05/2022)
 ------------------
 - Create a `database` for offline interaction

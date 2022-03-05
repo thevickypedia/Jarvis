@@ -43,7 +43,7 @@ class Database:
     def upload(self, key: Any, value: Any) -> None:
         """Placeholder method for reference."""
         logger.info(f"Uploading {key}: {''.join(['*' for _ in str(value)])}")
-        self.cursor.execute(f"INSERT OR REPLACE INTO {self.table_name} (key, value) VALUES ('{key}','{value}')")
+        self.cursor.execute(f"INSERT OR REPLACE INTO {self.table_name} (key, value) VALUES {(key, value)}")
         self.connection.commit()
 
     def delete(self, key: Any = None, value: Any = None) -> None:

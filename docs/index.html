@@ -1900,32 +1900,21 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.todo_list.create_db">
-<span class="sig-prename descclassname"><span class="pre">executors.todo_list.</span></span><span class="sig-name descname"><span class="pre">create_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.todo_list.create_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a database for to-do list by calling the <code class="docutils literal notranslate"><span class="pre">create_db</span></code> function in <code class="docutils literal notranslate"><span class="pre">database</span></code> module.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.todo_list.delete_db">
-<span class="sig-prename descclassname"><span class="pre">executors.todo_list.</span></span><span class="sig-name descname"><span class="pre">delete_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.todo_list.delete_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deletes the <code class="docutils literal notranslate"><span class="pre">tasks.db</span></code> database file after getting confirmation.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="executors.todo_list.delete_todo">
 <span class="sig-prename descclassname"><span class="pre">executors.todo_list.</span></span><span class="sig-name descname"><span class="pre">delete_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.todo_list.delete_todo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drops the table <code class="docutils literal notranslate"><span class="pre">tasks</span></code> from the database.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.todo_list.delete_todo_items">
+<span class="sig-prename descclassname"><span class="pre">executors.todo_list.</span></span><span class="sig-name descname"><span class="pre">delete_todo_items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.todo_list.delete_todo_items" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deletes items from an existing to-do list.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.todo_list.todo">
-<span class="sig-prename descclassname"><span class="pre">executors.todo_list.</span></span><span class="sig-name descname"><span class="pre">todo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_repeat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.todo_list.todo" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.todo_list.</span></span><span class="sig-name descname"><span class="pre">todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.todo_list.todo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Says the item and category stored in the to-do list.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>no_repeat</strong> – A placeholder flag switched during <code class="docutils literal notranslate"><span class="pre">recursion</span></code> so that, <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> doesn’t repeat himself.</p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
@@ -3374,85 +3363,6 @@ Whites can have a value of None.</p>
 </pre></div>
 </div>
 </section>
-<section id="module-modules.tasks.tasks">
-<span id="tasks"></span><h1>Tasks<a class="headerlink" href="#module-modules.tasks.tasks" title="Permalink to this headline">¶</a></h1>
-<p>Connector for <code class="docutils literal notranslate"><span class="pre">Tasks</span></code> to create and modify.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Tasks</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">create_db</span></code>: creates a database named ‘tasks.db’ with table as ‘tasks’</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">downloader</span></code>: gets item and category stored in the table ‘tasks’</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">uploader</span></code>: adds new item and category to the table ‘tasks’ and groups with existing category if found</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">deleter</span></code>: removes items from the table ‘tasks’ when the item or category name is matched.</p></li>
-</ul>
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.tasks.tasks.create_db">
-<span class="sig-prename descclassname"><span class="pre">modules.tasks.tasks.</span></span><span class="sig-name descname"><span class="pre">create_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.tasks.tasks.create_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a database with the set <code class="docutils literal notranslate"><span class="pre">filename:</span> <span class="pre">tasks.db</span></code> and a <code class="docutils literal notranslate"><span class="pre">table:</span> <span class="pre">tasks</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A success message on DB and table creation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.tasks.tasks.deleter">
-<span class="sig-prename descclassname"><span class="pre">modules.tasks.tasks.</span></span><span class="sig-name descname"><span class="pre">deleter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.tasks.tasks.deleter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deletes a particular record from the table.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>keyword</strong> – Takes the item that has to be removed as an argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>On success, returns a string indicating the item has been deleted.
-On failure, returns a string indicating the item was not found.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.tasks.tasks.downloader">
-<span class="sig-prename descclassname"><span class="pre">modules.tasks.tasks.</span></span><span class="sig-name descname"><span class="pre">downloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.tasks.tasks.downloader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Downloads the rows and columns in the table.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The downloaded table information.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.tasks.tasks.uploader">
-<span class="sig-prename descclassname"><span class="pre">modules.tasks.tasks.</span></span><span class="sig-name descname"><span class="pre">uploader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.tasks.tasks.uploader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates the table: tasks with new rows.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>category</strong> – Category under which a task falls. (Eg: Groceries)</p></li>
-<li><p><strong>item</strong> – Item which has to be added to the category. (Eg: Water can)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A string indicating the item and category that it was added to.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="module-modules.temperature.temperature">
 <span id="temperature"></span><h1>Temperature<a class="headerlink" href="#module-modules.temperature.temperature" title="Permalink to this headline">¶</a></h1>
 <p>Convert common temperature values used in the main module.</p>
@@ -4143,7 +4053,6 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#module-modules.netgear.ip_scanner">Local IP Scanner</a></li>
 <li><a class="reference internal" href="#module-modules.dictionary.dictionary">Meanings</a></li>
 <li><a class="reference internal" href="#module-restart">Restart</a></li>
-<li><a class="reference internal" href="#module-modules.tasks.tasks">Tasks</a></li>
 <li><a class="reference internal" href="#module-modules.temperature.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-modules.tv.tv_controls">TV Connector</a></li>
 <li><a class="reference internal" href="#module-modules.utils.support">Utils - Support</a></li>
