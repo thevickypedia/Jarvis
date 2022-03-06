@@ -15,7 +15,7 @@ from modules.utils import support
 env = models.env
 
 
-def github(phrase: str):
+def github(phrase: str) -> None:
     """Pre-process to check the phrase received and call the ``GitHub`` function as necessary.
 
     Args:

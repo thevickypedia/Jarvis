@@ -334,13 +334,13 @@
 <p><a class="reference external" href="https://github.com/encode/uvicorn/issues/742#issuecomment-674411676">https://github.com/encode/uvicorn/issues/742#issuecomment-674411676</a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="api.server.APIServer.install_signal_handlers">
-<span class="sig-name descname"><span class="pre">install_signal_handlers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.server.APIServer.install_signal_handlers" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">install_signal_handlers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.server.APIServer.install_signal_handlers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overrides <code class="docutils literal notranslate"><span class="pre">install_signal_handlers</span></code> in <code class="docutils literal notranslate"><span class="pre">uvicorn.Server</span></code> module.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="api.server.APIServer.run_in_parallel">
-<span class="sig-name descname"><span class="pre">run_in_parallel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.server.APIServer.run_in_parallel" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">run_in_parallel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.server.APIServer.run_in_parallel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">Server.run</span></code> in a dedicated process.</p>
 </dd></dl>
 
@@ -497,7 +497,7 @@ name is specified, allow every event.</p>
 <p>Runs once during API startup and continues to run in a cron scheduler as per market hours.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="api.report_gatherer.Investment">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.report_gatherer.</span></span><span class="sig-name descname"><span class="pre">Investment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">logging.Logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robinhood_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robinhood_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robinhood_qr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.report_gatherer.Investment" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.report_gatherer.</span></span><span class="sig-name descname"><span class="pre">Investment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">logging.Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.report_gatherer.Investment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">Investment</span></code> which gathers portfolio information.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Investment</span>
 </pre></div>
@@ -505,12 +505,7 @@ name is specified, allow every event.</p>
 <p>Authenticates Robinhood object and gathers the portfolio information to store it in a variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>logger</strong> – Takes the class <code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code> as an argument.</p></li>
-<li><p><strong>robinhood_user</strong> – Username to log in to robinhood.</p></li>
-<li><p><strong>robinhood_pass</strong> – Password to authenticate session.</p></li>
-<li><p><strong>robinhood_qr</strong> – QR code to bypass multi-factor authentication.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>logger</strong> – Takes the class <code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code> as an argument.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -1021,12 +1016,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.controls.stopper">
-<span class="sig-prename descclassname"><span class="pre">executors.controls.</span></span><span class="sig-name descname"><span class="pre">stopper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.controls.stopper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the key of <code class="docutils literal notranslate"><span class="pre">STOPPER</span></code> flag to True.</p>
-</dd></dl>
-
 </section>
 <section id="module-executors.date_time">
 <span id="datetime"></span><h1>DateTime<a class="headerlink" href="#module-executors.date_time" title="Permalink to this headline">¶</a></h1>
@@ -1105,7 +1094,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <span id="github"></span><h1>GitHub<a class="headerlink" href="#module-executors.github" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.github.github">
-<span class="sig-prename descclassname"><span class="pre">executors.github.</span></span><span class="sig-name descname"><span class="pre">github</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#executors.github.github" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.github.</span></span><span class="sig-name descname"><span class="pre">github</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.github.github" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pre-process to check the phrase received and call the <code class="docutils literal notranslate"><span class="pre">GitHub</span></code> function as necessary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1396,7 +1385,7 @@ A condition below assumes two different words as two places but not including tw
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.location.write_current_location">
-<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">write_current_location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#executors.location.write_current_location" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">write_current_location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.location.write_current_location" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts location information from either an <code class="docutils literal notranslate"><span class="pre">AppleDevice</span></code> or the public IP address.</p>
 </dd></dl>
 

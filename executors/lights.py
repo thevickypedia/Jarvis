@@ -36,12 +36,12 @@ def lights(phrase: str) -> None:
 
     phrase = phrase.lower()
 
-    def light_switch():
+    def light_switch() -> None:
         """Says a message if the physical switch is toggled off."""
         speaker.speak(text="I guess your light switch is turned off sir! I wasn't able to read the device. "
                            "Try toggling the switch and ask me to restart myself!")
 
-    def turn_off(host: str):
+    def turn_off(host: str) -> None:
         """Turns off the device.
 
         Args:
@@ -49,7 +49,7 @@ def lights(phrase: str) -> None:
         """
         smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off').turn_off()
 
-    def warm(host: str):
+    def warm(host: str) -> None:
         """Sets lights to warm/yellow.
 
         Args:
@@ -58,7 +58,7 @@ def lights(phrase: str) -> None:
         smart_lights.MagicHomeApi(device_ip=host, device_type=1,
                                   operation='Warm Lights').update_device(r=0, g=0, b=0, warm_white=255)
 
-    def cool(host: str):
+    def cool(host: str) -> None:
         """Sets lights to cool/white.
 
         Args:
@@ -68,7 +68,7 @@ def lights(phrase: str) -> None:
                                   operation='Cool Lights').update_device(r=255, g=255, b=255, warm_white=255,
                                                                          cool_white=255)
 
-    def preset(host: str, value: int):
+    def preset(host: str, value: int) -> None:
         """Changes light colors to preset values.
 
         Args:
@@ -78,7 +78,7 @@ def lights(phrase: str) -> None:
         smart_lights.MagicHomeApi(device_ip=host, device_type=2,
                                   operation='Preset Values').send_preset_function(preset_number=value, speed=101)
 
-    def lumen(host: str, warm_lights: bool, rgb: int = 255):
+    def lumen(host: str, warm_lights: bool, rgb: int = 255) -> None:
         """Sets lights to custom brightness.
 
         Args:

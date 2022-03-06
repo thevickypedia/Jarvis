@@ -66,10 +66,6 @@
 
 [![Ask Me | Anything ](https://img.shields.io/badge/Ask%20me-Anything-1abc9c.svg)](https://vigneshrao.com/contact)
 
-[comment]: <> ([![Stargazers over time]&#40;https://starchart.cc/thevickypedia/Jarvis.svg&#41;]&#40;https://starchart.cc/thevickypedia/Jarvis&#41;)
-[comment]: <> (![Stackoverflow reputation]&#40;https://img.shields.io/stackexchange/stackoverflow/r/13691532&#41;)
-[comment]: <> (![Profile views]&#40;https://gpvc.arturio.dev/thevickypedia&#41;)
-
 # Jarvis
 IronMan's Jarvis with python
 
@@ -84,21 +80,21 @@ IronMan's Jarvis with python
         - [`python3 jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis
 
 ### ENV Variables
-Environment variables are loaded from a `.env` file using the `python_dotenv` module.
+Environment variables are loaded from a `.env` file and validated using `pydantic`
 
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary>
 
 **Default args**
-**[Offline communicator helper](https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator):**
-- **OFFLINE_PORT** - Port number to initiate offline communicator on. Defaults to `4483`
-- **OFFLINE_PASS** - Secure phrase to be used for authentication purpose. Defaults to `jarvis`
+**[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py):**
+- **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`
+- **OFFLINE_PASS** - Secure phrase to authenticate offline requests. Defaults to `jarvis`
 
 **Accurate Location: (Defaults to the location based on `Public IP`)**
 - **ICLOUD_USER** - iCloud account username.
 - **ICLOUD_PASS** - iCloud account password.
 
-**Additional args**
+**Features**
 - **GIT_USER** - GitHub Username
 - **GIT_PASS** - GitHub Token
 - **WEATHER_API** - API Key from [openweathermap](https://openweathermap.org/) 
@@ -124,23 +120,19 @@ Environment variables are loaded from a `.env` file using the `python_dotenv` mo
 - **VPN_PASSWORD** - Password to authenticate vpn-server. Defaults to profile password or `aws_vpn_2021`
 
 **Args to control TV** - Applies only for [LGWebOS](https://en.wikipedia.org/wiki/WebOS)
-- **TV_CLIENT_KEY** - Client key to [control the TV](https://github.com/thevickypedia/Jarvis/blob/master/modules/tv_controls.py) using `pywebostv` module.
+- **TV_CLIENT_KEY** - Client key to [control the TV](https://github.com/thevickypedia/Jarvis/blob/master/modules/tv/tv_controls.py) using `pywebostv` module.
 
-**Args for [ip_scanner](https://github.com/thevickypedia/Jarvis/blob/master/modules/ip_scanner.py)** - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers)
+**Args for [ip_scanner](https://github.com/thevickypedia/Jarvis/blob/master/modules/netgear/ip_scanner.py)** - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers)
 - **ROUTER_PASS** - Router's admin password to get the available devices using `pynetgear` module.
      > Note that this may be done even without the module by simply scanning the whole network.
   > Using the module makes it easier since the devices are already connected to the router.
 
-**Args for [offline-communicator](https://vigneshrao.com/jarvisoffline)**
-> Built for a personalized usage.
-- **OFFLINE_PASS** - Password to authenticate offline requests. Defaults to `OfflineComm`
-
-**Args for [car_connector](https://github.com/thevickypedia/Jarvis/blob/master/modules/car_connector.py)**
+**Args for [car_connector](https://github.com/thevickypedia/Jarvis/blob/master/modules/car/connector.py)**
 > The following arguments can be used only if the vehicle is a Jaguar or a LandRover using InControl API.
 - **CAR_EMAIL** - Email address to log in to InControl API.
 - **CAR_PASS** - Password to authenticate InControl API.
 
-**Args for [car_controller](https://github.com/thevickypedia/Jarvis/blob/master/modules/car_controller.py)**
+**Args for [car_controller](https://github.com/thevickypedia/Jarvis/blob/master/modules/car/controller.py)**
 - **CAR_PIN** - Master PIN for the vehicle.
 </details>
 

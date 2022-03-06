@@ -18,7 +18,6 @@ class Database:
             table_name: Name of the table that has to be created.
             columns: List of columns that has to be created.
         """
-        logger.info('Connecting to the Database...')
         self.table_name = table_name
         self.connection = sqlite3.connect(database='database.db')
         self.connection.execute(f"CREATE TABLE IF NOT EXISTS {self.table_name} ({', '.join(columns)})")

@@ -65,8 +65,7 @@ def run_robinhood() -> None:
             return
     else:
         logger.info('Initiated robinhood gatherer.')
-    Investment(logger=logger, robinhood_user=env.robinhood_user, robinhood_pass=env.robinhood_pass,
-               robinhood_qr=env.robinhood_qr).report_gatherer()
+    Investment(logger=logger).report_gatherer()
 
 
 async def enable_cors() -> None:

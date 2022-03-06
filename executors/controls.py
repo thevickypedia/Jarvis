@@ -51,6 +51,7 @@ def restart(target: str = None, quiet: bool = False) -> None:
         if any(word in converted.lower() for word in keywords.ok):
             support.stop_processes()
             subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
+            globals.STOPPER['status'] = True
             raise KeyboardInterrupt
         else:
             speaker.speak(text="Machine state is left intact sir!")
@@ -199,8 +200,3 @@ def starter() -> None:
     voices.voice_default()
     clear_logs()
     meetings.meeting_app_launcher()
-
-
-def stopper() -> None:
-    """Sets the key of ``STOPPER`` flag to True."""
-    globals.STOPPER['status'] = True

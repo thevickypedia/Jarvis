@@ -1,7 +1,10 @@
 """Runs once during API startup and continues to run in a cron scheduler as per market hours."""
 
+import inspect
 import math
 import os
+import sys
+import warnings
 from datetime import date, datetime
 from logging import Logger, config, getLogger
 from time import perf_counter
@@ -10,10 +13,18 @@ import jinja2
 import requests
 from pyrh import Robinhood
 
-try:
-    from api.rh_helper import CustomTemplate
-except ModuleNotFoundError:  # Expected when script is started by cron schedule
-    from rh_helper import CustomTemplate
+current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parent_dir = os.path.dirname(current_dir)
+if parent_dir != os.getcwd():
+    warnings.warn('Parent directory does not match the current working directory.\n'
+                  f'Parent: {parent_dir}\n'
+                  f'CWD: {os.getcwd()}')
+sys.path.insert(0, parent_dir)
+
+from api.rh_helper import CustomTemplate  # noqa
+from modules.models import models  # noqa
+
+env = models.env
 
 
 def market_status() -> bool:
@@ -40,20 +51,14 @@ class Investment:
 
     """
 
-    def __init__(self, logger: Logger,
-                 robinhood_user: str = os.environ.get('robinhood_user'),
-                 robinhood_pass: str = os.environ.get('robinhood_pass'),
-                 robinhood_qr: str = os.environ.get('robinhood_qr')):
+    def __init__(self, logger: Logger):
         """Authenticates Robinhood object and gathers the portfolio information to store it in a variable.
 
         Args:
             logger: Takes the class ``logging.Logger`` as an argument.
-            robinhood_user: Username to log in to robinhood.
-            robinhood_pass: Password to authenticate session.
-            robinhood_qr: QR code to bypass multi-factor authentication.
         """
         rh = Robinhood()
-        rh.login(username=robinhood_user, password=robinhood_pass, qr_code=robinhood_qr)
+        rh.login(username=env.robinhood_user, password=env.robinhood_pass, qr_code=env.robinhood_qr)
         raw_result = rh.positions()
         self.logger = logger
         self.result = raw_result['results']
@@ -200,16 +205,12 @@ class Investment:
 
 
 if __name__ == '__main__':
-    from dotenv import load_dotenv
     from models import CronConfig
 
     config.dictConfig(CronConfig().dict())
 
     if not os.path.isdir('logs'):
         os.mkdir('logs')
-
-    if os.path.isfile('.env'):
-        load_dotenv(dotenv_path='.env')
 
     Investment(logger=getLogger('investment')).report_gatherer()
 
