@@ -1,3 +1,4 @@
+import os.path
 from socket import gaierror
 from sys import stdout
 from time import sleep
@@ -57,7 +58,11 @@ class TV:
 
         if self.reconnect:
             self.reconnect = False
-            set_key(dotenv_path='.env', key_to_set='tv_client_key', value_to_set=store.get('client_key'))
+            if os.path.isfile('.env'):
+                set_key(dotenv_path='.env', key_to_set='tv_client_key', value_to_set=store.get('client_key'))
+            else:
+                logger.critical('Client key has been generated. Store it in env vars to re-use.')
+                logger.critical(f"TV_CLIENT_KEY: {store.get('client_key')}")
 
         self.system = SystemControl(self.client)
         self.system.notify("Jarvis is controlling the TV now.") if not self._init_status else None
@@ -94,8 +99,8 @@ class TV:
         Args:
             target: Takes an integer as argument to set the volume.
         """
-        self.media.set_volume(target)
         self.system.notify(f"Jarvis::Volume has been set to: {self.media.get_volume()['volume']}%")
+        self.media.set_volume(target)
 
     def mute(self) -> None:
         """Mutes the TV."""

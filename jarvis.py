@@ -116,11 +116,11 @@ class Activator:
         """
         for func, process in globals.processes.items():
             if process.is_alive():
-                logger.info(f'Terminating {func} sending [SIGTERM] signal: {process.pid}')
+                logger.info(f'Sending [SIGTERM] to {func} with PID: {process.pid}')
                 process.terminate()
-                if process.is_alive():
-                    logger.info(f'Killing {func} sending [SIGKILL] signal: {process.pid}')
-                    process.kill()
+            if process.is_alive():
+                logger.info(f'Sending [SIGKILL] to {func} with PID: {process.pid}')
+                process.kill()
         logger.info('Releasing resources acquired by Porcupine.')
         self.detector.delete()
         if self.audio_stream and self.audio_stream.is_active():

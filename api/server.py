@@ -23,12 +23,12 @@ class APIServer(uvicorn.Server):
         https://github.com/encode/uvicorn/issues/742#issuecomment-674411676
     """
 
-    def install_signal_handlers(self):
+    def install_signal_handlers(self) -> None:
         """Overrides ``install_signal_handlers`` in ``uvicorn.Server`` module."""
         pass
 
     @contextlib.contextmanager
-    def run_in_parallel(self):
+    def run_in_parallel(self) -> None:
         """Initiates ``Server.run`` in a dedicated process."""
         self.run()
 

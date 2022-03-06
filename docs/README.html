@@ -108,20 +108,20 @@
 </section>
 <section id="env-variables">
 <h2>ENV Variables<a class="headerlink" href="#env-variables" title="Permalink to this headline">¶</a></h2>
-<p>Environment variables are loaded from a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file using the <code class="docutils literal notranslate"><span class="pre">python_dotenv</span></code> module.</p>
+<p>Environment variables are loaded from a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file and validated using <code class="docutils literal notranslate"><span class="pre">pydantic</span></code></p>
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary><p><strong>Default args</strong>
-<strong><a class="reference external" href="https://thevickypedia.github.io/Jarvis/#jarvis.offline_communicator">Offline communicator helper</a>:</strong></p>
+<strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py">Offline communicator</a>:</strong></p>
 <ul class="simple">
-<li><p><strong>OFFLINE_PORT</strong> - Port number to initiate offline communicator on. Defaults to <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>
-<li><p><strong>OFFLINE_PASS</strong> - Secure phrase to be used for authentication purpose. Defaults to <code class="docutils literal notranslate"><span class="pre">jarvis</span></code></p></li>
+<li><p><strong>OFFLINE_PORT</strong> - Port number to initiate offline communicator. Defaults to <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>
+<li><p><strong>OFFLINE_PASS</strong> - Secure phrase to authenticate offline requests. Defaults to <code class="docutils literal notranslate"><span class="pre">jarvis</span></code></p></li>
 </ul>
 <p><strong>Accurate Location: (Defaults to the location based on <code class="docutils literal notranslate"><span class="pre">Public</span> <span class="pre">IP</span></code>)</strong></p>
 <ul class="simple">
 <li><p><strong>ICLOUD_USER</strong> - iCloud account username.</p></li>
 <li><p><strong>ICLOUD_PASS</strong> - iCloud account password.</p></li>
 </ul>
-<p><strong>Additional args</strong></p>
+<p><strong>Features</strong></p>
 <ul class="simple">
 <li><p><strong>GIT_USER</strong> - GitHub Username</p></li>
 <li><p><strong>GIT_PASS</strong> - GitHub Token</p></li>
@@ -150,9 +150,9 @@
 </ul>
 <p><strong>Args to control TV</strong> - Applies only for <a class="reference external" href="https://en.wikipedia.org/wiki/WebOS">LGWebOS</a></p>
 <ul class="simple">
-<li><p><strong>TV_CLIENT_KEY</strong> - Client key to <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/tv_controls.py">control the TV</a> using <code class="docutils literal notranslate"><span class="pre">pywebostv</span></code> module.</p></li>
+<li><p><strong>TV_CLIENT_KEY</strong> - Client key to <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/tv/tv_controls.py">control the TV</a> using <code class="docutils literal notranslate"><span class="pre">pywebostv</span></code> module.</p></li>
 </ul>
-<p><strong>Args for <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/ip_scanner.py">ip_scanner</a></strong> - Applies only for <a class="reference external" href="https://github.com/MatMaul/pynetgear#supported-routers">Netgear routers</a></p>
+<p><strong>Args for <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/netgear/ip_scanner.py">ip_scanner</a></strong> - Applies only for <a class="reference external" href="https://github.com/MatMaul/pynetgear#supported-routers">Netgear routers</a></p>
 <ul>
 <li><p><strong>ROUTER_PASS</strong> - Router’s admin password to get the available devices using <code class="docutils literal notranslate"><span class="pre">pynetgear</span></code> module.</p>
 <blockquote>
@@ -161,14 +161,7 @@ Using the module makes it easier since the devices are already connected to the 
 </div></blockquote>
 </li>
 </ul>
-<p><strong>Args for <a class="reference external" href="https://vigneshrao.com/jarvisoffline">offline-communicator</a></strong></p>
-<blockquote>
-<div><p>Built for a personalized usage.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><strong>OFFLINE_PASS</strong> - Password to authenticate offline requests. Defaults to <code class="docutils literal notranslate"><span class="pre">OfflineComm</span></code></p></li>
-</ul>
-<p><strong>Args for <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/car_connector.py">car_connector</a></strong></p>
+<p><strong>Args for <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/car/connector.py">car_connector</a></strong></p>
 <blockquote>
 <div><p>The following arguments can be used only if the vehicle is a Jaguar or a LandRover using InControl API.</p>
 </div></blockquote>
@@ -176,7 +169,7 @@ Using the module makes it easier since the devices are already connected to the 
 <li><p><strong>CAR_EMAIL</strong> - Email address to log in to InControl API.</p></li>
 <li><p><strong>CAR_PASS</strong> - Password to authenticate InControl API.</p></li>
 </ul>
-<p><strong>Args for <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/car_controller.py">car_controller</a></strong></p>
+<p><strong>Args for <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/car/controller.py">car_controller</a></strong></p>
 <ul class="simple">
 <li><p><strong>CAR_PIN</strong> - Master PIN for the vehicle.</p></li>
 </ul>
