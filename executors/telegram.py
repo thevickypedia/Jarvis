@@ -13,7 +13,7 @@ from telebot import apihelper
 from telebot.types import Message
 
 from api.controller import offline_compatible
-from executors.controls import restart
+from executors import controls
 from modules.database import database
 from modules.models import config, models
 from modules.utils import support
@@ -200,7 +200,7 @@ def bot_is_running() -> bool:
             return True
         else:
             logger.error(response)
-            restart(quiet=True)
+            controls.restart_control(quiet=True)
 
 
 def poll_for_messages() -> None:
@@ -213,7 +213,7 @@ def poll_for_messages() -> None:
             bot.polling(non_stop=True)
         except requests.exceptions.ReadTimeout as error:
             logger.error(error)
-            restart(quiet=True)
+            controls.restart_control(quiet=True)
     else:
         logger.info('BOT_TOKEN was not stored as env var to initiate the Telegram bot.')
 

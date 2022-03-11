@@ -123,8 +123,8 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 
 **[IP Scanner](https://github.com/thevickypedia/Jarvis/blob/master/modules/netgear/ip_scanner.py)** - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers)
 - **ROUTER_PASS** - Router's admin password to get the available devices using `pynetgear` module.
-     > Note that this may be done even without the module by simply scanning/pinging the network range.
-  > Using the module makes it faster and accurate since the devices are already connected to the router.
+     > Note that this may be done even without the module by simply using the arp table.
+  > Using the module improves accuracy and support between different bandwidths since the devices are already connected to the router.
 
 **[Car Controls](https://github.com/thevickypedia/Jarvis/blob/master/modules/car)** - Applies only for JLR vehicles using `InControl API`.
 - **CAR_EMAIL** - Email address to log in to InControl API.

@@ -74,10 +74,6 @@ def automator() -> None:
                     Thread(target=reminder_executor, args=[remind_msg]).start()
                     os.remove(f'reminder/{each_reminder}')
 
-        if globals.STOPPER['status']:
-            logger.info('Exiting automator since the STOPPER flag was set.')
-            break
-
         dry_run = False
 
 

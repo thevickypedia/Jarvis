@@ -106,7 +106,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
                 else:
                     logger.error(f'Exception raised by {caller}. Restarting.')
                     Path('pyicloud_error').touch()
-                    controls.restart(quiet=True)  # Restarts quietly if the error occurs when called from __main__
+                    controls.restart_control(quiet=True)
         # uses latitude and longitude information from your IP's client when unable to connect to icloud
         st = Speedtest()
         current_lat_, current_lon_ = st.results.client['lat'], st.results.client['lon']
@@ -129,7 +129,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
     except (GeocoderUnavailable, GeopyError):
         logger.error('Error retrieving address from latitude and longitude information. Initiating self reboot.')
         speaker.speak(text='Received an error while retrieving your address sir! I think a restart should fix this.')
-        controls.restart()
+        controls.restart_control(quiet=True)
 
 
 def write_current_location() -> None:

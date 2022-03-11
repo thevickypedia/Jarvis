@@ -6,7 +6,7 @@ import git
 import requests
 from requests.auth import HTTPBasicAuth
 
-from executors.controls import restart
+from executors.controls import restart_control
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
@@ -108,4 +108,4 @@ def update() -> None:
     speaker.speak(text="I've updated myself to the latest version sir!")
     if status:
         speaker.speak(text=status)
-    restart()
+    restart_control(quiet=True)
