@@ -12,7 +12,7 @@ from pyaudio import PyAudio, paInt16
 
 from api.server import trigger_api
 from executors.commander import initiator
-from executors.controls import exit_process, starter
+from executors.controls import exit_process, restart, starter
 from executors.internet import get_ssid, internet_checker
 from executors.location import write_current_location
 from executors.logger import logger
@@ -20,8 +20,11 @@ from executors.offline import automator, initiate_tunneling
 from executors.system import hosted_device_info
 from executors.telegram import poll_for_messages
 from modules.audio import listener, speaker
+from modules.database import database
 from modules.models import models
 from modules.utils import globals, support
+
+db = database.Database(table_name='restart', columns=['flag', 'caller'])
 
 
 class Activator:
@@ -95,8 +98,14 @@ class Activator:
                                                            sound=False),
                               should_return=True)
                     speaker.speak(run=True)
-                elif globals.STOPPER['status']:
-                    logger.info('Exiting sentry mode since the STOPPER flag was set.')
+                elif flag := db.cursor.execute("SELECT flag, caller FROM restart").fetchone():
+                    logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
+                    db.cursor.execute("DELETE FROM restart WHERE flag=1")
+                    db.connection.commit()
+                    if flag[1] == 'restart_control':
+                        restart()
+                    else:
+                        restart(quiet=True)
                     break
         except KeyboardInterrupt:
             self.stop()

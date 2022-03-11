@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from logging.config import dictConfig
 from multiprocessing import Process
 from pathlib import Path
-from typing import NoReturn
+from typing import Any, NoReturn
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -92,7 +92,7 @@ async def enable_cors() -> NoReturn:
 
 
 @app.on_event(event_type='startup')
-async def start_robinhood() -> NoReturn:
+async def start_robinhood() -> Any:
     """Initiates robinhood gatherer in a process and adds a cron schedule if not present already."""
     await enable_cors()
     logger.info(f'Hosting at http://{env.offline_host}:{env.offline_port}')

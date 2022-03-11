@@ -77,7 +77,7 @@ class LocalIPScan:
 
 
 if __name__ == '__main__':
-    from os import environ
+    import os
     from pprint import pprint
 
     from dotenv import load_dotenv
@@ -85,4 +85,4 @@ if __name__ == '__main__':
     env_file_path = '../../.env'
     load_dotenv(dotenv_path=env_file_path)
 
-    pprint(LocalIPScan(router_pass=environ.get('router_pass')).attached_devices)
+    pprint(LocalIPScan(router_pass=os.environ.get('ROUTER_PASS')).attached_devices)

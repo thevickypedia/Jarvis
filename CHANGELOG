@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.7.1 (03/08/2022)
+------------------
+- Create a `restart` flag in `database` to kill processes
+- Control all restarts from restart_control
+- Avoid duplicate processes when restarted
+
 5.7.0 (03/08/2022)
 ------------------
 - FEATURE::Jarvis uses `TelegramAPI` for offline comm

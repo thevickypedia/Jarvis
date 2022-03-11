@@ -5,7 +5,6 @@
 
 """
 
-STOPPER = {'status': False}
 text_spoken = {'text': ''}
 vpn_status = {'active': False}
 called_by_offline = {'status': False}

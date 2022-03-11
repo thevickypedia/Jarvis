@@ -13,7 +13,10 @@ from executors.display_functions import decrease_brightness
 from executors.logger import logger
 from modules.audio import listener, speaker, voices, volume
 from modules.conditions import conversation, keywords
+from modules.database import database
 from modules.utils import globals, support
+
+db = database.Database(table_name='restart', columns=['flag', 'caller'])
 
 
 def restart(target: str = None, quiet: bool = False) -> None:
@@ -38,9 +41,6 @@ def restart(target: str = None, quiet: bool = False) -> None:
         KeyboardInterrupt: To stop Jarvis' PID.
     """
     if target:
-        if globals.called_by_offline['status']:
-            logger.warning(f"ERROR::Cannot restart {globals.hosted_device.get('device')} via offline communicator.")
-            return
         if target == 'PC':
             speaker.speak(text=f"{random.choice(conversation.confirmation)} restart your "
                                f"{globals.hosted_device.get('device')}?",
@@ -55,15 +55,11 @@ def restart(target: str = None, quiet: bool = False) -> None:
         else:
             speaker.speak(text="Machine state is left intact sir!")
             return
-    globals.STOPPER['status'] = True
-    logger.info('JARVIS::Restarting Now::STOPPER flag has been set.')
-    logger.info(f'Called by {sys._getframe(1).f_code.co_name}')  # noqa
     sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}\t"
                      f"Total runtime: {support.time_converter(perf_counter())}")
     if not quiet:
         try:
-            if not globals.called_by_offline['status']:
-                speaker.speak(text='Restarting now sir! I will be up and running momentarily.', run=True)
+            speaker.speak(text='Restarting now sir! I will be up and running momentarily.', run=True)
         except RuntimeError as error:
             logger.fatal(error)
     if os.path.isfile('location.yaml'):
@@ -79,14 +75,12 @@ def restart(target: str = None, quiet: bool = False) -> None:
         if process.is_alive():
             logger.info(f'Sending [SIGKILL] to {func} with PID: {process.pid}')
             process.kill()
-    os.system('python3 restart.py')
+    os.system('python restart.py')
     exit(1)
 
 
 def exit_process() -> None:
     """Function that holds the list of operations done upon exit."""
-    globals.STOPPER['status'] = True
-    logger.info('JARVIS::Stopping Now::STOPPER flag has been set to True')
     reminders = {}
     alarms = support.lock_files(alarm_files=True)
     if reminder_files := support.lock_files(reminder_files=True):
@@ -142,19 +136,26 @@ def sleep_control(phrase: str) -> bool:
     return True
 
 
-def restart_control(phrase: str):
+def restart_control(phrase: str = 'PlaceHolder', quiet: bool = False):
     """Controls the restart functions based on the user request.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
+        quiet: Take a boolean flag to restart without warning.
     """
     phrase = phrase.lower()
     if 'pc' in phrase or 'computer' in phrase or 'imac' in phrase:
         logger.info(f'JARVIS::Restart for {globals.hosted_device.get("device")} has been requested.')
         restart(target='PC')
     else:
+        caller = sys._getframe(1).f_code.co_name  # noqa
+        logger.info(f'Called by {caller}')
         logger.info('JARVIS::Self reboot has been requested.')
-        restart()
+        if quiet:  # restarted due internal errors or git update
+            db.cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, caller))
+        else:  # restarted requested via voice command
+            db.cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, 'restart_control'))
+        db.connection.commit()
 
 
 def shutdown(proceed: bool = False) -> None:
