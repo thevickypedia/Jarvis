@@ -23,7 +23,7 @@ randfacts==0.15.0
 appscript==1.1.2
 wolframalpha==5.0.0
 pynetgear==0.9.1
-fastapi==0.74.1
+fastapi==0.75.0
 uvicorn==0.17.5
 aiofiles==0.8.0
 python-multipart==0.0.5
@@ -41,3 +41,4 @@ pytest==7.0.1
 bs4==0.0.1
 Pillow==9.0.1
 GitPython==3.1.27
+pyTelegramBotAPI==4.4.0

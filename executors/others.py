@@ -286,15 +286,13 @@ def news(news_source: str = 'fox') -> None:
     try:
         all_articles = news_client.get_top_headlines(sources=f'{news_source}-news')
     except newsapi_exception.NewsAPIException:
-        all_articles = None
         speaker.speak(text="I wasn't able to get the news sir! I think the News API broke, you may try after sometime.")
+        return
 
-    if all_articles:
-        speaker.speak(text="News around you!")
-        for article in all_articles['articles']:
-            speaker.speak(text=article['title'])
-        if globals.called_by_offline['status']:
-            return
+    speaker.speak(text="News around you!")
+    speaker.speak(text=' '.join([article['title'] for article in all_articles['articles']]))
+    if globals.called_by_offline['status']:
+        return
 
     if globals.called['report'] or globals.called['time_travel']:
         speaker.speak(run=True)

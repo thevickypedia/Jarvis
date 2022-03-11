@@ -414,8 +414,7 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     except AttributeError:
         return
     located = geo_locator.reverse(coordinates, language='en')
-    data = located.raw
-    address = data['address']
+    address = located.raw['address']
     end_country = address['country'] if 'country' in address else None
     end = f"{located.latitude},{located.longitude}"
 

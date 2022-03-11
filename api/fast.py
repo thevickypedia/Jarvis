@@ -7,17 +7,18 @@ from datetime import datetime, timezone
 from logging.config import dictConfig
 from multiprocessing import Process
 from pathlib import Path
+from typing import NoReturn
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
-from api import authenticator, cron, filters
+from api import authenticator, cron
 from api.controller import keygen, offline_compatible
-from api.models import GetData, LogConfig
+from api.models import GetData, InvestmentFilter
 from api.report_gatherer import Investment
 from modules.database import database
-from modules.models import models
+from modules.models import config, models
 
 env = models.env
 db = database.Database(table_name='offline', columns=['key', 'value'])
@@ -27,20 +28,20 @@ ROBINHOOD_PROTECTOR = [Depends(dependency=authenticator.robinhood_has_access)]
 
 robinhood_token = {'token': ''}
 
-if not os.path.isfile(LogConfig.ACCESS_LOG_FILENAME):
-    Path(LogConfig.ACCESS_LOG_FILENAME).touch()
+if not os.path.isfile(config.APIConfig().ACCESS_LOG_FILENAME):
+    Path(config.APIConfig().ACCESS_LOG_FILENAME).touch()
 
-if not os.path.isfile(LogConfig.DEFAULT_LOG_FILENAME):
-    Path(LogConfig.DEFAULT_LOG_FILENAME).touch()
+if not os.path.isfile(config.APIConfig().DEFAULT_LOG_FILENAME):
+    Path(config.APIConfig().DEFAULT_LOG_FILENAME).touch()
 
 LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 
 offline_compatible = offline_compatible()
 
 importlib.reload(module=logging)
-dictConfig(config=LogConfig.LOGGING_CONFIG)
+dictConfig(config=config.APIConfig().LOGGING_CONFIG)
 
-logging.getLogger("uvicorn.access").addFilter(filters.InvestmentFilter())  # Adds token filter to the access logger
+logging.getLogger("uvicorn.access").addFilter(InvestmentFilter())  # Adds token filter to the access logger
 logging.getLogger("uvicorn.access").propagate = False  # Disables access logger in default logger to log independently
 
 logger = logging.getLogger('uvicorn.default')
@@ -56,7 +57,7 @@ app = FastAPI(
 )
 
 
-def run_robinhood() -> None:
+def run_robinhood() -> NoReturn:
     """Runs in a dedicated process during startup, if the file was modified earlier than the past hour."""
     if os.path.isfile(serve_file):
         modified = int(os.stat(serve_file).st_mtime)
@@ -68,7 +69,7 @@ def run_robinhood() -> None:
     Investment(logger=logger).report_gatherer()
 
 
-async def enable_cors() -> None:
+async def enable_cors() -> NoReturn:
     """Allow ``CORS: Cross-Origin Resource Sharing`` to allow restricted resources on the API."""
     logger.info('Setting CORS policy.')
     origins = [
@@ -91,7 +92,7 @@ async def enable_cors() -> None:
 
 
 @app.on_event(event_type='startup')
-async def start_robinhood() -> None:
+async def start_robinhood() -> NoReturn:
     """Initiates robinhood gatherer in a process and adds a cron schedule if not present already."""
     await enable_cors()
     logger.info(f'Hosting at http://{env.offline_host}:{env.offline_port}')
@@ -112,13 +113,13 @@ async def redirect_index() -> str:
 
 
 @app.get('/health', include_in_schema=False)
-async def health() -> None:
+async def health() -> NoReturn:
     """Health Check for OfflineCommunicator."""
     raise HTTPException(status_code=200, detail=status.HTTP_200_OK)
 
 
 @app.post("/offline-communicator", dependencies=OFFLINE_PROTECTOR)
-async def offline_communicator(input_data: GetData) -> None:
+async def offline_communicator(input_data: GetData) -> NoReturn:
     """Offline Communicator for Jarvis.
 
     Args:
@@ -144,17 +145,20 @@ async def offline_communicator(input_data: GetData) -> None:
     if 'and' in command.split() or 'also' in command.split():
         raise HTTPException(status_code=413,
                             detail='Jarvis can only process one command at a time via offline communicator.')
+    if 'after' in command.split():
+        raise HTTPException(status_code=413,
+                            detail='Jarvis cannot perform tasks at a later time using offline communicator.')
     if not any(word in command.lower() for word in offline_compatible):
         raise HTTPException(status_code=422,
                             detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
                                    'Please try an instruction that does not require an user interaction.')
+    if existing := db.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():
+        raise HTTPException(status_code=503,
+                            detail=f"Processing another offline request: '{existing[0]}'.\nPlease try again.")
     db.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('request', command)}")
     db.connection.commit()
 
     dt_string = datetime.now().astimezone(tz=LOCAL_TIMEZONE).strftime("%A, %B %d, %Y %H:%M:%S")
-    if 'restart' in command:
-        raise HTTPException(status_code=200,
-                            detail='Restarting now sir! I will be up and running momentarily.')
     while True:
         if response := db.cursor.execute("SELECT value from offline WHERE key=?", ('response',)).fetchone():
             db.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
@@ -177,7 +181,7 @@ async def get_favicon() -> FileResponse:
 
 if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
     @app.post("/robinhood-authenticate", dependencies=ROBINHOOD_PROTECTOR)
-    async def authenticate_robinhood() -> None:
+    async def authenticate_robinhood() -> NoReturn:
         """Authenticates the request. Uses a two-factor authentication by generating single use tokens.
 
         Raises:

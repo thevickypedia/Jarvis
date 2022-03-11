@@ -56,23 +56,16 @@ API CronTab
    :members:
    :exclude-members: COMMAND
 
-API Log Filters
-===============
-
-.. autoclass:: api.filters.InvestmentFilter(logging.Filter)
-   :members:
-   :undoc-members:
-
 API Models
 ==========
 
 .. autoclass:: api.models.GetData(pydantic.BaseModel)
    :members:
-   :undoc-members:
+   :exclude-members:
 
-.. autoclass:: api.models.LogConfig(pydantic.BaseModel)
+.. autoclass:: api.models.InvestmentFilter(logging.Filter)
    :members:
-   :exclude-members: ACCESS_LOG_FILENAME, ACCESS_LOG_FORMAT, DEFAULT_LOG_FILENAME, DEFAULT_LOG_FORMAT, ERROR_LOG_FORMAT, LOGGING_CONFIG, LOG_LEVEL
+   :exclude-members:
 
 API Robinhood
 =============
@@ -262,6 +255,13 @@ System
    :members:
    :undoc-members:
 
+Telegram
+========
+
+.. automodule:: executors.telegram
+   :members:
+   :undoc-members:
+
 To Do
 =====
 
@@ -343,6 +343,21 @@ Conditions
    :members:
    :exclude-members: add_todo, apps, automation, avoid, bluetooth, brightness, car, create_db, current_date, current_time, delete_db, delete_todo, directions, distance, exit_, face_detection, facts, flip_a_coin, github, google_home, google_search, guard_disable, guard_enable, ip_info, jokes, kill, kill_alarm, lights, locate, locate_places, location, meaning, meetings, music, news, notes, ok, read_gmail, reminder, repeat, report, restart_control, robinhood, send_sms, set_alarm, shutdown, sleep_control, speed_test, system_info, system_vitals, television, todo, voice_changer, volume, vpn_server, weather, wikipedia_
 
+Config
+======
+
+.. autoclass:: modules.models.config.CronConfig(pydantic.BaseModel)
+   :members:
+   :exclude-members:
+
+.. autoclass:: modules.models.config.APIConfig(pydantic.BaseModel)
+   :members:
+   :exclude-members:
+
+.. autoclass:: modules.models.config.BotConfig(pydantic.BaseModel)
+   :members:
+   :exclude-members:
+
 Database
 ========
 
@@ -380,6 +395,13 @@ Meanings
 ========
 
 .. automodule:: modules.dictionary.dictionary
+   :members:
+   :undoc-members:
+
+Models
+======
+
+.. autoclass:: modules.models.models.EnvConfig(pydantic.BaseModel)
    :members:
    :undoc-members:
 

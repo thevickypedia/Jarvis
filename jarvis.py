@@ -12,12 +12,13 @@ from pyaudio import PyAudio, paInt16
 
 from api.server import trigger_api
 from executors.commander import initiator
-from executors.controls import exit_process, restart, starter
+from executors.controls import exit_process, starter
 from executors.internet import get_ssid, internet_checker
 from executors.location import write_current_location
 from executors.logger import logger
 from executors.offline import automator, initiate_tunneling
 from executors.system import hosted_device_info
+from executors.telegram import poll_for_messages
 from modules.audio import listener, speaker
 from modules.models import models
 from modules.utils import globals, support
@@ -96,14 +97,11 @@ class Activator:
                     speaker.speak(run=True)
                 elif globals.STOPPER['status']:
                     logger.info('Exiting sentry mode since the STOPPER flag was set.')
-                    self.stop()
-                    restart(quiet=True)
                     break
         except KeyboardInterrupt:
             self.stop()
-            if not globals.called_by_offline['status']:
-                exit_process()
-                support.terminator()
+            exit_process()
+            support.terminator()
 
     def stop(self) -> None:
         """Invoked when the run loop is exited or manual interrupt.
@@ -134,18 +132,20 @@ def initiate_processes() -> Dict[str, Process]:
     """Initiate multiple background processes to achieve parallelization.
 
     Methods
-        - initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
-        - write_current_location: Writes current location details into a yaml file.
+        - poll_for_messages: Initiates polling for messages on the telegram bot.
         - trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.
         - automator: Initiates automator that executes offline commands and certain functions at said time.
+        - initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
+        - write_current_location: Writes current location details into a yaml file.
         - playsound: Plays a start-up sound.
     """
     processes = {
+        'telebot': Process(target=poll_for_messages),
+        'api': Process(target=trigger_api),
+        'automator': Process(target=automator),
         'ngrok': Process(target=initiate_tunneling,
                          kwargs={'offline_host': env.offline_host, 'offline_port': env.offline_port, 'home': env.home}),
         'location': Process(target=write_current_location),
-        'api': Process(target=trigger_api),
-        'automator': Process(target=automator)
     }
     for func, process in processes.items():
         process.start()

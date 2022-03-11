@@ -7,10 +7,10 @@ Disables loggers from imported modules, while using the root logger without havi
 
 """
 
+import importlib
 import logging
 import os
 from datetime import datetime
-from importlib import reload
 from logging.config import dictConfig
 from multiprocessing import current_process
 from time import struct_time, time
@@ -31,7 +31,7 @@ if current_process().name == 'MainProcess':
         else:
             file.write(f"\n{write}\n")
 
-reload(logging)
+importlib.reload(module=logging)
 dictConfig({
     'version': 1,
     'disable_existing_loggers': True,

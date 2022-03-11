@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+5.7.0 (03/08/2022)
+------------------
+- FEATURE::Jarvis uses `TelegramAPI` for offline comm
+- Do not check same threads for database connections
+- Do not write into offline table when there is an existing request
+- Gather all logging configuration in one module
+- Gracefully terminate all background processes before restart
+- Do not execute commands with 'after' via online communicator
+- Remove multiple restart and disable restart via offline statements
+- Gather all articles into a statement for news
+
 5.6.9 (03/06/2022)
 ------------------
 - Stop loading env vars when `Investment` runs as cron
