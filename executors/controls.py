@@ -51,7 +51,6 @@ def restart(target: str = None, quiet: bool = False) -> None:
         if any(word in converted.lower() for word in keywords.ok):
             support.stop_processes()
             subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
-            globals.STOPPER['status'] = True
             raise KeyboardInterrupt
         else:
             speaker.speak(text="Machine state is left intact sir!")
@@ -73,6 +72,13 @@ def restart(target: str = None, quiet: bool = False) -> None:
         data.update({'timestamp': int(time.time())})
         with open('location.yaml', 'w') as file:
             yaml.dump(stream=file, data=data)
+    for func, process in globals.processes.items():
+        if process.is_alive():
+            logger.info(f'Sending [SIGTERM] to {func} with PID: {process.pid}')
+            process.terminate()
+        if process.is_alive():
+            logger.info(f'Sending [SIGKILL] to {func} with PID: {process.pid}')
+            process.kill()
     os.system('python3 restart.py')
     exit(1)
 
@@ -94,19 +100,18 @@ def exit_process() -> None:
         else:
             speaker.speak(text=f'You have {len(reminders)} pending reminders sir!')
         for key, value in reminders.items():
-            speaker.speak(text=f"{value.replace('_', ' ')} at "
-                               f"{key.replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')}")
+            speaker.speak(text=f"{value.replace('_', ' ')} at {key.lstrip('0').replace('00', '').replace('_', ' ')}")
     if alarms:
         alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
         alarms = alarms.replace('.lock', '').replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')
-        speaker.speak(text=f'You have a pending alarm at {alarms} sir!')
+        speaker.speak(text=f"You have a pending alarm at {alarms} sir!")
     if reminders or alarms:
         speaker.speak(text="This will not be executed while I'm asleep!")
-    speaker.speak(text='Shutting down now sir!')
+    speaker.speak(text="Shutting down now sir!")
     try:
         speaker.speak(text=support.exit_message(), run=True)
     except RuntimeError as error:
-        logger.fatal(f'Received a RuntimeError while self terminating.\n{error}')
+        logger.fatal(f"Received a RuntimeError while self terminating.\n{error}")
     sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
                      f"\nTotal runtime: {support.time_converter(perf_counter())}")
 

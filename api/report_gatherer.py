@@ -1,12 +1,12 @@
 """Runs once during API startup and continues to run in a cron scheduler as per market hours."""
 
 import inspect
+import logging.config
 import math
 import os
 import sys
 import warnings
 from datetime import date, datetime
-from logging import Logger, config, getLogger
 from time import perf_counter
 
 import jinja2
@@ -22,7 +22,7 @@ if parent_dir != os.getcwd():
 sys.path.insert(0, parent_dir)
 
 from api.rh_helper import CustomTemplate  # noqa
-from modules.models import models  # noqa
+from modules.models import config, models  # noqa
 
 env = models.env
 
@@ -51,7 +51,7 @@ class Investment:
 
     """
 
-    def __init__(self, logger: Logger):
+    def __init__(self, logger: logging.Logger):
         """Authenticates Robinhood object and gathers the portfolio information to store it in a variable.
 
         Args:
@@ -205,15 +205,13 @@ class Investment:
 
 
 if __name__ == '__main__':
-    from models import CronConfig
-
-    config.dictConfig(CronConfig().dict())
+    logging.config.dictConfig(config.CronConfig().dict())
 
     if not os.path.isdir('logs'):
         os.mkdir('logs')
 
-    Investment(logger=getLogger('investment')).report_gatherer()
+    Investment(logger=logging.getLogger('investment')).report_gatherer()
 
-    with open(CronConfig().FILE_LOG, 'a') as file:
+    with open(config.CronConfig().LOG_FILE, 'a') as file:
         file.seek(0)
         file.write('\n')

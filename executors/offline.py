@@ -26,7 +26,7 @@ db = database.Database(table_name='offline', columns=['key', 'value'])
 
 
 def automator() -> None:
-    """Place for long-running background threads.
+    """Place for long-running background tasks.
 
     See Also:
         - Initiates ``meeting_file_writer`` and ``scan_smart_devices`` every hour in a dedicated process.
@@ -46,10 +46,10 @@ def automator() -> None:
     dry_run = True
     while True:
         if cmd := db.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():
+            offline_communicator(command=cmd[0])
             db.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
                               {'key': 'request', 'value': cmd[0]})
             db.connection.commit()
-            offline_communicator(command=cmd[0])
             support.flush_screen()
 
         if os.path.isfile('automation.yaml'):
@@ -146,12 +146,7 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
     Args:
         command: Takes the command that has to be executed as an argument.
         respond: Flag to create a ``response`` record in the database table ``offline``.
-
-    Warnings:
-        - Handles ``RuntimeError`` and logs it.
-        - Excepted when the ``speaker`` is stopped while another loop of speaker is in progress by regular interaction.
     """
-    response = None
     try:
         globals.called_by_offline['status'] = True
         conditions(converted=command)
@@ -163,7 +158,4 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
         audio_driver.stop()
         voice_default()
     except RuntimeError as error:
-        if command and not response:
-            db.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('request', command)}")
-            db.connection.commit()
         logger.fatal(f'Received a RuntimeError while executing offline request.\n{error}')

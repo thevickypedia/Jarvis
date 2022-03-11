@@ -57,6 +57,9 @@ class EnvConfig(BaseSettings):
     sensitivity: float = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
     timeout: PositiveInt = Field(default=3, env='TIMEOUT')
     phrase_limit: PositiveInt = Field(default=3, env='PHRASE_LIMIT')
+    bot_token: str = Field(default=None, env='BOT_TOKEN')
+    bot_chat_ids: list = Field(default=[], env='BOT_CHAT_IDS')
+    bot_users: list = Field(default=[], env='BOT_USERS')
 
     class Config:
         """Environment variables configuration."""

@@ -236,7 +236,7 @@ def extract_str(input_: str) -> str:
     return ''.join([i for i in input_ if not i.isdigit() and i not in [',', '.', '?', '-', ';', '!', ':']]).strip()
 
 
-def stop_processes(deep: bool = False, apps: tuple = ('iterm', 'terminal', 'pycharm')) -> None:
+def stop_processes(deep: bool = False, apps: tuple = ('iterm', 'terminal')) -> None:
     """Stops background processes.
 
     Args:
@@ -246,7 +246,7 @@ def stop_processes(deep: bool = False, apps: tuple = ('iterm', 'terminal', 'pych
     for proc in psutil.process_iter():
         if any(word in proc.name().lower() for word in apps):
             proc.terminate()
-            time.sleep(5e-01)
+            time.sleep(0.5)
             if deep and proc.is_running():
                 proc.kill()
 

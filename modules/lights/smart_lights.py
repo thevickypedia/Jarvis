@@ -21,20 +21,20 @@ class MagicHomeApi:
         Args:
             device_ip: Takes device IP address as argument.
             device_type: Specific device type. Commonly 1 or 2.
-            operation: Takes the operation that the calling function is trying to perform for logging.
+            operation: Takes the operation that the calling function is trying to perform and logs it.
         """
         self.device_ip = device_ip
         self.device_type = device_type
         self.operation = operation
         self.API_PORT = 5577
         self.latest_connection = datetime.now()
-        self.s = socket(AF_INET, SOCK_STREAM)
-        self.s.settimeout(3)
+        self.socket = socket(AF_INET, SOCK_STREAM)
+        self.socket.settimeout(3)
         try:
             # Establishing connection with the device.
-            self.s.connect((self.device_ip, self.API_PORT))
+            self.socket.connect((self.device_ip, self.API_PORT))
         except sock_error as error:
-            self.s.close()
+            self.socket.close()
             error_msg = f"\rSocket error on {device_ip}: {error}"
             stdout.write(error_msg)
             logger.error(f'{error_msg} while performing "{self.operation}"')
@@ -56,10 +56,10 @@ class MagicHomeApi:
         """
         if self.device_type == 2:
             self.send_bytes(0x81, 0x8A, 0x8B, 0x96)
-            return self.s.recv(15)
+            return self.socket.recv(15)
         else:
             self.send_bytes(0x81, 0x8A, 0x8B, 0x96)
-            return self.s.recv(14)
+            return self.socket.recv(14)
 
     def update_device(self, r: int = 0, g: int = 0, b: int = 0, warm_white: int = None, cool_white: int = None) -> None:
         """Updates a device based upon what we're sending to it.
@@ -191,11 +191,11 @@ class MagicHomeApi:
         try:
             if check_connection_time >= 290:
                 stdout.write("\rConnection timed out, reestablishing.")
-                self.s.connect((self.device_ip, self.API_PORT))
+                self.socket.connect((self.device_ip, self.API_PORT))
             message_length = len(bytes_)
-            self.s.send(pack("B" * message_length, *bytes_))
+            self.socket.send(pack("B" * message_length, *bytes_))
         except sock_error as error:
             error_msg = f"\rSocket error on {self.device_ip}: {error}"
             stdout.write(error_msg)
             logger.error(f'{error_msg} while performing "{self.operation}"')
-        self.s.close()
+        self.socket.close()

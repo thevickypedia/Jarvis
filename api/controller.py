@@ -19,7 +19,6 @@ def offline_compatible() -> list:
     offline_words = [keywords.sleep_control,
                      keywords.exit_,
                      keywords.set_alarm,
-                     keywords.restart_control,
                      keywords.current_time,
                      keywords.apps,
                      keywords.distance,

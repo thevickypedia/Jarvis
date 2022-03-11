@@ -139,10 +139,11 @@
 <dd><p>Initiate multiple background processes to achieve parallelization.</p>
 <dl class="simple">
 <dt>Methods</dt><dd><ul class="simple">
-<li><p>initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
-<li><p>write_current_location: Writes current location details into a yaml file.</p></li>
+<li><p>poll_for_messages: Initiates polling for messages on the telegram bot.</p></li>
 <li><p>trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.</p></li>
 <li><p>automator: Initiates automator that executes offline commands and certain functions at said time.</p></li>
+<li><p>initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
+<li><p>write_current_location: Writes current location details into a yaml file.</p></li>
 <li><p>playsound: Plays a start-up sound.</p></li>
 </ul>
 </dd>
@@ -157,7 +158,7 @@
 <span id="api-handler"></span><h1>API Handler<a class="headerlink" href="#module-api.fast" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.enable_cors">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">enable_cors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.enable_cors" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">enable_cors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.enable_cors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allow <code class="docutils literal notranslate"><span class="pre">CORS:</span> <span class="pre">Cross-Origin</span> <span class="pre">Resource</span> <span class="pre">Sharing</span></code> to allow restricted resources on the API.</p>
 </dd></dl>
 
@@ -177,13 +178,13 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.health">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">health</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.health" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">health</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.health" title="Permalink to this definition">¶</a></dt>
 <dd><p>Health Check for OfflineCommunicator.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.offline_communicator">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.GetData" title="api.models.GetData"><span class="pre">api.models.GetData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.offline_communicator" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.GetData" title="api.models.GetData"><span class="pre">api.models.GetData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.offline_communicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Offline Communicator for Jarvis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -225,13 +226,13 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.run_robinhood">
-<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">run_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.run_robinhood" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">run_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.run_robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs in a dedicated process during startup, if the file was modified earlier than the past hour.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.start_robinhood">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">start_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.start_robinhood" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">start_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.start_robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates robinhood gatherer in a process and adds a cron schedule if not present already.</p>
 </dd></dl>
 
@@ -418,46 +419,6 @@
 </dd></dl>
 
 </section>
-<section id="api-log-filters">
-<h1>API Log Filters<a class="headerlink" href="#api-log-filters" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="api.filters.InvestmentFilter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.filters.</span></span><span class="sig-name descname"><span class="pre">InvestmentFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logging.Filter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.filters.InvestmentFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to initiate <code class="docutils literal notranslate"><span class="pre">/investment</span></code> filter in logs while preserving other access logs.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">InvestmentFilter</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>Overrides logging by implementing a subclass of <code class="docutils literal notranslate"><span class="pre">logging.Filter</span></code></p></li>
-<li><p>The method <code class="docutils literal notranslate"><span class="pre">filter(record)</span></code>, that examines the log record and returns True to log it or False to discard it.</p></li>
-</ul>
-</div>
-<p>Initialize a filter.</p>
-<p>Initialize with the name of the logger which, together with its
-children, will have its events allowed through the filter. If no
-name is specified, allow every event.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="api.filters.InvestmentFilter.filter">
-<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">logging.LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.filters.InvestmentFilter.filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Filter out logging at <code class="docutils literal notranslate"><span class="pre">/investment?token=</span></code> from log streams.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>record</strong> – <code class="docutils literal notranslate"><span class="pre">LogRecord</span></code> represents an event which is created every time something is logged.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>False flag for the endpoint that needs to be filtered.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
 <section id="api-models">
 <h1>API Models<a class="headerlink" href="#api-models" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -475,20 +436,43 @@ name is specified, allow every event.</p>
 </div>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="api.models.GetData.command">
-<span class="sig-name descname"><span class="pre">command</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#api.models.GetData.command" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="api.models.LogConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">LogConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.LogConfig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom log configuration to redirect uvicorn logs to a log file.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LogConfig</span>
+<dt class="sig sig-object py" id="api.models.InvestmentFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">InvestmentFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logging.Filter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.InvestmentFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to initiate <code class="docutils literal notranslate"><span class="pre">/investment</span></code> filter in logs while preserving other access logs.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">InvestmentFilter</span>
 </pre></div>
 </div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Overrides logging by implementing a subclass of <code class="docutils literal notranslate"><span class="pre">logging.Filter</span></code></p></li>
+<li><p>The method <code class="docutils literal notranslate"><span class="pre">filter(record)</span></code>, that examines the log record and returns True to log it or False to discard it.</p></li>
+</ul>
+</div>
+<p>Initialize a filter.</p>
+<p>Initialize with the name of the logger which, together with its
+children, will have its events allowed through the filter. If no
+name is specified, allow every event.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="api.models.InvestmentFilter.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">logging.LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.models.InvestmentFilter.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter out logging at <code class="docutils literal notranslate"><span class="pre">/investment?token=</span></code> from log streams.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>record</strong> – <code class="docutils literal notranslate"><span class="pre">LogRecord</span></code> represents an event which is created every time something is logged.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False flag for the endpoint that needs to be filtered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -1511,7 +1495,7 @@ A condition below assumes two different words as two places but not including tw
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.offline.automator">
 <span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">automator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.offline.automator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Place for long-running background threads.</p>
+<dd><p>Place for long-running background tasks.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul>
@@ -1555,13 +1539,6 @@ A condition below assumes two different words as two places but not including tw
 </ul>
 </dd>
 </dl>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<ul class="simple">
-<li><p>Handles <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> and logs it.</p></li>
-<li><p>Excepted when the <code class="docutils literal notranslate"><span class="pre">speaker</span></code> is stopped while another loop of speaker is in progress by regular interaction.</p></li>
-</ul>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1877,6 +1854,93 @@ A condition below assumes two different words as two places but not including tw
 <li><p>If confirmed, invokes <a class="reference external" href="https://thevickypedia.github.io/Jarvis/#jarvis.restart">restart</a> function.</p></li>
 </ul>
 </div>
+</dd></dl>
+
+</section>
+<section id="module-executors.telegram">
+<span id="telegram"></span><h1>Telegram<a class="headerlink" href="#module-executors.telegram" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.telegram.authenticate">
+<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">authenticate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">telebot.types.Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.telegram.authenticate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates authentication using the payload received.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>payload</strong> – Payload received from Telegram API.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean flag to indicate whether the user has been authenticated.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.telegram.bot_is_running">
+<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">bot_is_running</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.telegram.bot_is_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if bot is running by making an update call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A flag indicating whether an instance of telebot is running.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.telegram.greet">
+<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">greet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">telebot.types.Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.telegram.greet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sample greeting responses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>payload</strong> – Payload received from Telegram API.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.telegram.greeting">
+<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">greeting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#executors.telegram.greeting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a random greeting message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Random greeting.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.telegram.jarvis">
+<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">jarvis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">telebot.types.Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.telegram.jarvis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles messages sent with the slash command <code class="docutils literal notranslate"><span class="pre">/jarvis</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>payload</strong> – Payload received from Telegram API.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.telegram.poll_for_messages">
+<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">poll_for_messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.telegram.poll_for_messages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Polls for incoming messages.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.telegram.start">
+<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">telebot.types.Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.telegram.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replies to the user with an introductory message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>payload</strong> – Payload received from Telegram API.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -3042,6 +3106,42 @@ Pass 155 for LO and 285 for HI.</p>
 </pre></div>
 </div>
 </section>
+<section id="config">
+<h1>Config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.models.config.CronConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.config.</span></span><span class="sig-name descname"><span class="pre">CronConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.config.CronConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom log configuration for the cron schedule.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CronConfig</span>
+</pre></div>
+</div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.models.config.APIConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.config.</span></span><span class="sig-name descname"><span class="pre">APIConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.config.APIConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom log configuration to redirect uvicorn logs to a log file.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">APIConfig</span>
+</pre></div>
+</div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.models.config.BotConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.config.</span></span><span class="sig-name descname"><span class="pre">BotConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.config.BotConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom log configuration for the telegram bot.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">BotConfig</span>
+</pre></div>
+</div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+</dd></dl>
+
+</section>
 <section id="module-modules.database.database">
 <span id="database"></span><h1>Database<a class="headerlink" href="#module-modules.database.database" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -3143,7 +3243,7 @@ None - NoneType if no face was recognized.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>device_ip</strong> – Takes device IP address as argument.</p></li>
 <li><p><strong>device_type</strong> – Specific device type. Commonly 1 or 2.</p></li>
-<li><p><strong>operation</strong> – Takes the operation that the calling function is trying to perform for logging.</p></li>
+<li><p><strong>operation</strong> – Takes the operation that the calling function is trying to perform and logs it.</p></li>
 </ul>
 </dd>
 </dl>
@@ -3342,6 +3442,241 @@ Whites can have a value of None.</p>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
+</dd></dl>
+
+</section>
+<section id="models">
+<h1>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.models.</span></span><span class="sig-name descname"><span class="pre">EnvConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.models.EnvConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure all env vars and validate using <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> to share across modules.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">EnvConfig</span>
+</pre></div>
+</div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.Config">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Config</span></span><a class="headerlink" href="#modules.models.models.EnvConfig.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Environment variables configuration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.Config.env_file">
+<span class="sig-name descname"><span class="pre">env_file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'.env'</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.Config.env_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.Config.env_prefix">
+<span class="sig-name descname"><span class="pre">env_prefix</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.Config.env_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.alt_gmail_pass">
+<span class="sig-name descname"><span class="pre">alt_gmail_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.alt_gmail_pass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.alt_gmail_user">
+<span class="sig-name descname"><span class="pre">alt_gmail_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.alt_gmail_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.birthday">
+<span class="sig-name descname"><span class="pre">birthday</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.birthday" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.bot_chat_ids">
+<span class="sig-name descname"><span class="pre">bot_chat_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.bot_chat_ids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.bot_token">
+<span class="sig-name descname"><span class="pre">bot_token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.bot_token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.bot_users">
+<span class="sig-name descname"><span class="pre">bot_users</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.bot_users" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.car_email">
+<span class="sig-name descname"><span class="pre">car_email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.car_email" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.car_pass">
+<span class="sig-name descname"><span class="pre">car_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.car_pass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.car_pin">
+<span class="sig-name descname"><span class="pre">car_pin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.car_pin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.git_pass">
+<span class="sig-name descname"><span class="pre">git_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.git_pass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.git_user">
+<span class="sig-name descname"><span class="pre">git_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.git_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.gmail_pass">
+<span class="sig-name descname"><span class="pre">gmail_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.gmail_pass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.gmail_user">
+<span class="sig-name descname"><span class="pre">gmail_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.gmail_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.home">
+<span class="sig-name descname"><span class="pre">home</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.DirectoryPath</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.home" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.icloud_pass">
+<span class="sig-name descname"><span class="pre">icloud_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.icloud_pass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.icloud_recovery">
+<span class="sig-name descname"><span class="pre">icloud_recovery</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.icloud_recovery" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.icloud_user">
+<span class="sig-name descname"><span class="pre">icloud_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.icloud_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.maps_api">
+<span class="sig-name descname"><span class="pre">maps_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.maps_api" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.meeting_app">
+<span class="sig-name descname"><span class="pre">meeting_app</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.meeting_app" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.news_api">
+<span class="sig-name descname"><span class="pre">news_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.news_api" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.offline_host">
+<span class="sig-name descname"><span class="pre">offline_host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.offline_host" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.offline_pass">
+<span class="sig-name descname"><span class="pre">offline_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.offline_pass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.offline_port">
+<span class="sig-name descname"><span class="pre">offline_port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.offline_port" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.phone_number">
+<span class="sig-name descname"><span class="pre">phone_number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.phone_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.phrase_limit">
+<span class="sig-name descname"><span class="pre">phrase_limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.phrase_limit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.recipient">
+<span class="sig-name descname"><span class="pre">recipient</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.recipient" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.robinhood_endpoint_auth">
+<span class="sig-name descname"><span class="pre">robinhood_endpoint_auth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.robinhood_endpoint_auth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.robinhood_pass">
+<span class="sig-name descname"><span class="pre">robinhood_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.robinhood_pass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.robinhood_qr">
+<span class="sig-name descname"><span class="pre">robinhood_qr</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.robinhood_qr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.robinhood_user">
+<span class="sig-name descname"><span class="pre">robinhood_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.robinhood_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.root_password">
+<span class="sig-name descname"><span class="pre">root_password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.root_password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.root_user">
+<span class="sig-name descname"><span class="pre">root_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.root_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.router_pass">
+<span class="sig-name descname"><span class="pre">router_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.router_pass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.sensitivity">
+<span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sensitivity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.timeout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.tv_client_key">
+<span class="sig-name descname"><span class="pre">tv_client_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.tv_client_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.vpn_password">
+<span class="sig-name descname"><span class="pre">vpn_password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.vpn_password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.vpn_username">
+<span class="sig-name descname"><span class="pre">vpn_username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.vpn_username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.weather_api">
+<span class="sig-name descname"><span class="pre">weather_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.weather_api" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.website">
+<span class="sig-name descname"><span class="pre">website</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.website" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.wolfram_api_key">
+<span class="sig-name descname"><span class="pre">wolfram_api_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.wolfram_api_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>
@@ -3915,7 +4250,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.stop_processes">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">stop_processes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">('iterm',</span> <span class="pre">'terminal',</span> <span class="pre">'pycharm')</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.stop_processes" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">stop_processes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">('iterm',</span> <span class="pre">'terminal')</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.stop_processes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stops background processes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -3997,7 +4332,6 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#module-api.authenticator">API Authenticator</a></li>
 <li><a class="reference internal" href="#module-api.server">API Server</a></li>
 <li><a class="reference internal" href="#module-api.cron">API CronTab</a></li>
-<li><a class="reference internal" href="#api-log-filters">API Log Filters</a></li>
 <li><a class="reference internal" href="#api-models">API Models</a></li>
 <li><a class="reference internal" href="#module-api.report_gatherer">API Robinhood</a></li>
 <li><a class="reference internal" href="#api-robinhood-helper">API Robinhood Helper</a></li>
@@ -4026,6 +4360,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#module-executors.remind">Remind</a></li>
 <li><a class="reference internal" href="#module-executors.robinhood">Robinhood</a></li>
 <li><a class="reference internal" href="#module-executors.system">System</a></li>
+<li><a class="reference internal" href="#module-executors.telegram">Telegram</a></li>
 <li><a class="reference internal" href="#module-executors.todo_list">To Do</a></li>
 <li><a class="reference internal" href="#module-executors.tv">TV</a></li>
 <li><a class="reference internal" href="#module-executors.unconditional">Unconditional</a></li>
@@ -4036,11 +4371,13 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#module-modules.audio.speaker">Audio</a></li>
 <li><a class="reference internal" href="#id1">Car</a></li>
 <li><a class="reference internal" href="#id2">Conditions</a></li>
+<li><a class="reference internal" href="#config">Config</a></li>
 <li><a class="reference internal" href="#module-modules.database.database">Database</a></li>
 <li><a class="reference internal" href="#module-modules.face.facial_recognition">Face Recognition</a></li>
 <li><a class="reference internal" href="#id3">Lights</a></li>
 <li><a class="reference internal" href="#module-modules.netgear.ip_scanner">Local IP Scanner</a></li>
 <li><a class="reference internal" href="#module-modules.dictionary.dictionary">Meanings</a></li>
+<li><a class="reference internal" href="#models">Models</a></li>
 <li><a class="reference internal" href="#module-restart">Restart</a></li>
 <li><a class="reference internal" href="#module-modules.temperature.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-modules.tv.tv_controls">TV Connector</a></li>

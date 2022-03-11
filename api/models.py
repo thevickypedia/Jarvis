@@ -1,4 +1,4 @@
-from datetime import datetime
+from logging import Filter, LogRecord
 
 from pydantic import BaseModel
 
@@ -15,100 +15,25 @@ class GetData(BaseModel):
     command: str = None
 
 
-class CronConfig(BaseModel):
-    """Custom log configuration for the cron schedule.
+class InvestmentFilter(Filter):
+    """Class to initiate ``/investment`` filter in logs while preserving other access logs.
 
-    >>> CronConfig
+    >>> InvestmentFilter
 
-    """
-
-    LOG_LEVEL = "DEBUG"
-    FILE_LOG = datetime.now().strftime('logs/cron_%d-%m-%Y.log')
-    FILE_LOG_FORMAT = '%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
-
-    version = 1
-    disable_existing_loggers = True
-    formatters = {
-        "investment": {
-            "format": FILE_LOG_FORMAT,
-            "filename": FILE_LOG,
-            "datefmt": "%b %d, %Y %H:%M:%S"
-        },
-    }
-    handlers = {
-        "investment": {
-            "formatter": "investment",
-            "class": "logging.FileHandler",
-            "filename": FILE_LOG,
-        }
-    }
-    loggers = {
-        "investment": {"handlers": ["investment"], "level": LOG_LEVEL, "filename": FILE_LOG}
-    }
-
-
-class LogConfig:
-    """Custom log configuration to redirect uvicorn logs to a log file.
-
-    >>> LogConfig
+    See Also:
+        - Overrides logging by implementing a subclass of ``logging.Filter``
+        - The method ``filter(record)``, that examines the log record and returns True to log it or False to discard it.
 
     """
 
-    LOG_LEVEL = "INFO"
+    def filter(self, record: LogRecord) -> bool:
+        """Filter out logging at ``/investment?token=`` from log streams.
 
-    ACCESS_LOG_FILENAME = datetime.now().strftime('logs/api/access_%d-%m-%Y.log')
-    DEFAULT_LOG_FILENAME = datetime.now().strftime('logs/api/default_%d-%m-%Y.log')
+        Args:
+            record: ``LogRecord`` represents an event which is created every time something is logged.
 
-    DEFAULT_LOG_FORMAT = '%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
-    ACCESS_LOG_FORMAT = '%(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'
-    ERROR_LOG_FORMAT = '%(levelname)s\t %(message)s'
-
-    LOGGING_CONFIG = {
-        "version": 1,
-        "disable_existing_loggers": True,
-        "formatters": {
-            "default": {
-                "()": "uvicorn.logging.DefaultFormatter",
-                "fmt": DEFAULT_LOG_FORMAT,
-                "use_colors": False,
-            },
-            "access": {
-                "()": "uvicorn.logging.AccessFormatter",
-                "fmt": ACCESS_LOG_FORMAT,
-                "use_colors": False,
-            },
-            "error": {
-                "()": "uvicorn.logging.DefaultFormatter",
-                "fmt": ERROR_LOG_FORMAT,
-                "use_colors": False,
-            },
-        },
-        "handlers": {
-            "default": {
-                "formatter": "default",
-                "class": "logging.FileHandler",
-                "filename": DEFAULT_LOG_FILENAME
-            },
-            "access": {
-                "formatter": "access",
-                "class": "logging.FileHandler",
-                "filename": ACCESS_LOG_FILENAME
-            },
-            "error": {
-                "formatter": "error",
-                "class": "logging.FileHandler",
-                "filename": DEFAULT_LOG_FILENAME
-            }
-        },
-        "loggers": {
-            "uvicorn": {
-                "handlers": ["default"], "level": LOG_LEVEL
-            },
-            "uvicorn.access": {
-                "handlers": ["access"], "level": LOG_LEVEL
-            },
-            "uvicorn.error": {
-                "handlers": ["error"], "level": LOG_LEVEL, "propagate": True  # Since FastAPI is running in a thread
-            }
-        }
-    }
+        Returns:
+            bool:
+            False flag for the endpoint that needs to be filtered.
+        """
+        return record.getMessage().find("/investment?token=") == -1

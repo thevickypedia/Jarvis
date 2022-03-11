@@ -85,12 +85,11 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary>
 
-**Default args**
-**[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py):**
+**Default - [Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py):**
 - **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`
 - **OFFLINE_PASS** - Secure phrase to authenticate offline requests. Defaults to `jarvis`
 
-**Accurate Location: (Defaults to the location based on `Public IP`)**
+**Accurate Location: (Defaults to the location based on `Public IP` which is _approximate_)**
 - **ICLOUD_USER** - iCloud account username.
 - **ICLOUD_PASS** - iCloud account password.
 
@@ -115,29 +114,31 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **MEETING_APP** - Application where the meetings are listed. Defaults to `calendar` but value can be `calendar` or `outlook`
 - **WOLFRAM_API_KEY** - API Key from wolfram alpha.
 
-**Args for [VPNServer](https://github.com/thevickypedia/vpn-server) integration**
+**[VPNServer](https://github.com/thevickypedia/vpn-server) integration**
 - **VPN_USERNAME** - Username to create vpn-server. Defaults to profile username or `openvpn`
 - **VPN_PASSWORD** - Password to authenticate vpn-server. Defaults to profile password or `aws_vpn_2021`
 
-**Args to control TV** - Applies only for [LGWebOS](https://en.wikipedia.org/wiki/WebOS)
-- **TV_CLIENT_KEY** - Client key to [control the TV](https://github.com/thevickypedia/Jarvis/blob/master/modules/tv/tv_controls.py) using `pywebostv` module.
+**[TV](https://github.com/thevickypedia/Jarvis/blob/master/modules/tv/tv_controls.py) controls** - Applies only for [LGWebOS](https://en.wikipedia.org/wiki/WebOS)
+- **TV_CLIENT_KEY** - TV's Client key. Auto-generated when used for the first time.
 
-**Args for [ip_scanner](https://github.com/thevickypedia/Jarvis/blob/master/modules/netgear/ip_scanner.py)** - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers)
+**[IP Scanner](https://github.com/thevickypedia/Jarvis/blob/master/modules/netgear/ip_scanner.py)** - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers)
 - **ROUTER_PASS** - Router's admin password to get the available devices using `pynetgear` module.
-     > Note that this may be done even without the module by simply scanning the whole network.
-  > Using the module makes it easier since the devices are already connected to the router.
+     > Note that this may be done even without the module by simply scanning/pinging the network range.
+  > Using the module makes it faster and accurate since the devices are already connected to the router.
 
-**Args for [car_connector](https://github.com/thevickypedia/Jarvis/blob/master/modules/car/connector.py)**
-> The following arguments can be used only if the vehicle is a Jaguar or a LandRover using InControl API.
+**[Car Controls](https://github.com/thevickypedia/Jarvis/blob/master/modules/car)** - Applies only for JLR vehicles using `InControl API`.
 - **CAR_EMAIL** - Email address to log in to InControl API.
 - **CAR_PASS** - Password to authenticate InControl API.
+- **CAR_PIN** - InControl PIN.
 
-**Args for [car_controller](https://github.com/thevickypedia/Jarvis/blob/master/modules/car/controller.py)**
-- **CAR_PIN** - Master PIN for the vehicle.
+**[Telegram Bot](https://github.com/thevickypedia/Jarvis/blob/master/executors/telegram.py) integration**
+- **BOT_TOKEN** - Telegram BOT token.
+- **BOT_CHAT_IDS** - UserID/ChatID for a particular user.
+- **BOT_USERS** - Usernames that should have access to Jarvis.
 </details>
 
 ### Smart Devices
-A source file `smart_devices.yaml` can be used as a source for smart devices' IPs. `Jarvis` supports `MagicHome` lights and `LGWebOS` TVs.
+A source file `smart_devices.yaml` is used to store smart devices' IPs. `Jarvis` supports `MagicHome` lights and `LGWebOS` TVs.
 
 <details>
 <summary><strong>Manual Setup</strong></summary>
@@ -159,7 +160,8 @@ tv_mac: TV_MAC_ADDRESS
 </details>
 
 ### Automation Setup [Optional]
-Executes pre-defined tasks at pre-defined times without any user interaction. Uses an `automation.yaml` file as source.
+Executes [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/api/controller.py#L7) tasks at pre-defined times without any user interaction.
+Uses an `automation.yaml` file as source.
 
 <details>
 <summary><strong>Setup Instructions</strong></summary>
