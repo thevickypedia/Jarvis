@@ -5,9 +5,9 @@ import logging.config
 import math
 import os
 import sys
+import time
 import warnings
 from datetime import date, datetime
-from time import perf_counter
 
 import jinja2
 import requests
@@ -201,7 +201,7 @@ class Investment:
         with open('api/robinhood.html', 'w') as static_file:
             static_file.write(rendered)
 
-        self.logger.info(f'Static file generated in {round(float(perf_counter()), 2)}s')
+        self.logger.info(f'Static file generated in {round(float(time.perf_counter()), 2)}s')
 
 
 if __name__ == '__main__':

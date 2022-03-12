@@ -144,6 +144,12 @@ def write_current_location() -> None:
             return
         elif timestamp:
             logger.info("Re-generating location data.")
+        else:
+            logger.info("No timestamp found. Updating current timestamp.")
+            location_data.update({'timestamp': int(time.time())})
+            with open('location.yaml', 'w') as file:
+                yaml.dump(stream=file, data=location_data)
+            return
 
     current_lat, current_lon, location_info = location_services(device=device_selector())
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)

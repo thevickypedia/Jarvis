@@ -1,5 +1,5 @@
+import os
 import sys
-from os import listdir
 from typing import Union
 
 from cv2 import (COLOR_BGR2GRAY, CascadeClassifier, VideoCapture, cvtColor,
@@ -32,9 +32,9 @@ class Face:
             raise BlockingIOError
         self.validation_video = VideoCapture(source)  # camera id - depends on installed camera applications
         self.train_faces, self.train_names = [], []
-        for character_dir in listdir(self.training_dataset):  # loads the training dataset
+        for character_dir in os.listdir(self.training_dataset):  # loads the training dataset
             try:
-                for file_name in listdir(f'{self.training_dataset}/{character_dir}'):
+                for file_name in os.listdir(f'{self.training_dataset}/{character_dir}'):
                     if file_name.startswith('.'):
                         continue
                     # loads all the files within the named repo

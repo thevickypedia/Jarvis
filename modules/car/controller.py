@@ -1,6 +1,6 @@
 """**API Reference:** https://documenter.getpostman.com/view/6250319/RznBMzqo for Jaguar LandRover InControl API."""
 
-from time import time
+import time
 from typing import Union
 
 from modules.car.connector import Connect
@@ -702,7 +702,7 @@ class Control:
             dict:
             A dictionary response.
         """
-        return self._prov_command(pin=pin, expiration_time=expiration_time or int(time()) + 86_400,
+        return self._prov_command(pin=pin, expiration_time=expiration_time or int(time.time()) + 86_400,
                                   mode="protectionStrategy_serviceMode")
 
     def enable_guardian_mode(self, pin: int, expiration_time: Union[int, float] = None) -> dict:
@@ -723,7 +723,7 @@ class Control:
         headers = self.connection.head.copy()
         headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.GuardianAlarmList-v1+json"
         gm_data = self._authenticate_service(pin=pin, service_name="GM")
-        gm_data["endTime"] = expiration_time or int(time()) + 86_400
+        gm_data["endTime"] = expiration_time or int(time.time()) + 86_400
         gm_data["status"] = "ACTIVE"
         return self.post_data(command="gm/alarms", headers=headers, data=gm_data)
 
@@ -738,7 +738,7 @@ class Control:
             dict:
             A dictionary response.
         """
-        return self._prov_command(pin=pin, expiration_time=expiration_time or int(time()) + 86_400,
+        return self._prov_command(pin=pin, expiration_time=expiration_time or int(time.time()) + 86_400,
                                   mode="protectionStrategy_transportMode")
 
     def enable_privacy_mode(self, pin: int) -> dict:

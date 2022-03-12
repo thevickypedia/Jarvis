@@ -2,7 +2,7 @@
 
 import json
 import os
-from time import time
+import time
 from typing import Union
 from urllib.error import HTTPError
 from urllib.request import Request, build_opener
@@ -100,7 +100,7 @@ class Connect:
             dict:
             JSON loaded response from post request.
         """
-        if time() > self.expiration:
+        if time.time() > self.expiration:
             logger.debug('Authentication expired, reconnecting.')
             self.connect()
             if headers['Authorization']:
@@ -133,7 +133,7 @@ class Connect:
             auth: Takes the auth dictionary.
         """
         self.access_token = auth.get('access_token')
-        self.expiration = time() + int(auth.get('expires_in', 0))
+        self.expiration = time.time() + int(auth.get('expires_in', 0))
         self.auth_token = auth.get('authorization_token')
         self.refresh_token = auth.get('refresh_token')
 

@@ -179,7 +179,7 @@ async def get_favicon() -> FileResponse:
         return FileResponse('favicon.ico')
 
 
-if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
+if os.getcwd().split('/')[-1] != 'Jarvis' or all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
     @app.post("/robinhood-authenticate", dependencies=ROBINHOOD_PROTECTOR)
     async def authenticate_robinhood() -> NoReturn:
         """Authenticates the request. Uses a two-factor authentication by generating single use tokens.
@@ -197,7 +197,7 @@ if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
         robinhood_token['token'] = keygen()
         raise HTTPException(status_code=200, detail=f"?token={robinhood_token['token']}")
 
-if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
+if os.getcwd().split('/')[-1] != 'Jarvis' or all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
     @app.get("/investment", response_class=HTMLResponse, include_in_schema=False)
     async def robinhood(token: str = None) -> HTMLResponse:
         """Serves static file.

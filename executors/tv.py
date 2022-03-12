@@ -2,8 +2,8 @@ import os
 import random
 import re
 import sys
+import time
 from threading import Thread
-from time import sleep
 
 import yaml
 from wakeonlan import send_magic_packet
@@ -69,7 +69,7 @@ def television(phrase: str) -> None:
             speaker.speak(text=f"I wasn't able to connect to your TV {env.title}! Please make sure you are on the "
                                "same network as your TV, and your TV is connected to a power source.")
             return
-        sleep(1)
+        time.sleep(1)
 
     if not globals.tv:
         try:
@@ -86,6 +86,10 @@ def television(phrase: str) -> None:
     if globals.tv:
         if 'turn on' in phrase_lower or 'connect' in phrase_lower:
             speaker.speak(text=f'Your TV is already powered on {env.title}!')
+        elif 'shutdown' in phrase_lower or 'shut down' in phrase_lower or 'turn off' in phrase_lower:
+            Thread(target=globals.tv.shutdown).start()
+            speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning your TV off.')
+            globals.tv = None
         elif 'increase' in phrase_lower:
             globals.tv.increase_volume()
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}!')
@@ -122,7 +126,7 @@ def television(phrase: str) -> None:
         elif 'app' in phrase_lower or 'application' in phrase_lower:
             sys.stdout.write(f'\r{globals.tv.get_apps()}')
             speaker.speak(text=f'App list on your screen {env.title}!', run=True)
-            sleep(5)
+            time.sleep(5)
         elif 'open' in phrase_lower or 'launch' in phrase_lower:
             cleaned = ' '.join([w for w in phrase.split() if w not in ['launch', 'open', 'tv', 'on', 'my', 'the']])
             app_name = support.get_closest_match(text=cleaned, match_list=globals.tv.get_apps())
@@ -138,10 +142,6 @@ def television(phrase: str) -> None:
             logger.info(f'{phrase} -> {source}')
             globals.tv.set_source(val=source)
             speaker.speak(text=f"I've changed the source to {source}.")
-        elif 'shutdown' in phrase_lower or 'shut down' in phrase_lower or 'turn off' in phrase_lower:
-            Thread(target=globals.tv.shutdown).start()
-            speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning your TV off.')
-            globals.tv = None
         else:
             speaker.speak(text="I didn't quite get that.")
             Thread(target=support.unrecognized_dumper, args=[{'TV': phrase}]).start()

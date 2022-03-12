@@ -2,8 +2,8 @@ import json
 import re
 import subprocess
 import sys
-from time import sleep
-from unicodedata import normalize
+import time
+import unicodedata
 
 from modules.audio import speaker
 from modules.models import models
@@ -25,13 +25,13 @@ def connector(phrase: str, targets: dict) -> bool:
     connection_attempt = False
     for target in targets:
         if target['name']:
-            target['name'] = normalize("NFKD", target['name'])
+            target['name'] = unicodedata.normalize("NFKD", target['name'])
             if any(re.search(line, target['name'], flags=re.IGNORECASE) for line in phrase.split()):
                 connection_attempt = True
                 if 'disconnect' in phrase:
                     output = subprocess.getoutput(cmd=f"blueutil --disconnect {target['address']}")
                     if not output:
-                        sleep(2)  # included a sleep here, so it avoids voice swapping between devices
+                        time.sleep(2)  # included a sleep here, so it avoids voice swapping between devices
                         speaker.speak(text=f"Disconnected from {target['name']} {env.title}!")
                     else:
                         speaker.speak(text=f"I was unable to disconnect {target['name']} {env.title}!. "
@@ -39,7 +39,7 @@ def connector(phrase: str, targets: dict) -> bool:
                 elif 'connect' in phrase:
                     output = subprocess.getoutput(cmd=f"blueutil --connect {target['address']}")
                     if not output:
-                        sleep(2)  # included a sleep here, so it avoids voice swapping between devices
+                        time.sleep(2)  # included a sleep here, so it avoids voice swapping between devices
                         speaker.speak(text=f"Connected to {target['name']} {env.title}!")
                     else:
                         speaker.speak(text=f"Unable to connect {target['name']} {env.title}!, "
@@ -65,7 +65,7 @@ def bluetooth(phrase: str) -> None:
         speaker.speak(text=f"Bluetooth has been turned on {env.title}!")
     elif 'disconnect' in phrase and ('bluetooth' in phrase or 'devices' in phrase):
         subprocess.call("blueutil --power 0", shell=True)
-        sleep(2)
+        time.sleep(2)
         subprocess.call("blueutil --power 1", shell=True)
         speaker.speak(text=f"All bluetooth devices have been disconnected {env.title}!")
     else:

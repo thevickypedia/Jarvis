@@ -209,7 +209,7 @@ def jokes() -> None:
 
 def flip_a_coin() -> None:
     """Says ``heads`` or ``tails`` from a random choice."""
-    playsound('indicators/coin.mp3')
+    playsound('indicators/coin.mp3') if not globals.called_by_offline['status'] else None
     speaker.speak(
         text=f"""{random.choice(['You got', 'It landed on', "It's"])} {random.choice(['heads', 'tails'])} {env.title}"""
     )

@@ -2,8 +2,8 @@ import os
 import random
 import re
 import subprocess
+import time
 from pathlib import Path
-from time import sleep
 
 from modules.audio import listener, speaker, volume
 from modules.conditions import conversation
@@ -98,5 +98,5 @@ def alarm_executor() -> None:
     """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
     volume.volume(level=100)
     subprocess.call(["open", "indicators/alarm.mp3"])
-    sleep(200)
+    time.sleep(200)
     volume.volume(level=50)

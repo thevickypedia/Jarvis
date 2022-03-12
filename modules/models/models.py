@@ -67,7 +67,7 @@ class EnvConfig(BaseSettings):
         """Environment variables configuration."""
 
         env_prefix = None
-        env_file = '../.env'
+        env_file = '.env'
 
 
 env = EnvConfig()

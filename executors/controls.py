@@ -4,7 +4,6 @@ import subprocess
 import sys
 import time
 from threading import Thread
-from time import perf_counter
 
 import yaml
 
@@ -58,7 +57,7 @@ def restart(target: str = None, quiet: bool = False) -> None:
             speaker.speak(text=f"Machine state is left intact {env.title}!")
             return
     sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}\t"
-                     f"Total runtime: {support.time_converter(perf_counter())}")
+                     f"Total runtime: {support.time_converter(time.perf_counter())}")
     if not quiet:
         try:
             speaker.speak(text=f'Restarting now {env.title}! I will be up and running momentarily.', run=True)
@@ -109,7 +108,7 @@ def exit_process() -> None:
     except RuntimeError as error:
         logger.fatal(f"Received a RuntimeError while self terminating.\n{error}")
     sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
-                     f"\nTotal runtime: {support.time_converter(perf_counter())}")
+                     f"\nTotal runtime: {support.time_converter(time.perf_counter())}")
 
 
 def pc_sleep() -> None:
