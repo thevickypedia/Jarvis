@@ -14,9 +14,11 @@ from executors.logger import logger
 from modules.audio import listener, speaker, voices, volume
 from modules.conditions import conversation, keywords
 from modules.database import database
+from modules.models import models
 from modules.utils import globals, support
 
 db = database.Database(table_name='restart', columns=['flag', 'caller'])
+env = models.env
 
 
 def restart(target: str = None, quiet: bool = False) -> None:
@@ -53,13 +55,13 @@ def restart(target: str = None, quiet: bool = False) -> None:
             subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
             raise KeyboardInterrupt
         else:
-            speaker.speak(text="Machine state is left intact sir!")
+            speaker.speak(text=f"Machine state is left intact {env.title}!")
             return
     sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}\t"
                      f"Total runtime: {support.time_converter(perf_counter())}")
     if not quiet:
         try:
-            speaker.speak(text='Restarting now sir! I will be up and running momentarily.', run=True)
+            speaker.speak(text=f'Restarting now {env.title}! I will be up and running momentarily.', run=True)
         except RuntimeError as error:
             logger.fatal(error)
     if os.path.isfile('location.yaml'):
@@ -90,18 +92,18 @@ def exit_process() -> None:
     if reminders:
         logger.info(f'JARVIS::Deleting Reminders - {reminders}')
         if len(reminders) == 1:
-            speaker.speak(text='You have a pending reminder sir!')
+            speaker.speak(text=f'You have a pending reminder {env.title}!')
         else:
-            speaker.speak(text=f'You have {len(reminders)} pending reminders sir!')
+            speaker.speak(text=f'You have {len(reminders)} pending reminders {env.title}!')
         for key, value in reminders.items():
             speaker.speak(text=f"{value.replace('_', ' ')} at {key.lstrip('0').replace('00', '').replace('_', ' ')}")
     if alarms:
         alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
         alarms = alarms.replace('.lock', '').replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')
-        speaker.speak(text=f"You have a pending alarm at {alarms} sir!")
+        speaker.speak(text=f"You have a pending alarm at {alarms} {env.title}!")
     if reminders or alarms:
         speaker.speak(text="This will not be executed while I'm asleep!")
-    speaker.speak(text="Shutting down now sir!")
+    speaker.speak(text=f"Shutting down now {env.title}!")
     try:
         speaker.speak(text=support.exit_message(), run=True)
     except RuntimeError as error:
@@ -130,7 +132,7 @@ def sleep_control(phrase: str) -> bool:
             'screen' in phrase:
         pc_sleep()
     else:
-        speaker.speak(text="Activating sentry mode, enjoy yourself sir!")
+        speaker.speak(text=f"Activating sentry mode, enjoy yourself {env.title}!")
         if globals.greet_check:
             globals.greet_check.pop('status')
     return True
@@ -178,7 +180,7 @@ def shutdown(proceed: bool = False) -> None:
             subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
             raise KeyboardInterrupt
         else:
-            speaker.speak(text="Machine state is left intact sir!")
+            speaker.speak(text=f"Machine state is left intact {env.title}!")
             return
 
 
@@ -192,8 +194,6 @@ def clear_logs() -> None:
 
 def starter() -> None:
     """Initiates crucial functions which needs to be called during start up.
-
-    Loads the ``.env`` file so that all the necessary credentials and api keys can be accessed as ``ENV vars``
 
     Methods:
         - volume_controller: To default the master volume 50%.

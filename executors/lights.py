@@ -10,7 +10,10 @@ from executors.internet import vpn_checker
 from modules.audio import speaker
 from modules.conditions import conversation
 from modules.lights import preset_values, smart_lights
+from modules.models import models
 from modules.utils import globals, support
+
+env = models.env
 
 
 def lights(phrase: str) -> None:
@@ -38,7 +41,7 @@ def lights(phrase: str) -> None:
 
     def light_switch() -> None:
         """Says a message if the physical switch is toggled off."""
-        speaker.speak(text="I guess your light switch is turned off sir! I wasn't able to read the device. "
+        speaker.speak(text=f"I guess your light switch is turned off {env.title}! I wasn't able to read the device. "
                            "Try toggling the switch and ask me to restart myself!")
 
     def turn_off(host: str) -> None:
@@ -138,7 +141,7 @@ def lights(phrase: str) -> None:
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! '
                                f'Setting {lights_count} {plural} to yellow!')
         else:
-            speaker.speak(text=f'Sure sir! Setting {lights_count} {plural} to warm!')
+            speaker.speak(text=f'Sure {env.title}! Setting {lights_count} {plural} to warm!')
         Thread(target=thread_worker, args=[warm]).start()
     elif any(word in phrase for word in list(preset_values.PRESET_VALUES.keys())):
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
@@ -164,5 +167,5 @@ def lights(phrase: str) -> None:
         for light_ip in host_ip:
             lumen(host=light_ip, warm_lights=globals.warm_light.get('status'), rgb=level)
     else:
-        speaker.speak(text=f"I didn't quite get that sir! What do you want me to do to your {plural}?")
+        speaker.speak(text=f"I didn't quite get that {env.title}! What do you want me to do to your {plural}?")
         Thread(target=support.unrecognized_dumper, args=[{'LIGHTS': phrase}]).start()

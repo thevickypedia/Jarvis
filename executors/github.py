@@ -40,7 +40,7 @@ def github(phrase: str) -> None:
         repos.append({response[i]['name'].replace('_', ' ').replace('-', ' '): response[i]['clone_url']})
     if 'how many' in phrase:
         speaker.speak(
-            text=f'You have {total} repositories sir, out of which {forked} are forked, {private} are private, '
+            text=f'You have {total} repositories {env.title}, out of which {forked} are forked, {private} are private, '
                  f'{licensed} are licensed, and {archived} archived.')
     else:
         [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
@@ -48,7 +48,7 @@ def github(phrase: str) -> None:
         if result:
             github_controller(target=result)
         else:
-            speaker.speak(text="Sorry sir! I did not find that repo.")
+            speaker.speak(text=f"Sorry {env.title}! I did not find that repo.")
 
 
 def github_controller(target: list) -> None:
@@ -62,12 +62,13 @@ def github_controller(target: list) -> None:
     if len(target) == 1:
         os.system(f"cd {env.home} && git clone -q {target[0]}")
         cloned = target[0].split('/')[-1].replace('.git', '')
-        speaker.speak(text=f"I've cloned {cloned} on your home directory sir!")
+        speaker.speak(text=f"I've cloned {cloned} on your home directory {env.title}!")
         return
     elif len(target) <= 3:
         newest = [new.split('/')[-1] for new in target]
         sys.stdout.write(f"\r{', '.join(newest)}")
-        speaker.speak(text=f"I found {len(target)} results. On your screen sir! Which one shall I clone?", run=True)
+        speaker.speak(text=f"I found {len(target)} results. On your screen {env.title}! Which one shall I clone?",
+                      run=True)
         converted = listener.listen(timeout=3, phrase_limit=5)
         if converted != 'SR_ERROR':
             if any(word in converted.lower() for word in keywords.exit_):
@@ -80,24 +81,24 @@ def github_controller(target: list) -> None:
                 item = 3
             else:
                 item = None
-                speaker.speak(text="Only first second or third can be accepted sir! Try again!")
+                speaker.speak(text=f"Only first second or third can be accepted {env.title}! Try again!")
                 github_controller(target)
             os.system(f"cd {env.home} && git clone -q {target[item]}")
             cloned = target[item].split('/')[-1].replace('.git', '')
-            speaker.speak(text=f"I've cloned {cloned} on your home directory sir!")
+            speaker.speak(text=f"I've cloned {cloned} on your home directory {env.title}!")
     else:
-        speaker.speak(text=f"I found {len(target)} repositories sir! You may want to be more specific.")
+        speaker.speak(text=f"I found {len(target)} repositories {env.title}! You may want to be more specific.")
 
 
 def update() -> None:
     """Pulls the latest version of ``Jarvis`` and restarts if there were any changes."""
     output = git.cmd.Git('Jarvis').pull()
     if not output:
-        speaker.speak(text="I was not able to update myself sir!")
+        speaker.speak(text=f"I was not able to update myself {env.title}!")
         return
 
     if output.strip() == 'Already up to date.':
-        speaker.speak(text="I'm already running on the latest version sir!")
+        speaker.speak(text=f"I'm already running on the latest version {env.title}!")
         return
 
     status = None
@@ -105,7 +106,7 @@ def update() -> None:
         if 'files changed' in each:
             status = each.split(',')[0].strip()
             break
-    speaker.speak(text="I've updated myself to the latest version sir!")
+    speaker.speak(text=f"I've updated myself to the latest version {env.title}!")
     if status:
         speaker.speak(text=status)
     restart_control(quiet=True)

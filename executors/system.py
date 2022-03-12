@@ -43,7 +43,7 @@ def system_vitals() -> None:
         - If confirmed, invokes `restart <https://thevickypedia.github.io/Jarvis/#jarvis.restart>`__ function.
     """
     if not env.root_password:
-        speaker.speak(text="You haven't provided a root password for me to read system vitals sir! "
+        speaker.speak(text=f"You haven't provided a root password for me to read system vitals {env.title}! "
                            "Add the root password as an environment variable for me to read.")
         return
 
@@ -98,8 +98,9 @@ def system_vitals() -> None:
     if second >= 259_200:  # 3 days
         if boot_extreme := re.search('(.*) days', restart_duration):
             warn = int(boot_extreme.group().replace(' days', '').strip())
-            speaker.speak(text=f'Sir! your {model} has been running for more than {warn} days. You must consider a '
-                               f'reboot for better performance. Would you like me to restart it for you sir?',
+            speaker.speak(text=f'{env.title}! your {model} has been running for more than {warn} days. You must '
+                               'consider a reboot for better performance. Would you like me to restart it for you '
+                               f'{env.title}?',
                           run=True)
             response = listener.listen(timeout=3, phrase_limit=3)
             if any(word in response.lower() for word in keywords.ok):

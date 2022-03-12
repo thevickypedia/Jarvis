@@ -8,7 +8,6 @@ from datetime import datetime
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from threading import Thread
-from time import sleep
 from typing import Tuple
 
 from googlehomepush import GoogleHome
@@ -59,9 +58,9 @@ def apps(phrase: str) -> None:
     ignore = ['app', 'application']
     if not keyword or keyword in ignore:
         if globals.called_by_offline['status']:
-            speaker.speak(text='I need an app name to open sir!')
+            speaker.speak(text=f'I need an app name to open {env.title}!')
             return
-        speaker.speak(text="Which app shall I open sir?", run=True)
+        speaker.speak(text=f"Which app shall I open {env.title}?", run=True)
         keyword = listener.listen(timeout=3, phrase_limit=4)
         if keyword != 'SR_ERROR':
             if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
@@ -88,8 +87,8 @@ def apps(phrase: str) -> None:
         app_status = os.system(f"open /Applications/'{keyword}' > /dev/null 2>&1")
         keyword = keyword.replace('.app', '')
         if app_status == 256:
-            speaker.speak(text=f"I'm sorry sir! I wasn't able to launch {keyword}. "
-                               f"You might need to check its permissions.")
+            speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to launch {keyword}. "
+                               "You might need to check its permissions.")
         else:
             speaker.speak(text=f"I have opened {keyword}")
 
@@ -110,9 +109,9 @@ def music(phrase: str = None) -> None:
         else:
             subprocess.call(["open", chosen])
             support.flush_screen()
-            speaker.speak(text="Enjoy your music sir!")
+            speaker.speak(text=f"Enjoy your music {env.title}!")
     else:
-        speaker.speak(text='No music files were found sir!')
+        speaker.speak(text=f'No music files were found {env.title}!')
 
 
 def google_home(device: str = None, file: str = None) -> None:
@@ -149,7 +148,7 @@ def google_home(device: str = None, file: str = None) -> None:
         return
 
     if not globals.called_by_offline['status']:
-        speaker.speak(text='Scanning your IP range for Google Home devices sir!', run=True)
+        speaker.speak(text=f'Scanning your IP range for Google Home devices {env.title}!', run=True)
         sys.stdout.write('\rScanning your IP range for Google Home devices..')
     network_id = '.'.join(network_id.split('.')[0:3])
 
@@ -181,14 +180,14 @@ def google_home(device: str = None, file: str = None) -> None:
 
     if not device or not file:
         support.flush_screen()
-        speaker.speak(text=f"You have {len(devices)} devices in your IP range sir! "
+        speaker.speak(text=f"You have {len(devices)} devices in your IP range {env.title}! "
                            f"{support.comma_separator(list(devices.keys()))}. You can choose one and ask me to play "
                            f"some music on any of these.")
         return
     else:
         chosen = [value for key, value in devices.items() if key.lower() in device.lower()]
         if not chosen:
-            speaker.speak(text="I don't see any matching devices sir!. Let me help you.")
+            speaker.speak(text=f"I don't see any matching devices {env.title}!. Let me help you.")
             google_home()
         for target in chosen:
             file_url = serve_file(file, "audio/mp3")  # serves the file on local host and generates the play url
@@ -197,10 +196,10 @@ def google_home(device: str = None, file: str = None) -> None:
             GoogleHome(host=target).play(file_url, "audio/mp3")
             sys.stdout = sys.__stdout__  # removes print statement's suppression above
         if len(chosen) == 1:
-            speaker.speak(text="Enjoy your music sir!", run=True)
+            speaker.speak(text=f"Enjoy your music {env.title}!", run=True)
         else:
             speaker.speak(text=f"That's interesting, you've asked me to play on {len(chosen)} devices at a time. "
-                               f"I hope you'll enjoy this sir.", run=True)
+                               f"I hope you'll enjoy this {env.title}.", run=True)
 
 
 def jokes() -> None:
@@ -211,9 +210,9 @@ def jokes() -> None:
 def flip_a_coin() -> None:
     """Says ``heads`` or ``tails`` from a random choice."""
     playsound('indicators/coin.mp3')
-    sleep(0.5)
     speaker.speak(
-        text=f"""{random.choice(['You got', 'It landed on', "It's"])} {random.choice(['heads', 'tails'])} sir!""")
+        text=f"""{random.choice(['You got', 'It landed on', "It's"])} {random.choice(['heads', 'tails'])} {env.title}"""
+    )
 
 
 def facts() -> None:
@@ -256,7 +255,7 @@ def meaning(phrase: str) -> None:
                     speaker.speak(text=letter)
                 speaker.speak(run=True)
         else:
-            speaker.speak(text=f"I'm sorry sir! I was unable to get meaning for the word: {keyword}")
+            speaker.speak(text=f"I'm sorry {env.title}! I was unable to get meaning for the word: {keyword}")
 
 
 def notes() -> None:
@@ -286,7 +285,8 @@ def news(news_source: str = 'fox') -> None:
     try:
         all_articles = news_client.get_top_headlines(sources=f'{news_source}-news')
     except newsapi_exception.NewsAPIException:
-        speaker.speak(text="I wasn't able to get the news sir! I think the News API broke, you may try after sometime.")
+        speaker.speak(text=f"I wasn't able to get the news {env.title}! "
+                           "I think the News API broke, you may try after sometime.")
         return
 
     speaker.speak(text="News around you!")
@@ -319,7 +319,7 @@ def time_travel() -> None:
     if not os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
             ['Saturday', 'Sunday']:
         meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer, kwds={'logger': logger})
-    speak(text=f"Good {part_day} Vignesh.")
+    speak(text=f"Good {part_day} {env.name}!")
     if part_day == 'Night':
         if event := support.celebrate():
             speak(text=f'Happy {event}!')

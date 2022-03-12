@@ -108,7 +108,8 @@ def conditions(converted: str, should_return: bool = False) -> bool:
             any(word in converted_lower for word in todo_checks):
         add_todo()
 
-    elif any(word in converted_lower for word in keywords.delete_todo):
+    elif any(word in converted_lower for word in keywords.delete_todo) and \
+            any(word in converted_lower for word in todo_checks):
         delete_todo()
 
     elif any(word in converted_lower for word in keywords.distance) and \

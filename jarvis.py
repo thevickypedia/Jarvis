@@ -24,7 +24,7 @@ from modules.database import database
 from modules.models import models
 from modules.utils import globals, support
 
-db = database.Database(table_name='restart', columns=['flag', 'caller'])
+db = database.Database(table_name="restart", columns=["flag", "caller"])
 
 
 class Activator:
@@ -53,7 +53,7 @@ class Activator:
         References:
             - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
         """
-        logger.info(f'Initiating model with sensitivity: {env.sensitivity}')
+        logger.info(f"Initiating model with sensitivity: {env.sensitivity}")
         keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in [PurePath(__file__).stem]]
         self.input_device_index = input_device_index
 
@@ -86,14 +86,14 @@ class Activator:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
             while True:
-                sys.stdout.write('\rSentry Mode')
+                sys.stdout.write("\rSentry Mode")
                 if not self.audio_stream:
                     self.open_stream()
                 pcm = self.audio_stream.read(num_frames=self.detector.frame_length, exception_on_overflow=False)
                 pcm = struct.unpack_from("h" * self.detector.frame_length, pcm)
                 if self.detector.process(pcm=pcm) >= 0:
                     self.close_stream()
-                    playsound(sound='indicators/acknowledgement.mp3', block=False)
+                    playsound(sound="indicators/acknowledgement.mp3", block=False)
                     initiator(key_original=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit,
                                                            sound=False),
                               should_return=True)
@@ -102,7 +102,7 @@ class Activator:
                     logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
                     db.cursor.execute("DELETE FROM restart WHERE flag=1")
                     db.connection.commit()
-                    if flag[1] == 'restart_control':
+                    if flag[1] == "restart_control":
                         restart()
                     else:
                         restart(quiet=True)
@@ -123,17 +123,17 @@ class Activator:
         """
         for func, process in globals.processes.items():
             if process.is_alive():
-                logger.info(f'Sending [SIGTERM] to {func} with PID: {process.pid}')
+                logger.info(f"Sending [SIGTERM] to {func} with PID: {process.pid}")
                 process.terminate()
             if process.is_alive():
-                logger.info(f'Sending [SIGKILL] to {func} with PID: {process.pid}')
+                logger.info(f"Sending [SIGKILL] to {func} with PID: {process.pid}")
                 process.kill()
-        logger.info('Releasing resources acquired by Porcupine.')
+        logger.info("Releasing resources acquired by Porcupine.")
         self.detector.delete()
         if self.audio_stream and self.audio_stream.is_active():
-            logger.info('Closing Audio Stream.')
+            logger.info("Closing Audio Stream.")
             self.audio_stream.close()
-        logger.info('Releasing PortAudio resources.')
+        logger.info("Releasing PortAudio resources.")
         self.py_audio.terminate()
 
 
@@ -149,37 +149,37 @@ def initiate_processes() -> Dict[str, Process]:
         - playsound: Plays a start-up sound.
     """
     processes = {
-        'telebot': Process(target=poll_for_messages),
-        'api': Process(target=trigger_api),
-        'automator': Process(target=automator),
-        'ngrok': Process(target=initiate_tunneling,
-                         kwargs={'offline_host': env.offline_host, 'offline_port': env.offline_port, 'home': env.home}),
-        'location': Process(target=write_current_location),
+        "telebot": Process(target=poll_for_messages),
+        "api": Process(target=trigger_api),
+        "automator": Process(target=automator),
+        "ngrok": Process(target=initiate_tunneling,
+                         kwargs={"offline_host": env.offline_host, "offline_port": env.offline_port, "home": env.home}),
+        "location": Process(target=write_current_location),
     }
     for func, process in processes.items():
         process.start()
-        logger.info(f'Started function: {func} {process.sentinel} with PID: {process.pid}')
-    playsound(sound='indicators/initialize.mp3', block=False)
+        logger.info(f"Started function: {func} {process.sentinel} with PID: {process.pid}")
+    playsound(sound="indicators/initialize.mp3", block=False)
     return processes
 
 
 if __name__ == '__main__':
     env = models.env
     globals.hosted_device = hosted_device_info()
-    if globals.hosted_device.get('os_name') != 'macOS':
-        exit('Unsupported Operating System.\nWindows support was deprecated. '
-             'Refer https://github.com/thevickypedia/Jarvis/commit/cf54b69363440d20e21ba406e4972eb058af98fc')
+    if globals.hosted_device.get("os_name") != "macOS":
+        exit("Unsupported Operating System.\nWindows support was deprecated. "
+             "Refer https://github.com/thevickypedia/Jarvis/commit/cf54b69363440d20e21ba406e4972eb058af98fc")
 
-    logger.info('JARVIS::Starting Now')
+    logger.info("JARVIS::Starting Now")
 
-    sys.stdout.write('\rVoice ID::Female: 1/17 Male: 0/7')  # Voice ID::reference
+    sys.stdout.write("\rVoice ID::Female: 1/17 Male: 0/7")  # Voice ID::reference
     starter()  # initiates crucial functions which needs to be called during start up
 
     if internet_checker():
-        sys.stdout.write(f'\rINTERNET::Connected to {get_ssid()}. Scanning router for connected devices.')
+        sys.stdout.write(f"\rINTERNET::Connected to {get_ssid()}. Scanning router for connected devices.")
     else:
-        sys.stdout.write('\rBUMMER::Unable to connect to the Internet')
-        speaker.speak(text="I was unable to connect to the internet sir! Please check your connection and retry.",
+        sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
+        speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.",
                       run=True)
         sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
                          f"\nTotal runtime: {support.time_converter(time.perf_counter())}")

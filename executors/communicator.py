@@ -22,10 +22,11 @@ def read_gmail() -> None:
     response = reader.instantiate()
     if response.ok:
         if globals.called_by_offline['status']:
-            speaker.speak(text=f'You have {response.count} unread email sir.') if response.count == 1 else \
-                speaker.speak(text=f'You have {response.count} unread emails sir.')
+            speaker.speak(text=f'You have {response.count} unread email {env.title}.') if response.count == 1 else \
+                speaker.speak(text=f'You have {response.count} unread emails {env.title}.')
             return
-        speaker.speak(text=f'You have {response.count} unread emails sir. Do you want me to check it?', run=True)
+        speaker.speak(text=f'You have {response.count} unread emails {env.title}. Do you want me to check it?',
+                      run=True)
         confirmation = listener.listen(timeout=3, phrase_limit=3)
         if confirmation == 'SR_ERROR':
             return
@@ -36,9 +37,9 @@ def read_gmail() -> None:
             speaker.speak(text=f"You have an email from, {mail.get('sender').strip()}, with subject, "
                                f"{mail.get('subject').strip()}, {mail.get('datetime').strip()}", run=True)
     elif response.status == 204:
-        speaker.speak(text="You don't have any emails to catch up sir!")
+        speaker.speak(text=f"You don't have any emails to catch up {env.title}!")
     else:
-        speaker.speak(text="I was unable to read your email sir!")
+        speaker.speak(text=f"I was unable to read your email {env.title}!")
 
 
 def send_sms(phrase: str) -> None:
@@ -52,15 +53,15 @@ def send_sms(phrase: str) -> None:
     if number := support.extract_nos(input_=phrase):
         number = str(int(number))
     else:
-        speaker.speak(text="Please tell me a number sir!", run=True)
+        speaker.speak(text=f"Please tell me a number {env.title}!", run=True)
         number = listener.listen(timeout=3, phrase_limit=7)
         if number != 'SR_ERROR':
             if 'exit' in number or 'quit' in number or 'Xzibit' in number:
                 return
     if len(number) != 10:
-        speaker.speak(text="I don't think that's a right number sir! Phone numbers are 10 digits. Try again!")
+        speaker.speak(text=f"I don't think that's a right number {env.title}! Phone numbers are 10 digits. Try again!")
         return
-    speaker.speak(text="What would you like to send sir?", run=True)
+    speaker.speak(text=f"What would you like to send {env.title}?", run=True)
     body = listener.listen(timeout=3, phrase_limit=5)
     if body != 'SR_ERROR':
         speaker.speak(text=f'{body} to {number}. Do you want me to proceed?', run=True)
@@ -69,9 +70,9 @@ def send_sms(phrase: str) -> None:
             if any(word in converted.lower() for word in keywords.ok):
                 logger.info(f'{body} -> {number}')
                 notify(user=env.gmail_user, password=env.gmail_pass, number=number, body=body)
-                speaker.speak(text="Message has been sent sir!")
+                speaker.speak(text=f"Message has been sent {env.title}!")
             else:
-                speaker.speak(text="Message will not be sent sir!")
+                speaker.speak(text=f"Message will not be sent {env.title}!")
 
 
 def notify(user: str, password: str, number: str, body: str, subject: str = None) -> None:
@@ -91,7 +92,7 @@ def notify(user: str, password: str, number: str, body: str, subject: str = None
         logger.error('No phone number was stored in env vars to trigger a notification.')
         return
     if not subject:
-        subject = "Message from Jarvis" if number == env.phone_number else "Jarvis::Message from Vignesh"
+        subject = "Message from Jarvis" if number == env.phone_number else f"Jarvis::Message from {env.name}"
     response = Messenger(gmail_user=user, gmail_pass=password, phone=number, subject=subject,
                          message=body).send_sms()
     if response.ok and response.status == 200:

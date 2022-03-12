@@ -19,22 +19,24 @@ def vpn_server(phrase: str) -> None:
     """
     if status := globals.vpn_status['active']:
         speaker.speak(
-            text=f'VPN Server was recently {status}, and the process is still running sir! Please wait and retry.')
+            text=f'VPN Server was recently {status}, and the process is still running {env.title}! '
+                 'Please wait and retry.')
         return
 
     phrase = phrase.lower()
     if 'start' in phrase or 'trigger' in phrase or 'initiate' in phrase or 'enable' in phrase or 'spin up' in phrase:
         Process(target=vpn_server_switch, kwargs={'operation': 'START'}).start()
-        speaker.speak(text='VPN Server has been initiated sir! Login details will be sent to you shortly.')
+        speaker.speak(text=f'VPN Server has been initiated {env.title}! Login details will be sent to you shortly.')
     elif 'stop' in phrase or 'shut' in phrase or 'close' in phrase or 'disable' in phrase:
         if not os.path.isfile('vpn_info.json'):
-            speaker.speak(text='Input file for VPN Server is missing sir! '
+            speaker.speak(text=f'Input file for VPN Server is missing {env.title}! '
                                'The VPN Server might have been shut down already.')
             return
         Process(target=vpn_server_switch, kwargs={'operation': 'STOP'}).start()
-        speaker.speak(text='VPN Server will be shutdown sir!')
+        speaker.speak(text=f'VPN Server will be shutdown {env.title}!')
     else:
-        speaker.speak(text="I don't understand the request sir! You can ask me to enable or disable the VPN server.")
+        speaker.speak(text=f"I don't understand the request {env.title}! "
+                           "You can ask me to enable or disable the VPN server.")
         Thread(target=support.unrecognized_dumper, args=[{'VPNServer': phrase}])
 
 

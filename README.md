@@ -85,7 +85,10 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary>
 
-**Default - [Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py):**
+- **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
+- **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
+
+**[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py):**
 - **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`
 - **OFFLINE_PASS** - Secure phrase to authenticate offline requests. Defaults to `jarvis`
 

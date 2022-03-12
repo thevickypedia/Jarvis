@@ -2,13 +2,15 @@ import os
 import random
 import re
 import subprocess
-import sys
 from pathlib import Path
 from time import sleep
 
 from modules.audio import listener, speaker, volume
 from modules.conditions import conversation
+from modules.models import models
 from modules.utils import globals, support
+
+env = models.env
 
 
 def set_alarm(phrase: str) -> None:
@@ -48,7 +50,7 @@ def set_alarm(phrase: str) -> None:
             speaker.speak(text=f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
                                f"I don't think a time like that exists on Earth.")
     else:
-        speaker.speak(text='Please tell me a time sir!')
+        speaker.speak(text=f"Please tell me a time {env.title}!")
         if globals.called_by_offline['status']:
             return
         speaker.speak(run=True)
@@ -64,15 +66,14 @@ def kill_alarm() -> None:
     """Removes lock file to stop the alarm which rings only when the certain lock file is present."""
     alarm_state = support.lock_files(alarm_files=True)
     if not alarm_state:
-        speaker.speak(text="You have no alarms set sir!")
+        speaker.speak(text=f"You have no alarms set {env.title}!")
     elif len(alarm_state) == 1:
         hour, minute, am_pm = alarm_state[0][0:2], alarm_state[0][3:5], alarm_state[0][6:8]
         os.remove(f"alarm/{alarm_state[0]}")
-        speaker.speak(text=f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
+        speaker.speak(text=f"Your alarm at {hour}:{minute} {am_pm} has been silenced {env.title}!")
     else:
-        sys.stdout.write(f"\r{', '.join(alarm_state).replace('.lock', '')}")
-        speaker.speak(text="Please let me know which alarm you want to remove. Current alarms on your screen sir!",
-                      run=True)
+        speaker.speak(text=f"Your alarms are at {', and '.join(alarm_state).replace('.lock', '')}. "
+                           "Please let me know which alarm you want to remove.", run=True)
         converted = listener.listen(timeout=3, phrase_limit=4)
         if converted == 'SR_ERROR':
             return
@@ -88,7 +89,7 @@ def kill_alarm() -> None:
         am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
         if os.path.exists(f'alarm/{hour}_{minute}_{am_pm}.lock'):
             os.remove(f"alarm/{hour}_{minute}_{am_pm}.lock")
-            speaker.speak(text=f"Your alarm at {hour}:{minute} {am_pm} has been silenced sir!")
+            speaker.speak(text=f"Your alarm at {hour}:{minute} {am_pm} has been silenced {env.title}!")
         else:
             speaker.speak(text=f"I wasn't able to find an alarm at {hour}:{minute} {am_pm}. Try again.")
 

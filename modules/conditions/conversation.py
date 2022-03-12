@@ -5,35 +5,41 @@
 
 """
 
-greeting = ['how are you', 'how are you doing', 'how have you been', 'how do you do']
+from modules.models import models
 
-capabilities = ['what can you do', 'what all can you do', 'what are your capabilities', "what's your capacity",
-                'what are you capable of']
+env = models.env
 
-languages = ['what languages do you speak', 'what are all the languages you can speak',
-             'what languages do you know', 'can you speak in a different language',
-             'how many languages can you speak', 'what are you made of', 'what languages can you speak',
-             'what languages do you speak', 'what are the languages you can speak']
+greeting = ["how are you", "how are you doing", "how have you been", "how do you do"]
 
-what = ['what are you']
+capabilities = ["what can you do", "what all can you do", "what are your capabilities", "what's your capacity",
+                "what are you capable of"]
 
-who = ['who are you', 'what do I call you', "what's your name", 'what is your name']
+languages = ["what languages do you speak", "what are all the languages you can speak",
+             "what languages do you know", "can you speak in a different language",
+             "how many languages can you speak", "what are you made of", "what languages can you speak",
+             "what languages do you speak", "what are the languages you can speak"]
 
-form = ['where is your body', "where's your body"]
+what = ["what are you"]
 
-whats_up = ["what's up", 'what is up', "what's going on", 'sup']
+who = ["who are you", "what do I call you", "what's your name", "what is your name"]
 
-about_me = ['tell me about you', 'tell me something about you', 'i would like to get you know you',
-            'tell me about yourself']
+form = ["where is your body", "where's your body"]
 
-wake_up1 = ['For you sir! Always!', 'At your service sir!']
+whats_up = ["what's up", "what is up", "what's going on", "sup"]
 
-wake_up2 = ['Up and running sir!', "We are online and ready sir!", "I have indeed been uploaded sir!",
-            'My listeners have been activated sir!']
+about_me = ["tell me about you", "tell me something about you", "i would like to get you know you",
+            "tell me about yourself"]
 
-wake_up3 = ["I'm here sir!"]
+wake_up1 = [f"For you {env.title}! Always!", f"At your service {env.title}!"]
 
-confirmation = ['Requesting confirmation sir! Did you mean', 'Sir, are you sure you want to']
+wake_up2 = [f"Up and running {env.title}!", f"We are online and ready {env.title}!",
+            f"I have indeed been uploaded {env.title}!",
+            f"My listeners have been activated {env.title}!"]
 
-acknowledgement = ['Check', 'Will do sir!', 'You got it sir!', 'Roger that!', 'Done sir!', 'By all means sir!',
-                   'Indeed sir!', 'Gladly sir!', 'Without fail sir!', 'Sure sir!', 'Buttoned up sir!', 'Executed sir!']
+wake_up3 = [f"I'm here {env.title}!"]
+
+confirmation = [f"Requesting confirmation {env.title}! Did you mean", f"{env.title}, are you sure you want to"]
+
+acknowledgement = ["Check", "Roger that!", f"Will do {env.title}!", f"You got it {env.title}!", f"Done {env.title}!",
+                   f"By all means {env.title}!", f"Indeed {env.title}!", f"Gladly {env.title}!", f"Sure {env.title}!",
+                   f"Without fail {env.title}!", f"Buttoned up {env.title}!", f"Executed {env.title}!"]

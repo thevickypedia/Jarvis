@@ -6,7 +6,10 @@ from timezonefinder import TimezoneFinder
 
 from executors.location import geo_locator
 from modules.audio import speaker
+from modules.models import models
 from modules.utils import globals, support
+
+env = models.env
 
 
 def current_time(converted: str = None) -> None:
@@ -53,8 +56,8 @@ def current_date() -> None:
         dt_string = f'{dt_string} {date_}, {year}'
     speaker.speak(text=f"It's {dt_string}")
     if event and event == 'Birthday':
-        speaker.speak(text=f"It's also your {event} sir!")
+        speaker.speak(text=f"It's also your {event} {env.title}!")
     elif event:
-        speaker.speak(text=f"It's also {event} sir!")
+        speaker.speak(text=f"It's also {event} {env.title}!")
     if globals.called['report'] or globals.called['time_travel']:
         speaker.speak(text='The current time is, ')
