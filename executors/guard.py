@@ -26,8 +26,8 @@ def guard_enable() -> None:
         - Notifications will be triggered only after 5 minutes of previous notification.
     """
     logger.info('Enabled Security Mode')
-    speaker.speak(text=f"Enabled security mode sir! I will look out for potential threats and keep you posted. "
-                       f"Have a nice {support.part_of_day()}, and enjoy yourself sir!", run=True)
+    speaker.speak(text=f"Enabled security mode {env.title}! I will look out for potential threats and keep you posted. "
+                       f"Have a nice {support.part_of_day()}, and enjoy yourself {env.title}!", run=True)
 
     cam_source, cam = None, None
     for i in range(0, 3):
@@ -57,9 +57,9 @@ def guard_enable() -> None:
             continue
 
         if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable):
-            speaker.speak(text=f'Welcome back sir! Good {support.part_of_day()}.')
+            speaker.speak(text=f'Welcome back {env.title}! Good {support.part_of_day()}.')
             if os.path.exists(f'threat/{date_extn}.jpg'):
-                speaker.speak(text="We had a potential threat sir! Please check your email to confirm.")
+                speaker.speak(text=f"We had a potential threat {env.title}! Please check your email to confirm.")
             speaker.speak(run=True)
             logger.info('Disabled security mode')
             sys.stdout.write('\rDisabled Security Mode')

@@ -12,8 +12,10 @@ from executors.offline import offline_communicator
 from executors.others import time_travel
 from modules.audio import listener, speaker
 from modules.conditions import conversation, keywords
+from modules.models import models
 from modules.utils import globals, support
 
+env = models.env
 offline_list = offline_compatible()
 
 
@@ -98,7 +100,7 @@ def timed_delay(key: str) -> bool:
         if split_[0].strip():
             delay = delay_calculator(phrase=split_[1].strip())
             Process(target=delay_condition, kwargs={'phrase': split_[0].strip(), 'delay': delay}).start()
-            speaker.speak(text=f"I will execute it after {support.time_converter(seconds=delay)} sir!")
+            speaker.speak(text=f"I will execute it after {support.time_converter(seconds=delay)} {env.title}!")
             return True
 
 

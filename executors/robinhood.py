@@ -25,9 +25,9 @@ def watcher(rh, result: list) -> str:
     n = 0
     n_ = 0
     for data in result:
-        share_id = str(data['instrument'].split('/')[-2])  # gets share_id eg: TSLA for Tesla
-        buy = round(float(data['average_buy_price']), 2)  # price the stocks were purchased
-        shares_count = int(data['quantity'].split('.')[0])  # number of shares owned in each stock
+        share_id = str(data["instrument"].split("/")[-2])
+        buy = round(float(data["average_buy_price"]), 2)
+        shares_count = int(data["quantity"].split(".")[0])
         if shares_count != 0:
             n = n + 1
             n_ = n_ + shares_count
@@ -36,7 +36,7 @@ def watcher(rh, result: list) -> str:
         raw_details = rh.get_quote(share_id)
         total = round(shares_count * float(buy), 2)
         shares_total.append(total)
-        current = (round(float(raw_details['last_trade_price']), 2))
+        current = (round(float(raw_details["last_trade_price"]), 2))
         current_total = round(shares_count * current, 2)
         difference = round(float(current_total - total),
                            2)  # calculates difference between current and purchased total
@@ -49,13 +49,13 @@ def watcher(rh, result: list) -> str:
     total_buy = round(math.fsum(shares_total))
     total_diff = round(net_worth - total_buy)
 
-    output = f'You have purchased {n} stocks and currently own {n_} shares sir. ' \
-             f'Your total investment is ${net_worth} now, and it was ${total_buy} when you purchased. '
+    output = f"You have purchased {n} stocks and currently own {n_} shares {env.title}. " \
+             f"Your total investment is ${net_worth} now, and it was ${total_buy} when you purchased. "
 
     if total_diff < 0:
-        output += f'Currently we are on an overall loss of ${total_diff} sir.'
+        output += f"Currently we are on an overall loss of ${total_diff} {env.title}."
     else:
-        output += f'Currently we are on an overall profit of ${total_diff} sir.'
+        output += f"Currently we are on an overall profit of ${total_diff} {env.title}."
 
     return output
 
@@ -66,10 +66,10 @@ def robinhood() -> None:
         support.no_env_vars()
         return
 
-    sys.stdout.write('\rGetting your investment details.')
+    sys.stdout.write("\rGetting your investment details.")
     rh = Robinhood()
     rh.login(username=env.robinhood_user, password=env.robinhood_pass, qr_code=env.robinhood_qr)
     raw_result = rh.positions()
-    result = raw_result['results']
+    result = raw_result["results"]
     stock_value = watcher(rh, result)
     speaker.speak(text=stock_value)

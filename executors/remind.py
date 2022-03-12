@@ -32,7 +32,7 @@ def reminder(phrase: str) -> None:
         if globals.called_by_offline['status']:
             speaker.speak(text='Reminder format should be::Remind me to do something, at some time.')
             return
-        speaker.speak(text="When do you want to be reminded sir?", run=True)
+        speaker.speak(text=f"When do you want to be reminded {env.title}?", run=True)
         phrase = listener.listen(timeout=3, phrase_limit=4)
         if phrase != 'SR_ERROR':
             extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or re.findall(

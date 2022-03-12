@@ -31,65 +31,65 @@ def car(phrase: str) -> None:
         support.no_env_vars()
         return
 
-    disconnected = "I wasn't able to connect your car sir! Please check the logs for more information."
+    disconnected = f"I wasn't able to connect your car {env.title}! Please check the logs for more information."
 
-    if 'start' in phrase or 'set' in phrase or 'turn on' in phrase:
-        extras = ''
+    if "start" in phrase or "set" in phrase or "turn on" in phrase:
+        extras = ""
         if climate := support.extract_nos(input_=phrase):
             climate = int(climate)
-        elif 'high' in phrase or 'highest' in phrase:
+        elif "high" in phrase or "highest" in phrase:
             climate = 83
-        elif 'low' in phrase or 'lowest' in phrase:
+        elif "low" in phrase or "lowest" in phrase:
             climate = 57
         else:
-            with open('location.yaml') as file:
+            with open("location.yaml") as file:
                 current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
             climate = int(temperature.k2f(arg=json.loads(urlopen(
                 url=f"https://api.openweathermap.org/data/2.5/onecall?lat={current_location['latitude']}&"
                     f"lon={current_location['longitude']}&exclude=minutely,hourly&appid={env.weather_api}"
             ).read())['current']['temp']))
-            extras += f'The current temperature is {climate}°F, so '
+            extras += f"The current temperature is {climate}°F, so "
 
         # Custom temperature that has to be set in the vehicle
         target_temp = 83 if climate < 45 else 57 if climate > 70 else 66
         extras += f"I've configured the climate setting to {target_temp}°F"
 
-        playsound(sound='indicators/exhaust.mp3', block=False) if not globals.called_by_offline['status'] else None
+        playsound(sound="indicators/exhaust.mp3", block=False) if not globals.called_by_offline['status'] else None
         if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, car_pin=env.car_pin,
-                               operation='START', temp=target_temp - 26):
-            speaker.speak(text=f'Your {car_name} has been started sir. {extras}')
+                               operation="START", temp=target_temp - 26):
+            speaker.speak(text=f"Your {car_name} has been started {env.title}. {extras}")
         else:
             speaker.speak(text=disconnected)
-    elif 'turn off' in phrase or 'stop' in phrase:
-        playsound(sound='indicators/exhaust.mp3', block=False) if not globals.called_by_offline['status'] else None
-        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation='STOP', car_pin=env.car_pin):
-            speaker.speak(text=f'Your {car_name} has been turned off sir!')
+    elif "turn off" in phrase or "stop" in phrase:
+        playsound(sound="indicators/exhaust.mp3", block=False) if not globals.called_by_offline['status'] else None
+        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation="STOP", car_pin=env.car_pin):
+            speaker.speak(text=f"Your {car_name} has been turned off {env.title}!")
         else:
             speaker.speak(text=disconnected)
-    elif 'secure' in phrase:
-        playsound(sound='indicators/exhaust.mp3', block=False) if not globals.called_by_offline['status'] else None
-        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation='SECURE', car_pin=env.car_pin):
-            speaker.speak(text=f'Guardian mode has been enabled sir! Your {car_name} is now secure.')
+    elif "secure" in phrase:
+        playsound(sound="indicators/exhaust.mp3", block=False) if not globals.called_by_offline['status'] else None
+        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation="SECURE", car_pin=env.car_pin):
+            speaker.speak(text=f"Guardian mode has been enabled {env.title}! Your {car_name} is now secure.")
         else:
             speaker.speak(text=disconnected)
-    elif 'unlock' in phrase:
+    elif "unlock" in phrase:
         if globals.called_by_offline['status']:
-            speaker.speak(text='Cannot unlock the car via offline communicator due to security reasons.')
+            speaker.speak(text="Cannot unlock the car via offline communicator due to security reasons.")
             return
-        playsound(sound='indicators/exhaust.mp3', block=False)
-        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation='UNLOCK', car_pin=env.car_pin):
-            speaker.speak(text=f'Your {car_name} has been unlocked sir!')
+        playsound(sound="indicators/exhaust.mp3", block=False)
+        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation="UNLOCK", car_pin=env.car_pin):
+            speaker.speak(text=f"Your {car_name} has been unlocked {env.title}!")
         else:
             speaker.speak(text=disconnected)
-    elif 'lock' in phrase:
-        playsound(sound='indicators/exhaust.mp3', block=False) if not globals.called_by_offline['status'] else None
-        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation='LOCK', car_pin=env.car_pin):
-            speaker.speak(text=f'Your {car_name} has been locked sir!')
+    elif "lock" in phrase:
+        playsound(sound="indicators/exhaust.mp3", block=False) if not globals.called_by_offline['status'] else None
+        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation="LOCK", car_pin=env.car_pin):
+            speaker.speak(text=f"Your {car_name} has been locked {env.title}!")
         else:
             speaker.speak(text=disconnected)
     else:
-        speaker.speak(text="I didn't quite get that sir! What do you want me to do to your car?")
-        Thread(target=support.unrecognized_dumper, args=[{'CAR': phrase}])
+        speaker.speak(text=f"I didn't quite get that {env.title}! What do you want me to do to your car?")
+        Thread(target=support.unrecognized_dumper, args=[{"CAR": phrase}])
 
 
 def vehicle(car_email: str, car_pass: str, car_pin: int, operation: str, temp: int = None) -> Union[str, None]:
@@ -111,21 +111,21 @@ def vehicle(car_email: str, car_pass: str, car_pin: int, operation: str, temp: i
         connection.connect()
         if not connection.head:
             return
-        vehicles = connection.get_vehicles(headers=connection.head).get('vehicles')
-        primary_vehicle = [each_vehicle for each_vehicle in vehicles if each_vehicle.get('role') == 'Primary'][0]
-        handler = controller.Control(vin=primary_vehicle.get('vin'), connection=connection)
+        vehicles = connection.get_vehicles(headers=connection.head).get("vehicles")
+        primary_vehicle = [each_vehicle for each_vehicle in vehicles if each_vehicle.get("role") == "Primary"][0]
+        handler = controller.Control(vin=primary_vehicle.get("vin"), connection=connection)
 
-        if operation == 'LOCK':
+        if operation == "LOCK":
             handler.lock(pin=car_pin)
-        elif operation == 'UNLOCK':
+        elif operation == "UNLOCK":
             handler.unlock(pin=car_pin)
-        elif operation == 'START':
+        elif operation == "START":
             handler.remote_engine_start(pin=car_pin, target_temperature=temp)
-        elif operation == 'STOP':
+        elif operation == "STOP":
             handler.remote_engine_stop(pin=car_pin)
-        elif operation == 'SECURE':
+        elif operation == "SECURE":
             handler.enable_guardian_mode(pin=car_pin)
-        return handler.get_attributes().get('vehicleBrand', 'car')
+        return handler.get_attributes().get("vehicleBrand", "car")
     except HTTPError as error:
         logger.error(error)
-        logger.error(f'Failed to connect {error.url} with error code: {error.code}')
+        logger.error(f"Failed to connect {error.url} with error code: {error.code}")

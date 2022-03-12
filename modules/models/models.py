@@ -60,12 +60,14 @@ class EnvConfig(BaseSettings):
     bot_token: str = Field(default=None, env='BOT_TOKEN')
     bot_chat_ids: list = Field(default=[], env='BOT_CHAT_IDS')
     bot_users: list = Field(default=[], env='BOT_USERS')
+    title: str = Field(default='sir', env='TITLE')
+    name: str = Field(default='Vignesh', env='NAME')
 
     class Config:
         """Environment variables configuration."""
 
         env_prefix = None
-        env_file = '.env'
+        env_file = '../.env'
 
 
 env = EnvConfig()

@@ -162,7 +162,7 @@ def google_maps(query: str) -> bool:
         current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
 
     results = len(required)
-    speaker.speak(text=f"I found {results} results sir!") if results != 1 else None
+    speaker.speak(text=f"I found {results} results {env.title}!") if results != 1 else None
     start = current_location['latitude'], current_location['longitude']
     n = 0
     for item in required:
@@ -176,10 +176,10 @@ def google_maps(query: str) -> bool:
         n += 1
         if results == 1:
             option = 'only option I found is'
-            next_val = "Do you want to head there sir?"
+            next_val = f"Do you want to head there {env.title}?"
         elif n <= 2:
             option = f'{inflect.engine().ordinal(n)} option is'
-            next_val = "Do you want to head there sir?"
+            next_val = f"Do you want to head there {env.title}?"
         elif n <= 5:
             option = 'next option would be'
             next_val = "Would you like to try that?"
@@ -198,12 +198,12 @@ def google_maps(query: str) -> bool:
             elif any(word in converted.lower() for word in keywords.ok):
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                 webbrowser.open(url=maps_url)
-                speaker.speak(text="Directions on your screen sir!")
+                speaker.speak(text=f"Directions on your screen {env.title}!")
                 return False
             elif results == 1:
                 return False
             elif n == results:
-                speaker.speak(text="I've run out of options sir!")
+                speaker.speak(text=f"I've run out of options {env.title}!")
                 return False
             else:
                 continue

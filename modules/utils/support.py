@@ -43,14 +43,14 @@ def celebrate() -> str:
         A string of the event observed today.
     """
     day = datetime.today().date()
-    us_holidays = country_holidays('US').get(day)  # checks if the current date is a US holiday
-    in_holidays = country_holidays('IND', prov='TN', state='TN').get(day)  # checks if Indian (esp TN) holiday
+    us_holidays = country_holidays("US").get(day)  # checks if the current date is a US holiday
+    in_holidays = country_holidays("IND", prov="TN", state="TN").get(day)  # checks if Indian (esp TN) holiday
     if in_holidays:
         return in_holidays
-    elif us_holidays and 'Observed' not in us_holidays:
+    elif us_holidays and "Observed" not in us_holidays:
         return us_holidays
     elif env.birthday == datetime.now().strftime("%d-%B"):
-        return 'Birthday'
+        return "Birthday"
 
 
 def part_of_day() -> str:
@@ -62,12 +62,12 @@ def part_of_day() -> str:
     """
     current_hour = int(datetime.now().strftime("%H"))
     if 5 <= current_hour <= 11:
-        return 'Morning'
+        return "Morning"
     if 12 <= current_hour <= 15:
-        return 'Afternoon'
+        return "Afternoon"
     if 16 <= current_hour <= 19:
-        return 'Evening'
-    return 'Night'
+        return "Evening"
+    return "Night"
 
 
 def time_converter(seconds: float) -> str:
@@ -87,25 +87,25 @@ def time_converter(seconds: float) -> str:
     minutes = round(seconds // 60)
     seconds %= 60
     if days and hours and minutes and seconds:
-        return f'{days} days, {hours} hours, {minutes} minutes, and {seconds} seconds'
+        return f"{days} days, {hours} hours, {minutes} minutes, and {seconds} seconds"
     elif days and hours and minutes:
-        return f'{days} days, {hours} hours, and {minutes} minutes'
+        return f"{days} days, {hours} hours, and {minutes} minutes"
     elif days and hours:
-        return f'{days} days, and {hours} hours'
+        return f"{days} days, and {hours} hours"
     elif days:
-        return f'{days} days'
+        return f"{days} days"
     elif hours and minutes and seconds:
-        return f'{hours} hours, {minutes} minutes, and {seconds} seconds'
+        return f"{hours} hours, {minutes} minutes, and {seconds} seconds"
     elif hours and minutes:
-        return f'{hours} hours, and {minutes} minutes'
+        return f"{hours} hours, and {minutes} minutes"
     elif hours:
-        return f'{hours} hours'
+        return f"{hours} hours"
     elif minutes and seconds:
-        return f'{minutes} minutes, and {seconds} seconds'
+        return f"{minutes} minutes, and {seconds} seconds"
     elif minutes:
-        return f'{minutes} minutes'
+        return f"{minutes} minutes"
     else:
-        return f'{seconds} seconds'
+        return f"{seconds} seconds"
 
 
 def get_capitalized(phrase: str, dot: bool = True) -> str:
@@ -119,12 +119,12 @@ def get_capitalized(phrase: str, dot: bool = True) -> str:
         str:
         Returns the upper case words if skimmed.
     """
-    place = ''
+    place = ""
     for word in phrase.split():
         if word[0].isupper():
-            place += word + ' '
-        elif '.' in word and dot:
-            place += word + ' '
+            place += word + " "
+        elif "." in word and dot:
+            place += word + " "
     if place:
         return place
 
@@ -140,8 +140,8 @@ def get_closest_match(text: str, match_list: list) -> str:
         str:
         Returns the text that matches closest in the list.
     """
-    closest_match = [{'key': key, 'val': SequenceMatcher(a=text, b=key).ratio()} for key in match_list]
-    return sorted(closest_match, key=lambda d: d['val'], reverse=True)[0].get('key')
+    closest_match = [{"key": key, "val": SequenceMatcher(a=text, b=key).ratio()} for key in match_list]
+    return sorted(closest_match, key=lambda d: d["val"], reverse=True)[0].get("key")
 
 
 def unrecognized_dumper(train_data: dict) -> None:
@@ -151,8 +151,8 @@ def unrecognized_dumper(train_data: dict) -> None:
         train_data: Takes the dictionary that has to be written as an argument.
     """
     dt_string = datetime.now().strftime("%B %d, %Y %H:%M:%S")
-    if os.path.isfile('training_data.yaml'):
-        with open('training_data.yaml') as reader:
+    if os.path.isfile("training_data.yaml"):
+        with open("training_data.yaml") as reader:
             data = yaml.safe_load(stream=reader) or {}
         for key, value in train_data.items():
             if data.get(key):
@@ -162,7 +162,7 @@ def unrecognized_dumper(train_data: dict) -> None:
     else:
         data = {key1: {dt_string: value1} for key1, value1 in train_data.items()}
 
-    with open('training_data.yaml', 'w') as writer:
+    with open("training_data.yaml", "w") as writer:
         yaml.dump(data=data, stream=writer)
 
 
@@ -180,7 +180,7 @@ def size_converter(byte_size: int) -> str:
         byte_size = getrusage(RUSAGE_SELF).ru_maxrss
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
     index = int(math.floor(math.log(byte_size, 1024)))
-    return f'{round(byte_size / pow(1024, index), 2)} {size_name[index]}'
+    return f"{round(byte_size / pow(1024, index), 2)} {size_name[index]}"
 
 
 def comma_separator(list_: list) -> str:
@@ -193,7 +193,7 @@ def comma_separator(list_: list) -> str:
         str:
         Comma separated list of elements.
     """
-    return ', and '.join([', '.join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
+    return ", and ".join([", ".join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
 
 
 def extract_nos(input_: str) -> float:
@@ -207,7 +207,7 @@ def extract_nos(input_: str) -> float:
         Float values.
     """
     if value := re.findall(r"\d+", input_):
-        return float('.'.join(value))
+        return float(".".join(value))
 
 
 def format_nos(input_: float) -> int:
@@ -233,10 +233,10 @@ def extract_str(input_: str) -> str:
         str:
         A string after removing special characters.
     """
-    return ''.join([i for i in input_ if not i.isdigit() and i not in [',', '.', '?', '-', ';', '!', ':']]).strip()
+    return "".join([i for i in input_ if not i.isdigit() and i not in [",", ".", "?", "-", ";", "!", ":"]]).strip()
 
 
-def stop_processes(deep: bool = False, apps: tuple = ('iterm', 'terminal')) -> None:
+def stop_processes(deep: bool = False, apps: tuple = ("iterm", "terminal")) -> None:
     """Stops background processes.
 
     Args:
@@ -263,9 +263,9 @@ def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> list:
         List of ``*.lock`` file names ignoring other hidden files.
     """
     if alarm_files:
-        return [f for f in os.listdir('alarm') if not f.startswith('.')] if os.path.isdir('alarm') else None
+        return [f for f in os.listdir("alarm") if not f.startswith(".")] if os.path.isdir("alarm") else None
     elif reminder_files:
-        return [f for f in os.listdir('reminder') if not f.startswith('.')] if os.path.isdir('reminder') else None
+        return [f for f in os.listdir("reminder") if not f.startswith(".")] if os.path.isdir("reminder") else None
 
 
 def terminator() -> None:
@@ -275,13 +275,13 @@ def terminator() -> None:
     """
     pid = os.getpid()
     proc = psutil.Process(pid=pid)
-    logger.info(f'Terminating process: {pid}')
+    logger.info(f"Terminating process: {pid}")
     try:
         proc.wait(timeout=5)
     except psutil.TimeoutExpired:
-        logger.warning(f'Failed to terminate process in 5 seconds: {pid}')
+        logger.warning(f"Failed to terminate process in 5 seconds: {pid}")
     if proc.is_running():
-        logger.info(f'{pid} is still running. Killing it.')
+        logger.info(f"{pid} is still running. Killing it.")
         proc.kill()
 
 
@@ -296,25 +296,25 @@ def exit_message() -> str:
     hour = datetime.now().strftime("%I")  # current hour
     day = datetime.now().strftime("%A")  # current day
 
-    if am_pm == 'AM' and int(hour) < 10:
+    if am_pm == "AM" and int(hour) < 10:
         exit_msg = f"Have a nice day, and happy {day}."
-    elif am_pm == 'AM' and int(hour) >= 10:
+    elif am_pm == "AM" and int(hour) >= 10:
         exit_msg = f"Enjoy your {day}."
-    elif am_pm == 'PM' and (int(hour) == 12 or int(hour) < 3) and day in ['Friday', 'Saturday']:
+    elif am_pm == "PM" and (int(hour) == 12 or int(hour) < 3) and day in ["Friday", "Saturday"]:
         exit_msg = "Have a nice afternoon, and enjoy your weekend."
-    elif am_pm == 'PM' and (int(hour) == 12 or int(hour) < 3):
+    elif am_pm == "PM" and (int(hour) == 12 or int(hour) < 3):
         exit_msg = "Have a nice afternoon."
-    elif am_pm == 'PM' and int(hour) < 6 and day in ['Friday', 'Saturday']:
+    elif am_pm == "PM" and int(hour) < 6 and day in ["Friday", "Saturday"]:
         exit_msg = "Have a nice evening, and enjoy your weekend."
-    elif am_pm == 'PM' and int(hour) < 6:
+    elif am_pm == "PM" and int(hour) < 6:
         exit_msg = "Have a nice evening."
-    elif day in ['Friday', 'Saturday']:
+    elif day in ["Friday", "Saturday"]:
         exit_msg = "Have a nice night, and enjoy your weekend."
     else:
         exit_msg = "Have a nice night."
 
     if event := celebrate():
-        exit_msg += f'\nAnd by the way, happy {event}'
+        exit_msg += f"\nAnd by the way, happy {event}"
 
     return exit_msg
 
@@ -328,22 +328,22 @@ def scan_smart_devices() -> None:
     """
     # TODO: Store values in a new table in the base DB
     if env.router_pass:
-        logger.info('Scanning smart devices using netgear module.')
+        logger.info("Scanning smart devices using netgear module.")
         local_devices = LocalIPScan(router_pass=env.router_pass)
         tv_ip, tv_mac = local_devices.tv()
-        with open('smart_devices.yaml', 'w') as file:
+        with open("smart_devices.yaml", "w") as file:
             yaml.dump(stream=file, data={
-                'hallway_ip': list(local_devices.hallway()),
-                'kitchen_ip': list(local_devices.kitchen()),
-                'bedroom_ip': list(local_devices.bedroom()),
-                'tv_ip': tv_ip,
-                'tv_mac': tv_mac
+                "hallway_ip": list(local_devices.hallway()),
+                "kitchen_ip": list(local_devices.kitchen()),
+                "bedroom_ip": list(local_devices.bedroom()),
+                "tv_ip": tv_ip,
+                "tv_mac": tv_mac
             })
 
 
 def daytime_nighttime_swapper() -> None:
     """Automatically puts the Mac on sleep and sets the volume to 25% after 9 PM and 50% after 6 AM."""
-    hour = int(datetime.now().strftime('%H'))
+    hour = int(datetime.now().strftime("%H"))
     locker = """osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'"""
     if 20 >= hour >= 7:
         volume.volume(level=50)
@@ -355,8 +355,8 @@ def daytime_nighttime_swapper() -> None:
 
 def no_env_vars() -> None:
     """Says a message about permissions when env vars are missing."""
-    logger.error(f'Called by: {sys._getframe(1).f_code.co_name}')  # noqa
-    speaker.speak(text="I'm sorry sir! I lack the permissions!")
+    logger.error(f"Called by: {sys._getframe(1).f_code.co_name}")  # noqa
+    speaker.speak(text=f"I'm sorry {env.title}! I lack the permissions!")
 
 
 def keygen(length: int, punctuation: bool = False) -> str:

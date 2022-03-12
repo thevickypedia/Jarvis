@@ -4,9 +4,11 @@ import sys
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.database import database
+from modules.models import models
 from modules.utils import globals
 
 db = database.Database(table_name='tasks', columns=['category', 'item'])
+env = models.env
 
 
 def todo() -> None:
@@ -29,11 +31,11 @@ def todo() -> None:
             response = f"{item}, in {category} category."
             speaker.speak(text=response)
     elif globals.called['report'] and not globals.called['time_travel']:
-        speaker.speak(text="You don't have any tasks in your to-do list sir.")
+        speaker.speak(text=f"You don't have any tasks in your to-do list {env.title}.")
     elif globals.called['time_travel']:
         pass
     else:
-        speaker.speak(text="You don't have any tasks in your to-do list sir.")
+        speaker.speak(text=f"You don't have any tasks in your to-do list {env.title}.")
 
     if globals.called['report'] or globals.called['time_travel']:
         speaker.speak(run=True)
@@ -41,17 +43,17 @@ def todo() -> None:
 
 def add_todo() -> None:
     """Adds new items to the to-do list."""
-    speaker.speak(text="What's your plan sir?", run=True)
+    speaker.speak(text=f"What's your plan {env.title}?", run=True)
     item = listener.listen(timeout=3, phrase_limit=5)
     if item == 'SR_ERROR' or 'exit' in item or 'quit' in item or 'Xzibit' in item:
-        speaker.speak(text='Your to-do list has been left intact sir.')
+        speaker.speak(text=f'Your to-do list has been left intact {env.title}.')
         return
     speaker.speak(text=f"I heard {item}. Which category you want me to add it to?", run=True)
     category = listener.listen(timeout=3, phrase_limit=3)
     if category == 'SR_ERROR':
         category = 'Unknown'
     if 'exit' in category or 'quit' in category or 'Xzibit' in category:
-        speaker.speak(text='Your to-do list has been left intact sir.')
+        speaker.speak(text=f'Your to-do list has been left intact {env.title}.')
         return
     if downloaded := db.cursor.execute("SELECT category, item FROM tasks").fetchall():
         for c, i in downloaded:  # browses through all categories and items
@@ -70,18 +72,18 @@ def add_todo() -> None:
 
 def delete_todo_items() -> None:
     """Deletes items from an existing to-do list."""
-    speaker.speak(text="Which one should I remove sir?", run=True)
+    speaker.speak(text=f"Which one should I remove {env.title}?", run=True)
     item = listener.listen(timeout=3, phrase_limit=5)
     if item == 'SR_ERROR' or 'exit' in item or 'quit' in item or 'Xzibit' in item:
-        speaker.speak(text='Your to-do list has been left intact sir.')
+        speaker.speak(text=f'Your to-do list has been left intact {env.title}.')
         return
     db.cursor.execute(f"DELETE FROM tasks WHERE item='{item}' OR category='{item}'")
     db.connection.commit()
-    speaker.speak(text='Done sir!', run=True)
+    speaker.speak(text=f'Done {env.title}!', run=True)
 
 
 def delete_todo() -> None:
     """Drops the table ``tasks`` from the database."""
     db.cursor.execute('DROP TABLE IF EXISTS tasks')
     db.connection.commit()
-    speaker.speak(text="I've dropped the table: tasks from the database sir.")
+    speaker.speak(text=f"I've dropped the table: tasks from the database {env.title}.")

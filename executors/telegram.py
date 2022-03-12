@@ -28,8 +28,8 @@ importlib.reload(module=logging)
 dictConfig(config.BotConfig().dict())
 logger = logging.getLogger('telegram')
 
+users_title = {}
 db = database.Database(table_name='offline', columns=['key', 'value'])
-
 offline_compatible = offline_compatible()
 
 apihelper.SESSION_TIME_TO_LIVE = 5 * 60  # Forces session recreation after 5 minutes without any activity
@@ -54,6 +54,9 @@ def authenticate(payload: Message) -> Union[bool, None]:
     Args:
         payload: Payload received from Telegram API.
 
+    See Also:
+        If authenticated, ``get_title_by_name`` is called and a title based on user's gender is stored as dict to reuse.
+
     Returns:
         bool: A boolean flag to indicate whether the user has been authenticated.
     """
@@ -67,6 +70,8 @@ def authenticate(payload: Message) -> Union[bool, None]:
         bot.send_message(chat_id=payload.chat.id, text="401 USER UNAUTHORIZED")
         return
     logger.info(f"{payload.chat.username} :: {payload.text}")
+    if not users_title.get(payload.chat.username):
+        users_title[payload.chat.username] = get_title_by_name(payload.chat.first_name)
     return True
 
 
@@ -124,6 +129,27 @@ def start(payload: Message) -> None:
                       "/jarvis flip a coin for me\n")
 
 
+def get_title_by_name(name: str) -> str:
+    """Predicts gender by name and returns a title accordingly.
+
+    Args:
+        name: Name for which gender has to be predicted.
+
+    Returns:
+        str:
+        ``mam`` if predicted to be female, ``sir`` if gender is predicted to be male or unpredicted.
+    """
+    logger.info(f"Identifying gender for {name}")
+    response = requests.get(url=f"https://api.genderize.io/?name={name}")
+    if not response.ok:
+        return 'sir'
+    if response.json().get('gender', 'Unidentified').lower() == 'female':
+        logger.info(f"{name} has been identified as female.")
+        return 'mam'
+    else:
+        return 'sir'
+
+
 @bot.message_handler(commands=['jarvis'])
 def jarvis(payload: Message) -> None:
     """Handles messages sent with the slash command ``/jarvis``.
@@ -175,7 +201,8 @@ def jarvis(payload: Message) -> None:
 
     while True:
         if response := db.cursor.execute("SELECT value from offline WHERE key=?", ('response',)).fetchone():
-            bot.send_message(chat_id=payload.chat.id, text=response[0])
+            bot.send_message(chat_id=payload.chat.id,
+                             text=response[0].replace(env.title, users_title.get(payload.chat.username)))
             db.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
                               {'key': 'response', 'value': response[0]})
             db.connection.commit()
@@ -183,14 +210,14 @@ def jarvis(payload: Message) -> None:
             return
 
 
-def bot_is_running() -> bool:
-    """Checks if bot is running by making an update call.
+def get_updates() -> bool:
+    """Checks if bot is running by making a ``getUpdate`` call.
 
     Returns:
         bool:
         A flag indicating whether an instance of telebot is running.
     """
-    logger.info('Running Telebot pre-check.')
+    logger.info('Running getUpdates on api.telegram.org.')
     try:
         bot.get_updates(limit=1, timeout=3, long_polling_timeout=3)
         return False
@@ -205,17 +232,18 @@ def bot_is_running() -> bool:
 
 def poll_for_messages() -> None:
     """Polls for incoming messages."""
-    if env.bot_token:
-        if bot_is_running():
-            return
-        logger.info('Polling for incoming messages..')
-        try:
-            bot.polling(non_stop=True)
-        except requests.exceptions.ReadTimeout as error:
-            logger.error(error)
-            controls.restart_control(quiet=True)
-    else:
-        logger.info('BOT_TOKEN was not stored as env var to initiate the Telegram bot.')
+    if not env.bot_token or not env.bot_users or not env.bot_chat_ids:
+        logger.info("BOT_TOKEN, BOT_CHAT_IDS and BOT_USERS are required to initiate the Telegram bot.")
+        return
+    if get_updates():
+        return
+    logger.info('Polling for incoming messages..')
+    try:
+        bot.polling(non_stop=True)
+    except requests.exceptions.ReadTimeout as error:
+        logger.error(error)
+        logger.info('Restarting main module to re-trigger the process.')
+        controls.restart_control(quiet=True)
 
 
 if __name__ == '__main__':

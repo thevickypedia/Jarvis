@@ -1,13 +1,20 @@
 Change Log
 ==========
 
-5.7.1 (03/08/2022)
+5.7.2 (03/08/2022)
+------------------
+- Predict gender of a user in ``TelegramAPI`` responses
+- Remove hard coded title as `sir` and set as env var
+- Remove hard coded name as Vignesh and set as env var
+- Speak alarm deletion confirmation instead of printing on the screen
+
+5.7.1 (03/11/2022)
 ------------------
 - Create a `restart` flag in `database` to kill processes
 - Control all restarts from restart_control
 - Avoid duplicate processes when restarted
 
-5.7.0 (03/08/2022)
+5.7.0 (03/11/2022)
 ------------------
 - FEATURE::Jarvis uses `TelegramAPI` for offline comm
 - Do not check same threads for database connections
@@ -68,7 +75,7 @@ Change Log
 5.6.2 (02/27/2022)
 ------------------
 - Change API `Authorization` from data to `Header`
-- Create a dependency module to authenticate headers
+- Create a module to authenticate headers
 - Change response code for expired tokens
 - Do not delete lock files of alarms and reminders
 

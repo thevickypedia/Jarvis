@@ -157,6 +157,26 @@
 <section id="module-api.fast">
 <span id="api-handler"></span><h1>API Handler<a class="headerlink" href="#module-api.fast" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="api.fast.authenticate_robinhood">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">authenticate_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.authenticate_robinhood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authenticates the request. Uses a two-factor authentication by generating single use tokens.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>200</strong> – If initial auth is successful and returns the single-use token.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>If basic auth (stored as an env var <code class="docutils literal notranslate"><span class="pre">robinhood_endpoint_auth</span></code>) succeeds:</p>
+<ul class="simple">
+<li><p>Returns <code class="docutils literal notranslate"><span class="pre">?token=HASHED_UUID</span></code> to access <code class="docutils literal notranslate"><span class="pre">/investment</span></code> accessed via <code class="docutils literal notranslate"><span class="pre">/?investment?token=HASHED_UUID</span></code></p></li>
+<li><p>Also stores the token in the dictionary <code class="docutils literal notranslate"><span class="pre">robinhood_token</span></code> which is verified in the path <code class="docutils literal notranslate"><span class="pre">/investment</span></code></p></li>
+<li><p>The token is deleted from env var as soon as it is verified, making page-refresh useless.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="api.fast.enable_cors">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">enable_cors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.enable_cors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allow <code class="docutils literal notranslate"><span class="pre">CORS:</span> <span class="pre">Cross-Origin</span> <span class="pre">Resource</span> <span class="pre">Sharing</span></code> to allow restricted resources on the API.</p>
@@ -222,6 +242,34 @@
 <dd class="field-even"><p>str</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.robinhood">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">starlette.responses.HTMLResponse</span></span></span><a class="headerlink" href="#api.fast.robinhood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serves static file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>token</strong> – Takes custom auth token as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Renders the html page.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HTMLResponse</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>This endpoint is secured behind two-factor authentication.</p></li>
+<li><p>Initial check is done by the function authenticate_robinhood behind the path “/robinhood-authenticate”</p></li>
+<li><p>Once the auth succeeds, a one-time usable hashed-uuid is generated and stored as an environment variable.</p></li>
+<li><p>This UUID is sent as response to the API endpoint behind ngrok tunnel.</p></li>
+<li><p>The UUID is deleted from env var as soon as the argument is checked for the first time.</p></li>
+<li><p>Page refresh doesn’t work because the env var is deleted as soon as it is authed once.</p></li>
+</ul>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -982,7 +1030,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="executors.controls.starter">
 <span class="sig-prename descclassname"><span class="pre">executors.controls.</span></span><span class="sig-name descname"><span class="pre">starter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.controls.starter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates crucial functions which needs to be called during start up.</p>
-<p>Loads the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file so that all the necessary credentials and api keys can be accessed as <code class="docutils literal notranslate"><span class="pre">ENV</span> <span class="pre">vars</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">-</span> <span class="pre">volume_controller</span></span></dt>
@@ -1870,19 +1917,42 @@ A condition below assumes two different words as two places but not including tw
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>payload</strong> – Payload received from Telegram API.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A boolean flag to indicate whether the user has been authenticated.</p>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>If authenticated, <code class="docutils literal notranslate"><span class="pre">get_title_by_name</span></code> is called and a title based on user’s gender is stored as dict to reuse.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A boolean flag to indicate whether the user has been authenticated.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.telegram.bot_is_running">
-<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">bot_is_running</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.telegram.bot_is_running" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if bot is running by making an update call.</p>
+<dt class="sig sig-object py" id="executors.telegram.get_title_by_name">
+<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">get_title_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#executors.telegram.get_title_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predicts gender by name and returns a title accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name for which gender has to be predicted.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mam</span></code> if predicted to be female, <code class="docutils literal notranslate"><span class="pre">sir</span></code> if gender is predicted to be male or unpredicted.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.telegram.get_updates">
+<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">get_updates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.telegram.get_updates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if bot is running by making a <code class="docutils literal notranslate"><span class="pre">getUpdate</span></code> call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A flag indicating whether an instance of telebot is running.</p>
@@ -3442,7 +3512,7 @@ Whites can have a value of None.</p>
 <dd><p>Environment variables configuration.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.Config.env_file">
-<span class="sig-name descname"><span class="pre">env_file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'.env'</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.Config.env_file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">env_file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'../.env'</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.Config.env_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3548,6 +3618,11 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.news_api">
 <span class="sig-name descname"><span class="pre">news_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.news_api" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3625,6 +3700,11 @@ Whites can have a value of None.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.timeout">
 <span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.timeout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.title">
+<span class="sig-name descname"><span class="pre">title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.title" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
