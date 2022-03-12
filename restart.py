@@ -5,8 +5,8 @@
 
 """
 
-from os import system
-from time import sleep
+import os
+import time
 
-sleep(5)
-system('python3 jarvis.py')
+time.sleep(5)
+os.system('python3 jarvis.py')

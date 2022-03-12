@@ -1,7 +1,15 @@
 Change Log
 ==========
 
-5.7.2 (03/08/2022)
+5.7.3 (03/12/2022)
+------------------
+- Add a new custom module for `TelegramAPI`
+- Do not regenerate location.yaml if timestamp is missing
+- Fix .env path
+- Add should return flag for offline executions
+- Suppress coin flip sound when triggered by offline
+
+5.7.2 (03/11/2022)
 ------------------
 - Predict gender of a user in ``TelegramAPI`` responses
 - Remove hard coded title as `sir` and set as env var

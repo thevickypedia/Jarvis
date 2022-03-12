@@ -1,8 +1,8 @@
 import os
 import sys
+import time
 from datetime import datetime
 from threading import Thread
-from time import time
 from typing import Union
 
 import cv2
@@ -87,8 +87,8 @@ def guard_enable() -> None:
             date_extn = None
 
         # if no notification was sent yet or if a phrase or face is detected notification thread will be triggered
-        if (not notified or float(time() - notified) > 300) and (converted or date_extn):
-            notified = time()
+        if (not notified or float(time.time() - notified) > 300) and (converted or date_extn):
+            notified = time.time()
             Thread(target=threat_notify, kwargs=({"converted": converted, "phone_number": env.phone_number,
                                                   "gmail_user": env.gmail_user, "gmail_pass": env.gmail_pass,
                                                   "recipient": env.recipient or env.alt_gmail_user or env.gmail_user,

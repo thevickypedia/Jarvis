@@ -10,10 +10,11 @@ Disables loggers from imported modules, while using the root logger without havi
 import importlib
 import logging
 import os
+import time
 from datetime import datetime
 from logging.config import dictConfig
 from multiprocessing import current_process
-from time import struct_time, time
+from typing import Union
 
 from pytz import timezone, utc
 
@@ -44,9 +45,6 @@ logging.basicConfig(
 logger = logging.getLogger('jarvis')
 
 
-# noinspection PyUnresolvedReferences,PyProtectedMember
-
-
 class TestLogger:
     """This is a class to test logger to verify logging using module references and different logging levels.
 
@@ -60,6 +58,7 @@ class TestLogger:
         """Instantiates logger to self.logger which is used by the function methods."""
         self.logger = logger
 
+    # noinspection PyUnresolvedReferences,PyProtectedMember
     def function1(self) -> None:
         """This WILL be logged as it is an error info."""
         self.logger.error(sys._getframe(0).f_code.co_name)
@@ -68,6 +67,7 @@ class TestLogger:
             else None
         self.logger.error(f'I was called by {called_func} which was called by {parent_func}')
 
+    # noinspection PyUnresolvedReferences,PyProtectedMember
     def function2(self) -> None:
         """This WILL be logged as it is a critical info."""
         logging.Formatter.converter = self.custom_time
@@ -79,6 +79,7 @@ class TestLogger:
         self.logger.critical("I'm a special function as I use custom timezone, overriding logging.formatTime() method.")
         self.function1()
 
+    # noinspection PyUnresolvedReferences,PyProtectedMember
     def function3(self) -> None:
         """This WILL be logged as it is a fatal info."""
         self.logger.fatal(sys._getframe(0).f_code.co_name)
@@ -96,8 +97,9 @@ class TestLogger:
         """This WILL NOT be logged as no logger level is set."""
         self.logger.debug('function 5')
 
+    # noinspection PyUnusedLocal
     @staticmethod
-    def custom_time(*args: logging.Formatter and time) -> struct_time:  # noqa
+    def custom_time(*args: Union[logging.Formatter, time.time]) -> time.struct_time:
         """Creates custom timezone for ``logging`` which gets used only when invoked by ``Docker``.
 
         This is used only when triggered within a ``docker container`` as it uses UTC timezone.

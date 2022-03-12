@@ -1,7 +1,7 @@
 import os.path
+import sys
+import time
 from socket import gaierror
-from sys import stdout
-from time import sleep
 
 from dotenv import set_key
 from playsound import playsound
@@ -41,7 +41,7 @@ class TV:
             self.reconnect = True
             playsound(sound='indicators/tv_scan.mp3', block=False)
             scan_msg = "The TV's IP has either changed or unreachable. Scanning your IP range."
-            stdout.write(f"\r{scan_msg}")
+            sys.stdout.write(f"\r{scan_msg}")
             logger.error(scan_msg)
             self.client = WebOSClient.discover()[0]
             self.client.connect()
@@ -50,11 +50,11 @@ class TV:
 
         for status in self.client.register(store):
             if status == WebOSClient.REGISTERED and not self._init_status:
-                stdout.write('\rConnected to the TV.')
+                sys.stdout.write('\rConnected to the TV.')
             elif status == WebOSClient.PROMPTED:
                 playsound(sound='indicators/tv_connect.mp3', block=False)
                 self.reconnect = True
-                stdout.write('\rPlease accept the connection request on your TV.')
+                sys.stdout.write('\rPlease accept the connection request on your TV.')
 
         if self.reconnect:
             self.reconnect = False
@@ -190,7 +190,7 @@ class TV:
     def audio_output(self) -> None:
         """Writes the currently used audio output source as AudioOutputSource instance on the screen."""
         media_output_source = self.media.get_audio_output()
-        stdout.write(f'{media_output_source}')
+        sys.stdout.write(f'{media_output_source}')
 
     def audio_output_source(self) -> list:
         """Checks the list of audio output sources available.
@@ -200,7 +200,7 @@ class TV:
             List of ``AudioOutputSource`` instances.
         """
         audio_outputs = self.media.list_audio_output_sources()
-        stdout.write(f'{audio_outputs}')
+        sys.stdout.write(f'{audio_outputs}')
         return audio_outputs
 
     def set_audio_output_source(self) -> None:
@@ -210,5 +210,5 @@ class TV:
     def shutdown(self) -> None:
         """Notifies the TV about shutdown and shuts down after 3 seconds."""
         self.system.notify('Jarvis::SHUTTING DOWN now')
-        sleep(3)
+        time.sleep(3)
         self.system.power_off()

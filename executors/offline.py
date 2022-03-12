@@ -145,7 +145,7 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
     """
     try:
         globals.called_by_offline['status'] = True
-        conditions(converted=command)
+        conditions(converted=command, should_return=True)
         globals.called_by_offline['status'] = False
         response = globals.text_spoken.get('text')
         if 'restart' not in command and respond:

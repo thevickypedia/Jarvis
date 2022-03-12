@@ -18,10 +18,10 @@ from executors.location import write_current_location
 from executors.logger import logger
 from executors.offline import automator, initiate_tunneling
 from executors.system import hosted_device_info
-from executors.telegram import poll_for_messages
 from modules.audio import listener, speaker
 from modules.database import database
 from modules.models import models
+from modules.telegram import bot
 from modules.utils import globals, support
 
 db = database.Database(table_name="restart", columns=["flag", "caller"])
@@ -149,7 +149,7 @@ def initiate_processes() -> Dict[str, Process]:
         - playsound: Plays a start-up sound.
     """
     processes = {
-        "telebot": Process(target=poll_for_messages),
+        "telegram": Process(target=bot.handler),
         "api": Process(target=trigger_api),
         "automator": Process(target=automator),
         "ngrok": Process(target=initiate_tunneling,
