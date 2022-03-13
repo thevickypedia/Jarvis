@@ -1,10 +1,12 @@
 import os
 import random
-import re
 import subprocess
 import time
+from datetime import datetime, timedelta
 from pathlib import Path
+from typing import NoReturn
 
+from executors.logger import logger
 from modules.audio import listener, speaker, volume
 from modules.conditions import conversation
 from modules.models import models
@@ -13,16 +15,48 @@ from modules.utils import globals, support
 env = models.env
 
 
+def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = None) -> NoReturn:
+    """Creates the lock file necessary to set an alarm/timer.
+
+    Args:
+        hour: Hour of alarm time.
+        minute: Minute of alarm time.
+        am_pm: AM/PM of alarm time.
+        phrase: Phrase spoken.
+        timer: Number of minutes/hours to alarm.
+    """
+    if not os.path.isdir('alarm'):
+        os.mkdir('alarm')
+    Path(f'alarm/{hour}_{minute}_{am_pm}.lock').touch()
+    if 'wake' in phrase:
+        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
+                           f"I will wake you up at {hour}:{minute} {am_pm}.")
+    elif 'timer' in phrase and timer:
+        logger.info(f"Timer set at {hour}:{minute} {am_pm}")
+        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
+                           f"I have set a timer for {timer}.")
+    else:
+        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
+                           f"Alarm has been set for {hour}:{minute} {am_pm}.")
+
+
 def set_alarm(phrase: str) -> None:
     """Passes hour, minute and am/pm to ``Alarm`` class which initiates a thread for alarm clock in the background.
 
     Args:
         phrase: Takes the voice recognized statement as argument and extracts time from it.
     """
-    phrase = phrase.lower()
-    extracted_time = re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', phrase) or \
-        re.findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', phrase) or re.findall(r'([0-9]+\s?(?:am|pm:?))', phrase)
-    if extracted_time:
+    if 'minute' in phrase:
+        if minutes := support.extract_nos(input_=phrase, method=int):
+            hour, minute, am_pm = (datetime.now() + timedelta(minutes=minutes)).strftime("%I %M %p").split()
+            create_alarm(hour=hour, minute=minute, am_pm=am_pm, phrase=phrase, timer=f"{minutes} minutes")
+            return
+    elif 'hour' in phrase:
+        if hours := support.extract_nos(input_=phrase, method=int):
+            hour, minute, am_pm = (datetime.now() + timedelta(hours=hours)).strftime("%I %M %p").split()
+            create_alarm(hour=hour, minute=minute, am_pm=am_pm, phrase=phrase, timer=f"{hours} hours")
+            return
+    if extracted_time := support.extract_time(input_=phrase):
         extracted_time = extracted_time[0]
         am_pm = extracted_time.split()[-1]
         am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
@@ -37,15 +71,7 @@ def set_alarm(phrase: str) -> None:
         hour, minute = f"{hour:02}", f"{minute:02}"
         am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
         if int(hour) <= 12 and int(minute) <= 59:
-            if not os.path.isdir('alarm'):
-                os.mkdir('alarm')
-            Path(f'alarm/{hour}_{minute}_{am_pm}.lock').touch()
-            if 'wake' in phrase.strip():
-                speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
-                                   f"I will wake you up at {hour}:{minute} {am_pm}.")
-            else:
-                speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
-                                   f"Alarm has been set for {hour}:{minute} {am_pm}.")
+            create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm)
         else:
             speaker.speak(text=f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
                                f"I don't think a time like that exists on Earth.")
@@ -94,7 +120,7 @@ def kill_alarm() -> None:
             speaker.speak(text=f"I wasn't able to find an alarm at {hour}:{minute} {am_pm}. Try again.")
 
 
-def alarm_executor() -> None:
+def alarm_executor() -> NoReturn:
     """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
     volume.volume(level=100)
     subprocess.call(["open", "indicators/alarm.mp3"])

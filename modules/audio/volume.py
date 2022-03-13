@@ -1,6 +1,5 @@
 import os
 import random
-import re
 
 from modules.audio import speaker
 from modules.conditions import conversation
@@ -21,8 +20,7 @@ def volume(phrase: str = None, level: int = None) -> None:
         elif 'max' in phrase_lower or 'full' in phrase_lower:
             level = 100
         else:
-            level = re.findall(r'\b\d+\b', phrase)  # gets integers from string as a list
-            level = int(level[0]) if level else 50  # converted to int for volume
+            level = support.extract_nos(input_=phrase, method=int) or 50
     support.flush_screen()
     level = round((8 * level) / 100)
     os.system(f'osascript -e "set Volume {level}"')

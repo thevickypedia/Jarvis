@@ -2,7 +2,6 @@ import importlib
 import logging
 import random
 import string
-import time
 from logging.config import dictConfig
 
 import requests
@@ -18,10 +17,9 @@ logger = logging.getLogger('telegram')
 
 env = models.env
 offline_compatible = offline_compatible()
-db = database.Database(table_name='offline', columns=['key', 'value'])
+odb = database.Database(table_name='offline', columns=['key', 'value'])
 
 USER_TITLE = {}
-FAILED_CONNECTIONS = {'calls': 0}
 
 
 def greeting() -> str:
@@ -64,7 +62,7 @@ def intro() -> str:
         str:
     """
     return "\nI am Jarvis, a pre-programmed virtual assistant designed by Mr. Rao\n" \
-           "You may start a conversation anytime using /jarvis\n\n" \
+           "You may start giving me commands to execute.\n\n" \
            "*Examples*\n\n" \
            "*Car Controls*\n" \
            "start my car\n" \
@@ -105,9 +103,10 @@ class TelegramBot:
     def __init__(self):
         """Initiates a session."""
         self.session = requests.Session()
+        self.session.verify = True
 
     def _make_request(self, url: str, payload: dict) -> requests.Response:
-        """Makes a post request with a ``connect timeout`` of 3 seconds and ``read timeout`` of 60.
+        """Makes a post request with a ``connect timeout`` of 5 seconds and ``read timeout`` of 60.
 
         Args:
             url: URL to submit the request.
@@ -117,7 +116,7 @@ class TelegramBot:
             Response:
             Response class.
         """
-        response = self.session.post(url=url, data=payload, timeout=(3, 60))
+        response = self.session.post(url=url, data=payload, timeout=(5, 60))
         if not response.ok:
             logger.error(response.json())
         return response
@@ -138,7 +137,7 @@ class TelegramBot:
                      'parse_mode': parse_mode}
         return self._make_request(url=self.BASE_URL + env.bot_token + '/sendMessage', payload=post_data)
 
-    def send_message(self, chat_id, response: str, parse_mode: str = 'markdown') -> requests.Response:
+    def send_message(self, chat_id: int, response: str, parse_mode: str = 'markdown') -> requests.Response:
         """Generates a payload to reply to a message received.
 
         Args:
@@ -220,11 +219,17 @@ class TelegramBot:
         if payload.get('text') in ['hello', 'hi', 'heya', 'hey']:
             self.reply_to(payload=payload,
                           response=f"{greeting()} {payload['from']['first_name']}!\n"
-                                   f"Good {support.part_of_day()}! How may I be of service today?")
+                                   f"Good {support.part_of_day()}! How can I be of service today?")
             return
         if payload['text'] == '/start':
             self.send_message(chat_id=payload['from']['id'],
-                              response=f"{greeting()} {payload['from']['first_name']}!{intro()}")
+                              response=f"{greeting()} {payload['from']['first_name']}! {intro()}")
+            return
+        if payload['text'].startswith('/'):
+            self.reply_to(payload=payload, response="*Deprecation Notice*\n\nSlash commands ('/') have been deprecated."
+                                                    " Please use commands directly instead.")
+            payload['text'] = payload['text'].lstrip('/').replace('jarvis', '').strip()
+        if not payload['text']:
             return
         if not USER_TITLE.get(payload['from']['username']):
             USER_TITLE[payload['from']['username']] = get_title_by_name(payload['from']['first_name'])
@@ -237,8 +242,12 @@ class TelegramBot:
             payload: Payload to extract information from.
         """
         command = payload['text']
-        command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
-        if command.lower() == 'test':
+        command_lower = command.lower()
+        if 'alarm' in command_lower or 'remind' in command_lower:
+            command = command_lower
+        else:
+            command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
+        if command_lower == 'test':
             self.send_message(chat_id=payload['from']['id'], response="Test message received.")
             return
 
@@ -252,7 +261,7 @@ class TelegramBot:
                               response="Jarvis cannot perform tasks at a later time using offline communicator.")
             return
 
-        if not any(word in command.lower() for word in offline_compatible):
+        if not any(word in command_lower for word in offline_compatible):
             self.send_message(chat_id=payload['from']['id'],
                               response=f"'{command}' is not a part of offline communicator compatible request.\n"
                                        "Using Telegram I'm limited to perform tasks that do not require an interaction")
@@ -260,59 +269,26 @@ class TelegramBot:
 
         logger.info(f'Request: {command}')
 
-        if existing := db.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():
+        if existing := odb.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():
             self.reply_to(payload=payload,
                           response=f"Processing another offline request: '{existing[0]}'.\nPlease try again.")
             return
 
-        db.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('request', command)}")
-        db.connection.commit()
+        odb.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('request', command)}")
+        odb.connection.commit()
 
         while True:
-            if response := db.cursor.execute("SELECT value from offline WHERE key=?", ('response',)).fetchone():
+            if response := odb.cursor.execute("SELECT value from offline WHERE key=?", ('response',)).fetchone():
                 if response[0]:
                     text = response[0].replace(env.title, USER_TITLE.get(payload['from']['username']))
                 else:
                     text = f"I'm sorry {env.title}! I wasn't able to process {payload.get('text')}"
                 self.send_message(chat_id=payload['from']['id'], response=text)
-                db.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
-                                  {'key': 'response', 'value': response[0]})
-                db.connection.commit()
+                odb.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
+                                   {'key': 'response', 'value': response[0]})
+                odb.connection.commit()
                 logger.info(f'Response: {response[0]}')
                 return
-
-
-def handler():
-    """Initiates polling for new messages.
-
-    Handles:
-        - OverflowError: Restarts polling to take control over.
-        - ConnectionError: Initiates after 10, 20 or 30 seconds. Depends on retry count. Shuts off after 3 attempts.
-    """
-    try:
-        TelegramBot().poll_for_messages()
-    except OverflowError as error:
-        logger.error(error)
-        logger.info("Restarting message poll to take over..")
-        handler()
-    except (requests.exceptions.ReadTimeout, ConnectionError) as error:
-        FAILED_CONNECTIONS['calls'] += 1
-        logger.critical(error)
-        logger.info("Restarting after 10 seconds..")
-        time.sleep(FAILED_CONNECTIONS['calls'] * 10)
-        if FAILED_CONNECTIONS['calls'] > 3:
-            logger.fatal("Couldn't recover from connection error.")
-        else:
-            handler()
-    # Expected exceptions
-    # except socket.timeout as error:
-    #     logger.fatal(error)
-    # except urllib3.exceptions.ConnectTimeoutError as error:
-    #     logger.fatal(error)
-    # except urllib3.exceptions.MaxRetryError as error:
-    #     logger.fatal(error)
-    # except requests.exceptions.ConnectTimeout as error:
-    #     logger.fatal(error)
 
 
 if __name__ == '__main__':

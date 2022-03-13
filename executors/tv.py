@@ -1,6 +1,5 @@
 import os
 import random
-import re
 import sys
 import time
 from threading import Thread
@@ -115,8 +114,7 @@ def television(phrase: str) -> None:
             globals.tv.stop()
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}!')
         elif 'set' in phrase_lower and 'volume' in phrase_lower:
-            vol = int(''.join([str(s) for s in re.findall(r'\b\d+\b', phrase_exc)]))
-            if vol:
+            if vol := support.extract_nos(input_=phrase_lower, method=int):
                 globals.tv.set_volume(target=vol)
                 speaker.speak(text=f"I've set the volume to {vol}% {env.title}.")
             else:

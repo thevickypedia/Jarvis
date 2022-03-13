@@ -63,6 +63,8 @@ API Models
    :members:
    :exclude-members:
 
+====
+
 .. autoclass:: api.models.InvestmentFilter(logging.Filter)
    :members:
    :exclude-members:
@@ -80,6 +82,8 @@ API Robinhood Helper
 .. autoclass:: api.rh_helper.CustomTemplate
    :members:
    :exclude-members: source
+
+====
 
 .. autoclass:: api.rh_helper.MarketHours
    :members:
@@ -313,9 +317,13 @@ Audio
    :members:
    :undoc-members:
 
+====
+
 .. automodule:: modules.audio.listener
    :members:
    :undoc-members:
+
+====
 
 .. automodule:: modules.audio.voices
    :members:
@@ -328,6 +336,8 @@ Car
    :members:
    :exclude-members: IFAS_BASE_URL, IFOP_BASE_URL, IF9_BASE_URL
 
+====
+
 .. automodule:: modules.car.controller
    :members:
    :exclude-members: DEFAULT_CONTENT_TYPE
@@ -338,6 +348,8 @@ Conditions
 .. automodule:: modules.conditions.conversation
    :members:
    :exclude-members: about_me, acknowledgement, capabilities, confirmation, form, greeting, languages, wake_up1, wake_up2, wake_up3, what, whats_up, who
+
+====
 
 .. automodule:: modules.conditions.keywords
    :members:
@@ -350,9 +362,13 @@ Config
    :members:
    :exclude-members:
 
+====
+
 .. autoclass:: modules.models.config.APIConfig(pydantic.BaseModel)
    :members:
    :exclude-members:
+
+====
 
 .. autoclass:: modules.models.config.BotConfig(pydantic.BaseModel)
    :members:
@@ -378,6 +394,8 @@ Lights
 .. automodule:: modules.lights.smart_lights
    :members:
    :undoc-members:
+
+====
 
 .. automodule:: modules.lights.preset_values
    :members:
@@ -412,6 +430,13 @@ Restart
    :members:
    :undoc-members:
 
+Telegram
+========
+
+.. automodule:: modules.telegram.bot
+   :members:
+   :exclude-members: BASE_URL
+
 Temperature
 ===========
 
@@ -426,19 +451,19 @@ TV Connector
    :members:
    :undoc-members:
 
-Utils - Support
-===============
+Support
+=======
 
 .. automodule:: modules.utils.support
    :members:
    :undoc-members:
 
-Utils - Globals
-===============
+Globals
+=======
 
 .. automodule:: modules.utils.globals
    :members:
-   :exclude-members: alt_gmail_pass, alt_gmail_user, birthday, car_email, car_pass, car_pin, git_pass, git_user, gmail_pass, gmail_user, home, icloud_pass, icloud_recovery, icloud_user, maps_api, meeting_app, news_api, offline_host, offline_pass, offline_port, phone_number, phrase_limit, recipient, robinhood_endpoint_auth, robinhood_pass, robinhood_qr, robinhood_user, root_password, root_user, router_pass, sensitivity, timeout, tv_client_key, vpn_password, vpn_username, weather_api, website, wolfram_api_key
+   :undoc-members:
 
 Indices and tables
 ==================

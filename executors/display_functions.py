@@ -1,10 +1,10 @@
 import os
 import random
-import re
 from threading import Thread
 
 from modules.audio import speaker
 from modules.conditions import conversation
+from modules.utils import support
 
 
 def brightness(phrase: str):
@@ -15,11 +15,9 @@ def brightness(phrase: str):
     """
     phrase = phrase.lower()
     speaker.speak(text=random.choice(conversation.acknowledgement))
-    if 'set' in phrase or re.findall(r'\b\d+\b', phrase):
-        level = re.findall(r'\b\d+\b', phrase)  # gets integers from string as a list
-        if not level:
-            level = ['50']  # pass as list for brightness, as args must be iterable
-        Thread(target=set_brightness, args=level).start()
+    if 'set' in phrase:
+        level = support.extract_nos(input_=phrase, method=int) or 50
+        Thread(target=set_brightness, args=[level]).start()
     elif 'decrease' in phrase or 'reduce' in phrase or 'lower' in phrase or \
             'dark' in phrase or 'dim' in phrase:
         Thread(target=decrease_brightness).start()

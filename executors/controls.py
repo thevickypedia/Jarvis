@@ -16,7 +16,7 @@ from modules.database import database
 from modules.models import models
 from modules.utils import globals, support
 
-db = database.Database(table_name='restart', columns=['flag', 'caller'])
+rdb = database.Database(table_name='restart', columns=['flag', 'caller'])
 env = models.env
 
 
@@ -153,10 +153,10 @@ def restart_control(phrase: str = 'PlaceHolder', quiet: bool = False):
         logger.info(f'Called by {caller}')
         logger.info('JARVIS::Self reboot has been requested.')
         if quiet:  # restarted due internal errors or git update
-            db.cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, caller))
+            rdb.cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, caller))
         else:  # restarted requested via voice command
-            db.cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, 'restart_control'))
-        db.connection.commit()
+            rdb.cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, 'restart_control'))
+        rdb.connection.commit()
 
 
 def shutdown(proceed: bool = False) -> None:

@@ -7,14 +7,14 @@ from modules.database import database
 from modules.models import models
 from modules.utils import globals
 
-db = database.Database(table_name='tasks', columns=['category', 'item'])
+tdb = database.Database(table_name='tasks', columns=['category', 'item'])
 env = models.env
 
 
 def todo() -> None:
     """Says the item and category stored in the to-do list."""
     sys.stdout.write("\rQuerying DB for to-do list..")
-    downloaded = db.cursor.execute("SELECT category, item FROM tasks").fetchall()
+    downloaded = tdb.cursor.execute("SELECT category, item FROM tasks").fetchall()
     result = {}
     for category, item in downloaded:
         # condition below makes sure one category can have multiple items without repeating category for each item
@@ -55,12 +55,12 @@ def add_todo() -> None:
     if 'exit' in category or 'quit' in category or 'Xzibit' in category:
         speaker.speak(text=f'Your to-do list has been left intact {env.title}.')
         return
-    if downloaded := db.cursor.execute("SELECT category, item FROM tasks").fetchall():
+    if downloaded := tdb.cursor.execute("SELECT category, item FROM tasks").fetchall():
         for c, i in downloaded:  # browses through all categories and items
             if i == item and c == category:  # checks if already present and updates items in case of repeated category
                 speaker.speak(text=f"Looks like you already have the item: {item} added in, {category} category")
                 return
-    db.cursor.execute(f"INSERT OR REPLACE INTO tasks (category, item) VALUES {(category, item)}")
+    tdb.cursor.execute(f"INSERT OR REPLACE INTO tasks (category, item) VALUES {(category, item)}")
     speaker.speak(text=f"I've added the item: {item} to the category: {category}. "
                        "Do you want to add anything else to your to-do list?", run=True)
     category_continue = listener.listen(timeout=3, phrase_limit=3)
@@ -77,13 +77,13 @@ def delete_todo_items() -> None:
     if item == 'SR_ERROR' or 'exit' in item or 'quit' in item or 'Xzibit' in item:
         speaker.speak(text=f'Your to-do list has been left intact {env.title}.')
         return
-    db.cursor.execute(f"DELETE FROM tasks WHERE item='{item}' OR category='{item}'")
-    db.connection.commit()
+    tdb.cursor.execute(f"DELETE FROM tasks WHERE item='{item}' OR category='{item}'")
+    tdb.connection.commit()
     speaker.speak(text=f'Done {env.title}!', run=True)
 
 
 def delete_todo() -> None:
     """Drops the table ``tasks`` from the database."""
-    db.cursor.execute('DROP TABLE IF EXISTS tasks')
-    db.connection.commit()
+    tdb.cursor.execute('DROP TABLE IF EXISTS tasks')
+    tdb.connection.commit()
     speaker.speak(text=f"I've dropped the table: tasks from the database {env.title}.")

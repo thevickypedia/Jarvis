@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+5.7.4 (03/13/2022)
+------------------
+- Alarm/reminder execute after certain minutes/hours
+- Create a new function to extract time from a string
+- Verify session for telegram connection
+- Add a deprecation message for slash commands in telegram
+- Drop offline and restart tables when restarting
+- Set a method validation for extract_nos function
+- Remove keyword args from conditions.py
+- Do not remove punctuations when a command is sent via offline
+- Rename db as offline db (odb), restart db (rdb) and tasks db (tdb)
+- Single quotes to double quotes in keywords.py
+- Move static methods and fix imports outside class in smart_lights.py
+- Set optional arg to extract_nos as int or float
+
 5.7.3 (03/12/2022)
 ------------------
 - Add a new custom module for `TelegramAPI`
