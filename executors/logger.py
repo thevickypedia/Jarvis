@@ -59,17 +59,8 @@ class TestLogger:
         self.logger = logger
 
     # noinspection PyUnresolvedReferences,PyProtectedMember
-    def function1(self) -> None:
-        """This WILL be logged as it is an error info."""
-        self.logger.error(sys._getframe(0).f_code.co_name)
-        called_func = sys._getframe(1).f_code.co_name.replace("<module>", __name__)
-        parent_func = sys._getframe(2).f_code.co_name.replace("<module>", __name__) if not called_func == '__main__' \
-            else None
-        self.logger.error(f'I was called by {called_func} which was called by {parent_func}')
-
-    # noinspection PyUnresolvedReferences,PyProtectedMember
-    def function2(self) -> None:
-        """This WILL be logged as it is a critical info."""
+    def test_log(self) -> None:
+        """Logs the caller function with a custom time."""
         logging.Formatter.converter = self.custom_time
         self.logger.error(sys._getframe(0).f_code.co_name)
         called_func = sys._getframe(1).f_code.co_name.replace("<module>", __name__)
@@ -77,25 +68,6 @@ class TestLogger:
             else None
         self.logger.critical(f'I was called by {called_func} which was called by {parent_func}')
         self.logger.critical("I'm a special function as I use custom timezone, overriding logging.formatTime() method.")
-        self.function1()
-
-    # noinspection PyUnresolvedReferences,PyProtectedMember
-    def function3(self) -> None:
-        """This WILL be logged as it is a fatal info."""
-        self.logger.fatal(sys._getframe(0).f_code.co_name)
-        called_func = sys._getframe(1).f_code.co_name.replace("<module>", __name__)
-        parent_func = sys._getframe(2).f_code.co_name.replace("<module>", __name__) if not called_func == '__main__' \
-            else None
-        self.logger.fatal(f'I was called by {called_func} which was called by {parent_func}')
-        self.function2()
-
-    def function4(self) -> None:
-        """This WILL NOT be logged as no logger level is set."""
-        self.logger.info('function 4')
-
-    def function5(self) -> None:
-        """This WILL NOT be logged as no logger level is set."""
-        self.logger.debug('function 5')
 
     # noinspection PyUnusedLocal
     @staticmethod
@@ -122,9 +94,7 @@ if __name__ == '__main__':
     import sys
 
     test_logger = TestLogger()
-    test_logger.function3()
-    test_logger.function4()
-    test_logger.function5()
+    test_logger.test_log()
     for method_name, return_value in TestLogger.__dict__.items():
         if callable(return_value):
             print(method_name)

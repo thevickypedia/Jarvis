@@ -50,8 +50,8 @@ def send_sms(phrase: str) -> None:
     Args:
         phrase: Takes phrase spoken as an argument.
     """
-    if number := support.extract_nos(input_=phrase):
-        number = str(int(number))
+    if number := support.extract_nos(input_=phrase, method=int):
+        number = str(number)
     else:
         speaker.speak(text=f"Please tell me a number {env.title}!", run=True)
         number = listener.listen(timeout=3, phrase_limit=7)

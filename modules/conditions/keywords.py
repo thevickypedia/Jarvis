@@ -5,115 +5,115 @@
 
 """
 
-current_date = ['date']
+current_date = ["today's date", "current date", "today"]
 
-current_time = ['time']
+current_time = ["current time", "time now", "time in"]
 
-weather = ['weather', 'temperature']
+weather = ["weather", "temperature"]
 
-system_info = ['configuration']
+system_info = ["configuration"]
 
-ip_info = ['address']
+ip_info = ["address"]
 
-wikipedia_ = ['wikipedia', 'info', 'information']
+wikipedia_ = ["wikipedia", "info", "information"]
 
-news = ['news']
+news = ["news"]
 
-report = ['report']
+report = ["report"]
 
-robinhood = ['robinhood', 'investment', 'portfolio', 'summary']
+robinhood = ["robinhood", "investment", "portfolio", "summary"]
 
-apps = ['launch']
+apps = ["launch"]
 
-repeat = ['repeat', 'train']
+repeat = ["repeat", "train"]
 
-location = ['location', 'where am i']
+location = ["location", "where am i"]
 
-locate = ['locate', 'where is my', "where's my"]
+locate = ["locate", "where is my", "where's my"]
 
-music = ['music', 'songs', 'play']
+music = ["music", "songs", "play"]
 
-read_gmail = ['email', 'mail']
+read_gmail = ["email", "mail"]
 
-meaning = ['meaning', 'dictionary', 'definition']
+meaning = ["meaning", "dictionary", "definition"]
 
-add_todo = ['add']
+add_todo = ["add"]
 
-delete_todo = ['remove', 'delete']
+delete_todo = ["remove", "delete"]
 
-todo = ['plan']
+todo = ["plan"]
 
-distance = ['far', 'distance', 'miles']
+distance = ["far", "distance", "miles"]
 
-avoid = ['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
-         'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter', 'server',
-         'cloud', 'update']
+avoid = ["sun", "moon", "mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune", "pluto",
+         "a.m.", "p.m.", "update my to do list", "launch", "safari", "body", "human", "centimeter", "server",
+         "cloud", "update"]
 
-locate_places = ['where is', "where's", 'which city', 'which state', 'which country', 'which county']
+locate_places = ["where is", "where's", "which city", "which state", "which country", "which county"]
 
-directions = ['take me', 'get directions']
+directions = ["take me", "get directions"]
 
-set_alarm = ['alarm', 'wake me']
+set_alarm = ["alarm", "wake me", "timer"]
 
-kill_alarm = ['stop alarm', 'stop my alarm', 'turn off my alarm', 'turn my alarm off', 'stop another alarm']
+kill_alarm = ["stop alarm", "stop my alarm", "turn off my alarm", "turn my alarm off", "stop another alarm"]
 
-reminder = ['remind', 'reminder']
+reminder = ["remind", "reminder"]
 
-google_home = ['google home', 'googlehome']
+google_home = ["google home", "googlehome"]
 
-jokes = ['joke', 'jokes', 'make me laugh']
+jokes = ["joke", "jokes", "make me laugh"]
 
-notes = ['notes', 'note']
+notes = ["notes", "note"]
 
-github = ['git', 'github', 'clone', 'GitHub', 'update yourself', 'update your self']
+github = ["git", "github", "clone", "GitHub", "update yourself", "update your self"]
 
-send_sms = ['message', 'text', 'messages']
+send_sms = ["message", "text", "messages"]
 
-google_search = ['google search']
+google_search = ["google search"]
 
-television = ['tv', 'television']
+television = ["tv", "television"]
 
-volume = ['volume', 'mute']
+volume = ["volume", "mute"]
 
-face_detection = ['face', 'recognize', 'who am i', 'detect', 'facial', 'recognition', 'detection']
+face_detection = ["face", "recognize", "who am i", "detect", "facial", "recognition", "detection"]
 
-speed_test = ['speed', 'fast']
+speed_test = ["speed", "fast"]
 
-bluetooth = ['bluetooth']
+bluetooth = ["bluetooth"]
 
-brightness = ['brightness', 'bright', 'dim']
+brightness = ["brightness", "bright", "dim"]
 
-lights = ['light', 'hallway', 'kitchen', 'living room', 'bedroom']
+lights = ["light", "hallway", "kitchen", "living room", "bedroom"]
 
-guard_enable = ['take care', 'heading out', 'keep an eye', 'turn on security mode', 'enable security mode']
+guard_enable = ["take care", "heading out", "keep an eye", "turn on security mode", "enable security mode"]
 
-guard_disable = ["I'm back", 'I am back', 'turn off security mode', 'disable security mode', 'jarvis']
+guard_disable = ["I'm back", "I am back", "turn off security mode", "disable security mode", "jarvis"]
 
-flip_a_coin = ['head', 'tail', 'flip']
+flip_a_coin = ["head", "tail", "flip"]
 
-facts = ['fact', 'facts']
+facts = ["fact", "facts"]
 
-meetings = ['meeting', 'appointment', 'schedule']
+meetings = ["meeting", "appointment", "schedule"]
 
-voice_changer = ['voice', 'module', 'audio']
+voice_changer = ["voice", "module", "audio"]
 
-system_vitals = ['vitals', 'statistics', 'readings', 'stats']
+system_vitals = ["vitals", "statistics", "readings", "stats"]
 
-vpn_server = ['vpn']
+vpn_server = ["vpn"]
 
-car = ['car', 'vehicle']
+car = ["car", "vehicle"]
 
-automation = ['automation']
+automation = ["automation"]
 
-ok = ['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going']
+ok = ["yeah", "yes", "yep", "go ahead", "proceed", "continue", "carry on", "please", "keep going"]
 
-restart_control = ['restart', 'reboot']
+restart_control = ["restart", "reboot"]
 
-exit_ = ['exit', 'quit', 'no', 'nope', 'thank you', 'Xzibit', 'bye', 'good bye', 'see you later', 'talk to you later',
-         "that's it", 'that is it']
+exit_ = ["exit", "quit", "no", "nope", "thank you", "Xzibit", "bye", "good bye", "see you later", "talk to you later",
+         "that's it", "that is it"]
 
-sleep_control = ['exit', 'quit', 'lock', 'sleep', 'Xzibit', 'activate sentry mode']
+sleep_control = ["exit", "quit", "lock", "sleep", "Xzibit", "activate sentry mode"]
 
-kill = ['kill', 'terminate yourself', 'stop running']
+kill = ["kill", "terminate yourself", "stop running"]
 
-shutdown = ['shutdown', 'shut down', 'terminate']
+shutdown = ["shutdown", "shut down", "terminate"]

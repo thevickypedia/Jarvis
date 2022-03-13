@@ -15,6 +15,7 @@ import time
 from datetime import datetime
 from difflib import SequenceMatcher
 from resource import RUSAGE_SELF, getrusage
+from typing import Union
 
 import psutil
 import yaml
@@ -196,29 +197,46 @@ def comma_separator(list_: list) -> str:
     return ", and ".join([", ".join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
 
 
-def extract_nos(input_: str) -> float:
+def extract_time(input_: str) -> list:
+    """Extracts 12-hour time value from a string.
+
+    Args:
+        input_: Int if found, else returns the received float value.
+
+    Returns:
+        list:
+        Extracted time from the string.
+    """
+    return re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', input_) or \
+        re.findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', input_) or \
+        re.findall(r'([0-9]+:[0-9]+\s?(?:am|pm:?))', input_) or \
+        re.findall(r'([0-9]+\s?(?:am|pm:?))', input_)
+
+
+def extract_nos(input_: str, method: type = float) -> Union[int, float]:
     """Extracts number part from a string.
 
     Args:
         input_: Takes string as an argument.
+        method: Takes a type to return a float or int value.
 
     Returns:
         float:
         Float values.
     """
     if value := re.findall(r"\d+", input_):
-        return float(".".join(value))
+        return method(".".join(value))
 
 
 def format_nos(input_: float) -> int:
     """Removes ``.0`` float values.
 
     Args:
-        input_: Int if found, else returns the received float value.
+        input_: Strings or integers with ``.0`` at the end.
 
     Returns:
         int:
-        Formatted integer.
+        Int if found, else returns the received float value.
     """
     return int(input_) if isinstance(input_, float) and input_.is_integer() else input_
 

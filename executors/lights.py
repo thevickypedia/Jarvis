@@ -1,6 +1,5 @@
 import os.path
 import random
-import re
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread
 
@@ -157,10 +156,7 @@ def lights(phrase: str) -> None:
         elif 'dim' in phrase:
             level = 50
         else:
-            if level := re.findall(r'\b\d+\b', phrase):
-                level = int(level[0])
-            else:
-                level = 100
+            level = support.extract_nos(input_=phrase, method=int) or 100
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
                            f"I've set {lights_count} {plural} to {level}%!")
         level = round((255 * level) / 100)

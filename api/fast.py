@@ -21,7 +21,7 @@ from modules.database import database
 from modules.models import config, models
 
 env = models.env
-db = database.Database(table_name='offline', columns=['key', 'value'])
+odb = database.Database(table_name='offline', columns=['key', 'value'])
 
 OFFLINE_PROTECTOR = [Depends(dependency=authenticator.offline_has_access)]
 ROBINHOOD_PROTECTOR = [Depends(dependency=authenticator.robinhood_has_access)]
@@ -139,8 +139,12 @@ async def offline_communicator(input_data: GetData) -> NoReturn:
     if not (command := input_data.command.strip()):
         raise HTTPException(status_code=204, detail='Empy requests cannot be processed.')
 
-    command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
-    if command.lower() == 'test':
+    command_lower = command.lower()
+    if 'alarm' in command_lower or 'remind' in command_lower:
+        command = command_lower
+    else:
+        command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
+    if command_lower == 'test':
         raise HTTPException(status_code=200, detail='Test message received.')
     if 'and' in command.split() or 'also' in command.split():
         raise HTTPException(status_code=413,
@@ -148,22 +152,22 @@ async def offline_communicator(input_data: GetData) -> NoReturn:
     if 'after' in command.split():
         raise HTTPException(status_code=413,
                             detail='Jarvis cannot perform tasks at a later time using offline communicator.')
-    if not any(word in command.lower() for word in offline_compatible):
+    if not any(word in command_lower for word in offline_compatible):
         raise HTTPException(status_code=422,
                             detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
                                    'Please try an instruction that does not require an user interaction.')
-    if existing := db.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():
+    if existing := odb.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():
         raise HTTPException(status_code=503,
                             detail=f"Processing another offline request: '{existing[0]}'.\nPlease try again.")
-    db.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('request', command)}")
-    db.connection.commit()
+    odb.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('request', command)}")
+    odb.connection.commit()
 
     dt_string = datetime.now().astimezone(tz=LOCAL_TIMEZONE).strftime("%A, %B %d, %Y %H:%M:%S")
     while True:
-        if response := db.cursor.execute("SELECT value from offline WHERE key=?", ('response',)).fetchone():
-            db.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
-                              {'key': 'response', 'value': response[0]})
-            db.connection.commit()
+        if response := odb.cursor.execute("SELECT value from offline WHERE key=?", ('response',)).fetchone():
+            odb.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
+                               {'key': 'response', 'value': response[0]})
+            odb.connection.commit()
             raise HTTPException(status_code=200, detail=f'{dt_string}\n\n{response[0]}')
 
 

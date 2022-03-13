@@ -58,17 +58,17 @@ def conditions(converted: str, should_return: bool = False) -> bool:
 
     elif any(word in converted_lower for word in keywords.current_time) and \
             not any(word in converted_lower for word in keywords.avoid):
-        current_time()
+        current_time(converted)
 
     elif any(word in converted_lower for word in keywords.weather) and \
             not any(word in converted_lower for word in keywords.avoid):
-        weather(phrase=converted)
+        weather(converted)
 
     elif any(word in converted_lower for word in keywords.system_info):
         system_info()
 
     elif any(word in converted for word in keywords.ip_info) or 'IP' in converted.split():
-        ip_info(phrase=converted)
+        ip_info(converted)
 
     elif any(word in converted_lower for word in keywords.wikipedia_):
         wikipedia_()
@@ -89,13 +89,13 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         location()
 
     elif any(word in converted_lower for word in keywords.locate):
-        locate(phrase=converted)
+        locate(converted)
 
     elif any(word in converted_lower for word in keywords.read_gmail):
         read_gmail()
 
     elif any(word in converted_lower for word in keywords.meaning):
-        meaning(phrase=converted)
+        meaning(converted)
 
     elif any(word in converted_lower for word in keywords.delete_todo) and 'items' in converted_lower and \
             any(word in converted_lower for word in todo_checks):
@@ -114,25 +114,25 @@ def conditions(converted: str, should_return: bool = False) -> bool:
 
     elif any(word in converted_lower for word in keywords.distance) and \
             not any(word in converted_lower for word in keywords.avoid):
-        distance(phrase=converted)
+        distance(converted)
 
     elif any(word in converted_lower for word in keywords.car):
-        car(phrase=converted_lower)
+        car(converted_lower)
 
     elif any(word in converted_lower for word in conversation.form):
         speak(text="I am a program, I'm without form.")
 
     elif any(word in converted_lower for word in keywords.locate_places):
-        locate_places(phrase=converted)
+        locate_places(converted)
 
     elif any(word in converted_lower for word in keywords.directions):
-        directions(phrase=converted)
+        directions(converted)
 
     elif any(word in converted_lower for word in keywords.kill_alarm):
         kill_alarm()
 
     elif any(word in converted_lower for word in keywords.set_alarm):
-        set_alarm(phrase=converted)
+        set_alarm(converted)
 
     elif any(word in converted_lower for word in keywords.google_home):
         google_home()
@@ -141,31 +141,31 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         jokes()
 
     elif any(word in converted_lower for word in keywords.reminder):
-        reminder(phrase=converted)
+        reminder(converted)
 
     elif any(word in converted_lower for word in keywords.notes):
         notes()
 
     elif any(word in converted_lower for word in keywords.github):
-        github(phrase=converted)
+        github(converted)
 
     elif any(word in converted_lower for word in keywords.send_sms):
-        send_sms(phrase=converted)
+        send_sms(converted)
 
     elif any(word in converted_lower for word in keywords.google_search):
-        google_search(phrase=converted)
+        google_search(converted)
 
     elif any(word in converted_lower for word in keywords.television):
-        television(phrase=converted)
+        television(converted)
 
     elif any(word in converted_lower for word in keywords.apps):
-        apps(phrase=converted)
+        apps(converted)
 
     elif any(word in converted_lower for word in keywords.music):
-        music(phrase=converted)
+        music(converted)
 
     elif any(word in converted_lower for word in keywords.volume):
-        volume(phrase=converted)
+        volume(converted)
 
     elif any(word in converted_lower for word in keywords.face_detection):
         face_detection()
@@ -174,13 +174,13 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         speed_test()
 
     elif any(word in converted_lower for word in keywords.bluetooth):
-        bluetooth(phrase=converted)
+        bluetooth(converted)
 
     elif any(word in converted_lower for word in keywords.brightness) and 'lights' not in converted_lower:
-        brightness(phrase=converted)
+        brightness(converted)
 
     elif any(word in converted_lower for word in keywords.lights):
-        lights(phrase=converted)
+        lights(converted)
 
     elif any(word in converted_lower for word in keywords.guard_enable):
         guard_enable()
@@ -195,16 +195,16 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         meetings()
 
     elif any(word in converted_lower for word in keywords.voice_changer):
-        voice_changer(phrase=converted)
+        voice_changer(converted)
 
     elif any(word in converted_lower for word in keywords.system_vitals):
         system_vitals()
 
     elif any(word in converted_lower for word in keywords.vpn_server):
-        vpn_server(phrase=converted)
+        vpn_server(converted)
 
     elif any(word in converted_lower for word in keywords.automation):
-        automation_handler(phrase=converted_lower)
+        automation_handler(converted_lower)
 
     elif any(word in converted_lower for word in conversation.greeting):
         speak(text='I am spectacular. I hope you are doing fine too.')
@@ -234,10 +234,10 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         speak(text="I can seamlessly take care of your daily tasks, and also help with most of your work!")
 
     elif any(word in converted_lower for word in keywords.sleep_control):
-        return controls.sleep_control(phrase=converted)
+        return controls.sleep_control(converted)
 
     elif any(word in converted_lower for word in keywords.restart_control):
-        controls.restart_control(phrase=converted)
+        controls.restart_control(converted)
 
     elif any(word in converted_lower for word in keywords.kill) and \
             not any(word in converted_lower for word in keywords.avoid):

@@ -18,13 +18,14 @@ from executors.location import write_current_location
 from executors.logger import logger
 from executors.offline import automator, initiate_tunneling
 from executors.system import hosted_device_info
+from executors.telegram import handler
 from modules.audio import listener, speaker
 from modules.database import database
 from modules.models import models
-from modules.telegram import bot
 from modules.utils import globals, support
 
-db = database.Database(table_name="restart", columns=["flag", "caller"])
+rdb = database.Database(table_name="restart", columns=["flag", "caller"])
+odb = database.Database(table_name='offline', columns=['key', 'value'])
 
 
 class Activator:
@@ -98,10 +99,14 @@ class Activator:
                                                            sound=False),
                               should_return=True)
                     speaker.speak(run=True)
-                elif flag := db.cursor.execute("SELECT flag, caller FROM restart").fetchone():
+                elif flag := rdb.cursor.execute("SELECT flag, caller FROM restart").fetchone():
                     logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
-                    db.cursor.execute("DELETE FROM restart WHERE flag=1")
-                    db.connection.commit()
+                    rdb.cursor.execute("DELETE FROM restart WHERE flag=1")
+                    rdb.connection.commit()
+                    odb.cursor.execute('DROP TABLE IF EXISTS offline')
+                    odb.connection.commit()
+                    rdb.cursor.execute('DROP TABLE IF EXISTS restart')
+                    rdb.connection.commit()
                     if flag[1] == "restart_control":
                         restart()
                     else:
@@ -149,7 +154,7 @@ def initiate_processes() -> Dict[str, Process]:
         - playsound: Plays a start-up sound.
     """
     processes = {
-        "telegram": Process(target=bot.handler),
+        "telegram": Process(target=handler),
         "api": Process(target=trigger_api),
         "automator": Process(target=automator),
         "ngrok": Process(target=initiate_tunneling,

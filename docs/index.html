@@ -486,6 +486,7 @@
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="api.models.InvestmentFilter">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">InvestmentFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logging.Filter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.InvestmentFilter" title="Permalink to this definition">¶</a></dt>
@@ -605,6 +606,7 @@ name is specified, allow every event.</p>
 </div>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="api.rh_helper.MarketHours">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.rh_helper.</span></span><span class="sig-name descname"><span class="pre">MarketHours</span></span><a class="headerlink" href="#api.rh_helper.MarketHours" title="Permalink to this definition">¶</a></dt>
@@ -626,8 +628,25 @@ name is specified, allow every event.</p>
 <span id="alarm"></span><h1>Alarm<a class="headerlink" href="#module-executors.alarm" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.alarm.alarm_executor">
-<span class="sig-prename descclassname"><span class="pre">executors.alarm.</span></span><span class="sig-name descname"><span class="pre">alarm_executor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.alarm.alarm_executor" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.alarm.</span></span><span class="sig-name descname"><span class="pre">alarm_executor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.alarm.alarm_executor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs the <code class="docutils literal notranslate"><span class="pre">alarm.mp3</span></code> file at max volume and reverts the volume after 3 minutes.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.alarm.create_alarm">
+<span class="sig-prename descclassname"><span class="pre">executors.alarm.</span></span><span class="sig-name descname"><span class="pre">create_alarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">am_pm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.alarm.create_alarm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the lock file necessary to set an alarm/timer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hour</strong> – Hour of alarm time.</p></li>
+<li><p><strong>minute</strong> – Minute of alarm time.</p></li>
+<li><p><strong>am_pm</strong> – AM/PM of alarm time.</p></li>
+<li><p><strong>phrase</strong> – Phrase spoken.</p></li>
+<li><p><strong>timer</strong> – Number of minutes/hours to alarm.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1460,33 +1479,9 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="executors.logger.TestLogger.function1">
-<span class="sig-name descname"><span class="pre">function1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.logger.TestLogger.function1" title="Permalink to this definition">¶</a></dt>
-<dd><p>This WILL be logged as it is an error info.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="executors.logger.TestLogger.function2">
-<span class="sig-name descname"><span class="pre">function2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.logger.TestLogger.function2" title="Permalink to this definition">¶</a></dt>
-<dd><p>This WILL be logged as it is a critical info.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="executors.logger.TestLogger.function3">
-<span class="sig-name descname"><span class="pre">function3</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.logger.TestLogger.function3" title="Permalink to this definition">¶</a></dt>
-<dd><p>This WILL be logged as it is a fatal info.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="executors.logger.TestLogger.function4">
-<span class="sig-name descname"><span class="pre">function4</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.logger.TestLogger.function4" title="Permalink to this definition">¶</a></dt>
-<dd><p>This WILL NOT be logged as no logger level is set.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="executors.logger.TestLogger.function5">
-<span class="sig-name descname"><span class="pre">function5</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.logger.TestLogger.function5" title="Permalink to this definition">¶</a></dt>
-<dd><p>This WILL NOT be logged as no logger level is set.</p>
+<dt class="sig sig-object py" id="executors.logger.TestLogger.test_log">
+<span class="sig-name descname"><span class="pre">test_log</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.logger.TestLogger.test_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logs the caller function with a custom time.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1825,6 +1820,24 @@ A condition below assumes two different words as two places but not including tw
 <section id="module-executors.remind">
 <span id="remind"></span><h1>Remind<a class="headerlink" href="#module-executors.remind" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="executors.remind.create_reminder">
+<span class="sig-prename descclassname"><span class="pre">executors.remind.</span></span><span class="sig-name descname"><span class="pre">create_reminder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">am_pm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_about</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#executors.remind.create_reminder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the lock file necessary to set a reminder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hour</strong> – Hour of reminder time.</p></li>
+<li><p><strong>minute</strong> – Minute of reminder time.</p></li>
+<li><p><strong>am_pm</strong> – AM/PM of reminder time.</p></li>
+<li><p><strong>message</strong> – Message to be reminded for.</p></li>
+<li><p><strong>to_about</strong> – remind to or remind about as said in phrase.</p></li>
+<li><p><strong>timer</strong> – Number of minutes/hours to reminder.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="executors.remind.reminder">
 <span class="sig-prename descclassname"><span class="pre">executors.remind.</span></span><span class="sig-name descname"><span class="pre">reminder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.remind.reminder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Passes hour, minute, am/pm and reminder message to Reminder class which initiates a thread for reminder.</p>
@@ -1910,108 +1923,14 @@ A condition below assumes two different words as two places but not including tw
 <section id="module-executors.telegram">
 <span id="telegram"></span><h1>Telegram<a class="headerlink" href="#module-executors.telegram" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.telegram.authenticate">
-<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">authenticate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">telebot.types.Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.telegram.authenticate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validates authentication using the payload received.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>payload</strong> – Payload received from Telegram API.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>If authenticated, <code class="docutils literal notranslate"><span class="pre">get_title_by_name</span></code> is called and a title based on user’s gender is stored as dict to reuse.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A boolean flag to indicate whether the user has been authenticated.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.telegram.get_title_by_name">
-<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">get_title_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#executors.telegram.get_title_by_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Predicts gender by name and returns a title accordingly.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> – Name for which gender has to be predicted.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mam</span></code> if predicted to be female, <code class="docutils literal notranslate"><span class="pre">sir</span></code> if gender is predicted to be male or unpredicted.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.telegram.get_updates">
-<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">get_updates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.telegram.get_updates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if bot is running by making a <code class="docutils literal notranslate"><span class="pre">getUpdate</span></code> call.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A flag indicating whether an instance of telebot is running.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.telegram.greet">
-<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">greet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">telebot.types.Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.telegram.greet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sample greeting responses.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>payload</strong> – Payload received from Telegram API.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.telegram.greeting">
-<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">greeting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#executors.telegram.greeting" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a random greeting message.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Random greeting.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.telegram.jarvis">
-<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">jarvis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">telebot.types.Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.telegram.jarvis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles messages sent with the slash command <code class="docutils literal notranslate"><span class="pre">/jarvis</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>payload</strong> – Payload received from Telegram API.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.telegram.poll_for_messages">
-<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">poll_for_messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.telegram.poll_for_messages" title="Permalink to this definition">¶</a></dt>
-<dd><p>Polls for incoming messages.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.telegram.start">
-<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">telebot.types.Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.telegram.start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Replies to the user with an introductory message.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>payload</strong> – Payload received from Telegram API.</p>
+<dt class="sig sig-object py" id="executors.telegram.handler">
+<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.telegram.handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates polling for new messages.</p>
+<dl class="simple">
+<dt>Handles:</dt><dd><ul class="simple">
+<li><p>OverflowError: Restarts polling to take control over.</p></li>
+<li><p>ConnectionError: Initiates after 10, 20 or 30 seconds. Depends on retry count. Shuts off after 3 attempts.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -2236,6 +2155,7 @@ A condition below assumes two different words as two places but not including tw
 </dl>
 </dd></dl>
 
+<hr class="docutils" />
 <span class="target" id="module-modules.audio.listener"></span><p>Module for speech recognition listener.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Listener</span>
 </pre></div>
@@ -2265,6 +2185,7 @@ A condition below assumes two different words as two places but not including tw
 </dl>
 </dd></dl>
 
+<hr class="docutils" />
 <span class="target" id="module-modules.audio.voices"></span><p>Module for voice changes.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Voices</span>
 </pre></div>
@@ -2413,6 +2334,7 @@ A condition below assumes two different words as two places but not including tw
 
 </dd></dl>
 
+<hr class="docutils" />
 <span class="target" id="module-modules.car.controller"></span><p><strong>API Reference:</strong> <a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo">https://documenter.getpostman.com/view/6250319/RznBMzqo</a> for Jaguar LandRover InControl API.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.car.controller.Control">
@@ -3174,6 +3096,7 @@ Pass 155 for LO and 285 for HI.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Conditions</span>
 </pre></div>
 </div>
+<hr class="docutils" />
 <span class="target" id="module-modules.conditions.keywords"></span><p>List of keywords for each variable which is condition matched in the main module.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Keywords</span>
 </pre></div>
@@ -3192,6 +3115,7 @@ Pass 155 for LO and 285 for HI.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.models.config.APIConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.config.</span></span><span class="sig-name descname"><span class="pre">APIConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.config.APIConfig" title="Permalink to this definition">¶</a></dt>
@@ -3203,6 +3127,7 @@ Pass 155 for LO and 285 for HI.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.models.config.BotConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.config.</span></span><span class="sig-name descname"><span class="pre">BotConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.config.BotConfig" title="Permalink to this definition">¶</a></dt>
@@ -3298,40 +3223,6 @@ None - NoneType if no face was recognized.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="modules.lights.smart_lights.MagicHomeApi.calculate_checksum">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_checksum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bytes_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi.calculate_checksum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the checksum from an array of bytes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bytes_</strong> – Takes a list value as argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Checksum value for the given list value.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="modules.lights.smart_lights.MagicHomeApi.check_number_range">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_number_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi.check_number_range" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given number is in the allowed range.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>number</strong> – Takes integer value for RGB value [0-255] check.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An accepted number between 0 and 255.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="modules.lights.smart_lights.MagicHomeApi.get_status">
 <span class="sig-name descname"><span class="pre">get_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi.get_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the current status of a device.</p>
@@ -3347,7 +3238,7 @@ None - NoneType if no face was recognized.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.lights.smart_lights.MagicHomeApi.send_bytes">
-<span class="sig-name descname"><span class="pre">send_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">bytes_</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi.send_bytes" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">send_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">bytes_</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi.send_bytes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send commands to the device.</p>
 <p>If the device hasn’t been communicated to in 5 minutes, reestablish the connection.</p>
 <dl class="field-list simple">
@@ -3359,7 +3250,7 @@ None - NoneType if no face was recognized.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.lights.smart_lights.MagicHomeApi.send_preset_function">
-<span class="sig-name descname"><span class="pre">send_preset_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preset_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi.send_preset_function" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">send_preset_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preset_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi.send_preset_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a preset command to a device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -3373,13 +3264,13 @@ None - NoneType if no face was recognized.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.lights.smart_lights.MagicHomeApi.turn_off">
-<span class="sig-name descname"><span class="pre">turn_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi.turn_off" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">turn_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi.turn_off" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turn a device off.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.lights.smart_lights.MagicHomeApi.turn_on">
-<span class="sig-name descname"><span class="pre">turn_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi.turn_on" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">turn_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi.turn_on" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turn a device on.</p>
 </dd></dl>
 
@@ -3404,6 +3295,41 @@ Whites can have a value of None.</p>
 
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.lights.smart_lights.calculate_checksum">
+<span class="sig-prename descclassname"><span class="pre">modules.lights.smart_lights.</span></span><span class="sig-name descname"><span class="pre">calculate_checksum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bytes_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.calculate_checksum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the checksum from an array of bytes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bytes_</strong> – Takes a list value as argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Checksum value for the given list value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.lights.smart_lights.check_number_range">
+<span class="sig-prename descclassname"><span class="pre">modules.lights.smart_lights.</span></span><span class="sig-name descname"><span class="pre">check_number_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.check_number_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given number is in the allowed range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>number</strong> – Takes integer value for RGB value [0-255] check.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An accepted number between 0 and 255.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
 <span class="target" id="module-modules.lights.preset_values"></span><p>Dictionary values of color and preset number for the lights.</p>
 </section>
 <section id="module-modules.netgear.ip_scanner">
@@ -3747,6 +3673,160 @@ Whites can have a value of None.</p>
 </pre></div>
 </div>
 </section>
+<section id="id4">
+<h1>Telegram<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-modules.telegram.bot"></span><dl class="py class">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.telegram.bot.</span></span><span class="sig-name descname"><span class="pre">TelegramBot</span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates a <code class="docutils literal notranslate"><span class="pre">requests</span></code> session to interact with Telegram API.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TelegramBot</span>
+</pre></div>
+</div>
+<p>Initiates a session.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.authenticate">
+<span class="sig-name descname"><span class="pre">authenticate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.authenticate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authenticates the user with <code class="docutils literal notranslate"><span class="pre">userId</span></code> and <code class="docutils literal notranslate"><span class="pre">userName</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>payload</strong> – Payload to extract the user information.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a boolean to indicate whether the user is authenticated.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.jarvis">
+<span class="sig-name descname"><span class="pre">jarvis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.jarvis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the table <code class="docutils literal notranslate"><span class="pre">offline</span></code> in the database to process a response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>payload</strong> – Payload to extract information from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.poll_for_messages">
+<span class="sig-name descname"><span class="pre">poll_for_messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.poll_for_messages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Polls <code class="docutils literal notranslate"><span class="pre">api.telegram.org</span></code> for new messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>- OverflowError</strong> – When a new polling is initiated using the same token.</p></li>
+<li><p><strong>- ConnectionError</strong> – If unable to connect to the endpoint.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Swaps <code class="docutils literal notranslate"><span class="pre">offset</span></code> value during every iteration to avoid hanging new messages.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.process_payload">
+<span class="sig-name descname"><span class="pre">process_payload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.process_payload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes the payload received after checking for authentication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>payload</strong> – Payload to extract information from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.reply_to">
+<span class="sig-name descname"><span class="pre">reply_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">requests.models.Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.reply_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a payload to reply to a message received.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>payload</strong> – Payload to send as data.</p></li>
+<li><p><strong>response</strong> – Message to be sent to the user.</p></li>
+<li><p><strong>parse_mode</strong> – Parse mode. Defaults to <code class="docutils literal notranslate"><span class="pre">markdown</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Response class.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.send_message">
+<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">requests.models.Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.send_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a payload to reply to a message received.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chat_id</strong> – Chat ID.</p></li>
+<li><p><strong>response</strong> – Message to be sent to the user.</p></li>
+<li><p><strong>parse_mode</strong> – Parse mode. Defaults to <code class="docutils literal notranslate"><span class="pre">markdown</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Response class.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.bot.get_title_by_name">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.bot.</span></span><span class="sig-name descname"><span class="pre">get_title_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.telegram.bot.get_title_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predicts gender by name and returns a title accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name for which gender has to be predicted.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mam</span></code> if predicted to be female, <code class="docutils literal notranslate"><span class="pre">sir</span></code> if gender is predicted to be male or unpredicted.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.bot.greeting">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.bot.</span></span><span class="sig-name descname"><span class="pre">greeting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.telegram.bot.greeting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a random greeting message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Random greeting.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.bot.intro">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.bot.</span></span><span class="sig-name descname"><span class="pre">intro</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.telegram.bot.intro" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a welcome message as a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-modules.temperature.temperature">
 <span id="temperature"></span><h1>Temperature<a class="headerlink" href="#module-modules.temperature.temperature" title="Permalink to this headline">¶</a></h1>
 <p>Convert common temperature values used in the main module.</p>
@@ -4065,7 +4145,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 
 </section>
 <section id="module-modules.utils.support">
-<span id="utils-support"></span><h1>Utils - Support<a class="headerlink" href="#module-modules.utils.support" title="Permalink to this headline">¶</a></h1>
+<span id="support"></span><h1>Support<a class="headerlink" href="#module-modules.utils.support" title="Permalink to this headline">¶</a></h1>
 <p>This is a space for support functions used across different modules.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Support</span>
 </pre></div>
@@ -4123,11 +4203,14 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.extract_nos">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">extract_nos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#modules.utils.support.extract_nos" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">extract_nos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method:</span> <span class="pre">type</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.utils.support.extract_nos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts number part from a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input_</strong> – Takes string as an argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_</strong> – Takes string as an argument.</p></li>
+<li><p><strong>method</strong> – Takes a type to return a float or int value.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Float values.</p>
@@ -4156,6 +4239,23 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.extract_time">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">extract_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.utils.support.extract_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts 12-hour time value from a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_</strong> – Int if found, else returns the received float value.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Extracted time from the string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.flush_screen">
 <span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">flush_screen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.flush_screen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flushes the screen output.</p>
@@ -4167,10 +4267,10 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <dd><p>Removes <code class="docutils literal notranslate"><span class="pre">.0</span></code> float values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input_</strong> – Int if found, else returns the received float value.</p>
+<dd class="field-odd"><p><strong>input_</strong> – Strings or integers with <code class="docutils literal notranslate"><span class="pre">.0</span></code> at the end.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Formatted integer.</p>
+<dd class="field-even"><p>Int if found, else returns the received float value.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>int</p>
@@ -4359,7 +4459,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 
 </section>
 <section id="module-modules.utils.globals">
-<span id="utils-globals"></span><h1>Utils - Globals<a class="headerlink" href="#module-modules.utils.globals" title="Permalink to this headline">¶</a></h1>
+<span id="globals"></span><h1>Globals<a class="headerlink" href="#module-modules.utils.globals" title="Permalink to this headline">¶</a></h1>
 <p>This is a space for dictionaries shared across multiple modules.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Globals</span>
 </pre></div>
@@ -4439,10 +4539,11 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#module-modules.dictionary.dictionary">Meanings</a></li>
 <li><a class="reference internal" href="#models">Models</a></li>
 <li><a class="reference internal" href="#module-restart">Restart</a></li>
+<li><a class="reference internal" href="#id4">Telegram</a></li>
 <li><a class="reference internal" href="#module-modules.temperature.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-modules.tv.tv_controls">TV Connector</a></li>
-<li><a class="reference internal" href="#module-modules.utils.support">Utils - Support</a></li>
-<li><a class="reference internal" href="#module-modules.utils.globals">Utils - Globals</a></li>
+<li><a class="reference internal" href="#module-modules.utils.support">Support</a></li>
+<li><a class="reference internal" href="#module-modules.utils.globals">Globals</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 

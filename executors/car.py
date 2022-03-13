@@ -35,8 +35,8 @@ def car(phrase: str) -> None:
 
     if "start" in phrase or "set" in phrase or "turn on" in phrase:
         extras = ""
-        if climate := support.extract_nos(input_=phrase):
-            climate = int(climate)
+        if climate := support.extract_nos(input_=phrase, method=int):
+            pass
         elif "high" in phrase or "highest" in phrase:
             climate = 83
         elif "low" in phrase or "lowest" in phrase:

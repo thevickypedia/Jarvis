@@ -22,7 +22,7 @@ from modules.models import models
 from modules.utils import globals, support
 
 env = models.env
-db = database.Database(table_name='offline', columns=['key', 'value'])
+odb = database.Database(table_name='offline', columns=['key', 'value'])
 
 
 def automator() -> None:
@@ -45,11 +45,11 @@ def automator() -> None:
     start = time.time()
     dry_run = True
     while True:
-        if cmd := db.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():
+        if cmd := odb.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():
             offline_communicator(command=cmd[0])
-            db.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
-                              {'key': 'request', 'value': cmd[0]})
-            db.connection.commit()
+            odb.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
+                               {'key': 'request', 'value': cmd[0]})
+            odb.connection.commit()
             support.flush_screen()
 
         if os.path.isfile('automation.yaml'):
@@ -149,8 +149,8 @@ def offline_communicator(command: str = None, respond: bool = True) -> None:
         globals.called_by_offline['status'] = False
         response = globals.text_spoken.get('text')
         if 'restart' not in command and respond:
-            db.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('response', response)}")
-            db.connection.commit()
+            odb.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('response', response)}")
+            odb.connection.commit()
         audio_driver.stop()
         voice_default()
     except RuntimeError as error:
