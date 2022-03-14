@@ -6,6 +6,7 @@ from typing import NoReturn
 
 import requests
 
+from executors.controls import restart_control
 from modules.models import config
 from modules.telegram.bot import TelegramBot
 
@@ -29,14 +30,15 @@ def handler() -> NoReturn:
         logger.error(error)
         logger.info("Restarting message poll to take over..")
         handler()
-    except (requests.exceptions.ReadTimeout, ConnectionError) as error:
-        FAILED_CONNECTIONS['calls'] += 1
+    except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError) as error:
         logger.critical(error)
-        logger.info("Restarting after 10 seconds..")
-        time.sleep(FAILED_CONNECTIONS['calls'] * 10)
+        FAILED_CONNECTIONS['calls'] += 1
         if FAILED_CONNECTIONS['calls'] > 3:
-            logger.fatal("Couldn't recover from connection error.")
+            logger.critical("Couldn't recover from connection error. Restarting main module..")
+            restart_control(quiet=True)
         else:
+            logger.info(f"Restarting in {FAILED_CONNECTIONS['calls'] * 10} seconds..")
+            time.sleep(FAILED_CONNECTIONS['calls'] * 10)
             handler()
     # Expected exceptions
     # except socket.timeout as error:

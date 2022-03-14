@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.7.5 (03/13/2022)
+------------------
+- Stop listeners and remove db file while restarting
+- Create a dedicated db file for tasks
+- Handle exceptions in telegram bot more valiantly
+
 5.7.4 (03/13/2022)
 ------------------
 - Alarm/reminder execute after certain minutes/hours

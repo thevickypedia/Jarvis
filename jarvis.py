@@ -101,12 +101,8 @@ class Activator:
                     speaker.speak(run=True)
                 elif flag := rdb.cursor.execute("SELECT flag, caller FROM restart").fetchone():
                     logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
-                    rdb.cursor.execute("DELETE FROM restart WHERE flag=1")
-                    rdb.connection.commit()
-                    odb.cursor.execute('DROP TABLE IF EXISTS offline')
-                    odb.connection.commit()
-                    rdb.cursor.execute('DROP TABLE IF EXISTS restart')
-                    rdb.connection.commit()
+                    self.stop()
+                    os.remove("database.db")
                     if flag[1] == "restart_control":
                         restart()
                     else:

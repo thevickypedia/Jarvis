@@ -7,7 +7,7 @@ from modules.database import database
 from modules.models import models
 from modules.utils import globals
 
-tdb = database.Database(table_name='tasks', columns=['category', 'item'])
+tdb = database.Database(database="tasks.db", table_name="tasks", columns=["category", "item"])
 env = models.env
 
 

@@ -69,13 +69,6 @@ def restart(target: str = None, quiet: bool = False) -> None:
         data.update({'timestamp': int(time.time())})
         with open('location.yaml', 'w') as file:
             yaml.dump(stream=file, data=data)
-    for func, process in globals.processes.items():
-        if process.is_alive():
-            logger.info(f'Sending [SIGTERM] to {func} with PID: {process.pid}')
-            process.terminate()
-        if process.is_alive():
-            logger.info(f'Sending [SIGKILL] to {func} with PID: {process.pid}')
-            process.kill()
     os.system('python restart.py')
     exit(1)
 
