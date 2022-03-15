@@ -5,7 +5,7 @@
 
 """
 
-current_date = ["today's date", "current date", "today"]
+current_date = ["today's date", "current date"]
 
 current_time = ["current time", "time now", "time in"]
 
@@ -27,7 +27,7 @@ apps = ["launch"]
 
 repeat = ["repeat", "train"]
 
-location = ["location", "where am i"]
+location = ["location", "where are you"]
 
 locate = ["locate", "where is my", "where's my"]
 

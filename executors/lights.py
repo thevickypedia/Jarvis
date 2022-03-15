@@ -13,6 +13,7 @@ from modules.models import models
 from modules.utils import globals, support
 
 env = models.env
+fileio = models.fileio
 
 
 def lights(phrase: str) -> None:
@@ -21,11 +22,11 @@ def lights(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
-    if not os.path.isfile('smart_devices.yaml'):
+    if not os.path.isfile(fileio.smart_devices):
         support.no_env_vars()
         return
 
-    with open('smart_devices.yaml') as file:
+    with open(fileio.smart_devices) as file:
         smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader)
 
     if not any([smart_devices.get('hallway_ip'), smart_devices.get('kitchen_ip'),

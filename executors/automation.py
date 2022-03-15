@@ -13,6 +13,7 @@ from modules.audio import speaker
 from modules.models import models
 
 env = models.env
+fileio = models.fileio
 
 
 def automation_handler(phrase: str) -> None:
@@ -22,32 +23,32 @@ def automation_handler(phrase: str) -> None:
         phrase: Takes the recognized phrase as an argument.
     """
     if "enable" in phrase:
-        if os.path.isfile("tmp_automation.yaml"):
-            os.rename(src="tmp_automation.yaml", dst="automation.yaml")
+        if os.path.isfile(fileio.tmp_automation):
+            os.rename(src=fileio.tmp_automation, dst=fileio.automation)
             speaker.speak(text=f"Automation has been enabled {env.title}!")
-        elif os.path.isfile("automation.yaml"):
+        elif os.path.isfile(fileio.automation):
             speaker.speak(text=f"Automation was never disabled {env.title}!")
         else:
             speaker.speak(text=f"I couldn't not find the source file to enable automation {env.title}!")
     elif "disable" in phrase:
-        if os.path.isfile("automation.yaml"):
-            os.rename(src="automation.yaml", dst="tmp_automation.yaml")
+        if os.path.isfile(fileio.automation):
+            os.rename(src=fileio.automation, dst=fileio.tmp_automation)
             speaker.speak(text=f"Automation has been disabled {env.title}!")
-        elif os.path.isfile("tmp_automation.yaml"):
+        elif os.path.isfile(fileio.tmp_automation):
             speaker.speak(text=f"Automation was never enabled {env.title}!")
         else:
             speaker.speak(text=f"I couldn't not find the source file to disable automation {env.title}!")
 
 
 def rewrite_automator(write_data: dict) -> None:
-    """Rewrites the ``'automation.yaml'`` with the updated dictionary.
+    """Rewrites the automation file with the updated dictionary.
 
     Args:
         write_data: Takes the new dictionary as an argument.
     """
-    with open("automation.yaml", "w") as file:
+    with open(fileio.automation, 'w') as file:
         logger.info("Data has been modified. Rewriting automation data into YAML file.")
-        yaml.dump(write_data, file, indent=2)
+        yaml.dump(data=write_data, stream=file, indent=2, sort_keys=False)
 
 
 def auto_helper() -> Union[str, None]:
@@ -58,7 +59,7 @@ def auto_helper() -> Union[str, None]:
         Task to be executed.
     """
     offline_list = offline_compatible()
-    with open("automation.yaml") as read_file:
+    with open(fileio.automation) as read_file:
         try:
             automation_data = yaml.load(stream=read_file, Loader=yaml.FullLoader)
         except ScannerError:
@@ -69,7 +70,7 @@ def auto_helper() -> Union[str, None]:
                          f"Logging automation data and removing the file to avoid endless errors.\n"
                          f"{''.join(['*' for _ in range(120)])}\n\n{read_file.read()}\n\n"
                          f"{''.join(['*' for _ in range(120)])}")
-            os.remove("automation.yaml")
+            os.remove(fileio.automation)
             return
 
     for automation_time, automation_info in automation_data.items():
@@ -85,7 +86,7 @@ def auto_helper() -> Union[str, None]:
         except ValueError:
             logger.error(f"Incorrect Datetime format: {automation_time}. "
                          "Datetime string should be in the format: 6:00 AM. "
-                         "Removing the key-value from automation.yaml")
+                         f"Removing the key-value from {fileio.automation}")
             automation_data.pop(automation_time)
             rewrite_automator(write_data=automation_data)
             break  # Using break instead of continue as python doesn't like dict size change in-between a loop

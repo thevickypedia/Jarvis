@@ -18,6 +18,7 @@ from modules.utils import globals, support
 
 rdb = database.Database(table_name='restart', columns=['flag', 'caller'])
 env = models.env
+fileio = models.fileio
 
 
 def restart(target: str = None, quiet: bool = False) -> None:
@@ -63,11 +64,11 @@ def restart(target: str = None, quiet: bool = False) -> None:
             speaker.speak(text=f'Restarting now {env.title}! I will be up and running momentarily.', run=True)
         except RuntimeError as error:
             logger.fatal(error)
-    if os.path.isfile('location.yaml'):
-        with open('location.yaml') as file:
+    if os.path.isfile(fileio.location):
+        with open(fileio.location) as file:
             data = yaml.load(stream=file, Loader=yaml.FullLoader)
-        data.update({'timestamp': int(time.time())})
-        with open('location.yaml', 'w') as file:
+        data["timestamp"] = int(time.time())
+        with open(fileio.location, 'w') as file:
             yaml.dump(stream=file, data=data)
     os.system('python restart.py')
     exit(1)
@@ -181,7 +182,7 @@ def clear_logs() -> None:
     for __path, __directory, __file in os.walk('logs'):
         for file_ in __file:
             if int(time.time() - os.stat(f'{__path}/{file_}').st_mtime) > 172_800:
-                os.remove(f'{__path}/{file_}')
+                os.remove(f'{__path}/{file_}')  # removes the file if it is older than 48 hours
 
 
 def starter() -> None:

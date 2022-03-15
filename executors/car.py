@@ -15,6 +15,7 @@ from modules.temperature import temperature
 from modules.utils import globals, support
 
 env = models.env
+fileio = models.fileio
 
 
 def car(phrase: str) -> None:
@@ -42,7 +43,7 @@ def car(phrase: str) -> None:
         elif "low" in phrase or "lowest" in phrase:
             climate = 57
         else:
-            with open("location.yaml") as file:
+            with open(fileio.location) as file:
                 current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
             climate = int(temperature.k2f(arg=json.loads(urlopen(
                 url=f"https://api.openweathermap.org/data/2.5/onecall?lat={current_location['latitude']}&"

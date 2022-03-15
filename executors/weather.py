@@ -13,6 +13,7 @@ from modules.temperature import temperature
 from modules.utils import globals, support
 
 env = models.env
+fileio = models.fileio
 
 
 def weather(phrase: str = None) -> None:
@@ -41,7 +42,7 @@ def weather(phrase: str = None) -> None:
         lat = located.latitude
         lon = located.longitude
     else:
-        with open('location.yaml') as file:
+        with open(fileio.location) as file:
             current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
 
         city = current_location['address']['city']

@@ -22,6 +22,7 @@ from modules.models import models
 from modules.utils import globals, support
 
 env = models.env
+fileio = models.fileio
 odb = database.Database(table_name='offline', columns=['key', 'value'])
 
 
@@ -31,7 +32,7 @@ def automator() -> None:
     See Also:
         - Initiates ``meeting_file_writer`` and ``scan_smart_devices`` every hour in a dedicated process.
         - Keeps waiting for the record ``request`` in the database table ``offline`` to invoke ``offline_communicator``
-        - The ``automation.yaml`` should be a dictionary within a dictionary that looks like the below:
+        - The automation file should be a dictionary within a dictionary that looks like the below:
 
             .. code-block:: yaml
 
@@ -52,7 +53,7 @@ def automator() -> None:
             odb.connection.commit()
             support.flush_screen()
 
-        if os.path.isfile('automation.yaml'):
+        if os.path.isfile(fileio.automation):
             if exec_task := auto_helper():
                 offline_communicator(command=exec_task, respond=False)
 

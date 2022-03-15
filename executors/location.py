@@ -1,13 +1,13 @@
 import math
 import os
 import re
+import socket
+import ssl
 import sys
 import time
 import webbrowser
 from difflib import SequenceMatcher
 from pathlib import Path
-from socket import gethostname
-from ssl import create_default_context
 from typing import Tuple, Union
 
 import certifi
@@ -30,9 +30,10 @@ from modules.models import models
 from modules.utils import globals, support
 
 env = models.env
+fileio = models.fileio
 
 # stores necessary values for geolocation to receive the latitude, longitude and address
-options.default_ssl_context = create_default_context(cafile=certifi.where())
+options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
 geo_locator = Nominatim(scheme="http", user_agent="test/1", timeout=3)
 
 
@@ -63,8 +64,8 @@ def device_selector(phrase: str = None) -> Union[AppleDevice, None]:
         index = closest_match.index(max(closest_match))
         target_device = icloud_api.devices[index]
     else:
-        target_device = [device for device in devices if device.get("name") == gethostname() or
-                         gethostname() == device.get("name") + ".local"][0]
+        target_device = [device for device in devices if device.get("name") == socket.gethostname() or
+                         socket.gethostname() == device.get("name") + ".local"][0]
     return target_device if target_device else icloud_api.iphone
 
 
@@ -136,25 +137,25 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
 def write_current_location() -> None:
     """Extracts location information from either an ``AppleDevice`` or the public IP address."""
     # todo: Write to a DB instead of dumping in an yaml file
-    if os.path.isfile("location.yaml"):
-        with open("location.yaml") as file:
+    if os.path.isfile(fileio.location):
+        with open(fileio.location) as file:
             location_data = yaml.load(stream=file, Loader=yaml.FullLoader)
-        if (timestamp := location_data.get("timestamp")) and int(time.time()) - timestamp <= 3_600:
+        if (timestamp := location_data.get("timestamp")) and int(time.time()) - timestamp <= 86_400:
             logger.info("Re-using location data.")
             return
         elif timestamp:
             logger.info("Re-generating location data.")
         else:
-            logger.info("No timestamp found. Updating current timestamp.")
-            location_data.update({'timestamp': int(time.time())})
-            with open('location.yaml', 'w') as file:
+            logger.info(f"No timestamp found. Updating current timestamp to {fileio.location}.")
+            location_data["timestamp"] = int(time.time())
+            with open(fileio.location, 'w') as file:
                 yaml.dump(stream=file, data=location_data)
             return
 
     current_lat, current_lon, location_info = location_services(device=device_selector())
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
-    logger.info("Writing location.yaml...")
-    with open("location.yaml", "w") as location_writer:
+    logger.info(f"Writing location info into {fileio.location}")
+    with open(fileio.location, 'w') as location_writer:
         yaml.dump(data={"timezone": current_tz, "timestamp": int(time.time()),
                         "latitude": current_lat, "longitude": current_lon, "address": location_info},
                   stream=location_writer, default_flow_style=False)
@@ -162,11 +163,12 @@ def write_current_location() -> None:
 
 def location() -> None:
     """Gets the user's current location."""
-    with open("location.yaml") as file:
+    with open(fileio.location) as file:
         current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
-    speaker.speak(text=f"You're at {current_location['address']['city']} "
-                       f"{current_location['address']['state']}, "
-                       f"in {current_location['address']['country']}")
+    speaker.speak(text=f"I'm at {current_location.get('address', {}).get('road', '')} - "
+                       f"{current_location.get('address', {}).get('city', '')} - "
+                       f"{current_location.get('address', {}).get('state', '')} - "
+                       f"in {current_location.get('address', {}).get('country', '')}")
 
 
 def locate(phrase: str) -> None:
@@ -288,7 +290,7 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         start = desired_start.latitude, desired_start.longitude
         start_check = None
     else:
-        with open("location.yaml") as file:
+        with open(fileio.location) as file:
             current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
         start = (current_location["latitude"], current_location["longitude"])
         start_check = "My Location"
@@ -353,7 +355,7 @@ def locate_places(phrase: str = None) -> None:
                 before_keyword, keyword, after_keyword = converted.partition(keyword)
                 place = after_keyword.replace(" in", "").strip()
 
-    with open("location.yaml") as file:
+    with open(fileio.location) as file:
         current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
     try:
         destination_location = geo_locator.geocode(place)
@@ -425,7 +427,7 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     end_country = address["country"] if "country" in address else None
     end = f"{located.latitude},{located.longitude}"
 
-    with open("location.yaml") as file:
+    with open(fileio.location) as file:
         current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
 
     start_country = current_location["address"]["country"]

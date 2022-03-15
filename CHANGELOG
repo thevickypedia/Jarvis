@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+5.7.6 (03/14/2022)
+------------------
+- Create a `pydantic` model to load all `FileIO` paths
+- Store all file operations in fileio directory
+- Add road name to string of address when asked
+- Fix meetings file re-written all the time
+- Write frequent files in max called first order
+
 5.7.5 (03/13/2022)
 ------------------
 - Stop listeners and remove db file while restarting

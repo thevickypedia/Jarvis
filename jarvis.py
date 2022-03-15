@@ -24,6 +24,9 @@ from modules.database import database
 from modules.models import models
 from modules.utils import globals, support
 
+env = models.env
+fileio = models.fileio
+
 rdb = database.Database(table_name="restart", columns=["flag", "caller"])
 odb = database.Database(table_name='offline', columns=['key', 'value'])
 
@@ -102,7 +105,7 @@ class Activator:
                 elif flag := rdb.cursor.execute("SELECT flag, caller FROM restart").fetchone():
                     logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
                     self.stop()
-                    os.remove("database.db")
+                    os.remove(fileio.base_db)
                     if flag[1] == "restart_control":
                         restart()
                     else:
@@ -165,7 +168,6 @@ def initiate_processes() -> Dict[str, Process]:
 
 
 if __name__ == '__main__':
-    env = models.env
     globals.hosted_device = hosted_device_info()
     if globals.hosted_device.get("os_name") != "macOS":
         exit("Unsupported Operating System.\nWindows support was deprecated. "

@@ -1,4 +1,4 @@
-from os.path import dirname, isfile, join, realpath, sep
+import os
 
 from setuptools import setup
 
@@ -35,7 +35,7 @@ def read(name: str) -> str:
     References:
         https://pythonhosted.org/an_example_pypi_project/setuptools.html#setting-up-setup-py
     """
-    with open(join(dirname(__file__), name)) as file:
+    with open(os.path.join(os.path.dirname(__file__), name)) as file:
         content = file.read()
     return content
 
@@ -47,8 +47,8 @@ def dependencies() -> list:
         list:
         List of dependencies to be installed.
     """
-    requirement_file = dirname(realpath(__file__)) + f'{sep}lib{sep}requirements.txt'
-    if isfile(requirement_file):
+    requirement_file = os.path.dirname(os.path.realpath(__file__)) + f'{os.path.sep}lib{os.path.sep}requirements.txt'
+    if os.path.isfile(requirement_file):
         with open(requirement_file) as requirements:
             install_requires = requirements.read().splitlines()
     return install_requires
