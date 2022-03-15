@@ -164,7 +164,7 @@ tv_mac: TV_MAC_ADDRESS
 
 ### Automation Setup [Optional]
 Executes [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/api/controller.py#L7) tasks at pre-defined times without any user interaction.
-Uses an `automation.yaml` file as source.
+Uses an `automation.yaml` file as source which should be stored within the directory `fileio`
 
 <details>
 <summary><strong>Setup Instructions</strong></summary>

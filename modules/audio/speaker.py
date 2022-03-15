@@ -12,7 +12,10 @@ import yaml
 
 from executors.logger import logger
 from modules.conditions import conversation, keywords
+from modules.models import models
 from modules.utils import globals
+
+fileio = models.fileio
 
 audio_driver = pyttsx3.init()
 
@@ -50,8 +53,8 @@ def frequently_used(function_name: str) -> None:
     See Also:
         - This function does not have purpose, but to analyze and re-order the conditions' module at a later time.
     """
-    if os.path.isfile('frequent.yaml'):
-        with open('frequent.yaml') as file:
+    if os.path.isfile(fileio.frequent):
+        with open(fileio.frequent) as file:
             data = yaml.load(stream=file, Loader=yaml.FullLoader)
         if data.get(function_name):
             data[function_name] += 1
@@ -59,5 +62,6 @@ def frequently_used(function_name: str) -> None:
             data[function_name] = 1
     else:
         data = {function_name: 1}
-    with open('frequent.yaml', 'w') as file:
-        yaml.dump(data=data, stream=file)
+    with open(fileio.frequent, 'w') as file:
+        yaml.dump(data={k: v for k, v in sorted(data.items(), key=lambda x: x[1], reverse=True)},
+                  stream=file, sort_keys=False)

@@ -16,6 +16,7 @@ from modules.tv.tv_controls import TV
 from modules.utils import globals, support
 
 env = models.env
+fileio = models.fileio
 
 
 def television(phrase: str) -> None:
@@ -29,14 +30,14 @@ def television(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
-    if not os.path.isfile('smart_devices.yaml'):
+    if not os.path.isfile(fileio.smart_devices):
         support.no_env_vars()
         return
 
     if vpn_checker().startswith('VPN'):
         return
 
-    with open('smart_devices.yaml') as file:
+    with open(fileio.smart_devices) as file:
         smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader)
 
     if not all([smart_devices.get('tv_ip'), smart_devices.get('tv_mac'), env.tv_client_key]):

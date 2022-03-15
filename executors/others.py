@@ -21,7 +21,6 @@ from randfacts import get_fact
 from executors.communicator import read_gmail
 from executors.date_time import current_date, current_time
 from executors.internet import vpn_checker
-from executors.logger import logger
 from executors.meetings import meeting_reader, meetings_gatherer
 from executors.robinhood import robinhood
 from executors.todo_list import todo
@@ -35,6 +34,7 @@ from modules.models import models
 from modules.utils import globals, support
 
 env = models.env
+fileio = models.fileio
 
 
 def repeat() -> None:
@@ -259,13 +259,13 @@ def meaning(phrase: str) -> None:
 
 
 def notes() -> None:
-    """Listens to the user and saves everything to a ``notes.txt`` file."""
+    """Listens to the user and saves it as a text file."""
     converted = listener.listen(timeout=5, phrase_limit=10)
     if converted != 'SR_ERROR':
         if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
             return
         else:
-            with open(r'notes.txt', 'a') as writer:
+            with open(fileio.notes, 'a') as writer:
                 writer.write(f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"
                              f"{converted}\n")
 
@@ -316,9 +316,9 @@ def time_travel() -> None:
     """Triggered only from ``initiator()`` to give a quick update on the user's daily routine."""
     part_day = support.part_of_day()
     meeting = None
-    if not os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
+    if not os.path.isfile(fileio.meetings) and part_day == 'Morning' and datetime.now().strftime('%A') not in \
             ['Saturday', 'Sunday']:
-        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer, kwds={'logger': logger})
+        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)  # Runs parallely and awaits completion
     speak(text=f"Good {part_day} {env.name}!")
     if part_day == 'Night':
         if event := support.celebrate():
@@ -328,7 +328,7 @@ def time_travel() -> None:
     current_time()
     weather()
     speak(run=True)
-    if os.path.isfile('meetings') and part_day == 'Morning' and datetime.now().strftime('%A') not in \
+    if os.path.isfile(fileio.meetings) and part_day == 'Morning' and datetime.now().strftime('%A') not in \
             ['Saturday', 'Sunday']:
         meeting_reader()
     elif meeting:

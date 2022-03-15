@@ -16,6 +16,7 @@ from modules.conditions import keywords
 from modules.models import models
 
 env = models.env
+fileio = models.fileio
 
 
 def alpha(text: str) -> bool:
@@ -158,7 +159,7 @@ def google_maps(query: str) -> bool:
     else:
         return True
 
-    with open('location.yaml') as file:
+    with open(fileio.location) as file:
         current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
 
     results = len(required)

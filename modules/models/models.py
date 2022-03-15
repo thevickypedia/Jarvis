@@ -9,7 +9,30 @@ import getpass
 import os.path
 import socket
 
-from pydantic import BaseSettings, DirectoryPath, EmailStr, Field, PositiveInt
+from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
+                      FilePath, PositiveInt)
+
+if not os.path.isdir('fileio'):
+    os.makedirs(name='fileio')
+
+
+class FileIO(BaseModel):
+    """Loads all the files' path required/created by Jarvis.
+
+    >>> FileIO
+
+    """
+
+    automation: FilePath = 'fileio/automation.yaml'
+    tmp_automation: FilePath = 'fileio/tmp_automation.yaml'
+    base_db: FilePath = 'fileio/database.db'
+    frequent: FilePath = 'fileio/frequent.yaml'
+    location: FilePath = 'fileio/location.yaml'
+    meetings: FilePath = 'fileio/meetings'
+    notes: FilePath = 'fileio/notes.txt'
+    smart_devices: FilePath = 'fileio/smart_devices.yaml'
+    task_db: FilePath = 'fileio/tasks.db'
+    training: FilePath = 'fileio/training_data.yaml'
 
 
 class EnvConfig(BaseSettings):
@@ -71,3 +94,4 @@ class EnvConfig(BaseSettings):
 
 
 env = EnvConfig()
+fileio = FileIO()

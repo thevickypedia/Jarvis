@@ -28,6 +28,7 @@ from modules.models import models
 from modules.netgear.ip_scanner import LocalIPScan
 
 env = models.env
+fileio = models.fileio
 
 
 def flush_screen() -> None:
@@ -152,8 +153,8 @@ def unrecognized_dumper(train_data: dict) -> None:
         train_data: Takes the dictionary that has to be written as an argument.
     """
     dt_string = datetime.now().strftime("%B %d, %Y %H:%M:%S")
-    if os.path.isfile("training_data.yaml"):
-        with open("training_data.yaml") as reader:
+    if os.path.isfile(fileio.training):
+        with open(fileio.training) as reader:
             data = yaml.safe_load(stream=reader) or {}
         for key, value in train_data.items():
             if data.get(key):
@@ -163,7 +164,7 @@ def unrecognized_dumper(train_data: dict) -> None:
     else:
         data = {key1: {dt_string: value1} for key1, value1 in train_data.items()}
 
-    with open("training_data.yaml", "w") as writer:
+    with open(fileio.training, 'w') as writer:
         yaml.dump(data=data, stream=writer)
 
 
@@ -349,7 +350,7 @@ def scan_smart_devices() -> None:
         logger.info("Scanning smart devices using netgear module.")
         local_devices = LocalIPScan(router_pass=env.router_pass)
         tv_ip, tv_mac = local_devices.tv()
-        with open("smart_devices.yaml", "w") as file:
+        with open(fileio.smart_devices, 'w') as file:
             yaml.dump(stream=file, data={
                 "hallway_ip": list(local_devices.hallway()),
                 "kitchen_ip": list(local_devices.kitchen()),

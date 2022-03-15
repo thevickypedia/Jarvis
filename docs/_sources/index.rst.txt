@@ -419,7 +419,13 @@ Meanings
 Models
 ======
 
-.. autoclass:: modules.models.models.EnvConfig(pydantic.BaseModel)
+.. autoclass:: modules.models.models.FileIO(pydantic.BaseModel)
+   :members:
+   :undoc-members:
+
+====
+
+.. autoclass:: modules.models.models.EnvConfig(pydantic.BaseSettings)
    :members:
    :undoc-members:
 

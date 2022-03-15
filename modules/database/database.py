@@ -1,5 +1,9 @@
 import sqlite3
 
+from modules.models import models
+
+fileio = models.fileio
+
 
 class Database:
     """Creates a connection to the base DB.
@@ -8,7 +12,7 @@ class Database:
 
     """
 
-    def __init__(self, table_name: str, columns: list[str], database: str = 'database.db'):
+    def __init__(self, table_name: str, columns: list[str], database: str = fileio.base_db):
         """Instantiates the class ``Database`` to create a connection and a cursor.
 
         Args:

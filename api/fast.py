@@ -3,6 +3,7 @@ import logging
 import mimetypes
 import os
 import string
+import time
 from datetime import datetime, timezone
 from logging.config import dictConfig
 from multiprocessing import Process
@@ -62,7 +63,7 @@ def run_robinhood() -> NoReturn:
     if os.path.isfile(serve_file):
         modified = int(os.stat(serve_file).st_mtime)
         logger.info(f"{serve_file} was generated on {datetime.fromtimestamp(modified).strftime('%c')}.")
-        if int(datetime.now().timestamp()) - modified < 3_600:
+        if int(time.time()) - modified < 3_600:  # generates new file only if the file is older than an hour
             return
     else:
         logger.info('Initiated robinhood gatherer.')

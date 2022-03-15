@@ -1,5 +1,6 @@
 import os
 import re
+import time
 from datetime import datetime
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
@@ -11,19 +12,20 @@ from modules.models import models
 from modules.utils import globals
 
 env = models.env
+fileio = models.fileio
 MEETING_FILE = f"{env.meeting_app}.scpt"
 
 
 def meeting_file_writer() -> None:
-    """Gets return value from ``meetings()`` and writes it to file named ``meetings``.
+    """Gets return value from ``meetings()`` and writes it to a file.
 
     This function runs in a dedicated thread every 30 minutes to avoid wait time when meetings information is requested.
     """
-    if os.path.isfile("meetings") and int(datetime.now().timestamp()) - int(os.stat("meetings").st_mtime) < 1_800:
-        os.remove("meetings")  # removes the file if it is older than 30 minutes
+    if os.path.isfile(fileio.meetings) and int(time.time()) - int(os.stat(fileio.meetings).st_mtime) > 1_800:
+        os.remove(fileio.meetings)  # removes the file if it is older than 30 minutes
     data = meetings_gatherer()
     if data.startswith("You"):
-        with open("meetings", "w") as gatherer:
+        with open(fileio.meetings, 'w') as gatherer:
             gatherer.write(data)
 
 
@@ -98,18 +100,18 @@ def meetings_gatherer() -> str:
 
 
 def meeting_reader() -> None:
-    """Speaks meeting information that ``meeting_gatherer()`` stored in a file named 'meetings'.
+    """Speaks meeting information that ``meeting_gatherer()`` stored in a file.
 
     If the file is not available, meeting information is directly fetched from the ``meetings()`` function.
     """
-    with open("meetings") as meeting:
+    with open(fileio.meetings) as meeting:
         meeting_info = meeting.read()
         speaker.speak(text=meeting_info)
 
 
 def meetings():
     """Controller for meetings."""
-    if os.path.isfile("meetings"):
+    if os.path.isfile(fileio.meetings):
         meeting_reader()
     else:
         if globals.called_by_offline["status"]:
