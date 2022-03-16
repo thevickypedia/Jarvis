@@ -1,8 +1,8 @@
 import json
+import socket
 import subprocess
 import sys
 from multiprocessing import Process
-from socket import AF_INET, SOCK_DGRAM, gethostname, socket
 from typing import Union
 from urllib.error import HTTPError
 from urllib.request import urlopen
@@ -26,11 +26,7 @@ def ip_address() -> str:
         str:
         Private IP address of host machine.
     """
-    socket_ = socket(AF_INET, SOCK_DGRAM)
-    socket_.connect(("8.8.8.8", 80))
-    ip_addr = socket_.getsockname()[0]
-    socket_.close()
-    return ip_addr
+    return socket.gethostbyname(socket.gethostname())
 
 
 def vpn_checker() -> str:
@@ -93,7 +89,7 @@ def ip_info(phrase: str) -> None:
         if not output:
             output = f"I was unable to fetch the public IP {env.title}!"
     else:
-        output = f"My local IP address for {gethostname()} is {ip_address()}"
+        output = f"My local IP address for {socket.gethostname()} is {ip_address()}"
     speaker.speak(text=output)
 
 

@@ -12,6 +12,7 @@ import socket
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       FilePath, PositiveInt)
 
+# Used by docs
 if not os.path.isdir('fileio'):
     os.makedirs(name='fileio')
 

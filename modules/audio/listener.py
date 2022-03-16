@@ -11,6 +11,7 @@ from playsound import playsound
 from speech_recognition import (Microphone, Recognizer, RequestError,
                                 UnknownValueError, WaitTimeoutError)
 
+from executors.logger import logger
 from modules.utils import support
 
 recognizer = Recognizer()  # initiates recognizer that uses google's translation
@@ -38,7 +39,7 @@ def listen(timeout: int, phrase_limit: int, sound: bool = True) -> str:
             support.flush_screen()
             playsound('indicators/end.mp3', block=False) if sound else None
             return_val = recognizer.recognize_google(listened)
-            sys.stdout.write(f'\r{return_val}')
+            logger.info(return_val)
         except (UnknownValueError, RequestError, WaitTimeoutError):
             return_val = 'SR_ERROR'
 

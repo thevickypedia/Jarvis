@@ -1,24 +1,22 @@
 import os
+import platform
 import struct
 import sys
 import time
-from multiprocessing import Process
 from pathlib import PurePath
-from typing import Dict
 
+import packaging.version
 import pvporcupine
+import speech_recognition
 from playsound import playsound
 from pyaudio import PyAudio, paInt16
 
-from api.server import trigger_api
 from executors.commander import initiator
 from executors.controls import exit_process, restart, starter
 from executors.internet import get_ssid, internet_checker
-from executors.location import write_current_location
 from executors.logger import logger
-from executors.offline import automator, initiate_tunneling
+from executors.processor import start_processes, stop_processes
 from executors.system import hosted_device_info
-from executors.telegram import handler
 from modules.audio import listener, speaker
 from modules.database import database
 from modules.models import models
@@ -28,7 +26,7 @@ env = models.env
 fileio = models.fileio
 
 rdb = database.Database(table_name="restart", columns=["flag", "caller"])
-odb = database.Database(table_name='offline', columns=['key', 'value'])
+odb = database.Database(table_name="offline", columns=["key", "value"])
 
 
 class Activator:
@@ -105,7 +103,6 @@ class Activator:
                 elif flag := rdb.cursor.execute("SELECT flag, caller FROM restart").fetchone():
                     logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
                     self.stop()
-                    os.remove(fileio.base_db)
                     if flag[1] == "restart_control":
                         restart()
                     else:
@@ -125,13 +122,7 @@ class Activator:
             - Closes audio stream.
             - Releases port audio resources.
         """
-        for func, process in globals.processes.items():
-            if process.is_alive():
-                logger.info(f"Sending [SIGTERM] to {func} with PID: {process.pid}")
-                process.terminate()
-            if process.is_alive():
-                logger.info(f"Sending [SIGKILL] to {func} with PID: {process.pid}")
-                process.kill()
+        stop_processes()
         logger.info("Releasing resources acquired by Porcupine.")
         self.detector.delete()
         if self.audio_stream and self.audio_stream.is_active():
@@ -141,30 +132,36 @@ class Activator:
         self.py_audio.terminate()
 
 
-def initiate_processes() -> Dict[str, Process]:
-    """Initiate multiple background processes to achieve parallelization.
-
-    Methods
-        - poll_for_messages: Initiates polling for messages on the telegram bot.
-        - trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.
-        - automator: Initiates automator that executes offline commands and certain functions at said time.
-        - initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
-        - write_current_location: Writes current location details into a yaml file.
-        - playsound: Plays a start-up sound.
-    """
-    processes = {
-        "telegram": Process(target=handler),
-        "api": Process(target=trigger_api),
-        "automator": Process(target=automator),
-        "ngrok": Process(target=initiate_tunneling,
-                         kwargs={"offline_host": env.offline_host, "offline_port": env.offline_port, "home": env.home}),
-        "location": Process(target=write_current_location),
-    }
-    for func, process in processes.items():
-        process.start()
-        logger.info(f"Started function: {func} {process.sentinel} with PID: {process.pid}")
-    playsound(sound="indicators/initialize.mp3", block=False)
-    return processes
+def sentry_mode() -> None:
+    """Listens forever and invokes ``initiator()`` when recognized. Stops when ``restart`` table has an entry."""
+    while True:
+        try:
+            sys.stdout.write("\rSentry Mode")
+            listened = recognizer.listen(source=source, timeout=5, phrase_time_limit=7)
+            support.flush_screen()
+            recognized = recognizer.recognize_google(listened)
+            logger.info(recognized)
+            if not any(word in recognized.lower() for word in ['jarvis', 'jealous', 'javis', 'buddy']):
+                continue
+            initiator(key_original=recognized, should_return=True)
+            speaker.speak(run=True)
+        except (speech_recognition.UnknownValueError,
+                speech_recognition.WaitTimeoutError,
+                speech_recognition.RequestError):
+            sys.stdout.write("\r")
+        except KeyboardInterrupt:
+            stop_processes()
+            exit_process()
+            support.terminator()
+            break
+        if flag := rdb.cursor.execute("SELECT flag, caller FROM restart").fetchone():
+            logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
+            stop_processes()
+            if flag[1] == "restart_control":
+                restart()
+            else:
+                restart(quiet=True)
+            break
 
 
 if __name__ == '__main__':
@@ -190,6 +187,12 @@ if __name__ == '__main__':
 
     sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: 50%")
 
-    globals.processes = initiate_processes()
+    globals.processes = start_processes()
 
-    Activator().start()
+    if packaging.version.parse(platform.mac_ver()[0]) > packaging.version.parse('10.14'):
+        Activator().start()
+    else:
+        recognizer = speech_recognition.Recognizer()
+        with speech_recognition.Microphone() as source:
+            recognizer.adjust_for_ambient_noise(source)
+            sentry_mode()

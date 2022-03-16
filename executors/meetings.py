@@ -67,8 +67,8 @@ def meetings_gatherer() -> str:
         if not failure:
             failure = f"Unable to read {env.meeting_app} - [{error}]\n{err_msg}"
         logger.error(failure)
-        failure = failure.replace('"', '')  # An identifier can’t go after this “"”
-        os.system(f"""osascript -e 'display notification "{failure}" with title "Jarvis"'""")
+        # failure = failure.replace('"', '')  # An identifier can’t go after this “"”
+        # os.system(f"""osascript -e 'display notification "{failure}" with title "Jarvis"'""")
         return f"I was unable to read your {env.meeting_app} {env.title}! Please make sure it is in sync."
 
     events = out.decode().strip()

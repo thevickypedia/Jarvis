@@ -64,8 +64,9 @@ def device_selector(phrase: str = None) -> Union[AppleDevice, None]:
         index = closest_match.index(max(closest_match))
         target_device = icloud_api.devices[index]
     else:
-        target_device = [device for device in devices if device.get("name") == socket.gethostname() or
-                         socket.gethostname() == device.get("name") + ".local"][0]
+        base_list = [device for device in devices if device.get("name") == socket.gethostname() or
+                     socket.gethostname() == device.get("name") + ".local"] or devices
+        target_device = base_list[0]
     return target_device if target_device else icloud_api.iphone
 
 
@@ -111,9 +112,6 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
         # uses latitude and longitude information from your IP's client when unable to connect to icloud
         st = Speedtest()
         current_lat_, current_lon_ = st.results.client["lat"], st.results.client["lon"]
-        speaker.speak(text="I have trouble accessing the i-cloud API, so I'll be using your I.P address to get your "
-                           "location. Please note that this may not be accurate enough for location services.",
-                      run=True)
     except ConnectionError:
         current_lat_, current_lon_ = None, None
         sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
@@ -166,7 +164,7 @@ def location() -> None:
     with open(fileio.location) as file:
         current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
     speaker.speak(text=f"I'm at {current_location.get('address', {}).get('road', '')} - "
-                       f"{current_location.get('address', {}).get('city', '')} - "
+                       f"{current_location.get('address', {}).get('city', '')} "
                        f"{current_location.get('address', {}).get('state', '')} - "
                        f"in {current_location.get('address', {}).get('country', '')}")
 

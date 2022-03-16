@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+5.7.7 (03/15/2022)
+------------------
+- FEATURE::Jarvis supports older MacOS versions
+- Fix bug in getting icloud default device
+- Stop notification for missing folder in calendar
+- Get system information in a more eloquent way
+- Check for Telegram Bot api key before start up
+- Split start and stop background processes into a dedicated module
+- Simply fetching local IP address
+- Add logging in listener.py
+- Change kwargs to be more meaningful
+
 5.7.6 (03/14/2022)
 ------------------
 - Create a `pydantic` model to load all `FileIO` paths

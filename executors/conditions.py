@@ -49,7 +49,6 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         bool:
         Boolean True only when asked to sleep for conditioned sleep message.
     """
-    logger.info(f'Request: {converted}')
     converted_lower = converted.lower()
     todo_checks = ['to do', 'to-do', 'todo']
     if any(word in converted_lower for word in keywords.current_date) and \
@@ -251,7 +250,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         return False
 
     else:
-        logger.info(f'Received the unrecognized lookup parameter: {converted}')
+        logger.info(f'Received unrecognized lookup parameter: {converted}')
         Thread(target=support.unrecognized_dumper, args=[{'CONDITIONS': converted}]).start()
         if alpha(text=converted):
             if google_maps(query=converted):
