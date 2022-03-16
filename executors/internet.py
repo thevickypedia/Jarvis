@@ -26,7 +26,11 @@ def ip_address() -> str:
         str:
         Private IP address of host machine.
     """
-    return socket.gethostbyname(socket.gethostname())
+    socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    socket_.connect(("8.8.8.8", 80))
+    ip_addr = socket_.getsockname()[0]
+    socket_.close()
+    return ip_addr
 
 
 def vpn_checker() -> str:
