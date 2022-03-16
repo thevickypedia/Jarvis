@@ -134,20 +134,9 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.initiate_processes">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">initiate_processes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">multiprocessing.context.Process</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.initiate_processes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiate multiple background processes to achieve parallelization.</p>
-<dl class="simple">
-<dt>Methods</dt><dd><ul class="simple">
-<li><p>poll_for_messages: Initiates polling for messages on the telegram bot.</p></li>
-<li><p>trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.</p></li>
-<li><p>automator: Initiates automator that executes offline commands and certain functions at said time.</p></li>
-<li><p>initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
-<li><p>write_current_location: Writes current location details into a yaml file.</p></li>
-<li><p>playsound: Plays a start-up sound.</p></li>
-</ul>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="jarvis.sentry_mode">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">sentry_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.sentry_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Listens forever and invokes <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> when recognized. Stops when <code class="docutils literal notranslate"><span class="pre">restart</span></code> table has an entry.</p>
 </dd></dl>
 
 </section>
@@ -912,12 +901,12 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.commander.split_phrase">
-<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">split_phrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.commander.split_phrase" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">split_phrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.commander.split_phrase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits the input at ‘and’ or ‘also’ and makes it multiple commands to execute if found in statement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> – Takes the phrase spoken as an argument.</p></li>
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
 <li><p><strong>should_return</strong> – A boolean flag sent to <code class="docutils literal notranslate"><span class="pre">conditions</span></code> to indicate that the <code class="docutils literal notranslate"><span class="pre">else</span></code> part shouldn’t be executed.</p></li>
 </ul>
 </dd>
@@ -932,11 +921,11 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.commander.timed_delay">
-<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">timed_delay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.commander.timed_delay" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">timed_delay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.commander.timed_delay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks pre-conditions if a delay is necessary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key</strong> – Takes the phrase spoken as an argument.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Returns a boolean flag whether the time delay should be applied.</p>
@@ -1814,6 +1803,32 @@ A condition below assumes two different words as two places but not including tw
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
+</dd></dl>
+
+</section>
+<section id="module-executors.processor">
+<span id="processor"></span><h1>Processor<a class="headerlink" href="#module-executors.processor" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.processor.start_processes">
+<span class="sig-prename descclassname"><span class="pre">executors.processor.</span></span><span class="sig-name descname"><span class="pre">start_processes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">multiprocessing.context.Process</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.processor.start_processes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates multiple background processes to achieve parallelization.</p>
+<dl class="simple">
+<dt>Methods</dt><dd><ul class="simple">
+<li><p>poll_for_messages: Initiates polling for messages on the telegram bot.</p></li>
+<li><p>trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.</p></li>
+<li><p>automator: Initiates automator that executes offline commands and certain functions at said time.</p></li>
+<li><p>initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
+<li><p>write_current_location: Writes current location details into a yaml file.</p></li>
+<li><p>playsound: Plays a start-up sound.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.processor.stop_processes">
+<span class="sig-prename descclassname"><span class="pre">executors.processor.</span></span><span class="sig-name descname"><span class="pre">stop_processes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.processor.stop_processes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops all background processes initiated during startup and removes database source file.</p>
 </dd></dl>
 
 </section>
@@ -4579,6 +4594,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#module-executors.offline">Offline</a></li>
 <li><a class="reference internal" href="#module-executors.others">Others</a></li>
 <li><a class="reference internal" href="#module-executors.port_handler">Port Handler</a></li>
+<li><a class="reference internal" href="#module-executors.processor">Processor</a></li>
 <li><a class="reference internal" href="#module-executors.remind">Remind</a></li>
 <li><a class="reference internal" href="#module-executors.robinhood">Robinhood</a></li>
 <li><a class="reference internal" href="#module-executors.system">System</a></li>

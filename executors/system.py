@@ -1,11 +1,12 @@
 import os
+import platform
 import re
 import shutil
 import subprocess
 import sys
 from datetime import datetime
-from platform import platform
 
+import packaging.version
 import psutil
 
 from executors.controls import restart
@@ -29,7 +30,7 @@ def system_info() -> None:
     ram_used = support.size_converter(byte_size=psutil.virtual_memory().percent).replace(' B', ' %')
     physical = psutil.cpu_count(logical=False)
     logical = psutil.cpu_count(logical=True)
-    speaker.speak(text=f"You're running {' '.join(platform().split('-')[0:2])}, with {physical} physical cores and "
+    speaker.speak(text=f"You're running {platform.platform(terse=True)}, with {physical} physical cores and "
                        f"{logical} logical cores. Your physical drive capacity is {total}. You have used up {used} of "
                        f"space. Your free space is {free}. Your RAM capacity is {ram}. You are currently utilizing "
                        f"{ram_used} of your memory.")
@@ -49,9 +50,12 @@ def system_vitals() -> None:
 
     version = globals.hosted_device.get('os_version')
     model = globals.hosted_device.get('device')
+    logger.info('Fetching system vitals')
 
     cpu_temp, gpu_temp, fan_speed, output = None, None, None, ""
-    if version >= 10.14:  # Tested on 10.13, 10.14 and 11.6 versions
+
+    # Tested on 10.13, 10.14, 11.6 and 12.3 versions
+    if packaging.version.parse(version) > packaging.version.parse('10.14'):
         critical_info = [each.strip() for each in (os.popen(
             f'echo {env.root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
         )).read().split('\n') if each != '']
@@ -117,6 +121,5 @@ def hosted_device_info() -> dict:
     """
     system_kernel = (subprocess.check_output("sysctl hw.model", shell=True)).decode('utf-8').splitlines()
     device = support.extract_str(system_kernel[0].split(':')[1])
-    platform_info = platform().split('-')
-    version = '.'.join(platform_info[1].split('.')[0:2])
-    return {'device': device, 'os_name': platform_info[0], 'os_version': float(version)}
+    platform_info = platform.platform(terse=True).split('-')
+    return {'device': device, 'os_name': platform_info[0], 'os_version': platform_info[1]}

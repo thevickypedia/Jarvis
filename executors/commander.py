@@ -19,11 +19,11 @@ env = models.env
 offline_list = offline_compatible()
 
 
-def split_phrase(key: str, should_return: bool = False) -> bool:
+def split_phrase(phrase: str, should_return: bool = False) -> bool:
     """Splits the input at 'and' or 'also' and makes it multiple commands to execute if found in statement.
 
     Args:
-        key: Takes the phrase spoken as an argument.
+        phrase: Takes the phrase spoken as an argument.
         should_return: A boolean flag sent to ``conditions`` to indicate that the ``else`` part shouldn't be executed.
 
     Returns:
@@ -32,18 +32,18 @@ def split_phrase(key: str, should_return: bool = False) -> bool:
     """
     exit_check = False  # this is specifically to catch the sleep command which should break the while loop in renew()
 
-    if ' after ' in key:
-        if timed_delay(key=key):
+    if ' after ' in phrase:
+        if timed_delay(phrase=phrase):
             return False
 
-    if ' and ' in key and not any(word in key.lower() for word in keywords.avoid):
-        for each in key.split(' and '):
+    if ' and ' in phrase and not any(word in phrase.lower() for word in keywords.avoid):
+        for each in phrase.split(' and '):
             exit_check = conditions(converted=each.strip(), should_return=should_return)
-    elif ' also ' in key and not any(word in key.lower() for word in keywords.avoid):
-        for each in key.split(' also '):
+    elif ' also ' in phrase and not any(word in phrase.lower() for word in keywords.avoid):
+        for each in phrase.split(' also '):
             exit_check = conditions(converted=each.strip(), should_return=should_return)
     else:
-        exit_check = conditions(converted=key.strip(), should_return=should_return)
+        exit_check = conditions(converted=phrase.strip(), should_return=should_return)
     return exit_check
 
 
@@ -83,20 +83,20 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
     offline_communicator(command=phrase, respond=False)
 
 
-def timed_delay(key: str) -> bool:
+def timed_delay(phrase: str) -> bool:
     """Checks pre-conditions if a delay is necessary.
 
     Args:
-        key: Takes the phrase spoken as an argument.
+        phrase: Takes the phrase spoken as an argument.
 
     Returns:
         bool:
         Returns a boolean flag whether the time delay should be applied.
     """
-    if any(word in key.lower() for word in offline_list) and \
-            not any(word in key.lower() for word in keywords.set_alarm) and \
-            not any(word in key.lower() for word in keywords.reminder):
-        split_ = key.split('after')
+    if any(word in phrase.lower() for word in offline_list) and \
+            not any(word in phrase.lower() for word in keywords.set_alarm) and \
+            not any(word in phrase.lower() for word in keywords.reminder):
+        split_ = phrase.split('after')
         if split_[0].strip():
             delay = delay_calculator(phrase=split_[1].strip())
             Process(target=delay_condition, kwargs={'phrase': split_[0].strip(), 'delay': delay}).start()
@@ -134,7 +134,7 @@ def renew() -> None:
         remove = ['buddy', 'jarvis', 'hey', 'hello', 'sr_error']
         converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
         if converted:
-            if split_phrase(key=converted):  # should_return flag is not passed which will default to False
+            if split_phrase(phrase=converted):  # should_return flag is not passed which will default to False
                 break  # split_phrase() returns a boolean flag from conditions. conditions return True only for sleep
         elif any(word in converted.lower() for word in remove):
             continue
@@ -169,7 +169,7 @@ def initiator(key_original: str, should_return: bool = False) -> None:
     else:
         converted = ' '.join([i for i in key_original.split() if i.lower() not in ['buddy', 'jarvis', 'sr_error']])
         if converted:
-            split_phrase(key=converted.strip(), should_return=should_return)
+            split_phrase(phrase=converted.strip(), should_return=should_return)
         else:
             speaker.speak(text=f'{random.choice(conversation.wake_up3)}')
             initialize()
