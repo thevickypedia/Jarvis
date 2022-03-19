@@ -6,7 +6,7 @@ from version import version_info
 
 base_url = 'https://github.com/thevickypedia/Jarvis'
 
-# https://pypi.org/classifiers/
+ https://pypi.org/classifiers/
 classifiers = [
     'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Information Technology',
