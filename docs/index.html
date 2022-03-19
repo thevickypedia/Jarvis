@@ -137,6 +137,10 @@
 <dt class="sig sig-object py" id="jarvis.sentry_mode">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">sentry_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.sentry_mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Listens forever and invokes <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> when recognized. Stops when <code class="docutils literal notranslate"><span class="pre">restart</span></code> table has an entry.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Gets invoked only when run from Mac-OS older than 14.4.</p>
+</div>
 </dd></dl>
 
 </section>
@@ -971,7 +975,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <ul>
 <li><div class="line-block">
 <div class="line">Restarts the machine without approval when <code class="docutils literal notranslate"><span class="pre">uptime</span></code> is more than 2 days as the confirmation is requested</div>
-<div class="line">in <a class="reference external" href="https://thevickypedia.github.io/Jarvis/#jarvis.system_vitals">system_vitals</a>.</div>
+<div class="line">in <a class="reference external" href="https://thevickypedia.github.io/Jarvis/#executors.system.system_vitals">system_vitals</a>.</div>
 </div>
 </li>
 <li><p>This is done ONLY when the system vitals are read, and the uptime is more than 2 days.</p></li>
@@ -1056,6 +1060,24 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd><p>To purge log files older than 48 hours.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.controls.stop_terminals">
+<span class="sig-prename descclassname"><span class="pre">executors.controls.</span></span><span class="sig-name descname"><span class="pre">stop_terminals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">apps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">('iterm',</span> <span class="pre">'terminal')</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.controls.stop_terminals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops background processes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>apps</strong> – Default apps that have to be shutdown when <code class="docutils literal notranslate"><span class="pre">deep</span></code> argument is not set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.controls.terminator">
+<span class="sig-prename descclassname"><span class="pre">executors.controls.</span></span><span class="sig-name descname"><span class="pre">terminator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.controls.terminator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.</p>
+<p>Using this, eliminates the hassle of forcing multiple threads to stop.</p>
 </dd></dl>
 
 </section>
@@ -3463,6 +3485,11 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.hostnames">
+<span class="sig-name descname"><span class="pre">hostnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.hostnames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.location">
 <span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.location" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4483,27 +4510,6 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.utils.support.stop_processes">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">stop_processes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">('iterm',</span> <span class="pre">'terminal')</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.stop_processes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stops background processes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>deep</strong> – Takes a boolean value indicating whether to kill the process or gracefully terminate it.</p></li>
-<li><p><strong>apps</strong> – Default apps that have to be shutdown when <code class="docutils literal notranslate"><span class="pre">deep</span></code> argument is not set.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.utils.support.terminator">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">terminator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.utils.support.terminator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.</p>
-<p>Using this, eliminates the hassle of forcing multiple threads to stop.</p>
 </dd></dl>
 
 <dl class="py function">

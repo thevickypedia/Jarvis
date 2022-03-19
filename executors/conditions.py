@@ -51,17 +51,29 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     """
     converted_lower = converted.lower()
     todo_checks = ['to do', 'to-do', 'todo']
-    if any(word in converted_lower for word in keywords.current_date) and \
+
+    if any(word in converted_lower for word in keywords.lights):
+        lights(converted)
+
+    elif any(word in converted_lower for word in keywords.volume):
+        volume(converted)
+
+    elif any(word in converted_lower for word in keywords.current_date) and \
             not any(word in converted_lower for word in keywords.avoid):
         current_date()
+
+    elif any(word in converted_lower for word in keywords.car):
+        car(converted_lower)
+
+    elif any(word in converted_lower for word in keywords.television):
+        television(converted)
+
+    elif any(word in converted_lower for word in keywords.weather):
+        weather(converted)
 
     elif any(word in converted_lower for word in keywords.current_time) and \
             not any(word in converted_lower for word in keywords.avoid):
         current_time(converted)
-
-    elif any(word in converted_lower for word in keywords.weather) and \
-            not any(word in converted_lower for word in keywords.avoid):
-        weather(converted)
 
     elif any(word in converted_lower for word in keywords.system_info):
         system_info()
@@ -115,9 +127,6 @@ def conditions(converted: str, should_return: bool = False) -> bool:
             not any(word in converted_lower for word in keywords.avoid):
         distance(converted)
 
-    elif any(word in converted_lower for word in keywords.car):
-        car(converted_lower)
-
     elif any(word in converted_lower for word in conversation.form):
         speak(text="I am a program, I'm without form.")
 
@@ -154,17 +163,11 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     elif any(word in converted_lower for word in keywords.google_search):
         google_search(converted)
 
-    elif any(word in converted_lower for word in keywords.television):
-        television(converted)
-
     elif any(word in converted_lower for word in keywords.apps):
         apps(converted)
 
     elif any(word in converted_lower for word in keywords.music):
         music(converted)
-
-    elif any(word in converted_lower for word in keywords.volume):
-        volume(converted)
 
     elif any(word in converted_lower for word in keywords.face_detection):
         face_detection()
@@ -175,11 +178,8 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     elif any(word in converted_lower for word in keywords.bluetooth):
         bluetooth(converted)
 
-    elif any(word in converted_lower for word in keywords.brightness) and 'lights' not in converted_lower:
+    elif any(word in converted_lower for word in keywords.brightness):
         brightness(converted)
-
-    elif any(word in converted_lower for word in keywords.lights):
-        lights(converted)
 
     elif any(word in converted_lower for word in keywords.guard_enable):
         guard_enable()
@@ -206,7 +206,8 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         automation_handler(converted_lower)
 
     elif any(word in converted_lower for word in conversation.greeting):
-        speak(text='I am spectacular. I hope you are doing fine too.')
+        if not alpha(text=converted):
+            speak(text='I am spectacular. I hope you are doing fine too.')
 
     elif any(word in converted_lower for word in conversation.capabilities):
         speak(text='There is a lot I can do. For example: I can get you the weather at any location, news around '
@@ -222,15 +223,15 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         speak(text="My listeners are up. There is nothing I cannot process. So ask me anything..")
 
     elif any(word in converted_lower for word in conversation.what):
-        speak(text="I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
+        speak(text="I'm just a pre-programmed virtual assistant.")
 
     elif any(word in converted_lower for word in conversation.who):
         speak(text="I am Jarvis. A virtual assistant designed by Mr.Raauv.")
 
     elif any(word in converted_lower for word in conversation.about_me):
-        speak(text="I am Jarvis. A virtual assistant designed by Mr.Raauv.")
-        speak(text="I'm just a pre-programmed virtual assistant, trying to become a natural language UI.")
-        speak(text="I can seamlessly take care of your daily tasks, and also help with most of your work!")
+        speak(text="I am Jarvis. A virtual assistant designed by Mr.Raauv. "
+                   "I'm just a pre-programmed virtual assistant, trying to become a natural language UI. "
+                   "I can seamlessly take care of your daily tasks, and also help with most of your work!")
 
     elif any(word in converted_lower for word in keywords.sleep_control):
         return controls.sleep_control(converted)
@@ -252,8 +253,8 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     else:
         logger.info(f'Received unrecognized lookup parameter: {converted}')
         Thread(target=support.unrecognized_dumper, args=[{'CONDITIONS': converted}]).start()
-        if alpha(text=converted):
-            if google_maps(query=converted):
+        if not alpha(text=converted):
+            if not google_maps(query=converted):
                 if google(query=converted):
                     # if none of the conditions above are met, opens a Google search on default browser
                     search_query = str(converted).replace(' ', '+')

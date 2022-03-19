@@ -1,4 +1,28 @@
+import os
+
+import yaml
 from pynetgear import Netgear
+
+from executors.logger import logger
+from modules.models import models
+
+fileio = models.fileio
+
+
+def _get_hostnames() -> dict:
+    """Loads the hostnames source file.
+
+    Returns:
+        dict:
+        Category and hostnames.
+    """
+    if os.path.isfile(fileio.hostnames):
+        try:
+            with open(fileio.hostnames) as file:
+                return yaml.load(stream=file, Loader=yaml.FullLoader)
+        except yaml.YAMLError as error:
+            logger.error(error)
+    return {}
 
 
 class LocalIPScan:
@@ -14,7 +38,12 @@ class LocalIPScan:
         Args:
             router_pass: Password to authenticate the API client.
         """
+        if not router_pass:
+            raise ValueError(
+                "Router password is required to scan for devices."
+            )
         self.attached_devices = Netgear(password=router_pass).get_attached_devices()
+        self._hostnames = _get_hostnames()
 
     def hallway(self) -> str:
         """Host names of hallway light bulbs stored in a list.
@@ -23,15 +52,9 @@ class LocalIPScan:
             str:
             IP address of the device.
         """
-        hallway_1 = 'ZENGGE_35_011853'
-        hallway_2 = 'ZENGGE_35_0171D9'
-        hallway_3 = 'ZENGGE_35_065576'
-        hallway_4 = 'ZENGGE_35_DDB9B1'
-        hallway_5 = 'ZENGGE_35_23343E'
-        hallway_all = [hallway_1, hallway_2, hallway_3, hallway_4, hallway_5]
-        if attached_devices := self.attached_devices:
-            for device in attached_devices:
-                if device.name in hallway_all:
+        if self.attached_devices and self._hostnames.get('hallway'):
+            for device in self.attached_devices:
+                if device.name in self._hostnames.get('hallway'):
                     yield device.ip
 
     def kitchen(self) -> str:
@@ -41,12 +64,9 @@ class LocalIPScan:
             str:
             IP address of the device.
         """
-        kitchen_1 = 'ZENGGE_35_239190'
-        kitchen_2 = 'ZENGGE_35_22E6FD'
-        kitchen_all = [kitchen_1, kitchen_2]
-        if attached_devices := self.attached_devices:
-            for device in attached_devices:
-                if device.name in kitchen_all:
+        if self.attached_devices and self._hostnames.get('kitchen'):
+            for device in self.attached_devices:
+                if device.name in self._hostnames.get('kitchen'):
                     yield device.ip
 
     def bedroom(self) -> str:
@@ -56,10 +76,9 @@ class LocalIPScan:
             str:
             IP address of the device.
         """
-        bedroom_1 = 'ZENGGE_35_22E43F'
-        if attached_devices := self.attached_devices:
-            for device in attached_devices:
-                if device.name == bedroom_1:
+        if self.attached_devices and self._hostnames.get('bedroom'):
+            for device in self.attached_devices:
+                if device.name in self._hostnames.get('bedroom'):
                     yield device.ip
 
     def tv(self) -> tuple:
@@ -69,20 +88,20 @@ class LocalIPScan:
             tuple:
             A tuple object of IP address and mac address of the TV.
         """
-        if attached_devices := self.attached_devices:
-            for device in attached_devices:
-                if device.name == 'LGWEBOSTV':
+        if self.attached_devices and self._hostnames.get('tv'):
+            for device in self.attached_devices:
+                if device.name == self._hostnames.get('tv'):
                     return device.ip, device.mac
         return None, None
 
 
 if __name__ == '__main__':
-    import os
     from pprint import pprint
 
     from dotenv import load_dotenv
 
-    env_file_path = '../../.env'
-    load_dotenv(dotenv_path=env_file_path)
+    env_path = '../../.env'
+    load_dotenv(dotenv_path=env_path)
+    fileio.hostnames = f'../../{fileio.hostnames}'
 
     pprint(LocalIPScan(router_pass=os.environ.get('ROUTER_PASS')).attached_devices)

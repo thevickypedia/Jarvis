@@ -1,3 +1,16 @@
+#!/bin/sh
+
+# Checks current version and throws a warning if older han 10.14
+base_ver="10.14"
+ver=$(sw_vers | grep ProductVersion | cut -d':' -f2 | tr -d ' ')
+if awk "BEGIN {exit !($base_ver > $ver)}"; then
+  echo -e '\n***************************************************************************************************'
+  echo "** You're running MacOS ${ver#"${ver%%[![:space:]]*}"}. Wake word library will not be supported in MacOS older than ${base_ver}. **"
+  echo "** This means the audio listened, is converted into text and then condition checked to initiate. **"
+  echo -e '***************************************************************************************************\n'
+  sleep 3
+fi
+
 # Looks for brew installation and installs only if brew is not found in /usr/local/bin
 brew_check=$(which brew)
 brew_condition="/usr/local/bin/brew"

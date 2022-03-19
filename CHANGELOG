@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+5.7.9 (03/18/2022)
+------------------
+- Use device hostnames from a source yaml file
+- Bump uvicorn version and clean up requirements.txt
+- Move stopper functions from support.py to controls.py
+- Show a warning message during installation for legacy versions
+- Re-arrange conditions.py as per frequently used
+- Simplify .gitignore
+
 5.7.8 (03/16/2022)
 ------------------
 - Fix local IP address reading `localhost`

@@ -144,21 +144,42 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 A source file `smart_devices.yaml` is used to store smart devices' IPs. `Jarvis` supports `MagicHome` lights and `LGWebOS` TVs.
 
 <details>
-<summary><strong>Manual Setup</strong></summary>
+<summary><strong>Setup Instructions</strong></summary>
 
-By using `smart_devices.yaml`, the `Netgear` module can be avoided at the cost of manually updating the source file in case of IP changes.
+- For the `Netgear` module to scan for smart devices, a `hostnames.yaml` file is required to be placed in `fileio` directory.
 
 - The source file should be as following:
 
 ```yaml
+bedroom:
+  - 'HOSTNAME1'
+  - 'HOSTNAME2'
+hallway:
+  - 'HOSTNAME1'
+  - 'HOSTNAME2'
+  - 'HOSTNAME3'
+kitchen:
+  - 'HOSTNAME1'
+  - 'HOSTNAME2'
+  - 'HOSTNAME3'
+tv: 'LGWEBOSTV'
+```
+
+> Note: Jarvis currently supports only one hostname for TV but multiple for lights.
+
+By using `smart_devices.yaml`, the `Netgear` module can be avoided at the cost of manually updating the source file in case of IP changes.
+
+- If the source file is hand-created, it should be as following:
+
+```yaml
 bedroom_ip:
-- LOCAL_IP_ADDRESS
+- 'LOCAL_IP_ADDRESS'
 hallway_ip:
-- LOCAL_IP_ADDRESS
+- 'LOCAL_IP_ADDRESS'
 kitchen_ip:
-- LOCAL_IP_ADDRESS
-tv_ip: LOCAL_IP_ADDRESS
-tv_mac: TV_MAC_ADDRESS
+- 'LOCAL_IP_ADDRESS'
+tv_ip: 'LOCAL_IP_ADDRESS'
+tv_mac: 'TV_MAC_ADDRESS'
 ```
 </details>
 

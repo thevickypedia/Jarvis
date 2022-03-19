@@ -4,45 +4,24 @@
 __pycache__
 venv
 
-# training directory with images of faces for recognition
-train
-
 # WIP: Dockerfile and it's requirements file
 Dockerfile
 lib/docker_requirements.txt
 
-# Unknown words will be saved for later review
-training_data.yaml
-
-# to-do items stored in a database
-tasks.db
-
-# Notes saved when asked to Jarvis
-notes.txt
-
 # WIP: Contacts to call or message
 contacts.yml
 
+# File IO operations
+fileio
+
 # Log files
-*.log
+logs
+
+# training directory with images of faces for recognition
+train
 
 # Storage for images of intruders
 threat
-
-# Storage for location details to reuse
-location.yaml
-
-# Storage for automation setup
-automation.yaml
-
-# Storage for frequently called functions/methods
-frequent.yaml
-
-# Storage for smart devices if found using Netgear module or hard-coded
-smart_devices.yaml
-
-# Storage for offline communications
-database.db
 
 # .keep files for Alarms and Reminders
 alarm
@@ -51,9 +30,6 @@ reminder
 # sphinx docs builder within doc_generator
 _build
 _static
-
-# file where meetings() data is written every 15 minutes
-meetings
 
 # credentials stored locally
 .env

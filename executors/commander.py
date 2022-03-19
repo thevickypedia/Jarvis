@@ -167,9 +167,8 @@ def initiator(key_original: str, should_return: bool = False) -> None:
         speaker.speak(text=f'{random.choice(conversation.wake_up2)}')
         initialize()
     else:
-        converted = ' '.join([i for i in key_original.split() if i.lower() not in ['buddy', 'jarvis', 'sr_error']])
-        if converted:
-            split_phrase(phrase=converted.strip(), should_return=should_return)
+        if key_original:
+            split_phrase(phrase=key_original, should_return=should_return)
         else:
             speaker.speak(text=f'{random.choice(conversation.wake_up3)}')
             initialize()
