@@ -32,6 +32,7 @@ class FileIO(BaseModel):
     meetings: FilePath = 'fileio/meetings'
     notes: FilePath = 'fileio/notes.txt'
     smart_devices: FilePath = 'fileio/smart_devices.yaml'
+    hostnames: FilePath = 'fileio/hostnames.yaml'
     task_db: FilePath = 'fileio/tasks.db'
     training: FilePath = 'fileio/training_data.yaml'
 

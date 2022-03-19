@@ -12,7 +12,7 @@ from playsound import playsound
 from pyaudio import PyAudio, paInt16
 
 from executors.commander import initiator
-from executors.controls import exit_process, restart, starter
+from executors.controls import exit_process, restart, starter, terminator
 from executors.internet import get_ssid, internet_checker
 from executors.logger import logger
 from executors.processor import start_processes, stop_processes
@@ -94,8 +94,8 @@ class Activator:
                 pcm = self.audio_stream.read(num_frames=self.detector.frame_length, exception_on_overflow=False)
                 pcm = struct.unpack_from("h" * self.detector.frame_length, pcm)
                 if self.detector.process(pcm=pcm) >= 0:
-                    self.close_stream()
                     playsound(sound="indicators/acknowledgement.mp3", block=False)
+                    self.close_stream()
                     initiator(key_original=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit,
                                                            sound=False),
                               should_return=True)
@@ -111,7 +111,7 @@ class Activator:
         except KeyboardInterrupt:
             self.stop()
             exit_process()
-            support.terminator()
+            terminator()
 
     def stop(self) -> None:
         """Invoked when the run loop is exited or manual interrupt.
@@ -133,17 +133,23 @@ class Activator:
 
 
 def sentry_mode() -> None:
-    """Listens forever and invokes ``initiator()`` when recognized. Stops when ``restart`` table has an entry."""
+    """Listens forever and invokes ``initiator()`` when recognized. Stops when ``restart`` table has an entry.
+
+    See Also:
+        Gets invoked only when run from Mac-OS older than 14.4.
+    """
     while True:
         try:
             sys.stdout.write("\rSentry Mode")
-            listened = recognizer.listen(source=source, timeout=5, phrase_time_limit=7)
-            support.flush_screen()
-            recognized = recognizer.recognize_google(listened)
-            logger.info(recognized)
-            if not any(word in recognized.lower() for word in ['jarvis', 'jealous', 'javis', 'buddy']):
+            listened = recognizer.listen(source=source, timeout=10, phrase_time_limit=1)
+            sys.stdout.write("\r")
+            if not any(word in recognizer.recognize_google(listened).lower() for word in [
+                'friday', 'jarvis', 'buddy', 'javis', 'you there', 'jealous'
+            ]):
                 continue
-            initiator(key_original=recognized, should_return=True)
+            playsound(sound="indicators/acknowledgement.mp3", block=False)
+            initiator(key_original=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
+                      should_return=True)
             speaker.speak(run=True)
         except (speech_recognition.UnknownValueError,
                 speech_recognition.WaitTimeoutError,
@@ -152,7 +158,7 @@ def sentry_mode() -> None:
         except KeyboardInterrupt:
             stop_processes()
             exit_process()
-            support.terminator()
+            terminator()
             break
         if flag := rdb.cursor.execute("SELECT flag, caller FROM restart").fetchone():
             logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
@@ -183,7 +189,7 @@ if __name__ == '__main__':
                       run=True)
         sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
                          f"\nTotal runtime: {support.time_converter(time.perf_counter())}")
-        support.terminator()
+        terminator()
 
     sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: 50%")
 

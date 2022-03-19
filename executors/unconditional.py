@@ -41,18 +41,19 @@ def alpha(text: str) -> bool:
     try:
         res = alpha_client.query(text)
     except Exception:  # noqa
-        return True
+        return False
     if res['@success'] == 'false':
-        return True
+        return False
     else:
         try:
             response = next(res.results).text.splitlines()[0]
             response = re.sub(r'(([0-9]+) \|)', '', response).replace(' |', ':').strip()
             if response == '(no data available)':
-                return True
+                return False
             speaker.speak(text=response)
-        except (StopIteration, AttributeError):
             return True
+        except (StopIteration, AttributeError):
+            return False
 
 
 def google(query: str, suggestion_count: int = 0) -> None:
@@ -157,7 +158,7 @@ def google_maps(query: str) -> bool:
     if required:
         required = sorted(required, key=lambda sort: sort['Rating'], reverse=True)
     else:
-        return True
+        return False
 
     with open(fileio.location) as file:
         current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
@@ -200,16 +201,16 @@ def google_maps(query: str) -> bool:
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                 webbrowser.open(url=maps_url)
                 speaker.speak(text=f"Directions on your screen {env.title}!")
-                return False
+                return True
             elif results == 1:
-                return False
+                return True
             elif n == results:
                 speaker.speak(text=f"I've run out of options {env.title}!")
-                return False
+                return True
             else:
                 continue
         else:
-            return False
+            return True
 
 
 def google_search(phrase: str = None) -> None:

@@ -11,13 +11,11 @@ import random
 import re
 import string
 import sys
-import time
 from datetime import datetime
 from difflib import SequenceMatcher
 from resource import RUSAGE_SELF, getrusage
 from typing import Union
 
-import psutil
 import yaml
 from holidays import country_holidays
 
@@ -255,21 +253,6 @@ def extract_str(input_: str) -> str:
     return "".join([i for i in input_ if not i.isdigit() and i not in [",", ".", "?", "-", ";", "!", ":"]]).strip()
 
 
-def stop_processes(deep: bool = False, apps: tuple = ("iterm", "terminal")) -> None:
-    """Stops background processes.
-
-    Args:
-        deep: Takes a boolean value indicating whether to kill the process or gracefully terminate it.
-        apps: Default apps that have to be shutdown when ``deep`` argument is not set.
-    """
-    for proc in psutil.process_iter():
-        if any(word in proc.name().lower() for word in apps):
-            proc.terminate()
-            time.sleep(0.5)
-            if deep and proc.is_running():
-                proc.kill()
-
-
 def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> list:
     """Checks for ``*.lock`` files within the ``alarm`` directory if present.
 
@@ -285,23 +268,6 @@ def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> list:
         return [f for f in os.listdir("alarm") if not f.startswith(".")] if os.path.isdir("alarm") else None
     elif reminder_files:
         return [f for f in os.listdir("reminder") if not f.startswith(".")] if os.path.isdir("reminder") else None
-
-
-def terminator() -> None:
-    """Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.
-
-    Using this, eliminates the hassle of forcing multiple threads to stop.
-    """
-    pid = os.getpid()
-    proc = psutil.Process(pid=pid)
-    logger.info(f"Terminating process: {pid}")
-    try:
-        proc.wait(timeout=5)
-    except psutil.TimeoutExpired:
-        logger.warning(f"Failed to terminate process in 5 seconds: {pid}")
-    if proc.is_running():
-        logger.info(f"{pid} is still running. Killing it.")
-        proc.kill()
 
 
 def exit_message() -> str:
@@ -393,5 +359,4 @@ def keygen(length: int, punctuation: bool = False) -> str:
         required_str = string.ascii_letters + string.digits + string.punctuation
     else:
         required_str = string.ascii_letters + string.digits
-    key = "".join(random.choices(required_str, k=length))
-    return key
+    return "".join(random.choices(required_str, k=length))

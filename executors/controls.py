@@ -5,6 +5,7 @@ import sys
 import time
 from threading import Thread
 
+import psutil
 import yaml
 
 from executors import meetings
@@ -30,7 +31,7 @@ def restart(target: str = None, quiet: bool = False) -> None:
 
     Warnings:
         - | Restarts the machine without approval when ``uptime`` is more than 2 days as the confirmation is requested
-          | in `system_vitals <https://thevickypedia.github.io/Jarvis/#jarvis.system_vitals>`__.
+          | in `system_vitals <https://thevickypedia.github.io/Jarvis/#executors.system.system_vitals>`__.
         - This is done ONLY when the system vitals are read, and the uptime is more than 2 days.
 
     Args:
@@ -51,7 +52,7 @@ def restart(target: str = None, quiet: bool = False) -> None:
         else:
             converted = 'yes'
         if any(word in converted.lower() for word in keywords.ok):
-            support.stop_processes()
+            stop_terminals()
             subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
             raise KeyboardInterrupt
         else:
@@ -153,6 +154,37 @@ def restart_control(phrase: str = 'PlaceHolder', quiet: bool = False):
         rdb.connection.commit()
 
 
+def stop_terminals(apps: tuple = ("iterm", "terminal")) -> None:
+    """Stops background processes.
+
+    Args:
+        apps: Default apps that have to be shutdown when ``deep`` argument is not set.
+    """
+    for proc in psutil.process_iter():
+        if any(word in proc.name().lower() for word in apps):
+            proc.terminate()
+            time.sleep(0.5)
+            if proc.is_running():
+                proc.kill()
+
+
+def terminator() -> None:
+    """Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.
+
+    Using this, eliminates the hassle of forcing multiple threads to stop.
+    """
+    pid = os.getpid()
+    proc = psutil.Process(pid=pid)
+    logger.info(f"Terminating process: {pid}")
+    try:
+        proc.wait(timeout=5)
+    except psutil.TimeoutExpired:
+        logger.warning(f"Failed to terminate process in 5 seconds: {pid}")
+    if proc.is_running():
+        logger.info(f"{pid} is still running. Killing it.")
+        proc.kill()
+
+
 def shutdown(proceed: bool = False) -> None:
     """Gets confirmation and turns off the machine.
 
@@ -169,7 +201,7 @@ def shutdown(proceed: bool = False) -> None:
         converted = 'yes'
     if converted != 'SR_ERROR':
         if any(word in converted.lower() for word in keywords.ok):
-            support.stop_processes(deep=True)
+            stop_terminals()
             subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
             raise KeyboardInterrupt
         else:

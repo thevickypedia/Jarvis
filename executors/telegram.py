@@ -35,7 +35,7 @@ def handler() -> NoReturn:
         logger.error(error)
         logger.info("Restarting message poll to take over..")
         handler()
-    except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError) as error:
+    except (ConnectionError, requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError) as error:
         logger.critical(error)
         FAILED_CONNECTIONS['calls'] += 1
         if FAILED_CONNECTIONS['calls'] > 3:

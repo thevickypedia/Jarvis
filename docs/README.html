@@ -181,18 +181,39 @@ Using the module improves accuracy and support between different bandwidths sinc
 <h2>Smart Devices<a class="headerlink" href="#smart-devices" title="Permalink to this headline">¶</a></h2>
 <p>A source file <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> is used to store smart devices’ IPs. <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> supports <code class="docutils literal notranslate"><span class="pre">MagicHome</span></code> lights and <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> TVs.</p>
 <details>
-<summary><strong>Manual Setup</strong></summary><p>By using <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code>, the <code class="docutils literal notranslate"><span class="pre">Netgear</span></code> module can be avoided at the cost of manually updating the source file in case of IP changes.</p>
-<ul class="simple">
+<summary><strong>Setup Instructions</strong></summary><ul class="simple">
+<li><p>For the <code class="docutils literal notranslate"><span class="pre">Netgear</span></code> module to scan for smart devices, a <code class="docutils literal notranslate"><span class="pre">hostnames.yaml</span></code> file is required to be placed in <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p></li>
 <li><p>The source file should be as following:</p></li>
 </ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">bedroom</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAME1&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAME2&#39;</span><span class="w"></span>
+<span class="nt">hallway</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAME1&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAME2&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAME3&#39;</span><span class="w"></span>
+<span class="nt">kitchen</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAME1&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAME2&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAME3&#39;</span><span class="w"></span>
+<span class="nt">tv</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LGWEBOSTV&#39;</span><span class="w"></span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>Note: Jarvis currently supports only one hostname for TV but multiple for lights.</p>
+</div></blockquote>
+<p>By using <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code>, the <code class="docutils literal notranslate"><span class="pre">Netgear</span></code> module can be avoided at the cost of manually updating the source file in case of IP changes.</p>
+<ul class="simple">
+<li><p>If the source file is hand-created, it should be as following:</p></li>
+</ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">bedroom_ip</span><span class="p">:</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LOCAL_IP_ADDRESS</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;LOCAL_IP_ADDRESS&#39;</span><span class="w"></span>
 <span class="nt">hallway_ip</span><span class="p">:</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LOCAL_IP_ADDRESS</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;LOCAL_IP_ADDRESS&#39;</span><span class="w"></span>
 <span class="nt">kitchen_ip</span><span class="p">:</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LOCAL_IP_ADDRESS</span><span class="w"></span>
-<span class="nt">tv_ip</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LOCAL_IP_ADDRESS</span><span class="w"></span>
-<span class="nt">tv_mac</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TV_MAC_ADDRESS</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;LOCAL_IP_ADDRESS&#39;</span><span class="w"></span>
+<span class="nt">tv_ip</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LOCAL_IP_ADDRESS&#39;</span><span class="w"></span>
+<span class="nt">tv_mac</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;TV_MAC_ADDRESS&#39;</span><span class="w"></span>
 </pre></div>
 </div>
 </details></section>
