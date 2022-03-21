@@ -230,4 +230,5 @@ def starter() -> None:
     volume.volume(level=50)
     voices.voice_default()
     clear_logs()
-    meetings.meeting_app_launcher()
+    if env.mac:
+        meetings.meeting_app_launcher()

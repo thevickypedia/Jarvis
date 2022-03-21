@@ -39,7 +39,7 @@ LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 
 offline_compatible = offline_compatible()
 
-importlib.reload(module=logging)
+importlib.reload(module=logging) if env.mac else None
 dictConfig(config=config.APIConfig().LOGGING_CONFIG)
 
 logging.getLogger("uvicorn.access").addFilter(InvestmentFilter())  # Adds token filter to the access logger
@@ -47,7 +47,7 @@ logging.getLogger("uvicorn.access").propagate = False  # Disables access logger 
 
 logger = logging.getLogger('uvicorn.default')
 
-serve_file = 'api/robinhood.html'
+serve_file = f'api{os.path.sep}robinhood.html'
 
 app = FastAPI(
     title="Jarvis API",
@@ -99,7 +99,8 @@ async def start_robinhood() -> Any:
     logger.info(f'Hosting at http://{env.offline_host}:{env.offline_port}')
     if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
         Process(target=run_robinhood).start()
-        cron.CronScheduler(logger=logger).controller()
+        if env.mac:
+            cron.CronScheduler(logger=logger).controller()
 
 
 @app.get('/', response_class=RedirectResponse, include_in_schema=False)

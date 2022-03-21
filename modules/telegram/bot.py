@@ -11,11 +11,12 @@ from modules.database import database
 from modules.models import config, models
 from modules.utils import support
 
-importlib.reload(module=logging)
+env = models.env
+
+importlib.reload(module=logging) if env.mac else None
 dictConfig(config.BotConfig().dict())
 logger = logging.getLogger('telegram')
 
-env = models.env
 offline_compatible = offline_compatible()
 odb = database.Database(table_name='offline', columns=['key', 'value'])
 

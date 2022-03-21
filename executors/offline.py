@@ -7,7 +7,6 @@ from multiprocessing import Process
 from threading import Thread
 
 import requests
-from appscript import app as apple_script
 
 from executors.alarm import alarm_executor
 from executors.automation import auto_helper
@@ -66,14 +65,14 @@ def automator() -> None:
             for each_alarm in alarm_state:
                 if each_alarm == datetime.now().strftime("%I_%M_%p.lock"):
                     Process(target=alarm_executor).start()
-                    os.remove(f'alarm/{each_alarm}')
+                    os.remove(f'alarm{os.path.sep}{each_alarm}')
         if reminder_state := support.lock_files(reminder_files=True):
             for each_reminder in reminder_state:
                 remind_time, remind_msg = each_reminder.split('-')
                 remind_msg = remind_msg.rstrip('.lock')
                 if remind_time == datetime.now().strftime("%I_%M_%p"):
                     Thread(target=reminder_executor, args=[remind_msg]).start()
-                    os.remove(f'reminder/{each_reminder}')
+                    os.remove(f'reminder{os.path.sep}{each_reminder}')
 
         dry_run = False
 
@@ -85,6 +84,9 @@ def initiate_tunneling(offline_host: str, offline_port: int, home: str) -> None:
         - ``forever_ngrok.py`` is a simple script that triggers ngrok connection in the port ``4483``.
         - The connection is tunneled through a public facing URL used to make ``POST`` requests to Jarvis API.
     """
+    # TODO: Make JarvisHelper public and trigger in a dedicated Process to avoid using appscript
+    if not env.mac:
+        return
     ngrok_status = False
     target_script = 'forever_ngrok.py'
     activator = 'source venv/bin/activate'
@@ -98,9 +100,10 @@ def initiate_tunneling(offline_host: str, offline_port: int, home: str) -> None:
                 logger.info('An instance of ngrok connection for offline communicator is running already.')
     if not ngrok_status:
         if os.path.exists(f"{home}/JarvisHelper"):
+            import appscript
             logger.info('Initiating ngrok connection for offline communicator.')
             initiate = f'cd {home}/JarvisHelper && {activator} && export port={offline_port} && python {target_script}'
-            apple_script('Terminal').do_script(initiate)
+            appscript.app('Terminal').do_script(initiate)
         else:
             logger.error(f'JarvisHelper is not available to trigger an ngrok tunneling through {offline_port}')
             endpoint = rf'http:\\{offline_host}:{offline_port}'

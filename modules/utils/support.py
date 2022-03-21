@@ -13,9 +13,9 @@ import string
 import sys
 from datetime import datetime
 from difflib import SequenceMatcher
-from resource import RUSAGE_SELF, getrusage
 from typing import Union
 
+import psutil
 import yaml
 from holidays import country_holidays
 
@@ -177,7 +177,11 @@ def size_converter(byte_size: int) -> str:
         Converted understandable size.
     """
     if not byte_size:
-        byte_size = getrusage(RUSAGE_SELF).ru_maxrss
+        if env.mac:
+            import resource
+            byte_size = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        else:
+            byte_size = psutil.Process(os.getpid()).memory_info().peak_wset
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
     index = int(math.floor(math.log(byte_size, 1024)))
     return f"{round(byte_size / pow(1024, index), 2)} {size_name[index]}"

@@ -43,50 +43,49 @@ def system_vitals() -> None:
         - Jarvis will suggest a reboot if the system uptime is more than 2 days.
         - If confirmed, invokes `restart <https://thevickypedia.github.io/Jarvis/#jarvis.restart>`__ function.
     """
-    if not env.root_password:
-        speaker.speak(text=f"You haven't provided a root password for me to read system vitals {env.title}! "
-                           "Add the root password as an environment variable for me to read.")
-        return
+    output = ""
+    if env.mac:
+        if not env.root_password:
+            speaker.speak(text=f"You haven't provided a root password for me to read system vitals {env.title}! "
+                               "Add the root password as an environment variable for me to read.")
+            return
 
-    version = globals.hosted_device.get('os_version')
-    model = globals.hosted_device.get('device')
-    logger.info('Fetching system vitals')
+        logger.info('Fetching system vitals')
+        cpu_temp, gpu_temp, fan_speed, output = None, None, None, ""
 
-    cpu_temp, gpu_temp, fan_speed, output = None, None, None, ""
+        # Tested on 10.13, 10.14, 11.6 and 12.3 versions
+        if packaging.version.parse(globals.hosted_device.get('os_version')) > packaging.version.parse('10.14'):
+            critical_info = [each.strip() for each in (os.popen(
+                f'echo {env.root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
+            )).read().split('\n') if each != '']
+            support.flush_screen()
 
-    # Tested on 10.13, 10.14, 11.6 and 12.3 versions
-    if packaging.version.parse(version) > packaging.version.parse('10.14'):
-        critical_info = [each.strip() for each in (os.popen(
-            f'echo {env.root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
-        )).read().split('\n') if each != '']
-        support.flush_screen()
+            for info in critical_info:
+                if 'CPU die temperature' in info:
+                    cpu_temp = info.strip('CPU die temperature: ').replace(' C', '').strip()
+                if 'GPU die temperature' in info:
+                    gpu_temp = info.strip('GPU die temperature: ').replace(' C', '').strip()
+                if 'Fan' in info:
+                    fan_speed = info.strip('Fan: ').replace(' rpm', '').strip()
+        else:
+            fan_speed = subprocess.check_output(
+                f'echo {env.root_password} | sudo -S spindump 1 1 -file /tmp/spindump.txt > /dev/null 2>&1;grep '
+                f'"Fan speed" /tmp/spindump.txt;sudo rm /tmp/spindump.txt', shell=True
+            ).decode('utf-8')
 
-        for info in critical_info:
-            if 'CPU die temperature' in info:
-                cpu_temp = info.strip('CPU die temperature: ').replace(' C', '').strip()
-            if 'GPU die temperature' in info:
-                gpu_temp = info.strip('GPU die temperature: ').replace(' C', '').strip()
-            if 'Fan' in info:
-                fan_speed = info.strip('Fan: ').replace(' rpm', '').strip()
-    else:
-        fan_speed = subprocess.check_output(
-            f'echo {env.root_password} | sudo -S spindump 1 1 -file /tmp/spindump.txt > /dev/null 2>&1;grep '
-            f'"Fan speed" /tmp/spindump.txt;sudo rm /tmp/spindump.txt', shell=True
-        ).decode('utf-8')
-
-    if cpu_temp:
-        cpu = f'Your current average CPU temperature is ' \
-              f'{support.format_nos(input_=temperature.c2f(arg=support.extract_nos(input_=cpu_temp)))}°F. '
-        output += cpu
-        speaker.speak(text=cpu)
-    if gpu_temp:
-        gpu = f'GPU temperature is {support.format_nos(temperature.c2f(support.extract_nos(gpu_temp)))}°F. '
-        output += gpu
-        speaker.speak(text=gpu)
-    if fan_speed:
-        fan = f'Current fan speed is {support.format_nos(support.extract_nos(fan_speed))} RPM. '
-        output += fan
-        speaker.speak(text=fan)
+        if cpu_temp:
+            cpu = f'Your current average CPU temperature is ' \
+                  f'{support.format_nos(input_=temperature.c2f(arg=support.extract_nos(input_=cpu_temp)))}°F. '
+            output += cpu
+            speaker.speak(text=cpu)
+        if gpu_temp:
+            gpu = f'GPU temperature is {support.format_nos(temperature.c2f(support.extract_nos(gpu_temp)))}°F. '
+            output += gpu
+            speaker.speak(text=gpu)
+        if fan_speed:
+            fan = f'Current fan speed is {support.format_nos(support.extract_nos(fan_speed))} RPM. '
+            output += fan
+            speaker.speak(text=fan)
 
     restart_time = datetime.fromtimestamp(psutil.boot_time())
     second = (datetime.now() - restart_time).total_seconds()
@@ -97,14 +96,14 @@ def system_vitals() -> None:
         speaker.speak(text=output)
         return
     sys.stdout.write(f'\r{output}')
-    speaker.speak(text=f'Your {model} was last booted on {restart_time}. '
-                       f'Current boot time is: {restart_duration}.')
+    speaker.speak(text=f"Your {globals.hosted_device.get('device')} was last booted on {restart_time}. "
+                       f"Current boot time is: {restart_duration}.")
     if second >= 259_200:  # 3 days
         if boot_extreme := re.search('(.*) days', restart_duration):
             warn = int(boot_extreme.group().replace(' days', '').strip())
-            speaker.speak(text=f'{env.title}! your {model} has been running for more than {warn} days. You must '
-                               'consider a reboot for better performance. Would you like me to restart it for you '
-                               f'{env.title}?',
+            speaker.speak(text=f"{env.title}! your {globals.hosted_device.get('device')} has been running for more "
+                               f"than {warn} days. You must consider a reboot for better performance. Would you like "
+                               f"me to restart it for you {env.title}?",
                           run=True)
             response = listener.listen(timeout=3, phrase_limit=3)
             if any(word in response.lower() for word in keywords.ok):
@@ -119,7 +118,10 @@ def hosted_device_info() -> dict:
         dict:
         A dictionary of key-value pairs with device type, operating system, os version.
     """
-    system_kernel = (subprocess.check_output("sysctl hw.model", shell=True)).decode('utf-8').splitlines()
-    device = support.extract_str(system_kernel[0].split(':')[1])
+    if env.mac:
+        system_kernel = subprocess.check_output("sysctl hw.model", shell=True).decode('utf-8').splitlines()
+        device = support.extract_str(system_kernel[0].split(':')[1])
+    else:
+        device = subprocess.getoutput("WMIC CSPRODUCT GET VENDOR").replace('Vendor', '').strip()
     platform_info = platform.platform(terse=True).split('-')
     return {'device': device, 'os_name': platform_info[0], 'os_version': platform_info[1]}

@@ -46,6 +46,9 @@ def meetings_gatherer() -> str:
         - If no events, returns a message saying there are no events in the next 12 hours.
         - On failure, returns a message saying Jarvis was unable to read calendar/outlook.
     """
+    # TODO: Avoid using an app to load a shared calendar
+    if not env.mac:
+        return "Meetings feature is currently not available for Windows."
     if not os.path.isfile(MEETING_FILE):
         return f"I wasn't able to find the meetings script for your {env.meeting_app} {env.title}!"
     failure = None

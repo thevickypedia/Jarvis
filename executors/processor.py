@@ -44,7 +44,6 @@ def start_processes() -> Dict[str, Process]:
 
 def stop_processes() -> NoReturn:
     """Stops all background processes initiated during startup and removes database source file."""
-    os.remove(fileio.base_db)
     for func, process in globals.processes.items():
         if process.is_alive():
             logger.info(f"Sending [SIGTERM] to {func} with PID: {process.pid}")
@@ -52,3 +51,7 @@ def stop_processes() -> NoReturn:
         if process.is_alive():
             logger.info(f"Sending [SIGKILL] to {func} with PID: {process.pid}")
             process.kill()
+    try:
+        os.remove(fileio.base_db)
+    except PermissionError:  # TODO: Occurs only in Windows but not in Mac
+        logger.error(f"Unable to delete {fileio.base_db}")

@@ -63,6 +63,8 @@ def trigger_api() -> None:
         "port": env.offline_port,
         "reload": True
     }
+    if not env.mac:
+        del argument_dict['reload']
 
     config = uvicorn.Config(**argument_dict)
     APIServer(config=config).run_in_parallel()

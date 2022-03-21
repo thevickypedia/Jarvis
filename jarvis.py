@@ -172,9 +172,6 @@ def sentry_mode() -> None:
 
 if __name__ == '__main__':
     globals.hosted_device = hosted_device_info()
-    if globals.hosted_device.get("os_name") != "macOS":
-        exit("Unsupported Operating System.\nWindows support was deprecated. "
-             "Refer https://github.com/thevickypedia/Jarvis/commit/cf54b69363440d20e21ba406e4972eb058af98fc")
 
     logger.info("JARVIS::Starting Now")
 
@@ -195,10 +192,10 @@ if __name__ == '__main__':
 
     globals.processes = start_processes()
 
-    if packaging.version.parse(platform.mac_ver()[0]) > packaging.version.parse('10.14'):
-        Activator().start()
-    else:
+    if env.mac and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
         recognizer = speech_recognition.Recognizer()
         with speech_recognition.Microphone() as source:
             recognizer.adjust_for_ambient_noise(source)
             sentry_mode()
+    else:
+        Activator().start()

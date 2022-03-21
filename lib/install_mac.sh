@@ -37,15 +37,15 @@ git clone https://github.com/toy/blueutil.git && cd blueutil && make && make ins
 # Upgrades pip module
 python3 -m pip install --upgrade pip
 
-# Installs non version specicfic packages using --upgrade and --no-cache flag
+# Installs non version specific packages using --upgrade and --no-cache flag
 python3 -m pip install --no-cache --upgrade setuptools gmail-connector vpn-server changelog-generator sphinx pre-commit recommonmark
 
 # Install pre-commit checker to restrict commit if any step in .pre-commit-config.yaml fails.
 pre-commit install
 
-# Get to the current directory and install the module specific packages from requiements.txt
+# Get to the current directory and install the module specific packages from requirements.txt
 current_dir="$(dirname "$(realpath "$0")")"
-python3 -m pip install --no-cache-dir -r $current_dir/requirements.txt
+python3 -m pip install --no-cache-dir -r $current_dir/mac_requirements.txt
 
 # Install face-recognition/detection dependencies as stand alone so users aren't blocked until then
 python3 -m pip install opencv-python==4.4.0.44

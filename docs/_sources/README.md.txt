@@ -72,12 +72,15 @@ IronMan's Jarvis with python
 ### Setup
    - Clone this [repository](https://github.com/thevickypedia/Jarvis.git) or download it from [pypi](https://pypi.org/project/jarvis-ironman/)
    - Run the following commands in command line/terminal:
-        - `cd lib && chmod +x installs.sh` - Makes [installation file](https://git.io/JBnPq) as executable.
+        - `cd lib && chmod +x install_mac.sh [OR] install_windows.sh` - Makes [installation file](https://github.com/thevickypedia/Jarvis/tree/master/lib) as executable.
         - `python3 -m venv venv` - Creates a virtual env named `venv`
         - `source venv/bin/activate` - Activates the virtual env `venv`
         - `which python` - Validate which python is being used. Should be the one within the virtual env `venv`
-        - [`bash installs.sh`](https://git.io/JBnPq) - Installs the required libraries/modules.
-        - [`python3 jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis
+        - `bash installs.sh` [OR] `bash install_windows.sh` - Installs the required libraries/modules.
+        - [`python jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis
+
+> :warning: &nbsp; Running on Windows OS might still have known issues, since it is still a WIP.
+> Please [raise an issue](https://github.com/thevickypedia/Jarvis/issues/new) if any bugs were to be found.
 
 ### ENV Variables
 Environment variables are loaded from a `.env` file and validated using `pydantic`

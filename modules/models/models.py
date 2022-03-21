@@ -7,6 +7,7 @@
 
 import getpass
 import os.path
+import platform
 import socket
 
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
@@ -24,17 +25,17 @@ class FileIO(BaseModel):
 
     """
 
-    automation: FilePath = 'fileio/automation.yaml'
-    tmp_automation: FilePath = 'fileio/tmp_automation.yaml'
-    base_db: FilePath = 'fileio/database.db'
-    frequent: FilePath = 'fileio/frequent.yaml'
-    location: FilePath = 'fileio/location.yaml'
-    meetings: FilePath = 'fileio/meetings'
-    notes: FilePath = 'fileio/notes.txt'
-    smart_devices: FilePath = 'fileio/smart_devices.yaml'
-    hostnames: FilePath = 'fileio/hostnames.yaml'
-    task_db: FilePath = 'fileio/tasks.db'
-    training: FilePath = 'fileio/training_data.yaml'
+    automation: FilePath = f'fileio{os.path.sep}automation.yaml'
+    tmp_automation: FilePath = f'fileio{os.path.sep}tmp_automation.yaml'
+    base_db: FilePath = f'fileio{os.path.sep}database.db'
+    frequent: FilePath = f'fileio{os.path.sep}frequent.yaml'
+    location: FilePath = f'fileio{os.path.sep}location.yaml'
+    meetings: FilePath = f'fileio{os.path.sep}meetings'
+    notes: FilePath = f'fileio{os.path.sep}notes.txt'
+    smart_devices: FilePath = f'fileio{os.path.sep}smart_devices.yaml'
+    hostnames: FilePath = f'fileio{os.path.sep}hostnames.yaml'
+    task_db: FilePath = f'fileio{os.path.sep}tasks.db'
+    training: FilePath = f'fileio{os.path.sep}training_data.yaml'
 
 
 class EnvConfig(BaseSettings):
@@ -91,8 +92,21 @@ class EnvConfig(BaseSettings):
     class Config:
         """Environment variables configuration."""
 
-        env_prefix = None
-        env_file = '.env'
+        env_prefix = ""
+        env_file = ".env"
+
+    if platform.system() == "Windows":
+        mac = 0
+    elif platform.system() == "Darwin":
+        mac = 1
+    else:
+        raise SystemError(
+            f"\n{''.join('*' for _ in range(80))}\n\n"
+            "Unsupported Operating System. Currently Jarvis can run only on Mac and Windows OS.\n\n"
+            "To raise an issue: https://github.com/thevickypedia/Jarvis/issues/new\n"
+            "To reach out: https://vigneshrao.com/contact\n"
+            f"\n{''.join('*' for _ in range(80))}\n"
+        )
 
 
 env = EnvConfig()

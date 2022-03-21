@@ -1,13 +1,20 @@
 import os
 import random
+import sys
 
 from modules.audio import speaker
 from modules.conditions import conversation
+from modules.models import models
 from modules.utils import support
+
+env = models.env
 
 
 def volume(phrase: str = None, level: int = None) -> None:
     """Controls volume from the numbers received. Defaults to 50%.
+
+    See Also:
+        SetVolume for Windows: https://rlatour.com/setvol/
 
     Args:
         phrase: Takes the phrase spoken as an argument.
@@ -22,7 +29,14 @@ def volume(phrase: str = None, level: int = None) -> None:
         else:
             level = support.extract_nos(input_=phrase, method=int) or 50
     support.flush_screen()
-    level = round((8 * level) / 100)
-    os.system(f'osascript -e "set Volume {level}"')
+    if env.mac:
+        os.system(f'osascript -e "set Volume {round((8 * level) / 100)}"')
+    else:
+        if not os.path.isfile('SetVol.exe'):
+            sys.stdout.write("\rPLEASE WAIT::Downloading volume controller for Windows")
+            os.system("""curl https://thevickypedia.com/Jarvis/SetVol.exe --output SetVol.exe --silent""")
+            sys.stdout.write("\r")
+        os.system(f'SetVol.exe {level}')
+    support.flush_screen()
     if phrase:
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}!")

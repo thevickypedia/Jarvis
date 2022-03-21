@@ -97,23 +97,31 @@ def ip_info(phrase: str) -> None:
     speaker.speak(text=output)
 
 
-def get_ssid() -> str:
+def get_ssid() -> Union[str, None]:
     """Gets SSID of the network connected.
 
     Returns:
         str:
         Wi-Fi or Ethernet SSID.
     """
-    process = subprocess.Popen(
-        ["/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport", "-I"],
-        stdout=subprocess.PIPE
-    )
-    out, err = process.communicate()
-    if error := process.returncode:
-        logger.error(f"Failed to fetch SSID with exit code: {error}\n{err}")
-    # noinspection PyTypeChecker
-    return dict(map(str.strip, info.split(": ")) for info in out.decode("utf-8").splitlines()[:-1] if
-                len(info.split()) == 2).get("SSID")
+    if env.mac:
+        process = subprocess.Popen(
+            ["/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport", "-I"],
+            stdout=subprocess.PIPE
+        )
+        out, err = process.communicate()
+        if error := process.returncode:
+            logger.error(f"Failed to fetch SSID with exit code: {error}\n{err}")
+            return
+        # noinspection PyTypeChecker
+        return dict(map(str.strip, info.split(": ")) for info in out.decode("utf-8").splitlines()[:-1] if
+                    len(info.split()) == 2).get("SSID")
+    else:
+        if ssid := [i.decode().strip() for i in subprocess.check_output("netsh wlan show interfaces").splitlines() if
+                    i.decode().strip().startswith('SSID')]:
+            return ssid[0].split(':')[-1].strip()
+        else:
+            logger.error("Failed to fetch SSID")
 
 
 def speed_test() -> None:

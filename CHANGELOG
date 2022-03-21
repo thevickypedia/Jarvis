@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+5.8.0 (03/20/2022)
+------------------
+- FEATURE::Jarvis supports Windows OS once again
+
 5.7.9 (03/18/2022)
 ------------------
 - Use device hostnames from a source yaml file

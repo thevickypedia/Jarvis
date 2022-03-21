@@ -18,6 +18,10 @@ from typing import Union
 
 from pytz import timezone, utc
 
+from modules.models import models
+
+env = models.env
+
 if not os.path.isdir('logs/api'):
     os.makedirs('logs/api')  # Recursively creates both logs and api directories if unavailable
 
@@ -32,11 +36,13 @@ if current_process().name == 'MainProcess':
         else:
             file.write(f"\n{write}\n")
 
-importlib.reload(module=logging)
+importlib.reload(module=logging) if env.mac else None
 dictConfig({
     'version': 1,
     'disable_existing_loggers': True,
 })
+if not env.mac:
+    logging.getLogger("_code_cache").propagate = False
 logging.basicConfig(
     filename=log_file, filemode='a', level=logging.INFO,
     format='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s',
