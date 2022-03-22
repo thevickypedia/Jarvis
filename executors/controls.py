@@ -53,7 +53,10 @@ def restart(target: str = None, quiet: bool = False) -> None:
             converted = 'yes'
         if any(word in converted.lower() for word in keywords.ok):
             stop_terminals()
-            subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
+            if env.mac:
+                subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
+            else:
+                os.system("shutdown /r /t 1")
             raise KeyboardInterrupt
         else:
             speaker.speak(text=f"Machine state is left intact {env.title}!")
@@ -124,7 +127,7 @@ def sleep_control(phrase: str) -> bool:
     phrase = phrase.lower()
     if 'pc' in phrase or 'computer' in phrase or 'imac' in phrase or \
             'screen' in phrase:
-        pc_sleep()
+        pc_sleep() if env.mac else support.missing_windows_features()
     else:
         speaker.speak(text=f"Activating sentry mode, enjoy yourself {env.title}!")
         if globals.greet_check:
@@ -202,7 +205,10 @@ def shutdown(proceed: bool = False) -> None:
     if converted != 'SR_ERROR':
         if any(word in converted.lower() for word in keywords.ok):
             stop_terminals()
-            subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
+            if env.mac:
+                subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
+            else:
+                os.system("shutdown /s /t 1")
             raise KeyboardInterrupt
         else:
             speaker.speak(text=f"Machine state is left intact {env.title}!")

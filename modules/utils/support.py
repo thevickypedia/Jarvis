@@ -338,8 +338,9 @@ def daytime_nighttime_swapper() -> None:
         volume.volume(level=50)
     elif hour >= 21 or hour <= 6:
         volume.volume(level=30)
-        display_functions.decrease_brightness()
-        os.system(locker)
+        if env.mac:
+            display_functions.decrease_brightness()
+            os.system(locker)
 
 
 def no_env_vars() -> None:
@@ -364,3 +365,8 @@ def keygen(length: int, punctuation: bool = False) -> str:
     else:
         required_str = string.ascii_letters + string.digits
     return "".join(random.choices(required_str, k=length))
+
+
+def missing_windows_features():
+    """Speaker for unsupported features in Windows."""
+    speaker.speak(text=f"Requested feature is not available in Windows {env.title}")

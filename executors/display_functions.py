@@ -4,7 +4,10 @@ from threading import Thread
 
 from modules.audio import speaker
 from modules.conditions import conversation
+from modules.models import models
 from modules.utils import support
+
+env = models.env
 
 
 def brightness(phrase: str):
@@ -13,6 +16,9 @@ def brightness(phrase: str):
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
+    if not env.mac:
+        support.missing_windows_features()
+        return
     phrase = phrase.lower()
     speaker.speak(text=random.choice(conversation.acknowledgement))
     if 'set' in phrase:

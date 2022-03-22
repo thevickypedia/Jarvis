@@ -1,11 +1,17 @@
 Change Log
 ==========
 
+5.8.1 (03/21/2022)
+------------------
+- Fix existing features on Windows OS
+- Add an unsupported message for non-existing ones
+- Add legacy keywords as an optional env var
+
 5.8.0 (03/20/2022)
 ------------------
 - FEATURE::Jarvis supports Windows OS once again
 
-5.7.9 (03/18/2022)
+5.7.9 (03/19/2022)
 ------------------
 - Use device hostnames from a source yaml file
 - Bump uvicorn version and clean up requirements.txt

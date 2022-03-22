@@ -158,7 +158,7 @@ def initiator(key_original: str, should_return: bool = False) -> None:
         if event := support.celebrate():
             speaker.speak(text=f'Happy {event}!')
         if 'night' in key_split or 'goodnight' in key_split:
-            Thread(target=pc_sleep).start()
+            Thread(target=pc_sleep).start() if env.mac else None
         time_travel()
     elif 'you there' in key:
         speaker.speak(text=f'{random.choice(conversation.wake_up1)}')

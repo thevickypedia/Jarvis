@@ -86,6 +86,7 @@ class EnvConfig(BaseSettings):
     bot_token: str = Field(default=None, env='BOT_TOKEN')
     bot_chat_ids: list = Field(default=[], env='BOT_CHAT_IDS')
     bot_users: list = Field(default=[], env='BOT_USERS')
+    legacy_keywords: list = Field(default=['jarvis'], env='LEGACY_KEYWORDS')
     title: str = Field(default='sir', env='TITLE')
     name: str = Field(default='Vignesh', env='NAME')
 

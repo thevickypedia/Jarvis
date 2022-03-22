@@ -106,4 +106,5 @@ def reminder_executor(message: str) -> None:
     """
     communicator.notify(user=env.gmail_user, password=env.gmail_pass, number=env.phone_number, body=message,
                         subject="REMINDER from Jarvis")
-    os.system(f"""osascript -e 'display notification "{message}" with title "REMINDER from Jarvis"'""")
+    if env.mac:
+        os.system(f"""osascript -e 'display notification "{message}" with title "REMINDER from Jarvis"'""")

@@ -123,6 +123,6 @@ def kill_alarm() -> None:
 def alarm_executor() -> NoReturn:
     """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
     volume.volume(level=100)
-    subprocess.call(["open", "indicators/alarm.mp3"])
+    subprocess.call(["open", f"indicators{os.path.sep}alarm.mp3"])
     time.sleep(200)
     volume.volume(level=50)

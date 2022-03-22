@@ -38,7 +38,7 @@ def start_processes() -> Dict[str, Process]:
     for func, process in processes.items():
         process.start()
         logger.info(f"Started function: {func} {process.sentinel} with PID: {process.pid}")
-    playsound(sound="indicators/initialize.mp3", block=False)
+    playsound(sound=f"indicators{os.path.sep}initialize.mp3", block=False)
     return processes
 
 

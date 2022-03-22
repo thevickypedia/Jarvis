@@ -1,4 +1,5 @@
 import json
+import os
 from threading import Thread
 from typing import Union
 from urllib.error import HTTPError
@@ -55,20 +56,23 @@ def car(phrase: str) -> None:
         target_temp = 83 if climate < 45 else 57 if climate > 70 else 66
         extras += f"I've configured the climate setting to {target_temp}°F"
 
-        playsound(sound="indicators/exhaust.mp3", block=False) if not globals.called_by_offline['status'] else None
+        if not globals.called_by_offline['status']:
+            playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
         if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, car_pin=env.car_pin,
                                operation="START", temp=target_temp - 26):
             speaker.speak(text=f"Your {car_name} has been started {env.title}. {extras}")
         else:
             speaker.speak(text=disconnected)
     elif "turn off" in phrase or "stop" in phrase:
-        playsound(sound="indicators/exhaust.mp3", block=False) if not globals.called_by_offline['status'] else None
+        if not globals.called_by_offline['status']:
+            playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
         if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation="STOP", car_pin=env.car_pin):
             speaker.speak(text=f"Your {car_name} has been turned off {env.title}!")
         else:
             speaker.speak(text=disconnected)
     elif "secure" in phrase:
-        playsound(sound="indicators/exhaust.mp3", block=False) if not globals.called_by_offline['status'] else None
+        if not globals.called_by_offline['status']:
+            playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
         if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation="SECURE", car_pin=env.car_pin):
             speaker.speak(text=f"Guardian mode has been enabled {env.title}! Your {car_name} is now secure.")
         else:
@@ -77,13 +81,14 @@ def car(phrase: str) -> None:
         if globals.called_by_offline['status']:
             speaker.speak(text="Cannot unlock the car via offline communicator due to security reasons.")
             return
-        playsound(sound="indicators/exhaust.mp3", block=False)
+        playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
         if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation="UNLOCK", car_pin=env.car_pin):
             speaker.speak(text=f"Your {car_name} has been unlocked {env.title}!")
         else:
             speaker.speak(text=disconnected)
     elif "lock" in phrase:
-        playsound(sound="indicators/exhaust.mp3", block=False) if not globals.called_by_offline['status'] else None
+        if not globals.called_by_offline['status']:
+            playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
         if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation="LOCK", car_pin=env.car_pin):
             speaker.speak(text=f"Your {car_name} has been locked {env.title}!")
         else:

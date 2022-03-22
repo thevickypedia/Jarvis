@@ -5,7 +5,8 @@
 
 **Platform Supported**
 
-![Generic badge](https://img.shields.io/badge/Platform-MacOS-1f425f.svg)
+![Generic badge](https://img.shields.io/badge/Platform-Mac-1f425f.svg)
+![Generic badge](https://img.shields.io/badge/Platform-Windows-1f425f.svg)
 
 **Language Stats**
 
@@ -90,6 +91,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 
 - **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
+- **LEGACY_KEYWORDS** - List of wake words for legacy macOS. Defaults to `['jarvis']`
 
 **[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py):**
 - **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`

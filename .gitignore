@@ -34,6 +34,9 @@ _static
 # credentials stored locally
 .env
 
+# volume exec file for Windows
+SetVol.exe
+
 # robinhood report file generated to be accessed from API endpoint
 api/robinhood.html
 

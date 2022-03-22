@@ -139,7 +139,12 @@
 <dd><p>Listens forever and invokes <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> when recognized. Stops when <code class="docutils literal notranslate"><span class="pre">restart</span></code> table has an entry.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>Gets invoked only when run from Mac-OS older than 14.4.</p>
+<ul class="simple">
+<li><p>Gets invoked only when run from Mac-OS older than 14.4.</p></li>
+<li><p>A regular listener is used to converted audio to text.</p></li>
+<li><p>The text is then condition matched for wake-up words.</p></li>
+<li><p>Additional wake words can be passed in a list as an env var <code class="docutils literal notranslate"><span class="pre">LEGACY_KEYWORDS</span></code>.</p></li>
+</ul>
 </div>
 </dd></dl>
 
@@ -2006,12 +2011,6 @@ A condition below assumes two different words as two places but not including tw
 <dt class="sig sig-object py" id="executors.tv.television">
 <span class="sig-prename descclassname"><span class="pre">executors.tv.</span></span><span class="sig-name descname"><span class="pre">television</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.tv.television" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controls all actions on a TV (LG Web OS).</p>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>In the <code class="docutils literal notranslate"><span class="pre">__main__</span></code> method tv is set to None.</p></li>
-<li><p>Jarvis will try to ping the TV and then power it on if the host is unreachable initially.</p></li>
-<li><p>Once the tv is turned on, the TV class is also initiated and assigned to tv variable.</p></li>
-</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument.</p>
@@ -3633,6 +3632,11 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.legacy_keywords">
+<span class="sig-name descname"><span class="pre">legacy_keywords</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.legacy_keywords" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.maps_api">
 <span class="sig-name descname"><span class="pre">maps_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.maps_api" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4455,6 +4459,12 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <dd class="field-odd"><p>list</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.missing_windows_features">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">missing_windows_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.utils.support.missing_windows_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speaker for unsupported features in Windows.</p>
 </dd></dl>
 
 <dl class="py function">

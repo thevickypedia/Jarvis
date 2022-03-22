@@ -69,6 +69,14 @@ def apps(phrase: str) -> None:
             speaker.speak(text="I didn't quite get that. Try again.")
             return
 
+    if not env.mac:
+        status = os.system(f'start {keyword}')
+        if status == 0:
+            speaker.speak(text=f'I have opened {keyword}')
+        else:
+            speaker.speak(text=f"I did not find the app {keyword}. Try again.")
+        return
+
     all_apps = subprocess.check_output("ls /Applications/", shell=True)
     apps_ = all_apps.decode('utf-8').split('\n')
 
@@ -83,14 +91,13 @@ def apps(phrase: str) -> None:
         speaker.speak(text=f"I did not find the app {keyword}. Try again.")
         Thread(target=support.unrecognized_dumper, args=[{'APPLICATIONS': keyword}]).start()
         return
+    app_status = os.system(f"open /Applications/'{keyword}' > /dev/null 2>&1")
+    keyword = keyword.replace('.app', '')
+    if app_status == 256:
+        speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to launch {keyword}. "
+                           "You might need to check its permissions.")
     else:
-        app_status = os.system(f"open /Applications/'{keyword}' > /dev/null 2>&1")
-        keyword = keyword.replace('.app', '')
-        if app_status == 256:
-            speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to launch {keyword}. "
-                               "You might need to check its permissions.")
-        else:
-            speaker.speak(text=f"I have opened {keyword}")
+        speaker.speak(text=f"I have opened {keyword}")
 
 
 def music(phrase: str = None) -> None:
@@ -100,14 +107,17 @@ def music(phrase: str = None) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     sys.stdout.write("\rScanning music files...")
-    get_all_files = (os.path.join(root, f) for root, _, files in os.walk(f"{env.home}/Music") for f in
+    get_all_files = (os.path.join(root, f) for root, _, files in os.walk(f"{env.home}{os.path.sep}Music") for f in
                      files)
     if music_files := [file for file in get_all_files if os.path.splitext(file)[1] == '.mp3']:
         chosen = random.choice(music_files)
         if phrase and 'speaker' in phrase:
             google_home(device=phrase, file=chosen)
         else:
-            subprocess.call(["open", chosen])
+            if env.mac:
+                subprocess.call(["open", chosen])
+            else:
+                os.system(f'start wmplayer "{chosen}"')
             support.flush_screen()
             speaker.speak(text=f"Enjoy your music {env.title}!")
     else:
@@ -209,7 +219,7 @@ def jokes() -> None:
 
 def flip_a_coin() -> None:
     """Says ``heads`` or ``tails`` from a random choice."""
-    playsound('indicators/coin.mp3') if not globals.called_by_offline['status'] else None
+    playsound(f'indicators{os.path.sep}coin.mp3') if not globals.called_by_offline['status'] else None
     speaker.speak(
         text=f"""{random.choice(['You got', 'It landed on', "It's"])} {random.choice(['heads', 'tails'])} {env.title}"""
     )

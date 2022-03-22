@@ -94,7 +94,7 @@ class Activator:
                 pcm = self.audio_stream.read(num_frames=self.detector.frame_length, exception_on_overflow=False)
                 pcm = struct.unpack_from("h" * self.detector.frame_length, pcm)
                 if self.detector.process(pcm=pcm) >= 0:
-                    playsound(sound="indicators/acknowledgement.mp3", block=False)
+                    playsound(sound=f"indicators{os.path.sep}acknowledgement.mp3", block=False)
                     self.close_stream()
                     initiator(key_original=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit,
                                                            sound=False),
@@ -136,18 +136,19 @@ def sentry_mode() -> None:
     """Listens forever and invokes ``initiator()`` when recognized. Stops when ``restart`` table has an entry.
 
     See Also:
-        Gets invoked only when run from Mac-OS older than 14.4.
+        - Gets invoked only when run from Mac-OS older than 14.4.
+        - A regular listener is used to converted audio to text.
+        - The text is then condition matched for wake-up words.
+        - Additional wake words can be passed in a list as an env var ``LEGACY_KEYWORDS``.
     """
     while True:
         try:
             sys.stdout.write("\rSentry Mode")
             listened = recognizer.listen(source=source, timeout=10, phrase_time_limit=1)
             sys.stdout.write("\r")
-            if not any(word in recognizer.recognize_google(listened).lower() for word in [
-                'friday', 'jarvis', 'buddy', 'javis', 'you there', 'jealous'
-            ]):
+            if not any(word in recognizer.recognize_google(listened).lower() for word in env.legacy_keywords):
                 continue
-            playsound(sound="indicators/acknowledgement.mp3", block=False)
+            playsound(sound=f"indicators{os.path.sep}acknowledgement.mp3", block=False)
             initiator(key_original=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
                       should_return=True)
             speaker.speak(run=True)

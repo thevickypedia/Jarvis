@@ -39,7 +39,7 @@ class TV:
             self.client.connect()
         except (gaierror, ConnectionRefusedError, ConnectionResetError):  # when IP or client key is None or incorrect
             self.reconnect = True
-            playsound(sound='indicators/tv_scan.mp3', block=False)
+            playsound(sound=f'indicators{os.path.sep}tv_scan.mp3', block=False)
             scan_msg = "The TV's IP has either changed or unreachable. Scanning your IP range."
             sys.stdout.write(f"\r{scan_msg}")
             logger.error(scan_msg)
@@ -52,7 +52,7 @@ class TV:
             if status == WebOSClient.REGISTERED and not self._init_status:
                 sys.stdout.write('\rConnected to the TV.')
             elif status == WebOSClient.PROMPTED:
-                playsound(sound='indicators/tv_connect.mp3', block=False)
+                playsound(sound=f'indicators{os.path.sep}tv_connect.mp3', block=False)
                 self.reconnect = True
                 sys.stdout.write('\rPlease accept the connection request on your TV.')
 

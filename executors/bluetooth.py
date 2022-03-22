@@ -7,6 +7,7 @@ import unicodedata
 
 from modules.audio import speaker
 from modules.models import models
+from modules.utils import support
 
 env = models.env
 
@@ -54,6 +55,9 @@ def bluetooth(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
+    if not env.mac:
+        support.missing_windows_features()
+        return
     phrase = phrase.lower()
     if 'turn off' in phrase or 'power off' in phrase:
         subprocess.call("blueutil --power 0", shell=True)

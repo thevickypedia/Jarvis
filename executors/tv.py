@@ -22,11 +22,6 @@ fileio = models.fileio
 def television(phrase: str) -> None:
     """Controls all actions on a TV (LG Web OS).
 
-    Notes:
-        - In the ``__main__`` method tv is set to None.
-        - Jarvis will try to ping the TV and then power it on if the host is unreachable initially.
-        - Once the tv is turned on, the TV class is also initiated and assigned to tv variable.
-
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
@@ -49,7 +44,10 @@ def television(phrase: str) -> None:
 
     def tv_status() -> int:
         """Pings the tv and returns the status. 0 if able to ping, 256 if unable to ping."""
-        return os.system(f"ping -c 1 -t 3 {smart_devices.get('tv_ip')} >/dev/null")
+        if env.mac:
+            return os.system(f"ping -c 1 -t 3 {smart_devices.get('tv_ip')} >/dev/null")
+        else:
+            return os.system(f"ping -c 1 -t 3 {smart_devices.get('tv_ip')} > NUL")
 
     if ('turn off' in phrase_lower or 'shutdown' in phrase_lower or 'shut down' in phrase_lower) and tv_status() != 0:
         speaker.speak(text=f"I wasn't able to connect to your TV {env.title}! I guess your TV is powered off already.")
