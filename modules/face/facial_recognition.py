@@ -7,6 +7,8 @@ from cv2 import (COLOR_BGR2GRAY, CascadeClassifier, VideoCapture, cvtColor,
 from face_recognition import (compare_faces, face_encodings, face_locations,
                               load_image_file)
 
+from modules.exceptions import CameraError
+
 
 class Face:
     """Module for ``face recognition`` script using defined tolerance level and specific model.
@@ -29,7 +31,9 @@ class Face:
                 break
         if source is None:
             sys.stdout.write('\rNo cameras were found.')
-            raise BlockingIOError
+            raise CameraError(
+                "No cameras were found."
+            )
         self.validation_video = VideoCapture(source)  # camera id - depends on installed camera applications
         self.train_faces, self.train_names = [], []
         for character_dir in os.listdir(self.training_dataset):  # loads the training dataset

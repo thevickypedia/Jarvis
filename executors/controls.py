@@ -14,6 +14,7 @@ from executors.logger import logger
 from modules.audio import listener, speaker, voices, volume
 from modules.conditions import conversation, keywords
 from modules.database import database
+from modules.exceptions import StopSignal
 from modules.models import models
 from modules.utils import globals, support
 
@@ -41,7 +42,7 @@ def restart(target: str = None, quiet: bool = False) -> None:
         quiet: If a boolean ``True`` is passed, a silent restart will be performed.
 
     Raises:
-        KeyboardInterrupt: To stop Jarvis' PID.
+        StopSignal: To stop Jarvis' PID.
     """
     if target:
         if target == 'PC':
@@ -57,7 +58,7 @@ def restart(target: str = None, quiet: bool = False) -> None:
                 subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
             else:
                 os.system("shutdown /r /t 1")
-            raise KeyboardInterrupt
+            raise StopSignal
         else:
             speaker.speak(text=f"Machine state is left intact {env.title}!")
             return
@@ -195,7 +196,7 @@ def shutdown(proceed: bool = False) -> None:
         proceed: Boolean value whether to get confirmation.
 
     Raises:
-        KeyboardInterrupt: To stop Jarvis' PID.
+        StopSignal: To stop Jarvis' PID.
     """
     if not proceed:
         speaker.speak(text=f"{random.choice(conversation.confirmation)} turn off the machine?", run=True)
@@ -209,7 +210,7 @@ def shutdown(proceed: bool = False) -> None:
                 subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
             else:
                 os.system("shutdown /s /t 1")
-            raise KeyboardInterrupt
+            raise StopSignal
         else:
             speaker.speak(text=f"Machine state is left intact {env.title}!")
             return

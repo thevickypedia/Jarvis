@@ -8,8 +8,10 @@ from datetime import datetime
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from threading import Thread
-from typing import Tuple
+from typing import NoReturn, Tuple
 
+import requests
+from bs4 import BeautifulSoup
 from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
 from joke.jokes import chucknorris, geek, icanhazdad, icndb
@@ -353,3 +355,14 @@ def time_travel() -> None:
     if any(word in phrase.lower() for word in keywords.ok):
         news()
     globals.called['time_travel'] = False
+
+
+def sprint_name() -> NoReturn:
+    """Generates a random sprint name."""
+    response = requests.get(url="https://sprint-name-gen.herokuapp.com/")
+    if not response.ok:
+        speak(text="I wasn't able to get a sprint name sir! Why not name it, Jarvis failed?")
+        return
+    soup = BeautifulSoup(response.content, 'html.parser')
+    name = soup.find('span', {'class': 'sprint-name'}).text
+    speak(text=name)

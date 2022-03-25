@@ -140,8 +140,8 @@
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>Gets invoked only when run from Mac-OS older than 14.4.</p></li>
-<li><p>A regular listener is used to converted audio to text.</p></li>
+<li><p>Gets invoked only when run from Mac-OS older than 10.14.</p></li>
+<li><p>A regular listener is used to convert audio to text.</p></li>
 <li><p>The text is then condition matched for wake-up words.</p></li>
 <li><p>Additional wake words can be passed in a list as an env var <code class="docutils literal notranslate"><span class="pre">LEGACY_KEYWORDS</span></code>.</p></li>
 </ul>
@@ -223,7 +223,6 @@
 <p class="admonition-title">See also</p>
 <ul class="simple">
 <li><p>Keeps waiting for the record <code class="docutils literal notranslate"><span class="pre">response</span></code> in the database table <code class="docutils literal notranslate"><span class="pre">offline</span></code></p></li>
-<li><p>This response will be sent as raising a <code class="docutils literal notranslate"><span class="pre">HTTPException</span></code> with status code 200.</p></li>
 </ul>
 </div>
 </dd></dl>
@@ -999,7 +998,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>KeyboardInterrupt</strong> – To stop Jarvis’ PID.</p>
+<dd class="field-even"><p><a class="reference internal" href="#modules.exceptions.StopSignal" title="modules.exceptions.StopSignal"><strong>StopSignal</strong></a> – To stop Jarvis’ PID.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1027,7 +1026,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd class="field-odd"><p><strong>proceed</strong> – Boolean value whether to get confirmation.</p>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>KeyboardInterrupt</strong> – To stop Jarvis’ PID.</p>
+<dd class="field-even"><p><a class="reference internal" href="#modules.exceptions.StopSignal" title="modules.exceptions.StopSignal"><strong>StopSignal</strong></a> – To stop Jarvis’ PID.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1745,6 +1744,12 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="executors.others.sprint_name">
+<span class="sig-prename descclassname"><span class="pre">executors.others.</span></span><span class="sig-name descname"><span class="pre">sprint_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.others.sprint_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a random sprint name.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="executors.others.time_travel">
 <span class="sig-prename descclassname"><span class="pre">executors.others.</span></span><span class="sig-name descname"><span class="pre">time_travel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.others.time_travel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Triggered only from <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> to give a quick update on the user’s daily routine.</p>
@@ -1970,7 +1975,7 @@ A condition below assumes two different words as two places but not including tw
 <dd><p>Initiates polling for new messages.</p>
 <dl class="simple">
 <dt>Handles:</dt><dd><ul class="simple">
-<li><p>OverflowError: Restarts polling to take control over.</p></li>
+<li><p>BotInUse: Restarts polling to take control over.</p></li>
 <li><p>ConnectionError: Initiates after 10, 20 or 30 seconds. Depends on retry count. Shuts off after 3 attempts.</p></li>
 </ul>
 </dd>
@@ -3821,7 +3826,7 @@ Whites can have a value of None.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>- OverflowError</strong> – When a new polling is initiated using the same token.</p></li>
+<li><p><strong>- BotInUse</strong> – When a new polling is initiated using the same token.</p></li>
 <li><p><strong>- ConnectionError</strong> – If unable to connect to the endpoint.</p></li>
 </ul>
 </dd>
@@ -3859,7 +3864,7 @@ Whites can have a value of None.</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Response</p>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.exceptions.Response" title="modules.exceptions.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3880,7 +3885,7 @@ Whites can have a value of None.</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Response</p>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.exceptions.Response" title="modules.exceptions.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -4553,6 +4558,49 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 </pre></div>
 </div>
 </section>
+<section id="module-modules.exceptions">
+<span id="exceptions"></span><h1>Exceptions<a class="headerlink" href="#module-modules.exceptions" title="Permalink to this headline">¶</a></h1>
+<p>This is a space for custom exceptions and errors masking defaults with meaningful names.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Exceptions</span>
+</pre></div>
+</div>
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.BotInUse">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">BotInUse</span></span><a class="headerlink" href="#modules.exceptions.BotInUse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">OverflowError</span></code> to indicate bot token is being used else where.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.CameraError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">CameraError</span></span><a class="headerlink" href="#modules.exceptions.CameraError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">BlockingIOError</span></code> to handle missing camera device.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.MissingEnvVars">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">MissingEnvVars</span></span><a class="headerlink" href="#modules.exceptions.MissingEnvVars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> to indicate missing env vars.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.Response">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.exceptions.Response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">HTTPException</span></code> from <code class="docutils literal notranslate"><span class="pre">FastAPI</span></code> to wrap an API response.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.StopSignal">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">StopSignal</span></span><a class="headerlink" href="#modules.exceptions.StopSignal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">KeyboardInterrupt</span></code> to handle manual interruption.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.UnsupportedOS">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedOS</span></span><a class="headerlink" href="#modules.exceptions.UnsupportedOS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">OSError</span></code> raised when initiated in an unsupported operating system.</p>
+</dd></dl>
+
+</section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
@@ -4633,6 +4681,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#module-modules.tv.tv_controls">TV Connector</a></li>
 <li><a class="reference internal" href="#module-modules.utils.support">Support</a></li>
 <li><a class="reference internal" href="#module-modules.utils.globals">Globals</a></li>
+<li><a class="reference internal" href="#module-modules.exceptions">Exceptions</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 

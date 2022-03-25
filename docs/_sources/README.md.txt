@@ -95,7 +95,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 
 **[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py):**
 - **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`
-- **OFFLINE_PASS** - Secure phrase to authenticate offline requests. Defaults to `jarvis`
+- **OFFLINE_PASS** - Secure phrase to authenticate offline requests. Defaults to `OfflineComm`
 
 **Accurate Location: (Defaults to the location based on `Public IP` which is _approximate_)**
 - **ICLOUD_USER** - iCloud account username.
@@ -109,8 +109,8 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **MAPS_API** - API Key for maps from [google](https://developers.google.com/maps/documentation/maps-static/get-api-key)
 - **GMAIL_USER** - Gmail account username to send and read emails.
 - **GMAIL_PASS** - Gmail account password to send and read emails.
-- **ALT_GMAIL_USER** - Alternate gmail account username to send an SMS. (`gmail_user` can be re-used)
-- **ALT_GMAIL_PASS** - Alternate gmail account password to send an SMS. (`gmail_pass` can be re-used)
+- **ALT_GMAIL_USER** - Alternate gmail account username to send an SMS. (`GMAIL_USER` can be re-used)
+- **ALT_GMAIL_PASS** - Alternate gmail account password to send an SMS. (`GMAIL_PASS` can be re-used)
 - **RECIPIENT** - Email address to which the emails from jarvis have to be received.
 - **ROBINHOOD_USER** - Robinhood account username.
 - **ROBINHOOD_PASS** - Robinhood account password.

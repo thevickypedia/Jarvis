@@ -19,6 +19,7 @@ from executors.processor import start_processes, stop_processes
 from executors.system import hosted_device_info
 from modules.audio import listener, speaker
 from modules.database import database
+from modules.exceptions import StopSignal
 from modules.models import models
 from modules.utils import globals, support
 
@@ -108,7 +109,7 @@ class Activator:
                     else:
                         restart(quiet=True)
                     break
-        except KeyboardInterrupt:
+        except StopSignal:
             self.stop()
             exit_process()
             terminator()
@@ -136,8 +137,8 @@ def sentry_mode() -> None:
     """Listens forever and invokes ``initiator()`` when recognized. Stops when ``restart`` table has an entry.
 
     See Also:
-        - Gets invoked only when run from Mac-OS older than 14.4.
-        - A regular listener is used to converted audio to text.
+        - Gets invoked only when run from Mac-OS older than 10.14.
+        - A regular listener is used to convert audio to text.
         - The text is then condition matched for wake-up words.
         - Additional wake words can be passed in a list as an env var ``LEGACY_KEYWORDS``.
     """
@@ -156,7 +157,7 @@ def sentry_mode() -> None:
                 speech_recognition.WaitTimeoutError,
                 speech_recognition.RequestError):
             sys.stdout.write("\r")
-        except KeyboardInterrupt:
+        except StopSignal:
             stop_processes()
             exit_process()
             terminator()

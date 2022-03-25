@@ -105,6 +105,8 @@ car = ["car", "vehicle"]
 
 automation = ["automation"]
 
+sprint = ["sprint"]
+
 ok = ["yeah", "yes", "yep", "go ahead", "proceed", "continue", "carry on", "please", "keep going"]
 
 restart_control = ["restart", "reboot"]

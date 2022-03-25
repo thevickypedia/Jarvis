@@ -7,6 +7,7 @@ from PIL import Image
 
 from executors.logger import logger
 from modules.audio import listener, speaker
+from modules.exceptions import CameraError
 from modules.face.facial_recognition import Face
 from modules.utils import support
 
@@ -20,7 +21,7 @@ def face_detection() -> None:
     sys.stdout.write('\rLooking for faces to recognize.')
     try:
         result = Face().face_recognition()
-    except BlockingIOError:
+    except CameraError:
         support.flush_screen()
         logger.error('Unable to access the camera.')
         speaker.speak(text="I was unable to access the camera. Facial recognition can work only when cameras are "

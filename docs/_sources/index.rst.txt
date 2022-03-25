@@ -478,6 +478,13 @@ Globals
    :members:
    :undoc-members:
 
+Exceptions
+==========
+
+.. automodule:: modules.exceptions
+   :members:
+   :undoc-members:
+
 Indices and tables
 ==================
 

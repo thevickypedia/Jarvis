@@ -7,6 +7,7 @@ from typing import NoReturn
 import requests
 
 from executors.controls import restart_control
+from modules.exceptions import BotInUse
 from modules.models import config, models
 from modules.telegram.bot import TelegramBot
 
@@ -23,7 +24,7 @@ def handler() -> NoReturn:
     """Initiates polling for new messages.
 
     Handles:
-        - OverflowError: Restarts polling to take control over.
+        - BotInUse: Restarts polling to take control over.
         - ConnectionError: Initiates after 10, 20 or 30 seconds. Depends on retry count. Shuts off after 3 attempts.
     """
     if not env.bot_token:
@@ -31,7 +32,7 @@ def handler() -> NoReturn:
         return
     try:
         TelegramBot().poll_for_messages()
-    except OverflowError as error:
+    except BotInUse as error:
         logger.error(error)
         logger.info("Restarting message poll to take over..")
         handler()

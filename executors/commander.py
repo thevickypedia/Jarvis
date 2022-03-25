@@ -39,9 +39,11 @@ def split_phrase(phrase: str, should_return: bool = False) -> bool:
     if ' and ' in phrase and not any(word in phrase.lower() for word in keywords.avoid):
         for each in phrase.split(' and '):
             exit_check = conditions(converted=each.strip(), should_return=should_return)
+            speaker.speak(run=True)
     elif ' also ' in phrase and not any(word in phrase.lower() for word in keywords.avoid):
         for each in phrase.split(' also '):
             exit_check = conditions(converted=each.strip(), should_return=should_return)
+            speaker.speak(run=True)
     else:
         exit_check = conditions(converted=phrase.strip(), should_return=should_return)
     return exit_check
@@ -77,6 +79,7 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
         phrase: Takes the phrase spoken as an argument.
         delay: Sleeps for the number of seconds.
     """
+    # TODO: Validate flow during multiple delayed executions
     logger.info(f"'{phrase}' will be executed after {support.time_converter(seconds=delay)}")
     time.sleep(delay)
     logger.info(f"Executing '{phrase}'")

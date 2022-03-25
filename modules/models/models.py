@@ -13,6 +13,8 @@ import socket
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       FilePath, PositiveInt)
 
+from modules.exceptions import UnsupportedOS
+
 # Used by docs
 if not os.path.isdir('fileio'):
     os.makedirs(name='fileio')
@@ -101,7 +103,7 @@ class EnvConfig(BaseSettings):
     elif platform.system() == "Darwin":
         mac = 1
     else:
-        raise SystemError(
+        raise UnsupportedOS(
             f"\n{''.join('*' for _ in range(80))}\n\n"
             "Unsupported Operating System. Currently Jarvis can run only on Mac and Windows OS.\n\n"
             "To raise an issue: https://github.com/thevickypedia/Jarvis/issues/new\n"

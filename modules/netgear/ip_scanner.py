@@ -4,6 +4,7 @@ import yaml
 from pynetgear import Netgear
 
 from executors.logger import logger
+from modules.exceptions import MissingEnvVars
 from modules.models import models
 
 fileio = models.fileio
@@ -39,7 +40,7 @@ class LocalIPScan:
             router_pass: Password to authenticate the API client.
         """
         if not router_pass:
-            raise ValueError(
+            raise MissingEnvVars(
                 "Router password is required to scan for devices."
             )
         self.attached_devices = Netgear(password=router_pass).get_attached_devices()

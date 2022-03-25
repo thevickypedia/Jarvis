@@ -19,7 +19,8 @@ from executors.location import (directions, distance, locate, locate_places,
 from executors.logger import logger
 from executors.meetings import meetings
 from executors.others import (apps, facts, flip_a_coin, google_home, jokes,
-                              meaning, music, news, notes, repeat, report)
+                              meaning, music, news, notes, repeat, report,
+                              sprint_name)
 from executors.remind import reminder
 from executors.robinhood import robinhood
 from executors.system import system_info, system_vitals
@@ -33,6 +34,7 @@ from modules.audio.speaker import speak
 from modules.audio.voices import voice_changer
 from modules.audio.volume import volume
 from modules.conditions import conversation, keywords
+from modules.exceptions import StopSignal
 from modules.utils import support
 
 
@@ -205,6 +207,9 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     elif any(word in converted_lower for word in keywords.automation):
         automation_handler(converted_lower)
 
+    elif any(word in converted for word in keywords.sprint):
+        sprint_name()
+
     elif any(word in converted_lower for word in conversation.greeting):
         if not alpha(text=converted):
             speak(text='I am spectacular. I hope you are doing fine too.')
@@ -241,7 +246,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
 
     elif any(word in converted_lower for word in keywords.kill) and \
             not any(word in converted_lower for word in keywords.avoid):
-        raise KeyboardInterrupt
+        raise StopSignal
 
     elif any(word in converted_lower for word in keywords.shutdown):
         controls.shutdown()

@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+5.8.2 (03/24/2022)
+------------------
+- FEATURE::Jarvis can tell random sprint names
+- Create custom exceptions with meaningful names
+- Run speaker for each iteration during and or also
+- Fix typos in doc strings and README.md
+
 5.8.1 (03/21/2022)
 ------------------
 - Fix existing features on Windows OS

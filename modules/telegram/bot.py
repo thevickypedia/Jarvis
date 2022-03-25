@@ -8,6 +8,7 @@ import requests
 
 from api.controller import offline_compatible
 from modules.database import database
+from modules.exceptions import BotInUse
 from modules.models import config, models
 from modules.utils import support
 
@@ -157,7 +158,7 @@ class TelegramBot:
         """Polls ``api.telegram.org`` for new messages.
 
         Raises:
-            - OverflowError: When a new polling is initiated using the same token.
+            - BotInUse: When a new polling is initiated using the same token.
             - ConnectionError: If unable to connect to the endpoint.
 
         See Also:
@@ -172,7 +173,7 @@ class TelegramBot:
                 response = response.json()
             else:
                 if response.status_code == 409:
-                    raise OverflowError(
+                    raise BotInUse(
                         response.json().get('description')
                     )
                 raise ConnectionError(
@@ -293,6 +294,8 @@ class TelegramBot:
 
 
 if __name__ == '__main__':
+    from modules.exceptions import StopSignal
+
     logger = logging.getLogger(__name__)
     log_handler = logging.StreamHandler()
     log_handler.setFormatter(fmt=logging.Formatter(
@@ -303,5 +306,5 @@ if __name__ == '__main__':
     logger.setLevel(level=logging.DEBUG)
     try:
         TelegramBot().poll_for_messages()
-    except KeyboardInterrupt:
+    except StopSignal:
         logger.info("Terminated")

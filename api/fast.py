@@ -10,7 +10,7 @@ from multiprocessing import Process
 from pathlib import Path
 from typing import Any, NoReturn
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
@@ -19,6 +19,7 @@ from api.controller import keygen, offline_compatible
 from api.models import GetData, InvestmentFilter
 from api.report_gatherer import Investment
 from modules.database import database
+from modules.exceptions import Response
 from modules.models import config, models
 
 env = models.env
@@ -117,7 +118,7 @@ async def redirect_index() -> str:
 @app.get('/health', include_in_schema=False)
 async def health() -> NoReturn:
     """Health Check for OfflineCommunicator."""
-    raise HTTPException(status_code=200, detail=status.HTTP_200_OK)
+    raise Response(status_code=200, detail=status.HTTP_200_OK)
 
 
 @app.post("/offline-communicator", dependencies=OFFLINE_PROTECTOR)
@@ -136,10 +137,9 @@ async def offline_communicator(input_data: GetData) -> NoReturn:
 
     See Also:
         - Keeps waiting for the record ``response`` in the database table ``offline``
-        - This response will be sent as raising a ``HTTPException`` with status code 200.
     """
     if not (command := input_data.command.strip()):
-        raise HTTPException(status_code=204, detail='Empy requests cannot be processed.')
+        raise Response(status_code=204, detail='Empy requests cannot be processed.')
 
     command_lower = command.lower()
     if 'alarm' in command_lower or 'remind' in command_lower:
@@ -147,20 +147,20 @@ async def offline_communicator(input_data: GetData) -> NoReturn:
     else:
         command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
     if command_lower == 'test':
-        raise HTTPException(status_code=200, detail='Test message received.')
+        raise Response(status_code=200, detail='Test message received.')
     if 'and' in command.split() or 'also' in command.split():
-        raise HTTPException(status_code=413,
-                            detail='Jarvis can only process one command at a time via offline communicator.')
+        raise Response(status_code=413,
+                       detail='Jarvis can only process one command at a time via offline communicator.')
     if 'after' in command.split():
-        raise HTTPException(status_code=413,
-                            detail='Jarvis cannot perform tasks at a later time using offline communicator.')
+        raise Response(status_code=413,
+                       detail='Jarvis cannot perform tasks at a later time using offline communicator.')
     if not any(word in command_lower for word in offline_compatible):
-        raise HTTPException(status_code=422,
-                            detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
-                                   'Please try an instruction that does not require an user interaction.')
+        raise Response(status_code=422,
+                       detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
+                              'Please try an instruction that does not require an user interaction.')
     if existing := odb.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():
-        raise HTTPException(status_code=503,
-                            detail=f"Processing another offline request: '{existing[0]}'.\nPlease try again.")
+        raise Response(status_code=503,
+                       detail=f"Processing another offline request: '{existing[0]}'.\nPlease try again.")
     odb.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('request', command)}")
     odb.connection.commit()
 
@@ -170,7 +170,7 @@ async def offline_communicator(input_data: GetData) -> NoReturn:
             odb.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
                                {'key': 'response', 'value': response[0]})
             odb.connection.commit()
-            raise HTTPException(status_code=200, detail=f'{dt_string}\n\n{response[0]}')
+            raise Response(status_code=200, detail=f'{dt_string}\n\n{response[0]}')
 
 
 @app.get("/favicon.ico", include_in_schema=False)
@@ -201,7 +201,7 @@ if os.getcwd().split('/')[-1] != 'Jarvis' or all([env.robinhood_user, env.robinh
             - The token is deleted from env var as soon as it is verified, making page-refresh useless.
         """
         robinhood_token['token'] = keygen()
-        raise HTTPException(status_code=200, detail=f"?token={robinhood_token['token']}")
+        raise Response(status_code=200, detail=f"?token={robinhood_token['token']}")
 
 if os.getcwd().split('/')[-1] != 'Jarvis' or all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
     @app.get("/investment", response_class=HTMLResponse, include_in_schema=False)
@@ -224,16 +224,16 @@ if os.getcwd().split('/')[-1] != 'Jarvis' or all([env.robinhood_user, env.robinh
             - Page refresh doesn't work because the env var is deleted as soon as it is authed once.
         """
         if not token:
-            raise HTTPException(status_code=400, detail='Request needs to be authorized with a single-use token.')
+            raise Response(status_code=400, detail='Request needs to be authorized with a single-use token.')
         if token == robinhood_token['token']:
             robinhood_token['token'] = ''
             if not os.path.isfile(serve_file):
-                raise HTTPException(status_code=404, detail='Static file was not found on server.')
+                raise Response(status_code=404, detail='Static file was not found on server.')
             with open(serve_file) as static_file:
                 html_content = static_file.read()
             content_type, _ = mimetypes.guess_type(html_content)
             return HTMLResponse(content=html_content, media_type=content_type)  # serves as a static webpage
         else:
             logger.warning('/investment was accessed with an expired token.')
-            raise HTTPException(status_code=419,
-                                detail='Session expired. Requires authentication since endpoint uses single-use token.')
+            raise Response(status_code=419,
+                           detail='Session expired. Requires authentication since endpoint uses single-use token.')
