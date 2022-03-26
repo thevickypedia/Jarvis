@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+5.8.4 (03/26/2022)
+------------------
+- Fix background process initiating incorrect method
+- Use base db to write meetings/events information
+- Change time format while reading meetings
+- Add logs when scanning for meetings/events
+
 5.8.3 (03/26/2022)
 ------------------
 - FEATURE::Jarvis can read meetings from ICS URLs

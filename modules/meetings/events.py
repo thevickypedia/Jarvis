@@ -15,7 +15,7 @@ from modules.utils import globals
 
 env = models.env
 EVENT_SCRIPT = f"{env.event_app}.scpt"
-edb = database.Database(database='events', table_name='Events', columns=['info'])
+edb = database.Database(table_name='Events', columns=['info'])
 
 
 def events_writer() -> NoReturn:
@@ -52,6 +52,7 @@ def events_gatherer() -> str:
     if not os.path.isfile(EVENT_SCRIPT):
         return f"I wasn't able to find the events script for your {env.event_app} {env.title}!"
     event_app_launcher()
+    logger.info(f"Getting calendar events from {env.event_app}")
     failure = None
     process = Popen(["/usr/bin/osascript", EVENT_SCRIPT] + [str(arg) for arg in [1, 3]], stdout=PIPE, stderr=PIPE)
     out, err = process.communicate()
@@ -77,6 +78,7 @@ def events_gatherer() -> str:
 
     local_events = out.decode().strip()
     if not local_events or local_events == ",":
+        logger.info("No events found!")
         return f"You don't have any events in the next 12 hours {env.title}!"
 
     local_events = local_events.replace(", date ", " rEpLaCInG ")
@@ -84,6 +86,7 @@ def events_gatherer() -> str:
     event_name = local_events.split("rEpLaCInG")[0].split(", ")
     event_name = [i.strip() for n, i in enumerate(event_name) if i not in event_name[n + 1:]]  # remove duplicates
     count = len(event_time)
+    logger.info(f"Events: {count}")
     [event_name.remove(e) for e in event_name if len(e) <= 5] if count != len(event_name) else None
     event_status = f"You have {count} events in the next 12 hours {env.title}! " if count > 1 else ""
     local_events = {}

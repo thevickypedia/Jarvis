@@ -14,7 +14,7 @@ from modules.utils import globals
 
 env = models.env
 fileio = models.fileio
-mdb = database.Database(database='meetings', table_name='Meetings', columns=['info'])
+mdb = database.Database(table_name='Meetings', columns=['info'])
 
 
 def meetings_writer() -> NoReturn:
@@ -41,23 +41,26 @@ def meetings_gatherer() -> str:
     if not response.ok:
         logger.error(response.status_code)
         return "I wasn't able to read your calendar schedule sir! Please check the shared URL."
+    logger.info("Getting calendar schedule from ICS.")
     calendar = Calendar(response.text)
     events = list(calendar.timeline.today())
     if not events:
+        logger.info("No meetings found!")
         return f"You don't have any meetings today {env.title}!"
+    logger.info(f"Meetings: {len(events)}")
     meeting_status = f"You have {len(events)} meetings today {env.title}! " if len(events) > 1 else ""
     for index, event in enumerate(events):
         # import dateutil.tz
         # begin_local = event.begin.replace(
         #     tzinfo=dateutil.tz.tzutc()).astimezone(dateutil.tz.tzlocal()).strftime(
-        #     format='%A, %B %d, %Y %I:%M %p'
+        #     format='%I:%M %p'
         # )
         # end_local = event.end.replace(
         #     tzinfo=dateutil.tz.tzutc()).astimezone(dateutil.tz.tzlocal()).strftime(
-        #     format='%A, %B %d, %Y %I:%M %p'
+        #     format='%I:%M %p'
         # )
-        begin_local = event.begin.astimezone(tz=globals.LOCAL_TIMEZONE).strftime("%A, %B %d, %Y %H:%M")
-        # end_local = event.end.astimezone(tz=globals.LOCAL_TIMEZONE).strftime("%A, %B %d, %Y %H:%M")
+        begin_local = event.begin.astimezone(tz=globals.LOCAL_TIMEZONE).strftime("%I:%M %p")
+        # end_local = event.end.astimezone(tz=globals.LOCAL_TIMEZONE).strftime("%I:%M %p")
         if len(events) == 1:
             meeting_status += f"You have a meeting at {begin_local} {env.title}! {event.name}. "
         else:

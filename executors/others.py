@@ -34,8 +34,8 @@ from modules.utils import globals, support
 
 env = models.env
 fileio = models.fileio
-mdb = database.Database(database='meetings', table_name='Meetings', columns=['info'])
-edb = database.Database(database='events', table_name='Events', columns=['info'])
+mdb = database.Database(table_name='Meetings', columns=['info'])
+edb = database.Database(table_name='Events', columns=['info'])
 
 
 def repeat() -> None:

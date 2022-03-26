@@ -57,8 +57,8 @@ def automator() -> None:
 
         if dry_run or start + 3_600 <= time.time():  # Executes every hour
             start = time.time()
-            Process(target=events.events_gatherer).start()
-            Process(target=icalendar.meetings_gatherer).start()
+            Process(target=events.events_writer).start()
+            Process(target=icalendar.meetings_writer).start()
             Process(target=support.scan_smart_devices).start()
 
         if alarm_state := support.lock_files(alarm_files=True):
