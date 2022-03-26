@@ -5,8 +5,6 @@ import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
-from multiprocessing.context import TimeoutError as ThreadTimeoutError
-from multiprocessing.pool import ThreadPool
 from threading import Thread
 from typing import NoReturn, Tuple
 
@@ -23,20 +21,21 @@ from randfacts import get_fact
 from executors.communicator import read_gmail
 from executors.date_time import current_date, current_time
 from executors.internet import vpn_checker
-from executors.meetings import meeting_reader, meetings_gatherer
 from executors.robinhood import robinhood
 from executors.todo_list import todo
 from executors.weather import weather
 from modules.audio import listener, speaker
 from modules.audio.listener import listen
-from modules.audio.speaker import speak
 from modules.conditions import keywords
+from modules.database import database
 from modules.dictionary import dictionary
 from modules.models import models
 from modules.utils import globals, support
 
 env = models.env
 fileio = models.fileio
+mdb = database.Database(database='meetings', table_name='Meetings', columns=['info'])
+edb = database.Database(database='events', table_name='Events', columns=['info'])
 
 
 def repeat() -> None:
@@ -327,30 +326,24 @@ def report() -> None:
 def time_travel() -> None:
     """Triggered only from ``initiator()`` to give a quick update on the user's daily routine."""
     part_day = support.part_of_day()
-    meeting = None
-    if not os.path.isfile(fileio.meetings) and part_day == 'Morning' and datetime.now().strftime('%A') not in \
-            ['Saturday', 'Sunday']:
-        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)  # Runs parallely and awaits completion
-    speak(text=f"Good {part_day} {env.name}!")
+    speaker.speak(text=f"Good {part_day} {env.name}!")
     if part_day == 'Night':
         if event := support.celebrate():
-            speak(text=f'Happy {event}!')
+            speaker.speak(text=f'Happy {event}!')
         return
     current_date()
     current_time()
     weather()
-    speak(run=True)
-    if os.path.isfile(fileio.meetings) and part_day == 'Morning' and datetime.now().strftime('%A') not in \
-            ['Saturday', 'Sunday']:
-        meeting_reader()
-    elif meeting:
-        try:
-            speak(text=meeting.get(timeout=30))
-        except ThreadTimeoutError:
-            pass  # skip terminate, close and join thread since the motive is to skip meetings info in case of a timeout
+    speaker.speak(run=True)
+    if (meeting_status := mdb.cursor.execute("SELECT info FROM Meetings").fetchone()) and \
+            meeting_status[0].startswith('You'):
+        speaker.speak(text=meeting_status[0])
+    if (event_status := edb.cursor.execute("SELECT info FROM Events").fetchone()) and \
+            event_status[0].startswith('You'):
+        speaker.speak(text=event_status[0])
     todo()
     read_gmail()
-    speak(text='Would you like to hear the latest news?', run=True)
+    speaker.speak(text='Would you like to hear the latest news?', run=True)
     phrase = listen(timeout=3, phrase_limit=3)
     if any(word in phrase.lower() for word in keywords.ok):
         news()
@@ -361,8 +354,8 @@ def sprint_name() -> NoReturn:
     """Generates a random sprint name."""
     response = requests.get(url="https://sprint-name-gen.herokuapp.com/")
     if not response.ok:
-        speak(text="I wasn't able to get a sprint name sir! Why not name it, Jarvis failed?")
+        speaker.speak(text="I wasn't able to get a sprint name sir! Why not name it, Jarvis failed?")
         return
     soup = BeautifulSoup(response.content, 'html.parser')
     name = soup.find('span', {'class': 'sprint-name'}).text
-    speak(text=name)
+    speaker.speak(text=name)

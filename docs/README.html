@@ -91,17 +91,48 @@
 <section id="jarvis">
 <h1>Jarvis<a class="headerlink" href="#jarvis" title="Permalink to this headline">¶</a></h1>
 <p>IronMan’s Jarvis with python</p>
+<section id="prep">
+<h2>Prep<a class="headerlink" href="#prep" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>MacOS</strong> <br> <em>Tested on <strong>MacOS High Sierra, Mojave, Catalina, Big Sur, and Monterey</strong></em></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">System</span> <span class="pre">Preferences</span></code> → <code class="docutils literal notranslate"><span class="pre">Security</span> <span class="pre">&amp;</span> <span class="pre">Privacy</span></code> → <code class="docutils literal notranslate"><span class="pre">Privacy</span></code></p></li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">+</span></code> sign and add the preferred <code class="docutils literal notranslate"><span class="pre">IDE</span></code> and <code class="docutils literal notranslate"><span class="pre">Terminal</span></code> in the following sections in left pane.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Microphone</span></code> - <strong>Required</strong> to listen and respond.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Accessibility</span></code> - <strong>Required</strong> to control the device.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Camera</span></code> - <strong>Required</strong> only during face recognition/detection.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Automation</span></code> - <strong>Required</strong> to control other apps (like Outlook and Calendar) and System Events.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Files</span> <span class="pre">and</span> <span class="pre">Folders</span></code> [OR] <code class="docutils literal notranslate"><span class="pre">Full</span> <span class="pre">Disk</span> <span class="pre">Access</span></code> - <strong>Required</strong> for all <code class="docutils literal notranslate"><span class="pre">FileIO</span></code> operations.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Windows</strong> <br> <em>Tested on <strong>Windows 10</strong></em></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Settings</span></code> → <code class="docutils literal notranslate"><span class="pre">Privacy</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Microphone</span></code> - <strong>Required</strong> to listen and respond.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Camera</span></code> - <strong>Required</strong> only during face recognition/detection.</p></li>
+<li><p>Unlike <code class="docutils literal notranslate"><span class="pre">MacOS</span></code>, <code class="docutils literal notranslate"><span class="pre">Windows</span></code> pops a confirmation window to <strong>Allow</strong> or <strong>Deny</strong> access to files and folders.</p></li>
+</ul>
+</li>
+<li><p>Install <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/">Anaconda</a> or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html#windows-installers">Miniconda</a>, and <a class="reference external" href="https://visualstudio.microsoft.com/visual-cpp-build-tools/">VisualStudio C++ BuildTools</a></p></li>
+</ul>
+</li>
+</ul>
+</section>
 <section id="setup">
 <h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Clone this <a class="reference external" href="https://github.com/thevickypedia/Jarvis.git">repository</a> or download it from <a class="reference external" href="https://pypi.org/project/jarvis-ironman/">pypi</a></p></li>
 <li><p>Run the following commands in command line/terminal:</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">lib</span> <span class="pre">&amp;&amp;</span> <span class="pre">chmod</span> <span class="pre">+x</span> <span class="pre">install_mac.sh</span> <span class="pre">[OR]</span> <span class="pre">install_windows.sh</span></code> - Makes <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/lib">installation file</a> as executable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">lib</span> <span class="pre">&amp;&amp;</span> <span class="pre">chmod</span> <span class="pre">+x</span> <span class="pre">install.sh</span></code> - Makes <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/lib/install.sh">installation file</a> as executable.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">venv</span> <span class="pre">venv</span></code> - Creates a virtual env named <code class="docutils literal notranslate"><span class="pre">venv</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">venv/bin/activate</span></code> - Activates the virtual env <code class="docutils literal notranslate"><span class="pre">venv</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">which</span> <span class="pre">python</span></code> - Validate which python is being used. Should be the one within the virtual env <code class="docutils literal notranslate"><span class="pre">venv</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">installs.sh</span></code> [OR] <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">install_windows.sh</span></code> - Installs the required libraries/modules.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">installs.sh</span></code> - Installs the required libraries/modules.</p></li>
 <li><p><a class="reference external" href="https://git.io/JBnPz"><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">jarvis.py</span></code></a> - BOOM, you’re all set, go ahead and interact with Jarvis</p></li>
 </ul>
 </li>
@@ -149,8 +180,10 @@ Please <a class="reference external" href="https://github.com/thevickypedia/Jarv
 <li><p><strong>ICLOUD_RECOVERY</strong> - Recovery phone number to activate lost mode on a target device - Example: <code class="docutils literal notranslate"><span class="pre">+11234567890</span></code></p></li>
 <li><p><strong>PHONE_NUMBER</strong> - To send SMS from Jarvis - Example: <code class="docutils literal notranslate"><span class="pre">+11234567890</span></code></p></li>
 <li><p><strong>ROOT_PASSWORD</strong> - System password for your <code class="docutils literal notranslate"><span class="pre">mac</span></code> to get the system vitals.</p></li>
-<li><p><strong>MEETING_APP</strong> - Application where the meetings are listed. Defaults to <code class="docutils literal notranslate"><span class="pre">calendar</span></code> but value can be <code class="docutils literal notranslate"><span class="pre">calendar</span></code> or <code class="docutils literal notranslate"><span class="pre">outlook</span></code></p></li>
 <li><p><strong>WOLFRAM_API_KEY</strong> - API Key from wolfram alpha.</p></li>
+<li><p><strong>ICS_URL</strong> - Shared calendar URL to get meetings information from. Should end with <code class="docutils literal notranslate"><span class="pre">.ics</span></code></p></li>
+<li><p><strong>EVENT_APP</strong> - To read events from <code class="docutils literal notranslate"><span class="pre">outlook</span></code> or <code class="docutils literal notranslate"><span class="pre">calendar</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">calendar</span></code> <br>
+:bulb:   When <code class="docutils literal notranslate"><span class="pre">calender</span></code> is used, the name of it should be <strong>Jarvis</strong></p></li>
 </ul>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/vpn-server">VPNServer</a> integration</strong></p>
 <ul class="simple">
@@ -301,6 +334,7 @@ features’ overview and demo videos.</p>
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Jarvis</a><ul>
+<li><a class="reference internal" href="#prep">Prep</a></li>
 <li><a class="reference internal" href="#setup">Setup</a></li>
 <li><a class="reference internal" href="#env-variables">ENV Variables</a></li>
 <li><a class="reference internal" href="#smart-devices">Smart Devices</a></li>

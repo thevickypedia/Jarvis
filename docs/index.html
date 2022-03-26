@@ -47,6 +47,7 @@
 <p class="caption" role="heading"><span class="caption-text">Read Me:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="README.html">Jarvis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="README.html#prep">Prep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#setup">Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#env-variables">ENV Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#smart-devices">Smart Devices</a></li>
@@ -1502,54 +1503,6 @@ A condition below assumes two different words as two places but not including tw
 </dd></dl>
 
 </section>
-<section id="module-executors.meetings">
-<span id="meetings"></span><h1>Meetings<a class="headerlink" href="#module-executors.meetings" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.meetings.meeting_app_launcher">
-<span class="sig-prename descclassname"><span class="pre">executors.meetings.</span></span><span class="sig-name descname"><span class="pre">meeting_app_launcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.meetings.meeting_app_launcher" title="Permalink to this definition">¶</a></dt>
-<dd><p>Launches either Calendar or Outlook application which is required to read meetings.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.meetings.meeting_file_writer">
-<span class="sig-prename descclassname"><span class="pre">executors.meetings.</span></span><span class="sig-name descname"><span class="pre">meeting_file_writer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.meetings.meeting_file_writer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets return value from <code class="docutils literal notranslate"><span class="pre">meetings()</span></code> and writes it to a file.</p>
-<p>This function runs in a dedicated thread every 30 minutes to avoid wait time when meetings information is requested.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.meetings.meeting_reader">
-<span class="sig-prename descclassname"><span class="pre">executors.meetings.</span></span><span class="sig-name descname"><span class="pre">meeting_reader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.meetings.meeting_reader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Speaks meeting information that <code class="docutils literal notranslate"><span class="pre">meeting_gatherer()</span></code> stored in a file.</p>
-<p>If the file is not available, meeting information is directly fetched from the <code class="docutils literal notranslate"><span class="pre">meetings()</span></code> function.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.meetings.meetings">
-<span class="sig-prename descclassname"><span class="pre">executors.meetings.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#executors.meetings.meetings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controller for meetings.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.meetings.meetings_gatherer">
-<span class="sig-prename descclassname"><span class="pre">executors.meetings.</span></span><span class="sig-name descname"><span class="pre">meetings_gatherer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#executors.meetings.meetings_gatherer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses <code class="docutils literal notranslate"><span class="pre">applescript</span></code> to fetch events/meetings from local Calendar (including subscriptions) or Microsoft Outlook.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p>On success, returns a message saying which meeting is scheduled at what time.</p></li>
-<li><p>If no events, returns a message saying there are no events in the next 12 hours.</p></li>
-<li><p>On failure, returns a message saying Jarvis was unable to read calendar/outlook.</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="module-executors.offline">
 <span id="offline"></span><h1>Offline<a class="headerlink" href="#module-executors.offline" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
@@ -1574,17 +1527,6 @@ A condition below assumes two different words as two places but not including tw
 <li><p>Jarvis creates/swaps a <code class="docutils literal notranslate"><span class="pre">status</span></code> flag upon execution, so that it doesn’t execute a task repeatedly.</p></li>
 </ul>
 </div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.offline.initiate_tunneling">
-<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">initiate_tunneling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offline_host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offline_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">home</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.offline.initiate_tunneling" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Ngrok to tunnel requests from external sources if they aren’t running already.</p>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">forever_ngrok.py</span></code> is a simple script that triggers ngrok connection in the port <code class="docutils literal notranslate"><span class="pre">4483</span></code>.</p></li>
-<li><p>The connection is tunneled through a public facing URL used to make <code class="docutils literal notranslate"><span class="pre">POST</span></code> requests to Jarvis API.</p></li>
-</ul>
 </dd></dl>
 
 <dl class="py function">
@@ -1849,7 +1791,6 @@ A condition below assumes two different words as two places but not including tw
 <li><p>poll_for_messages: Initiates polling for messages on the telegram bot.</p></li>
 <li><p>trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.</p></li>
 <li><p>automator: Initiates automator that executes offline commands and certain functions at said time.</p></li>
-<li><p>initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
 <li><p>write_current_location: Writes current location details into a yaml file.</p></li>
 <li><p>playsound: Plays a start-up sound.</p></li>
 </ul>
@@ -3198,6 +3139,55 @@ Pass 155 for LO and 285 for HI.</p>
 </dd></dl>
 
 </section>
+<section id="module-modules.exceptions">
+<span id="exceptions"></span><h1>Exceptions<a class="headerlink" href="#module-modules.exceptions" title="Permalink to this headline">¶</a></h1>
+<p>This is a space for custom exceptions and errors masking defaults with meaningful names.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Exceptions</span>
+</pre></div>
+</div>
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.BotInUse">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">BotInUse</span></span><a class="headerlink" href="#modules.exceptions.BotInUse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">OverflowError</span></code> to indicate bot token is being used else where.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.CameraError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">CameraError</span></span><a class="headerlink" href="#modules.exceptions.CameraError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">BlockingIOError</span></code> to handle missing camera device.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.InvalidEnvVars">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidEnvVars</span></span><a class="headerlink" href="#modules.exceptions.InvalidEnvVars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> to indicate invalid env vars.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.MissingEnvVars">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">MissingEnvVars</span></span><a class="headerlink" href="#modules.exceptions.MissingEnvVars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> to indicate missing env vars.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.Response">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.exceptions.Response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">HTTPException</span></code> from <code class="docutils literal notranslate"><span class="pre">FastAPI</span></code> to wrap an API response.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.StopSignal">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">StopSignal</span></span><a class="headerlink" href="#modules.exceptions.StopSignal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">KeyboardInterrupt</span></code> to handle manual interruption.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.UnsupportedOS">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedOS</span></span><a class="headerlink" href="#modules.exceptions.UnsupportedOS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">OSError</span></code> raised when initiated in an unsupported operating system.</p>
+</dd></dl>
+
+</section>
 <section id="module-modules.face.facial_recognition">
 <span id="face-recognition"></span><h1>Face Recognition<a class="headerlink" href="#module-modules.face.facial_recognition" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -3457,6 +3447,84 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
+<section id="module-modules.meetings.events">
+<span id="meetings"></span><h1>Meetings<a class="headerlink" href="#module-modules.meetings.events" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.meetings.events.event_app_launcher">
+<span class="sig-prename descclassname"><span class="pre">modules.meetings.events.</span></span><span class="sig-name descname"><span class="pre">event_app_launcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.meetings.events.event_app_launcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launches either Calendar or Outlook application which is required to read events.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.meetings.events.events">
+<span class="sig-prename descclassname"><span class="pre">modules.meetings.events.</span></span><span class="sig-name descname"><span class="pre">events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.meetings.events.events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controller for events.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.meetings.events.events_gatherer">
+<span class="sig-prename descclassname"><span class="pre">modules.meetings.events.</span></span><span class="sig-name descname"><span class="pre">events_gatherer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.meetings.events.events_gatherer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses <code class="docutils literal notranslate"><span class="pre">applescript</span></code> to fetch events from local Calendar (including subscriptions) or Microsoft Outlook.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>When reading from apple <code class="docutils literal notranslate"><span class="pre">Calendar</span></code>, the calendar should be named as <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>On success, returns a message saying which event is scheduled at what time.</p></li>
+<li><p>If no events, returns a message saying there are no events in the next 12 hours.</p></li>
+<li><p>On failure, returns a message saying Jarvis was unable to read calendar/outlook.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.meetings.events.events_writer">
+<span class="sig-prename descclassname"><span class="pre">modules.meetings.events.</span></span><span class="sig-name descname"><span class="pre">events_writer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.meetings.events.events_writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets return value from <code class="docutils literal notranslate"><span class="pre">events_gatherer</span></code> function and writes it to events table in the database.</p>
+<p>This function runs in a dedicated process every hour to avoid wait time when events information is requested.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="module-modules.meetings.icalendar"></span><dl class="py function">
+<dt class="sig sig-object py" id="modules.meetings.icalendar.meetings">
+<span class="sig-prename descclassname"><span class="pre">modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.meetings.icalendar.meetings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controller for meetings.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.meetings.icalendar.meetings_gatherer">
+<span class="sig-prename descclassname"><span class="pre">modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">meetings_gatherer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.meetings.icalendar.meetings_gatherer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets ICS data and converts into a statement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>On success, returns a message saying which event is scheduled at what time.</p></li>
+<li><p>If no events, returns a message saying there are no events today.</p></li>
+<li><p>On failure, returns a message saying Jarvis was unable to read the calendar schedule.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.meetings.icalendar.meetings_writer">
+<span class="sig-prename descclassname"><span class="pre">modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">meetings_writer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.meetings.icalendar.meetings_writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets return value from <code class="docutils literal notranslate"><span class="pre">meetings()</span></code> and writes it to a file.</p>
+<p>This function runs in a dedicated process every hour to avoid wait time when meetings information is requested.</p>
+</dd></dl>
+
+</section>
 <section id="models">
 <h1>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -3491,11 +3559,6 @@ Whites can have a value of None.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.location">
 <span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.location" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.meetings">
-<span class="sig-name descname"><span class="pre">meetings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.meetings" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3597,6 +3660,11 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.event_app">
+<span class="sig-name descname"><span class="pre">event_app</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.event_app" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.git_pass">
 <span class="sig-name descname"><span class="pre">git_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.git_pass" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3637,6 +3705,11 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.ics_url">
+<span class="sig-name descname"><span class="pre">ics_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.HttpUrl</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.ics_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.legacy_keywords">
 <span class="sig-name descname"><span class="pre">legacy_keywords</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.legacy_keywords" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3644,11 +3717,6 @@ Whites can have a value of None.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.maps_api">
 <span class="sig-name descname"><span class="pre">maps_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.maps_api" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.EnvConfig.meeting_app">
-<span class="sig-name descname"><span class="pre">meeting_app</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.meeting_app" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4558,49 +4626,6 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 </pre></div>
 </div>
 </section>
-<section id="module-modules.exceptions">
-<span id="exceptions"></span><h1>Exceptions<a class="headerlink" href="#module-modules.exceptions" title="Permalink to this headline">¶</a></h1>
-<p>This is a space for custom exceptions and errors masking defaults with meaningful names.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Exceptions</span>
-</pre></div>
-</div>
-<dl class="py exception">
-<dt class="sig sig-object py" id="modules.exceptions.BotInUse">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">BotInUse</span></span><a class="headerlink" href="#modules.exceptions.BotInUse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">OverflowError</span></code> to indicate bot token is being used else where.</p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="modules.exceptions.CameraError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">CameraError</span></span><a class="headerlink" href="#modules.exceptions.CameraError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">BlockingIOError</span></code> to handle missing camera device.</p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="modules.exceptions.MissingEnvVars">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">MissingEnvVars</span></span><a class="headerlink" href="#modules.exceptions.MissingEnvVars" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> to indicate missing env vars.</p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="modules.exceptions.Response">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.exceptions.Response" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">HTTPException</span></code> from <code class="docutils literal notranslate"><span class="pre">FastAPI</span></code> to wrap an API response.</p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="modules.exceptions.StopSignal">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">StopSignal</span></span><a class="headerlink" href="#modules.exceptions.StopSignal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">KeyboardInterrupt</span></code> to handle manual interruption.</p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="modules.exceptions.UnsupportedOS">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedOS</span></span><a class="headerlink" href="#modules.exceptions.UnsupportedOS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">OSError</span></code> raised when initiated in an unsupported operating system.</p>
-</dd></dl>
-
-</section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
@@ -4649,7 +4674,6 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#module-executors.lights">Lights</a></li>
 <li><a class="reference internal" href="#module-executors.location">Location</a></li>
 <li><a class="reference internal" href="#module-executors.logger">Logger</a></li>
-<li><a class="reference internal" href="#module-executors.meetings">Meetings</a></li>
 <li><a class="reference internal" href="#module-executors.offline">Offline</a></li>
 <li><a class="reference internal" href="#module-executors.others">Others</a></li>
 <li><a class="reference internal" href="#module-executors.port_handler">Port Handler</a></li>
@@ -4670,10 +4694,12 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#id2">Conditions</a></li>
 <li><a class="reference internal" href="#config">Config</a></li>
 <li><a class="reference internal" href="#module-modules.database.database">Database</a></li>
+<li><a class="reference internal" href="#module-modules.exceptions">Exceptions</a></li>
 <li><a class="reference internal" href="#module-modules.face.facial_recognition">Face Recognition</a></li>
 <li><a class="reference internal" href="#id3">Lights</a></li>
 <li><a class="reference internal" href="#module-modules.netgear.ip_scanner">Local IP Scanner</a></li>
 <li><a class="reference internal" href="#module-modules.dictionary.dictionary">Meanings</a></li>
+<li><a class="reference internal" href="#module-modules.meetings.events">Meetings</a></li>
 <li><a class="reference internal" href="#models">Models</a></li>
 <li><a class="reference internal" href="#module-restart">Restart</a></li>
 <li><a class="reference internal" href="#id4">Telegram</a></li>
@@ -4681,7 +4707,6 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <li><a class="reference internal" href="#module-modules.tv.tv_controls">TV Connector</a></li>
 <li><a class="reference internal" href="#module-modules.utils.support">Support</a></li>
 <li><a class="reference internal" href="#module-modules.utils.globals">Globals</a></li>
-<li><a class="reference internal" href="#module-modules.exceptions">Exceptions</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 

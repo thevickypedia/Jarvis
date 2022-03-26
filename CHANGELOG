@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+5.8.3 (03/26/2022)
+------------------
+- FEATURE::Jarvis can read meetings from ICS URLs
+- Use single install script and requirements.txt
+- Increase phrase limit in legacy mode to 3 secs
+- Onboard a new module to read .ics urls
+- Move LOCAL_TIMEZONE to globals.py
+- Update README.md and requirements.txt
+
 5.8.2 (03/24/2022)
 ------------------
 - FEATURE::Jarvis can tell random sprint names

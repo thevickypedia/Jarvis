@@ -145,7 +145,7 @@ def sentry_mode() -> None:
     while True:
         try:
             sys.stdout.write("\rSentry Mode")
-            listened = recognizer.listen(source=source, timeout=10, phrase_time_limit=1)
+            listened = recognizer.listen(source=source, timeout=10, phrase_time_limit=3)
             sys.stdout.write("\r")
             if not any(word in recognizer.recognize_google(listened).lower() for word in env.legacy_keywords):
                 continue

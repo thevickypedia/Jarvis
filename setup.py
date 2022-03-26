@@ -1,5 +1,4 @@
 import os
-import platform
 
 from setuptools import setup
 
@@ -51,12 +50,7 @@ def dependencies() -> list:
         list:
         List of dependencies to be installed.
     """
-    req = ""
-    if platform.system() == "Darwin":
-        req = "mac_requirements.txt"
-    elif platform.system() == "Windows":
-        req = "win_requirements.txt"
-    requirement_file = os.path.dirname(os.path.realpath(__file__)) + f'{os.path.sep}lib{os.path.sep}{req}'
+    requirement_file = os.path.dirname(os.path.realpath(__file__)) + f'{os.path.sep}lib{os.path.sep}requirements.txt'
     if os.path.isfile(requirement_file):
         with open(requirement_file) as requirements:
             install_requires = requirements.read().splitlines()

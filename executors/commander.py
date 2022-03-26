@@ -79,7 +79,6 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
         phrase: Takes the phrase spoken as an argument.
         delay: Sleeps for the number of seconds.
     """
-    # TODO: Validate flow during multiple delayed executions
     logger.info(f"'{phrase}' will be executed after {support.time_converter(seconds=delay)}")
     time.sleep(delay)
     logger.info(f"Executing '{phrase}'")

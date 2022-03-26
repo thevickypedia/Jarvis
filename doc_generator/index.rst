@@ -210,13 +210,6 @@ Logger
    :members:
    :undoc-members:
 
-Meetings
-========
-
-.. automodule:: executors.meetings
-   :members:
-   :undoc-members:
-
 Offline
 =======
 
@@ -388,6 +381,13 @@ Database
    :members:
    :undoc-members:
 
+Exceptions
+==========
+
+.. automodule:: modules.exceptions
+   :members:
+   :undoc-members:
+
 Face Recognition
 ================
 
@@ -420,6 +420,19 @@ Meanings
 ========
 
 .. automodule:: modules.dictionary.dictionary
+   :members:
+   :undoc-members:
+
+Meetings
+========
+
+.. automodule:: modules.meetings.events
+   :members:
+   :undoc-members:
+
+====
+
+.. automodule:: modules.meetings.icalendar
    :members:
    :undoc-members:
 
@@ -475,13 +488,6 @@ Globals
 =======
 
 .. automodule:: modules.utils.globals
-   :members:
-   :undoc-members:
-
-Exceptions
-==========
-
-.. automodule:: modules.exceptions
    :members:
    :undoc-members:
 

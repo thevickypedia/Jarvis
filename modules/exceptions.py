@@ -36,3 +36,8 @@ class StopSignal(KeyboardInterrupt):
 class Response(HTTPException):
     """Custom ``HTTPException`` from ``FastAPI`` to wrap an API response."""
     pass
+
+
+class InvalidEnvVars(ValueError):
+    """Custom ``ValueError`` to indicate invalid env vars."""
+    pass

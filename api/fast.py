@@ -4,7 +4,7 @@ import mimetypes
 import os
 import string
 import time
-from datetime import datetime, timezone
+from datetime import datetime
 from logging.config import dictConfig
 from multiprocessing import Process
 from pathlib import Path
@@ -21,6 +21,7 @@ from api.report_gatherer import Investment
 from modules.database import database
 from modules.exceptions import Response
 from modules.models import config, models
+from modules.utils import globals
 
 env = models.env
 odb = database.Database(table_name='offline', columns=['key', 'value'])
@@ -35,8 +36,6 @@ if not os.path.isfile(config.APIConfig().ACCESS_LOG_FILENAME):
 
 if not os.path.isfile(config.APIConfig().DEFAULT_LOG_FILENAME):
     Path(config.APIConfig().DEFAULT_LOG_FILENAME).touch()
-
-LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 
 offline_compatible = offline_compatible()
 
@@ -164,7 +163,10 @@ async def offline_communicator(input_data: GetData) -> NoReturn:
     odb.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('request', command)}")
     odb.connection.commit()
 
-    dt_string = datetime.now().astimezone(tz=LOCAL_TIMEZONE).strftime("%A, %B %d, %Y %H:%M:%S")
+    # Alternate way for datetime conversions without first specifying a local timezone
+    # import dateutil.tz
+    # dt_string = datetime.now().astimezone(dateutil.tz.tzlocal()).strftime("%A, %B %d, %Y %H:%M:%S")
+    dt_string = datetime.now().astimezone(tz=globals.LOCAL_TIMEZONE).strftime("%A, %B %d, %Y %H:%M:%S")
     while True:
         if response := odb.cursor.execute("SELECT value from offline WHERE key=?", ('response',)).fetchone():
             odb.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",

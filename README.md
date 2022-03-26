@@ -70,14 +70,30 @@
 # Jarvis
 IronMan's Jarvis with python
 
+### Prep
+   - **MacOS** <br> _Tested on **MacOS High Sierra, Mojave, Catalina, Big Sur, and Monterey**_
+     - `System Preferences` → `Security & Privacy` → `Privacy`
+     - Click `+` sign and add the preferred `IDE` and `Terminal` in the following sections in left pane.
+       - `Microphone` - **Required** to listen and respond.
+       - `Accessibility` - **Required** to control the device.
+       - `Camera` - **Required** only during face recognition/detection.
+       - `Automation` - **Required** to control other apps (like Outlook and Calendar) and System Events.
+       - `Files and Folders` [OR] `Full Disk Access` - **Required** for all `FileIO` operations.
+   - **Windows** <br> _Tested on **Windows 10**_
+     - `Settings` → `Privacy`
+       - `Microphone` - **Required** to listen and respond.
+       - `Camera` - **Required** only during face recognition/detection.
+       - Unlike `MacOS`, `Windows` pops a confirmation window to **Allow** or **Deny** access to files and folders.
+     - Install [Anaconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html#windows-installers), and [VisualStudio C++ BuildTools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+
 ### Setup
    - Clone this [repository](https://github.com/thevickypedia/Jarvis.git) or download it from [pypi](https://pypi.org/project/jarvis-ironman/)
    - Run the following commands in command line/terminal:
-        - `cd lib && chmod +x install_mac.sh [OR] install_windows.sh` - Makes [installation file](https://github.com/thevickypedia/Jarvis/tree/master/lib) as executable.
+        - `cd lib && chmod +x install.sh` - Makes [installation file](https://github.com/thevickypedia/Jarvis/blob/master/lib/install.sh) as executable.
         - `python3 -m venv venv` - Creates a virtual env named `venv`
         - `source venv/bin/activate` - Activates the virtual env `venv`
         - `which python` - Validate which python is being used. Should be the one within the virtual env `venv`
-        - `bash installs.sh` [OR] `bash install_windows.sh` - Installs the required libraries/modules.
+        - `bash installs.sh` - Installs the required libraries/modules.
         - [`python jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis
 
 > :warning: &nbsp; Running on Windows OS might still have known issues, since it is still a WIP.
@@ -119,8 +135,10 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **ICLOUD_RECOVERY** - Recovery phone number to activate lost mode on a target device - Example: `+11234567890`
 - **PHONE_NUMBER** - To send SMS from Jarvis - Example: `+11234567890`
 - **ROOT_PASSWORD** - System password for your `mac` to get the system vitals.
-- **MEETING_APP** - Application where the meetings are listed. Defaults to `calendar` but value can be `calendar` or `outlook`
 - **WOLFRAM_API_KEY** - API Key from wolfram alpha.
+- **ICS_URL** - Shared calendar URL to get meetings information from. Should end with `.ics`
+- **EVENT_APP** - To read events from `outlook` or `calendar`. Defaults to `calendar` <br>
+:bulb: &nbsp; When `calender` is used, the name of it should be **Jarvis**
 
 **[VPNServer](https://github.com/thevickypedia/vpn-server) integration**
 - **VPN_USERNAME** - Username to create vpn-server. Defaults to profile username or `openvpn`

@@ -93,7 +93,9 @@ flip_a_coin = ["head", "tail", "flip"]
 
 facts = ["fact", "facts"]
 
-meetings = ["meeting", "appointment", "schedule"]
+meetings = ["meeting"]
+
+events = ["event"]
 
 voice_changer = ["voice", "module", "audio"]
 

@@ -8,7 +8,6 @@ from threading import Thread
 import psutil
 import yaml
 
-from executors import meetings
 from executors.display_functions import decrease_brightness
 from executors.logger import logger
 from modules.audio import listener, speaker, voices, volume
@@ -237,5 +236,3 @@ def starter() -> None:
     volume.volume(level=50)
     voices.voice_default()
     clear_logs()
-    if env.mac:
-        meetings.meeting_app_launcher()

@@ -11,9 +11,9 @@ import platform
 import socket
 
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
-                      FilePath, PositiveInt)
+                      FilePath, HttpUrl, PositiveInt)
 
-from modules.exceptions import UnsupportedOS
+from modules.exceptions import InvalidEnvVars, UnsupportedOS
 
 # Used by docs
 if not os.path.isdir('fileio'):
@@ -32,7 +32,6 @@ class FileIO(BaseModel):
     base_db: FilePath = f'fileio{os.path.sep}database.db'
     frequent: FilePath = f'fileio{os.path.sep}frequent.yaml'
     location: FilePath = f'fileio{os.path.sep}location.yaml'
-    meetings: FilePath = f'fileio{os.path.sep}meetings'
     notes: FilePath = f'fileio{os.path.sep}notes.txt'
     smart_devices: FilePath = f'fileio{os.path.sep}smart_devices.yaml'
     hostnames: FilePath = f'fileio{os.path.sep}hostnames.yaml'
@@ -65,7 +64,8 @@ class EnvConfig(BaseSettings):
     robinhood_pass: str = Field(default=None, env='ROBINHOOD_PASS')
     robinhood_qr: str = Field(default=None, env='ROBINHOOD_QR')
     robinhood_endpoint_auth: str = Field(default=None, env='ROBINHOOD_ENDPOINT_AUTH')
-    meeting_app: str = Field(default='calendar', env='MEETING_APP')
+    event_app: str = Field(default=None, env='EVENT_APP')
+    ics_url: HttpUrl = Field(default=None, env='ICS_URL')
     website: str = Field(default='vigneshrao.com', env='WEBSITE')
     wolfram_api_key: str = Field(default=None, env='WOLFRAM_API_KEY')
     maps_api: str = Field(default=None, env='MAPS_API')
@@ -114,3 +114,14 @@ class EnvConfig(BaseSettings):
 
 env = EnvConfig()
 fileio = FileIO()
+
+if env.event_app and env.event_app not in ('calendar', 'outlook'):
+    raise InvalidEnvVars(
+        "'EVENT_APP' can only be either 'outlook' OR 'calendar'"
+    )
+
+# regex=".*ics$" will not work since the type hint is HttpUrl
+if env.ics_url and not env.ics_url.endswith('.ics'):
+    raise InvalidEnvVars(
+        "'ICS_URL' should end with .ics"
+    )

@@ -1,5 +1,4 @@
 SpeechRecognition==3.8.1
-PyAudio==0.2.11
 pyttsx3==2.90
 pvporcupine==1.9.5
 wikipedia==1.4.0
@@ -20,7 +19,6 @@ wakeonlan==2.1.0
 speedtest-cli==2.1.3
 holidays==0.13
 randfacts==0.15.0
-appscript==1.1.2
 wolframalpha==5.0.0
 pynetgear==0.9.1
 fastapi==0.75.0
@@ -29,8 +27,8 @@ aiofiles==0.8.0
 python-multipart==0.0.5
 pydantic==1.9.0
 pydantic[email]==1.9.0
+ics==0.7
 Jinja2==3.0.3
-python-crontab==2.6.0
 certifi==2021.10.8
 googlehomepush==0.1.0
 PyChromecast==2.3.0

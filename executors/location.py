@@ -134,7 +134,6 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
 
 def write_current_location() -> None:
     """Extracts location information from either an ``AppleDevice`` or the public IP address."""
-    # todo: Write to a DB instead of dumping in an yaml file
     if os.path.isfile(fileio.location):
         with open(fileio.location) as file:
             location_data = yaml.load(stream=file, Loader=yaml.FullLoader)

@@ -17,7 +17,6 @@ from executors.lights import lights
 from executors.location import (directions, distance, locate, locate_places,
                                 location)
 from executors.logger import logger
-from executors.meetings import meetings
 from executors.others import (apps, facts, flip_a_coin, google_home, jokes,
                               meaning, music, news, notes, repeat, report,
                               sprint_name)
@@ -35,6 +34,8 @@ from modules.audio.voices import voice_changer
 from modules.audio.volume import volume
 from modules.conditions import conversation, keywords
 from modules.exceptions import StopSignal
+from modules.meetings.events import events
+from modules.meetings.icalendar import meetings
 from modules.utils import support
 
 
@@ -194,6 +195,9 @@ def conditions(converted: str, should_return: bool = False) -> bool:
 
     elif any(word in converted_lower for word in keywords.meetings):
         meetings()
+
+    elif any(word in converted_lower for word in keywords.events):
+        events()
 
     elif any(word in converted_lower for word in keywords.voice_changer):
         voice_changer(converted)

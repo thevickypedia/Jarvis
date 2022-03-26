@@ -1,6 +1,5 @@
 import json
 import os
-import subprocess
 import time
 from datetime import datetime
 from multiprocessing import Process
@@ -12,11 +11,11 @@ from executors.alarm import alarm_executor
 from executors.automation import auto_helper
 from executors.conditions import conditions
 from executors.logger import logger
-from executors.meetings import meeting_file_writer
 from executors.remind import reminder_executor
 from modules.audio.speaker import audio_driver
 from modules.audio.voices import voice_default
 from modules.database import database
+from modules.meetings import events, icalendar
 from modules.models import models
 from modules.utils import globals, support
 
@@ -58,7 +57,8 @@ def automator() -> None:
 
         if dry_run or start + 3_600 <= time.time():  # Executes every hour
             start = time.time()
-            Process(target=meeting_file_writer).start()
+            Process(target=events.events_gatherer).start()
+            Process(target=icalendar.meetings_gatherer).start()
             Process(target=support.scan_smart_devices).start()
 
         if alarm_state := support.lock_files(alarm_files=True):
@@ -75,40 +75,6 @@ def automator() -> None:
                     os.remove(f'reminder{os.path.sep}{each_reminder}')
 
         dry_run = False
-
-
-def initiate_tunneling(offline_host: str, offline_port: int, home: str) -> None:
-    """Initiates Ngrok to tunnel requests from external sources if they aren't running already.
-
-    Notes:
-        - ``forever_ngrok.py`` is a simple script that triggers ngrok connection in the port ``4483``.
-        - The connection is tunneled through a public facing URL used to make ``POST`` requests to Jarvis API.
-    """
-    # TODO: Make JarvisHelper public and trigger in a dedicated Process to avoid using appscript
-    if not env.mac:
-        return
-    ngrok_status = False
-    target_script = 'forever_ngrok.py'
-    activator = 'source venv/bin/activate'
-
-    pid_check = subprocess.check_output(f"ps -ef | grep {target_script}", shell=True)
-    pid_list = pid_check.decode('utf-8').split('\n')
-    for id_ in pid_list:
-        if id_ and 'grep' not in id_ and '/bin/sh' not in id_:
-            if target_script == 'forever_ngrok.py':
-                ngrok_status = True
-                logger.info('An instance of ngrok connection for offline communicator is running already.')
-    if not ngrok_status:
-        if os.path.exists(f"{home}/JarvisHelper"):
-            import appscript
-            logger.info('Initiating ngrok connection for offline communicator.')
-            initiate = f'cd {home}/JarvisHelper && {activator} && export port={offline_port} && python {target_script}'
-            appscript.app('Terminal').do_script(initiate)
-        else:
-            logger.error(f'JarvisHelper is not available to trigger an ngrok tunneling through {offline_port}')
-            endpoint = rf'http:\\{offline_host}:{offline_port}'
-            logger.error(f'However offline communicator can still be accessed via '
-                         f'{endpoint}\\offline-communicator for API calls and {endpoint}\\docs for docs.')
 
 
 def on_demand_offline_automation(task: str) -> bool:
