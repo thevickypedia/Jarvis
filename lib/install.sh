@@ -44,7 +44,7 @@ if [[ "$OSName" == "Darwin" ]]; then
     python3 -m pip install --no-cache --upgrade setuptools gmail-connector vpn-server changelog-generator sphinx pre-commit recommonmark
 
     # Mac specifics
-    python3 -m pip install python-crontab==2.6.0 PyAudio==0.2.11
+    python3 -m pip install python-crontab==2.6.0 PyAudio==0.2.11 appscript==1.1.2
 
     # Install pre-commit checker to restrict commit if any step in .pre-commit-config.yaml fails.
     pre-commit install

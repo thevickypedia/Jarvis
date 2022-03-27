@@ -23,7 +23,8 @@ def events_writer() -> NoReturn:
 
     This function runs in a dedicated process every hour to avoid wait time when events information is requested.
     """
-    edb.cursor.execute("INSERT OR REPLACE INTO Events (info) VALUES (?);", (events_gatherer(),))
+    event_info = events_gatherer()
+    edb.cursor.execute("INSERT OR REPLACE INTO Events (info) VALUES (?);", (event_info,))
     edb.connection.commit()
 
 

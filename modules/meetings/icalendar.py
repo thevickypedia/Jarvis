@@ -22,7 +22,8 @@ def meetings_writer() -> NoReturn:
 
     This function runs in a dedicated process every hour to avoid wait time when meetings information is requested.
     """
-    mdb.cursor.execute("INSERT OR REPLACE INTO Meetings (info) VALUES (?);", (meetings_gatherer(),))
+    meeting_info = meetings_gatherer()
+    mdb.cursor.execute("INSERT OR REPLACE INTO Meetings (info) VALUES (?);", (meeting_info,))
     mdb.connection.commit()
 
 
@@ -50,22 +51,18 @@ def meetings_gatherer() -> str:
     logger.info(f"Meetings: {len(events)}")
     meeting_status = f"You have {len(events)} meetings today {env.title}! " if len(events) > 1 else ""
     for index, event in enumerate(events):
-        # import dateutil.tz
-        # begin_local = event.begin.replace(
-        #     tzinfo=dateutil.tz.tzutc()).astimezone(dateutil.tz.tzlocal()).strftime(
-        #     format='%I:%M %p'
-        # )
-        # end_local = event.end.replace(
-        #     tzinfo=dateutil.tz.tzutc()).astimezone(dateutil.tz.tzlocal()).strftime(
-        #     format='%I:%M %p'
-        # )
+        # import dateutil.tz  # Alternate way for time formatting
+        # begin_local = event.begin.replace(tzinfo=dateutil.tz.tzutc()).astimezone(dateutil.tz.tzlocal()).strftime(
+        #     format='%I:%M %p')
+        # end_local = event.end.replace(tzinfo=dateutil.tz.tzutc()).astimezone(dateutil.tz.tzlocal()).strftime(
+        #     format='%I:%M %p')
         begin_local = event.begin.astimezone(tz=globals.LOCAL_TIMEZONE).strftime("%I:%M %p")
-        # end_local = event.end.astimezone(tz=globals.LOCAL_TIMEZONE).strftime("%I:%M %p")
         if len(events) == 1:
-            meeting_status += f"You have a meeting at {begin_local} {env.title}! {event.name}. "
+            meeting_status += f"You have an all day meeting {env.title}! {event.name}. " if event.all_day else \
+                f"You have a meeting at {begin_local} {env.title}! {event.name}. "
         else:
-            meeting_status += f"{event.name} at {begin_local}, " if index + 1 < len(events) else \
-                f"{event.name} at {begin_local}."
+            meeting_status += f"{event.name} - all day" if event.all_day else f"{event.name} at {begin_local}"
+            meeting_status += ', ' if index + 1 < len(events) else '.'
     return meeting_status
 
 

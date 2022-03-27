@@ -7,7 +7,7 @@ from playsound import playsound
 from api.server import trigger_api
 from executors.location import write_current_location
 from executors.logger import logger
-from executors.offline import automator
+from executors.offline import automator, initiate_tunneling
 from executors.telegram import handler
 from modules.models import models
 from modules.utils import globals
@@ -22,6 +22,7 @@ def start_processes() -> Dict[str, Process]:
         - poll_for_messages: Initiates polling for messages on the telegram bot.
         - trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.
         - automator: Initiates automator that executes offline commands and certain functions at said time.
+        - initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
         - write_current_location: Writes current location details into a yaml file.
         - playsound: Plays a start-up sound.
     """
@@ -29,6 +30,7 @@ def start_processes() -> Dict[str, Process]:
         "telegram": Process(target=handler),
         "api": Process(target=trigger_api),
         "automator": Process(target=automator),
+        "ngrok": Process(target=initiate_tunneling),
         "location": Process(target=write_current_location),
     }
     for func, process in processes.items():

@@ -8,7 +8,7 @@ import time
 import webbrowser
 from difflib import SequenceMatcher
 from pathlib import Path
-from typing import Tuple, Union
+from typing import NoReturn, Tuple, Union
 
 import certifi
 import yaml
@@ -70,7 +70,8 @@ def device_selector(phrase: str = None) -> Union[AppleDevice, None]:
     return target_device if target_device else icloud_api.iphone
 
 
-def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, str or float, str]]:
+def location_services(device: AppleDevice) -> Union[NoReturn,
+                                                    Tuple[str or float or None, str or float or None, str or None]]:
     """Gets the current location of an Apple device.
 
     Args:
@@ -91,7 +92,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
                 raise PyiCloudFailedLoginException
         raw_location = device.location()
         if not raw_location and sys._getframe(1).f_code.co_name == "locate":  # noqa
-            return "None", "None", "None"
+            return None, None, None
         elif not raw_location:
             raise PyiCloudAPIResponseException(reason=f"Unable to retrieve location for {device}")
         else:
@@ -119,7 +120,7 @@ def location_services(device: AppleDevice) -> Union[None, Tuple[str or float, st
                       run=True)
         sys.stdout.write(f"\rMemory consumed: {support.size_converter(byte_size=0)}"
                          f"\nTotal runtime: {support.time_converter(seconds=time.perf_counter())}")
-        support.terminator()
+        controls.terminator()
 
     try:
         # Uses the latitude and longitude information and converts to the required address.
@@ -149,7 +150,7 @@ def write_current_location() -> None:
                 yaml.dump(stream=file, data=location_data)
             return
 
-    current_lat, current_lon, location_info = location_services(device=device_selector())
+    current_lat, current_lon, location_info = location_services(device=device_selector(phrase=None))
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
     logger.info(f"Writing location info into {fileio.location}")
     with open(fileio.location, 'w') as location_writer:
@@ -188,12 +189,14 @@ def locate(phrase: str) -> None:
     speaker.speak(text="Would you like to get the location details?", run=True)
     phrase_location = listener.listen(timeout=3, phrase_limit=3)
 
-    if phrase_location == "SR_ERROR" and not any(word in phrase_location.lower() for word in keywords.ok):
+    if phrase_location == "SR_ERROR":
+        return
+    elif not any(word in phrase_location.lower() for word in keywords.ok):
         return
 
-    ignore_lat, ignore_lon, location_info_ = location_services(target_device)
+    ignore_lat, ignore_lon, location_info_ = location_services(device=target_device)
     lookup = str(target_device).split(":")[0].strip()
-    if location_info_ == "None":
+    if not location_info_:
         speaker.speak(text=f"I wasn't able to locate your {lookup} {env.title}! It is probably offline.")
     else:
         post_code = '"'.join(list(location_info_["postcode"].split("-")[0]))
@@ -209,8 +212,7 @@ def locate(phrase: str) -> None:
         speaker.speak(text="I can also enable lost mode. Would you like to do it?", run=True)
         phrase_lost = listener.listen(timeout=3, phrase_limit=3)
         if any(word in phrase_lost.lower() for word in keywords.ok):
-            message = "Return my phone immediately."
-            target_device.lost_device(number=env.icloud_recovery, text=message)
+            target_device.lost_device(number=env.icloud_recovery, text="Return my phone immediately.")
             speaker.speak(text="I've enabled lost mode on your phone.")
         else:
             speaker.speak(text=f"No action taken {env.title}!")

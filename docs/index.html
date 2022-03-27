@@ -1430,7 +1430,7 @@ A condition below assumes two different words as two places but not including tw
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.location.location_services">
-<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">location_services</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.location.location_services" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">location_services</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">NoReturn</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.location.location_services" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the current location of an Apple device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1527,6 +1527,17 @@ A condition below assumes two different words as two places but not including tw
 <li><p>Jarvis creates/swaps a <code class="docutils literal notranslate"><span class="pre">status</span></code> flag upon execution, so that it doesn’t execute a task repeatedly.</p></li>
 </ul>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.offline.initiate_tunneling">
+<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">initiate_tunneling</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.offline.initiate_tunneling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates Ngrok to tunnel requests from external sources if they aren’t running already.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">forever_ngrok.py</span></code> is a simple script that triggers ngrok connection in the given offline port.</p></li>
+<li><p>The connection is tunneled through a public facing URL used to make <code class="docutils literal notranslate"><span class="pre">POST</span></code> requests to Jarvis API.</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py function">
@@ -1791,6 +1802,7 @@ A condition below assumes two different words as two places but not including tw
 <li><p>poll_for_messages: Initiates polling for messages on the telegram bot.</p></li>
 <li><p>trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.</p></li>
 <li><p>automator: Initiates automator that executes offline commands and certain functions at said time.</p></li>
+<li><p>initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
 <li><p>write_current_location: Writes current location details into a yaml file.</p></li>
 <li><p>playsound: Plays a start-up sound.</p></li>
 </ul>

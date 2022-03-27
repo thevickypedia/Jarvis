@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.8.5 (03/26/2022)
+------------------
+- Fix open connections on database and iPhone locator
+- Differentiate all day events in meetings
+
 5.8.4 (03/26/2022)
 ------------------
 - Fix background process initiating incorrect method
