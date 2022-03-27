@@ -4,6 +4,7 @@ import struct
 import sys
 import time
 from pathlib import PurePath
+from typing import NoReturn
 
 import packaging.version
 import pvporcupine
@@ -69,7 +70,7 @@ class Activator:
         )
         self.audio_stream = None
 
-    def open_stream(self) -> None:
+    def open_stream(self) -> NoReturn:
         """Initializes an audio stream."""
         self.audio_stream = self.py_audio.open(
             rate=self.detector.sample_rate,
@@ -80,12 +81,12 @@ class Activator:
             input_device_index=self.input_device_index
         )
 
-    def close_stream(self) -> None:
+    def close_stream(self) -> NoReturn:
         """Closes audio stream so that other listeners can use microphone."""
         self.py_audio.close(stream=self.audio_stream)
         self.audio_stream = None
 
-    def start(self) -> None:
+    def start(self) -> NoReturn:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
             while True:
@@ -114,7 +115,7 @@ class Activator:
             exit_process()
             terminator()
 
-    def stop(self) -> None:
+    def stop(self) -> NoReturn:
         """Invoked when the run loop is exited or manual interrupt.
 
         See Also:
@@ -133,7 +134,7 @@ class Activator:
         self.py_audio.terminate()
 
 
-def sentry_mode() -> None:
+def sentry_mode() -> NoReturn:
     """Listens forever and invokes ``initiator()`` when recognized. Stops when ``restart`` table has an entry.
 
     See Also:
@@ -145,7 +146,7 @@ def sentry_mode() -> None:
     while True:
         try:
             sys.stdout.write("\rSentry Mode")
-            listened = recognizer.listen(source=source, timeout=10, phrase_time_limit=3)
+            listened = recognizer.listen(source=source, timeout=10, phrase_time_limit=env.legacy_phrase_limit)
             sys.stdout.write("\r")
             if not any(word in recognizer.recognize_google(listened).lower() for word in env.legacy_keywords):
                 continue

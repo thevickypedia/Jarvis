@@ -4,7 +4,6 @@ from multiprocessing import Process
 from threading import Thread
 from typing import Union
 
-from api.controller import offline_compatible
 from executors.conditions import conditions
 from executors.controls import pc_sleep
 from executors.logger import logger
@@ -13,10 +12,11 @@ from executors.others import time_travel
 from modules.audio import listener, speaker
 from modules.conditions import conversation, keywords
 from modules.models import models
+from modules.offline import compatibles
 from modules.utils import globals, support
 
 env = models.env
-offline_list = offline_compatible()
+offline_list = compatibles.offline_compatible()
 
 
 def split_phrase(phrase: str, should_return: bool = False) -> bool:

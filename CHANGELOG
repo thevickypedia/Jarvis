@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+5.8.6 (03/27/2022)
+------------------
+- Remove market status condition to gather `robinhood` report
+- Fix google home device scanner
+- Move offline_compatible words into its own module
+- Move hashed token into support.py
+- Remove appscript and use osascript instead for tunneling
+- Move legacy phrase limit to env var
+
 5.8.5 (03/26/2022)
 ------------------
 - Fix open connections on database and iPhone locator

@@ -15,13 +15,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
 from api import authenticator, cron
-from api.controller import keygen, offline_compatible
 from api.models import GetData, InvestmentFilter
 from api.report_gatherer import Investment
 from modules.database import database
 from modules.exceptions import Response
 from modules.models import config, models
-from modules.utils import globals
+from modules.offline import compatibles
+from modules.utils import globals, support
 
 env = models.env
 odb = database.Database(table_name='offline', columns=['key', 'value'])
@@ -37,7 +37,7 @@ if not os.path.isfile(config.APIConfig().ACCESS_LOG_FILENAME):
 if not os.path.isfile(config.APIConfig().DEFAULT_LOG_FILENAME):
     Path(config.APIConfig().DEFAULT_LOG_FILENAME).touch()
 
-offline_compatible = offline_compatible()
+offline_compatible = compatibles.offline_compatible()
 
 importlib.reload(module=logging) if env.mac else None
 dictConfig(config=config.APIConfig().LOGGING_CONFIG)
@@ -202,7 +202,7 @@ if os.getcwd().split('/')[-1] != 'Jarvis' or all([env.robinhood_user, env.robinh
             - Also stores the token in the dictionary ``robinhood_token`` which is verified in the path ``/investment``
             - The token is deleted from env var as soon as it is verified, making page-refresh useless.
         """
-        robinhood_token['token'] = keygen()
+        robinhood_token['token'] = support.token()
         raise Response(status_code=200, detail=f"?token={robinhood_token['token']}")
 
 if os.getcwd().split('/')[-1] != 'Jarvis' or all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):

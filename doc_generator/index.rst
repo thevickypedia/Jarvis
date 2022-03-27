@@ -28,13 +28,6 @@ API Handler
    :members:
    :undoc-members:
 
-API Controller
-==============
-
-.. automodule:: api.controller
-   :members:
-   :undoc-members:
-
 API Authenticator
 =================
 
@@ -446,6 +439,13 @@ Models
 ====
 
 .. autoclass:: modules.models.models.EnvConfig(pydantic.BaseSettings)
+   :members:
+   :undoc-members:
+
+Offline
+=======
+
+.. automodule:: modules.offline.compatibles
    :members:
    :undoc-members:
 

@@ -6,10 +6,10 @@ from logging.config import dictConfig
 
 import requests
 
-from api.controller import offline_compatible
 from modules.database import database
 from modules.exceptions import BotInUse
 from modules.models import config, models
+from modules.offline import compatibles
 from modules.utils import support
 
 env = models.env
@@ -18,7 +18,7 @@ importlib.reload(module=logging) if env.mac else None
 dictConfig(config.BotConfig().dict())
 logger = logging.getLogger('telegram')
 
-offline_compatible = offline_compatible()
+offline_compatible = compatibles.offline_compatible()
 odb = database.Database(table_name='offline', columns=['key', 'value'])
 
 USER_TITLE = {}

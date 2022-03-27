@@ -83,7 +83,7 @@ bluetooth = ["bluetooth"]
 
 brightness = ["brightness", "bright", "dim"]
 
-lights = ["light", "hallway", "kitchen", "living room", "bedroom"]
+lights = ["light"]
 
 guard_enable = ["take care", "heading out", "keep an eye", "turn on security mode", "enable security mode"]
 

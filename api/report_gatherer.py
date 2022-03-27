@@ -7,7 +7,7 @@ import os
 import sys
 import time
 import warnings
-from datetime import date, datetime
+from datetime import datetime
 
 import jinja2
 import requests
@@ -25,23 +25,6 @@ from api.rh_helper import CustomTemplate  # noqa
 from modules.models import config, models  # noqa
 
 env = models.env
-
-
-def market_status() -> bool:
-    """Checks if the stock market is open today.
-
-    Returns:
-        bool:
-        True if the current date is ``NOT`` in trading calendar or fails to fetch results from the URL.
-    """
-    today = date.today().strftime("%B %d, %Y")
-    url = requests.get(url='https://www.nasdaqtrader.com/trader.aspx?id=Calendar')
-
-    if not url.ok:
-        return True
-
-    if today not in url.text:
-        return True
 
 
 class Investment:
@@ -176,9 +159,6 @@ class Investment:
     def report_gatherer(self) -> None:
         """Gathers all the necessary information and creates an ``index.html`` using a ``Jinja`` template."""
         current_time = datetime.now()
-        if not market_status():
-            self.logger.info(f'{current_time.strftime("%B %d, %Y")}: The markets are closed today.')
-            return
 
         port_head, profit, loss, overall_result = self.watcher()
         s1, s2 = self.watchlist()

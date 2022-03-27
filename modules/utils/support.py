@@ -5,15 +5,17 @@
 
 """
 
+import hashlib
 import math
 import os
 import random
 import re
 import string
 import sys
+import uuid
 from datetime import datetime
 from difflib import SequenceMatcher
-from typing import Union
+from typing import NoReturn, Union
 
 import psutil
 import yaml
@@ -27,12 +29,6 @@ from modules.netgear.ip_scanner import LocalIPScan
 
 env = models.env
 fileio = models.fileio
-
-
-def flush_screen() -> None:
-    """Flushes the screen output."""
-    sys.stdout.flush()
-    sys.stdout.write("\r")
 
 
 def celebrate() -> str:
@@ -108,7 +104,7 @@ def time_converter(seconds: float) -> str:
         return f"{seconds} seconds"
 
 
-def get_capitalized(phrase: str, dot: bool = True) -> str:
+def get_capitalized(phrase: str, dot: bool = True) -> Union[str, None]:
     """Looks for words starting with an upper-case letter.
 
     Args:
@@ -125,8 +121,7 @@ def get_capitalized(phrase: str, dot: bool = True) -> str:
             place += word + " "
         elif "." in word and dot:
             place += word + " "
-    if place:
-        return place
+    return place.strip() if place.strip() else None
 
 
 def get_closest_match(text: str, match_list: list) -> str:
@@ -144,7 +139,7 @@ def get_closest_match(text: str, match_list: list) -> str:
     return sorted(closest_match, key=lambda d: d["val"], reverse=True)[0].get("key")
 
 
-def unrecognized_dumper(train_data: dict) -> None:
+def unrecognized_dumper(train_data: dict) -> NoReturn:
     """If none of the conditions are met, converted text is written to a yaml file for training purpose.
 
     Args:
@@ -308,7 +303,7 @@ def exit_message() -> str:
     return exit_msg
 
 
-def scan_smart_devices() -> None:
+def scan_smart_devices() -> NoReturn:
     """Retrieves devices IP by doing a local IP range scan using Netgear API.
 
     See Also:
@@ -329,7 +324,7 @@ def scan_smart_devices() -> None:
             })
 
 
-def daytime_nighttime_swapper() -> None:
+def daytime_nighttime_swapper() -> NoReturn:
     """Automatically puts the Mac on sleep and sets the volume to 25% after 9 PM and 50% after 6 AM."""
     hour = int(datetime.now().strftime("%H"))
     locker = """osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'"""
@@ -342,7 +337,7 @@ def daytime_nighttime_swapper() -> None:
             os.system(locker)
 
 
-def no_env_vars() -> None:
+def no_env_vars() -> NoReturn:
     """Says a message about permissions when env vars are missing."""
     logger.error(f"Called by: {sys._getframe(1).f_code.co_name}")  # noqa
     speaker.speak(text=f"I'm sorry {env.title}! I lack the permissions!")
@@ -366,6 +361,45 @@ def keygen(length: int, punctuation: bool = False) -> str:
     return "".join(random.choices(required_str, k=length))
 
 
-def missing_windows_features():
+def flush_screen() -> NoReturn:
+    """Flushes the screen output."""
+    sys.stdout.flush()
+    sys.stdout.write("\r")
+
+
+def block_print() -> NoReturn:
+    """Suppresses print statement."""
+    sys.stdout = open(os.devnull, 'w')
+
+
+def release_print() -> NoReturn:
+    """Removes print statement's suppression."""
+    sys.stdout = sys.__stdout__
+
+
+def missing_windows_features() -> NoReturn:
     """Speaker for unsupported features in Windows."""
     speaker.speak(text=f"Requested feature is not available in Windows {env.title}")
+
+
+def hashed(key: uuid.UUID) -> str:
+    """Generates sha from UUID.
+
+    Args:
+        key: Takes the UUID generated as an argument.
+
+    Returns:
+        str:
+        Hashed value of the UUID received.
+    """
+    return hashlib.sha1(key.bytes + bytes(key.hex, "utf-8")).digest().hex()
+
+
+def token() -> str:
+    """Generates a token using hashed uuid4.
+
+    Returns:
+        str:
+        Returns hashed UUID as a string.
+    """
+    return hashed(key=uuid.uuid4())

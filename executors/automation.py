@@ -7,13 +7,14 @@ from typing import Union
 import yaml
 from yaml.scanner import ScannerError
 
-from api.controller import offline_compatible
 from executors.logger import logger
 from modules.audio import speaker
 from modules.models import models
+from modules.offline import compatibles
 
 env = models.env
 fileio = models.fileio
+offline_list = compatibles.offline_compatible()
 
 
 def automation_handler(phrase: str) -> None:
@@ -58,7 +59,6 @@ def auto_helper() -> Union[str, None]:
         str:
         Task to be executed.
     """
-    offline_list = offline_compatible()
     with open(fileio.automation) as read_file:
         try:
             automation_data = yaml.load(stream=read_file, Loader=yaml.FullLoader)

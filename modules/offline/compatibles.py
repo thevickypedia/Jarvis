@@ -1,6 +1,3 @@
-import hashlib
-import uuid
-
 from modules.conditions import conversation, keywords
 
 
@@ -60,26 +57,3 @@ def offline_compatible() -> list:
                      conversation.who]
     matrix_to_list = sum(offline_words, []) or [item for sublist in offline_words for item in sublist]
     return [i.strip() for n, i in enumerate(matrix_to_list) if i not in matrix_to_list[n + 1:]]  # remove dupes
-
-
-def hashed(key: uuid.UUID) -> str:
-    """Generates sha from UUID.
-
-    Args:
-        key: Takes the UUID generated as an argument.
-
-    Returns:
-        str:
-        Hashed value of the UUID received.
-    """
-    return hashlib.sha1(key.bytes + bytes(key.hex, "utf-8")).digest().hex()
-
-
-def keygen() -> str:
-    """Generates key using hashed uuid4.
-
-    Returns:
-        str:
-        Returns hashed UUID as a string.
-    """
-    return hashed(key=uuid.uuid4())

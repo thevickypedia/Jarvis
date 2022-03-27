@@ -38,7 +38,7 @@ mdb = database.Database(table_name='Meetings', columns=['info'])
 edb = database.Database(table_name='Events', columns=['info'])
 
 
-def repeat() -> None:
+def repeat() -> NoReturn:
     """Repeats whatever is heard."""
     speaker.speak(text="Please tell me what to repeat.", run=True)
     keyword = listener.listen(timeout=3, phrase_limit=10)
@@ -101,7 +101,7 @@ def apps(phrase: str) -> None:
         speaker.speak(text=f"I have opened {keyword}")
 
 
-def music(phrase: str = None) -> None:
+def music(phrase: str = None) -> NoReturn:
     """Scans music directory in the user profile for ``.mp3`` files and plays using default player.
 
     Args:
@@ -133,13 +133,9 @@ def google_home(device: str = None, file: str = None) -> None:
 
     See Also:
         - https://github.com/deblockt/google-home-push/pull/7
-        - Instead of commenting/removing the final print statement on: site-packages/googlehomepush/__init__.py
-
-            - ``sys.stdout = open(os.devnull, 'w')`` is used to suppress any print statements.
-            - To enable this again at a later time use ``sys.stdout = sys.__stdout__``
-
-        - When music is played and immediately stopped/tasked the Google home device, it is most likely to except.
-        - Broken Pipe error. This usually happens when a socket is written after it is fully closed.
+        - | When music is played and immediately stopped/tasked the Google home device, it is most likely to except
+          | ``BrokenPipeError``
+        - This usually happens when a socket is written after it is fully closed.
         - This error occurs when one end of the connection tries sending data while the other has closed the connection.
         - This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).
 
@@ -198,27 +194,29 @@ def google_home(device: str = None, file: str = None) -> None:
     else:
         chosen = [value for key, value in devices.items() if key.lower() in device.lower()]
         if not chosen:
-            speaker.speak(text=f"I don't see any matching devices {env.title}!. Let me help you.")
-            google_home()
+            speaker.speak(text=f"I don't see any matching devices {env.title}!. Let me help you. "
+                               f"You have {len(devices)} devices in your IP range {env.title}! "
+                               f"{support.comma_separator(list(devices.keys()))}.")
+            return
         for target in chosen:
             file_url = serve_file(file, "audio/mp3")  # serves the file on local host and generates the play url
             support.flush_screen()
-            sys.stdout = open(os.devnull, 'w')  # suppresses print statement from "googlehomepush/__init.py__"
+            support.block_print()
             GoogleHome(host=target).play(file_url, "audio/mp3")
-            sys.stdout = sys.__stdout__  # removes print statement's suppression above
-        if len(chosen) == 1:
-            speaker.speak(text=f"Enjoy your music {env.title}!", run=True)
-        else:
+            support.release_print()
+        if len(chosen) > 1:
             speaker.speak(text=f"That's interesting, you've asked me to play on {len(chosen)} devices at a time. "
                                f"I hope you'll enjoy this {env.title}.", run=True)
+        else:
+            speaker.speak(text=f"Enjoy your music {env.title}!", run=True)
 
 
-def jokes() -> None:
+def jokes() -> NoReturn:
     """Uses jokes lib to say chucknorris jokes."""
     speaker.speak(text=random.choice([geek, icanhazdad, chucknorris, icndb])())
 
 
-def flip_a_coin() -> None:
+def flip_a_coin() -> NoReturn:
     """Says ``heads`` or ``tails`` from a random choice."""
     playsound(f'indicators{os.path.sep}coin.mp3') if not globals.called_by_offline['status'] else None
     speaker.speak(
@@ -226,7 +224,7 @@ def flip_a_coin() -> None:
     )
 
 
-def facts() -> None:
+def facts() -> NoReturn:
     """Tells a random fact."""
     speaker.speak(text=get_fact(filter_enabled=False))
 
@@ -309,7 +307,7 @@ def news(news_source: str = 'fox') -> None:
         speaker.speak(run=True)
 
 
-def report() -> None:
+def report() -> NoReturn:
     """Initiates a list of functions, that I tend to check first thing in the morning."""
     sys.stdout.write("\rStarting today's report")
     globals.called['report'] = True

@@ -26,7 +26,7 @@ fileio = models.fileio
 odb = database.Database(table_name='offline', columns=['key', 'value'])
 
 
-def automator() -> None:
+def automator() -> NoReturn:
     """Place for long-running background tasks.
 
     See Also:
@@ -88,26 +88,22 @@ def initiate_tunneling() -> NoReturn:
     """
     if not env.mac:
         return
-    ngrok_status = False
-    target_script = 'forever_ngrok.py'
-    pid_check = subprocess.check_output(f"ps -ef | grep {target_script}", shell=True)
+    pid_check = subprocess.check_output("ps -ef | grep forever_ngrok.py", shell=True)
     pid_list = pid_check.decode('utf-8').split('\n')
     for id_ in pid_list:
         if id_ and 'grep' not in id_ and '/bin/sh' not in id_:
-            ngrok_status = True
             logger.info('An instance of ngrok tunnel for offline communicator is running already.')
-    if not ngrok_status:
-        if os.path.exists(f"{env.home}/JarvisHelper/venv/bin/activate"):
-            import appscript
-            logger.info('Initiating ngrok connection for offline communicator.')
-            initiate = f'cd {env.home}/JarvisHelper && ' \
-                       f'source venv/bin/activate && export port={env.offline_port} && python {target_script}'
-            appscript.app('Terminal').do_script(initiate)
-        else:
-            logger.error(f'JarvisHelper is not available to trigger an ngrok tunneling through {env.offline_port}')
-            endpoint = rf'http:\\{env.offline_host}:{env.offline_port}'
-            logger.error(f'However offline communicator can still be accessed via '
-                         f'{endpoint}\\offline-communicator for API calls and {endpoint}\\docs for docs.')
+            return
+    if os.path.exists(f"{env.home}/JarvisHelper/venv/bin/activate"):
+        logger.info('Initiating ngrok connection for offline communicator.')
+        initiate = f'cd {env.home}/JarvisHelper && ' \
+                   f'source venv/bin/activate && export port={env.offline_port} && python forever_ngrok.py'
+        os.system(f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null""")
+    else:
+        logger.error(f'JarvisHelper is not available to trigger an ngrok tunneling through {env.offline_port}')
+        endpoint = rf'http:\\{env.offline_host}:{env.offline_port}'
+        logger.error('However offline communicator can still be accessed via '
+                     f'{endpoint}\\offline-communicator for API calls and {endpoint}\\docs for docs.')
 
 
 def on_demand_offline_automation(task: str) -> bool:
@@ -139,7 +135,7 @@ def on_demand_offline_automation(task: str) -> bool:
         return True
 
 
-def offline_communicator(command: str = None, respond: bool = True) -> None:
+def offline_communicator(command: str = None, respond: bool = True) -> NoReturn:
     """Initiates a task and writes the spoken text into the record ``response`` in the database table ``offline``.
 
     Args:
