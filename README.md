@@ -88,16 +88,14 @@ IronMan's Jarvis with python
 
 ### Setup
    - Clone this [repository](https://github.com/thevickypedia/Jarvis.git) or download it from [pypi](https://pypi.org/project/jarvis-ironman/)
-   - Run the following commands in command line/terminal:
-        - `cd lib && chmod +x install.sh` - Makes [installation file](https://github.com/thevickypedia/Jarvis/blob/master/lib/install.sh) as executable.
-        - `python3 -m venv venv` - Creates a virtual env named `venv`
-        - `source venv/bin/activate` - Activates the virtual env `venv`
-        - `which python` - Validate which python is being used. Should be the one within the virtual env `venv`
-        - `bash installs.sh` - Installs the required libraries/modules.
-        - [`python jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis
-
-> :warning: &nbsp; Running on Windows OS might still have known issues, since it is still a WIP.
-> Please [raise an issue](https://github.com/thevickypedia/Jarvis/issues/new) if any bugs were to be found.
+   - Run the following commands in a command-line/terminal:
+     1. `python3 -m venv venv` - Creates a virtual env named `venv`
+     2. `source venv/bin/activate` - Activates the virtual env `venv`
+     3. `which python` - Validate which python is being used. Should be the one within the virtual env `venv`
+     4. `chmod +x lib/install.sh` - Makes [installation file](https://github.com/thevickypedia/Jarvis/blob/master/lib/install.sh) as executable.
+     5. `bash lib/installs.sh` - Installs the required libraries/modules.
+     6. [`python jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis.
+        1. [PyCharm](https://www.jetbrains.com/pycharm/download) or similar IDE preferred to initiate Jarvis (Step `vi.`) to keep `stdout` clear.
 
 ### ENV Variables
 Environment variables are loaded from a `.env` file and validated using `pydantic`
@@ -112,10 +110,6 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 **[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py):**
 - **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`
 - **OFFLINE_PASS** - Secure phrase to authenticate offline requests. Defaults to `OfflineComm`
-
-**Accurate Location: (Defaults to the location based on `Public IP` which is _approximate_)**
-- **ICLOUD_USER** - iCloud account username.
-- **ICLOUD_PASS** - iCloud account password.
 
 **Features**
 - **GIT_USER** - GitHub Username
@@ -132,6 +126,8 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **ROBINHOOD_PASS** - Robinhood account password.
 - **ROBINHOOD_QR** - Robinhood login [QR code](https://robinhood.com/account/settings)
 - **BIRTHDAY** - Birth date in the format DD-MM - Example: `24-April`
+- **ICLOUD_USER** - iCloud account username/email.
+- **ICLOUD_PASS** - iCloud account password.
 - **ICLOUD_RECOVERY** - Recovery phone number to activate lost mode on a target device - Example: `+11234567890`
 - **PHONE_NUMBER** - To send SMS from Jarvis - Example: `+11234567890`
 - **ROOT_PASSWORD** - System password for your `mac` to get the system vitals.

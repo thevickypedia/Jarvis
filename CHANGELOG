@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.8.7 (03/27/2022)
+------------------
+- Default to location by IP address during startup
+- Update README.md on startup instructions and remove WIP banner
+
 5.8.6 (03/27/2022)
 ------------------
 - Remove market status condition to gather `robinhood` report

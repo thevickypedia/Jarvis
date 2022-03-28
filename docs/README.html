@@ -126,21 +126,21 @@
 <h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Clone this <a class="reference external" href="https://github.com/thevickypedia/Jarvis.git">repository</a> or download it from <a class="reference external" href="https://pypi.org/project/jarvis-ironman/">pypi</a></p></li>
-<li><p>Run the following commands in command line/terminal:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">lib</span> <span class="pre">&amp;&amp;</span> <span class="pre">chmod</span> <span class="pre">+x</span> <span class="pre">install.sh</span></code> - Makes <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/lib/install.sh">installation file</a> as executable.</p></li>
+<li><p>Run the following commands in a command-line/terminal:</p>
+<ol class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">venv</span> <span class="pre">venv</span></code> - Creates a virtual env named <code class="docutils literal notranslate"><span class="pre">venv</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">venv/bin/activate</span></code> - Activates the virtual env <code class="docutils literal notranslate"><span class="pre">venv</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">which</span> <span class="pre">python</span></code> - Validate which python is being used. Should be the one within the virtual env <code class="docutils literal notranslate"><span class="pre">venv</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">installs.sh</span></code> - Installs the required libraries/modules.</p></li>
-<li><p><a class="reference external" href="https://git.io/JBnPz"><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">jarvis.py</span></code></a> - BOOM, you’re all set, go ahead and interact with Jarvis</p></li>
-</ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">chmod</span> <span class="pre">+x</span> <span class="pre">lib/install.sh</span></code> - Makes <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/lib/install.sh">installation file</a> as executable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">lib/installs.sh</span></code> - Installs the required libraries/modules.</p></li>
+<li><p><a class="reference external" href="https://git.io/JBnPz"><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">jarvis.py</span></code></a> - BOOM, you’re all set, go ahead and interact with Jarvis.</p>
+<ol class="simple">
+<li><p><a class="reference external" href="https://www.jetbrains.com/pycharm/download">PyCharm</a> or similar IDE preferred to initiate Jarvis (Step <code class="docutils literal notranslate"><span class="pre">vi.</span></code>) to keep <code class="docutils literal notranslate"><span class="pre">stdout</span></code> clear.</p></li>
+</ol>
+</li>
+</ol>
 </li>
 </ul>
-<blockquote>
-<div><p>:warning:   Running on Windows OS might still have known issues, since it is still a WIP.
-Please <a class="reference external" href="https://github.com/thevickypedia/Jarvis/issues/new">raise an issue</a> if any bugs were to be found.</p>
-</div></blockquote>
 </section>
 <section id="env-variables">
 <h2>ENV Variables<a class="headerlink" href="#env-variables" title="Permalink to this headline">¶</a></h2>
@@ -155,11 +155,6 @@ Please <a class="reference external" href="https://github.com/thevickypedia/Jarv
 <ul class="simple">
 <li><p><strong>OFFLINE_PORT</strong> - Port number to initiate offline communicator. Defaults to <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>
 <li><p><strong>OFFLINE_PASS</strong> - Secure phrase to authenticate offline requests. Defaults to <code class="docutils literal notranslate"><span class="pre">OfflineComm</span></code></p></li>
-</ul>
-<p><strong>Accurate Location: (Defaults to the location based on <code class="docutils literal notranslate"><span class="pre">Public</span> <span class="pre">IP</span></code> which is <em>approximate</em>)</strong></p>
-<ul class="simple">
-<li><p><strong>ICLOUD_USER</strong> - iCloud account username.</p></li>
-<li><p><strong>ICLOUD_PASS</strong> - iCloud account password.</p></li>
 </ul>
 <p><strong>Features</strong></p>
 <ul class="simple">
@@ -177,6 +172,8 @@ Please <a class="reference external" href="https://github.com/thevickypedia/Jarv
 <li><p><strong>ROBINHOOD_PASS</strong> - Robinhood account password.</p></li>
 <li><p><strong>ROBINHOOD_QR</strong> - Robinhood login <a class="reference external" href="https://robinhood.com/account/settings">QR code</a></p></li>
 <li><p><strong>BIRTHDAY</strong> - Birth date in the format DD-MM - Example: <code class="docutils literal notranslate"><span class="pre">24-April</span></code></p></li>
+<li><p><strong>ICLOUD_USER</strong> - iCloud account username/email.</p></li>
+<li><p><strong>ICLOUD_PASS</strong> - iCloud account password.</p></li>
 <li><p><strong>ICLOUD_RECOVERY</strong> - Recovery phone number to activate lost mode on a target device - Example: <code class="docutils literal notranslate"><span class="pre">+11234567890</span></code></p></li>
 <li><p><strong>PHONE_NUMBER</strong> - To send SMS from Jarvis - Example: <code class="docutils literal notranslate"><span class="pre">+11234567890</span></code></p></li>
 <li><p><strong>ROOT_PASSWORD</strong> - System password for your <code class="docutils literal notranslate"><span class="pre">mac</span></code> to get the system vitals.</p></li>
@@ -394,7 +391,7 @@ features’ overview and demo videos.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2021, Vignesh Sivanandha Rao.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
     </div>
   </body>
 </html>

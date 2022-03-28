@@ -70,6 +70,34 @@ def device_selector(phrase: str = None) -> Union[AppleDevice, None]:
     return target_device if target_device else icloud_api.iphone
 
 
+def get_coordinates_from_ip() -> Tuple[float, float]:
+    """Uses ``Speedtest`` module to retrieve latitude and longitude.
+
+    Returns:
+        tuple:
+        Returns latitude and longitude as a tuple.
+    """
+    st = Speedtest()
+    return float(st.results.client["lat"]), float(st.results.client["lon"])
+
+
+def get_location_from_coordinates(coordinates: tuple) -> Tuple[float, float, dict]:
+    """Uses the latitude and longitude information to get the address information.
+
+    Args:
+        coordinates: Takes the latitude and longitude as a tuple.
+
+    Returns:
+        tuple:
+        Latitude, Longitude, and Address.
+    """
+    try:
+        locator = geo_locator.reverse(coordinates, language="en")
+        return coordinates[0], coordinates[1], locator.raw["address"]
+    except (GeocoderUnavailable, GeopyError) as error:
+        logger.error(error)
+
+
 def location_services(device: AppleDevice) -> Union[NoReturn,
                                                     Tuple[str or float or None, str or float or None, str or None]]:
     """Gets the current location of an Apple device.
@@ -96,7 +124,7 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
         elif not raw_location:
             raise PyiCloudAPIResponseException(reason=f"Unable to retrieve location for {device}")
         else:
-            current_lat_, current_lon_ = raw_location["latitude"], raw_location["longitude"]
+            coordinates = raw_location["latitude"], raw_location["longitude"]
         os.remove("pyicloud_error") if os.path.isfile("pyicloud_error") else None
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException) as error:
         if device:
@@ -110,11 +138,9 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
                     logger.error(f"Exception raised by {caller}. Restarting.")
                     Path("pyicloud_error").touch()
                     controls.restart_control(quiet=True)
-        # uses latitude and longitude information from your IP's client when unable to connect to icloud
-        st = Speedtest()
-        current_lat_, current_lon_ = st.results.client["lat"], st.results.client["lon"]
+        coordinates = get_coordinates_from_ip()
     except ConnectionError:
-        current_lat_, current_lon_ = None, None
+        coordinates = None, None
         sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
         speaker.speak(text="I was unable to connect to the internet. Please check your connection settings and retry.",
                       run=True)
@@ -122,44 +148,27 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
                          f"\nTotal runtime: {support.time_converter(seconds=time.perf_counter())}")
         controls.terminator()
 
-    try:
-        # Uses the latitude and longitude information and converts to the required address.
-        locator = geo_locator.reverse(f"{current_lat_}, {current_lon_}", language="en")
-        return float(current_lat_), float(current_lon_), locator.raw["address"]
-    except (GeocoderUnavailable, GeopyError):
+    if location_info := get_location_from_coordinates(coordinates=coordinates):
+        return location_info
+    else:
         logger.error("Error retrieving address from latitude and longitude information. Initiating self reboot.")
         speaker.speak(text=f"Received an error while retrieving your address {env.title}! "
                            "I think a restart should fix this.")
         controls.restart_control(quiet=True)
 
 
-def write_current_location() -> None:
-    """Extracts location information from either an ``AppleDevice`` or the public IP address."""
-    if os.path.isfile(fileio.location):
-        with open(fileio.location) as file:
-            location_data = yaml.load(stream=file, Loader=yaml.FullLoader)
-        if (timestamp := location_data.get("timestamp")) and int(time.time()) - timestamp <= 86_400:
-            logger.info("Re-using location data.")
-            return
-        elif timestamp:
-            logger.info("Re-generating location data.")
-        else:
-            logger.info(f"No timestamp found. Updating current timestamp to {fileio.location}.")
-            location_data["timestamp"] = int(time.time())
-            with open(fileio.location, 'w') as file:
-                yaml.dump(stream=file, data=location_data)
-            return
-
-    current_lat, current_lon, location_info = location_services(device=device_selector(phrase=None))
+def write_current_location() -> NoReturn:
+    """Extracts location information from public IP address and writes it to a yaml file."""
+    current_lat, current_lon, location_info = get_location_from_coordinates(coordinates=get_coordinates_from_ip())
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
     logger.info(f"Writing location info into {fileio.location}")
     with open(fileio.location, 'w') as location_writer:
-        yaml.dump(data={"timezone": current_tz, "timestamp": int(time.time()),
-                        "latitude": current_lat, "longitude": current_lon, "address": location_info},
+        yaml.dump(data={"timezone": current_tz, "latitude": current_lat, "longitude": current_lon,
+                        "address": location_info},
                   stream=location_writer, default_flow_style=False)
 
 
-def location() -> None:
+def location() -> NoReturn:
     """Gets the user's current location."""
     with open(fileio.location) as file:
         current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
@@ -218,19 +227,11 @@ def locate(phrase: str) -> None:
             speaker.speak(text=f"No action taken {env.title}!")
 
 
-def distance(phrase):
+def distance(phrase) -> NoReturn:
     """Extracts the start and end location to get the distance for it.
 
     Args:
         phrase:Takes the phrase spoken as an argument.
-
-    See Also:
-        A loop differentiates between two-worded places and one-worded place.
-        A condition below assumes two different words as two places but not including two words starting upper case
-    right next to each other
-
-    Examples:
-        New York will be considered as one word and New York and Las Vegas will be considered as two words.
     """
     check = phrase.split()  # str to list
     places = []
