@@ -34,8 +34,8 @@ from modules.utils import globals, support
 
 env = models.env
 fileio = models.fileio
-mdb = database.Database(table_name='Meetings', columns=['info'])
-edb = database.Database(table_name='Events', columns=['info'])
+mdb = database.Database(database=fileio.meetings_db, table_name='ics', columns=['info'])
+edb = database.Database(database=fileio.events_db, table_name=env.event_app, columns=['info'])
 
 
 def repeat() -> NoReturn:
@@ -333,10 +333,10 @@ def time_travel() -> None:
     current_time()
     weather()
     speaker.speak(run=True)
-    if (meeting_status := mdb.cursor.execute("SELECT info FROM Meetings").fetchone()) and \
+    if (meeting_status := mdb.cursor.execute("SELECT info FROM ics").fetchone()) and \
             meeting_status[0].startswith('You'):
         speaker.speak(text=meeting_status[0])
-    if (event_status := edb.cursor.execute("SELECT info FROM Events").fetchone()) and \
+    if (event_status := edb.cursor.execute(f"SELECT info FROM {env.event_app}").fetchone()) and \
             event_status[0].startswith('You'):
         speaker.speak(text=event_status[0])
     todo()

@@ -1,3 +1,4 @@
+import json
 import math
 import os
 import re
@@ -9,6 +10,8 @@ import webbrowser
 from difflib import SequenceMatcher
 from pathlib import Path
 from typing import NoReturn, Tuple, Union
+from urllib.error import HTTPError
+from urllib.request import urlopen
 
 import certifi
 import yaml
@@ -71,14 +74,23 @@ def device_selector(phrase: str = None) -> Union[AppleDevice, None]:
 
 
 def get_coordinates_from_ip() -> Tuple[float, float]:
-    """Uses ``Speedtest`` module to retrieve latitude and longitude.
+    """Uses public IP to retrieve latitude and longitude. If fails, uses ``Speedtest`` module.
 
     Returns:
         tuple:
         Returns latitude and longitude as a tuple.
     """
-    st = Speedtest()
-    return float(st.results.client["lat"]), float(st.results.client["lon"])
+    try:
+        info = json.load(urlopen("https://ipinfo.io/json"))
+        coordinates = tuple(map(float, info.get('loc', '0,0').split(',')))
+    except HTTPError as error:
+        logger.error(error)
+        coordinates = (0.0, 0.0)
+    if coordinates == (0.0, 0.0):
+        st = Speedtest()
+        return float(st.results.client["lat"]), float(st.results.client["lon"])
+    else:
+        return coordinates
 
 
 def get_location_from_coordinates(coordinates: tuple) -> Tuple[float, float, dict]:

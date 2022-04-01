@@ -24,10 +24,8 @@ def current_time(converted: str = None) -> None:
         place_tz = geo_locator.geocode(place)
         coordinates = place_tz.latitude, place_tz.longitude
         located = geo_locator.reverse(coordinates, language='en')
-        data = located.raw
-        address = data['address']
-        city = address['city'] if 'city' in address.keys() else None
-        state = address['state'] if 'state' in address.keys() else None
+        address = located.raw.get('address', {})
+        city, state = address.get('city'), address.get('state')
         time_location = f'{city} {state}'.replace('None', '') if city or state else place
         zone = tf.timezone_at(lat=place_tz.latitude, lng=place_tz.longitude)
         datetime_zone = datetime.now(timezone(zone))
@@ -40,8 +38,10 @@ def current_time(converted: str = None) -> None:
         else:
             speaker.speak(text=f'The current time in {time_location} is {time_tz}.')
     else:
-        c_time = datetime.now().strftime("%I:%M %p")
-        speaker.speak(text=f'{c_time}.')
+        if globals.called['report'] or globals.called['time_travel']:
+            speaker.speak(text=f"The current time is, {datetime.now().strftime('%I:%M %p')}.")
+            return
+        speaker.speak(text=f"{datetime.now().strftime('%I:%M %p')}.")
 
 
 def current_date() -> None:
@@ -59,5 +59,3 @@ def current_date() -> None:
         speaker.speak(text=f"It's also your {event} {env.title}!")
     elif event:
         speaker.speak(text=f"It's also {event} {env.title}!")
-    if globals.called['report'] or globals.called['time_travel']:
-        speaker.speak(text='The current time is, ')

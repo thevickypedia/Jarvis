@@ -30,12 +30,14 @@ class FileIO(BaseModel):
     automation: FilePath = f'fileio{os.path.sep}automation.yaml'
     tmp_automation: FilePath = f'fileio{os.path.sep}tmp_automation.yaml'
     base_db: FilePath = f'fileio{os.path.sep}database.db'
+    events_db: FilePath = f'fileio{os.path.sep}events.db'
+    meetings_db: FilePath = f'fileio{os.path.sep}meetings.db'
+    task_db: FilePath = f'fileio{os.path.sep}tasks.db'
     frequent: FilePath = f'fileio{os.path.sep}frequent.yaml'
     location: FilePath = f'fileio{os.path.sep}location.yaml'
     notes: FilePath = f'fileio{os.path.sep}notes.txt'
     smart_devices: FilePath = f'fileio{os.path.sep}smart_devices.yaml'
     hostnames: FilePath = f'fileio{os.path.sep}hostnames.yaml'
-    task_db: FilePath = f'fileio{os.path.sep}tasks.db'
     training: FilePath = f'fileio{os.path.sep}training_data.yaml'
 
 
@@ -64,7 +66,7 @@ class EnvConfig(BaseSettings):
     robinhood_pass: str = Field(default=None, env='ROBINHOOD_PASS')
     robinhood_qr: str = Field(default=None, env='ROBINHOOD_QR')
     robinhood_endpoint_auth: str = Field(default=None, env='ROBINHOOD_ENDPOINT_AUTH')
-    event_app: str = Field(default=None, env='EVENT_APP')
+    event_app: str = Field(default='calendar', env='EVENT_APP')
     ics_url: HttpUrl = Field(default=None, env='ICS_URL')
     website: str = Field(default='vigneshrao.com', env='WEBSITE')
     wolfram_api_key: str = Field(default=None, env='WOLFRAM_API_KEY')
@@ -116,7 +118,7 @@ class EnvConfig(BaseSettings):
 env = EnvConfig()
 fileio = FileIO()
 
-if env.event_app and env.event_app not in ('calendar', 'outlook'):
+if env.event_app not in ('calendar', 'outlook'):
     raise InvalidEnvVars(
         "'EVENT_APP' can only be either 'outlook' OR 'calendar'"
     )

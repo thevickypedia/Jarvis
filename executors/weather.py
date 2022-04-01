@@ -37,16 +37,16 @@ def weather(phrase: str = None) -> None:
         coordinates = desired_location.latitude, desired_location.longitude
         located = geo_locator.reverse(coordinates, language='en')
         address = located.raw['address']
-        city = address['city'] if 'city' in address.keys() else None
-        state = address['state'] if 'state' in address.keys() else None
+        city = address.get('city')
+        state = address.get('state')
         lat = located.latitude
         lon = located.longitude
     else:
         with open(fileio.location) as file:
             current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
 
-        city = current_location['address']['city']
-        state = current_location['address']['state']
+        city = current_location.get('address', {}).get('city', 'Unknown')
+        state = current_location.get('address', {}).get('state', 'Unknown')
         lat = current_location['latitude']
         lon = current_location['longitude']
     weather_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,' \

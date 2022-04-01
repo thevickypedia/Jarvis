@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+5.8.8 (03/31/2022)
+------------------
+- Ignore meetings occurred same day in the past
+- Go easy on getting city and state info from fileio/location.yaml
+- Create dedicated database for events and meetings
+- Remove the global dict warm_light
+- Get location information from IP address instead of speedtest module
+- Default event_app to calendar
+- Have a strict mode in report_gatherer.py to ignore purchased stocks in watchlist
+
 5.8.7 (03/27/2022)
 ------------------
 - Default to location by IP address during startup

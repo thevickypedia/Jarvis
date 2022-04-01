@@ -81,7 +81,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     elif any(word in converted_lower for word in keywords.system_info):
         system_info()
 
-    elif any(word in converted for word in keywords.ip_info) or 'IP' in converted.split():
+    elif any(word in converted_lower for word in keywords.ip_info) or 'IP' in converted.split():
         ip_info(converted)
 
     elif any(word in converted_lower for word in keywords.wikipedia_):
@@ -211,7 +211,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     elif any(word in converted_lower for word in keywords.automation):
         automation_handler(converted_lower)
 
-    elif any(word in converted for word in keywords.sprint):
+    elif any(word in converted_lower for word in keywords.sprint):
         sprint_name()
 
     elif any(word in converted_lower for word in conversation.greeting):

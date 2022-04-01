@@ -505,11 +505,14 @@ name is specified, allow every event.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="api.report_gatherer.Investment.watchlist">
-<span class="sig-name descname"><span class="pre">watchlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'hour'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#api.report_gatherer.Investment.watchlist" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">watchlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'hour'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#api.report_gatherer.Investment.watchlist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sweeps all watchlist stocks and compares current price with historical data (24h ago) to wrap as a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>interval</strong> – Takes interval for historic data. Defaults to <code class="docutils literal notranslate"><span class="pre">hour</span></code>. Options are <code class="docutils literal notranslate"><span class="pre">hour</span></code> or <code class="docutils literal notranslate"><span class="pre">10minute</span></code></p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interval</strong> – Takes interval for historic data. Defaults to <code class="docutils literal notranslate"><span class="pre">hour</span></code>. Options are <code class="docutils literal notranslate"><span class="pre">hour</span></code> or <code class="docutils literal notranslate"><span class="pre">10minute</span></code></p></li>
+<li><p><strong>strict</strong> – Flag to ignore the watchlist items if the stocks were purchased already.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Returns a tuple of each watch list item and a unicode character to indicate if the price went up or down.</p>
@@ -1325,7 +1328,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.location.get_coordinates_from_ip">
 <span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">get_coordinates_from_ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.location.get_coordinates_from_ip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses <code class="docutils literal notranslate"><span class="pre">Speedtest</span></code> module to retrieve latitude and longitude.</p>
+<dd><p>Uses public IP to retrieve latitude and longitude. If fails, uses <code class="docutils literal notranslate"><span class="pre">Speedtest</span></code> module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Returns latitude and longitude as a tuple.</p>
@@ -3508,6 +3511,11 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.events_db">
+<span class="sig-name descname"><span class="pre">events_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.events_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.frequent">
 <span class="sig-name descname"><span class="pre">frequent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.frequent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3520,6 +3528,11 @@ Whites can have a value of None.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.location">
 <span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.location" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.meetings_db">
+<span class="sig-name descname"><span class="pre">meetings_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.meetings_db" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

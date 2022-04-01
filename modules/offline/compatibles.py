@@ -44,6 +44,7 @@ def offline_compatible() -> list:
                      keywords.volume,
                      keywords.meaning,
                      keywords.meetings,
+                     keywords.events,
                      keywords.car,
                      keywords.television,
                      keywords.automation,

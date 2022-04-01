@@ -10,7 +10,7 @@ from modules.audio import speaker
 from modules.conditions import conversation
 from modules.lights import preset_values, smart_lights
 from modules.models import models
-from modules.utils import globals, support
+from modules.utils import support
 
 env = models.env
 fileio = models.fileio
@@ -81,17 +81,14 @@ def lights(phrase: str) -> None:
         smart_lights.MagicHomeApi(device_ip=host, device_type=2,
                                   operation='Preset Values').send_preset_function(preset_number=value, speed=101)
 
-    def lumen(host: str, warm_lights: bool, rgb: int = 255) -> None:
+    def lumen(host: str, rgb: int = 255) -> None:
         """Sets lights to custom brightness.
 
         Args:
             host: Takes target device IP address as an argument.
-            warm_lights: Boolean value if lights have been set to warm or cool.
             rgb: Red, Green andBlue values to alter the brightness.
         """
         args = {'r': 255, 'g': 255, 'b': 255, 'warm_white': rgb}
-        if not warm_lights:
-            args.update({'cool_white': rgb})
         smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness').update_device(**args)
 
     if 'hallway' in phrase:
@@ -124,7 +121,6 @@ def lights(phrase: str) -> None:
 
     plural = 'lights!' if lights_count > 1 else 'light!'
     if 'turn on' in phrase or 'cool' in phrase or 'white' in phrase:
-        globals.warm_light.pop('status') if globals.warm_light.get('status') else None
         tone = 'white' if 'white' in phrase else 'cool'
         if 'turn on' in phrase:
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning on {lights_count} {plural}')
@@ -134,9 +130,9 @@ def lights(phrase: str) -> None:
         Thread(target=thread_worker, args=[cool]).start()
     elif 'turn off' in phrase:
         speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning off {lights_count} {plural}')
+        Thread(target=thread_worker, args=[cool]).run()
         Thread(target=thread_worker, args=[turn_off]).start()
     elif 'warm' in phrase or 'yellow' in phrase:
-        globals.warm_light['status'] = True
         if 'yellow' in phrase:
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! '
                                f'Setting {lights_count} {plural} to yellow!')
@@ -162,7 +158,7 @@ def lights(phrase: str) -> None:
                            f"I've set {lights_count} {plural} to {level}%!")
         level = round((255 * level) / 100)
         for light_ip in host_ip:
-            lumen(host=light_ip, warm_lights=globals.warm_light.get('status'), rgb=level)
+            lumen(host=light_ip, rgb=level)
     else:
         speaker.speak(text=f"I didn't quite get that {env.title}! What do you want me to do to your {plural}?")
         Thread(target=support.unrecognized_dumper, args=[{'LIGHTS': phrase}]).start()

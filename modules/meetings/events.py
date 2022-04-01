@@ -14,8 +14,9 @@ from modules.models import models
 from modules.utils import globals
 
 env = models.env
+fileio = models.fileio
 EVENT_SCRIPT = f"{env.event_app}.scpt"
-edb = database.Database(table_name='Events', columns=['info'])
+edb = database.Database(database=fileio.events_db, table_name=env.event_app, columns=['info'])
 
 
 def events_writer() -> NoReturn:
@@ -24,7 +25,7 @@ def events_writer() -> NoReturn:
     This function runs in a dedicated process every hour to avoid wait time when events information is requested.
     """
     event_info = events_gatherer()
-    edb.cursor.execute("INSERT OR REPLACE INTO Events (info) VALUES (?);", (event_info,))
+    edb.cursor.execute(f"INSERT OR REPLACE INTO {env.event_app} (info) VALUES (?);", (event_info,))
     edb.connection.commit()
 
 
@@ -109,12 +110,12 @@ def events_gatherer() -> str:
 
 def events() -> NoReturn:
     """Controller for events."""
-    if event_status := edb.cursor.execute("SELECT info FROM Events").fetchone():
+    if event_status := edb.cursor.execute(f"SELECT info FROM {env.event_app}").fetchone():
         speaker.speak(text=event_status[0])
     else:
         if globals.called_by_offline["status"]:
             Process(target=events_gatherer).start()
-            speaker.speak(text="Events table is empty. Please try again in a minute or two.")
+            speaker.speak(text=f"Events table is empty {env.title}. Please try again in a minute or two.")
             return False
         event = ThreadPool(processes=1).apply_async(func=events_gatherer)  # Runs parallely and awaits completion
         speaker.speak(text=f"Please give me a moment {env.title}! Let me check your {env.event_app}.", run=True)

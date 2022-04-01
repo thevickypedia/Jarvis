@@ -49,7 +49,4 @@ def stop_processes() -> NoReturn:
         if process.is_alive():
             logger.info(f"Sending [SIGKILL] to {func} with PID: {process.pid}")
             process.kill()
-    try:
-        os.remove(fileio.base_db)
-    except PermissionError:  # TODO: Occurs only in Windows but not in Mac
-        logger.error(f"Unable to delete {fileio.base_db}")
+    [os.remove(db) for db in [fileio.base_db, fileio.events_db, fileio.meetings_db] if os.path.isfile(db)]

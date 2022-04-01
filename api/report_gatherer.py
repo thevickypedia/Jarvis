@@ -114,25 +114,26 @@ class Investment:
             output += f"\nCurrent Spike: ${two_day_diff:,}"
         return port_msg, profit_output, loss_output, output
 
-    def watchlist(self, interval: str = 'hour') -> tuple:
+    def watchlist(self, interval: str = 'hour', strict: bool = False) -> tuple:
         """Sweeps all watchlist stocks and compares current price with historical data (24h ago) to wrap as a string.
 
         Args:
             interval: Takes interval for historic data. Defaults to ``hour``. Options are ``hour`` or ``10minute``
+            strict: Flag to ignore the watchlist items if the stocks were purchased already.
 
         Returns:
             tuple:
             Returns a tuple of each watch list item and a unicode character to indicate if the price went up or down.
         """
-        self.logger.info('Gathering watchlist.')
-        watchlist_items = self.rh.get_url(url="https://api.robinhood.com/watchlists/")
-        watchlist = [self.rh.get_url(item['instrument'])
-                     for item in self.rh.get_url(url=watchlist_items["results"][0]["url"])["results"]
-                     if watchlist_items and 'results' in watchlist_items]
         r1, r2 = '', ''
-        instruments = [data['instrument'] for data in self.result]
+        self.logger.info('Gathering watchlist.')
+        watchlist = [self.rh.get_url(item['instrument'])
+                     for item in self.rh.get_url(url='https://api.robinhood.com/watchlists/Default').get('results', [])]
+        if not watchlist:
+            return r1, r2
+        instruments = [data['instrument'] for data in self.result] if strict else []
         for item in watchlist:
-            if item['url'] in instruments:  # ignores the watchlist items if the stocks were purchased already
+            if strict and item['url'] in instruments:
                 continue
             stock = item['symbol']
             if interval == 'hour':

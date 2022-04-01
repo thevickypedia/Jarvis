@@ -75,10 +75,10 @@ IronMan's Jarvis with python
      - `System Preferences` → `Security & Privacy` → `Privacy`
      - Click `+` sign and add the preferred `IDE` and `Terminal` in the following sections in left pane.
        - `Microphone` - **Required** to listen and respond.
-       - `Accessibility` - **Required** to control the device.
-       - `Camera` - **Required** only during face recognition/detection.
-       - `Automation` - **Required** to control other apps (like Outlook and Calendar) and System Events.
-       - `Files and Folders` [OR] `Full Disk Access` - **Required** for all `FileIO` operations.
+       - `Accessibility` - **Required** to use key combinations for brightness and volume controls.
+       - `Camera` - **[Optional]** Required only during face recognition/detection.
+       - `Automation` - **Required** to control `System Events` and other apps like Outlook and Calendar.
+       - `Files and Folders` **[OR]** `Full Disk Access` - **Required** for all `FileIO` operations.
    - **Windows** <br> _Tested on **Windows 10**_
      - `Settings` → `Privacy`
        - `Microphone` - **Required** to listen and respond.

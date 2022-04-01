@@ -15,7 +15,6 @@ called_by_offline = {'status': False}
 processes = {}
 hosted_device = {}
 greet_check = {}
-warm_light = {}
 tv = None
 
 called = {
