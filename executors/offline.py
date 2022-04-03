@@ -14,8 +14,6 @@ from executors.automation import auto_helper
 from executors.conditions import conditions
 from executors.logger import logger
 from executors.remind import reminder_executor
-from modules.audio.speaker import audio_driver
-from modules.audio.voices import voice_default
 from modules.database import database
 from modules.meetings import events, icalendar
 from modules.models import models
@@ -43,7 +41,7 @@ def automator() -> NoReturn:
 
         - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't execute a task repeatedly.
     """
-    start = time.time()
+    start_events = start_meetings = start_netgear = time.time()
     dry_run = True
     while True:
         if cmd := odb.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():
@@ -57,10 +55,14 @@ def automator() -> NoReturn:
             if exec_task := auto_helper():
                 offline_communicator(command=exec_task, respond=False)
 
-        if dry_run or start + 3_600 <= time.time():  # Executes every hour
-            start = time.time()
+        if start_events + env.sync_events <= time.time() or dry_run:
+            start_events = time.time()
             Process(target=events.events_writer).start()
+        if start_meetings + env.sync_meetings <= time.time() or dry_run:
+            start_meetings = time.time()
             Process(target=icalendar.meetings_writer).start()
+        if start_netgear + env.sync_netgear <= time.time() or dry_run:
+            start_netgear = time.time()
             Process(target=support.scan_smart_devices).start()
 
         if alarm_state := support.lock_files(alarm_files=True):
@@ -142,15 +144,10 @@ def offline_communicator(command: str = None, respond: bool = True) -> NoReturn:
         command: Takes the command that has to be executed as an argument.
         respond: Flag to create a ``response`` record in the database table ``offline``.
     """
-    try:
-        globals.called_by_offline['status'] = True
-        conditions(converted=command, should_return=True)
-        globals.called_by_offline['status'] = False
-        response = globals.text_spoken.get('text')
-        if 'restart' not in command and respond:
-            odb.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('response', response)}")
-            odb.connection.commit()
-        audio_driver.stop()
-        voice_default()
-    except RuntimeError as error:
-        logger.fatal(f'Received a RuntimeError while executing offline request.\n{error}')
+    globals.called_by_offline['status'] = True
+    conditions(converted=command, should_return=True)
+    globals.called_by_offline['status'] = False
+    response = globals.text_spoken.get('text')
+    if 'restart' not in command and respond:
+        odb.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('response', response)}")
+        odb.connection.commit()

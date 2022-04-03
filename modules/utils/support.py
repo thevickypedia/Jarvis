@@ -310,18 +310,22 @@ def scan_smart_devices() -> NoReturn:
         - This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)
         - Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted.
     """
-    if env.router_pass:
-        logger.info("Scanning smart devices using netgear module.")
-        local_devices = LocalIPScan(router_pass=env.router_pass)
-        tv_ip, tv_mac = local_devices.tv()
-        with open(fileio.smart_devices, 'w') as file:
-            yaml.dump(stream=file, data={
-                "hallway_ip": list(local_devices.hallway()),
-                "kitchen_ip": list(local_devices.kitchen()),
-                "bedroom_ip": list(local_devices.bedroom()),
-                "tv_ip": tv_ip,
-                "tv_mac": tv_mac
-            })
+    if not env.router_pass:
+        return
+    if not fileio.hostnames:
+        logger.warning(f"{fileio.hostnames} is missing!!")
+        return
+    logger.info("Scanning smart devices using netgear module.")
+    local_devices = LocalIPScan(router_pass=env.router_pass)
+    tv_ip, tv_mac = local_devices.tv()
+    with open(fileio.smart_devices, 'w') as file:
+        yaml.dump(stream=file, data={
+            "hallway_ip": list(local_devices.hallway()),
+            "kitchen_ip": list(local_devices.kitchen()),
+            "bedroom_ip": list(local_devices.bedroom()),
+            "tv_ip": tv_ip,
+            "tv_mac": tv_mac
+        })
 
 
 def daytime_nighttime_swapper() -> NoReturn:

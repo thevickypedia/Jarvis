@@ -33,12 +33,13 @@ def speak(text: str = None, run: bool = False) -> None:
     """
     caller = sys._getframe(1).f_code.co_name  # noqa
     if text:
-        audio_driver.say(text=text)
         text = text.replace('\n', '\t').strip()
         logger.info(f'Response: {text}')
         logger.info(f'Speaker called by: {caller}')
         sys.stdout.write(f"\r{text}")
         globals.text_spoken['text'] = text
+        if not globals.called_by_offline['status']:
+            audio_driver.say(text=text)
     if run:
         audio_driver.runAndWait()
     frequently_used(function_name=caller) if caller in FUNCTIONS_TO_TRACK else None

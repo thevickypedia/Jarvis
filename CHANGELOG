@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+5.8.9 (04/03/2022)
+------------------
+- Fix `OperationalError` upon inserting data into DB
+- Avoid stopping speaker module when called by offline
+- Log warning if router pass is present but not hostnames.yaml
+- Have an optional env var for meetings and netgear's sync intervals
+
 5.8.8 (03/31/2022)
 ------------------
 - Ignore meetings occurred same day in the past

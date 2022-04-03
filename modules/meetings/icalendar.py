@@ -1,7 +1,9 @@
+import os
 import time
 from multiprocessing import Process
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
+from sqlite3 import OperationalError
 from typing import NoReturn
 
 import requests
@@ -15,7 +17,6 @@ from modules.utils import globals
 
 env = models.env
 fileio = models.fileio
-mdb = database.Database(database=fileio.meetings_db, table_name='ics', columns=['info'])
 
 
 def meetings_writer() -> NoReturn:
@@ -23,9 +24,15 @@ def meetings_writer() -> NoReturn:
 
     This function runs in a dedicated process every hour to avoid wait time when meetings information is requested.
     """
+    mdb = database.Database(database=fileio.meetings_db, table_name='ics', columns=['info'])
     meeting_info = meetings_gatherer()
     mdb.cursor.execute("INSERT OR REPLACE INTO ics (info) VALUES (?);", (meeting_info,))
-    mdb.connection.commit()
+    try:
+        mdb.connection.commit()
+    except OperationalError as error:
+        logger.error(error)
+        os.remove(fileio.meetings_db)
+        meetings_writer()
 
 
 def meetings_gatherer() -> str:
@@ -73,6 +80,7 @@ def meetings_gatherer() -> str:
 
 def meetings() -> NoReturn:
     """Controller for meetings."""
+    mdb = database.Database(database=fileio.meetings_db, table_name='ics', columns=['info'])
     if meeting_status := mdb.cursor.execute("SELECT info FROM ics").fetchone():
         speaker.speak(text=meeting_status[0])
     else:

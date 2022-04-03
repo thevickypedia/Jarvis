@@ -4,6 +4,7 @@ from datetime import datetime
 from multiprocessing import Process
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
+from sqlite3 import OperationalError
 from subprocess import PIPE, Popen
 from typing import NoReturn
 
@@ -16,7 +17,6 @@ from modules.utils import globals
 env = models.env
 fileio = models.fileio
 EVENT_SCRIPT = f"{env.event_app}.scpt"
-edb = database.Database(database=fileio.events_db, table_name=env.event_app, columns=['info'])
 
 
 def events_writer() -> NoReturn:
@@ -24,9 +24,15 @@ def events_writer() -> NoReturn:
 
     This function runs in a dedicated process every hour to avoid wait time when events information is requested.
     """
+    edb = database.Database(database=fileio.events_db, table_name=env.event_app, columns=['info'])
     event_info = events_gatherer()
     edb.cursor.execute(f"INSERT OR REPLACE INTO {env.event_app} (info) VALUES (?);", (event_info,))
-    edb.connection.commit()
+    try:
+        edb.connection.commit()
+    except OperationalError as error:
+        logger.error(error)
+        os.remove(fileio.events_db)
+        events_writer()
 
 
 def event_app_launcher() -> NoReturn:
@@ -110,6 +116,7 @@ def events_gatherer() -> str:
 
 def events() -> NoReturn:
     """Controller for events."""
+    edb = database.Database(database=fileio.events_db, table_name=env.event_app, columns=['info'])
     if event_status := edb.cursor.execute(f"SELECT info FROM {env.event_app}").fetchone():
         speaker.speak(text=event_status[0])
     else:

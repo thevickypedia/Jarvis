@@ -151,7 +151,7 @@
 <li><p><strong>NAME</strong> - Name which Jarvis should address the user by. Defaults to <code class="docutils literal notranslate"><span class="pre">Vignesh</span></code></p></li>
 <li><p><strong>LEGACY_KEYWORDS</strong> - List of wake words for legacy macOS. Defaults to <code class="docutils literal notranslate"><span class="pre">['jarvis']</span></code></p></li>
 </ul>
-<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py">Offline communicator</a>:</strong></p>
+<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py">Offline communicator</a></strong></p>
 <ul class="simple">
 <li><p><strong>OFFLINE_PORT</strong> - Port number to initiate offline communicator. Defaults to <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>
 <li><p><strong>OFFLINE_PASS</strong> - Secure phrase to authenticate offline requests. Defaults to <code class="docutils literal notranslate"><span class="pre">OfflineComm</span></code></p></li>
@@ -181,6 +181,12 @@
 <li><p><strong>ICS_URL</strong> - Shared calendar URL to get meetings information from. Should end with <code class="docutils literal notranslate"><span class="pre">.ics</span></code></p></li>
 <li><p><strong>EVENT_APP</strong> - To read events from <code class="docutils literal notranslate"><span class="pre">outlook</span></code> or <code class="docutils literal notranslate"><span class="pre">calendar</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">calendar</span></code> <br>
 :bulb:   When <code class="docutils literal notranslate"><span class="pre">calender</span></code> is used, the name of it should be <strong>Jarvis</strong></p></li>
+</ul>
+<p><strong>Background scans [Defaults to 1 hour]</strong></p>
+<ul class="simple">
+<li><p><strong>SYNC_NETGEAR</strong> - Interval in seconds to scan for smart devices using <code class="docutils literal notranslate"><span class="pre">Netgear</span></code> module.</p></li>
+<li><p><strong>SYNC_MEETINGS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">meetings</span></code> information using <code class="docutils literal notranslate"><span class="pre">ics</span></code> URL.</p></li>
+<li><p><strong>SYNC_EVENTS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">events</span></code> information using <code class="docutils literal notranslate"><span class="pre">calendar</span></code> or <code class="docutils literal notranslate"><span class="pre">outlook</span></code> application.</p></li>
 </ul>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/vpn-server">VPNServer</a> integration</strong></p>
 <ul class="simple">

@@ -107,7 +107,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **LEGACY_KEYWORDS** - List of wake words for legacy macOS. Defaults to `['jarvis']`
 
-**[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py):**
+**[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py)**
 - **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`
 - **OFFLINE_PASS** - Secure phrase to authenticate offline requests. Defaults to `OfflineComm`
 
@@ -135,6 +135,11 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **ICS_URL** - Shared calendar URL to get meetings information from. Should end with `.ics`
 - **EVENT_APP** - To read events from `outlook` or `calendar`. Defaults to `calendar` <br>
 :bulb: &nbsp; When `calender` is used, the name of it should be **Jarvis**
+
+**Background scans [Defaults to 1 hour]**
+- **SYNC_NETGEAR** - Interval in seconds to scan for smart devices using ``Netgear`` module.
+- **SYNC_MEETINGS** - Interval in seconds to generate ``meetings`` information using `ics` URL.
+- **SYNC_EVENTS** - Interval in seconds to generate ``events`` information using `calendar` or `outlook` application.
 
 **[VPNServer](https://github.com/thevickypedia/vpn-server) integration**
 - **VPN_USERNAME** - Username to create vpn-server. Defaults to profile username or `openvpn`
