@@ -190,6 +190,31 @@ def location() -> NoReturn:
                        f"in {current_location.get('address', {}).get('country', '')}")
 
 
+def locate_device(target_device: AppleDevice) -> NoReturn:
+    """Speaks the location information of the target device.
+
+    Args:
+        target_device: Takes the target device as an argument.
+    """
+    ignore_lat, ignore_lon, location_info_ = location_services(device=target_device)
+    lookup = str(target_device).split(":")[0].strip()
+    if not location_info_:
+        speaker.speak(text=f"I wasn't able to locate your {lookup} {env.title}! It is probably offline.")
+    else:
+        if globals.called_by_offline['status']:
+            post_code = location_info_["postcode"].split("-")[0]
+        else:
+            post_code = '"'.join(list(location_info_["postcode"].split("-")[0]))
+        iphone_location = f"Your {lookup} is near {location_info_['road']}, {location_info_['city']} " \
+                          f"{location_info_['state']}. Zipcode: {post_code}, {location_info_['country']}"
+        stat = target_device.status()
+        bat_percent = f"Battery: {round(stat['batteryLevel'] * 100)} %, " if stat["batteryLevel"] else ""
+        device_model = stat["deviceDisplayName"]
+        phone_name = stat["name"]
+        speaker.speak(text=f"{iphone_location}. Some more details. {bat_percent} Name: {phone_name}, "
+                           f"Model: {device_model}")
+
+
 def locate(phrase: str) -> None:
     """Locates an Apple device using icloud api for python.
 
@@ -198,6 +223,9 @@ def locate(phrase: str) -> None:
     """
     if not (target_device := device_selector(phrase=phrase)):
         support.no_env_vars()
+        return
+    if globals.called_by_offline['status']:
+        locate_device(target_device=target_device)
         return
     sys.stdout.write(f"\rLocating your {target_device}")
     target_device.play_sound()
@@ -215,20 +243,7 @@ def locate(phrase: str) -> None:
     elif not any(word in phrase_location.lower() for word in keywords.ok):
         return
 
-    ignore_lat, ignore_lon, location_info_ = location_services(device=target_device)
-    lookup = str(target_device).split(":")[0].strip()
-    if not location_info_:
-        speaker.speak(text=f"I wasn't able to locate your {lookup} {env.title}! It is probably offline.")
-    else:
-        post_code = '"'.join(list(location_info_["postcode"].split("-")[0]))
-        iphone_location = f"Your {lookup} is near {location_info_['road']}, {location_info_['city']} " \
-                          f"{location_info_['state']}. Zipcode: {post_code}, {location_info_['country']}"
-        speaker.speak(text=iphone_location)
-        stat = target_device.status()
-        bat_percent = f"Battery: {round(stat['batteryLevel'] * 100)} %, " if stat["batteryLevel"] else ""
-        device_model = stat["deviceDisplayName"]
-        phone_name = stat["name"]
-        speaker.speak(text=f"Some more details. {bat_percent} Name: {phone_name}, Model: {device_model}")
+    locate_device(target_device=target_device)
     if env.icloud_recovery:
         speaker.speak(text="I can also enable lost mode. Would you like to do it?", run=True)
         phrase_lost = listener.listen(timeout=3, phrase_limit=3)

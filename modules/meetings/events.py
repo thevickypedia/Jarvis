@@ -59,7 +59,6 @@ def events_gatherer() -> str:
         return f"Reading events from {env.event_app} is not possible on Windows operating system."
     if not os.path.isfile(EVENT_SCRIPT):
         return f"I wasn't able to find the events script for your {env.event_app} {env.title}!"
-    event_app_launcher()
     logger.info(f"Getting calendar events from {env.event_app}")
     failure = None
     process = Popen(["/usr/bin/osascript", EVENT_SCRIPT] + [str(arg) for arg in [1, 3]], stdout=PIPE, stderr=PIPE)

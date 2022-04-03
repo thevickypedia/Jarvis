@@ -42,6 +42,7 @@ def automator() -> NoReturn:
         - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't execute a task repeatedly.
     """
     start_events = start_meetings = start_netgear = time.time()
+    events.event_app_launcher()
     dry_run = True
     while True:
         if cmd := odb.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():

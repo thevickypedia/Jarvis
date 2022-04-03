@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.9.0 (04/03/2022)
+------------------
+- FEATURE::`honk/blink` and `locate` a car
+- Do not ring device when asked to locate from offline
+- Launch events app only during startup
+
 5.8.9 (04/03/2022)
 ------------------
 - Fix `OperationalError` upon inserting data into DB

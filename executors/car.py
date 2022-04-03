@@ -8,6 +8,7 @@ from urllib.request import urlopen
 import yaml
 from playsound import playsound
 
+from executors.location import get_location_from_coordinates
 from executors.logger import logger
 from modules.audio import speaker
 from modules.car import connector, controller
@@ -58,22 +59,21 @@ def car(phrase: str) -> None:
 
         if not globals.called_by_offline['status']:
             playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
-        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, car_pin=env.car_pin,
-                               operation="START", temp=target_temp - 26):
+        if car_name := vehicle(operation="START", temp=target_temp - 26):
             speaker.speak(text=f"Your {car_name} has been started {env.title}. {extras}")
         else:
             speaker.speak(text=disconnected)
     elif "turn off" in phrase or "stop" in phrase:
         if not globals.called_by_offline['status']:
             playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
-        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation="STOP", car_pin=env.car_pin):
+        if car_name := vehicle(operation="STOP"):
             speaker.speak(text=f"Your {car_name} has been turned off {env.title}!")
         else:
             speaker.speak(text=disconnected)
     elif "secure" in phrase:
         if not globals.called_by_offline['status']:
             playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
-        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation="SECURE", car_pin=env.car_pin):
+        if car_name := vehicle(operation="SECURE"):
             speaker.speak(text=f"Guardian mode has been enabled {env.title}! Your {car_name} is now secure.")
         else:
             speaker.speak(text=disconnected)
@@ -82,15 +82,29 @@ def car(phrase: str) -> None:
             speaker.speak(text="Cannot unlock the car via offline communicator due to security reasons.")
             return
         playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
-        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation="UNLOCK", car_pin=env.car_pin):
+        if car_name := vehicle(operation="UNLOCK"):
             speaker.speak(text=f"Your {car_name} has been unlocked {env.title}!")
         else:
             speaker.speak(text=disconnected)
     elif "lock" in phrase:
         if not globals.called_by_offline['status']:
             playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
-        if car_name := vehicle(car_email=env.car_email, car_pass=env.car_pass, operation="LOCK", car_pin=env.car_pin):
+        if car_name := vehicle(operation="LOCK"):
             speaker.speak(text=f"Your {car_name} has been locked {env.title}!")
+        else:
+            speaker.speak(text=disconnected)
+    elif "honk" in phrase or "blink" in phrase or "horn" in phrase:
+        if not globals.called_by_offline['status']:
+            playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
+        if car_name := vehicle(operation="HONK"):
+            speaker.speak(text=f"I've made your {car_name} honk and blink {env.title}!")
+        else:
+            speaker.speak(text=disconnected)
+    elif "locate" in phrase or "where" in phrase:
+        if not globals.called_by_offline['status']:
+            playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
+        if location := vehicle(operation="LOCATE"):
+            speaker.speak(text=location)
         else:
             speaker.speak(text=disconnected)
     else:
@@ -98,14 +112,11 @@ def car(phrase: str) -> None:
         Thread(target=support.unrecognized_dumper, args=[{"CAR": phrase}])
 
 
-def vehicle(car_email: str, car_pass: str, car_pin: int, operation: str, temp: int = None) -> Union[str, None]:
+def vehicle(operation: str, temp: int = None) -> Union[str, None]:
     """Establishes a connection with the car and returns an object to control the primary vehicle.
 
     Args:
-        car_email: Email to authenticate API.
-        car_pass: Password to authenticate API.
         operation: Operation to be performed.
-        car_pin: Master PIN to perform operations.
         temp: Temperature for climate control.
 
     Returns:
@@ -113,7 +124,7 @@ def vehicle(car_email: str, car_pass: str, car_pin: int, operation: str, temp: i
         Control object to access the primary vehicle.
     """
     try:
-        connection = connector.Connect(username=car_email, password=car_pass)
+        connection = connector.Connect(username=env.car_email, password=env.car_pass)
         connection.connect()
         if not connection.head:
             return
@@ -122,15 +133,36 @@ def vehicle(car_email: str, car_pass: str, car_pin: int, operation: str, temp: i
         handler = controller.Control(vin=primary_vehicle.get("vin"), connection=connection)
 
         if operation == "LOCK":
-            handler.lock(pin=car_pin)
+            handler.lock(pin=env.car_pin)
         elif operation == "UNLOCK":
-            handler.unlock(pin=car_pin)
+            handler.unlock(pin=env.car_pin)
         elif operation == "START":
-            handler.remote_engine_start(pin=car_pin, target_temperature=temp)
+            handler.remote_engine_start(pin=env.car_pin, target_temperature=temp)
         elif operation == "STOP":
-            handler.remote_engine_stop(pin=car_pin)
+            handler.remote_engine_stop(pin=env.car_pin)
         elif operation == "SECURE":
-            handler.enable_guardian_mode(pin=car_pin)
+            handler.enable_guardian_mode(pin=env.car_pin)
+        elif operation == "HONK":
+            handler.honk_blink()
+        elif operation == "LOCATE":
+            if not (position := handler.get_position().get('position')):
+                logger.error("Unable to get position of the vehicle.")
+                return
+            if not (data := handler.connection.reverse_geocode(latitude=position.get('latitude'),
+                                                               longitude=position.get('longitude'))):
+                logger.error("Unable to get location details of the vehicle.")
+                data = get_location_from_coordinates(coordinates=(position['latitude'], position['longitude']))[-1]
+            number = data.get('streetNumber', data.get('house_number'))
+            street = data.get('street', data.get('road'))
+            state = data.get('region', data.get('state'))
+            city, country = data.get('city'), data.get('country')
+            if all([number, street, state, city, country]):
+                address = f"{number} {street}, {city} {state}, {country}"
+            elif data.get('formattedAddress'):
+                address = data['formattedAddress']
+            else:
+                address = data
+            return f"Your {handler.get_attributes().get('vehicleBrand', 'car')} is at {address}"
         return handler.get_attributes().get("vehicleBrand", "car")
     except HTTPError as error:
         logger.error(error)
