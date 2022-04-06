@@ -14,7 +14,7 @@ from fastapi import Depends, FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
-from api import authenticator, cron
+from api import authenticator
 from api.models import GetData, InvestmentFilter
 from api.report_gatherer import Investment
 from executors.offline import offline_communicator
@@ -99,7 +99,8 @@ async def start_robinhood() -> Any:
     if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
         Process(target=run_robinhood).start()
         if env.mac:
-            cron.CronScheduler(logger=logger).controller()
+            from api.cron import CronScheduler
+            CronScheduler(logger=logger).controller()
 
 
 @app.get('/', response_class=RedirectResponse, include_in_schema=False)

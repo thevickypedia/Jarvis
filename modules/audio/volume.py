@@ -1,6 +1,5 @@
 import os
 import random
-import sys
 
 from modules.audio import speaker
 from modules.conditions import conversation
@@ -32,10 +31,6 @@ def volume(phrase: str = None, level: int = None) -> None:
     if env.mac:
         os.system(f'osascript -e "set Volume {round((8 * level) / 100)}"')
     else:
-        if not os.path.isfile('SetVol.exe'):
-            sys.stdout.write("\rPLEASE WAIT::Downloading volume controller for Windows")
-            os.system("""curl https://thevickypedia.com/Jarvis/SetVol.exe --output SetVol.exe --silent""")
-            sys.stdout.write("\r")
         os.system(f'SetVol.exe {level}')
     support.flush_screen()
     if phrase:

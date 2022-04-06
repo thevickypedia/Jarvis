@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+5.9.2 (04/06/2022)
+------------------
+- Fix `null` response during offline communication
+- Fix list to string when logging offline response
+- Group OS independent modules in install.sh
+- Fix Windows OS start up bugs
+
 5.9.1 (04/05/2022)
 ------------------
 - Avoid using database for offline communication

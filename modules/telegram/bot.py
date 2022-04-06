@@ -217,7 +217,8 @@ class TelegramBot:
         """
         if not self.authenticate(payload=payload):
             return
-        if payload.get('text') in ['hello', 'hi', 'heya', 'hey']:
+        # TODO: Add more introductory words to the below list and consider using NLP
+        if any(word in payload.get('text') for word in ['hello', 'hi', 'heya', 'hey', 'howdy', "what's up"]):
             self.reply_to(payload=payload,
                           response=f"{greeting()} {payload['from']['first_name']}!\n"
                                    f"Good {support.part_of_day()}! How can I be of service today?")
@@ -277,7 +278,7 @@ class TelegramBot:
 
         response = offline_communicator(command=command).replace(env.title, USER_TITLE.get(payload['from']['username']))
         self.send_message(chat_id=payload['from']['id'], response=response)
-        logger.info(f'Response: {response[0]}')
+        logger.info(f'Response: {response}')
 
 
 if __name__ == '__main__':

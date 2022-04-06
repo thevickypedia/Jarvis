@@ -150,4 +150,8 @@ def offline_communicator(command: str) -> AnyStr:
     globals.called_by_offline['status'] = True
     conditions(converted=command, should_return=True)
     globals.called_by_offline['status'] = False
-    return globals.text_spoken.get('text')
+    if response := globals.text_spoken['text']:
+        globals.text_spoken['text'] = None
+        return response
+    else:
+        return f"I was unable to process the request: {command}"

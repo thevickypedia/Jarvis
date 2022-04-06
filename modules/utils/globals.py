@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 
 LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 
-text_spoken = {'text': ''}
+text_spoken = {'text': None}
 vpn_status = {'active': False}
 called_by_offline = {'status': False}
 processes = {}

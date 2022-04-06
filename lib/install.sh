@@ -1,5 +1,20 @@
 #!/bin/sh
 
+os_independent_packages() {
+      # Upgrades pip module
+    python -m pip install --upgrade pip
+
+    # Installs non version specific packages using --upgrade and --no-cache flag
+    python -m pip install --no-cache --upgrade setuptools gmail-connector vpn-server changelog-generator sphinx pre-commit recommonmark
+
+    # Install pre-commit checker to restrict commit if any step in .pre-commit-config.yaml fails.
+    pre-commit install
+
+    # Get to the current directory and install the module specific packages from requirements.txt
+    current_dir="$(dirname "$(realpath "$0")")"
+    python -m pip install --no-cache-dir -r $current_dir/requirements.txt
+}
+
 OSName=$(UNAME)
 
 if [[ "$OSName" == "Darwin" ]]; then
@@ -37,27 +52,17 @@ if [[ "$OSName" == "Darwin" ]]; then
     brew install portaudio coreutils
     git clone https://github.com/toy/blueutil.git && cd blueutil && make && make install && cd ../ && rm -rf blueutil
 
-    # Upgrades pip module
-    python3 -m pip install --upgrade pip
-
-    # Installs non version specific packages using --upgrade and --no-cache flag
-    python3 -m pip install --no-cache --upgrade setuptools gmail-connector vpn-server changelog-generator sphinx pre-commit recommonmark
+    # Installs the OS independent packages
+    os_independent_packages
 
     # Mac specifics
-    python3 -m pip install python-crontab==2.6.0 PyAudio==0.2.11
-
-    # Install pre-commit checker to restrict commit if any step in .pre-commit-config.yaml fails.
-    pre-commit install
-
-    # Get to the current directory and install the module specific packages from requirements.txt
-    current_dir="$(dirname "$(realpath "$0")")"
-    python3 -m pip install --no-cache-dir -r $current_dir/requirements.txt
+    python -m pip install python-crontab==2.6.0 PyAudio==0.2.11 playsound==1.3.0
 
     # Install face-recognition/detection dependencies as stand alone so users aren't blocked until then
-    python3 -m pip install opencv-python==4.4.0.44
-    python3 -m pip install cmake==3.18.2.post1
-    python3 -m pip install dlib==19.21.0
-    python3 -m pip install face-recognition==1.3.0
+    python -m pip install opencv-python==4.4.0.44
+    python -m pip install cmake==3.18.2.post1
+    python -m pip install dlib==19.21.0
+    python -m pip install face-recognition==1.3.0
 elif [[ "$OSName" == MSYS* ]]; then
     clear
     echo "*****************************************************************************************************************"
@@ -83,7 +88,7 @@ elif [[ "$OSName" == MSYS* ]]; then
     conda install portaudio=19.6.0
 
     # Upgrades pip module
-    python3 -m pip install --upgrade pip
+    python -m pip install --upgrade pip
 
     # Install pipwin and pyaudio
     pip install pipwin
@@ -91,24 +96,20 @@ elif [[ "$OSName" == MSYS* ]]; then
 
     pip install git+https://github.com/bisoncorps/search-engine-parser
 
-    # Installs non version specific packages using --upgrade and --no-cache flag
-    python3 -m pip install --no-cache --upgrade setuptools gmail-connector vpn-server changelog-generator sphinx pre-commit recommonmark
-
-    # Install pre-commit checker to restrict commit if any step in .pre-commit-config.yaml fails.
-    pre-commit install
+    # Installs the OS independent packages
+    os_independent_packages
 
     # Install Windows specifics
-    python3 -m pip install pywin32==300
+    python -m pip install pywin32==300 playsound==1.2.2
 
-    # Get to the current directory and install the module specific packages from requirements.txt
-    current_dir="$(dirname "$(realpath "$0")")"
-    python3 -m pip install --no-cache-dir -r $current_dir/requirements.txt
+    # Downloads SetVol.exe fto control volume on Windows
+    curl https://thevickypedia.com/Jarvis/SetVol.exe --output SetVol.exe --silent
 
     # Install face-recognition/detection dependencies as stand alone so users aren't blocked until then
-    python3 -m pip install opencv-python==4.5.5.64
-    python3 -m pip install cmake==3.18.2.post1
-    python3 -m pip install dlib==19.21.0
-    python3 -m pip install face-recognition==1.3.0
+    python -m pip install opencv-python==4.5.5.64
+    python -m pip install cmake==3.18.2.post1
+    python -m pip install dlib==19.21.0
+    python -m pip install face-recognition==1.3.0
 else
     clear
     echo "*****************************************************************************************************************"
