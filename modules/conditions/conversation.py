@@ -9,7 +9,7 @@ from modules.models import models
 
 env = models.env
 
-greeting = ["how are you", "how are you doing", "how have you been", "how do you do"]
+greeting = ["how are you", "how are you doing", "how have you been", "how do you do", "how's it going"]
 
 capabilities = ["what can you do", "what all can you do", "what are your capabilities", "what's your capacity",
                 "what are you capable of"]

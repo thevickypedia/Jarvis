@@ -34,8 +34,7 @@ from modules.utils import globals, support
 
 env = models.env
 fileio = models.fileio
-mdb = database.Database(database=fileio.meetings_db, table_name='ics', columns=['info'])
-edb = database.Database(database=fileio.events_db, table_name=env.event_app, columns=['info'])
+db = database.Database(database=fileio.base_db)
 
 
 def repeat() -> NoReturn:
@@ -150,8 +149,7 @@ def google_home(device: str = None, file: str = None) -> None:
         device: Name of the Google home device on which the music has to be played.
         file: Scanned audio file to be played.
     """
-    network_id = vpn_checker()
-    if network_id.startswith('VPN'):
+    if not (network_id := vpn_checker()):
         return
 
     if not globals.called_by_offline['status']:
@@ -333,10 +331,10 @@ def time_travel() -> None:
     current_time()
     weather()
     speaker.speak(run=True)
-    if (meeting_status := mdb.cursor.execute("SELECT info FROM ics").fetchone()) and \
+    if (meeting_status := db.cursor.execute("SELECT info FROM ics").fetchone()) and \
             meeting_status[0].startswith('You'):
         speaker.speak(text=meeting_status[0])
-    if (event_status := edb.cursor.execute(f"SELECT info FROM {env.event_app}").fetchone()) and \
+    if (event_status := db.cursor.execute(f"SELECT info FROM {env.event_app}").fetchone()) and \
             event_status[0].startswith('You'):
         speaker.speak(text=event_status[0])
     todo()
@@ -345,7 +343,6 @@ def time_travel() -> None:
     phrase = listen(timeout=3, phrase_limit=3)
     if any(word in phrase.lower() for word in keywords.ok):
         news()
-    globals.called['time_travel'] = False
 
 
 def sprint_name() -> NoReturn:

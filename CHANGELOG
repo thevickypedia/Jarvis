@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+5.9.1 (04/05/2022)
+------------------
+- Avoid using database for offline communication
+- Split create_table in database.py
+- Write events and meetings into base database
+- vpn_checker function to only return IP when VPN is not connected
+- Differentiate stop and pause in tv.py
+- Update requirements.txt
+
 5.9.0 (04/03/2022)
 ------------------
 - FEATURE::`honk/blink` and `locate` a car

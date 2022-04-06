@@ -4,6 +4,7 @@ import re
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import NoReturn
 
 from executors import communicator
 from executors.logger import logger
@@ -15,7 +16,7 @@ from modules.utils import globals, support
 env = models.env
 
 
-def create_reminder(hour, minute, am_pm, message, to_about, timer: str = None):
+def create_reminder(hour, minute, am_pm, message, to_about, timer: str = None) -> NoReturn:
     """Creates the lock file necessary to set a reminder.
 
     Args:
@@ -98,7 +99,7 @@ def reminder(phrase: str) -> None:
                            f"I don't think a time like that exists on Earth.")
 
 
-def reminder_executor(message: str) -> None:
+def reminder_executor(message: str) -> NoReturn:
     """Notifies user about the reminder and displays a notification on the device.
 
     Args:

@@ -22,6 +22,9 @@ def lights(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
+    if not vpn_checker():
+        return
+
     if not os.path.isfile(fileio.smart_devices):
         support.no_env_vars()
         return
@@ -32,9 +35,6 @@ def lights(phrase: str) -> None:
     if not any([smart_devices.get('hallway_ip'), smart_devices.get('kitchen_ip'),
                 smart_devices.get('bedroom_ip')]):
         support.no_env_vars()
-        return
-
-    if vpn_checker().startswith('VPN'):
         return
 
     phrase = phrase.lower()

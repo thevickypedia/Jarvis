@@ -49,4 +49,4 @@ def stop_processes() -> NoReturn:
         if process.is_alive():
             logger.info(f"Sending [SIGKILL] to {func} with PID: {process.pid}")
             process.kill()
-    [os.remove(db) for db in [fileio.base_db, fileio.events_db, fileio.meetings_db] if os.path.isfile(db)]
+    [os.remove(db) for db in [fileio.base_db] if os.path.isfile(db)]

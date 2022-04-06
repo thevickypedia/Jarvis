@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
-from typing import NoReturn
+from typing import AnyStr, NoReturn
 
 import requests
 
@@ -14,14 +14,12 @@ from executors.automation import auto_helper
 from executors.conditions import conditions
 from executors.logger import logger
 from executors.remind import reminder_executor
-from modules.database import database
 from modules.meetings import events, icalendar
 from modules.models import models
 from modules.utils import globals, support
 
 env = models.env
 fileio = models.fileio
-odb = database.Database(table_name='offline', columns=['key', 'value'])
 
 
 def automator() -> NoReturn:
@@ -45,25 +43,26 @@ def automator() -> NoReturn:
     events.event_app_launcher()
     dry_run = True
     while True:
-        if cmd := odb.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():
-            offline_communicator(command=cmd[0])
-            odb.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
-                               {'key': 'request', 'value': cmd[0]})
-            odb.connection.commit()
-            support.flush_screen()
-
         if os.path.isfile(fileio.automation):
             if exec_task := auto_helper():
-                offline_communicator(command=exec_task, respond=False)
+                offline_communicator(command=exec_task)
 
         if start_events + env.sync_events <= time.time() or dry_run:
             start_events = time.time()
+            if dry_run:
+                logger.info(f"Getting calendar events from {env.event_app}")
             Process(target=events.events_writer).start()
+
         if start_meetings + env.sync_meetings <= time.time() or dry_run:
             start_meetings = time.time()
+            if dry_run:
+                logger.info("Getting calendar schedule from ICS.")
             Process(target=icalendar.meetings_writer).start()
+
         if start_netgear + env.sync_netgear <= time.time() or dry_run:
             start_netgear = time.time()
+            if dry_run:
+                logger.info("Scanning smart devices using netgear module.")
             Process(target=support.scan_smart_devices).start()
 
         if alarm_state := support.lock_files(alarm_files=True):
@@ -103,10 +102,10 @@ def initiate_tunneling() -> NoReturn:
                    f'source venv/bin/activate && export port={env.offline_port} && python forever_ngrok.py'
         os.system(f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null""")
     else:
-        logger.error(f'JarvisHelper is not available to trigger an ngrok tunneling through {env.offline_port}')
+        logger.info(f'JarvisHelper is not available to trigger an ngrok tunneling through {env.offline_port}')
         endpoint = rf'http:\\{env.offline_host}:{env.offline_port}'
-        logger.error('However offline communicator can still be accessed via '
-                     f'{endpoint}\\offline-communicator for API calls and {endpoint}\\docs for docs.')
+        logger.info('However offline communicator can still be accessed via '
+                    f'{endpoint}\\offline-communicator for API calls and {endpoint}\\docs for docs.')
 
 
 def on_demand_offline_automation(task: str) -> bool:
@@ -138,17 +137,17 @@ def on_demand_offline_automation(task: str) -> bool:
         return True
 
 
-def offline_communicator(command: str = None, respond: bool = True) -> NoReturn:
-    """Initiates a task and writes the spoken text into the record ``response`` in the database table ``offline``.
+def offline_communicator(command: str) -> AnyStr:
+    """Initiates conditions after flipping ``status`` flag in ``called_by_offline`` dict which suppresses the speaker.
 
     Args:
         command: Takes the command that has to be executed as an argument.
-        respond: Flag to create a ``response`` record in the database table ``offline``.
+
+    Returns:
+        AnyStr:
+        Response from Jarvis.
     """
     globals.called_by_offline['status'] = True
     conditions(converted=command, should_return=True)
     globals.called_by_offline['status'] = False
-    response = globals.text_spoken.get('text')
-    if 'restart' not in command and respond:
-        odb.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('response', response)}")
-        odb.connection.commit()
+    return globals.text_spoken.get('text')

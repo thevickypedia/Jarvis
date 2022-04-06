@@ -28,29 +28,28 @@ def ip_address() -> str:
     """
     socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     socket_.connect(("8.8.8.8", 80))
-    ip_addr = socket_.getsockname()[0]
+    ip_address_ = socket_.getsockname()[0]
     socket_.close()
-    return ip_addr
+    return ip_address_
 
 
-def vpn_checker() -> str:
+def vpn_checker() -> Union[bool, str]:
     """Uses simple check on network id to see if it is connected to local host or not.
 
     Returns:
-        str:
-        Private IP address of host machine.
+        bool or str:
+        Returns a ``False`` flag if VPN is detected, else the IP address.
     """
-    ip_addr = ip_address()
-    if not (ip_addr.startswith("192") | ip_addr.startswith("127")):
-        ip_addr = "VPN:" + ip_addr
+    ip_address_ = ip_address()
+    if ip_address_.startswith("192") or ip_address_.startswith("127"):
+        return ip_address_
+    else:
         info = json.load(urlopen("https://ipinfo.io/json"))
-        sys.stdout.write(f"\rVPN connection is detected to {info.get('ip')} at {info.get('city')}, "
-                         f"{info.get('region')} maintained by {info.get('org')}")
-
-    if ip_addr.startswith("VPN"):
-        speaker.speak(text=f"You have your VPN turned on. Details on your screen {env.title}! "
-                           "Please note that none of the home integrations will work with VPN enabled.")
-    return ip_addr
+        speaker.speak(text=f"You have your VPN turned on {env.title}! A connection has been detected to "
+                           f"{info.get('ip')} at {info.get('city')} {info.get('region')}, "
+                           f"maintained by {info.get('org')}. Please note that none of the home integrations will "
+                           "work with VPN enabled.")
+        return False
 
 
 def internet_checker() -> Union[Speedtest, bool]:

@@ -82,7 +82,7 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
     logger.info(f"'{phrase}' will be executed after {support.time_converter(seconds=delay)}")
     time.sleep(delay)
     logger.info(f"Executing '{phrase}'")
-    offline_communicator(command=phrase, respond=False)
+    offline_communicator(command=phrase)
 
 
 def timed_delay(phrase: str) -> bool:
@@ -143,34 +143,34 @@ def renew() -> None:
         speaker.speak(run=True)
 
 
-def initiator(key_original: str, should_return: bool = False) -> None:
+def initiator(phrase: str, should_return: bool = False) -> None:
     """When invoked by ``Activator``, checks for the right keyword to wake up and gets into action.
 
     Args:
-        key_original: Takes the processed string from ``SentryMode`` as input.
+        phrase: Takes the processed string from ``SentryMode`` as input.
         should_return: Flag to return the function if nothing is heard.
     """
-    if key_original == 'SR_ERROR' and should_return:
+    if phrase == 'SR_ERROR' and should_return:
         return
     support.flush_screen()
-    key = key_original.lower()
-    key_split = key.split()
-    if [word for word in key_split if word in ['morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight']]:
+    if [word for word in phrase.lower().split() if word in ['morning', 'night', 'afternoon',
+                                                            'after noon', 'evening', 'goodnight']]:
         globals.called['time_travel'] = True
         if event := support.celebrate():
             speaker.speak(text=f'Happy {event}!')
-        if 'night' in key_split or 'goodnight' in key_split:
+        if 'night' in phrase.split() or 'goodnight' in phrase.split():
             Thread(target=pc_sleep).start() if env.mac else None
         time_travel()
-    elif 'you there' in key:
+        globals.called['time_travel'] = False
+    elif 'you there' in phrase.lower():
         speaker.speak(text=f'{random.choice(conversation.wake_up1)}')
         initialize()
-    elif any(word in key for word in ['look alive', 'wake up', 'wakeup', 'show time', 'showtime']):
+    elif any(word in phrase.lower() for word in ['look alive', 'wake up', 'wakeup', 'show time', 'showtime']):
         speaker.speak(text=f'{random.choice(conversation.wake_up2)}')
         initialize()
     else:
-        if key_original:
-            split_phrase(phrase=key_original, should_return=should_return)
+        if phrase:
+            split_phrase(phrase=phrase, should_return=should_return)
         else:
             speaker.speak(text=f'{random.choice(conversation.wake_up3)}')
             initialize()

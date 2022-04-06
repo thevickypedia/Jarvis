@@ -17,14 +17,13 @@ from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from api import authenticator, cron
 from api.models import GetData, InvestmentFilter
 from api.report_gatherer import Investment
-from modules.database import database
+from executors.offline import offline_communicator
 from modules.exceptions import Response
 from modules.models import config, models
 from modules.offline import compatibles
 from modules.utils import globals, support
 
 env = models.env
-odb = database.Database(table_name='offline', columns=['key', 'value'])
 
 OFFLINE_PROTECTOR = [Depends(dependency=authenticator.offline_has_access)]
 ROBINHOOD_PROTECTOR = [Depends(dependency=authenticator.robinhood_has_access)]
@@ -121,8 +120,8 @@ async def health() -> NoReturn:
 
 
 @app.post("/offline-communicator", dependencies=OFFLINE_PROTECTOR)
-async def offline_communicator(input_data: GetData) -> NoReturn:
-    """Offline Communicator for Jarvis.
+async def offline_communicator_api(input_data: GetData) -> NoReturn:
+    """Offline Communicator API endpoint for Jarvis.
 
     Args:
         - input_data: Takes the following arguments as data instead of a QueryString.
@@ -157,22 +156,16 @@ async def offline_communicator(input_data: GetData) -> NoReturn:
         raise Response(status_code=422,
                        detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
                               'Please try an instruction that does not require an user interaction.')
-    if existing := odb.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():
+    if globals.called_by_offline['status']:
         raise Response(status_code=503,
-                       detail=f"Processing another offline request: '{existing[0]}'.\nPlease try again.")
-    odb.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('request', command)}")
-    odb.connection.commit()
+                       detail="Processing another offline request.\nPlease try again.")
 
     # Alternate way for datetime conversions without first specifying a local timezone
     # import dateutil.tz
     # dt_string = datetime.now().astimezone(dateutil.tz.tzlocal()).strftime("%A, %B %d, %Y %H:%M:%S")
     dt_string = datetime.now().astimezone(tz=globals.LOCAL_TIMEZONE).strftime("%A, %B %d, %Y %H:%M:%S")
-    while True:
-        if response := odb.cursor.execute("SELECT value from offline WHERE key=?", ('response',)).fetchone():
-            odb.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
-                               {'key': 'response', 'value': response[0]})
-            odb.connection.commit()
-            raise Response(status_code=200, detail=f'{dt_string}\n\n{response[0]}')
+    response = offline_communicator(command=command)
+    raise Response(status_code=200, detail=f'{dt_string}\n\n{response}')
 
 
 @app.get("/favicon.ico", include_in_schema=False)

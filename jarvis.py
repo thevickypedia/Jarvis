@@ -26,9 +26,7 @@ from modules.utils import globals, support
 
 env = models.env
 fileio = models.fileio
-
-rdb = database.Database(table_name="restart", columns=["flag", "caller"])
-odb = database.Database(table_name="offline", columns=["key", "value"])
+db = database.Database(database=fileio.base_db)
 
 
 class Activator:
@@ -98,11 +96,10 @@ class Activator:
                 if self.detector.process(pcm=pcm) >= 0:
                     playsound(sound=f"indicators{os.path.sep}acknowledgement.mp3", block=False)
                     self.close_stream()
-                    initiator(key_original=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit,
-                                                           sound=False),
+                    initiator(phrase=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
                               should_return=True)
                     speaker.speak(run=True)
-                elif flag := rdb.cursor.execute("SELECT flag, caller FROM restart").fetchone():
+                elif flag := db.cursor.execute("SELECT flag, caller FROM restart").fetchone():
                     logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
                     self.stop()
                     if flag[1] == "restart_control":
@@ -151,7 +148,7 @@ def sentry_mode() -> NoReturn:
             if not any(word in recognizer.recognize_google(listened).lower() for word in env.legacy_keywords):
                 continue
             playsound(sound=f"indicators{os.path.sep}acknowledgement.mp3", block=False)
-            initiator(key_original=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
+            initiator(phrase=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
                       should_return=True)
             speaker.speak(run=True)
         except (speech_recognition.UnknownValueError,
@@ -163,7 +160,7 @@ def sentry_mode() -> NoReturn:
             exit_process()
             terminator()
             break
-        if flag := rdb.cursor.execute("SELECT flag, caller FROM restart").fetchone():
+        if flag := db.cursor.execute("SELECT flag, caller FROM restart").fetchone():
             logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
             stop_processes()
             if flag[1] == "restart_control":
@@ -198,7 +195,6 @@ if __name__ == '__main__':
     if env.mac and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
         recognizer = speech_recognition.Recognizer()
         with speech_recognition.Microphone() as source:
-            recognizer.adjust_for_ambient_noise(source)
             sentry_mode()
     else:
         Activator().start()

@@ -25,11 +25,11 @@ def television(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
-    if not os.path.isfile(fileio.smart_devices):
-        support.no_env_vars()
+    if not vpn_checker():
         return
 
-    if vpn_checker().startswith('VPN'):
+    if not os.path.isfile(fileio.smart_devices):
+        support.no_env_vars()
         return
 
     with open(fileio.smart_devices) as file:
@@ -97,7 +97,10 @@ def television(phrase: str) -> None:
         elif 'mute' in phrase_lower:
             globals.tv.mute()
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}!')
-        elif 'pause' in phrase_lower or 'boss' in phrase_lower or 'pass' in phrase_lower or 'hold' in phrase_lower:
+        elif 'stop' in phrase_lower and 'content' in phrase_lower:
+            globals.tv.stop()
+            speaker.speak(text=f'{random.choice(conversation.acknowledgement)}!')
+        elif 'stop' in phrase_lower or 'pause' in phrase_lower:
             globals.tv.pause()
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}!')
         elif 'resume' in phrase_lower or 'play' in phrase_lower:
@@ -108,9 +111,6 @@ def television(phrase: str) -> None:
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}!')
         elif 'forward' in phrase_lower:
             globals.tv.forward()
-            speaker.speak(text=f'{random.choice(conversation.acknowledgement)}!')
-        elif 'stop' in phrase_lower:
-            globals.tv.stop()
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}!')
         elif 'set' in phrase_lower and 'volume' in phrase_lower:
             if vol := support.extract_nos(input_=phrase_lower, method=int):

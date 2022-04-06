@@ -6,6 +6,7 @@
 """
 import os.path
 import sys
+from typing import NoReturn
 
 import pyttsx3
 import yaml
@@ -24,7 +25,7 @@ CONVERSATION = [__conversation for __conversation in dir(conversation) if not __
 FUNCTIONS_TO_TRACK = KEYWORDS + CONVERSATION
 
 
-def speak(text: str = None, run: bool = False) -> None:
+def speak(text: str = None, run: bool = False) -> NoReturn:
     """Calls ``audio_driver.say`` to speak a statement from the received text.
 
     Args:
@@ -45,7 +46,7 @@ def speak(text: str = None, run: bool = False) -> None:
     frequently_used(function_name=caller) if caller in FUNCTIONS_TO_TRACK else None
 
 
-def frequently_used(function_name: str) -> None:
+def frequently_used(function_name: str) -> NoReturn:
     """Writes the function called and the number of times into a yaml file.
 
     Args:

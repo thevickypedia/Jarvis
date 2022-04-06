@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import sys
 from datetime import datetime
+from typing import NoReturn
 
 import packaging.version
 import psutil
@@ -20,7 +21,7 @@ from modules.utils import globals, support
 env = models.env
 
 
-def system_info() -> None:
+def system_info() -> NoReturn:
     """Tells the system configuration."""
     total, used, free = shutil.disk_usage("/")
     total = support.size_converter(byte_size=total)

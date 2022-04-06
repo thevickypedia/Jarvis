@@ -4,7 +4,6 @@ from datetime import datetime
 from multiprocessing import Process
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
-from sqlite3 import OperationalError
 from subprocess import PIPE, Popen
 from typing import NoReturn
 
@@ -16,23 +15,20 @@ from modules.utils import globals
 
 env = models.env
 fileio = models.fileio
+db = database.Database(database=fileio.base_db)
+db.create_table(table_name=env.event_app, columns=['info'])
+
 EVENT_SCRIPT = f"{env.event_app}.scpt"
 
 
 def events_writer() -> NoReturn:
     """Gets return value from ``events_gatherer`` function and writes it to events table in the database.
 
-    This function runs in a dedicated process every hour to avoid wait time when events information is requested.
+    This function runs in a dedicated process to avoid wait time when events information is requested.
     """
-    edb = database.Database(database=fileio.events_db, table_name=env.event_app, columns=['info'])
     event_info = events_gatherer()
-    edb.cursor.execute(f"INSERT OR REPLACE INTO {env.event_app} (info) VALUES (?);", (event_info,))
-    try:
-        edb.connection.commit()
-    except OperationalError as error:
-        logger.error(error)
-        os.remove(fileio.events_db)
-        events_writer()
+    db.cursor.execute(f"INSERT OR REPLACE INTO {env.event_app} (info) VALUES (?);", (event_info,))
+    db.connection.commit()
 
 
 def event_app_launcher() -> NoReturn:
@@ -59,7 +55,6 @@ def events_gatherer() -> str:
         return f"Reading events from {env.event_app} is not possible on Windows operating system."
     if not os.path.isfile(EVENT_SCRIPT):
         return f"I wasn't able to find the events script for your {env.event_app} {env.title}!"
-    logger.info(f"Getting calendar events from {env.event_app}")
     failure = None
     process = Popen(["/usr/bin/osascript", EVENT_SCRIPT] + [str(arg) for arg in [1, 3]], stdout=PIPE, stderr=PIPE)
     out, err = process.communicate()
@@ -85,7 +80,6 @@ def events_gatherer() -> str:
 
     local_events = out.decode().strip()
     if not local_events or local_events == ",":
-        logger.info("No events found!")
         return f"You don't have any events in the next 12 hours {env.title}!"
 
     local_events = local_events.replace(", date ", " rEpLaCInG ")
@@ -93,7 +87,6 @@ def events_gatherer() -> str:
     event_name = local_events.split("rEpLaCInG")[0].split(", ")
     event_name = [i.strip() for n, i in enumerate(event_name) if i not in event_name[n + 1:]]  # remove duplicates
     count = len(event_time)
-    logger.info(f"Events: {count}")
     [event_name.remove(e) for e in event_name if len(e) <= 5] if count != len(event_name) else None
     event_status = f"You have {count} events in the next 12 hours {env.title}! " if count > 1 else ""
     local_events = {}
@@ -115,8 +108,7 @@ def events_gatherer() -> str:
 
 def events() -> NoReturn:
     """Controller for events."""
-    edb = database.Database(database=fileio.events_db, table_name=env.event_app, columns=['info'])
-    if event_status := edb.cursor.execute(f"SELECT info FROM {env.event_app}").fetchone():
+    if event_status := db.cursor.execute(f"SELECT info FROM {env.event_app}").fetchone():
         speaker.speak(text=event_status[0])
     else:
         if globals.called_by_offline["status"]:

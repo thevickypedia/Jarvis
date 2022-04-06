@@ -3,7 +3,7 @@ import sys
 import time
 from datetime import datetime
 from threading import Thread
-from typing import Union
+from typing import NoReturn, Union
 
 import cv2
 from gmailconnector.send_email import SendEmail
@@ -96,7 +96,7 @@ def guard_enable() -> None:
 
 
 def threat_notify(converted: str, date_extn: Union[str, None], gmail_user: str, gmail_pass: str,
-                  phone_number: str, recipient: str) -> None:
+                  phone_number: str, recipient: str) -> NoReturn:
     """Sends an SMS and email notification in case of a threat.
 
     References:

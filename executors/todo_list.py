@@ -10,7 +10,8 @@ from modules.utils import globals
 env = models.env
 fileio = models.fileio
 
-tdb = database.Database(database=fileio.task_db, table_name="tasks", columns=["category", "item"])
+tdb = database.Database(database=fileio.task_db)
+tdb.create_table(table_name="tasks", columns=["category", "item"])
 
 
 def todo() -> None:

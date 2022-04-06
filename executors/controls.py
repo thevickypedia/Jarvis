@@ -4,6 +4,7 @@ import subprocess
 import sys
 import time
 from threading import Thread
+from typing import NoReturn
 
 import psutil
 import yaml
@@ -17,9 +18,10 @@ from modules.exceptions import StopSignal
 from modules.models import models
 from modules.utils import globals, support
 
-rdb = database.Database(table_name='restart', columns=['flag', 'caller'])
 env = models.env
 fileio = models.fileio
+db = database.Database(database=fileio.base_db)
+db.create_table(table_name="restart", columns=["flag", "caller"])
 
 
 def restart(target: str = None, quiet: bool = False) -> None:
@@ -78,7 +80,7 @@ def restart(target: str = None, quiet: bool = False) -> None:
     exit(1)
 
 
-def exit_process() -> None:
+def exit_process() -> NoReturn:
     """Function that holds the list of operations done upon exit."""
     reminders = {}
     alarms = support.lock_files(alarm_files=True)
@@ -109,7 +111,7 @@ def exit_process() -> None:
                      f"\nTotal runtime: {support.time_converter(time.perf_counter())}")
 
 
-def pc_sleep() -> None:
+def pc_sleep() -> NoReturn:
     """Locks the host device using osascript and reduces brightness to bare minimum."""
     Thread(target=decrease_brightness).start()
     # os.system("""osascript -e 'tell app "System Events" to sleep'""")  # requires restarting Jarvis manually
@@ -135,7 +137,7 @@ def sleep_control(phrase: str) -> bool:
     return True
 
 
-def restart_control(phrase: str = 'PlaceHolder', quiet: bool = False):
+def restart_control(phrase: str = 'PlaceHolder', quiet: bool = False) -> NoReturn:
     """Controls the restart functions based on the user request.
 
     Args:
@@ -151,13 +153,13 @@ def restart_control(phrase: str = 'PlaceHolder', quiet: bool = False):
         logger.info(f'Called by {caller}')
         logger.info('JARVIS::Self reboot has been requested.')
         if quiet:  # restarted due internal errors or git update
-            rdb.cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, caller))
+            db.cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, caller))
         else:  # restarted requested via voice command
-            rdb.cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, 'restart_control'))
-        rdb.connection.commit()
+            db.cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, 'restart_control'))
+        db.connection.commit()
 
 
-def stop_terminals(apps: tuple = ("iterm", "terminal")) -> None:
+def stop_terminals(apps: tuple = ("iterm", "terminal")) -> NoReturn:
     """Stops background processes.
 
     Args:
@@ -171,7 +173,7 @@ def stop_terminals(apps: tuple = ("iterm", "terminal")) -> None:
                 proc.kill()
 
 
-def terminator() -> None:
+def terminator() -> NoReturn:
     """Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.
 
     Using this, eliminates the hassle of forcing multiple threads to stop.
@@ -215,7 +217,7 @@ def shutdown(proceed: bool = False) -> None:
             return
 
 
-def clear_logs() -> None:
+def clear_logs() -> NoReturn:
     """Deletes log files that were updated before 48 hours."""
     for __path, __directory, __file in os.walk('logs'):
         for file_ in __file:
@@ -223,7 +225,7 @@ def clear_logs() -> None:
                 os.remove(f'{__path}/{file_}')  # removes the file if it is older than 48 hours
 
 
-def starter() -> None:
+def starter() -> NoReturn:
     """Initiates crucial functions which needs to be called during start up.
 
     Methods:

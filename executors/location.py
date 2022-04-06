@@ -347,9 +347,10 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
             else:
                 speaker.speak(text=f"It might take you about {drive_time} hours to get there {env.title}!")
     elif start_check:
-        speaker.speak(text=f"{env.title}! You're {miles} miles away from {destination}.")
+        text = f"{env.title}! You're {miles} miles away from {destination}. "
         if not globals.called["locate_places"]:
-            speaker.speak(text=f"You may also ask where is {destination}")
+            text += f"You may also ask where is {destination}"
+        speaker.speak(text=text)
     else:
         speaker.speak(text=f"{origin} is {miles} miles away from {destination}.")
     return

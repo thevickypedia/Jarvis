@@ -6,11 +6,11 @@ from logging.config import dictConfig
 
 import requests
 
-from modules.database import database
+from executors.offline import offline_communicator
 from modules.exceptions import BotInUse
 from modules.models import config, models
 from modules.offline import compatibles
-from modules.utils import support
+from modules.utils import globals, support
 
 env = models.env
 
@@ -19,7 +19,6 @@ dictConfig(config.BotConfig().dict())
 logger = logging.getLogger('telegram')
 
 offline_compatible = compatibles.offline_compatible()
-odb = database.Database(table_name='offline', columns=['key', 'value'])
 
 USER_TITLE = {}
 
@@ -234,7 +233,7 @@ class TelegramBot:
         if not payload['text']:
             return
         if not USER_TITLE.get(payload['from']['username']):
-            USER_TITLE[payload['from']['username']] = get_title_by_name(payload['from']['first_name'])
+            USER_TITLE[payload['from']['username']] = get_title_by_name(name=payload['from']['first_name'])
         self.jarvis(payload=payload)
 
     def jarvis(self, payload: dict) -> None:
@@ -271,26 +270,14 @@ class TelegramBot:
 
         logger.info(f'Request: {command}')
 
-        if existing := odb.cursor.execute("SELECT value from offline WHERE key=?", ('request',)).fetchone():
+        if globals.called_by_offline['status']:
             self.reply_to(payload=payload,
-                          response=f"Processing another offline request: '{existing[0]}'.\nPlease try again.")
+                          response="Processing another offline request.\nPlease try again.")
             return
 
-        odb.cursor.execute(f"INSERT OR REPLACE INTO offline (key, value) VALUES {('request', command)}")
-        odb.connection.commit()
-
-        while True:
-            if response := odb.cursor.execute("SELECT value from offline WHERE key=?", ('response',)).fetchone():
-                if response[0]:
-                    text = response[0].replace(env.title, USER_TITLE.get(payload['from']['username']))
-                else:
-                    text = f"I'm sorry {env.title}! I wasn't able to process {payload.get('text')}"
-                self.send_message(chat_id=payload['from']['id'], response=text)
-                odb.cursor.execute("DELETE FROM offline WHERE key=:key OR value=:value ",
-                                   {'key': 'response', 'value': response[0]})
-                odb.connection.commit()
-                logger.info(f'Response: {response[0]}')
-                return
+        response = offline_communicator(command=command).replace(env.title, USER_TITLE.get(payload['from']['username']))
+        self.send_message(chat_id=payload['from']['id'], response=response)
+        logger.info(f'Response: {response[0]}')
 
 
 if __name__ == '__main__':

@@ -1,9 +1,7 @@
-import os
 import time
 from multiprocessing import Process
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
-from sqlite3 import OperationalError
 from typing import NoReturn
 
 import requests
@@ -17,6 +15,8 @@ from modules.utils import globals
 
 env = models.env
 fileio = models.fileio
+db = database.Database(database=fileio.base_db)
+db.create_table(table_name="ics", columns=["info"])
 
 
 def meetings_writer() -> NoReturn:
@@ -24,15 +24,9 @@ def meetings_writer() -> NoReturn:
 
     This function runs in a dedicated process every hour to avoid wait time when meetings information is requested.
     """
-    mdb = database.Database(database=fileio.meetings_db, table_name='ics', columns=['info'])
     meeting_info = meetings_gatherer()
-    mdb.cursor.execute("INSERT OR REPLACE INTO ics (info) VALUES (?);", (meeting_info,))
-    try:
-        mdb.connection.commit()
-    except OperationalError as error:
-        logger.error(error)
-        os.remove(fileio.meetings_db)
-        meetings_writer()
+    db.cursor.execute("INSERT OR REPLACE INTO ics (info) VALUES (?);", (meeting_info,))
+    db.connection.commit()
 
 
 def meetings_gatherer() -> str:
@@ -46,7 +40,6 @@ def meetings_gatherer() -> str:
     """
     if not env.ics_url:
         return f"I wasn't given a calendar URL to look up your meetings {env.title}!"
-    logger.info("Getting calendar schedule from ICS.")
     response = requests.get(url=env.ics_url)
     if not response.ok:
         logger.error(response.status_code)
@@ -69,10 +62,9 @@ def meetings_gatherer() -> str:
             meeting_status += f"{event.name} - all day" if event.all_day else f"{event.name} at {begin_local}"
             meeting_status += ', ' if index + 1 < len(events) else '.'
     if count:
-        logger.info(f"Meetings: {count}")
-        meeting_status = f"You have {count} meetings today {env.title}! {meeting_status}"
+        plural = "meeting" if count == 1 else "meetings"
+        meeting_status = f"You have {count} {plural} today {env.title}! {meeting_status}"
     else:
-        logger.info(f"Past Meetings: {len(events)}")
         meeting_status = f"You have no more meetings for rest of the day {env.title}! " \
                          f"However, you had {len(events)} meetings earlier today."
     return meeting_status
@@ -80,8 +72,7 @@ def meetings_gatherer() -> str:
 
 def meetings() -> NoReturn:
     """Controller for meetings."""
-    mdb = database.Database(database=fileio.meetings_db, table_name='ics', columns=['info'])
-    if meeting_status := mdb.cursor.execute("SELECT info FROM ics").fetchone():
+    if meeting_status := db.cursor.execute("SELECT info FROM ics").fetchone():
         speaker.speak(text=meeting_status[0])
     else:
         if globals.called_by_offline["status"]:

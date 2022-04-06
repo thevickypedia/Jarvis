@@ -30,8 +30,6 @@ class FileIO(BaseModel):
     automation: FilePath = f'fileio{os.path.sep}automation.yaml'
     tmp_automation: FilePath = f'fileio{os.path.sep}tmp_automation.yaml'
     base_db: FilePath = f'fileio{os.path.sep}database.db'
-    events_db: FilePath = f'fileio{os.path.sep}events.db'
-    meetings_db: FilePath = f'fileio{os.path.sep}meetings.db'
     task_db: FilePath = f'fileio{os.path.sep}tasks.db'
     frequent: FilePath = f'fileio{os.path.sep}frequent.yaml'
     location: FilePath = f'fileio{os.path.sep}location.yaml'
