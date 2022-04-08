@@ -48,10 +48,10 @@ def handler() -> NoReturn:
             handler()
     # Expected exceptions
     # except socket.timeout as error:
-    #     logger.fatal(error)
+    #     logger.critical(error)
     # except urllib3.exceptions.ConnectTimeoutError as error:
-    #     logger.fatal(error)
+    #     logger.critical(error)
     # except urllib3.exceptions.MaxRetryError as error:
-    #     logger.fatal(error)
+    #     logger.critical(error)
     # except requests.exceptions.ConnectTimeout as error:
-    #     logger.fatal(error)
+    #     logger.critical(error)

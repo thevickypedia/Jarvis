@@ -157,7 +157,7 @@ async def offline_communicator_api(input_data: GetData) -> NoReturn:
         raise Response(status_code=422,
                        detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
                               'Please try an instruction that does not require an user interaction.')
-    if globals.called_by_offline['status']:
+    if globals.called_by_offline:
         raise Response(status_code=503,
                        detail="Processing another offline request.\nPlease try again.")
 

@@ -53,7 +53,7 @@ def television(phrase: str) -> None:
         speaker.speak(text=f"I wasn't able to connect to your TV {env.title}! I guess your TV is powered off already.")
         return
     elif tv_status():
-        if globals.called_by_offline['status']:
+        if globals.called_by_offline:
             send_magic_packet(smart_devices.get('tv_mac'))
         else:
             Thread(target=send_magic_packet, args=[smart_devices.get('tv_mac')]).start()

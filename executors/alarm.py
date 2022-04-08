@@ -77,7 +77,7 @@ def set_alarm(phrase: str) -> None:
                                f"I don't think a time like that exists on Earth.")
     else:
         speaker.speak(text=f"Please tell me a time {env.title}!")
-        if globals.called_by_offline['status']:
+        if globals.called_by_offline:
             return
         speaker.speak(run=True)
         converted = listener.listen(timeout=3, phrase_limit=4)

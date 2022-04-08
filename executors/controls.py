@@ -1,5 +1,6 @@
 import os
 import random
+import stat
 import subprocess
 import sys
 import time
@@ -69,7 +70,7 @@ def restart(target: str = None, quiet: bool = False) -> None:
         try:
             speaker.speak(text=f'Restarting now {env.title}! I will be up and running momentarily.', run=True)
         except RuntimeError as error:
-            logger.fatal(error)
+            logger.critical(error)
     if os.path.isfile(fileio.location):
         with open(fileio.location) as file:
             data = yaml.load(stream=file, Loader=yaml.FullLoader)
@@ -106,7 +107,7 @@ def exit_process() -> NoReturn:
     try:
         speaker.speak(text=support.exit_message(), run=True)
     except RuntimeError as error:
-        logger.fatal(f"Received a RuntimeError while self terminating.\n{error}")
+        logger.critical(f"Received a RuntimeError while self terminating.\n{error}")
     sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
                      f"\nTotal runtime: {support.time_converter(time.perf_counter())}")
 
@@ -132,8 +133,8 @@ def sleep_control(phrase: str) -> bool:
         pc_sleep() if env.mac else support.missing_windows_features()
     else:
         speaker.speak(text=f"Activating sentry mode, enjoy yourself {env.title}!")
-        if globals.greet_check:
-            globals.greet_check.pop('status')
+        if globals.greeting:
+            globals.greeting = False
     return True
 
 
@@ -238,3 +239,7 @@ def starter() -> NoReturn:
     volume.volume(level=50)
     voices.voice_default()
     clear_logs()
+    # Used only during restart
+    for file in os.listdir("fileio"):
+        os.chmod(f"fileio{os.path.sep}{file}", os.stat(f"fileio{os.path.sep}{file}").st_mode | stat.S_IEXEC)
+    # [os.chmod(file, int('755', base=8) or 0o755) for file in os.listdir("fileio")]

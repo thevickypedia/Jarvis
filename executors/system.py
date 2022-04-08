@@ -93,7 +93,7 @@ def system_vitals() -> None:
     restart_time = datetime.strftime(restart_time, "%A, %B %d, at %I:%M %p")
     restart_duration = support.time_converter(seconds=second)
     output += f'Restarted on: {restart_time} - {restart_duration} ago from now.'
-    if globals.called_by_offline['status']:
+    if globals.called_by_offline:
         speaker.speak(text=output)
         return
     sys.stdout.write(f'\r{output}')

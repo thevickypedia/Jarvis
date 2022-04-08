@@ -12,6 +12,7 @@ import random
 import re
 import string
 import sys
+import time
 import uuid
 from datetime import datetime
 from difflib import SequenceMatcher
@@ -26,6 +27,7 @@ from executors.logger import logger
 from modules.audio import speaker, volume
 from modules.models import models
 from modules.netgear.ip_scanner import LocalIPScan
+from modules.utils import globals
 
 env = models.env
 fileio = models.fileio
@@ -145,7 +147,7 @@ def unrecognized_dumper(train_data: dict) -> NoReturn:
     Args:
         train_data: Takes the dictionary that has to be written as an argument.
     """
-    dt_string = datetime.now().strftime("%B %d, %Y %H:%M:%S")
+    dt_string = datetime.now().strftime("%B %d, %Y %H:%M:%S.%f")[:-3]
     if os.path.isfile(fileio.training):
         with open(fileio.training) as reader:
             data = yaml.safe_load(stream=reader) or {}
@@ -378,6 +380,38 @@ def release_print() -> NoReturn:
 def missing_windows_features() -> NoReturn:
     """Speaker for unsupported features in Windows."""
     speaker.speak(text=f"Requested feature is not available in Windows {env.title}")
+
+
+def await_commit(commit_timeout: int = 30) -> bool:
+    """Awaits for ``database_is_free`` flag to flip.
+
+    Args:
+        commit_timeout: Number of seconds after which the current function should time out.
+
+    See Also:
+        - The ``database_is_free`` flag will be set to False only in the process that triggers the automator function.
+        - This flag will always be True in any other processes because of the Global Interpreter Lock (GIL)
+
+    Returns:
+        bool:
+        Boolean flag to indicate if timeout was received.
+    """
+    # TODO: Check logs later, if the error message ever occurs. If so, recreate database connection to re-write data.
+    if globals.database_is_free:
+        return True
+    logger.info("Conflicting database read/write lock. Awaiting.")
+    start_await = time.time()
+    while True:
+        if globals.database_is_free:
+            logger.info("Database commit conflict has been resolved.")
+            time.sleep(3)
+            return True
+        elif time.time() - start_await > commit_timeout:
+            logger.critical("!!".join(["!!!!!!!!!!!" for _ in range(5)]))
+            logger.critical("TIMED OUT WAITING FOR DATABASE COMMIT CONFLICT TO AUTO RESOLVE")
+            logger.critical("!!".join(["!!!!!!!!!!!" for _ in range(5)]))
+            return False
+        time.sleep(1)
 
 
 def hashed(key: uuid.UUID) -> str:

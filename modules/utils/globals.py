@@ -7,15 +7,19 @@
 
 from datetime import datetime, timezone
 
-LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
+LOCAL_TIMEZONE = datetime.now(tz=timezone.utc).astimezone().tzinfo
 
-text_spoken = {'text': None}
-vpn_status = {'active': False}
-called_by_offline = {'status': False}
+greeting = False
+called_by_offline = False
+called_by_automator = False
+database_is_free = True
+
+active_vpn = None
+text_spoken = None
+tv = None
+
 processes = {}
 hosted_device = {}
-greet_check = {}
-tv = None
 
 called = {
     'report': False,

@@ -21,7 +21,7 @@ def read_gmail() -> None:
     reader = ReadEmail(gmail_user=env.gmail_user, gmail_pass=env.gmail_pass)
     response = reader.instantiate()
     if response.ok:
-        if globals.called_by_offline['status']:
+        if globals.called_by_offline:
             speaker.speak(text=f'You have {response.count} unread email {env.title}.') if response.count == 1 else \
                 speaker.speak(text=f'You have {response.count} unread emails {env.title}.')
             return

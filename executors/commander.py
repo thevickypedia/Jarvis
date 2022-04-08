@@ -108,11 +108,11 @@ def timed_delay(phrase: str) -> bool:
 
 def initialize() -> None:
     """Awakens from sleep mode. ``greet_check`` is to ensure greeting is given only for the first function call."""
-    if globals.greet_check.get('status'):
+    if globals.greeting:
         speaker.speak(text="What can I do for you?")
     else:
         speaker.speak(text=f'Good {support.part_of_day()}.')
-        globals.greet_check['status'] = True
+        globals.greeting = True
     renew()
 
 

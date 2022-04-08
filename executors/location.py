@@ -201,7 +201,7 @@ def locate_device(target_device: AppleDevice) -> NoReturn:
     if not location_info_:
         speaker.speak(text=f"I wasn't able to locate your {lookup} {env.title}! It is probably offline.")
     else:
-        if globals.called_by_offline['status']:
+        if globals.called_by_offline:
             post_code = location_info_["postcode"].split("-")[0]
         else:
             post_code = '"'.join(list(location_info_["postcode"].split("-")[0]))
@@ -224,7 +224,7 @@ def locate(phrase: str) -> None:
     if not (target_device := device_selector(phrase=phrase)):
         support.no_env_vars()
         return
-    if globals.called_by_offline['status']:
+    if globals.called_by_offline:
         locate_device(target_device=target_device)
         return
     sys.stdout.write(f"\rLocating your {target_device}")
@@ -299,7 +299,7 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
     """
     if not destination:
         speaker.speak(text="Destination please?")
-        if globals.called_by_offline["status"]:
+        if globals.called_by_offline:
             return
         speaker.speak(run=True)
         destination = listener.listen(timeout=3, phrase_limit=4)
@@ -369,7 +369,7 @@ def locate_places(phrase: str = None) -> None:
         before_keyword, keyword, after_keyword = phrase.partition(keyword)
         place = after_keyword.replace(" in", "").strip()
     if not place:
-        if globals.called_by_offline["status"]:
+        if globals.called_by_offline:
             speaker.speak(text=f"I need a location to get you the details {env.title}!")
             return
         speaker.speak(text="Tell me the name of a place!", run=True)
@@ -408,12 +408,12 @@ def locate_places(phrase: str = None) -> None:
                 speaker.speak(text=f"{place} is in {city or county}, {state}")
             else:
                 speaker.speak(text=f"{place} is in {city or county}, {state}, in {country}")
-        if globals.called_by_offline["status"]:
+        if globals.called_by_offline:
             return
         globals.called["locate_places"] = True
     except (TypeError, AttributeError):
         speaker.speak(text=f"{place} is not a real place on Earth {env.title}! Try again.")
-        if globals.called_by_offline["status"]:
+        if globals.called_by_offline:
             return
         locate_places(phrase=None)
     distance_controller(origin=None, destination=place)

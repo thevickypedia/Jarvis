@@ -55,7 +55,7 @@ def trigger_api() -> None:
             logger.error('Unable to connect to existing uvicorn server.')
 
         if not kill_port_pid(port=env.offline_port):  # This might terminate Jarvis
-            logger.fatal('Failed to kill existing PID. Attempting to re-create session.')
+            logger.critical('Failed to kill existing PID. Attempting to re-create session.')
 
     argument_dict = {
         "app": "api.fast:app",

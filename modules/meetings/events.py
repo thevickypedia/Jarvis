@@ -1,24 +1,22 @@
 import os
 import re
+import subprocess
 from datetime import datetime
 from multiprocessing import Process
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
-from subprocess import PIPE, Popen
 from typing import NoReturn
 
 from executors.logger import logger
 from modules.audio import speaker
 from modules.database import database
 from modules.models import models
-from modules.utils import globals
+from modules.utils import globals, support
 
 env = models.env
 fileio = models.fileio
 db = database.Database(database=fileio.base_db)
 db.create_table(table_name=env.event_app, columns=['info'])
-
-EVENT_SCRIPT = f"{env.event_app}.scpt"
 
 
 def events_writer() -> NoReturn:
@@ -27,15 +25,18 @@ def events_writer() -> NoReturn:
     This function runs in a dedicated process to avoid wait time when events information is requested.
     """
     event_info = events_gatherer()
+    support.await_commit()  # TODO: Create a condition here to re-create db connection if return value is False
+    globals.database_is_free = False
     db.cursor.execute(f"INSERT OR REPLACE INTO {env.event_app} (info) VALUES (?);", (event_info,))
     db.connection.commit()
+    globals.database_is_free = True
 
 
 def event_app_launcher() -> NoReturn:
     """Launches either Calendar or Outlook application which is required to read events."""
-    if EVENT_SCRIPT == "calendar.scpt":
+    if env.event_app == "calendar":
         os.system("open /System/Applications/Calendar.app > /dev/null 2>&1")
-    elif EVENT_SCRIPT == "outlook.scpt":
+    else:
         os.system("open /Applications/'Microsoft Outlook.app' > /dev/null 2>&1")
 
 
@@ -53,12 +54,11 @@ def events_gatherer() -> str:
     """
     if not env.mac:
         return f"Reading events from {env.event_app} is not possible on Windows operating system."
-    if not os.path.isfile(EVENT_SCRIPT):
-        return f"I wasn't able to find the events script for your {env.event_app} {env.title}!"
     failure = None
-    process = Popen(["/usr/bin/osascript", EVENT_SCRIPT] + [str(arg) for arg in [1, 3]], stdout=PIPE, stderr=PIPE)
+    process = subprocess.Popen(["/usr/bin/osascript", fileio.event_script] + [str(arg) for arg in [1, 3]],
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = process.communicate()
-    os.system(f"git checkout -- {EVENT_SCRIPT}")  # Undo the unspecified changes done by ScriptEditor
+    os.system(f"git checkout -- {fileio.event_script}")  # Undo the unspecified changes done by ScriptEditor
     if error := process.returncode:  # stores non zero error
         err_msg = err.decode("UTF-8")
         err_code = err_msg.split()[-1].strip()
@@ -67,7 +67,7 @@ def events_gatherer() -> str:
             return f"Jarvis is unavailable in your {env.event_app} {env.title}!"
         elif err_code == "(-1712)":  # If an event takes 2+ minutes, the Apple Event Manager reports a time-out error.
             failure = f"{env.event_app}/event took an unusually long time to respond/complete.\nInclude, " \
-                      f"'with timeout of 300 seconds' to your {EVENT_SCRIPT} right after the " \
+                      f"'with timeout of 300 seconds' to your {fileio.event_script} right after the " \
                       f"'tell application {env.event_app}' step and 'end timeout' before the 'end tell' step."
         elif err_code in ["(-10810)", "(-609)", "(-600)"]:  # If unable to launch the app or app terminates.
             event_app_launcher()
@@ -111,7 +111,7 @@ def events() -> NoReturn:
     if event_status := db.cursor.execute(f"SELECT info FROM {env.event_app}").fetchone():
         speaker.speak(text=event_status[0])
     else:
-        if globals.called_by_offline["status"]:
+        if globals.called_by_offline:
             Process(target=events_gatherer).start()
             speaker.speak(text=f"Events table is empty {env.title}. Please try again in a minute or two.")
             return False

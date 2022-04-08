@@ -17,7 +17,7 @@ def vpn_server(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if status := globals.vpn_status['active']:
+    if status := globals.active_vpn:
         speaker.speak(
             text=f'VPN Server was recently {status}, and the process is still running {env.title}! '
                  'Please wait and retry.')
@@ -56,9 +56,9 @@ def vpn_server_switch(operation: str) -> None:
                            recipient=env.recipient or env.alt_gmail_user or env.gmail_user,
                            phone=env.phone_number, log='FILE')
     if operation == 'START':
-        globals.vpn_status['active'] = 'enabled'
+        globals.active_vpn = 'enabled'
         vpn_object.create_vpn_server()
     elif operation == 'STOP':
-        globals.vpn_status['active'] = 'disabled'
+        globals.active_vpn = 'disabled'
         vpn_object.delete_vpn_server()
-    globals.vpn_status['active'] = False
+    globals.active_vpn = False

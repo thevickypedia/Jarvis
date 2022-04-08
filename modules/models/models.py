@@ -20,25 +20,6 @@ if not os.path.isdir('fileio'):
     os.makedirs(name='fileio')
 
 
-class FileIO(BaseModel):
-    """Loads all the files' path required/created by Jarvis.
-
-    >>> FileIO
-
-    """
-
-    automation: FilePath = f'fileio{os.path.sep}automation.yaml'
-    tmp_automation: FilePath = f'fileio{os.path.sep}tmp_automation.yaml'
-    base_db: FilePath = f'fileio{os.path.sep}database.db'
-    task_db: FilePath = f'fileio{os.path.sep}tasks.db'
-    frequent: FilePath = f'fileio{os.path.sep}frequent.yaml'
-    location: FilePath = f'fileio{os.path.sep}location.yaml'
-    notes: FilePath = f'fileio{os.path.sep}notes.txt'
-    smart_devices: FilePath = f'fileio{os.path.sep}smart_devices.yaml'
-    hostnames: FilePath = f'fileio{os.path.sep}hostnames.yaml'
-    training: FilePath = f'fileio{os.path.sep}training_data.yaml'
-
-
 class EnvConfig(BaseSettings):
     """Configure all env vars and validate using ``pydantic`` to share across modules.
 
@@ -117,15 +98,38 @@ class EnvConfig(BaseSettings):
 
 
 env = EnvConfig()
-fileio = FileIO()
 
 if env.event_app not in ('calendar', 'outlook'):
     raise InvalidEnvVars(
         "'EVENT_APP' can only be either 'outlook' OR 'calendar'"
     )
 
-# regex=".*ics$" will not work since the type hint is HttpUrl
+# Note: Pydantic validation for ICS_URL can be implemented using regex=".*ics$"
+# However it will NOT work in this use case, since the type hint is HttpUrl
 if env.ics_url and not env.ics_url.endswith('.ics'):
     raise InvalidEnvVars(
         "'ICS_URL' should end with .ics"
     )
+
+
+class FileIO(BaseModel):
+    """Loads all the files' path required/created by Jarvis.
+
+    >>> FileIO
+
+    """
+
+    automation: FilePath = f'fileio{os.path.sep}automation.yaml'
+    tmp_automation: FilePath = f'fileio{os.path.sep}tmp_automation.yaml'
+    base_db: FilePath = f'fileio{os.path.sep}database.db'
+    task_db: FilePath = f'fileio{os.path.sep}tasks.db'
+    frequent: FilePath = f'fileio{os.path.sep}frequent.yaml'
+    location: FilePath = f'fileio{os.path.sep}location.yaml'
+    notes: FilePath = f'fileio{os.path.sep}notes.txt'
+    smart_devices: FilePath = f'fileio{os.path.sep}smart_devices.yaml'
+    hostnames: FilePath = f'fileio{os.path.sep}hostnames.yaml'
+    training: FilePath = f'fileio{os.path.sep}training_data.yaml'
+    event_script: FilePath = f'fileio{os.path.sep}{env.event_app}.scpt'
+
+
+fileio = FileIO()

@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+5.9.3 (04/08/2022)
+------------------
+- Fix DB error when running `INSERT` queries parallely
+- Fix old response when no response from Jarvis for offline comm
+- Fix key error on training data when multiple entries get written at the exact same second
+- Move apple script files into fileio directory
+- Change some global flags from dict to bool variables
+
 5.9.2 (04/06/2022)
 ------------------
 - Fix `null` response during offline communication

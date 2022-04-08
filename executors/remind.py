@@ -69,7 +69,7 @@ def reminder(phrase: str) -> None:
                             timer=f"{hours} {hour_}", to_about=to_about)
             return
     if not (extracted_time := support.extract_time(input_=phrase)):
-        if globals.called_by_offline['status']:
+        if globals.called_by_offline:
             speaker.speak(text='Reminder format should be::Remind me to do something, at some time.')
             return
         speaker.speak(text=f"When do you want to be reminded {env.title}?", run=True)

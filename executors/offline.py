@@ -147,11 +147,11 @@ def offline_communicator(command: str) -> AnyStr:
         AnyStr:
         Response from Jarvis.
     """
-    globals.called_by_offline['status'] = True
+    globals.called_by_offline = True
     conditions(converted=command, should_return=True)
-    globals.called_by_offline['status'] = False
-    if response := globals.text_spoken['text']:
-        globals.text_spoken['text'] = None
+    globals.called_by_offline = False
+    if response := globals.text_spoken:
+        globals.text_spoken = None
         return response
     else:
         return f"I was unable to process the request: {command}"

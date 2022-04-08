@@ -25,7 +25,7 @@ def wikipedia_() -> None:
                 sys.stdout.write(f"\r{error}")
                 speaker.speak(text=f"Your keyword has multiple results {env.title}. {' '.join(error.options)}"
                                    "Please pick one and try again.")
-                if globals.called_by_offline['status']:
+                if globals.called_by_offline:
                     return
                 speaker.speak(run=True)
                 keyword1 = listener.listen(timeout=3, phrase_limit=5)

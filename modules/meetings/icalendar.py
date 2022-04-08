@@ -11,7 +11,7 @@ from executors.logger import logger
 from modules.audio import speaker
 from modules.database import database
 from modules.models import models
-from modules.utils import globals
+from modules.utils import globals, support
 
 env = models.env
 fileio = models.fileio
@@ -25,8 +25,11 @@ def meetings_writer() -> NoReturn:
     This function runs in a dedicated process every hour to avoid wait time when meetings information is requested.
     """
     meeting_info = meetings_gatherer()
+    support.await_commit()  # TODO: Create a condition here to re-create db connection if return value is False
+    globals.database_is_free = False
     db.cursor.execute("INSERT OR REPLACE INTO ics (info) VALUES (?);", (meeting_info,))
     db.connection.commit()
+    globals.database_is_free = True
 
 
 def meetings_gatherer() -> str:
@@ -75,7 +78,7 @@ def meetings() -> NoReturn:
     if meeting_status := db.cursor.execute("SELECT info FROM ics").fetchone():
         speaker.speak(text=meeting_status[0])
     else:
-        if globals.called_by_offline["status"]:
+        if globals.called_by_offline:
             Process(target=meetings_gatherer).start()
             speaker.speak(text=f"Meetings table is empty {env.title}. Please try again in a minute or two.")
             return False

@@ -57,7 +57,7 @@ def apps(phrase: str) -> None:
     keyword = phrase.split()[-1] if phrase else None
     ignore = ['app', 'application']
     if not keyword or keyword in ignore:
-        if globals.called_by_offline['status']:
+        if globals.called_by_offline:
             speaker.speak(text=f'I need an app name to open {env.title}!')
             return
         speaker.speak(text=f"Which app shall I open {env.title}?", run=True)
@@ -152,7 +152,7 @@ def google_home(device: str = None, file: str = None) -> None:
     if not (network_id := vpn_checker()):
         return
 
-    if not globals.called_by_offline['status']:
+    if not globals.called_by_offline:
         speaker.speak(text=f'Scanning your IP range for Google Home devices {env.title}!', run=True)
         sys.stdout.write('\rScanning your IP range for Google Home devices..')
     network_id = '.'.join(network_id.split('.')[0:3])
@@ -216,7 +216,7 @@ def jokes() -> NoReturn:
 
 def flip_a_coin() -> NoReturn:
     """Says ``heads`` or ``tails`` from a random choice."""
-    playsound(f'indicators{os.path.sep}coin.mp3') if not globals.called_by_offline['status'] else None
+    playsound(f'indicators{os.path.sep}coin.mp3') if not globals.called_by_offline else None
     speaker.speak(
         text=f"""{random.choice(['You got', 'It landed on', "It's"])} {random.choice(['heads', 'tails'])} {env.title}"""
     )
@@ -253,7 +253,7 @@ def meaning(phrase: str) -> None:
                 n += 1
                 mean = ', '.join(value[0:2])
                 speaker.speak(text=f'{keyword} is {repeated} {insert} {key}, which means {mean}.')
-            if globals.called_by_offline['status']:
+            if globals.called_by_offline:
                 return
             speaker.speak(text=f'Do you wanna know how {keyword} is spelled?', run=True)
             response = listener.listen(timeout=3, phrase_limit=3)
@@ -298,7 +298,7 @@ def news(news_source: str = 'fox') -> None:
 
     speaker.speak(text="News around you!")
     speaker.speak(text=' '.join([article['title'] for article in all_articles['articles']]))
-    if globals.called_by_offline['status']:
+    if globals.called_by_offline:
         return
 
     if globals.called['report'] or globals.called['time_travel']:

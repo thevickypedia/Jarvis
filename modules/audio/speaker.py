@@ -38,8 +38,8 @@ def speak(text: str = None, run: bool = False) -> NoReturn:
         logger.info(f'Response: {text}')
         logger.info(f'Speaker called by: {caller}')
         sys.stdout.write(f"\r{text}")
-        globals.text_spoken['text'] = text
-        if not globals.called_by_offline['status']:
+        globals.text_spoken = text
+        if not globals.called_by_offline:
             audio_driver.say(text=text)
     if run:
         audio_driver.runAndWait()

@@ -271,7 +271,7 @@ class TelegramBot:
 
         logger.info(f'Request: {command}')
 
-        if globals.called_by_offline['status']:
+        if globals.called_by_offline:
             self.reply_to(payload=payload,
                           response="Processing another offline request.\nPlease try again.")
             return

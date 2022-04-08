@@ -12,7 +12,8 @@ lib/docker_requirements.txt
 contacts.yml
 
 # File IO operations
-fileio
+fileio/*.yaml
+fileio/*.db
 
 # Log files
 logs

@@ -26,7 +26,7 @@ def todo() -> None:
         else:
             result[category] = result[category] + ', ' + item  # updates category if already found in result
     if result:
-        if globals.called_by_offline['status']:
+        if globals.called_by_offline:
             speaker.speak(text=json.dumps(result))
             return
         speaker.speak(text='Your to-do items are')

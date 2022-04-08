@@ -23,6 +23,8 @@ def _get_hostnames() -> dict:
                 return yaml.load(stream=file, Loader=yaml.FullLoader)
         except yaml.YAMLError as error:
             logger.error(error)
+    else:
+        logger.warning(f"{fileio.hostnames} was not found.")
     return {}
 
 
