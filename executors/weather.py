@@ -10,7 +10,7 @@ from executors.location import geo_locator
 from modules.audio import speaker
 from modules.models import models
 from modules.temperature import temperature
-from modules.utils import globals, support
+from modules.utils import shared, support
 
 env = models.env
 fileio = models.fileio
@@ -117,7 +117,7 @@ def weather(phrase: str = None) -> None:
     temp_feel_f = int(temperature.k2f(arg=response['current']['feels_like']))
     sunrise = datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p")
-    if globals.called['time_travel']:
+    if shared.called['time_travel']:
         if 'rain' in condition or 'showers' in condition:
             feeling = 'rainy'
             weather_suggest = 'You might need an umbrella" if you plan to head out.'
@@ -145,7 +145,7 @@ def weather(phrase: str = None) -> None:
         else:
             output = f'The weather in {city} is {feeling} {temp_f}°, and it currently feels like {temp_feel_f}°. ' \
                      f'{weather_suggest}'
-    elif place or not globals.called['report']:
+    elif place or not shared.called['report']:
         output = f'The weather in {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \
                  f'It currently feels like {temp_feel_f}°F, and the current condition is {condition}.'
     else:

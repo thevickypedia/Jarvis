@@ -6,7 +6,7 @@ from vpn.controller import VPNServer
 
 from modules.audio import speaker
 from modules.models import models
-from modules.utils import globals, support
+from modules.utils import shared, support
 
 env = models.env
 
@@ -17,7 +17,7 @@ def vpn_server(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if status := globals.active_vpn:
+    if status := shared.active_vpn:
         speaker.speak(
             text=f'VPN Server was recently {status}, and the process is still running {env.title}! '
                  'Please wait and retry.')
@@ -56,9 +56,9 @@ def vpn_server_switch(operation: str) -> None:
                            recipient=env.recipient or env.alt_gmail_user or env.gmail_user,
                            phone=env.phone_number, log='FILE')
     if operation == 'START':
-        globals.active_vpn = 'enabled'
+        shared.active_vpn = 'enabled'
         vpn_object.create_vpn_server()
     elif operation == 'STOP':
-        globals.active_vpn = 'disabled'
+        shared.active_vpn = 'disabled'
         vpn_object.delete_vpn_server()
-    globals.active_vpn = False
+    shared.active_vpn = False

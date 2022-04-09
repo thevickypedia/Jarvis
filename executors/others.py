@@ -30,7 +30,7 @@ from modules.conditions import keywords
 from modules.database import database
 from modules.dictionary import dictionary
 from modules.models import models
-from modules.utils import globals, support
+from modules.utils import shared, support
 
 env = models.env
 fileio = models.fileio
@@ -57,7 +57,7 @@ def apps(phrase: str) -> None:
     keyword = phrase.split()[-1] if phrase else None
     ignore = ['app', 'application']
     if not keyword or keyword in ignore:
-        if globals.called_by_offline:
+        if shared.called_by_offline:
             speaker.speak(text=f'I need an app name to open {env.title}!')
             return
         speaker.speak(text=f"Which app shall I open {env.title}?", run=True)
@@ -152,7 +152,7 @@ def google_home(device: str = None, file: str = None) -> None:
     if not (network_id := vpn_checker()):
         return
 
-    if not globals.called_by_offline:
+    if not shared.called_by_offline:
         speaker.speak(text=f'Scanning your IP range for Google Home devices {env.title}!', run=True)
         sys.stdout.write('\rScanning your IP range for Google Home devices..')
     network_id = '.'.join(network_id.split('.')[0:3])
@@ -216,7 +216,7 @@ def jokes() -> NoReturn:
 
 def flip_a_coin() -> NoReturn:
     """Says ``heads`` or ``tails`` from a random choice."""
-    playsound(f'indicators{os.path.sep}coin.mp3') if not globals.called_by_offline else None
+    playsound(f'indicators{os.path.sep}coin.mp3') if not shared.called_by_offline else None
     speaker.speak(
         text=f"""{random.choice(['You got', 'It landed on', "It's"])} {random.choice(['heads', 'tails'])} {env.title}"""
     )
@@ -253,7 +253,7 @@ def meaning(phrase: str) -> None:
                 n += 1
                 mean = ', '.join(value[0:2])
                 speaker.speak(text=f'{keyword} is {repeated} {insert} {key}, which means {mean}.')
-            if globals.called_by_offline:
+            if shared.called_by_offline:
                 return
             speaker.speak(text=f'Do you wanna know how {keyword} is spelled?', run=True)
             response = listener.listen(timeout=3, phrase_limit=3)
@@ -268,13 +268,11 @@ def meaning(phrase: str) -> None:
 def notes() -> None:
     """Listens to the user and saves it as a text file."""
     converted = listener.listen(timeout=5, phrase_limit=10)
-    if converted != 'SR_ERROR':
-        if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
-            return
-        else:
-            with open(fileio.notes, 'a') as writer:
-                writer.write(f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"
-                             f"{converted}\n")
+    if converted == 'SR_ERROR' or 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+        return
+    with open(fileio.notes, 'a') as writer:
+        writer.write(f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"
+                     f"{converted}\n")
 
 
 def news(news_source: str = 'fox') -> None:
@@ -298,17 +296,17 @@ def news(news_source: str = 'fox') -> None:
 
     speaker.speak(text="News around you!")
     speaker.speak(text=' '.join([article['title'] for article in all_articles['articles']]))
-    if globals.called_by_offline:
+    if shared.called_by_offline:
         return
 
-    if globals.called['report'] or globals.called['time_travel']:
+    if shared.called['report'] or shared.called['time_travel']:
         speaker.speak(run=True)
 
 
 def report() -> NoReturn:
     """Initiates a list of functions, that I tend to check first thing in the morning."""
     sys.stdout.write("\rStarting today's report")
-    globals.called['report'] = True
+    shared.called['report'] = True
     current_date()
     current_time()
     weather()
@@ -316,7 +314,7 @@ def report() -> NoReturn:
     read_gmail()
     robinhood()
     news()
-    globals.called['report'] = False
+    shared.called['report'] = False
 
 
 def time_travel() -> None:
@@ -331,11 +329,15 @@ def time_travel() -> None:
     current_time()
     weather()
     speaker.speak(run=True)
-    if (meeting_status := db.cursor.execute("SELECT info FROM ics").fetchone()) and \
-            meeting_status[0].startswith('You'):
+    with db.connection:
+        cursor = db.connection.cursor()
+        meeting_status = cursor.execute("SELECT info FROM ics").fetchone()
+    if meeting_status and meeting_status[0].startswith('You'):
         speaker.speak(text=meeting_status[0])
-    if (event_status := db.cursor.execute(f"SELECT info FROM {env.event_app}").fetchone()) and \
-            event_status[0].startswith('You'):
+    with db.connection:
+        cursor = db.connection.cursor()
+        event_status = cursor.execute(f"SELECT info FROM {env.event_app}").fetchone()
+    if event_status and event_status[0].startswith('You'):
         speaker.speak(text=event_status[0])
     todo()
     read_gmail()

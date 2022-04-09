@@ -11,7 +11,7 @@ from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import conversation
 from modules.models import models
-from modules.utils import globals, support
+from modules.utils import shared, support
 
 env = models.env
 
@@ -69,7 +69,7 @@ def reminder(phrase: str) -> None:
                             timer=f"{hours} {hour_}", to_about=to_about)
             return
     if not (extracted_time := support.extract_time(input_=phrase)):
-        if globals.called_by_offline:
+        if shared.called_by_offline:
             speaker.speak(text='Reminder format should be::Remind me to do something, at some time.')
             return
         speaker.speak(text=f"When do you want to be reminded {env.title}?", run=True)

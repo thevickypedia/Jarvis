@@ -2,7 +2,6 @@ import os
 import platform
 import struct
 import sys
-import time
 from pathlib import PurePath
 from typing import NoReturn
 
@@ -22,7 +21,7 @@ from modules.audio import listener, speaker
 from modules.database import database
 from modules.exceptions import StopSignal
 from modules.models import models
-from modules.utils import globals, support
+from modules.utils import shared
 
 env = models.env
 fileio = models.fileio
@@ -99,14 +98,16 @@ class Activator:
                     initiator(phrase=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
                               should_return=True)
                     speaker.speak(run=True)
-                elif flag := db.cursor.execute("SELECT flag, caller FROM restart").fetchone():
-                    logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
-                    self.stop()
-                    if flag[1] == "restart_control":
-                        restart()
-                    else:
-                        restart(quiet=True)
-                    break
+                with db.connection:
+                    cursor = db.connection.cursor()
+                    if flag := cursor.execute("SELECT flag, caller FROM restart").fetchone():
+                        logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
+                        self.stop()
+                        if flag[1] == "restart_control":
+                            restart()
+                        else:
+                            restart(quiet=True)
+                        break
         except StopSignal:
             self.stop()
             exit_process()
@@ -131,7 +132,7 @@ class Activator:
         self.py_audio.terminate()
 
 
-def sentry_mode() -> NoReturn:
+def sentry_mode(recognizer, source) -> NoReturn:
     """Listens forever and invokes ``initiator()`` when recognized. Stops when ``restart`` table has an entry.
 
     See Also:
@@ -160,7 +161,10 @@ def sentry_mode() -> NoReturn:
             exit_process()
             terminator()
             break
-        if flag := db.cursor.execute("SELECT flag, caller FROM restart").fetchone():
+        with db.connection:
+            cursor = db.connection.cursor()
+            flag = cursor.execute("SELECT flag, caller FROM restart").fetchone()
+        if flag:
             logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
             stop_processes()
             if flag[1] == "restart_control":
@@ -170,31 +174,46 @@ def sentry_mode() -> NoReturn:
             break
 
 
+class Jarvis:
+    """Bundle to initiate Jarvis.
+
+    >>> Jarvis
+
+    """
+
+    def __init__(self):
+        """Initiates start up functions."""
+        logger.info("JARVIS::Starting Now")
+        self.startup = starter  # initiates crucial functions which needs to be called during start up
+        self.check_internet = internet_checker
+
+    def _prerequisites(self):
+        """Checks for internet connection and triggers background processes."""
+        self.startup()
+        if self.check_internet():
+            sys.stdout.write(f"\rINTERNET::Connected to {get_ssid()}. Scanning router for connected devices.")
+        else:
+            sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
+            speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.",
+                          run=True)
+            return False
+        sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: 50%")
+        shared.hosted_device = hosted_device_info()
+        shared.processes = start_processes()
+        if shared.processes and shared.hosted_device:
+            return True
+
+    def start(self) -> None:
+        """Starts the main process to activate Jarvis."""
+        if not self._prerequisites():
+            return
+        if env.mac and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
+            recognizer = speech_recognition.Recognizer()
+            with speech_recognition.Microphone() as source:
+                sentry_mode(recognizer=recognizer, source=source)
+        else:
+            Activator().start()
+
+
 if __name__ == '__main__':
-    globals.hosted_device = hosted_device_info()
-
-    logger.info("JARVIS::Starting Now")
-
-    sys.stdout.write("\rVoice ID::Female: 1/17 Male: 0/7")  # Voice ID::reference
-    starter()  # initiates crucial functions which needs to be called during start up
-
-    if internet_checker():
-        sys.stdout.write(f"\rINTERNET::Connected to {get_ssid()}. Scanning router for connected devices.")
-    else:
-        sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
-        speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.",
-                      run=True)
-        sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
-                         f"\nTotal runtime: {support.time_converter(time.perf_counter())}")
-        terminator()
-
-    sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: 50%")
-
-    globals.processes = start_processes()
-
-    if env.mac and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
-        recognizer = speech_recognition.Recognizer()
-        with speech_recognition.Microphone() as source:
-            sentry_mode()
-    else:
-        Activator().start()
+    Jarvis().start()

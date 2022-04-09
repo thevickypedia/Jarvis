@@ -11,7 +11,7 @@ from executors.logger import logger
 from modules.audio import speaker
 from modules.database import database
 from modules.models import models
-from modules.utils import globals, support
+from modules.utils import shared
 
 env = models.env
 fileio = models.fileio
@@ -25,11 +25,10 @@ def events_writer() -> NoReturn:
     This function runs in a dedicated process to avoid wait time when events information is requested.
     """
     event_info = events_gatherer()
-    support.await_commit()  # TODO: Create a condition here to re-create db connection if return value is False
-    globals.database_is_free = False
-    db.cursor.execute(f"INSERT OR REPLACE INTO {env.event_app} (info) VALUES (?);", (event_info,))
-    db.connection.commit()
-    globals.database_is_free = True
+    with db.connection:
+        cursor = db.connection.cursor()
+        cursor.execute(f"INSERT OR REPLACE INTO {env.event_app} (info) VALUES (?);", (event_info,))
+        cursor.connection.commit()
 
 
 def event_app_launcher() -> NoReturn:
@@ -108,10 +107,13 @@ def events_gatherer() -> str:
 
 def events() -> NoReturn:
     """Controller for events."""
-    if event_status := db.cursor.execute(f"SELECT info FROM {env.event_app}").fetchone():
+    with db.connection:
+        cursor = db.connection.cursor()
+        event_status = cursor.execute(f"SELECT info FROM {env.event_app}").fetchone()
+    if event_status:
         speaker.speak(text=event_status[0])
     else:
-        if globals.called_by_offline:
+        if shared.called_by_offline:
             Process(target=events_gatherer).start()
             speaker.speak(text=f"Events table is empty {env.title}. Please try again in a minute or two.")
             return False

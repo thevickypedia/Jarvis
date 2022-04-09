@@ -14,7 +14,6 @@ inflect==5.4.0
 wordninja==2.0.0
 search_engine_parser==0.6.6
 pywebostv==0.8.7
-wakeonlan==2.1.0
 speedtest-cli==2.1.3
 holidays==0.13
 randfacts==0.15.0

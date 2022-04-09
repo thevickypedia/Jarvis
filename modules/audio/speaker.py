@@ -14,7 +14,7 @@ import yaml
 from executors.logger import logger
 from modules.conditions import conversation, keywords
 from modules.models import models
-from modules.utils import globals
+from modules.utils import shared
 
 fileio = models.fileio
 
@@ -38,8 +38,8 @@ def speak(text: str = None, run: bool = False) -> NoReturn:
         logger.info(f'Response: {text}')
         logger.info(f'Speaker called by: {caller}')
         sys.stdout.write(f"\r{text}")
-        globals.text_spoken = text
-        if not globals.called_by_offline:
+        shared.text_spoken = text
+        if not shared.called_by_offline:
             audio_driver.say(text=text)
     if run:
         audio_driver.runAndWait()

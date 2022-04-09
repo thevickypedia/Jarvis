@@ -456,6 +456,20 @@ Restart
    :members:
    :undoc-members:
 
+Shared Resources
+================
+
+.. automodule:: modules.utils.shared
+   :members:
+   :undoc-members:
+
+Support
+=======
+
+.. automodule:: modules.utils.support
+   :members:
+   :undoc-members:
+
 Telegram
 ========
 
@@ -477,19 +491,13 @@ TV Connector
    :members:
    :undoc-members:
 
-Support
-=======
+WakeOnLAN
+=========
 
-.. automodule:: modules.utils.support
+.. automodule:: modules.wakeonlan.wakeonlan
    :members:
    :undoc-members:
 
-Globals
-=======
-
-.. automodule:: modules.utils.globals
-   :members:
-   :undoc-members:
 
 Indices and tables
 ==================

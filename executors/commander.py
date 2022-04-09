@@ -13,7 +13,7 @@ from modules.audio import listener, speaker
 from modules.conditions import conversation, keywords
 from modules.models import models
 from modules.offline import compatibles
-from modules.utils import globals, support
+from modules.utils import shared, support
 
 env = models.env
 offline_list = compatibles.offline_compatible()
@@ -108,11 +108,11 @@ def timed_delay(phrase: str) -> bool:
 
 def initialize() -> None:
     """Awakens from sleep mode. ``greet_check`` is to ensure greeting is given only for the first function call."""
-    if globals.greeting:
+    if shared.greeting:
         speaker.speak(text="What can I do for you?")
     else:
         speaker.speak(text=f'Good {support.part_of_day()}.')
-        globals.greeting = True
+        shared.greeting = True
     renew()
 
 
@@ -155,13 +155,13 @@ def initiator(phrase: str, should_return: bool = False) -> None:
     support.flush_screen()
     if [word for word in phrase.lower().split() if word in ['morning', 'night', 'afternoon',
                                                             'after noon', 'evening', 'goodnight']]:
-        globals.called['time_travel'] = True
+        shared.called['time_travel'] = True
         if event := support.celebrate():
             speaker.speak(text=f'Happy {event}!')
         if 'night' in phrase.split() or 'goodnight' in phrase.split():
             Thread(target=pc_sleep).start() if env.mac else None
         time_travel()
-        globals.called['time_travel'] = False
+        shared.called['time_travel'] = False
     elif 'you there' in phrase.lower():
         speaker.speak(text=f'{random.choice(conversation.wake_up1)}')
         initialize()

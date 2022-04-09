@@ -10,7 +10,7 @@ from executors.offline import offline_communicator
 from modules.exceptions import BotInUse
 from modules.models import config, models
 from modules.offline import compatibles
-from modules.utils import globals, support
+from modules.utils import shared, support
 
 env = models.env
 
@@ -271,7 +271,7 @@ class TelegramBot:
 
         logger.info(f'Request: {command}')
 
-        if globals.called_by_offline:
+        if shared.called_by_offline:
             self.reply_to(payload=payload,
                           response="Processing another offline request.\nPlease try again.")
             return

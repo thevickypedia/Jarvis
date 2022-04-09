@@ -18,7 +18,6 @@ class Database:
         if not database.endswith('.db'):
             database = database + '.db'
         self.connection = sqlite3.connect(database=database, check_same_thread=False)
-        self.cursor = self.connection.cursor()
 
     def create_table(self, table_name: str, columns: list[str]) -> NoReturn:
         """Creates the table with the required columns.
@@ -27,19 +26,23 @@ class Database:
             table_name: Name of the table that has to be created.
             columns: List of columns that has to be created.
         """
-        self.connection.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns)})")
+        with self.connection:
+            cursor = self.connection.cursor()
+            cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns)})")
 
 
 if __name__ == '__main__':
     db = Database(database="sample")
     db.create_table(table_name="TestDatabase", columns=["column"])
-    db.cursor.execute("INSERT INTO TestDatabase (column) VALUES (?);", (True,))
-    db.connection.commit()
-    if foo := db.cursor.execute("SELECT column FROM TestDatabase").fetchone():
-        print(foo[0])
-        db.cursor.execute("DELETE FROM TestDatabase WHERE column=1")
+    with db.connection:
+        cursor_ = db.connection.cursor()
+        cursor_.execute("INSERT INTO TestDatabase (column) VALUES (?);", (True,))
         db.connection.commit()
-    if bar := db.cursor.execute("SELECT column FROM TestDatabase").fetchone():
-        print(bar[0])
-    db.cursor.execute("DROP TABLE IF EXISTS TestDatabase")
-    db.connection.commit()
+        if foo := cursor_.execute("SELECT column FROM TestDatabase").fetchone():
+            print(foo[0])
+            cursor_.execute("DELETE FROM TestDatabase WHERE column=1")
+            db.connection.commit()
+        if bar := cursor_.execute("SELECT column FROM TestDatabase").fetchone():
+            print(bar[0])
+        cursor_.execute("DROP TABLE IF EXISTS TestDatabase")
+        db.connection.commit()

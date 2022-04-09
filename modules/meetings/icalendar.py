@@ -11,7 +11,7 @@ from executors.logger import logger
 from modules.audio import speaker
 from modules.database import database
 from modules.models import models
-from modules.utils import globals, support
+from modules.utils import shared
 
 env = models.env
 fileio = models.fileio
@@ -25,11 +25,10 @@ def meetings_writer() -> NoReturn:
     This function runs in a dedicated process every hour to avoid wait time when meetings information is requested.
     """
     meeting_info = meetings_gatherer()
-    support.await_commit()  # TODO: Create a condition here to re-create db connection if return value is False
-    globals.database_is_free = False
-    db.cursor.execute("INSERT OR REPLACE INTO ics (info) VALUES (?);", (meeting_info,))
-    db.connection.commit()
-    globals.database_is_free = True
+    with db.connection:
+        cursor = db.connection.cursor()
+        cursor.execute("INSERT OR REPLACE INTO ics (info) VALUES (?);", (meeting_info,))
+        cursor.connection.commit()
 
 
 def meetings_gatherer() -> str:
@@ -68,17 +67,21 @@ def meetings_gatherer() -> str:
         plural = "meeting" if count == 1 else "meetings"
         meeting_status = f"You have {count} {plural} today {env.title}! {meeting_status}"
     else:
+        plural = "meeting" if len(events) == 1 else "meetings"
         meeting_status = f"You have no more meetings for rest of the day {env.title}! " \
-                         f"However, you had {len(events)} meetings earlier today."
+                         f"However, you had {len(events)} {plural} earlier today."
     return meeting_status
 
 
 def meetings() -> NoReturn:
     """Controller for meetings."""
-    if meeting_status := db.cursor.execute("SELECT info FROM ics").fetchone():
+    with db.connection:
+        cursor = db.connection.cursor()
+        meeting_status = cursor.execute("SELECT info FROM ics").fetchone()
+    if meeting_status:
         speaker.speak(text=meeting_status[0])
     else:
-        if globals.called_by_offline:
+        if shared.called_by_offline:
             Process(target=meetings_gatherer).start()
             speaker.speak(text=f"Meetings table is empty {env.title}. Please try again in a minute or two.")
             return False

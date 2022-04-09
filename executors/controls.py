@@ -17,7 +17,7 @@ from modules.conditions import conversation, keywords
 from modules.database import database
 from modules.exceptions import StopSignal
 from modules.models import models
-from modules.utils import globals, support
+from modules.utils import shared, support
 
 env = models.env
 fileio = models.fileio
@@ -49,7 +49,7 @@ def restart(target: str = None, quiet: bool = False) -> None:
     if target:
         if target == 'PC':
             speaker.speak(text=f"{random.choice(conversation.confirmation)} restart your "
-                               f"{globals.hosted_device.get('device')}?",
+                               f"{shared.hosted_device.get('device')}?",
                           run=True)
             converted = listener.listen(timeout=3, phrase_limit=3)
         else:
@@ -117,7 +117,7 @@ def pc_sleep() -> NoReturn:
     Thread(target=decrease_brightness).start()
     # os.system("""osascript -e 'tell app "System Events" to sleep'""")  # requires restarting Jarvis manually
     os.system("""osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'""")
-    if not (globals.called['report'] or globals.called['time_travel']):
+    if not (shared.called['report'] or shared.called['time_travel']):
         speaker.speak(text=random.choice(conversation.acknowledgement))
 
 
@@ -133,8 +133,8 @@ def sleep_control(phrase: str) -> bool:
         pc_sleep() if env.mac else support.missing_windows_features()
     else:
         speaker.speak(text=f"Activating sentry mode, enjoy yourself {env.title}!")
-        if globals.greeting:
-            globals.greeting = False
+        if shared.greeting:
+            shared.greeting = False
     return True
 
 
@@ -147,17 +147,22 @@ def restart_control(phrase: str = 'PlaceHolder', quiet: bool = False) -> NoRetur
     """
     phrase = phrase.lower()
     if 'pc' in phrase or 'computer' in phrase or 'imac' in phrase:
-        logger.info(f'JARVIS::Restart for {globals.hosted_device.get("device")} has been requested.')
+        logger.info(f'JARVIS::Restart for {shared.hosted_device.get("device")} has been requested.')
         restart(target='PC')
     else:
         caller = sys._getframe(1).f_code.co_name  # noqa
         logger.info(f'Called by {caller}')
         logger.info('JARVIS::Self reboot has been requested.')
         if quiet:  # restarted due internal errors or git update
-            db.cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, caller))
+            with db.connection:
+                cursor = db.connection.cursor()
+                cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, caller))
+                cursor.connection.commit()
         else:  # restarted requested via voice command
-            db.cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, 'restart_control'))
-        db.connection.commit()
+            with db.connection:
+                cursor = db.connection.cursor()
+                cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, 'restart_control'))
+                cursor.connection.commit()
 
 
 def stop_terminals(apps: tuple = ("iterm", "terminal")) -> NoReturn:

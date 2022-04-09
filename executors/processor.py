@@ -10,7 +10,7 @@ from executors.logger import logger
 from executors.offline import automator, initiate_tunneling
 from executors.telegram import handler
 from modules.models import models
-from modules.utils import globals
+from modules.utils import shared
 
 fileio = models.fileio
 
@@ -42,7 +42,7 @@ def start_processes() -> Dict[str, Process]:
 
 def stop_processes() -> NoReturn:
     """Stops all background processes initiated during startup and removes database source file."""
-    for func, process in globals.processes.items():
+    for func, process in shared.processes.items():
         if process.is_alive():
             logger.info(f"Sending [SIGTERM] to {func} with PID: {process.pid}")
             process.terminate()

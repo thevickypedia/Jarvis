@@ -16,7 +16,7 @@ from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
 from modules.temperature import temperature
-from modules.utils import globals, support
+from modules.utils import shared, support
 
 env = models.env
 
@@ -55,7 +55,7 @@ def system_vitals() -> None:
         cpu_temp, gpu_temp, fan_speed, output = None, None, None, ""
 
         # Tested on 10.13, 10.14, 11.6 and 12.3 versions
-        if packaging.version.parse(globals.hosted_device.get('os_version')) > packaging.version.parse('10.14'):
+        if packaging.version.parse(shared.hosted_device.get('os_version')) > packaging.version.parse('10.14'):
             critical_info = [each.strip() for each in (os.popen(
                 f'echo {env.root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
             )).read().split('\n') if each != '']
@@ -93,22 +93,22 @@ def system_vitals() -> None:
     restart_time = datetime.strftime(restart_time, "%A, %B %d, at %I:%M %p")
     restart_duration = support.time_converter(seconds=second)
     output += f'Restarted on: {restart_time} - {restart_duration} ago from now.'
-    if globals.called_by_offline:
+    if shared.called_by_offline:
         speaker.speak(text=output)
         return
     sys.stdout.write(f'\r{output}')
-    speaker.speak(text=f"Your {globals.hosted_device.get('device')} was last booted on {restart_time}. "
+    speaker.speak(text=f"Your {shared.hosted_device.get('device')} was last booted on {restart_time}. "
                        f"Current boot time is: {restart_duration}.")
     if second >= 259_200:  # 3 days
         if boot_extreme := re.search('(.*) days', restart_duration):
             warn = int(boot_extreme.group().replace(' days', '').strip())
-            speaker.speak(text=f"{env.title}! your {globals.hosted_device.get('device')} has been running for more "
+            speaker.speak(text=f"{env.title}! your {shared.hosted_device.get('device')} has been running for more "
                                f"than {warn} days. You must consider a reboot for better performance. Would you like "
                                f"me to restart it for you {env.title}?",
                           run=True)
             response = listener.listen(timeout=3, phrase_limit=3)
             if any(word in response.lower() for word in keywords.ok):
-                logger.info(f'JARVIS::Restarting {globals.hosted_device.get("device")}')
+                logger.info(f'JARVIS::Restarting {shared.hosted_device.get("device")}')
                 restart(target='PC_Proceed')
 
 

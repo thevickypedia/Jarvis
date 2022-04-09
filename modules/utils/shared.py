@@ -1,7 +1,7 @@
 # noinspection PyUnresolvedReferences
-"""This is a space for dictionaries shared across multiple modules.
+"""This is a space for variables shared across multiple modules.
 
->>> Globals
+>>> Shared
 
 """
 
@@ -12,7 +12,6 @@ LOCAL_TIMEZONE = datetime.now(tz=timezone.utc).astimezone().tzinfo
 greeting = False
 called_by_offline = False
 called_by_automator = False
-database_is_free = True
 
 active_vpn = None
 text_spoken = None

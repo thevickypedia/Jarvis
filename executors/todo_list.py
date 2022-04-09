@@ -5,7 +5,7 @@ from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.database import database
 from modules.models import models
-from modules.utils import globals
+from modules.utils import shared
 
 env = models.env
 fileio = models.fileio
@@ -17,7 +17,9 @@ tdb.create_table(table_name="tasks", columns=["category", "item"])
 def todo() -> None:
     """Says the item and category stored in the to-do list."""
     sys.stdout.write("\rQuerying DB for to-do list..")
-    downloaded = tdb.cursor.execute("SELECT category, item FROM tasks").fetchall()
+    with tdb.connection:
+        cursor = tdb.connection.cursor()
+        downloaded = cursor.execute("SELECT category, item FROM tasks").fetchall()
     result = {}
     for category, item in downloaded:
         # condition below makes sure one category can have multiple items without repeating category for each item
@@ -26,21 +28,21 @@ def todo() -> None:
         else:
             result[category] = result[category] + ', ' + item  # updates category if already found in result
     if result:
-        if globals.called_by_offline:
+        if shared.called_by_offline:
             speaker.speak(text=json.dumps(result))
             return
         speaker.speak(text='Your to-do items are')
         for category, item in result.items():  # browses dictionary and stores result in response and says it
             response = f"{item}, in {category} category."
             speaker.speak(text=response)
-    elif globals.called['report'] and not globals.called['time_travel']:
+    elif shared.called['report'] and not shared.called['time_travel']:
         speaker.speak(text=f"You don't have any tasks in your to-do list {env.title}.")
-    elif globals.called['time_travel']:
+    elif shared.called['time_travel']:
         pass
     else:
         speaker.speak(text=f"You don't have any tasks in your to-do list {env.title}.")
 
-    if globals.called['report'] or globals.called['time_travel']:
+    if shared.called['report'] or shared.called['time_travel']:
         speaker.speak(run=True)
 
 
@@ -58,12 +60,17 @@ def add_todo() -> None:
     if 'exit' in category or 'quit' in category or 'Xzibit' in category:
         speaker.speak(text=f'Your to-do list has been left intact {env.title}.')
         return
-    if downloaded := tdb.cursor.execute("SELECT category, item FROM tasks").fetchall():
+    with tdb.connection:
+        cursor = tdb.connection.cursor()
+        downloaded = cursor.execute("SELECT category, item FROM tasks").fetchall()
+    if downloaded:
         for c, i in downloaded:  # browses through all categories and items
             if i == item and c == category:  # checks if already present and updates items in case of repeated category
                 speaker.speak(text=f"Looks like you already have the item: {item} added in, {category} category")
                 return
-    tdb.cursor.execute(f"INSERT OR REPLACE INTO tasks (category, item) VALUES {(category, item)}")
+    with tdb.connection:
+        cursor = tdb.connection.cursor()
+        cursor.execute(f"INSERT OR REPLACE INTO tasks (category, item) VALUES {(category, item)}")
     speaker.speak(text=f"I've added the item: {item} to the category: {category}. "
                        "Do you want to add anything else to your to-do list?", run=True)
     category_continue = listener.listen(timeout=3, phrase_limit=3)
@@ -80,13 +87,17 @@ def delete_todo_items() -> None:
     if item == 'SR_ERROR' or 'exit' in item or 'quit' in item or 'Xzibit' in item:
         speaker.speak(text=f'Your to-do list has been left intact {env.title}.')
         return
-    tdb.cursor.execute(f"DELETE FROM tasks WHERE item='{item}' OR category='{item}'")
-    tdb.connection.commit()
+    with tdb.connection:
+        cursor = tdb.connection.cursor()
+        cursor.execute(f"DELETE FROM tasks WHERE item='{item}' OR category='{item}'")
+        cursor.connection.commit()
     speaker.speak(text=f'Done {env.title}!', run=True)
 
 
 def delete_todo() -> None:
     """Drops the table ``tasks`` from the database."""
-    tdb.cursor.execute('DROP TABLE IF EXISTS tasks')
-    tdb.connection.commit()
+    with tdb.connection:
+        cursor = tdb.connection.cursor()
+        cursor.execute('DROP TABLE IF EXISTS tasks')
+        cursor.connection.commit()
     speaker.speak(text=f"I've dropped the table: tasks from the database {env.title}.")

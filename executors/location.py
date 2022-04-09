@@ -30,7 +30,7 @@ from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
-from modules.utils import globals, support
+from modules.utils import shared, support
 
 env = models.env
 fileio = models.fileio
@@ -201,7 +201,7 @@ def locate_device(target_device: AppleDevice) -> NoReturn:
     if not location_info_:
         speaker.speak(text=f"I wasn't able to locate your {lookup} {env.title}! It is probably offline.")
     else:
-        if globals.called_by_offline:
+        if shared.called_by_offline:
             post_code = location_info_["postcode"].split("-")[0]
         else:
             post_code = '"'.join(list(location_info_["postcode"].split("-")[0]))
@@ -224,7 +224,7 @@ def locate(phrase: str) -> None:
     if not (target_device := device_selector(phrase=phrase)):
         support.no_env_vars()
         return
-    if globals.called_by_offline:
+    if shared.called_by_offline:
         locate_device(target_device=target_device)
         return
     sys.stdout.write(f"\rLocating your {target_device}")
@@ -299,7 +299,7 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
     """
     if not destination:
         speaker.speak(text="Destination please?")
-        if globals.called_by_offline:
+        if shared.called_by_offline:
             return
         speaker.speak(run=True)
         destination = listener.listen(timeout=3, phrase_limit=4)
@@ -332,9 +332,9 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         return
     miles = round(geodesic(start, end).miles)  # calculates miles from starting point to destination
     sys.stdout.write(f"** {desired_location.address} - {miles}")
-    if globals.called["directions"]:
+    if shared.called["directions"]:
         # calculates drive time using d = s/t and distance calculation is only if location is same country
-        globals.called["directions"] = False
+        shared.called["directions"] = False
         avg_speed = 60
         t_taken = miles / avg_speed
         if miles < avg_speed:
@@ -348,7 +348,7 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
                 speaker.speak(text=f"It might take you about {drive_time} hours to get there {env.title}!")
     elif start_check:
         text = f"{env.title}! You're {miles} miles away from {destination}. "
-        if not globals.called["locate_places"]:
+        if not shared.called["locate_places"]:
             text += f"You may also ask where is {destination}"
         speaker.speak(text=text)
     else:
@@ -369,7 +369,7 @@ def locate_places(phrase: str = None) -> None:
         before_keyword, keyword, after_keyword = phrase.partition(keyword)
         place = after_keyword.replace(" in", "").strip()
     if not place:
-        if globals.called_by_offline:
+        if shared.called_by_offline:
             speaker.speak(text=f"I need a location to get you the details {env.title}!")
             return
         speaker.speak(text="Tell me the name of a place!", run=True)
@@ -408,12 +408,12 @@ def locate_places(phrase: str = None) -> None:
                 speaker.speak(text=f"{place} is in {city or county}, {state}")
             else:
                 speaker.speak(text=f"{place} is in {city or county}, {state}, in {country}")
-        if globals.called_by_offline:
+        if shared.called_by_offline:
             return
-        globals.called["locate_places"] = True
+        shared.called["locate_places"] = True
     except (TypeError, AttributeError):
         speaker.speak(text=f"{place} is not a real place on Earth {env.title}! Try again.")
-        if globals.called_by_offline:
+        if shared.called_by_offline:
             return
         locate_places(phrase=None)
     distance_controller(origin=None, destination=place)
@@ -465,7 +465,7 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     speaker.speak(text=f"Directions on your screen {env.title}!")
     if start_country and end_country:
         if re.match(start_country, end_country, flags=re.IGNORECASE):
-            globals.called["directions"] = True
+            shared.called["directions"] = True
             distance_controller(origin=None, destination=place)
         else:
             speaker.speak(text="You might need a flight to get there!")

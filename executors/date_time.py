@@ -7,7 +7,7 @@ from timezonefinder import TimezoneFinder
 from executors.location import geo_locator
 from modules.audio import speaker
 from modules.models import models
-from modules.utils import globals, support
+from modules.utils import shared, support
 
 env = models.env
 
@@ -38,7 +38,7 @@ def current_time(converted: str = None) -> None:
         else:
             speaker.speak(text=f'The current time in {time_location} is {time_tz}.')
     else:
-        if globals.called['report'] or globals.called['time_travel']:
+        if shared.called['report'] or shared.called['time_travel']:
             speaker.speak(text=f"The current time is, {datetime.now().strftime('%I:%M %p')}.")
             return
         speaker.speak(text=f"{datetime.now().strftime('%I:%M %p')}.")
@@ -50,7 +50,7 @@ def current_date() -> None:
     date_ = engine().ordinal(datetime.now().strftime("%d"))
     year = str(datetime.now().year)
     event = support.celebrate()
-    if globals.called['time_travel']:
+    if shared.called['time_travel']:
         dt_string = f'{dt_string} {date_}'
     else:
         dt_string = f'{dt_string} {date_}, {year}'

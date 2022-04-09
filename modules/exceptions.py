@@ -41,3 +41,8 @@ class Response(HTTPException):
 class InvalidEnvVars(ValueError):
     """Custom ``ValueError`` to indicate invalid env vars."""
     pass
+
+
+class InvalidArgument(ValueError):
+    """Custom ``ValueError`` to indicate invalid args."""
+    pass

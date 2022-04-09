@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+5.9.4 (04/08/2022)
+------------------
+- Use context manager for database connections
+- globals.py -> shared.py
+- Wrap main initiators within a single class
+- Remove wakeonlan package and add it to wakeonlan.py
+- Remove await method for database commits
+- Add *.txt files to .gitignore
+
 5.9.3 (04/08/2022)
 ------------------
 - Fix DB error when running `INSERT` queries parallely
