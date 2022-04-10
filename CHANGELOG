@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+5.9.5 (04/10/2022)
+------------------
+- Onboard optional speech synthesis running on docker
+- Start larynx process as part of other background processes
+- Set up an endpoint using fastapi to access the docker page
+- Fix imports and os specific file paths
+
 5.9.4 (04/08/2022)
 ------------------
 - Use context manager for database connections

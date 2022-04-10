@@ -259,6 +259,23 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="api.fast.redirect_speech_synthesis">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">redirect_speech_synthesis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.exceptions.Response" title="modules.exceptions.Response"><span class="pre">modules.exceptions.Response</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.fast.redirect_speech_synthesis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redirect to speech synthesis if docker container is running.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Redirect to localhost:5002.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>- 500</strong> – If the connection fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="api.fast.robinhood">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">starlette.responses.HTMLResponse</span></span></span><a class="headerlink" href="#api.fast.robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Serves static file.</p>
@@ -1783,6 +1800,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <li><p>automator: Initiates automator that executes offline commands and certain functions at said time.</p></li>
 <li><p>initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
 <li><p>write_current_location: Writes current location details into a yaml file.</p></li>
+<li><p>speech_synthesis: Initiates larynx docker image.</p></li>
 <li><p>playsound: Plays a start-up sound.</p></li>
 </ul>
 </dd>
@@ -2128,6 +2146,26 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.audio.speaker.speech_synthesizer">
+<span class="sig-prename descclassname"><span class="pre">modules.audio.speaker.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.audio.speaker.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a post call to docker container running on localhost for speech synthesis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – Takes the text that has to be spoken as an argument.</p></li>
+<li><p><strong>block</strong> – Takes a boolean flag to wait other tasks while speaking.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean flag to indicate whether speech synthesis has worked.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
 <hr class="docutils" />
 <span class="target" id="module-modules.audio.listener"></span><p>Module for speech recognition listener.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Listener</span>
@@ -2156,6 +2194,37 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="module-modules.audio.speech_synthesis"></span><dl class="py class">
+<dt class="sig sig-object py" id="modules.audio.speech_synthesis.SpeechSynthesizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">SpeechSynthesizer</span></span><a class="headerlink" href="#modules.audio.speech_synthesis.SpeechSynthesizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates the docker container to process text-to-speech requests.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SpeechSynthesizer</span>
+</pre></div>
+</div>
+<p>Creates log file and initiates port number and docker command to run.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.audio.speech_synthesis.SpeechSynthesizer.check_existing">
+<span class="sig-name descname"><span class="pre">check_existing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.audio.speech_synthesis.SpeechSynthesizer.check_existing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for existing connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A boolean flag whether a valid connection is present.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.audio.speech_synthesis.SpeechSynthesizer.synthesizer">
+<span class="sig-name descname"><span class="pre">synthesizer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.audio.speech_synthesis.SpeechSynthesizer.synthesizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates speech synthesizer using docker.</p>
+</dd></dl>
+
 </dd></dl>
 
 <hr class="docutils" />
@@ -3584,6 +3653,16 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.speech_synthesis_log">
+<span class="sig-name descname"><span class="pre">speech_synthesis_log</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.speech_synthesis_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.speech_synthesis_wav">
+<span class="sig-name descname"><span class="pre">speech_synthesis_wav</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.speech_synthesis_wav" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.task_db">
 <span class="sig-name descname"><span class="pre">task_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.task_db" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3814,6 +3893,11 @@ Whites can have a value of None.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.sensitivity">
 <span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sensitivity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.speech_synthesis_timeout">
+<span class="sig-name descname"><span class="pre">speech_synthesis_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.speech_synthesis_timeout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

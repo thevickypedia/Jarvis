@@ -133,8 +133,10 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **ROOT_PASSWORD** - System password for your `mac` to get the system vitals.
 - **WOLFRAM_API_KEY** - API Key from wolfram alpha.
 - **ICS_URL** - Shared calendar URL to get meetings information from. Should end with `.ics`
-- **EVENT_APP** - To read events from `outlook` or `calendar`. Defaults to `calendar` <br>
-:bulb: &nbsp; When `calender` is used, the name of it should be **Jarvis**
+- **EVENT_APP** - To read events from `outlook` or `calendar`. Defaults to `calendar`
+- **DOCKER_TIMEOUT** - Timeout to connect to the docker container that processes text to speech requests. <br>
+:bulb: &nbsp; When `calender` is used, the name of it should be **Jarvis** <br>
+:bulb: &nbsp; Text to speech is optionally run on a docker container for better voices. If you don't have docker installed or simply don't want to use it, set the `DOCKER_TIMEOUT` env var to 0. This is also done automatically.
 
 **Background scans [Defaults to 1 hour]**
 - **SYNC_NETGEAR** - Interval in seconds to scan for smart devices using ``Netgear`` module.

@@ -2,15 +2,17 @@ import importlib
 import logging
 import mimetypes
 import os
+import pathlib
 import string
 import time
 from datetime import datetime
 from logging.config import dictConfig
 from multiprocessing import Process
-from pathlib import Path
-from typing import Any, NoReturn
+from typing import Any, NoReturn, Union
 
-from fastapi import Depends, FastAPI, status
+import requests
+from fastapi import Depends, FastAPI
+from fastapi import status as http_status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
@@ -31,10 +33,10 @@ ROBINHOOD_PROTECTOR = [Depends(dependency=authenticator.robinhood_has_access)]
 robinhood_token = {'token': ''}
 
 if not os.path.isfile(config.APIConfig().ACCESS_LOG_FILENAME):
-    Path(config.APIConfig().ACCESS_LOG_FILENAME).touch()
+    pathlib.Path(config.APIConfig().ACCESS_LOG_FILENAME).touch()
 
 if not os.path.isfile(config.APIConfig().DEFAULT_LOG_FILENAME):
-    Path(config.APIConfig().DEFAULT_LOG_FILENAME).touch()
+    pathlib.Path(config.APIConfig().DEFAULT_LOG_FILENAME).touch()
 
 offline_compatible = compatibles.offline_compatible()
 
@@ -114,10 +116,34 @@ async def redirect_index() -> str:
     return app.redoc_url
 
 
+@app.get('/speech-synthesis', response_class=RedirectResponse)
+async def redirect_speech_synthesis() -> Union[Response, str]:
+    """Redirect to speech synthesis if docker container is running.
+
+    Returns:
+        str:
+        Redirect to localhost:5002.
+
+    Raises:
+        - 500: If the connection fails.
+    """
+    if not env.speech_synthesis_timeout:
+        raise Response(status_code=404, detail=http_status.HTTP_404_NOT_FOUND)
+    try:
+        response = requests.get(url="http://localhost:5002")
+        if response.ok:
+            return 'http://localhost:5002'
+        logger.error(f"{response.status_code}::{response.url} - {response.text}")
+        raise Response(status_code=response.status_code, detail=response.text)
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as error:
+        logger.error(error)
+        raise Response(status_code=500, detail=error)
+
+
 @app.get('/health', include_in_schema=False)
 async def health() -> NoReturn:
     """Health Check for OfflineCommunicator."""
-    raise Response(status_code=200, detail=status.HTTP_200_OK)
+    raise Response(status_code=200, detail=http_status.HTTP_200_OK)
 
 
 @app.post("/offline-communicator", dependencies=OFFLINE_PROTECTOR)

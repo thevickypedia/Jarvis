@@ -1,7 +1,7 @@
 import json
 import sys
+import urllib.request
 from datetime import datetime
-from urllib.request import urlopen
 
 import yaml
 from inflect import engine
@@ -51,7 +51,7 @@ def weather(phrase: str = None) -> None:
         lon = current_location['longitude']
     weather_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,' \
                   f'hourly&appid={env.weather_api}'
-    response = json.loads(urlopen(weather_url).read())  # loads the response in a json
+    response = json.loads(urllib.request.urlopen(url=weather_url).read())  # loads the response in a json
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
 

@@ -3,9 +3,9 @@
 import json
 import os
 import time
+import urllib.error
+import urllib.request
 from typing import Union
-from urllib.error import HTTPError
-from urllib.request import Request, build_opener
 from uuid import UUID, uuid4
 
 from executors.logger import logger
@@ -23,15 +23,16 @@ def _open(url: str, headers: dict = None, data: dict = None) -> dict:
         dict:
         JSON loaded response from post request.
     """
-    request = Request(url=url, headers=headers)
+    request = urllib.request.Request(url=url, headers=headers)
     if data:
         request.data = bytes(json.dumps(data), encoding="utf8")
 
-    response = build_opener().open(request)
+    response = urllib.request.build_opener().open(request)
 
     if not 200 <= response.code <= 300:
         logger.debug(f'Response: {response.code}')
-        raise HTTPError(code=response.code, msg='HTTPError', url=url, hdrs=response.headers, fp=response.fp)
+        raise urllib.error.HTTPError(code=response.code, msg='HTTPError', url=url,
+                                     hdrs=response.headers, fp=response.fp)
 
     charset = response.info().get('charset', 'utf-8')
     if resp_data := response.read().decode(charset):

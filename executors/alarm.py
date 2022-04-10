@@ -1,9 +1,9 @@
 import os
+import pathlib
 import random
 import subprocess
 import time
 from datetime import datetime, timedelta
-from pathlib import Path
 from typing import NoReturn
 
 from executors.logger import logger
@@ -27,7 +27,7 @@ def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = N
     """
     if not os.path.isdir('alarm'):
         os.mkdir('alarm')
-    Path(f'alarm/{hour}_{minute}_{am_pm}.lock').touch()
+    pathlib.Path(f'alarm/{hour}_{minute}_{am_pm}.lock').touch()
     if 'wake' in phrase:
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
                            f"I will wake you up at {hour}:{minute} {am_pm}.")

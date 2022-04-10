@@ -2,10 +2,10 @@ import json
 import socket
 import subprocess
 import sys
+import urllib.error
+import urllib.request
 from multiprocessing import Process
 from typing import Union
-from urllib.error import HTTPError
-from urllib.request import urlopen
 
 import psutil
 from speedtest import ConfigRetrievalError, Speedtest
@@ -44,7 +44,7 @@ def vpn_checker() -> Union[bool, str]:
     if ip_address_.startswith("192") or ip_address_.startswith("127"):
         return ip_address_
     else:
-        info = json.load(urlopen("https://ipinfo.io/json"))
+        info = json.load(urllib.request.urlopen(url="https://ipinfo.io/json"))
         speaker.speak(text=f"You have your VPN turned on {env.title}! A connection has been detected to "
                            f"{info.get('ip')} at {info.get('city')} {info.get('region')}, "
                            f"maintained by {info.get('org')}. Please note that none of the home integrations will "
@@ -82,12 +82,14 @@ def ip_info(phrase: str) -> None:
             ssid = ""
         output = None
         try:
-            output = f"My public IP {ssid}is {json.load(urlopen('https://ipinfo.io/json')).get('ip')}"
-        except HTTPError as error:
+            output = f"My public IP {ssid}is " \
+                     f"{json.load(urllib.request.urlopen(url='https://ipinfo.io/json')).get('ip')}"
+        except urllib.error.HTTPError as error:
             logger.error(error)
         try:
-            output = output or f"My public IP {ssid}is {json.loads(urlopen('http://ip.jsontest.com').read()).get('ip')}"
-        except HTTPError as error:
+            output = output or f"My public IP {ssid}is " \
+                               f"{json.loads(urllib.request.urlopen(url='http://ip.jsontest.com').read()).get('ip')}"
+        except urllib.error.HTTPError as error:
             logger.error(error)
         if not output:
             output = f"I was unable to fetch the public IP {env.title}!"

@@ -6,10 +6,13 @@
 """
 import os.path
 import sys
+from threading import Thread
 from typing import NoReturn
 
 import pyttsx3
+import requests
 import yaml
+from playsound import playsound
 
 from executors.logger import logger
 from modules.conditions import conversation, keywords
@@ -17,12 +20,42 @@ from modules.models import models
 from modules.utils import shared
 
 fileio = models.fileio
+env = models.env
 
 audio_driver = pyttsx3.init()
 
 KEYWORDS = [__keyword for __keyword in dir(keywords) if not __keyword.startswith('__')]
 CONVERSATION = [__conversation for __conversation in dir(conversation) if not __conversation.startswith('__')]
 FUNCTIONS_TO_TRACK = KEYWORDS + CONVERSATION
+
+
+def speech_synthesizer(text: str, block: bool = True) -> bool:
+    """Makes a post call to docker container running on localhost for speech synthesis.
+
+    Args:
+        text: Takes the text that has to be spoken as an argument.
+        block: Takes a boolean flag to wait other tasks while speaking.
+
+    Returns:
+        bool:
+        A boolean flag to indicate whether speech synthesis has worked.
+    """
+    try:
+        response = requests.post(url="http://localhost:5002/api/tts", headers={"Content-Type": "text/plain"},
+                                 params={"voice": "en-us_northern_english_male-glow_tts", "quality": "medium"},
+                                 data=text, verify=False, timeout=env.speech_synthesis_timeout)
+        logger.error(f"{response.status_code}::http://localhost:5002/api/tts")
+        if not response.ok:
+            return False
+        with open(file=fileio.speech_synthesis_wav, mode="wb") as file:
+            file.write(response.content)
+        playsound(sound=fileio.speech_synthesis_wav, block=block)
+        os.remove(fileio.speech_synthesis_wav)
+        return True
+    except (requests.exceptions.ConnectionError,
+            requests.exceptions.Timeout) as error:
+        # Timeout exception covers both connection timeout and read timeout
+        logger.error(error)
 
 
 def speak(text: str = None, run: bool = False) -> NoReturn:
@@ -40,10 +73,11 @@ def speak(text: str = None, run: bool = False) -> NoReturn:
         sys.stdout.write(f"\r{text}")
         shared.text_spoken = text
         if not shared.called_by_offline:
-            audio_driver.say(text=text)
+            if not env.speech_synthesis_timeout or not speech_synthesizer(text=text):
+                audio_driver.say(text=text)
     if run:
         audio_driver.runAndWait()
-    frequently_used(function_name=caller) if caller in FUNCTIONS_TO_TRACK else None
+    Thread(target=frequently_used, kwargs={"function_name": caller}) if caller in FUNCTIONS_TO_TRACK else None
 
 
 def frequently_used(function_name: str) -> NoReturn:

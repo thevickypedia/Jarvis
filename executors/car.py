@@ -1,9 +1,9 @@
 import json
 import os
+import urllib.error
+import urllib.request
 from threading import Thread
 from typing import Union
-from urllib.error import HTTPError
-from urllib.request import urlopen
 
 import yaml
 from playsound import playsound
@@ -47,7 +47,7 @@ def car(phrase: str) -> None:
         else:
             with open(fileio.location) as file:
                 current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
-            climate = int(temperature.k2f(arg=json.loads(urlopen(
+            climate = int(temperature.k2f(arg=json.loads(urllib.request.urlopen(
                 url=f"https://api.openweathermap.org/data/2.5/onecall?lat={current_location['latitude']}&"
                     f"lon={current_location['longitude']}&exclude=minutely,hourly&appid={env.weather_api}"
             ).read())['current']['temp']))
@@ -164,6 +164,6 @@ def vehicle(operation: str, temp: int = None) -> Union[str, None]:
                 address = data
             return f"Your {handler.get_attributes().get('vehicleBrand', 'car')} is at {address}"
         return handler.get_attributes().get("vehicleBrand", "car")
-    except HTTPError as error:
+    except urllib.error.HTTPError as error:
         logger.error(error)
         logger.error(f"Failed to connect {error.url} with error code: {error.code}")
