@@ -40,8 +40,6 @@ def speech_synthesizer(text: str, timeout: int = env.speech_synthesis_timeout) -
         bool:
         A boolean flag to indicate whether speech synthesis has worked.
     """
-    if not env.speech_synthesis_timeout:
-        return False
     try:
         response = requests.post(url="http://localhost:5002/api/tts", headers={"Content-Type": "text/plain"},
                                  params={"voice": "en-us_northern_english_male-glow_tts", "quality": "medium"},

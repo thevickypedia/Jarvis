@@ -140,11 +140,8 @@ async def speech_synthesis(text: str) -> FileResponse:
 
     Raises:
         - 404: If audio file was not found after successful response.
-        - 424: If speech-synthesis timeout was set to 0.
         - 500: If the connection fails.
     """
-    if not env.speech_synthesis_timeout:
-        raise Response(status_code=424, detail=http_status.HTTP_424_FAILED_DEPENDENCY)
     try:
         response = requests.get(url="http://localhost:5002", timeout=1)
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as error:

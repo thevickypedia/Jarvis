@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.9.7 (04/10/2022)
+------------------
+- Enable `speech-synthesis` for offline-communicator
+- Remove redundant checks for timeout env var
+- Update README.md
+
 5.9.6 (04/10/2022)
 ------------------
 - Process requests to `speech-synthesis` instead of redirect
