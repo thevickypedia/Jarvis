@@ -182,7 +182,7 @@
 <li><p><strong>EVENT_APP</strong> - To read events from <code class="docutils literal notranslate"><span class="pre">outlook</span></code> or <code class="docutils literal notranslate"><span class="pre">calendar</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">calendar</span></code></p></li>
 <li><p><strong>DOCKER_TIMEOUT</strong> - Timeout to connect to the docker container that processes text to speech requests. <br>
 :bulb:   When <code class="docutils literal notranslate"><span class="pre">calender</span></code> is used, the name of it should be <strong>Jarvis</strong> <br>
-:bulb:   Text to speech is optionally run on a docker container for better voices. If you don’t have docker installed or simply don’t want to use it, set the <code class="docutils literal notranslate"><span class="pre">DOCKER_TIMEOUT</span></code> env var to 0. This is also done automatically.</p></li>
+:bulb:   Text to speech is optionally run on a docker container for better voices but the response might be slower. If you don’t have docker installed or simply don’t want to use it, set the <code class="docutils literal notranslate"><span class="pre">DOCKER_TIMEOUT</span></code> env var to 0. This is also done automatically if failed to launch a docker container.</p></li>
 </ul>
 <p><strong>Background scans [Defaults to 1 hour]</strong></p>
 <ul class="simple">

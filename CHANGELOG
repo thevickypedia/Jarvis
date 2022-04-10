@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.9.6 (04/10/2022)
+------------------
+- Process requests to `speech-synthesis` instead of redirect
+- Simplify docker container check before using default audio
+
 5.9.5 (04/10/2022)
 ------------------
 - Onboard optional speech synthesis running on docker

@@ -29,28 +29,28 @@ CONVERSATION = [__conversation for __conversation in dir(conversation) if not __
 FUNCTIONS_TO_TRACK = KEYWORDS + CONVERSATION
 
 
-def speech_synthesizer(text: str, block: bool = True) -> bool:
+def speech_synthesizer(text: str, timeout: int = env.speech_synthesis_timeout) -> bool:
     """Makes a post call to docker container running on localhost for speech synthesis.
 
     Args:
         text: Takes the text that has to be spoken as an argument.
-        block: Takes a boolean flag to wait other tasks while speaking.
+        timeout: Time to wait for the docker image to process text-to-speech request.
 
     Returns:
         bool:
         A boolean flag to indicate whether speech synthesis has worked.
     """
+    if not env.speech_synthesis_timeout:
+        return False
     try:
         response = requests.post(url="http://localhost:5002/api/tts", headers={"Content-Type": "text/plain"},
                                  params={"voice": "en-us_northern_english_male-glow_tts", "quality": "medium"},
-                                 data=text, verify=False, timeout=env.speech_synthesis_timeout)
+                                 data=text, verify=False, timeout=timeout)
         logger.error(f"{response.status_code}::http://localhost:5002/api/tts")
         if not response.ok:
             return False
         with open(file=fileio.speech_synthesis_wav, mode="wb") as file:
             file.write(response.content)
-        playsound(sound=fileio.speech_synthesis_wav, block=block)
-        os.remove(fileio.speech_synthesis_wav)
         return True
     except (requests.exceptions.ConnectionError,
             requests.exceptions.Timeout) as error:
@@ -58,12 +58,13 @@ def speech_synthesizer(text: str, block: bool = True) -> bool:
         logger.error(error)
 
 
-def speak(text: str = None, run: bool = False) -> NoReturn:
+def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
     """Calls ``audio_driver.say`` to speak a statement from the received text.
 
     Args:
         text: Takes the text that has to be spoken as an argument.
         run: Takes a boolean flag to choose whether to run the ``audio_driver.say`` loop.
+        block: Takes a boolean flag to wait other tasks while speaking. [Applies only for larynx running on docker]
     """
     caller = sys._getframe(1).f_code.co_name  # noqa
     if text:
@@ -73,7 +74,12 @@ def speak(text: str = None, run: bool = False) -> NoReturn:
         sys.stdout.write(f"\r{text}")
         shared.text_spoken = text
         if not shared.called_by_offline:
-            if not env.speech_synthesis_timeout or not speech_synthesizer(text=text):
+            if env.speech_synthesis_timeout and \
+                    speech_synthesizer(text=text) and \
+                    os.path.isfile(fileio.speech_synthesis_wav):
+                playsound(sound=fileio.speech_synthesis_wav, block=block)
+                os.remove(fileio.speech_synthesis_wav)
+            else:
                 audio_driver.say(text=text)
     if run:
         audio_driver.runAndWait()

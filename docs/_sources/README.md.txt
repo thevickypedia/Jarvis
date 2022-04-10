@@ -136,7 +136,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **EVENT_APP** - To read events from `outlook` or `calendar`. Defaults to `calendar`
 - **DOCKER_TIMEOUT** - Timeout to connect to the docker container that processes text to speech requests. <br>
 :bulb: &nbsp; When `calender` is used, the name of it should be **Jarvis** <br>
-:bulb: &nbsp; Text to speech is optionally run on a docker container for better voices. If you don't have docker installed or simply don't want to use it, set the `DOCKER_TIMEOUT` env var to 0. This is also done automatically.
+:bulb: &nbsp; Text to speech is optionally run on a docker container for better voices but the response might be slower. If you don't have docker installed or simply don't want to use it, set the `DOCKER_TIMEOUT` env var to 0. This is also done automatically if failed to launch a docker container.
 
 **Background scans [Defaults to 1 hour]**
 - **SYNC_NETGEAR** - Interval in seconds to scan for smart devices using ``Netgear`` module.
