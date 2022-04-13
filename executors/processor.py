@@ -9,10 +9,12 @@ from executors.location import write_current_location
 from executors.logger import logger
 from executors.offline import automator, initiate_tunneling
 from executors.telegram import handler
+from modules.audio import speech_synthesis
 from modules.models import models
 from modules.utils import shared
 
 fileio = models.fileio
+docker_container = speech_synthesis.SpeechSynthesizer()
 
 
 def start_processes() -> Dict[str, Process]:
@@ -24,6 +26,7 @@ def start_processes() -> Dict[str, Process]:
         - automator: Initiates automator that executes offline commands and certain functions at said time.
         - initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
         - write_current_location: Writes current location details into a yaml file.
+        - speech_synthesis: Initiates larynx docker image.
         - playsound: Plays a start-up sound.
     """
     processes = {
@@ -32,6 +35,7 @@ def start_processes() -> Dict[str, Process]:
         "automator": Process(target=automator),
         "ngrok": Process(target=initiate_tunneling),
         "location": Process(target=write_current_location),
+        "speech_synthesis": Process(target=docker_container.synthesizer)
     }
     for func, process in processes.items():
         process.start()

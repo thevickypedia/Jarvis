@@ -318,6 +318,12 @@ Audio
 
 ====
 
+.. automodule:: modules.audio.speech_synthesis
+   :members:
+   :undoc-members:
+
+====
+
 .. automodule:: modules.audio.voices
    :members:
    :undoc-members:

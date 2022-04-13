@@ -1,17 +1,17 @@
 import json
 import math
 import os
+import pathlib
 import re
 import socket
 import ssl
 import sys
 import time
+import urllib.error
+import urllib.request
 import webbrowser
 from difflib import SequenceMatcher
-from pathlib import Path
 from typing import NoReturn, Tuple, Union
-from urllib.error import HTTPError
-from urllib.request import urlopen
 
 import certifi
 import yaml
@@ -81,9 +81,9 @@ def get_coordinates_from_ip() -> Tuple[float, float]:
         Returns latitude and longitude as a tuple.
     """
     try:
-        info = json.load(urlopen("https://ipinfo.io/json"))
+        info = json.load(urllib.request.urlopen(url="https://ipinfo.io/json"))
         coordinates = tuple(map(float, info.get('loc', '0,0').split(',')))
-    except HTTPError as error:
+    except urllib.error.HTTPError as error:
         logger.error(error)
         coordinates = (0.0, 0.0)
     if coordinates == (0.0, 0.0):
@@ -148,7 +148,7 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
                     os.remove("pyicloud_error")
                 else:
                     logger.error(f"Exception raised by {caller}. Restarting.")
-                    Path("pyicloud_error").touch()
+                    pathlib.Path("pyicloud_error").touch()
                     controls.restart_control(quiet=True)
         coordinates = get_coordinates_from_ip()
     except ConnectionError:

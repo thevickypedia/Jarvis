@@ -180,8 +180,26 @@
 <li><p><strong>WOLFRAM_API_KEY</strong> - API Key from wolfram alpha.</p></li>
 <li><p><strong>ICS_URL</strong> - Shared calendar URL to get meetings information from. Should end with <code class="docutils literal notranslate"><span class="pre">.ics</span></code></p></li>
 <li><p><strong>EVENT_APP</strong> - To read events from <code class="docutils literal notranslate"><span class="pre">outlook</span></code> or <code class="docutils literal notranslate"><span class="pre">calendar</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">calendar</span></code> <br>
-:bulb:   When <code class="docutils literal notranslate"><span class="pre">calender</span></code> is used, the name of it should be <strong>Jarvis</strong></p></li>
+:bulb:   When <code class="docutils literal notranslate"><span class="pre">calender</span></code> is used, the name of the <em>calendar</em> within the <code class="docutils literal notranslate"><span class="pre">Calendar.app</span></code> should be <strong>Jarvis</strong> <br></p></li>
+<li><p><strong>SPEECH_SYNTHESIS_TIMEOUT</strong> - Timeout to connect to the docker container that processes text to speech requests. <br></p>
+<ul>
+<li><p>To enable independent <code class="docutils literal notranslate"><span class="pre">speech-synthesis</span></code> run:</p></li>
 </ul>
+</li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker run <span class="se">\</span>
+    -it <span class="se">\</span>
+    -p <span class="m">5002</span>:5002 <span class="se">\</span>
+    -e <span class="s2">&quot;HOME=</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
+    -v <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">:</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
+    -v /usr/share/ca-certificates:/usr/share/ca-certificates <span class="se">\</span>
+    -v /etc/ssl/certs:/etc/ssl/certs <span class="se">\</span>
+    -w <span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
+    --user <span class="s2">&quot;</span><span class="k">$(</span>id -u<span class="k">)</span><span class="s2">:</span><span class="k">$(</span>id -g<span class="k">)</span><span class="s2">&quot;</span> <span class="se">\</span>
+    rhasspy/larynx
+</pre></div>
+</div>
+<p>:bulb:   Text to speech is optionally run on a docker container for better voices but the response might be slower. If you don’t have docker installed or simply don’t want to use it, set the <code class="docutils literal notranslate"><span class="pre">SPEECH_SYNTHESIS_TIMEOUT</span></code> env var to 0. This is also done automatically if failed to launch a docker container upon startup.</p>
 <p><strong>Background scans [Defaults to 1 hour]</strong></p>
 <ul class="simple">
 <li><p><strong>SYNC_NETGEAR</strong> - Interval in seconds to scan for smart devices using <code class="docutils literal notranslate"><span class="pre">Netgear</span></code> module.</p></li>

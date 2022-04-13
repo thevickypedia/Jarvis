@@ -1,9 +1,9 @@
 import os
+import pathlib
 import random
 import re
 import sys
 from datetime import datetime, timedelta
-from pathlib import Path
 from typing import NoReturn
 
 from executors import communicator
@@ -29,7 +29,7 @@ def create_reminder(hour, minute, am_pm, message, to_about, timer: str = None) -
     """
     if not os.path.isdir('reminder'):
         os.mkdir('reminder')
-    Path(f'reminder/{hour}_{minute}_{am_pm}-{message.replace(" ", "_")}.lock').touch()
+    pathlib.Path(f'reminder/{hour}_{minute}_{am_pm}-{message.replace(" ", "_")}.lock').touch()
     if timer:
         logger.info(f"Reminder created for '{message}' at {hour}:{minute} {am_pm}")
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "

@@ -1,8 +1,8 @@
 import os
+import pathlib
 import platform
 import struct
 import sys
-from pathlib import PurePath
 from typing import NoReturn
 
 import packaging.version
@@ -54,8 +54,8 @@ class Activator:
         References:
             - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
         """
-        logger.info(f"Initiating model with sensitivity: {env.sensitivity}")
-        keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in [PurePath(__file__).stem]]
+        logger.info(f"Initiating hot-word detector with sensitivity: {env.sensitivity}")
+        keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in [pathlib.PurePath(__file__).stem]]
         self.input_device_index = input_device_index
 
         self.py_audio = PyAudio()
@@ -100,14 +100,15 @@ class Activator:
                     speaker.speak(run=True)
                 with db.connection:
                     cursor = db.connection.cursor()
-                    if flag := cursor.execute("SELECT flag, caller FROM restart").fetchone():
-                        logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
-                        self.stop()
-                        if flag[1] == "restart_control":
-                            restart()
-                        else:
-                            restart(quiet=True)
-                        break
+                    flag = cursor.execute("SELECT flag, caller FROM restart").fetchone()
+                if flag:
+                    logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
+                    self.stop()
+                    if flag[1] == "restart_control":
+                        restart()
+                    else:
+                        restart(quiet=True)
+                    break
         except StopSignal:
             self.stop()
             exit_process()

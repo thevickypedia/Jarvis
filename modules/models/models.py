@@ -9,6 +9,7 @@ import getpass
 import os.path
 import platform
 import socket
+from datetime import datetime
 
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       FilePath, HttpUrl, PositiveInt)
@@ -74,6 +75,7 @@ class EnvConfig(BaseSettings):
     bot_chat_ids: list = Field(default=[], env='BOT_CHAT_IDS')
     bot_users: list = Field(default=[], env='BOT_USERS')
     legacy_keywords: list = Field(default=['jarvis'], env='LEGACY_KEYWORDS')
+    speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
     title: str = Field(default='sir', env='TITLE')
     name: str = Field(default='Vignesh', env='NAME')
 
@@ -130,6 +132,8 @@ class FileIO(BaseModel):
     hostnames: FilePath = f'fileio{os.path.sep}hostnames.yaml'
     training: FilePath = f'fileio{os.path.sep}training_data.yaml'
     event_script: FilePath = f'fileio{os.path.sep}{env.event_app}.scpt'
+    speech_synthesis_wav: FilePath = f'fileio{os.path.sep}speech_synthesis.wav'
+    speech_synthesis_log: FilePath = datetime.now().strftime(f'logs{os.path.sep}speech_synthesis_%d-%m-%Y.log')
 
 
 fileio = FileIO()

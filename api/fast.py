@@ -2,15 +2,18 @@ import importlib
 import logging
 import mimetypes
 import os
+import pathlib
 import string
 import time
 from datetime import datetime
 from logging.config import dictConfig
 from multiprocessing import Process
-from pathlib import Path
+from threading import Thread
 from typing import Any, NoReturn
 
-from fastapi import Depends, FastAPI, status
+import requests
+from fastapi import Depends, FastAPI
+from fastapi import status as http_status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
@@ -18,12 +21,14 @@ from api import authenticator
 from api.models import GetData, InvestmentFilter
 from api.report_gatherer import Investment
 from executors.offline import offline_communicator
+from modules.audio import speaker
 from modules.exceptions import Response
 from modules.models import config, models
 from modules.offline import compatibles
 from modules.utils import shared, support
 
 env = models.env
+fileio = models.fileio
 
 OFFLINE_PROTECTOR = [Depends(dependency=authenticator.offline_has_access)]
 ROBINHOOD_PROTECTOR = [Depends(dependency=authenticator.robinhood_has_access)]
@@ -31,10 +36,10 @@ ROBINHOOD_PROTECTOR = [Depends(dependency=authenticator.robinhood_has_access)]
 robinhood_token = {'token': ''}
 
 if not os.path.isfile(config.APIConfig().ACCESS_LOG_FILENAME):
-    Path(config.APIConfig().ACCESS_LOG_FILENAME).touch()
+    pathlib.Path(config.APIConfig().ACCESS_LOG_FILENAME).touch()
 
 if not os.path.isfile(config.APIConfig().DEFAULT_LOG_FILENAME):
-    Path(config.APIConfig().DEFAULT_LOG_FILENAME).touch()
+    pathlib.Path(config.APIConfig().DEFAULT_LOG_FILENAME).touch()
 
 offline_compatible = compatibles.offline_compatible()
 
@@ -55,6 +60,17 @@ app = FastAPI(
                 "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)",
     version="v1.0"
 )
+
+
+def remove_file(delay: int, filepath: str) -> NoReturn:
+    """Deletes the requested file after a certain time.
+
+    Args:
+        delay: Delay in seconds after which the requested file is to be deleted.
+        filepath: Filepath that has to be removed.
+    """
+    time.sleep(delay)
+    os.remove(filepath) if os.path.isfile(filepath) else logger.error(f"{filepath} not found.")
 
 
 def run_robinhood() -> NoReturn:
@@ -103,7 +119,7 @@ async def start_robinhood() -> Any:
             CronScheduler(logger=logger).controller()
 
 
-@app.get('/', response_class=RedirectResponse, include_in_schema=False)
+@app.get(path="/", response_class=RedirectResponse, include_in_schema=False)
 async def redirect_index() -> str:
     """Redirect to docs in ``read-only`` mode.
 
@@ -114,13 +130,44 @@ async def redirect_index() -> str:
     return app.redoc_url
 
 
-@app.get('/health', include_in_schema=False)
+@app.post(path='/speech-synthesis', response_class=RedirectResponse, dependencies=OFFLINE_PROTECTOR)
+async def speech_synthesis(text: str) -> FileResponse:
+    """Process request to convert text to speech if docker container is running.
+
+    Returns:
+        FileResponse:
+        Audio file to be downloaded.
+
+    Raises:
+        - 404: If audio file was not found after successful response.
+        - 500: If the connection fails.
+    """
+    try:
+        response = requests.get(url="http://localhost:5002", timeout=1)
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as error:
+        logger.error(error)
+        raise Response(status_code=500, detail=error)
+    if response.ok:
+        if not speaker.speech_synthesizer(text=text, timeout=len(text)):
+            logger.error("Speech synthesis could not process the request.")
+            raise Response(status_code=500, detail=http_status.HTTP_500_INTERNAL_SERVER_ERROR)
+        if os.path.isfile(path=fileio.speech_synthesis_wav):
+            Thread(target=remove_file, kwargs={'delay': 2, 'filepath': fileio.speech_synthesis_wav})
+            return FileResponse(path=fileio.speech_synthesis_wav, media_type='application/octet-stream',
+                                filename="synthesized.wav")
+        logger.error(f'File Not Found: {fileio.speech_synthesis_wav}')
+        raise Response(status_code=404, detail=http_status.HTTP_404_NOT_FOUND)
+    logger.error(f"{response.status_code}::{response.url} - {response.text}")
+    raise Response(status_code=response.status_code, detail=response.text)
+
+
+@app.get(path="/health", include_in_schema=False)
 async def health() -> NoReturn:
     """Health Check for OfflineCommunicator."""
-    raise Response(status_code=200, detail=status.HTTP_200_OK)
+    raise Response(status_code=200, detail=http_status.HTTP_200_OK)
 
 
-@app.post("/offline-communicator", dependencies=OFFLINE_PROTECTOR)
+@app.post(path="/offline-communicator", dependencies=OFFLINE_PROTECTOR)
 async def offline_communicator_api(input_data: GetData) -> NoReturn:
     """Offline Communicator API endpoint for Jarvis.
 
@@ -169,7 +216,7 @@ async def offline_communicator_api(input_data: GetData) -> NoReturn:
     raise Response(status_code=200, detail=f'{dt_string}\n\n{response}')
 
 
-@app.get("/favicon.ico", include_in_schema=False)
+@app.get(path="/favicon.ico", include_in_schema=False)
 async def get_favicon() -> FileResponse:
     """Gets the favicon.ico and adds to the API endpoint.
 
@@ -181,8 +228,9 @@ async def get_favicon() -> FileResponse:
         return FileResponse('favicon.ico')
 
 
-if os.getcwd().split('/')[-1] != 'Jarvis' or all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
-    @app.post("/robinhood-authenticate", dependencies=ROBINHOOD_PROTECTOR)
+# Conditional endpoint: Condition matches without env vars during docs generation
+if not os.getcwd().endswith("Jarvis") or all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
+    @app.post(path="/robinhood-authenticate", dependencies=ROBINHOOD_PROTECTOR)
     async def authenticate_robinhood() -> NoReturn:
         """Authenticates the request. Uses a two-factor authentication by generating single use tokens.
 
@@ -199,8 +247,10 @@ if os.getcwd().split('/')[-1] != 'Jarvis' or all([env.robinhood_user, env.robinh
         robinhood_token['token'] = support.token()
         raise Response(status_code=200, detail=f"?token={robinhood_token['token']}")
 
-if os.getcwd().split('/')[-1] != 'Jarvis' or all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
-    @app.get("/investment", response_class=HTMLResponse, include_in_schema=False)
+
+# Conditional endpoint: Condition matches without env vars during docs generation
+if not os.getcwd().endswith("Jarvis") or all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
+    @app.get(path="/investment", response_class=HTMLResponse, include_in_schema=False)
     async def robinhood(token: str = None) -> HTMLResponse:
         """Serves static file.
 
