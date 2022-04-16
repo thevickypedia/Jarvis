@@ -49,21 +49,18 @@ def automator() -> NoReturn:
 
         if start_events + env.sync_events <= time.time() or dry_run:
             start_events = time.time()
-            if dry_run:
-                logger.info(f"Getting calendar events from {env.event_app}")
+            logger.info(f"Getting calendar events from {env.event_app}") if dry_run else None
             Process(target=events.events_writer).start()
 
         if start_meetings + env.sync_meetings <= time.time() or dry_run:
             start_meetings = time.time()
-            if dry_run:
-                logger.info("Getting calendar schedule from ICS.")
+            logger.info("Getting calendar schedule from ICS.") if dry_run else None
             Process(target=icalendar.meetings_writer).start()
 
         if start_netgear + env.sync_netgear <= time.time() or dry_run:
             start_netgear = time.time()
-            if dry_run:
-                logger.info("Scanning smart devices using netgear module.")
-            Process(target=support.scan_smart_devices).start()
+            logger.info("Scanning smart devices using netgear module.") if dry_run and env.router_pass else None
+            Process(target=support.scan_smart_devices).start() if env.router_pass else None
 
         if alarm_state := support.lock_files(alarm_files=True):
             for each_alarm in alarm_state:

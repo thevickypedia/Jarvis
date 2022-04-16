@@ -5,6 +5,7 @@ import time
 from typing import NoReturn
 
 from executors.logger import logger
+from modules.exceptions import LightsError
 
 
 def check_number_range(number: int) -> int:
@@ -66,8 +67,10 @@ class MagicHomeApi:
         except socket.error as error:
             self.sock.close()
             error_msg = f"\rSocket error on {device_ip}: {error}"
-            sys.stdout.write(error_msg)
             logger.error(f'{error_msg} while performing "{self.operation}"')
+            raise LightsError(
+                error
+            )
 
     def turn_on(self) -> NoReturn:
         """Turn a device on."""

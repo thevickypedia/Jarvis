@@ -1,22 +1,25 @@
 import os.path
 import random
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from multiprocessing.pool import ThreadPool
 from threading import Thread
+from typing import Callable, NoReturn, Union
 
 import yaml
 
 from executors.internet import vpn_checker
+from executors.logger import logger
 from modules.audio import speaker
 from modules.conditions import conversation
 from modules.lights import preset_values, smart_lights
 from modules.models import models
-from modules.utils import support
+from modules.utils import shared, support
 
 env = models.env
 fileio = models.fileio
 
 
-def lights(phrase: str) -> None:
+def lights(phrase: str) -> Union[None, NoReturn]:
     """Controller for smart lights.
 
     Args:
@@ -32,19 +35,13 @@ def lights(phrase: str) -> None:
     with open(fileio.smart_devices) as file:
         smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader)
 
-    if not any([smart_devices.get('hallway_ip'), smart_devices.get('kitchen_ip'),
-                smart_devices.get('bedroom_ip')]):
+    if not any(smart_devices):
         support.no_env_vars()
         return
 
     phrase = phrase.lower()
 
-    def light_switch() -> None:
-        """Says a message if the physical switch is toggled off."""
-        speaker.speak(text=f"I guess your light switch is turned off {env.title}! I wasn't able to read the device. "
-                           "Try toggling the switch and ask me to restart myself!")
-
-    def turn_off(host: str) -> None:
+    def turn_off(host: str) -> NoReturn:
         """Turns off the device.
 
         Args:
@@ -52,7 +49,7 @@ def lights(phrase: str) -> None:
         """
         smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off').turn_off()
 
-    def warm(host: str) -> None:
+    def warm(host: str) -> NoReturn:
         """Sets lights to warm/yellow.
 
         Args:
@@ -61,7 +58,7 @@ def lights(phrase: str) -> None:
         smart_lights.MagicHomeApi(device_ip=host, device_type=1,
                                   operation='Warm Lights').update_device(r=0, g=0, b=0, warm_white=255)
 
-    def cool(host: str) -> None:
+    def cool(host: str) -> NoReturn:
         """Sets lights to cool/white.
 
         Args:
@@ -71,7 +68,7 @@ def lights(phrase: str) -> None:
                                   operation='Cool Lights').update_device(r=255, g=255, b=255, warm_white=255,
                                                                          cool_white=255)
 
-    def preset(host: str, value: int) -> None:
+    def preset(host: str, value: int) -> NoReturn:
         """Changes light colors to preset values.
 
         Args:
@@ -81,7 +78,7 @@ def lights(phrase: str) -> None:
         smart_lights.MagicHomeApi(device_ip=host, device_type=2,
                                   operation='Preset Values').send_preset_function(preset_number=value, speed=101)
 
-    def lumen(host: str, rgb: int = 255) -> None:
+    def lumen(host: str, rgb: int = 255) -> NoReturn:
         """Sets lights to custom brightness.
 
         Args:
@@ -91,57 +88,78 @@ def lights(phrase: str) -> None:
         args = {'r': 255, 'g': 255, 'b': 255, 'warm_white': rgb}
         smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness').update_device(**args)
 
-    if 'hallway' in phrase:
-        if not (host_ip := smart_devices.get('hallway_ip')):
-            light_switch()
-            return
-    elif 'kitchen' in phrase:
-        if not (host_ip := smart_devices.get('kitchen_ip')):
-            light_switch()
-            return
-    elif 'bedroom' in phrase:
-        if not (host_ip := smart_devices.get('bedroom_ip')):
-            light_switch()
-            return
+    if 'all' in phrase:
+        host_ip = [value for key, value in smart_devices.items()
+                   if isinstance(value, list)]  # Checking for list since lights are inserted as a list and tv as string
     else:
-        host_ip = smart_devices.get('hallway_ip') + \
-                  smart_devices.get('kitchen_ip') + \
-                  smart_devices.get('bedroom_ip')  # noqa: E126
+        host_ip = [smart_devices.get(each) for each in list(smart_devices.keys())
+                   if any(word in phrase.lower() for word in each.replace('_', ' ').replace('room', '').split())]
 
-    lights_count = len(host_ip)
+    if not host_ip:
+        Thread(target=support.unrecognized_dumper, args=[{'LIGHTS': phrase}]).start()
+        speaker.speak(text=f"I'm not sure which lights you meant {env.title}!")
+        return
+    host_ip = support.matrix_to_flat_list(input_=host_ip)
 
-    def thread_worker(function_to_call: staticmethod) -> None:
+    def avail_check(function_to_call: Callable) -> NoReturn:
+        """Speaks an error message if any of the lights aren't reachable.
+
+        Args:
+            function_to_call: Takes the function/method that has to be called as an argument.
+        """
+        status = ThreadPool(processes=1).apply_async(func=thread_worker, args=[function_to_call])
+        speaker.speak(run=True)
+        if failed := status.get(timeout=5):
+            plural_ = "lights aren't available right now!" if failed > 1 else "light isn't available right now!"
+            speaker.speak(text=f"I'm sorry sir! {support.number_to_words(input_=failed, capitalize=True)} {plural_}")
+
+    def thread_worker(function_to_call: Callable) -> int:
         """Initiates ``ThreadPoolExecutor`` with in a dedicated thread.
 
         Args:
             function_to_call: Takes the function/method that has to be called as an argument.
         """
-        with ThreadPoolExecutor(max_workers=lights_count) as executor:
-            executor.map(function_to_call, host_ip)
+        futures = {}
+        executor = ThreadPoolExecutor(max_workers=len(host_ip))
+        with executor:
+            for iterator in host_ip:
+                future = executor.submit(function_to_call, iterator)
+                futures[future] = iterator
 
-    plural = 'lights!' if lights_count > 1 else 'light!'
+        thread_except = 0
+        for future in as_completed(futures):
+            if future.exception():
+                thread_except += 1
+                logger.error(f'Thread processing for {iterator} received an exception: {future.exception()}')
+        return thread_except
+
+    plural = 'lights!' if len(host_ip) > 1 else 'light!'
     if 'turn on' in phrase or 'cool' in phrase or 'white' in phrase:
         tone = 'white' if 'white' in phrase else 'cool'
         if 'turn on' in phrase:
-            speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning on {lights_count} {plural}')
+            speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning on {len(host_ip)} {plural}')
         else:
             speaker.speak(
-                text=f'{random.choice(conversation.acknowledgement)}! Setting {lights_count} {plural} to {tone}!')
-        Thread(target=thread_worker, args=[cool]).start()
+                text=f'{random.choice(conversation.acknowledgement)}! Setting {len(host_ip)} {plural} to {tone}!'
+            )
+        Thread(target=thread_worker, args=[cool]).start() if shared.called_by_offline else \
+            avail_check(function_to_call=cool)
     elif 'turn off' in phrase:
-        speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning off {lights_count} {plural}')
+        speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning off {len(host_ip)} {plural}')
         Thread(target=thread_worker, args=[cool]).run()
-        Thread(target=thread_worker, args=[turn_off]).start()
+        Thread(target=thread_worker, args=[turn_off]).start() if shared.called_by_offline else \
+            avail_check(function_to_call=turn_off)
     elif 'warm' in phrase or 'yellow' in phrase:
         if 'yellow' in phrase:
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! '
-                               f'Setting {lights_count} {plural} to yellow!')
+                               f'Setting {len(host_ip)} {plural} to yellow!')
         else:
-            speaker.speak(text=f'Sure {env.title}! Setting {lights_count} {plural} to warm!')
-        Thread(target=thread_worker, args=[warm]).start()
+            speaker.speak(text=f'Sure {env.title}! Setting {len(host_ip)} {plural} to warm!')
+        Thread(target=thread_worker, args=[warm]).start() if shared.called_by_offline else \
+            avail_check(function_to_call=warm)
     elif any(word in phrase for word in list(preset_values.PRESET_VALUES.keys())):
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
-                           f"I've changed {lights_count} {plural} to red!")
+                           f"I've changed {len(host_ip)} {plural} to red!")
         for light_ip in host_ip:
             preset(host=light_ip,
                    value=[preset_values.PRESET_VALUES[_type] for _type in
@@ -155,7 +173,7 @@ def lights(phrase: str) -> None:
         else:
             level = support.extract_nos(input_=phrase, method=int) or 100
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
-                           f"I've set {lights_count} {plural} to {level}%!")
+                           f"I've set {len(host_ip)} {plural} to {level}%!")
         level = round((255 * level) / 100)
         for light_ip in host_ip:
             lumen(host=light_ip, rgb=level)

@@ -108,6 +108,7 @@ def get_location_from_coordinates(coordinates: tuple) -> Tuple[float, float, dic
         return coordinates[0], coordinates[1], locator.raw["address"]
     except (GeocoderUnavailable, GeopyError) as error:
         logger.error(error)
+        return coordinates[0], coordinates[1], {}
 
 
 def location_services(device: AppleDevice) -> Union[NoReturn,
@@ -173,7 +174,7 @@ def write_current_location() -> NoReturn:
     """Extracts location information from public IP address and writes it to a yaml file."""
     current_lat, current_lon, location_info = get_location_from_coordinates(coordinates=get_coordinates_from_ip())
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
-    logger.info(f"Writing location info into {fileio.location}")
+    logger.info(f"Writing location info in {fileio.location}")
     with open(fileio.location, 'w') as location_writer:
         yaml.dump(data={"timezone": current_tz, "latitude": current_lat, "longitude": current_lon,
                         "address": location_info},

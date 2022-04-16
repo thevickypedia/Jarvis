@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from inflect import engine
-from pytz import timezone
+import inflect
+import pytz
 from timezonefinder import TimezoneFinder
 
 from executors.location import geo_locator
@@ -28,7 +28,7 @@ def current_time(converted: str = None) -> None:
         city, state = address.get('city'), address.get('state')
         time_location = f'{city} {state}'.replace('None', '') if city or state else place
         zone = tf.timezone_at(lat=place_tz.latitude, lng=place_tz.longitude)
-        datetime_zone = datetime.now(timezone(zone))
+        datetime_zone = datetime.now(pytz.timezone(zone))
         date_tz = datetime_zone.strftime("%A, %B %d, %Y")
         time_tz = datetime_zone.strftime("%I:%M %p")
         dt_string = datetime.now().strftime("%A, %B %d, %Y")
@@ -47,7 +47,7 @@ def current_time(converted: str = None) -> None:
 def current_date() -> None:
     """Says today's date and adds the current time in speaker queue if report or time_travel function was called."""
     dt_string = datetime.now().strftime("%A, %B")
-    date_ = engine().ordinal(datetime.now().strftime("%d"))
+    date_ = inflect.engine().ordinal(datetime.now().strftime("%d"))
     year = str(datetime.now().year)
     event = support.celebrate()
     if shared.called['time_travel']:

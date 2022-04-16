@@ -15,8 +15,9 @@ import sys
 import uuid
 from datetime import datetime
 from difflib import SequenceMatcher
-from typing import NoReturn, Union
+from typing import List, NoReturn, Union
 
+import inflect
 import psutil
 import yaml
 from holidays import country_holidays
@@ -252,6 +253,88 @@ def extract_str(input_: str) -> str:
     return "".join([i for i in input_ if not i.isdigit() and i not in [",", ".", "?", "-", ";", "!", ":"]]).strip()
 
 
+def matrix_to_flat_list(input_: List[list]) -> list:
+    """Converts a matrix into flat list.
+
+    Args:
+        input_: Takes a list of list as an argument.
+
+    Returns:
+        list:
+        Flat list.
+    """
+    return sum(input_, []) or [item for sublist in input_ for item in sublist]
+
+
+def words_to_number(input_: str) -> int:
+    """Converts words into integers.
+
+    Args:
+        input_: Takes an integer wording as an argument.
+
+    Returns:
+        int:
+        Integer version of the words.
+    """
+    input_ = input_.lower()
+    number_mapping = {
+        'zero': 0,
+        'one': 1,
+        'two': 2,
+        'three': 3,
+        'four': 4,
+        'five': 5,
+        'six': 6,
+        'seven': 7,
+        'eight': 8,
+        'nine': 9,
+        'ten': 10,
+        'eleven': 11,
+        'twelve': 12,
+        'thirteen': 13,
+        'fourteen': 14,
+        'fifteen': 15,
+        'sixteen': 16,
+        'seventeen': 17,
+        'eighteen': 18,
+        'nineteen': 19,
+        'twenty': 20,
+        'thirty': 30,
+        'forty': 40,
+        'fifty': 50,
+        'sixty': 60,
+        'seventy': 70,
+        'eighty': 80,
+        'ninety': 90,
+    }
+    numbers = []
+    for word in input_.replace('-', ' ').split(' '):
+        if word in number_mapping:
+            numbers.append(number_mapping[word])
+        elif word == 'hundred':
+            numbers[-1] *= 100
+        elif word == 'thousand':
+            numbers = [x * 1000 for x in numbers]
+        elif word == 'million':
+            numbers = [x * 1000000 for x in numbers]
+    return sum(numbers)
+
+
+def number_to_words(input_: Union[int, str], capitalize: bool = False) -> str:
+    """Converts integer version of a number into words.
+
+    Args:
+        input_: Takes the integer version of a number as an argument.
+        capitalize: Boolean flag to capitalize the first letter.
+
+    Returns:
+        str:
+        String version of the number.
+    """
+    result = inflect.engine().number_to_words(num=input_)
+    return result[0].upper() + result[1:] if capitalize else result
+
+
 def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> list:
     """Checks for ``*.lock`` files within the ``alarm`` directory if present.
 
@@ -310,16 +393,9 @@ def scan_smart_devices() -> NoReturn:
         - This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)
         - Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted.
     """
-    local_devices = LocalIPScan(router_pass=env.router_pass)
-    tv_ip, tv_mac = local_devices.tv()
+    smart_devices = LocalIPScan().smart_devices()
     with open(fileio.smart_devices, 'w') as file:
-        yaml.dump(stream=file, data={
-            "hallway_ip": list(local_devices.hallway()),
-            "kitchen_ip": list(local_devices.kitchen()),
-            "bedroom_ip": list(local_devices.bedroom()),
-            "tv_ip": tv_ip,
-            "tv_mac": tv_mac
-        })
+        yaml.dump(stream=file, data=smart_devices)
 
 
 def daytime_nighttime_swapper() -> NoReturn:

@@ -156,13 +156,13 @@ def initiator(phrase: str, should_return: bool = False) -> None:
     if [word for word in phrase.lower().split() if word in ['morning', 'night', 'afternoon',
                                                             'after noon', 'evening', 'goodnight']]:
         shared.called['time_travel'] = True
-        if event := support.celebrate():
+        if (event := support.celebrate()) and 'night' not in phrase.lower():
             speaker.speak(text=f'Happy {event}!')
         if 'night' in phrase.split() or 'goodnight' in phrase.split():
             Thread(target=pc_sleep).start() if env.mac else None
         time_travel()
         shared.called['time_travel'] = False
-    elif 'you there' in phrase.lower():
+    elif 'you there' in phrase.lower() or any(word in phrase.lower() for word in env.legacy_keywords):
         speaker.speak(text=f'{random.choice(conversation.wake_up1)}')
         initialize()
     elif any(word in phrase.lower() for word in ['look alive', 'wake up', 'wakeup', 'show time', 'showtime']):

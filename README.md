@@ -82,8 +82,8 @@ IronMan's Jarvis with python
    - **Windows** <br> _Tested on **Windows 10**_
      - `Settings` → `Privacy`
        - `Microphone` - **Required** to listen and respond.
-       - `Camera` - **Required** only during face recognition/detection.
-       - Unlike `MacOS`, `Windows` pops a confirmation window to **Allow** or **Deny** access to files and folders.
+       - `Camera` - **[Optional]** Required only during face recognition/detection.
+       - Unlike MacOS, `Windows` pops a confirmation window to **Allow** or **Deny** access to files and folders.
      - Install [Anaconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html#windows-installers), and [VisualStudio C++ BuildTools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
 ### Setup
@@ -93,7 +93,7 @@ IronMan's Jarvis with python
      2. `source venv/bin/activate` - Activates the virtual env `venv`
      3. `which python` - Validate which python is being used. Should be the one within the virtual env `venv`
      4. `chmod +x lib/install.sh` - Makes [installation file](https://github.com/thevickypedia/Jarvis/blob/master/lib/install.sh) as executable.
-     5. `bash lib/installs.sh` - Installs the required libraries/modules.
+     5. `bash lib/installs.sh` - Installs the required modules based on the operating system.
      6. [`python jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis.
         1. [PyCharm](https://www.jetbrains.com/pycharm/download) or similar IDE preferred to initiate Jarvis (Step `vi.`) to keep `stdout` clear.
 
@@ -186,21 +186,18 @@ A source file `smart_devices.yaml` is used to store smart devices' IPs. `Jarvis`
 <summary><strong>Setup Instructions</strong></summary>
 
 - For the `Netgear` module to scan for smart devices, a `hostnames.yaml` file is required to be placed in `fileio` directory.
-
-- The source file should be as following:
+- The name used in the keys will be the identifier of those light bulbs.
+- The source file (`hostnames.yaml`) should be as following:
 
 ```yaml
 bedroom:
-  - 'HOSTNAME1'
-  - 'HOSTNAME2'
+  - 'HOSTNAMES'
 hallway:
-  - 'HOSTNAME1'
-  - 'HOSTNAME2'
-  - 'HOSTNAME3'
+  - 'HOSTNAMES'
 kitchen:
-  - 'HOSTNAME1'
-  - 'HOSTNAME2'
-  - 'HOSTNAME3'
+  - 'HOSTNAMES'
+living_room:
+  - 'HOSTNAMES'
 tv: 'LGWEBOSTV'
 ```
 
@@ -208,15 +205,18 @@ tv: 'LGWEBOSTV'
 
 By using `smart_devices.yaml`, the `Netgear` module can be avoided at the cost of manually updating the source file in case of IP changes.
 
-- If the source file is hand-created, it should be as following:
+- The name used in the keys will be the identifier of those light bulbs.
+- If the source file (`smart_devices.yaml`) is hand-created, it should be as following:
 
 ```yaml
-bedroom_ip:
-- 'LOCAL_IP_ADDRESS'
-hallway_ip:
-- 'LOCAL_IP_ADDRESS'
-kitchen_ip:
-- 'LOCAL_IP_ADDRESS'
+bedroom:
+  - 'LOCAL_IP_ADDRESS'
+hallway:
+  - 'LOCAL_IP_ADDRESS'
+kitchen:
+  - 'LOCAL_IP_ADDRESS'
+living_room:
+  - 'LOCAL_IP_ADDRESS'
 tv_ip: 'LOCAL_IP_ADDRESS'
 tv_mac: 'TV_MAC_ADDRESS'
 ```

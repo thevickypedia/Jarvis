@@ -61,18 +61,21 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     elif any(word in converted_lower for word in keywords.volume):
         volume(converted)
 
-    elif any(word in converted_lower for word in keywords.current_date) and \
-            not any(word in converted_lower for word in keywords.avoid):
-        current_date()
-
-    elif any(word in converted_lower for word in keywords.car):
-        car(converted_lower)
-
     elif any(word in converted_lower for word in keywords.television):
         television(converted)
 
     elif any(word in converted_lower for word in keywords.weather):
         weather(converted)
+
+    elif any(word in converted_lower for word in keywords.car):
+        car(converted_lower)
+
+    elif any(word in converted_lower for word in keywords.meetings):
+        meetings()
+
+    elif any(word in converted_lower for word in keywords.current_date) and \
+            not any(word in converted_lower for word in keywords.avoid):
+        current_date()
 
     elif any(word in converted_lower for word in keywords.current_time) and \
             not any(word in converted_lower for word in keywords.avoid):
@@ -192,9 +195,6 @@ def conditions(converted: str, should_return: bool = False) -> bool:
 
     elif any(word in converted_lower for word in keywords.facts):
         facts()
-
-    elif any(word in converted_lower for word in keywords.meetings):
-        meetings()
 
     elif any(word in converted_lower for word in keywords.events):
         events()

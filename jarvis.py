@@ -175,46 +175,34 @@ def sentry_mode(recognizer, source) -> NoReturn:
             break
 
 
-class Jarvis:
-    """Bundle to initiate Jarvis.
+def _prerequisites():
+    """Checks for internet connection and triggers background processes."""
+    starter()
+    if internet_checker():
+        sys.stdout.write(f"\rINTERNET::Connected to {get_ssid()}. Scanning router for connected devices.")
+    else:
+        sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
+        speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.",
+                      run=True)
+        return False
+    sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: 50%")
+    shared.hosted_device = hosted_device_info()
+    shared.processes = start_processes()
+    if shared.processes and shared.hosted_device:
+        return True
 
-    >>> Jarvis
 
-    """
-
-    def __init__(self):
-        """Initiates start up functions."""
-        logger.info("JARVIS::Starting Now")
-        self.startup = starter  # initiates crucial functions which needs to be called during start up
-        self.check_internet = internet_checker
-
-    def _prerequisites(self):
-        """Checks for internet connection and triggers background processes."""
-        self.startup()
-        if self.check_internet():
-            sys.stdout.write(f"\rINTERNET::Connected to {get_ssid()}. Scanning router for connected devices.")
-        else:
-            sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
-            speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.",
-                          run=True)
-            return False
-        sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: 50%")
-        shared.hosted_device = hosted_device_info()
-        shared.processes = start_processes()
-        if shared.processes and shared.hosted_device:
-            return True
-
-    def start(self) -> None:
-        """Starts the main process to activate Jarvis."""
-        if not self._prerequisites():
-            return
-        if env.mac and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
-            recognizer = speech_recognition.Recognizer()
-            with speech_recognition.Microphone() as source:
-                sentry_mode(recognizer=recognizer, source=source)
-        else:
-            Activator().start()
+def begin() -> None:
+    """Starts the main process to activate Jarvis."""
+    if not _prerequisites():
+        return
+    if env.mac and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
+        recognizer = speech_recognition.Recognizer()
+        with speech_recognition.Microphone() as source:
+            sentry_mode(recognizer=recognizer, source=source)
+    else:
+        Activator().start()
 
 
 if __name__ == '__main__':
-    Jarvis().start()
+    begin()

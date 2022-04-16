@@ -7,6 +7,7 @@ from executors.logger import logger
 from modules.exceptions import MissingEnvVars
 from modules.models import models
 
+env = models.env
 fileio = models.fileio
 
 
@@ -35,76 +36,30 @@ class LocalIPScan:
 
     """
 
-    def __init__(self, router_pass: str):
-        """Gets local host devices connected to the same network range.
-
-        Args:
-            router_pass: Password to authenticate the API client.
-        """
-        if not router_pass:
+    def __init__(self):
+        """Gets local host devices connected to the same network range."""
+        if not env.router_pass:
             raise MissingEnvVars(
-                "Router password is required to scan for devices."
+                "Router password is required to scan the local host."
             )
-        self.attached_devices = Netgear(password=router_pass).get_attached_devices()
-        self._hostnames = _get_hostnames()
+        self.attached_devices = Netgear(password=env.router_pass).get_attached_devices()
 
-    def hallway(self) -> str:
-        """Host names of hallway light bulbs stored in a list.
-
-        Yields:
-            str:
-            IP address of the device.
-        """
-        if self.attached_devices and self._hostnames.get('hallway'):
-            for device in self.attached_devices:
-                if device.name in self._hostnames.get('hallway'):
-                    yield device.ip
-
-    def kitchen(self) -> str:
-        """Host names of kitchen light bulbs stored in a list.
-
-        Yields:
-            str:
-            IP address of the device.
-        """
-        if self.attached_devices and self._hostnames.get('kitchen'):
-            for device in self.attached_devices:
-                if device.name in self._hostnames.get('kitchen'):
-                    yield device.ip
-
-    def bedroom(self) -> str:
-        """Host names of bedroom light bulbs stored in a list.
-
-        Yields:
-            str:
-            IP address of the device.
-        """
-        if self.attached_devices and self._hostnames.get('bedroom'):
-            for device in self.attached_devices:
-                if device.name in self._hostnames.get('bedroom'):
-                    yield device.ip
-
-    def tv(self) -> tuple:
-        """Host name of TV for string equality comparison.
+    def smart_devices(self) -> dict:
+        """Gets the IP addresses of the smart devices listed in hostnames.yaml.
 
         Returns:
-            tuple:
-            A tuple object of IP address and mac address of the TV.
+            dict:
+            A dictionary of device category as key and list of IPs as value.
         """
-        if self.attached_devices and self._hostnames.get('tv'):
-            for device in self.attached_devices:
-                if device.name == self._hostnames.get('tv'):
-                    return device.ip, device.mac
-        return None, None
-
-
-if __name__ == '__main__':
-    from pprint import pprint
-
-    from dotenv import load_dotenv
-
-    env_path = '../../.env'
-    load_dotenv(dotenv_path=env_path)
-    fileio.hostnames = f'../../{fileio.hostnames}'
-
-    pprint(LocalIPScan(router_pass=os.environ.get('ROUTER_PASS')).attached_devices)
+        smart_devices_dict = {}
+        for device in self.attached_devices:
+            for category, hostnames in _get_hostnames().items():
+                if category.upper() == "TV":
+                    smart_devices_dict["tv_ip"] = device.ip
+                    smart_devices_dict["tv_mac"] = device.mac
+                elif device.name in hostnames:
+                    if category in list(smart_devices_dict.keys()):
+                        smart_devices_dict[category].append(device.ip)
+                    else:
+                        smart_devices_dict[category] = [device.ip]
+        return smart_devices_dict

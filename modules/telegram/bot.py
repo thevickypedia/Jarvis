@@ -217,8 +217,8 @@ class TelegramBot:
         """
         if not self.authenticate(payload=payload):
             return
-        # TODO: Add more introductory words to the below list and consider using NLP
-        if any(word in payload.get('text') for word in ['hello', 'hi', 'heya', 'hey', 'howdy', "what's up"]):
+        if any(word in payload.get('text') for word in ["hey", "hi", "hola", "what's up", "yo", "ssup", "whats up",
+                                                        "hello", "howdy", "hey", "chao", "hiya", "aloha"]):
             self.reply_to(payload=payload,
                           response=f"{greeting()} {payload['from']['first_name']}!\n"
                                    f"Good {support.part_of_day()}! How can I be of service today?")
@@ -228,9 +228,11 @@ class TelegramBot:
                               response=f"{greeting()} {payload['from']['first_name']}! {intro()}")
             return
         if payload['text'].startswith('/'):
-            self.reply_to(payload=payload, response="*Deprecation Notice*\n\nSlash commands ('/') have been deprecated."
-                                                    " Please use commands directly instead.")
-            payload['text'] = payload['text'].lstrip('/').replace('jarvis', '').strip()
+            if '_' not in payload['text']:  # Auto-complete can be setup using "/" commands so ignore if "_" is present
+                self.reply_to(payload=payload,
+                              response="*Deprecation Notice*\n\nSlash commands ('/') have been deprecated. Please use "
+                                       "commands directly instead.")
+            payload['text'] = payload['text'].lstrip('/').replace('jarvis', '').replace('_', ' ').strip()
         if not payload['text']:
             return
         if not USER_TITLE.get(payload['from']['username']):

@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+5.9.8 (04/15/2022)
+------------------
+- Get smart-lights location name from `hostnames.yaml`
+- Speak a message if unable to connect to particular lights
+- Remove unnecessary OOP from jarvis.py
+- Handle / commands to support shortcuts
+- Add more introductory words to welcome message in Telegram API
+- Add more support functions to support.py
+- Fix redundant event wishes during night message
+- Re-arrange conditions.py as per frequently used
+- Add ISSUE_TEMPLATE and update README.md
+
 5.9.7 (04/10/2022)
 ------------------
 - Enable `speech-synthesis` for offline-communicator

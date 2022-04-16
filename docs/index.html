@@ -134,20 +134,10 @@
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.Jarvis">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">Jarvis</span></span><a class="headerlink" href="#jarvis.Jarvis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bundle to initiate Jarvis.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Jarvis</span>
-</pre></div>
-</div>
-<p>Initiates start up functions.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.Jarvis.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.Jarvis.start" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.begin">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">begin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.begin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Starts the main process to activate Jarvis.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py function">
@@ -1291,7 +1281,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <span id="lights"></span><h1>Lights<a class="headerlink" href="#module-executors.lights" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.lights.lights">
-<span class="sig-prename descclassname"><span class="pre">executors.lights.</span></span><span class="sig-name descname"><span class="pre">lights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.lights.lights" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.lights.</span></span><span class="sig-name descname"><span class="pre">lights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.lights.lights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controller for smart lights.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -3258,6 +3248,12 @@ Pass 155 for LO and 285 for HI.</p>
 </dd></dl>
 
 <dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.LightsError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">LightsError</span></span><a class="headerlink" href="#modules.exceptions.LightsError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">socket.error</span></code> to indicate lights IP isn’t reachable.</p>
+</dd></dl>
+
+<dl class="py exception">
 <dt class="sig sig-object py" id="modules.exceptions.MissingEnvVars">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">MissingEnvVars</span></span><a class="headerlink" href="#modules.exceptions.MissingEnvVars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> to indicate missing env vars.</p>
@@ -3456,60 +3452,22 @@ Whites can have a value of None.</p>
 <span id="local-ip-scanner"></span><h1>Local IP Scanner<a class="headerlink" href="#module-modules.netgear.ip_scanner" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.netgear.ip_scanner.LocalIPScan">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.netgear.ip_scanner.</span></span><span class="sig-name descname"><span class="pre">LocalIPScan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">router_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.netgear.ip_scanner.LocalIPScan" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.netgear.ip_scanner.</span></span><span class="sig-name descname"><span class="pre">LocalIPScan</span></span><a class="headerlink" href="#modules.netgear.ip_scanner.LocalIPScan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connector to scan devices in the same IP range using <code class="docutils literal notranslate"><span class="pre">Netgear</span> <span class="pre">API</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LocalIPScan</span>
 </pre></div>
 </div>
 <p>Gets local host devices connected to the same network range.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>router_pass</strong> – Password to authenticate the API client.</p>
-</dd>
-</dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="modules.netgear.ip_scanner.LocalIPScan.bedroom">
-<span class="sig-name descname"><span class="pre">bedroom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.netgear.ip_scanner.LocalIPScan.bedroom" title="Permalink to this definition">¶</a></dt>
-<dd><p>Host names of bedroom light bulbs stored in a list.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Yields</dt>
-<dd class="field-odd"><p><em>str</em> – IP address of the device.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="modules.netgear.ip_scanner.LocalIPScan.hallway">
-<span class="sig-name descname"><span class="pre">hallway</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.netgear.ip_scanner.LocalIPScan.hallway" title="Permalink to this definition">¶</a></dt>
-<dd><p>Host names of hallway light bulbs stored in a list.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Yields</dt>
-<dd class="field-odd"><p><em>str</em> – IP address of the device.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="modules.netgear.ip_scanner.LocalIPScan.kitchen">
-<span class="sig-name descname"><span class="pre">kitchen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.netgear.ip_scanner.LocalIPScan.kitchen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Host names of kitchen light bulbs stored in a list.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Yields</dt>
-<dd class="field-odd"><p><em>str</em> – IP address of the device.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="modules.netgear.ip_scanner.LocalIPScan.tv">
-<span class="sig-name descname"><span class="pre">tv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#modules.netgear.ip_scanner.LocalIPScan.tv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Host name of TV for string equality comparison.</p>
+<dt class="sig sig-object py" id="modules.netgear.ip_scanner.LocalIPScan.smart_devices">
+<span class="sig-name descname"><span class="pre">smart_devices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#modules.netgear.ip_scanner.LocalIPScan.smart_devices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the IP addresses of the smart devices listed in hostnames.yaml.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A tuple object of IP address and mac address of the TV.</p>
+<dd class="field-odd"><p>A dictionary of device category as key and list of IPs as value.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple</p>
+<dd class="field-even"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4253,6 +4211,23 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.matrix_to_flat_list">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">matrix_to_flat_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.utils.support.matrix_to_flat_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a matrix into flat list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_</strong> – Takes a list of list as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Flat list.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.missing_windows_features">
 <span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">missing_windows_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.utils.support.missing_windows_features" title="Permalink to this definition">¶</a></dt>
 <dd><p>Speaker for unsupported features in Windows.</p>
@@ -4262,6 +4237,26 @@ Whites can have a value of None.</p>
 <dt class="sig sig-object py" id="modules.utils.support.no_env_vars">
 <span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">no_env_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.utils.support.no_env_vars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Says a message about permissions when env vars are missing.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.number_to_words">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">number_to_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capitalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.support.number_to_words" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts integer version of a number into words.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_</strong> – Takes the integer version of a number as an argument.</p></li>
+<li><p><strong>capitalize</strong> – Boolean flag to capitalize the first letter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>String version of the number.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -4352,6 +4347,23 @@ Whites can have a value of None.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>train_data</strong> – Takes the dictionary that has to be written as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.words_to_number">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">words_to_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#modules.utils.support.words_to_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts words into integers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_</strong> – Takes an integer wording as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Integer version of the words.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
