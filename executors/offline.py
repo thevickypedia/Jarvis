@@ -53,6 +53,14 @@ def automator() -> NoReturn:
             Process(target=events.events_writer).start()
 
         if start_meetings + env.sync_meetings <= time.time() or dry_run:
+            if dry_run and env.ics_url:
+                try:
+                    if requests.get(url=env.ics_url).status_code == 503:
+                        env.sync_meetings = 21_600  # Set to 6 hours if unable to connect to the meetings URL
+                except (requests.exceptions.ConnectionError,
+                        requests.exceptions.HTTPError, requests.exceptions.Timeout) as error:
+                    logger.error(error)
+                    env.sync_meetings = 99_999_999  # NEVER RUN, since env vars are loaded only once during start up
             start_meetings = time.time()
             logger.info("Getting calendar schedule from ICS.") if dry_run else None
             Process(target=icalendar.meetings_writer).start()
@@ -69,8 +77,8 @@ def automator() -> NoReturn:
                     os.remove(f'alarm{os.path.sep}{each_alarm}')
         if reminder_state := support.lock_files(reminder_files=True):
             for each_reminder in reminder_state:
-                remind_time, remind_msg = each_reminder.split('-')
-                remind_msg = remind_msg.rstrip('.lock')
+                remind_time, remind_msg = each_reminder.split('|')
+                remind_msg = remind_msg.rstrip('.lock').replace('_', '')
                 if remind_time == datetime.now().strftime("%I_%M_%p"):
                     Thread(target=reminder_executor, args=[remind_msg]).start()
                     os.remove(f'reminder{os.path.sep}{each_reminder}')

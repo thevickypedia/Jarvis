@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+5.9.9 (04/22/2022)
+------------------
+- Fix target temperature for vehicle's remote start
+- Fix reminder message having _ in it
+- Create a new custom exception for TV
+- Check ics_url status code before running schedule
+- Have an optional port number for speech synthesis
+- Fix TV errors when unable to find or scan
+- Add more keywords
+
 5.9.8 (04/15/2022)
 ------------------
 - Get smart-lights location name from `hostnames.yaml`

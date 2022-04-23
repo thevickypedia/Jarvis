@@ -41,10 +41,11 @@ def speech_synthesizer(text: str, timeout: int = env.speech_synthesis_timeout) -
         A boolean flag to indicate whether speech synthesis has worked.
     """
     try:
-        response = requests.post(url="http://localhost:5002/api/tts", headers={"Content-Type": "text/plain"},
+        response = requests.post(url=f"http://localhost:{env.speech_synthesis_port}/api/tts",
+                                 headers={"Content-Type": "text/plain"},
                                  params={"voice": "en-us_northern_english_male-glow_tts", "quality": "medium"},
                                  data=text, verify=False, timeout=timeout)
-        logger.error(f"{response.status_code}::http://localhost:5002/api/tts")
+        logger.error(f"{response.status_code}::http://localhost:{env.speech_synthesis_port}/api/tts")
         if not response.ok:
             return False
         with open(file=fileio.speech_synthesis_wav, mode="wb") as file:
@@ -81,7 +82,7 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
                 audio_driver.say(text=text)
     if run:
         audio_driver.runAndWait()
-    Thread(target=frequently_used, kwargs={"function_name": caller}) if caller in FUNCTIONS_TO_TRACK else None
+    Thread(target=frequently_used, kwargs={"function_name": caller}).start() if caller in FUNCTIONS_TO_TRACK else None
 
 
 def frequently_used(function_name: str) -> NoReturn:

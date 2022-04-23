@@ -87,7 +87,7 @@ def exit_process() -> NoReturn:
     alarms = support.lock_files(alarm_files=True)
     if reminder_files := support.lock_files(reminder_files=True):
         for file in reminder_files:
-            split_val = file.replace('.lock', '').split('-')
+            split_val = file.replace('.lock', '').split('|')
             reminders.update({split_val[0]: split_val[-1]})
     if reminders:
         logger.info(f'JARVIS::Deleting Reminders - {reminders}')

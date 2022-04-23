@@ -55,7 +55,9 @@ directions = ["take me", "get directions"]
 
 set_alarm = ["alarm", "wake me", "timer"]
 
-kill_alarm = ["stop alarm", "stop my alarm", "turn off my alarm", "turn my alarm off", "stop another alarm"]
+kill_alarm = ["stop alarm", "stop my alarm", "stop another alarm",
+              "turn off my alarm", "turn my alarm off", "stop another alarm", "turn off alarm",
+              "delete alarm", "delete my alarm", "delete another alarm"]
 
 reminder = ["remind", "reminder"]
 
@@ -114,7 +116,7 @@ ok = ["yeah", "yes", "yep", "go ahead", "proceed", "continue", "carry on", "plea
 restart_control = ["restart", "reboot"]
 
 exit_ = ["exit", "quit", "no", "nope", "thank you", "Xzibit", "bye", "good bye", "see you later", "talk to you later",
-         "that's it", "that is it"]
+         "that's it", "that is it", "never mind", "nevermind"]
 
 sleep_control = ["exit", "quit", "lock", "sleep", "Xzibit", "activate sentry mode"]
 

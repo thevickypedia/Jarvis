@@ -44,3 +44,7 @@ class InvalidArgument(ValueError):
 
 class LightsError(socket.error):
     """Custom ``socket.error`` to indicate lights IP isn't reachable."""
+
+
+class TVError(ConnectionResetError):
+    """Custom ``ConnectionResetError`` to indicate that the TV is not reachable."""

@@ -88,7 +88,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         args = {'r': 255, 'g': 255, 'b': 255, 'warm_white': rgb}
         smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness').update_device(**args)
 
-    if 'all' in phrase:
+    if 'all' in phrase.split():
         host_ip = [value for key, value in smart_devices.items()
                    if isinstance(value, list)]  # Checking for list since lights are inserted as a list and tv as string
     else:

@@ -2,7 +2,6 @@ import os
 import pathlib
 import random
 import re
-import sys
 from datetime import datetime, timedelta
 from typing import NoReturn
 
@@ -29,7 +28,7 @@ def create_reminder(hour, minute, am_pm, message, to_about, timer: str = None) -
     """
     if not os.path.isdir('reminder'):
         os.mkdir('reminder')
-    pathlib.Path(f'reminder/{hour}_{minute}_{am_pm}-{message.replace(" ", "_")}.lock').touch()
+    pathlib.Path(f'reminder{os.path.sep}{hour}_{minute}_{am_pm}|{message.replace(" ", "_")}.lock').touch()
     if timer:
         logger.info(f"Reminder created for '{message}' at {hour}:{minute} {am_pm}")
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
@@ -51,7 +50,6 @@ def reminder(phrase: str) -> None:
         re.search(' to (.*)', phrase) or re.search(' about (.*)', phrase)
     if not message:
         speaker.speak(text='Reminder format should be::Remind me to do something, at some time.')
-        sys.stdout.write('\rReminder format should be::Remind ME to do something, AT some time.')
         return
     to_about = 'about' if 'about' in phrase else 'to'
     if 'minute' in phrase:

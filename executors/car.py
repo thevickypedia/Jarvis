@@ -38,23 +38,29 @@ def car(phrase: str) -> None:
 
     if "start" in phrase or "set" in phrase or "turn on" in phrase:
         extras = ""
-        if climate := support.extract_nos(input_=phrase, method=int):
-            pass
+        if target_temp := support.extract_nos(input_=phrase, method=int):
+            if target_temp < 57:
+                target_temp = 57
+            elif target_temp > 83:
+                target_temp = 83
         elif "high" in phrase or "highest" in phrase:
-            climate = 83
+            target_temp = 83
         elif "low" in phrase or "lowest" in phrase:
-            climate = 57
+            target_temp = 57
         else:
-            with open(fileio.location) as file:
-                current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
-            climate = int(temperature.k2f(arg=json.loads(urllib.request.urlopen(
-                url=f"https://api.openweathermap.org/data/2.5/onecall?lat={current_location['latitude']}&"
-                    f"lon={current_location['longitude']}&exclude=minutely,hourly&appid={env.weather_api}"
-            ).read())['current']['temp']))
-            extras += f"The current temperature is {climate}°F, so "
+            if os.path.isfile(fileio.location):
+                with open(fileio.location) as file:
+                    current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+                current_temp = int(temperature.k2f(arg=json.loads(urllib.request.urlopen(
+                    url=f"https://api.openweathermap.org/data/2.5/onecall?lat={current_location['latitude']}&"
+                        f"lon={current_location['longitude']}&exclude=minutely,hourly&appid={env.weather_api}"
+                ).read())['current']['temp']))
+                extras += f"The current temperature is {current_temp}°F, so "
+                target_temp = 83 if current_temp < 45 else 57 if current_temp > 70 else 66
+            else:
+                logger.critical(f"{fileio.location} is missing!")
+                target_temp = 69
 
-        # Custom temperature that has to be set in the vehicle
-        target_temp = 83 if climate < 45 else 57 if climate > 70 else 66
         extras += f"I've configured the climate setting to {target_temp}°F"
 
         if not shared.called_by_offline:
@@ -109,7 +115,7 @@ def car(phrase: str) -> None:
             speaker.speak(text=disconnected)
     else:
         speaker.speak(text=f"I didn't quite get that {env.title}! What do you want me to do to your car?")
-        Thread(target=support.unrecognized_dumper, args=[{"CAR": phrase}])
+        Thread(target=support.unrecognized_dumper, args=[{"CAR": phrase}]).start()
 
 
 def vehicle(operation: str, temp: int = None) -> Union[str, None]:
@@ -120,8 +126,8 @@ def vehicle(operation: str, temp: int = None) -> Union[str, None]:
         temp: Temperature for climate control.
 
     Returns:
-        Control:
-        Control object to access the primary vehicle.
+        str:
+        Returns the vehicle's name.
     """
     try:
         connection = connector.Connect(username=env.car_email, password=env.car_pass)

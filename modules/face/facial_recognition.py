@@ -38,11 +38,11 @@ class Face:
         self.train_faces, self.train_names = [], []
         for character_dir in os.listdir(self.training_dataset):  # loads the training dataset
             try:
-                for file_name in os.listdir(f'{self.training_dataset}/{character_dir}'):
+                for file_name in os.listdir(os.path.join(self.training_dataset, character_dir)):
                     if file_name.startswith('.'):
                         continue
                     # loads all the files within the named repo
-                    img = load_image_file(f'{self.training_dataset}/{character_dir}/{file_name}')
+                    img = load_image_file(os.path.join(self.training_dataset, character_dir, file_name))
                     encoded = face_encodings(img)[0]  # generates face encoding matrix
                     self.train_faces.append(encoded)  # loads ended values to match
                     self.train_names.append(character_dir)  # loads the names of each named sub directories

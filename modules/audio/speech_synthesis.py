@@ -13,6 +13,28 @@ fileio = models.fileio
 env = models.env
 
 
+def check_existing() -> bool:
+    """Checks for existing connection.
+
+    Returns:
+        bool:
+        A boolean flag whether a valid connection is present.
+    """
+    if is_port_in_use(port=env.speech_synthesis_port):
+        logger.info(f'{env.speech_synthesis_port} is currently in use.')
+        try:
+            res = requests.get(url=f"http://localhost:{env.speech_synthesis_port}", timeout=1)
+            if res.ok:
+                logger.info(f'http://localhost:{env.speech_synthesis_port} is accessible.')
+                return True
+            return False
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+            logger.error('Unable to connect to existing container.')
+            if not kill_port_pid(port=env.speech_synthesis_port):
+                logger.critical('Failed to kill existing PID. Attempting to re-create session.')
+            return False
+
+
 class SpeechSynthesizer:
     """Initiates the docker container to process text-to-speech requests.
 
@@ -22,9 +44,8 @@ class SpeechSynthesizer:
 
     def __init__(self):
         """Creates log file and initiates port number and docker command to run."""
-        self.port = 5002
         self.docker = f"""docker run \
-            -p {self.port}:{self.port} \
+            -p {env.speech_synthesis_port}:{env.speech_synthesis_port} \
             -e "HOME={env.home}" \
             -v "$HOME:{env.home}" \
             -v /usr/share/ca-certificates:/usr/share/ca-certificates \
@@ -32,34 +53,15 @@ class SpeechSynthesizer:
             -w "{os.getcwd()}" \
             --user "$(id -u):$(id -g)" \
             rhasspy/larynx"""
-
-    def check_existing(self) -> bool:
-        """Checks for existing connection.
-
-        Returns:
-            bool:
-            A boolean flag whether a valid connection is present.
-        """
-        if is_port_in_use(port=self.port):
-            logger.info(f'{self.port} is currently in use.')
-            try:
-                res = requests.get(url=f"http://localhost:{self.port}", timeout=1)
-                if res.ok:
-                    logger.info(f'http://localhost:{self.port} is accessible.')
-                    return True
-                return False
-            except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-                logger.error('Unable to connect to existing container.')
-                if not kill_port_pid(port=self.port):
-                    logger.critical('Failed to kill existing PID. Attempting to re-create session.')
-                return False
+        if env.speech_synthesis_port != 5002:
+            self.docker += " --port {env.speech_synthesis_port}"
 
     def synthesizer(self) -> NoReturn:
         """Initiates speech synthesizer using docker."""
         if not env.speech_synthesis_timeout:
             logger.warning("Speech synthesis disabled since the env var DOCKER_TIMEOUT is set to 0")
             return
-        if self.check_existing():
+        if check_existing():
             return
         if not os.path.isfile(fileio.speech_synthesis_log):
             pathlib.Path(fileio.speech_synthesis_log).touch()

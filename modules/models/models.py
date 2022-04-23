@@ -76,6 +76,7 @@ class EnvConfig(BaseSettings):
     bot_users: list = Field(default=[], env='BOT_USERS')
     legacy_keywords: list = Field(default=['jarvis'], env='LEGACY_KEYWORDS')
     speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
+    speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
     title: str = Field(default='sir', env='TITLE')
     name: str = Field(default='Vignesh', env='NAME')
 

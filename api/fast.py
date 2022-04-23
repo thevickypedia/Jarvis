@@ -143,7 +143,7 @@ async def speech_synthesis(text: str) -> FileResponse:
         - 500: If the connection fails.
     """
     try:
-        response = requests.get(url="http://localhost:5002", timeout=1)
+        response = requests.get(url=f"http://localhost:{env.speech_synthesis_port}", timeout=1)
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as error:
         logger.error(error)
         raise Response(status_code=500, detail=error)
@@ -152,7 +152,7 @@ async def speech_synthesis(text: str) -> FileResponse:
             logger.error("Speech synthesis could not process the request.")
             raise Response(status_code=500, detail=http_status.HTTP_500_INTERNAL_SERVER_ERROR)
         if os.path.isfile(path=fileio.speech_synthesis_wav):
-            Thread(target=remove_file, kwargs={'delay': 2, 'filepath': fileio.speech_synthesis_wav})
+            Thread(target=remove_file, kwargs={'delay': 2, 'filepath': fileio.speech_synthesis_wav}).start()
             return FileResponse(path=fileio.speech_synthesis_wav, media_type='application/octet-stream',
                                 filename="synthesized.wav")
         logger.error(f'File Not Found: {fileio.speech_synthesis_wav}')

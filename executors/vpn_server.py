@@ -37,7 +37,7 @@ def vpn_server(phrase: str) -> None:
     else:
         speaker.speak(text=f"I don't understand the request {env.title}! "
                            "You can ask me to enable or disable the VPN server.")
-        Thread(target=support.unrecognized_dumper, args=[{'VPNServer': phrase}])
+        Thread(target=support.unrecognized_dumper, args=[{'VPNServer': phrase}]).start()
 
 
 def vpn_server_switch(operation: str) -> None:

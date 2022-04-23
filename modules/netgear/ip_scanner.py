@@ -54,6 +54,7 @@ class LocalIPScan:
         smart_devices_dict = {}
         for device in self.attached_devices:
             for category, hostnames in _get_hostnames().items():
+                category = category.replace(' ', '_')
                 if category.upper() == "TV":
                     smart_devices_dict["tv_ip"] = device.ip
                     smart_devices_dict["tv_mac"] = device.mac

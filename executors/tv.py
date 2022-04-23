@@ -10,6 +10,7 @@ from executors.internet import vpn_checker
 from executors.logger import logger
 from modules.audio import speaker
 from modules.conditions import conversation
+from modules.exceptions import TVError
 from modules.models import models
 from modules.tv.tv_controls import TV
 from modules.utils import shared, support
@@ -78,7 +79,7 @@ def television(phrase: str) -> None:
     if not shared.tv:
         try:
             shared.tv = TV(ip_address=smart_devices.get('tv_ip'), client_key=env.tv_client_key)
-        except ConnectionResetError as error:
+        except TVError as error:
             logger.error(f"Failed to connect to the TV. {error}")
             speaker.speak(text=f"I was unable to connect to the TV {env.title}! It appears to be a connection issue. "
                                "You might want to try again later.")
