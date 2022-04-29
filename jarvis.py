@@ -133,7 +133,7 @@ class Activator:
         self.py_audio.terminate()
 
 
-def sentry_mode(recognizer, source) -> NoReturn:
+def sentry_mode() -> NoReturn:
     """Listens forever and invokes ``initiator()`` when recognized. Stops when ``restart`` table has an entry.
 
     See Also:
@@ -142,41 +142,43 @@ def sentry_mode(recognizer, source) -> NoReturn:
         - The text is then condition matched for wake-up words.
         - Additional wake words can be passed in a list as an env var ``LEGACY_KEYWORDS``.
     """
-    while True:
-        try:
-            sys.stdout.write("\rSentry Mode")
-            listened = recognizer.listen(source=source, timeout=10, phrase_time_limit=env.legacy_phrase_limit)
-            sys.stdout.write("\r")
-            if not any(word in recognizer.recognize_google(listened).lower() for word in env.legacy_keywords):
-                continue
-            playsound(sound=f"indicators{os.path.sep}acknowledgement.mp3", block=False)
-            initiator(phrase=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
-                      should_return=True)
-            speaker.speak(run=True)
-        except (speech_recognition.UnknownValueError,
-                speech_recognition.WaitTimeoutError,
-                speech_recognition.RequestError):
-            sys.stdout.write("\r")
-        except StopSignal:
-            stop_processes()
-            exit_process()
-            terminator()
-            break
-        with db.connection:
-            cursor = db.connection.cursor()
-            flag = cursor.execute("SELECT flag, caller FROM restart").fetchone()
-        if flag:
-            logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
-            stop_processes()
-            if flag[1] == "restart_control":
-                restart()
-            else:
-                restart(quiet=True)
-            break
+    recognizer = speech_recognition.Recognizer()
+    with speech_recognition.Microphone() as source:
+        while True:
+            try:
+                sys.stdout.write("\rSentry Mode")
+                listened = recognizer.listen(source=source, timeout=10, phrase_time_limit=env.legacy_phrase_limit)
+                sys.stdout.write("\r")
+                if not any(word in recognizer.recognize_google(listened).lower() for word in env.legacy_keywords):
+                    continue
+                playsound(sound=f"indicators{os.path.sep}acknowledgement.mp3", block=False)
+                initiator(phrase=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
+                          should_return=True)
+                speaker.speak(run=True)
+            except (speech_recognition.UnknownValueError,
+                    speech_recognition.WaitTimeoutError,
+                    speech_recognition.RequestError):
+                sys.stdout.write("\r")
+            except StopSignal:
+                stop_processes()
+                exit_process()
+                terminator()
+                break
+            with db.connection:
+                cursor = db.connection.cursor()
+                flag = cursor.execute("SELECT flag, caller FROM restart").fetchone()
+            if flag:
+                logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
+                stop_processes()
+                if flag[1] == "restart_control":
+                    restart()
+                else:
+                    restart(quiet=True)
+                break
 
 
-def _prerequisites():
-    """Checks for internet connection and triggers background processes."""
+def begin() -> None:
+    """Starts main process to activate Jarvis after checking internet connection and initiating background processes."""
     starter()
     if internet_checker():
         sys.stdout.write(f"\rINTERNET::Connected to {get_ssid()}. Scanning router for connected devices.")
@@ -184,22 +186,12 @@ def _prerequisites():
         sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
         speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.",
                       run=True)
-        return False
+        return
     sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: 50%")
     shared.hosted_device = hosted_device_info()
     shared.processes = start_processes()
-    if shared.processes and shared.hosted_device:
-        return True
-
-
-def begin() -> None:
-    """Starts the main process to activate Jarvis."""
-    if not _prerequisites():
-        return
     if env.mac and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
-        recognizer = speech_recognition.Recognizer()
-        with speech_recognition.Microphone() as source:
-            sentry_mode(recognizer=recognizer, source=source)
+        sentry_mode()
     else:
         Activator().start()
 

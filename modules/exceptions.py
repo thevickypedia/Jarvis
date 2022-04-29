@@ -11,40 +11,80 @@ from fastapi import HTTPException
 
 
 class UnsupportedOS(OSError):
-    """Custom ``OSError`` raised when initiated in an unsupported operating system."""
+    """Custom ``OSError`` raised when initiated in an unsupported operating system.
+
+    >>> UnsupportedOS
+
+    """
 
 
 class CameraError(BlockingIOError):
-    """Custom ``BlockingIOError`` to handle missing camera device."""
+    """Custom ``BlockingIOError`` to handle missing camera device.
+
+    >>> CameraError
+
+    """
 
 
 class BotInUse(OverflowError):
-    """Custom ``OverflowError`` to indicate bot token is being used else where."""
+    """Custom ``OverflowError`` to indicate bot token is being used else where.
+
+    >>> BotInUse
+
+    """
 
 
 class StopSignal(KeyboardInterrupt):
-    """Custom ``KeyboardInterrupt`` to handle manual interruption."""
+    """Custom ``KeyboardInterrupt`` to handle manual interruption.
+
+    >>> StopSignal
+
+    """
 
 
-class Response(HTTPException):
-    """Custom ``HTTPException`` from ``FastAPI`` to wrap an API response."""
+class APIResponse(HTTPException):
+    """Custom ``HTTPException`` from ``FastAPI`` to wrap an API response.
+
+    >>> APIResponse
+
+    """
 
 
 class InvalidEnvVars(ValueError):
-    """Custom ``ValueError`` to indicate invalid env vars."""
+    """Custom ``ValueError`` to indicate invalid env vars.
+
+    >>> InvalidEnvVars
+
+    """
 
 
 class MissingEnvVars(ValueError):
-    """Custom ``ValueError`` to indicate missing env vars."""
+    """Custom ``ValueError`` to indicate missing env vars.
+
+    >>> MissingEnvVars
+
+    """
 
 
 class InvalidArgument(ValueError):
-    """Custom ``ValueError`` to indicate invalid args."""
+    """Custom ``ValueError`` to indicate invalid args.
+
+    >>> InvalidArgument
+
+    """
 
 
 class LightsError(socket.error):
-    """Custom ``socket.error`` to indicate lights IP isn't reachable."""
+    """Custom ``socket.error`` to indicate lights IP isn't reachable.
+
+    >>> LightsError
+
+    """
 
 
 class TVError(ConnectionResetError):
-    """Custom ``ConnectionResetError`` to indicate that the TV is not reachable."""
+    """Custom ``ConnectionResetError`` to indicate that the TV is not reachable.
+
+    >>> TVError
+
+    """

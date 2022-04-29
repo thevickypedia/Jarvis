@@ -137,12 +137,12 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.begin">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">begin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.begin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starts the main process to activate Jarvis.</p>
+<dd><p>Starts main process to activate Jarvis after checking internet connection and initiating background processes.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.sentry_mode">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">sentry_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recognizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.sentry_mode" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">sentry_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.sentry_mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Listens forever and invokes <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> when recognized. Stops when <code class="docutils literal notranslate"><span class="pre">restart</span></code> table has an entry.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -3224,63 +3224,93 @@ Pass 155 for LO and 285 for HI.</p>
 </pre></div>
 </div>
 <dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.APIResponse">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">APIResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.exceptions.APIResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">HTTPException</span></code> from <code class="docutils literal notranslate"><span class="pre">FastAPI</span></code> to wrap an API response.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">APIResponse</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py exception">
 <dt class="sig sig-object py" id="modules.exceptions.BotInUse">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">BotInUse</span></span><a class="headerlink" href="#modules.exceptions.BotInUse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom <code class="docutils literal notranslate"><span class="pre">OverflowError</span></code> to indicate bot token is being used else where.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">BotInUse</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="modules.exceptions.CameraError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">CameraError</span></span><a class="headerlink" href="#modules.exceptions.CameraError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom <code class="docutils literal notranslate"><span class="pre">BlockingIOError</span></code> to handle missing camera device.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CameraError</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="modules.exceptions.InvalidArgument">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidArgument</span></span><a class="headerlink" href="#modules.exceptions.InvalidArgument" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> to indicate invalid args.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">InvalidArgument</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="modules.exceptions.InvalidEnvVars">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidEnvVars</span></span><a class="headerlink" href="#modules.exceptions.InvalidEnvVars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> to indicate invalid env vars.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">InvalidEnvVars</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="modules.exceptions.LightsError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">LightsError</span></span><a class="headerlink" href="#modules.exceptions.LightsError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom <code class="docutils literal notranslate"><span class="pre">socket.error</span></code> to indicate lights IP isn’t reachable.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LightsError</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="modules.exceptions.MissingEnvVars">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">MissingEnvVars</span></span><a class="headerlink" href="#modules.exceptions.MissingEnvVars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> to indicate missing env vars.</p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="modules.exceptions.Response">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.exceptions.Response" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">HTTPException</span></code> from <code class="docutils literal notranslate"><span class="pre">FastAPI</span></code> to wrap an API response.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MissingEnvVars</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="modules.exceptions.StopSignal">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">StopSignal</span></span><a class="headerlink" href="#modules.exceptions.StopSignal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom <code class="docutils literal notranslate"><span class="pre">KeyboardInterrupt</span></code> to handle manual interruption.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">StopSignal</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="modules.exceptions.TVError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">TVError</span></span><a class="headerlink" href="#modules.exceptions.TVError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom <code class="docutils literal notranslate"><span class="pre">ConnectionResetError</span></code> to indicate that the TV is not reachable.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TVError</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="modules.exceptions.UnsupportedOS">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedOS</span></span><a class="headerlink" href="#modules.exceptions.UnsupportedOS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom <code class="docutils literal notranslate"><span class="pre">OSError</span></code> raised when initiated in an unsupported operating system.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">UnsupportedOS</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -3789,7 +3819,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.legacy_phrase_limit">
-<span class="sig-name descname"><span class="pre">legacy_phrase_limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.legacy_phrase_limit" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">legacy_phrase_limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.legacy_phrase_limit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3829,7 +3859,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.phrase_limit">
-<span class="sig-name descname"><span class="pre">phrase_limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.phrase_limit" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">phrase_limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.phrase_limit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3874,7 +3904,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.sensitivity">
-<span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sensitivity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sensitivity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3904,7 +3934,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.timeout">
-<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.timeout" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.timeout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4463,7 +4493,7 @@ Whites can have a value of None.</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#modules.exceptions.Response" title="modules.exceptions.Response">Response</a></p>
+<dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4484,7 +4514,7 @@ Whites can have a value of None.</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#modules.exceptions.Response" title="modules.exceptions.Response">Response</a></p>
+<dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>

@@ -10,6 +10,7 @@ import os.path
 import platform
 import socket
 from datetime import datetime
+from typing import Union
 
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       FilePath, HttpUrl, PositiveInt)
@@ -67,10 +68,10 @@ class EnvConfig(BaseSettings):
     car_email: EmailStr = Field(default=None, env='CAR_EMAIL')
     car_pass: str = Field(default=None, env='CAR_PASS')
     car_pin: str = Field(default=None, regex="\\d{4}$", env='CAR_PIN')
-    sensitivity: float = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
-    timeout: PositiveInt = Field(default=3, env='TIMEOUT')
-    phrase_limit: PositiveInt = Field(default=3, env='PHRASE_LIMIT')
-    legacy_phrase_limit: PositiveInt = Field(default=2, env='LEGACY_PHRASE_LIMIT')
+    sensitivity: Union[float, PositiveInt] = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
+    timeout: Union[float, PositiveInt] = Field(default=3, env='TIMEOUT')
+    phrase_limit: Union[float, PositiveInt] = Field(default=3, env='PHRASE_LIMIT')
+    legacy_phrase_limit: Union[float, PositiveInt] = Field(default=2, env='LEGACY_PHRASE_LIMIT')
     bot_token: str = Field(default=None, env='BOT_TOKEN')
     bot_chat_ids: list = Field(default=[], env='BOT_CHAT_IDS')
     bot_users: list = Field(default=[], env='BOT_USERS')

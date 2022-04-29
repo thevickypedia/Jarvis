@@ -1,7 +1,7 @@
 import os.path
+import socket
 import sys
 import time
-from socket import gaierror
 
 from dotenv import set_key
 from playsound import playsound
@@ -12,6 +12,7 @@ from pywebostv.controls import (ApplicationControl, MediaControl,
 from executors.logger import logger
 from modules.exceptions import TVError
 from modules.models import models
+from modules.utils import shared
 
 env = models.env
 
@@ -41,10 +42,11 @@ class TV:
         try:
             self.client = WebOSClient(ip_address)
             self.client.connect()
-        except (gaierror, ConnectionRefusedError) as error:
+        except (socket.gaierror, ConnectionRefusedError) as error:
             logger.error(error)
             self.reconnect = True
-            playsound(sound=f'indicators{os.path.sep}tv_scan.mp3', block=False)
+            if not shared.called_by_offline:
+                playsound(sound=f'indicators{os.path.sep}tv_scan.mp3', block=False)
             if discovered := WebOSClient.discover():
                 self.client = discovered[0]
                 self.client.connect()

@@ -5,7 +5,7 @@ os_independent_packages() {
     python -m pip install --upgrade pip
 
     # Installs non version specific packages using --upgrade and --no-cache flag
-    python -m pip install --no-cache --upgrade setuptools gmail-connector vpn-server changelog-generator sphinx pre-commit recommonmark
+    python -m pip install --no-cache --upgrade setuptools gmail-connector vpn-server
 
     # Install pre-commit checker to restrict commit if any step in .pre-commit-config.yaml fails.
     pre-commit install
@@ -87,17 +87,14 @@ elif [[ "$OSName" == MSYS* ]]; then
     fi
     conda install portaudio=19.6.0
 
-    # Upgrades pip module
-    python -m pip install --upgrade pip
+    # Installs the OS independent packages
+    os_independent_packages
 
     # Install pipwin and pyaudio
     pip install pipwin
     pipwin install pyaudio
 
     pip install git+https://github.com/bisoncorps/search-engine-parser
-
-    # Installs the OS independent packages
-    os_independent_packages
 
     # Install Windows specifics
     python -m pip install pywin32==300 playsound==1.2.2

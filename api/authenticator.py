@@ -1,7 +1,7 @@
 from fastapi import Depends
 from fastapi.security import HTTPBasicCredentials, HTTPBearer
 
-from modules.exceptions import Response
+from modules.exceptions import APIResponse
 from modules.models import models
 
 env = models.env
@@ -19,7 +19,7 @@ async def offline_has_access(token: HTTPBasicCredentials = Depends(security)) ->
         auth = bytes(auth, "utf-8").decode(encoding="unicode_escape")
     if auth == env.offline_pass:
         return
-    raise Response(status_code=403, detail='Request not authorized.')
+    raise APIResponse(status_code=403, detail='Request not authorized.')
 
 
 async def robinhood_has_access(token: HTTPBasicCredentials = Depends(security)) -> None:
@@ -33,4 +33,4 @@ async def robinhood_has_access(token: HTTPBasicCredentials = Depends(security)) 
         auth = bytes(auth, "utf-8").decode(encoding="unicode_escape")
     if auth == env.robinhood_endpoint_auth:
         return
-    raise Response(status_code=403, detail='Request not authorized.')
+    raise APIResponse(status_code=403, detail='Request not authorized.')
