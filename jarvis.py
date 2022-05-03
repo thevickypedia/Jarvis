@@ -9,7 +9,7 @@ import packaging.version
 import pvporcupine
 import speech_recognition
 from playsound import playsound
-from pyaudio import PyAudio, paInt16
+from pyaudio import pyaudio, paInt16
 
 from executors.commander import initiator
 from executors.controls import exit_process, restart, starter, terminator
