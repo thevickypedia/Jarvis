@@ -1,6 +1,25 @@
 Change Log
 ==========
 
+6.0.1 (05/11/2022)
+------------------
+- Set incoming message process timeout for `TelegramAPI`
+- Fix car temperature mixed up with weather
+- Speak out meetings in the past as well
+- Avoid stopping Jarvis due to connection issue
+- Block process until acknowledgement tone is played for legacy
+- Sort robinhood report by top gainer and top looser
+- Move robinhood.html from api/ to fileio/
+- Add more exception handlers to tv_controls.py
+
+6.0.0 (04/29/2022)
+------------------
+- Allow `Float` and `Int` for sensitivity, timeout and phrase limit
+- Avoid playing tv scan message when called by offline
+- Remove redundant functions
+- Change exceptions name
+- Fix install.sh
+
 5.9.9 (04/22/2022)
 ------------------
 - Fix target temperature for vehicle's remote start

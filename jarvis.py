@@ -151,7 +151,7 @@ def sentry_mode() -> NoReturn:
                 sys.stdout.write("\r")
                 if not any(word in recognizer.recognize_google(listened).lower() for word in env.legacy_keywords):
                     continue
-                playsound(sound=f"indicators{os.path.sep}acknowledgement.mp3", block=False)
+                playsound(sound=f"indicators{os.path.sep}acknowledgement.mp3", block=True)
                 initiator(phrase=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
                           should_return=True)
                 speaker.speak(run=True)
@@ -186,7 +186,6 @@ def begin() -> None:
         sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
         speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.",
                       run=True)
-        return
     sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: 50%")
     shared.hosted_device = hosted_device_info()
     shared.processes = start_processes()

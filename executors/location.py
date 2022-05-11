@@ -6,7 +6,6 @@ import re
 import socket
 import ssl
 import sys
-import time
 import urllib.error
 import urllib.request
 import webbrowser
@@ -29,6 +28,7 @@ from executors import controls
 from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
+from modules.exceptions import NoInternetError
 from modules.models import models
 from modules.utils import shared, support
 
@@ -152,14 +152,9 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
                     pathlib.Path("pyicloud_error").touch()
                     controls.restart_control(quiet=True)
         coordinates = get_coordinates_from_ip()
-    except ConnectionError:
-        coordinates = None, None
-        sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
-        speaker.speak(text="I was unable to connect to the internet. Please check your connection settings and retry.",
-                      run=True)
-        sys.stdout.write(f"\rMemory consumed: {support.size_converter(byte_size=0)}"
-                         f"\nTotal runtime: {support.time_converter(seconds=time.perf_counter())}")
-        controls.terminator()
+    except ConnectionError as error:
+        logger.error(error)
+        raise NoInternetError
 
     if location_info := get_location_from_coordinates(coordinates=coordinates):
         return location_info
@@ -197,7 +192,12 @@ def locate_device(target_device: AppleDevice) -> NoReturn:
     Args:
         target_device: Takes the target device as an argument.
     """
-    ignore_lat, ignore_lon, location_info_ = location_services(device=target_device)
+    try:
+        ignore_lat, ignore_lon, location_info_ = location_services(device=target_device)
+    except NoInternetError:
+        speaker.speak(text="I was unable to connect to the internet. Please check your connection settings and retry.",
+                      run=True)
+        return
     lookup = str(target_device).split(":")[0].strip()
     if not location_info_:
         speaker.speak(text=f"I wasn't able to locate your {lookup} {env.title}! It is probably offline.")

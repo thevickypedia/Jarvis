@@ -49,11 +49,16 @@ class TV:
                 playsound(sound=f'indicators{os.path.sep}tv_scan.mp3', block=False)
             if discovered := WebOSClient.discover():
                 self.client = discovered[0]
-                self.client.connect()
+                try:
+                    self.client.connect()
+                except (TimeoutError, BrokenPipeError) as error:
+                    logger.error(error)
+                    raise TVError
             else:
                 raise TVError
         except (TimeoutError, BrokenPipeError) as error:
             logger.error(error)
+            raise TVError
 
         for status in self.client.register(store):
             if status == WebOSClient.REGISTERED and not self._init_status:

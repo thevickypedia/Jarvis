@@ -13,6 +13,7 @@ contacts.yml
 
 # File IO operations
 fileio/*.yaml
+fileio/*.html
 fileio/*.db
 fileio/*.txt
 
@@ -38,9 +39,6 @@ _static
 
 # volume exec file for Windows
 SetVol.exe
-
-# robinhood report file generated to be accessed from API endpoint
-api/robinhood.html
 
 # temporary file that indicates that jarvis should restart
 pyicloud_error

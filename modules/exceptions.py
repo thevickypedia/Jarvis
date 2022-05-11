@@ -88,3 +88,11 @@ class TVError(ConnectionResetError):
     >>> TVError
 
     """
+
+
+class NoInternetError(ConnectionError):
+    """Custom ``ConnectionError`` to indicate a connection issue.
+
+    >>> NoInternetError
+
+    """

@@ -25,6 +25,7 @@ from api.rh_helper import CustomTemplate  # noqa
 from modules.models import config, models  # noqa
 
 env = models.env
+fileio = models.fileio
 
 
 class Investment:
@@ -54,8 +55,7 @@ class Investment:
             tuple:
             Returns a tuple of portfolio header, profit stat, loss stat, and current profit/loss compared to purchased.
         """
-        shares_total, loss_total, profit_total = [], [], []
-        loss_output, profit_output = '', ''
+        shares_total, loss_dict, profit_dict = [], {}, {}
         n, n_ = 0, 0
         self.logger.info('Gathering portfolio.')
         for data in self.result:
@@ -75,23 +75,32 @@ class Investment:
             current_total = round(shares_count * current, 2)
             difference = round(float(current_total - total), 2)
             if difference < 0:
-                loss_output += (
+                loss_dict[ticker] = [
+                    -difference,
                     f'\n{stock_name}:\n{shares_count:,} shares of <a href="https://robinhood.com/stocks/{ticker}" '
                     f'target="_bottom">{ticker}</a> at ${buy:,} Currently: ${current:,}\n '
                     f'Total bought: ${total:,} Current Total: ${current_total:,}'
-                    f'\nLOST ${-difference:,}\n')
-                loss_total.append(-difference)
+                    f'\nLOST ${-difference:,}\n'
+                ]
             else:
-                profit_output += (
+                profit_dict[ticker] = [
+                    difference,
                     f'\n{stock_name}:\n{shares_count:,} shares of <a href="https://robinhood.com/stocks/{ticker}" '
                     f'target="_bottom">{ticker}</a> at ${buy:,} Currently: ${current:,}\n'
                     f'Total bought: ${total:,} Current Total: ${current_total:,}'
-                    f'\nGained ${difference:,}\n')
-                profit_total.append(difference)
+                    f'\nGained ${difference:,}\n'
+                ]
 
-        lost = round(math.fsum(loss_total), 2)
-        gained = round(math.fsum(profit_total), 2)
-        port_msg = f'\nTotal Profit: ${gained:,}\nTotal Loss: ${lost:,}\n\n' \
+        profit_output, profit_total, loss_output, loss_total = "", [], "", []
+        for key, value in sorted(profit_dict.items(), reverse=True, key=lambda item: item[1]):
+            profit_output += value[1]
+            profit_total.append(value[0])
+        for key, value in sorted(loss_dict.items(), reverse=True, key=lambda item: item[1]):
+            loss_output += value[1]
+            loss_total.append(value[0])
+
+        port_msg = f'\nTotal Profit: ${round(math.fsum(profit_total), 2):,}\n' \
+                   f'Total Loss: ${round(math.fsum(loss_total), 2):,}\n\n' \
                    'The above values might differ from overall profit/loss if multiple shares ' \
                    'of the stock were purchased at different prices.'
         net_worth = round(float(self.rh.equity()), 2)
@@ -179,7 +188,7 @@ class Investment:
         template = CustomTemplate.source.strip()
         rendered = jinja2.Template(template).render(TITLE=title, SUMMARY=web_text, PROFIT=profit_web, LOSS=loss_web,
                                                     WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)
-        with open('api/robinhood.html', 'w') as static_file:
+        with open(fileio.robinhood, 'w') as static_file:
             static_file.write(rendered)
 
         self.logger.info(f'Static file generated in {round(float(time.perf_counter()), 2)}s')

@@ -69,7 +69,7 @@ def meetings_gatherer() -> str:
     else:
         plural = "meeting" if len(events) == 1 else "meetings"
         meeting_status = f"You have no more meetings for rest of the day {env.title}! " \
-                         f"However, you had {len(events)} {plural} earlier today."
+                         f"However, you had {len(events)} {plural} earlier today. {meeting_status}"
     return meeting_status
 
 

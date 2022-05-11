@@ -130,6 +130,7 @@ class FileIO(BaseModel):
     frequent: FilePath = f'fileio{os.path.sep}frequent.yaml'
     location: FilePath = f'fileio{os.path.sep}location.yaml'
     notes: FilePath = f'fileio{os.path.sep}notes.txt'
+    robinhood: FilePath = f'fileio{os.path.sep}robinhood.html'
     smart_devices: FilePath = f'fileio{os.path.sep}smart_devices.yaml'
     hostnames: FilePath = f'fileio{os.path.sep}hostnames.yaml'
     training: FilePath = f'fileio{os.path.sep}training_data.yaml'

@@ -2,6 +2,7 @@ import importlib
 import logging
 import random
 import string
+import time
 from logging.config import dictConfig
 
 import requests
@@ -217,6 +218,18 @@ class TelegramBot:
         """
         if not self.authenticate(payload=payload):
             return
+        if int(time.time()) - payload['date'] > 60:
+            request_time = time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(payload['date']))
+            logger.warning(f"Request timed out when {payload['from']['username']} requested {payload.get('text')}")
+            logger.warning(f"Request time: {request_time}")
+            if "bypass" in payload.get('text', '').lower():
+                logger.info(f"{payload['from']['username']} requested a timeout bypass.")
+                payload['text'] = payload.get('text').replace('bypass', '').replace('BYPASS', '')
+            else:
+                self.reply_to(payload=payload,
+                              response=f"Request timed out\nRequested: {request_time}\n"
+                                       f"Processed: {time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(time.time()))}")
+                return
         if any(word in payload.get('text') for word in ["hey", "hi", "hola", "what's up", "yo", "ssup", "whats up",
                                                         "hello", "howdy", "hey", "chao", "hiya", "aloha"]):
             self.reply_to(payload=payload,

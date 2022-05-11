@@ -51,8 +51,6 @@ logging.getLogger("uvicorn.access").propagate = False  # Disables access logger 
 
 logger = logging.getLogger('uvicorn.default')
 
-serve_file = f'api{os.path.sep}robinhood.html'
-
 app = FastAPI(
     title="Jarvis API",
     description="Handles offline communication with **Jarvis** and generates a one time auth token for **Robinhood**."
@@ -75,13 +73,12 @@ def remove_file(delay: int, filepath: str) -> NoReturn:
 
 def run_robinhood() -> NoReturn:
     """Runs in a dedicated process during startup, if the file was modified earlier than the past hour."""
-    if os.path.isfile(serve_file):
-        modified = int(os.stat(serve_file).st_mtime)
-        logger.info(f"{serve_file} was generated on {datetime.fromtimestamp(modified).strftime('%c')}.")
+    if os.path.isfile(fileio.robinhood):
+        modified = int(os.stat(fileio.robinhood).st_mtime)
+        logger.info(f"{fileio.robinhood} was generated on {datetime.fromtimestamp(modified).strftime('%c')}.")
         if int(time.time()) - modified < 3_600:  # generates new file only if the file is older than an hour
             return
-    else:
-        logger.info('Initiated robinhood gatherer.')
+    logger.info('Initiated robinhood gatherer.')
     Investment(logger=logger).report_gatherer()
 
 
@@ -273,9 +270,9 @@ if not os.getcwd().endswith("Jarvis") or all([env.robinhood_user, env.robinhood_
             raise APIResponse(status_code=400, detail='Request needs to be authorized with a single-use token.')
         if token == robinhood_token['token']:
             robinhood_token['token'] = ''
-            if not os.path.isfile(serve_file):
+            if not os.path.isfile(fileio.robinhood):
                 raise APIResponse(status_code=404, detail='Static file was not found on server.')
-            with open(serve_file) as static_file:
+            with open(fileio.robinhood) as static_file:
                 html_content = static_file.read()
             content_type, _ = mimetypes.guess_type(html_content)
             return HTMLResponse(content=html_content, media_type=content_type)  # serves as a static webpage
