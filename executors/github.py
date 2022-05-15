@@ -7,6 +7,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 from executors.controls import restart_control
+from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
@@ -26,6 +27,7 @@ def github(phrase: str) -> None:
         return
 
     if not all([env.git_user, env.git_pass]):
+        logger.warning("Github username or token not found.")
         support.no_env_vars()
         return
     auth = HTTPBasicAuth(env.git_user, env.git_pass)

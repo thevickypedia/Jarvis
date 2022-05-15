@@ -8,7 +8,6 @@ from threading import Thread
 from typing import NoReturn
 
 import psutil
-import yaml
 
 from executors.display_functions import decrease_brightness
 from executors.logger import logger
@@ -20,7 +19,7 @@ from modules.models import models
 from modules.utils import shared, support
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
 db = database.Database(database=fileio.base_db)
 db.create_table(table_name="restart", columns=["flag", "caller"])
 
@@ -71,12 +70,6 @@ def restart(target: str = None, quiet: bool = False) -> None:
             speaker.speak(text=f'Restarting now {env.title}! I will be up and running momentarily.', run=True)
         except RuntimeError as error:
             logger.critical(error)
-    if os.path.isfile(fileio.location):
-        with open(fileio.location) as file:
-            data = yaml.load(stream=file, Loader=yaml.FullLoader)
-        data["timestamp"] = int(time.time())
-        with open(fileio.location, 'w') as file:
-            yaml.dump(stream=file, data=data)
     os.system('python restart.py')
     exit(1)
 

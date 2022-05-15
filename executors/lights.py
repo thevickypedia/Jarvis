@@ -16,7 +16,7 @@ from modules.models import models
 from modules.utils import shared, support
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
 
 
 def lights(phrase: str) -> Union[None, NoReturn]:
@@ -29,13 +29,15 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         return
 
     if not os.path.isfile(fileio.smart_devices):
+        logger.warning(f"{fileio.smart_devices} not found.")
         support.no_env_vars()
         return
 
     with open(fileio.smart_devices) as file:
-        smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader)
+        smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
 
     if not any(smart_devices):
+        logger.warning(f"{fileio.smart_devices} is empty.")
         support.no_env_vars()
         return
 
@@ -92,8 +94,9 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         host_ip = [value for key, value in smart_devices.items()
                    if isinstance(value, list)]  # Checking for list since lights are inserted as a list and tv as string
     else:
-        host_ip = [smart_devices.get(each) for each in list(smart_devices.keys())
-                   if any(word in phrase.lower() for word in each.replace('_', ' ').replace('room', '').split())]
+        # Get the closest matching name provided in hostnames.yaml compared to what's requested by the user
+        host_ip = [smart_devices.get(support.get_closest_match(text=phrase.replace('room', ''),
+                                                               match_list=list(smart_devices.keys())))]
 
     if not host_ip:
         Thread(target=support.unrecognized_dumper, args=[{'LIGHTS': phrase}]).start()

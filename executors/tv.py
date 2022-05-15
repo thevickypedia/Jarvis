@@ -17,7 +17,7 @@ from modules.utils import shared, support
 from modules.wakeonlan import wakeonlan
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
 
 
 def television(phrase: str) -> None:
@@ -30,13 +30,19 @@ def television(phrase: str) -> None:
         return
 
     if not os.path.isfile(fileio.smart_devices):
+        logger.warning(f"{fileio.smart_devices} not found.")
         support.no_env_vars()
         return
 
     with open(fileio.smart_devices) as file:
-        smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader)
+        smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
 
     if not all([smart_devices.get('tv_ip'), smart_devices.get('tv_mac'), env.tv_client_key]):
+        if not all(smart_devices):
+            logger.warning(f"{fileio.smart_devices} is empty.")
+        else:
+            logger.warning("TV's IP, MacAddress and ClientKey not found.")
+            logger.warning(smart_devices)
         support.no_env_vars()
         return
 

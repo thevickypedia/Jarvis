@@ -9,7 +9,7 @@ from executors.logger import logger
 from executors.port_handler import is_port_in_use, kill_port_pid
 from modules.models import models
 
-fileio = models.fileio
+fileio = models.FileIO()
 env = models.env
 
 

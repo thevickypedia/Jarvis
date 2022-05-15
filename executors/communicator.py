@@ -15,8 +15,10 @@ env = models.env
 def read_gmail() -> None:
     """Reads unread emails from the gmail account for which the credentials are stored in env variables."""
     if not all([env.gmail_user, env.gmail_pass]):
+        logger.warning("Gmail username and password not found.")
         support.no_env_vars()
         return
+
     sys.stdout.write("\rFetching unread emails..")
     reader = ReadEmail(gmail_user=env.gmail_user, gmail_pass=env.gmail_pass)
     response = reader.instantiate()

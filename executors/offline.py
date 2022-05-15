@@ -19,7 +19,7 @@ from modules.models import models
 from modules.utils import shared, support
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
 
 
 def automator() -> NoReturn:
@@ -67,8 +67,12 @@ def automator() -> NoReturn:
 
         if start_netgear + env.sync_netgear <= time.time() or dry_run:
             start_netgear = time.time()
-            logger.info("Scanning smart devices using netgear module.") if dry_run and env.router_pass else None
-            Process(target=support.scan_smart_devices).start() if env.router_pass else None
+            if dry_run and env.router_pass:
+                logger.info("Scanning smart devices using netgear module.")
+            elif env.router_pass:
+                Process(target=support.scan_smart_devices).start()
+            else:
+                env.sync_netgear = 99_999_999  # NEVER RUN, since env vars are loaded only once during start up
 
         if alarm_state := support.lock_files(alarm_files=True):
             for each_alarm in alarm_state:

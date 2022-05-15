@@ -13,7 +13,8 @@ from modules.audio import speech_synthesis
 from modules.models import models
 from modules.utils import shared
 
-fileio = models.fileio
+fileio = models.FileIO()
+indicators = models.Indicators()
 docker_container = speech_synthesis.SpeechSynthesizer()
 
 
@@ -40,7 +41,7 @@ def start_processes() -> Dict[str, Process]:
     for func, process in processes.items():
         process.start()
         logger.info(f"Started function: {func} {process.sentinel} with PID: {process.pid}")
-    playsound(sound=f"indicators{os.path.sep}initialize.mp3", block=False)
+    playsound(sound=indicators.initialize, block=False)
     return processes
 
 

@@ -16,7 +16,7 @@ from modules.conditions import keywords
 from modules.models import models
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
 
 
 def alpha(text: str) -> bool:

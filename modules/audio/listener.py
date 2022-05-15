@@ -5,7 +5,6 @@
 
 """
 
-import os
 import sys
 
 from playsound import playsound
@@ -13,8 +12,10 @@ from speech_recognition import (Microphone, Recognizer, RequestError,
                                 UnknownValueError, WaitTimeoutError)
 
 from executors.logger import logger
+from modules.models import models
 from modules.utils import support
 
+indicators = models.Indicators()
 recognizer = Recognizer()  # initiates recognizer that uses google's translation
 microphone = Microphone()  # initiates microphone as a source for audio
 
@@ -34,11 +35,11 @@ def listen(timeout: int, phrase_limit: int, sound: bool = True) -> str:
     """
     with microphone as source:
         try:
-            playsound(f'indicators{os.path.sep}start.mp3', block=False) if sound else None
+            playsound(sound=indicators.start, block=False) if sound else None
             sys.stdout.write("\rListener activated..")
             listened = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_limit)
             support.flush_screen()
-            playsound(f'indicators{os.path.sep}end.mp3', block=False) if sound else None
+            playsound(sound=indicators.end, block=False) if sound else None
             return_val = recognizer.recognize_google(listened)
             logger.info(return_val)
         except (UnknownValueError, RequestError, WaitTimeoutError):

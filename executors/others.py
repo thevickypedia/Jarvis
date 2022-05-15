@@ -21,6 +21,7 @@ from randfacts import get_fact
 from executors.communicator import read_gmail
 from executors.date_time import current_date, current_time
 from executors.internet import vpn_checker
+from executors.logger import logger
 from executors.robinhood import robinhood
 from executors.todo_list import todo
 from executors.weather import weather
@@ -33,7 +34,8 @@ from modules.models import models
 from modules.utils import shared, support
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
+indicators = models.Indicators()
 db = database.Database(database=fileio.base_db)
 
 
@@ -216,7 +218,7 @@ def jokes() -> NoReturn:
 
 def flip_a_coin() -> NoReturn:
     """Says ``heads`` or ``tails`` from a random choice."""
-    playsound(f'indicators{os.path.sep}coin.mp3') if not shared.called_by_offline else None
+    playsound(sound=indicators.coin, block=True) if not shared.called_by_offline else None
     speaker.speak(
         text=f"""{random.choice(['You got', 'It landed on', "It's"])} {random.choice(['heads', 'tails'])} {env.title}"""
     )
@@ -282,6 +284,7 @@ def news(news_source: str = 'fox') -> None:
         news_source: Source from where the news has to be fetched. Defaults to ``fox``.
     """
     if not env.news_api:
+        logger.warning("News apikey not found.")
         support.no_env_vars()
         return
 

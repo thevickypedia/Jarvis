@@ -19,7 +19,7 @@ from modules.conditions import conversation, keywords
 from modules.models import models
 from modules.utils import shared
 
-fileio = models.fileio
+fileio = models.FileIO()
 env = models.env
 
 audio_driver = pyttsx3.init()
@@ -96,7 +96,7 @@ def frequently_used(function_name: str) -> NoReturn:
     """
     if os.path.isfile(fileio.frequent):
         with open(fileio.frequent) as file:
-            data = yaml.load(stream=file, Loader=yaml.FullLoader)
+            data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
         if data.get(function_name):
             data[function_name] += 1
         else:

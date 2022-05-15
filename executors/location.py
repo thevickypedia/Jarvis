@@ -33,7 +33,7 @@ from modules.models import models
 from modules.utils import shared, support
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
 
 # stores necessary values for geolocation to receive the latitude, longitude and address
 options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
@@ -55,6 +55,7 @@ def device_selector(phrase: str = None) -> Union[AppleDevice, None]:
         Returns the selected device from the class ``AppleDevice``
     """
     if not all([env.icloud_user, env.icloud_pass]):
+        logger.warning("ICloud username or password not found.")
         return
     icloud_api = PyiCloudService(env.icloud_user, env.icloud_pass)
     devices = [device for device in icloud_api.devices]
@@ -65,12 +66,11 @@ def device_selector(phrase: str = None) -> Union[AppleDevice, None]:
             for device in devices_str for key, val in device.items()
         ]
         index = closest_match.index(max(closest_match))
-        target_device = icloud_api.devices[index]
+        return icloud_api.devices[index]
     else:
         base_list = [device for device in devices if device.get("name") == socket.gethostname() or
                      socket.gethostname() == device.get("name") + ".local"] or devices
-        target_device = base_list[0]
-    return target_device if target_device else icloud_api.iphone
+        return base_list[0] or icloud_api.iphone
 
 
 def get_coordinates_from_ip() -> Tuple[float, float]:
@@ -93,22 +93,22 @@ def get_coordinates_from_ip() -> Tuple[float, float]:
         return coordinates
 
 
-def get_location_from_coordinates(coordinates: tuple) -> Tuple[float, float, dict]:
+def get_location_from_coordinates(coordinates: tuple) -> dict:
     """Uses the latitude and longitude information to get the address information.
 
     Args:
         coordinates: Takes the latitude and longitude as a tuple.
 
     Returns:
-        tuple:
-        Latitude, Longitude, and Address.
+        dict:
+        Location address.
     """
     try:
         locator = geo_locator.reverse(coordinates, language="en")
-        return coordinates[0], coordinates[1], locator.raw["address"]
+        return locator.raw["address"]
     except (GeocoderUnavailable, GeopyError) as error:
         logger.error(error)
-        return coordinates[0], coordinates[1], {}
+        return {}
 
 
 def location_services(device: AppleDevice) -> Union[NoReturn,
@@ -141,7 +141,7 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
         os.remove("pyicloud_error") if os.path.isfile("pyicloud_error") else None
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException) as error:
         if device:
-            logger.error(f"Unable to retrieve location::{error}")  # traceback
+            logger.error(f"Unable to retrieve location::{error}")
             caller = sys._getframe(1).f_code.co_name  # noqa
             if caller == "<module>":
                 if os.path.isfile("pyicloud_error"):
@@ -157,7 +157,7 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
         raise NoInternetError
 
     if location_info := get_location_from_coordinates(coordinates=coordinates):
-        return location_info
+        return *coordinates, location_info
     else:
         logger.error("Error retrieving address from latitude and longitude information. Initiating self reboot.")
         speaker.speak(text=f"Received an error while retrieving your address {env.title}! "
@@ -167,7 +167,8 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
 
 def write_current_location() -> NoReturn:
     """Extracts location information from public IP address and writes it to a yaml file."""
-    current_lat, current_lon, location_info = get_location_from_coordinates(coordinates=get_coordinates_from_ip())
+    current_lat, current_lon = get_coordinates_from_ip()
+    location_info = get_location_from_coordinates(coordinates=(current_lat, current_lon))
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
     logger.info(f"Writing location info in {fileio.location}")
     with open(fileio.location, 'w') as location_writer:

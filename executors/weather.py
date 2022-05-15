@@ -1,5 +1,6 @@
 import json
 import sys
+import urllib.error
 import urllib.request
 from datetime import datetime
 
@@ -7,13 +8,14 @@ import yaml
 from inflect import engine
 
 from executors.location import geo_locator
+from executors.logger import logger
 from modules.audio import speaker
 from modules.models import models
 from modules.temperature import temperature
 from modules.utils import shared, support
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
 
 
 def weather(phrase: str = None) -> None:
@@ -25,6 +27,7 @@ def weather(phrase: str = None) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     if not env.weather_api:
+        logger.warning("Weather apikey not found.")
         support.no_env_vars()
         return
 
@@ -51,7 +54,12 @@ def weather(phrase: str = None) -> None:
         lon = current_location['longitude']
     weather_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,' \
                   f'hourly&appid={env.weather_api}'
-    response = json.loads(urllib.request.urlopen(url=weather_url).read())  # loads the response in a json
+    try:
+        response = json.loads(urllib.request.urlopen(url=weather_url).read())  # loads the response in a json
+    except (urllib.error.HTTPError, urllib.error.URLError) as error:
+        logger.error(error)
+        speaker.speak(text=f"I'm sorry {env.title}! I ran into an exception. Please check your logs.")
+        return
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
 

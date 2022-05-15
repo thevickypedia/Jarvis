@@ -5,6 +5,7 @@ import sys
 
 from pyrh import Robinhood
 
+from executors.logger import logger
 from modules.audio import speaker
 from modules.models import models
 from modules.utils import support
@@ -63,6 +64,7 @@ def watcher(rh, result: list) -> str:
 def robinhood() -> None:
     """Gets investment details from robinhood API."""
     if not all([env.robinhood_user, env.robinhood_pass, env.robinhood_qr]):
+        logger.warning("Robinhood username, password or QR code not found.")
         support.no_env_vars()
         return
 

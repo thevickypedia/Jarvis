@@ -13,7 +13,7 @@ from modules.models import models
 from modules.offline import compatibles
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
 offline_list = compatibles.offline_compatible()
 
 
@@ -61,14 +61,15 @@ def auto_helper() -> Union[str, None]:
     """
     with open(fileio.automation) as read_file:
         try:
-            automation_data = yaml.load(stream=read_file, Loader=yaml.FullLoader)
+            automation_data = yaml.load(stream=read_file, Loader=yaml.FullLoader) or {}
         except ScannerError:
             warnings.warn(
                 "AUTOMATION FILE :: Invalid file format."
             )
             logger.error(f"Invalid file format. "
                          f"Logging automation data and removing the file to avoid endless errors.\n"
-                         f"{''.join(['*' for _ in range(120)])}\n\n{read_file.read()}\n\n"
+                         f"{''.join(['*' for _ in range(120)])}"
+                         f"\n\n{read_file.read()}\n\n"
                          f"{''.join(['*' for _ in range(120)])}")
             os.remove(fileio.automation)
             return

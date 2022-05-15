@@ -1,9 +1,8 @@
 import json
-import os
 import urllib.error
 import urllib.request
 from threading import Thread
-from typing import Union
+from typing import Tuple, Union
 
 import yaml
 from playsound import playsound
@@ -17,7 +16,30 @@ from modules.temperature import temperature
 from modules.utils import shared, support
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
+indicators = models.Indicators()
+
+
+def get_current_temp(location: dict) -> Tuple[Union[int, str], int]:
+    """Get the current temperature at a given location.
+
+    Args:
+        location: Takes the location information as a dictionary.
+
+    Returns:
+        tuple:
+        A tuple of current temperature and target temperature.
+    """
+    try:
+        current_temp = int(temperature.k2f(arg=json.loads(urllib.request.urlopen(
+            url=f"https://api.openweathermap.org/data/2.5/onecall?lat={location['latitude']}&"
+                f"lon={location['longitude']}&exclude=minutely,hourly&appid={env.weather_api}"
+        ).read())['current']['temp']))
+    except (urllib.error.HTTPError, urllib.error.URLError) as error:
+        logger.error(error)
+        return "unknown", 66
+    target_temp = 83 if current_temp < 45 else 57 if current_temp > 70 else 66
+    return f"{current_temp}°F", target_temp
 
 
 def car(phrase: str) -> None:
@@ -31,12 +53,15 @@ def car(phrase: str) -> None:
         Car Climate controls: 58 is LO, 84 is HOT
     """
     if not all([env.car_email, env.car_pass, env.car_pin]):
+        logger.warning("InControl email or password or PIN not found.")
         support.no_env_vars()
         return
 
     disconnected = f"I wasn't able to connect your car {env.title}! Please check the logs for more information."
 
     if "start" in phrase or "set" in phrase or "turn on" in phrase:
+        if not shared.called_by_offline:
+            playsound(sound=indicators.exhaust, block=False)
         extras = ""
         if target_temp := support.extract_nos(input_=phrase, method=int):
             if target_temp < 57:
@@ -48,37 +73,32 @@ def car(phrase: str) -> None:
         elif "low" in phrase or "lowest" in phrase:
             target_temp = 57
         else:
-            if os.path.isfile(fileio.location):
-                with open(fileio.location) as file:
-                    current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
-                current_temp = int(temperature.k2f(arg=json.loads(urllib.request.urlopen(
-                    url=f"https://api.openweathermap.org/data/2.5/onecall?lat={current_location['latitude']}&"
-                        f"lon={current_location['longitude']}&exclude=minutely,hourly&appid={env.weather_api}"
-                ).read())['current']['temp']))
-                extras += f"The current temperature is {current_temp}°F, so "
-                target_temp = 83 if current_temp < 45 else 57 if current_temp > 70 else 66
+            if vehicle_position := vehicle(operation="LOCATE_INTERNAL"):
+                current_temp, target_temp = get_current_temp(location=vehicle_position)
+                extras += f"Your {vehicle_position['name']} is at {vehicle_position['city']} " \
+                          f"{vehicle_position['state']}. The current temperature at {vehicle_position['city']} is " \
+                          f"{current_temp}, so "
             else:
-                logger.critical(f"{fileio.location} is missing!")
-                target_temp = 69
+                with open(fileio.location) as file:
+                    current_temp, target_temp = get_current_temp(location=yaml.load(stream=file,
+                                                                                    Loader=yaml.FullLoader))
+                extras += f"The current temperature is {current_temp}, so "
 
         extras += f"I've configured the climate setting to {target_temp}°F"
-
-        if not shared.called_by_offline:
-            playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
         if car_name := vehicle(operation="START", temp=target_temp - 26):
             speaker.speak(text=f"Your {car_name} has been started {env.title}. {extras}")
         else:
             speaker.speak(text=disconnected)
     elif "turn off" in phrase or "stop" in phrase:
         if not shared.called_by_offline:
-            playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
+            playsound(sound=indicators.exhaust, block=False)
         if car_name := vehicle(operation="STOP"):
             speaker.speak(text=f"Your {car_name} has been turned off {env.title}!")
         else:
             speaker.speak(text=disconnected)
     elif "secure" in phrase:
         if not shared.called_by_offline:
-            playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
+            playsound(sound=indicators.exhaust, block=False)
         if car_name := vehicle(operation="SECURE"):
             speaker.speak(text=f"Guardian mode has been enabled {env.title}! Your {car_name} is now secure.")
         else:
@@ -87,28 +107,28 @@ def car(phrase: str) -> None:
         if shared.called_by_offline:
             speaker.speak(text="Cannot unlock the car via offline communicator due to security reasons.")
             return
-        playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
+        playsound(sound=indicators.exhaust, block=False)
         if car_name := vehicle(operation="UNLOCK"):
             speaker.speak(text=f"Your {car_name} has been unlocked {env.title}!")
         else:
             speaker.speak(text=disconnected)
     elif "lock" in phrase:
         if not shared.called_by_offline:
-            playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
+            playsound(sound=indicators.exhaust, block=False)
         if car_name := vehicle(operation="LOCK"):
             speaker.speak(text=f"Your {car_name} has been locked {env.title}!")
         else:
             speaker.speak(text=disconnected)
     elif "honk" in phrase or "blink" in phrase or "horn" in phrase:
         if not shared.called_by_offline:
-            playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
+            playsound(sound=indicators.exhaust, block=False)
         if car_name := vehicle(operation="HONK"):
             speaker.speak(text=f"I've made your {car_name} honk and blink {env.title}!")
         else:
             speaker.speak(text=disconnected)
     elif "locate" in phrase or "where" in phrase:
         if not shared.called_by_offline:
-            playsound(sound=f"indicators{os.path.sep}exhaust.mp3", block=False)
+            playsound(sound=indicators.exhaust, block=False)
         if location := vehicle(operation="LOCATE"):
             speaker.speak(text=location)
         else:
@@ -118,7 +138,7 @@ def car(phrase: str) -> None:
         Thread(target=support.unrecognized_dumper, args=[{"CAR": phrase}]).start()
 
 
-def vehicle(operation: str, temp: int = None) -> Union[str, None]:
+def vehicle(operation: str, temp: int = None) -> Union[str, dict, None]:
     """Establishes a connection with the car and returns an object to control the primary vehicle.
 
     Args:
@@ -150,18 +170,23 @@ def vehicle(operation: str, temp: int = None) -> Union[str, None]:
             handler.enable_guardian_mode(pin=env.car_pin)
         elif operation == "HONK":
             handler.honk_blink()
-        elif operation == "LOCATE":
+        elif operation == "LOCATE" or operation == "LOCATE_INTERNAL":
             if not (position := handler.get_position().get('position')):
                 logger.error("Unable to get position of the vehicle.")
                 return
             if not (data := handler.connection.reverse_geocode(latitude=position.get('latitude'),
                                                                longitude=position.get('longitude'))):
                 logger.error("Unable to get location details of the vehicle.")
-                data = get_location_from_coordinates(coordinates=(position['latitude'], position['longitude']))[-1]
+                data = get_location_from_coordinates(coordinates=(position['latitude'], position['longitude']))
             number = data.get('streetNumber', data.get('house_number'))
             street = data.get('street', data.get('road'))
             state = data.get('region', data.get('state'))
             city, country = data.get('city'), data.get('country')
+            if operation == "LOCATE_INTERNAL":
+                position['city'] = city
+                position['state'] = state
+                position['name'] = handler.get_attributes().get('vehicleBrand', 'car')
+                return position
             if all([number, street, state, city, country]):
                 address = f"{number} {street}, {city} {state}, {country}"
             elif data.get('formattedAddress'):
@@ -170,6 +195,10 @@ def vehicle(operation: str, temp: int = None) -> Union[str, None]:
                 address = data
             return f"Your {handler.get_attributes().get('vehicleBrand', 'car')} is at {address}"
         return handler.get_attributes().get("vehicleBrand", "car")
-    except urllib.error.HTTPError as error:
-        logger.error(error)
-        logger.error(f"Failed to connect {error.url} with error code: {error.code}")
+    except (urllib.error.HTTPError, urllib.error.URLError) as error:
+        if isinstance(error, urllib.error.URLError):
+            logger.fatal("UNKNOWN ERROR! REQUIRES INVESTIGATION!")
+            logger.fatal(error)
+        else:
+            logger.error(error)
+            logger.error(f"Failed to connect {error.url} with error code: {error.code}")

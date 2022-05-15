@@ -139,4 +139,19 @@ class FileIO(BaseModel):
     speech_synthesis_log: FilePath = datetime.now().strftime(f'logs{os.path.sep}speech_synthesis_%d-%m-%Y.log')
 
 
-fileio = FileIO()
+class Indicators(BaseModel):
+    """Loads all the mp3 files' path required by Jarvis.
+
+    >>> Indicators
+
+    """
+
+    acknowledgement: FilePath = f'indicators{os.path.sep}acknowledgement.mp3'
+    alarm: FilePath = f'indicators{os.path.sep}alarm.mp3'
+    coin: FilePath = f'indicators{os.path.sep}coin.mp3'
+    end: FilePath = f'indicators{os.path.sep}end.mp3'
+    exhaust: FilePath = f'indicators{os.path.sep}exhaust.mp3'
+    initialize: FilePath = f'indicators{os.path.sep}initialize.mp3'
+    start: FilePath = f'indicators{os.path.sep}start.mp3'
+    tv_connect: FilePath = f'indicators{os.path.sep}tv_connect.mp3'
+    tv_scan: FilePath = f'indicators{os.path.sep}tv_scan.mp3'

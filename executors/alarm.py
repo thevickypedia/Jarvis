@@ -13,6 +13,7 @@ from modules.models import models
 from modules.utils import shared, support
 
 env = models.env
+indicators = models.Indicators()
 
 
 def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = None) -> NoReturn:
@@ -123,6 +124,6 @@ def kill_alarm() -> None:
 def alarm_executor() -> NoReturn:
     """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
     volume.volume(level=100)
-    subprocess.call(["open", f"indicators{os.path.sep}alarm.mp3"])
+    subprocess.call(["open", indicators.alarm])
     time.sleep(200)
     volume.volume(level=50)

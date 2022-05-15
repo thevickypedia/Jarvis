@@ -29,7 +29,7 @@ from modules.models import models
 from modules.netgear.ip_scanner import LocalIPScan
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
 
 
 def celebrate() -> str:
@@ -206,10 +206,10 @@ def extract_time(input_: str) -> list:
         list:
         Extracted time from the string.
     """
-    return re.findall(r'([0-9]+:[0-9]+\s?(?:a.m.|p.m.:?))', input_) or \
-        re.findall(r'([0-9]+\s?(?:a.m.|p.m.:?))', input_) or \
-        re.findall(r'([0-9]+:[0-9]+\s?(?:am|pm:?))', input_) or \
-        re.findall(r'([0-9]+\s?(?:am|pm:?))', input_)
+    return re.findall(r'(\d+:\d+\s?(?:a.m.|p.m.:?))', input_) or \
+        re.findall(r'(\d+\s?(?:a.m.|p.m.:?))', input_) or \
+        re.findall(r'(\d+:\d+\s?(?:am|pm:?))', input_) or \
+        re.findall(r'(\d+\s?(?:am|pm:?))', input_)
 
 
 def extract_nos(input_: str, method: type = float) -> Union[int, float]:

@@ -84,12 +84,12 @@ def ip_info(phrase: str) -> None:
         try:
             output = f"My public IP {ssid}is " \
                      f"{json.load(urllib.request.urlopen(url='https://ipinfo.io/json')).get('ip')}"
-        except urllib.error.HTTPError as error:
+        except (urllib.error.HTTPError, urllib.error.URLError) as error:
             logger.error(error)
         try:
             output = output or f"My public IP {ssid}is " \
                                f"{json.loads(urllib.request.urlopen(url='http://ip.jsontest.com').read()).get('ip')}"
-        except urllib.error.HTTPError as error:
+        except (urllib.error.HTTPError, urllib.error.URLError) as error:
             logger.error(error)
         if not output:
             output = f"I was unable to fetch the public IP {env.title}!"

@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+6.0.2 (05/15/2022)
+------------------
+- Set car temperature based on the vehicle's location
+- Get closest match for lights controls
+- Reduce redundancy in location.py
+- Add more logging for missing fileio
+- Add more exception handlers for URL requests
+- Add a class for indicators to load all mp3 files upon startup
+
 6.0.1 (05/11/2022)
 ------------------
 - Set incoming message process timeout for `TelegramAPI`

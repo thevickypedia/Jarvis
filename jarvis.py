@@ -24,7 +24,8 @@ from modules.models import models
 from modules.utils import shared
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
+indicators = models.Indicators()
 db = database.Database(database=fileio.base_db)
 
 
@@ -93,7 +94,7 @@ class Activator:
                 pcm = self.audio_stream.read(num_frames=self.detector.frame_length, exception_on_overflow=False)
                 pcm = struct.unpack_from("h" * self.detector.frame_length, pcm)
                 if self.detector.process(pcm=pcm) >= 0:
-                    playsound(sound=f"indicators{os.path.sep}acknowledgement.mp3", block=False)
+                    playsound(sound=indicators.acknowledgement, block=False)
                     self.close_stream()
                     initiator(phrase=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
                               should_return=True)
@@ -151,7 +152,7 @@ def sentry_mode() -> NoReturn:
                 sys.stdout.write("\r")
                 if not any(word in recognizer.recognize_google(listened).lower() for word in env.legacy_keywords):
                     continue
-                playsound(sound=f"indicators{os.path.sep}acknowledgement.mp3", block=True)
+                playsound(sound=indicators.acknowledgement, block=True)
                 initiator(phrase=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
                           should_return=True)
                 speaker.speak(run=True)

@@ -25,7 +25,7 @@ from api.rh_helper import CustomTemplate  # noqa
 from modules.models import config, models  # noqa
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
 
 
 class Investment:

@@ -8,7 +8,7 @@ from modules.exceptions import MissingEnvVars
 from modules.models import models
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
 
 
 def _get_hostnames() -> dict:

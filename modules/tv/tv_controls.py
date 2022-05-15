@@ -15,6 +15,7 @@ from modules.models import models
 from modules.utils import shared
 
 env = models.env
+indicators = models.Indicators()
 
 
 class TV:
@@ -46,7 +47,7 @@ class TV:
             logger.error(error)
             self.reconnect = True
             if not shared.called_by_offline:
-                playsound(sound=f'indicators{os.path.sep}tv_scan.mp3', block=False)
+                playsound(sound=indicators.tv_scan, block=False)
             if discovered := WebOSClient.discover():
                 self.client = discovered[0]
                 try:
@@ -65,7 +66,7 @@ class TV:
                 sys.stdout.write('\rConnected to the TV.')
                 break
             elif status == WebOSClient.PROMPTED:
-                playsound(sound=f'indicators{os.path.sep}tv_connect.mp3', block=False)
+                playsound(sound=indicators.tv_connect, block=False)
                 self.reconnect = True
                 sys.stdout.write('\rPlease accept the connection request on your TV.')
 

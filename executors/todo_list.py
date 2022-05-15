@@ -8,7 +8,7 @@ from modules.models import models
 from modules.utils import shared
 
 env = models.env
-fileio = models.fileio
+fileio = models.FileIO()
 
 tdb = database.Database(database=fileio.task_db)
 tdb.create_table(table_name="tasks", columns=["category", "item"])
