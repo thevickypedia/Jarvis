@@ -48,8 +48,9 @@ def weather(phrase: str = None) -> None:
         with open(fileio.location) as file:
             current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
 
-        city = current_location.get('address', {}).get('city', 'Unknown')
-        state = current_location.get('address', {}).get('state', 'Unknown')
+        address = current_location.get('address', {})
+        city = address.get('city', address.get('hamlet', 'Unknown'))
+        state = address.get('state', 'Unknown')
         lat = current_location['latitude']
         lon = current_location['longitude']
     weather_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,' \

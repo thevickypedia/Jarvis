@@ -72,7 +72,9 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
         logger.info(f'Speaker called by: {caller}')
         sys.stdout.write(f"\r{text}")
         shared.text_spoken = text
-        if not shared.called_by_offline:
+        if shared.called_by_offline:
+            shared.offline_caller = caller
+        else:
             if env.speech_synthesis_timeout and \
                     speech_synthesizer(text=text) and \
                     os.path.isfile(fileio.speech_synthesis_wav):

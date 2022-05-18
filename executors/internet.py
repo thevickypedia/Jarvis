@@ -94,7 +94,7 @@ def ip_info(phrase: str) -> None:
         if not output:
             output = f"I was unable to fetch the public IP {env.title}!"
     else:
-        output = f"My local IP address for {socket.gethostname().rstrip('.local')} is {ip_address()}"
+        output = f"My local IP address for {socket.gethostname().replace('.local', '')} is {ip_address()}"
     speaker.speak(text=output)
 
 

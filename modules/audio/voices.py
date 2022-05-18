@@ -16,13 +16,17 @@ from modules.models import models
 env = models.env
 
 
-def voice_default() -> None:
-    """Sets voice module to default."""
+def voice_default(stdout: bool = True) -> None:
+    """Sets voice module to default.
+
+    Args:
+        stdout: Takes a boolean flag whether to display voice module configuration name.
+    """
     voices = speaker.audio_driver.getProperty("voices")  # gets the list of voices available
     voice_model = "Daniel" if env.mac else "David"
     for ind_d, voice_id in enumerate(voices):  # noqa
         if voice_id.name == voice_model or voice_model in voice_id.name:
-            sys.stdout.write(f"\rVoice module has been configured to {ind_d}::{voice_id.name}")
+            sys.stdout.write(f"\rVoice module has been configured to {ind_d}::{voice_id.name}") if stdout else None
             speaker.audio_driver.setProperty("voice", voices[ind_d].id)  # noqa
             return
 

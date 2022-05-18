@@ -49,14 +49,14 @@ if [[ "$OSName" == "Darwin" ]]; then
     fi
 
     # Packages installed using homebrew
-    brew install portaudio coreutils
+    brew install portaudio coreutils ffmpeg lame
     git clone https://github.com/toy/blueutil.git && cd blueutil && make && make install && cd ../ && rm -rf blueutil
 
     # Installs the OS independent packages
     os_independent_packages
 
     # Mac specifics
-    python -m pip install python-crontab==2.6.0 PyAudio==0.2.11 playsound==1.3.0
+    python -m pip install python-crontab==2.6.0 PyAudio==0.2.11 playsound==1.3.0 ftransc==7.0.3
 
     # Install face-recognition/detection dependencies as stand alone so users aren't blocked until then
     python -m pip install opencv-python==4.4.0.44

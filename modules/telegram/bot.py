@@ -1,13 +1,21 @@
 import importlib
+import json
 import logging
+import os
 import random
 import string
 import time
 from logging.config import dictConfig
+from typing import NoReturn, Union
 
+import pyttsx3
 import requests
+from ftransc.core.transcoders import transcode
+from speech_recognition import AudioFile, Recognizer, UnknownValueError
 
 from executors.offline import offline_communicator
+from executors.timeout import timeout
+from modules.audio.voices import voice_default
 from modules.exceptions import BotInUse
 from modules.models import config, models
 from modules.offline import compatibles
@@ -32,7 +40,7 @@ def greeting() -> str:
         Random greeting.
     """
     return random.choice(
-        ["Greetings", "Hello", "Welcome", "Bonjour", "Hey there", "What's up", "Yo", "Ssup", "Cheers", "Ciao"]
+        ["Greetings", "Hello", "Welcome", "Bonjour", "Hey there", "What's up", "Yo", "Cheers"]
     )
 
 
@@ -53,8 +61,7 @@ def get_title_by_name(name: str) -> str:
     if response.json().get('gender', 'Unidentified').lower() == 'female':
         logger.info(f"{name} has been identified as female.")
         return 'mam'
-    else:
-        return 'sir'
+    return 'sir'
 
 
 def intro() -> str:
@@ -101,33 +108,86 @@ class TelegramBot:
     """
 
     BASE_URL = 'https://api.telegram.org/bot'
+    FILE_CONTENT_URL = f'https://api.telegram.org/file/bot{env.bot_token}/' + '{file_path}'
+    # TODO: Integrate feature to save document, photo and audio on server.
+    # SUPPORTED_TYPES = ['text', 'audio', 'document', 'photo', 'voice']
 
     def __init__(self):
         """Initiates a session."""
         self.session = requests.Session()
         self.session.verify = True
+        self.recognizer = Recognizer()
+        self.audio_driver = pyttsx3.init()
+        voice_default(stdout=False)
 
-    def _make_request(self, url: str, payload: dict) -> requests.Response:
+    def _get_file(self, payload: dict) -> Union[bytes, None]:
+        """Makes a request to get the file and file path.
+
+        Args:
+            payload: Payload received, to extract information from.
+
+        Returns:
+            bytes:
+            Returns the file content as bytes.
+        """
+        response = self._make_request(url=self.BASE_URL + env.bot_token + '/getFile',
+                                      payload={'file_id': payload['file_id']})
+        try:
+            json_response = json.loads(response.content)
+        except json.JSONDecodeError as error:
+            logger.error(error)
+            return
+        if not response.ok or not json_response.get('ok'):
+            logger.error(response.content)
+            return
+        response = self.session.get(url=self.FILE_CONTENT_URL.format(file_path=json_response['result']['file_path']))
+        if not response.ok:
+            logger.error(response.content)
+            return
+        return response.content
+
+    def _make_request(self, url: str, payload: dict, files: dict = None) -> requests.Response:
         """Makes a post request with a ``connect timeout`` of 5 seconds and ``read timeout`` of 60.
 
         Args:
             url: URL to submit the request.
-            payload: Payload to send as data.
+            payload: Payload received, to extract information from.
+            files: Take filename as an optional argument.
 
         Returns:
             Response:
             Response class.
         """
-        response = self.session.post(url=url, data=payload, timeout=(5, 60))
+        if files:
+            response = self.session.post(url=url, data=payload, files=files, timeout=(5, 60))
+        else:
+            response = self.session.post(url=url, data=payload, timeout=(5, 60))
         if not response.ok:
             logger.error(response.json())
         return response
+
+    def send_audio(self, chat_id: int, filename: str, parse_mode: str = 'HTML') -> requests.Response:
+        """Sends an audio file to the user.
+
+        Args:
+            chat_id: Chat ID.
+            filename: Name of the audio file that has to be sent.
+            parse_mode: Parse mode. Defaults to ``HTML``
+
+        Returns:
+            Response:
+            Response class.
+        """
+        with open(filename, 'rb') as audio:
+            files = {'audio': audio.read()}
+        return self._make_request(url=self.BASE_URL + env.bot_token + '/sendAudio', files=files,
+                                  payload={'chat_id': chat_id, 'title': filename, 'parse_mode': parse_mode})
 
     def reply_to(self, payload: dict, response: str, parse_mode: str = 'markdown') -> requests.Response:
         """Generates a payload to reply to a message received.
 
         Args:
-            payload: Payload to send as data.
+            payload: Payload received, to extract information from.
             response: Message to be sent to the user.
             parse_mode: Parse mode. Defaults to ``markdown``
 
@@ -135,9 +195,10 @@ class TelegramBot:
             Response:
             Response class.
         """
-        post_data = {'chat_id': payload['from']['id'], 'reply_to_message_id': payload['message_id'], 'text': response,
-                     'parse_mode': parse_mode}
-        return self._make_request(url=self.BASE_URL + env.bot_token + '/sendMessage', payload=post_data)
+        return self._make_request(url=self.BASE_URL + env.bot_token + '/sendMessage',
+                                  payload={'chat_id': payload['from']['id'],
+                                           'reply_to_message_id': payload['message_id'],
+                                           'text': response, 'parse_mode': parse_mode})
 
     def send_message(self, chat_id: int, response: str, parse_mode: str = 'markdown') -> requests.Response:
         """Generates a payload to reply to a message received.
@@ -151,10 +212,10 @@ class TelegramBot:
             Response:
             Response class.
         """
-        post_data = {'chat_id': chat_id, 'text': response, 'parse_mode': parse_mode}
-        return self._make_request(url=self.BASE_URL + env.bot_token + '/sendMessage', payload=post_data)
+        return self._make_request(url=self.BASE_URL + env.bot_token + '/sendMessage',
+                                  payload={'chat_id': chat_id, 'text': response, 'parse_mode': parse_mode})
 
-    def poll_for_messages(self) -> None:
+    def poll_for_messages(self) -> NoReturn:
         """Polls ``api.telegram.org`` for new messages.
 
         Raises:
@@ -183,15 +244,36 @@ class TelegramBot:
                 continue
             for result in response['result']:
                 message = result.get('message', {})
-                if message.get('text') and message.get('from', {}).get('id'):
-                    self.process_payload(payload=message)
+                if message.get('text'):
+                    self.process_text(payload=message)
+                elif message.get('voice'):
+                    self.process_voice(payload=message)
                 offset = result['update_id'] + 1
+
+    def audio_to_text(self, filename: str) -> str:
+        """Converts audio to text using speech recognition.
+
+        Args:
+            filename: Filename to process the information from.
+
+        Returns:
+            str:
+            Returns the string converted from the audio file.
+        """
+        try:
+            file = AudioFile(filename_or_fileobject=filename)
+            with file as source:
+                audio = self.recognizer.record(source)
+            os.remove(filename)
+            return self.recognizer.recognize_google(audio)
+        except UnknownValueError:
+            logger.error("Unrecognized audio or language.")
 
     def authenticate(self, payload: dict) -> bool:
         """Authenticates the user with ``userId`` and ``userName``.
 
         Args:
-            payload: Payload to extract the user information.
+            payload: Payload received, to extract information from.
 
         Returns:
             bool:
@@ -207,30 +289,98 @@ class TelegramBot:
             logger.error(f"Unauthorized chatID ({chat['id']}) or userName ({chat['username']})")
             self.send_message(chat_id=chat['id'], response=f"401 {chat['username']} UNAUTHORIZED")
             return False
-        logger.info(f"{chat['username']}: {payload.get('text')}")
+        logger.info(f"{chat['username']}: {payload['text']}") if payload.get('text') else None
+        if not USER_TITLE.get(payload['from']['username']):
+            USER_TITLE[payload['from']['username']] = get_title_by_name(name=payload['from']['first_name'])
         return True
 
-    def process_payload(self, payload: dict) -> None:
+    def verify_timeout(self, payload: dict) -> bool:
+        """Verifies whether the message was received in the past 60 seconds.
+
+        Args:
+            payload: Payload received, to extract information from.
+
+        Returns:
+            bool:
+            True or False flag to indicate if the request timed out.
+        """
+        if int(time.time()) - payload['date'] < 60:
+            return True
+        request_time = time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(payload['date']))
+        logger.warning(f"Request timed out when {payload['from']['username']} requested {payload.get('text')}")
+        logger.warning(f"Request time: {request_time}")
+        if "bypass" in payload.get('text', '').lower():
+            logger.info(f"{payload['from']['username']} requested a timeout bypass.")
+            return True
+        else:
+            self.reply_to(payload=payload,
+                          response=f"Request timed out\nRequested: {request_time}\n"
+                                   f"Processed: {time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(time.time()))}")
+
+    def process_voice(self, payload: dict) -> None:
         """Processes the payload received after checking for authentication.
 
         Args:
-            payload: Payload to extract information from.
+            payload: Payload received, to extract information from.
         """
         if not self.authenticate(payload=payload):
             return
-        if int(time.time()) - payload['date'] > 60:
-            request_time = time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(payload['date']))
-            logger.warning(f"Request timed out when {payload['from']['username']} requested {payload.get('text')}")
-            logger.warning(f"Request time: {request_time}")
-            if "bypass" in payload.get('text', '').lower():
-                logger.info(f"{payload['from']['username']} requested a timeout bypass.")
-                payload['text'] = payload.get('text').replace('bypass', '').replace('BYPASS', '')
+        if not self.verify_timeout(payload=payload):
+            return
+        if not env.mac:
+            self.reply_to(payload=payload, response="Jarvis is currently running on a Windows machine.\n"
+                                                    "Voice commands are currently supported only on MacOS.\n"
+                                                    "Please use regular text for a response from Jarvis.")
+            return
+        if bytes_obj := self._get_file(payload=payload['voice']):
+            if payload['voice']['mime_type'] == 'audio/ogg':
+                filename = f"{payload['voice']['file_unique_id']}.ogg"
             else:
+                logger.error("Unknown FileType received.")
+                logger.error(payload)
                 self.reply_to(payload=payload,
-                              response=f"Request timed out\nRequested: {request_time}\n"
-                                       f"Processed: {time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(time.time()))}")
+                              response=f"Your voice command was received as an unknown file type: "
+                                       f"{payload['voice']['mime_type']}\nPlease try the command as a text.")
                 return
-        if any(word in payload.get('text') for word in ["hey", "hi", "hola", "what's up", "yo", "ssup", "whats up",
+            with open(filename, 'wb') as file:
+                file.write(bytes_obj)
+            if transcode(input_file_name=filename, output_audio_format="flac"):
+                os.remove(filename)
+                filename = filename.replace(".ogg", ".flac")
+                audio_to_text = self.audio_to_text(filename=filename)
+                if audio_to_text:
+                    payload['text'] = audio_to_text
+                    self.jarvis(payload=payload)
+                else:
+                    title = USER_TITLE.get(payload['from']['username'], env.title)
+                    if filename := self.text_to_audio(text=f"I'm sorry {title}! I was unable to process your "
+                                                           "voice command. Please try again!"):
+                        self.send_audio(filename=filename, chat_id=payload['from']['id'])
+                        os.remove(filename)
+                        return
+                    else:
+                        self.reply_to(payload=payload,
+                                      response=f"I'm sorry {title}! I was neither to process your voice command, "
+                                               f"nor respond to you with one. Please try using text commands.")
+                        return
+            else:
+                logger.error("Failed to transcode OPUS to Native FLAC")
+        else:
+            logger.error("Unable to get file for the file_id in the payload received.")
+            logger.error(payload)
+
+    def process_text(self, payload: dict) -> None:
+        """Processes the payload received after checking for authentication.
+
+        Args:
+            payload: Payload received, to extract information from.
+        """
+        if not self.authenticate(payload=payload):
+            return
+        if not self.verify_timeout(payload=payload):
+            return
+        payload['text'] = payload.get('text', '').replace('bypass', '').replace('BYPASS', '')
+        if any(word in payload.get('text') for word in ["hey", "hi", "hola", "what's up", "ssup", "whats up",
                                                         "hello", "howdy", "hey", "chao", "hiya", "aloha"]):
             self.reply_to(payload=payload,
                           response=f"{greeting()} {payload['from']['first_name']}!\n"
@@ -248,15 +398,13 @@ class TelegramBot:
             payload['text'] = payload['text'].lstrip('/').replace('jarvis', '').replace('_', ' ').strip()
         if not payload['text']:
             return
-        if not USER_TITLE.get(payload['from']['username']):
-            USER_TITLE[payload['from']['username']] = get_title_by_name(name=payload['from']['first_name'])
         self.jarvis(payload=payload)
 
     def jarvis(self, payload: dict) -> None:
         """Uses the table ``offline`` in the database to process a response.
 
         Args:
-            payload: Payload to extract information from.
+            payload: Payload received, to extract information from.
         """
         command = payload['text']
         command_lower = command.lower()
@@ -292,8 +440,44 @@ class TelegramBot:
             return
 
         response = offline_communicator(command=command).replace(env.title, USER_TITLE.get(payload['from']['username']))
-        self.send_message(chat_id=payload['from']['id'], response=response)
         logger.info(f'Response: {response}')
+        if payload.get('voice'):
+            if filename := self.text_to_audio(text=response):
+                self.send_audio(chat_id=payload['from']['id'], filename=filename)
+                os.remove(filename)
+                return
+        self.send_message(chat_id=payload['from']['id'], response=response)
+
+    def text_to_audio(self, text: str) -> Union[str, None]:
+        """Converts text into an audio file.
+
+        Args:
+            text: Takes the text that has to be converted as audio.
+
+        Returns:
+            str:
+            Returns the temporary filename.
+        """
+        if shared.offline_caller:
+            tmp_file = f"{shared.offline_caller}.flac"
+            shared.offline_caller = None  # Reset caller after using it
+        else:
+            tmp_file = f"{int(time.time())}.flac"
+        self.audio_driver.save_to_file(filename=tmp_file, text=text)
+        with timeout(duration=2, capture_frame=False):
+            try:
+                self.audio_driver.runAndWait()
+            except TimeoutError as error:
+                logger.error(error)
+        if not os.path.isfile(tmp_file):
+            logger.error("Failed to generate text to audio within the set timeout.")
+            return
+        if transcode(input_file_name=tmp_file, output_audio_format="mp3"):
+            os.remove(tmp_file)
+            tmp_file = tmp_file.replace(".flac", ".mp3")
+            return tmp_file
+        else:
+            logger.error("Failed to transcode Native FLAC to MP3")
 
 
 if __name__ == '__main__':

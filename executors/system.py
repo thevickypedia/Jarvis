@@ -55,6 +55,9 @@ def system_vitals() -> None:
         cpu_temp, gpu_temp, fan_speed, output = None, None, None, ""
 
         # Tested on 10.13, 10.14, 11.6 and 12.3 versions
+        if not shared.hosted_device or not shared.hosted_device.get('os_version'):
+            logger.warning("hosted_device information was not loaded during startup. Reloading now.")
+            shared.hosted_device = hosted_device_info()
         if packaging.version.parse(shared.hosted_device.get('os_version')) > packaging.version.parse('10.14'):
             critical_info = [each.strip() for each in (os.popen(
                 f'echo {env.root_password} | sudo -S powermetrics --samplers smc -i1 -n1'

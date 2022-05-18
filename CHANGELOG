@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+6.0.3 (05/17/2022)
+------------------
+- FEATURE::Jarvis can process voice commands via `TelegramAPI`
+- Convert ogg to flac to mp3 to handle voice command requests
+- Fix hostname being wonky using strip
+- Add new shared variable to identify caller function name
+- Fix shared hosted_device information missing in multiprocessing
+- Print voice module information optionally
+- Onboard timeout handler for a particular function or a task
+- City and hamlet are equivalent in location
+
 6.0.2 (05/15/2022)
 ------------------
 - Set car temperature based on the vehicle's location

@@ -75,9 +75,8 @@ def car(phrase: str) -> None:
         else:
             if vehicle_position := vehicle(operation="LOCATE_INTERNAL"):
                 current_temp, target_temp = get_current_temp(location=vehicle_position)
-                extras += f"Your {vehicle_position['name']} is at {vehicle_position['city']} " \
-                          f"{vehicle_position['state']}. The current temperature at {vehicle_position['city']} is " \
-                          f"{current_temp}, so "
+                extras += f"Your car is in {vehicle_position['city']} {vehicle_position['state']}, where the " \
+                          f"current temperature is {current_temp}, so "
             else:
                 with open(fileio.location) as file:
                     current_temp, target_temp = get_current_temp(location=yaml.load(stream=file,
@@ -185,7 +184,6 @@ def vehicle(operation: str, temp: int = None) -> Union[str, dict, None]:
             if operation == "LOCATE_INTERNAL":
                 position['city'] = city
                 position['state'] = state
-                position['name'] = handler.get_attributes().get('vehicleBrand', 'car')
                 return position
             if all([number, street, state, city, country]):
                 address = f"{number} {street}, {city} {state}, {country}"

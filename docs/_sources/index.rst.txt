@@ -259,6 +259,13 @@ Telegram
    :members:
    :undoc-members:
 
+Timeout
+=======
+
+.. automodule:: executors.timeout
+   :members:
+   :undoc-members:
+
 To Do
 =====
 

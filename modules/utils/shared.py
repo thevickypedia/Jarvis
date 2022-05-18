@@ -15,6 +15,7 @@ called_by_automator = False
 
 active_vpn = None
 text_spoken = None
+offline_caller = None
 tv = None
 
 processes = {}

@@ -1957,6 +1957,23 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
+<section id="module-executors.timeout">
+<span id="timeout"></span><h1>Timeout<a class="headerlink" href="#module-executors.timeout" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.timeout.timeout">
+<span class="sig-prename descclassname"><span class="pre">executors.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capture_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.timeout.timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a timeout handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>duration</strong> – Takes the duration as an argument.</p></li>
+<li><p><strong>capture_frame</strong> – Takes a boolean flag whether to raise a <code class="docutils literal notranslate"><span class="pre">TimeoutError</span></code> along with the frame information.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-executors.todo_list">
 <span id="to-do"></span><h1>To Do<a class="headerlink" href="#module-executors.todo_list" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
@@ -2270,8 +2287,13 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.audio.voices.voice_default">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.voices.</span></span><span class="sig-name descname"><span class="pre">voice_default</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.audio.voices.voice_default" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.audio.voices.</span></span><span class="sig-name descname"><span class="pre">voice_default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stdout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.audio.voices.voice_default" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets voice module to default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>stdout</strong> – Takes a boolean flag whether to display voice module configuration name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -4452,12 +4474,29 @@ Whites can have a value of None.</p>
 </div>
 <p>Initiates a session.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.audio_to_text">
+<span class="sig-name descname"><span class="pre">audio_to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.audio_to_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts audio to text using speech recognition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – Filename to process the information from.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the string converted from the audio file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.authenticate">
 <span class="sig-name descname"><span class="pre">authenticate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.authenticate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Authenticates the user with <code class="docutils literal notranslate"><span class="pre">userId</span></code> and <code class="docutils literal notranslate"><span class="pre">userName</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>payload</strong> – Payload to extract the user information.</p>
+<dd class="field-odd"><p><strong>payload</strong> – Payload received, to extract information from.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Returns a boolean to indicate whether the user is authenticated.</p>
@@ -4474,14 +4513,14 @@ Whites can have a value of None.</p>
 <dd><p>Uses the table <code class="docutils literal notranslate"><span class="pre">offline</span></code> in the database to process a response.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>payload</strong> – Payload to extract information from.</p>
+<dd class="field-odd"><p><strong>payload</strong> – Payload received, to extract information from.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.poll_for_messages">
-<span class="sig-name descname"><span class="pre">poll_for_messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.poll_for_messages" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">poll_for_messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.poll_for_messages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Polls <code class="docutils literal notranslate"><span class="pre">api.telegram.org</span></code> for new messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -4498,12 +4537,23 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.process_payload">
-<span class="sig-name descname"><span class="pre">process_payload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.process_payload" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.process_text">
+<span class="sig-name descname"><span class="pre">process_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.process_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processes the payload received after checking for authentication.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>payload</strong> – Payload to extract information from.</p>
+<dd class="field-odd"><p><strong>payload</strong> – Payload received, to extract information from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.process_voice">
+<span class="sig-name descname"><span class="pre">process_voice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.process_voice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes the payload received after checking for authentication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>payload</strong> – Payload received, to extract information from.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4515,9 +4565,30 @@ Whites can have a value of None.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>payload</strong> – Payload to send as data.</p></li>
+<li><p><strong>payload</strong> – Payload received, to extract information from.</p></li>
 <li><p><strong>response</strong> – Message to be sent to the user.</p></li>
 <li><p><strong>parse_mode</strong> – Parse mode. Defaults to <code class="docutils literal notranslate"><span class="pre">markdown</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Response class.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.send_audio">
+<span class="sig-name descname"><span class="pre">send_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HTML'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">requests.models.Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.send_audio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends an audio file to the user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chat_id</strong> – Chat ID.</p></li>
+<li><p><strong>filename</strong> – Name of the audio file that has to be sent.</p></li>
+<li><p><strong>parse_mode</strong> – Parse mode. Defaults to <code class="docutils literal notranslate"><span class="pre">HTML</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -4546,6 +4617,40 @@ Whites can have a value of None.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.text_to_audio">
+<span class="sig-name descname"><span class="pre">text_to_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.text_to_audio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts text into an audio file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> – Takes the text that has to be converted as audio.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the temporary filename.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.verify_timeout">
+<span class="sig-name descname"><span class="pre">verify_timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.verify_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verifies whether the message was received in the past 60 seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>payload</strong> – Payload received, to extract information from.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True or False flag to indicate if the request timed out.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5021,6 +5126,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-executors.robinhood">Robinhood</a></li>
 <li><a class="reference internal" href="#module-executors.system">System</a></li>
 <li><a class="reference internal" href="#module-executors.telegram">Telegram</a></li>
+<li><a class="reference internal" href="#module-executors.timeout">Timeout</a></li>
 <li><a class="reference internal" href="#module-executors.todo_list">To Do</a></li>
 <li><a class="reference internal" href="#module-executors.tv">TV</a></li>
 <li><a class="reference internal" href="#module-executors.unconditional">Unconditional</a></li>
