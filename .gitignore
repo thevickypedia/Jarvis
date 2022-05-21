@@ -40,6 +40,9 @@ _static
 # volume exec file for Windows
 SetVol.exe
 
+# audio converter for Telegram API (Windows)
+ffmpeg
+
 # temporary file that indicates that jarvis should restart
 pyicloud_error
 

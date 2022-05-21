@@ -1,4 +1,5 @@
 import os
+import warnings
 from multiprocessing import Process
 from typing import Dict, NoReturn
 
@@ -13,6 +14,7 @@ from modules.audio import speech_synthesis
 from modules.models import models
 from modules.utils import shared
 
+env = models.env
 fileio = models.FileIO()
 indicators = models.Indicators()
 docker_container = speech_synthesis.SpeechSynthesizer()
@@ -54,4 +56,9 @@ def stop_processes() -> NoReturn:
         if process.is_alive():
             logger.info(f"Sending [SIGKILL] to {func} with PID: {process.pid}")
             process.kill()
-    [os.remove(db) for db in [fileio.base_db] if os.path.isfile(db)]
+    try:
+        [os.remove(db) for db in [fileio.base_db, fileio.location] if os.path.isfile(db)]
+    except PermissionError as error:
+        warnings.warn(
+            str(error)
+        )

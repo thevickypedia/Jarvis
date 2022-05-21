@@ -42,7 +42,7 @@ class LocalIPScan:
             raise MissingEnvVars(
                 "Router password is required to scan the local host."
             )
-        self.attached_devices = Netgear(password=env.router_pass).get_attached_devices()
+        self.attached_devices = Netgear(password=env.router_pass).get_attached_devices() or []
 
     def smart_devices(self) -> dict:
         """Gets the IP addresses of the smart devices listed in hostnames.yaml.

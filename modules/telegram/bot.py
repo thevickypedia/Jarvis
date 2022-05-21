@@ -6,15 +6,14 @@ import random
 import string
 import time
 from logging.config import dictConfig
-from typing import NoReturn, Union
+from typing import Callable, NoReturn, Union
 
 import pyttsx3
 import requests
-from ftransc.core.transcoders import transcode
 from speech_recognition import AudioFile, Recognizer, UnknownValueError
 
 from executors.offline import offline_communicator
-from executors.timeout import timeout
+from executors.timeout import timeout_mac, timeout_win
 from modules.audio.voices import voice_default
 from modules.exceptions import BotInUse
 from modules.models import config, models
@@ -30,6 +29,57 @@ logger = logging.getLogger('telegram')
 offline_compatible = compatibles.offline_compatible()
 
 USER_TITLE = {}
+
+
+def audio_converter_mac() -> Callable:
+    """Imports transcode from ftransc.
+
+    Returns:
+        Callable:
+        Transcode function from ftransc.
+    """
+    try:
+        from ftransc.core.transcoders import transcode
+        return transcode
+    except SystemExit as error:
+        logger.error(error)
+
+
+def audio_converter_win(input_filename: str, output_audio_format: str) -> Union[str, None]:
+    """Imports AudioSegment from pydub.
+
+    Args:
+        input_filename: Input filename.
+        output_audio_format: Output audio format.
+
+    Returns:
+        str:
+        Output filename if conversion is successful.
+    """
+    ffmpeg_path = os.path.join(os.getcwd(), "ffmpeg", "bin")
+    if not os.path.exists(path=ffmpeg_path):
+        logger.warning("ffmpeg codec is missing!")
+        return
+    os.environ['PATH'] += ffmpeg_path
+    from pydub import AudioSegment
+    if input_filename.endswith(".ogg"):
+        audio = AudioSegment.from_ogg(input_filename)
+        output_filename = input_filename.replace(".ogg", f".{output_audio_format}")
+    elif input_filename.endswith(".wav"):
+        audio = AudioSegment.from_wav(input_filename)
+        output_filename = input_filename.replace(".wav", f".{output_audio_format}")
+    else:
+        return
+    try:
+        audio.export(input_filename, format=output_audio_format)
+        os.remove(input_filename)
+        if os.path.isfile(output_filename):
+            return output_filename
+        raise FileNotFoundError(
+            f"{output_filename} was not found after exporting audio to {output_audio_format}"
+        )
+    except FileNotFoundError as error:  # raised by audio.export when conversion fails
+        logger.error(error)
 
 
 def greeting() -> str:
@@ -327,11 +377,6 @@ class TelegramBot:
             return
         if not self.verify_timeout(payload=payload):
             return
-        if not env.mac:
-            self.reply_to(payload=payload, response="Jarvis is currently running on a Windows machine.\n"
-                                                    "Voice commands are currently supported only on MacOS.\n"
-                                                    "Please use regular text for a response from Jarvis.")
-            return
         if bytes_obj := self._get_file(payload=payload['voice']):
             if payload['voice']['mime_type'] == 'audio/ogg':
                 filename = f"{payload['voice']['file_unique_id']}.ogg"
@@ -344,30 +389,37 @@ class TelegramBot:
                 return
             with open(filename, 'wb') as file:
                 file.write(bytes_obj)
-            if transcode(input_file_name=filename, output_audio_format="flac"):
+            converted = False
+            if env.mac:
+                transcode = audio_converter_mac()
+                if transcode and transcode(input_file_name=filename, output_audio_format="flac"):
+                    converted = True
+            else:
+                if audio_converter_win(input_filename=filename, output_audio_format="flac"):
+                    converted = True
+            if converted:
                 os.remove(filename)
                 filename = filename.replace(".ogg", ".flac")
                 audio_to_text = self.audio_to_text(filename=filename)
                 if audio_to_text:
                     payload['text'] = audio_to_text
                     self.jarvis(payload=payload)
-                else:
-                    title = USER_TITLE.get(payload['from']['username'], env.title)
-                    if filename := self.text_to_audio(text=f"I'm sorry {title}! I was unable to process your "
-                                                           "voice command. Please try again!"):
-                        self.send_audio(filename=filename, chat_id=payload['from']['id'])
-                        os.remove(filename)
-                        return
-                    else:
-                        self.reply_to(payload=payload,
-                                      response=f"I'm sorry {title}! I was neither to process your voice command, "
-                                               f"nor respond to you with one. Please try using text commands.")
-                        return
+                    return
             else:
                 logger.error("Failed to transcode OPUS to Native FLAC")
         else:
             logger.error("Unable to get file for the file_id in the payload received.")
             logger.error(payload)
+        # Catches both unconverted source ogg and unconverted audio to text
+        title = USER_TITLE.get(payload['from']['username'], env.title)
+        if filename := self.text_to_audio(text=f"I'm sorry {title}! I was unable to process your "
+                                               "voice command. Please try again!"):
+            self.send_audio(filename=filename, chat_id=payload['from']['id'])
+            os.remove(filename)
+        else:
+            self.reply_to(payload=payload,
+                          response=f"I'm sorry {title}! I was neither to process your voice command, "
+                                   f"nor respond to you with one. Please try using text commands.")
 
     def process_text(self, payload: dict) -> None:
         """Processes the payload received after checking for authentication.
@@ -448,6 +500,11 @@ class TelegramBot:
                 return
         self.send_message(chat_id=payload['from']['id'], response=response)
 
+    @timeout_win(duration=2)
+    def __audio_driver_executor(self) -> None:
+        """Audio driver to run and wait."""
+        self.audio_driver.runAndWait()
+
     def text_to_audio(self, text: str) -> Union[str, None]:
         """Converts text into an audio file.
 
@@ -459,25 +516,25 @@ class TelegramBot:
             Returns the temporary filename.
         """
         if shared.offline_caller:
-            tmp_file = f"{shared.offline_caller}.flac"
+            tmp_file = f"{shared.offline_caller}.wav"
             shared.offline_caller = None  # Reset caller after using it
         else:
-            tmp_file = f"{int(time.time())}.flac"
+            tmp_file = f"{int(time.time())}.wav"
         self.audio_driver.save_to_file(filename=tmp_file, text=text)
-        with timeout(duration=2, capture_frame=False):
+        if env.mac:
+            with timeout_mac(duration=2, capture_frame=False):
+                try:
+                    self.audio_driver.runAndWait()
+                except TimeoutError as error:
+                    logger.error(error)
+        else:
             try:
-                self.audio_driver.runAndWait()
+                self.__audio_driver_executor()
             except TimeoutError as error:
                 logger.error(error)
-        if not os.path.isfile(tmp_file):
-            logger.error("Failed to generate text to audio within the set timeout.")
-            return
-        if transcode(input_file_name=tmp_file, output_audio_format="mp3"):
-            os.remove(tmp_file)
-            tmp_file = tmp_file.replace(".flac", ".mp3")
+        if os.path.isfile(tmp_file):
             return tmp_file
-        else:
-            logger.error("Failed to transcode Native FLAC to MP3")
+        logger.error("Failed to generate text to audio within the set timeout.")
 
 
 if __name__ == '__main__':

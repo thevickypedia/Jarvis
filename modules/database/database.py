@@ -1,5 +1,7 @@
 import sqlite3
-from typing import NoReturn
+from typing import NoReturn, Union
+
+from pydantic import FilePath
 
 
 class Database:
@@ -9,7 +11,7 @@ class Database:
 
     """
 
-    def __init__(self, database: str):
+    def __init__(self, database: Union[FilePath, str]):
         """Instantiates the class ``Database`` to create a connection and a cursor.
 
         Args:

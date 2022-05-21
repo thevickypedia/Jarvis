@@ -194,6 +194,8 @@ bedroom:
   - 'HOSTNAMES'
 hallway:
   - 'HOSTNAMES'
+hallway_basement:
+  - 'HOSTNAMES'
 kitchen:
   - 'HOSTNAMES'
 living_room:
@@ -210,14 +212,16 @@ By using `smart_devices.yaml`, the `Netgear` module can be avoided at the cost o
 
 ```yaml
 bedroom:
-  - 'LOCAL_IP_ADDRESS'
+  - 'IP_ADDRESS'
 hallway:
-  - 'LOCAL_IP_ADDRESS'
+  - 'IP_ADDRESS'
+hallway_basement:
+  - 'IP_ADDRESS'
 kitchen:
-  - 'LOCAL_IP_ADDRESS'
+  - 'IP_ADDRESS'
 living_room:
-  - 'LOCAL_IP_ADDRESS'
-tv_ip: 'LOCAL_IP_ADDRESS'
+  - 'IP_ADDRESS'
+tv_ip: 'IP_ADDRESS'
 tv_mac: 'TV_MAC_ADDRESS'
 ```
 </details>

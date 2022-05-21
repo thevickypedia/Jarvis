@@ -1960,8 +1960,8 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <section id="module-executors.timeout">
 <span id="timeout"></span><h1>Timeout<a class="headerlink" href="#module-executors.timeout" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.timeout.timeout">
-<span class="sig-prename descclassname"><span class="pre">executors.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capture_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.timeout.timeout" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="executors.timeout.timeout_mac">
+<span class="sig-prename descclassname"><span class="pre">executors.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout_mac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capture_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.timeout.timeout_mac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a timeout handler.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1969,6 +1969,23 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <li><p><strong>duration</strong> – Takes the duration as an argument.</p></li>
 <li><p><strong>capture_frame</strong> – Takes a boolean flag whether to raise a <code class="docutils literal notranslate"><span class="pre">TimeoutError</span></code> along with the frame information.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.timeout.timeout_win">
+<span class="sig-prename descclassname"><span class="pre">executors.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout_win</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="headerlink" href="#executors.timeout.timeout_win" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timeout handler for Windows OS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>duration</strong> – Takes the duration as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the decorator method.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Callable</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3228,7 +3245,7 @@ Pass 155 for LO and 285 for HI.</p>
 <span id="database"></span><h1>Database<a class="headerlink" href="#module-modules.database.database" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.database.database.Database">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.database.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.database.database.Database" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.database.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">pydantic.types.FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.database.database.Database" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a connection to the base DB.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Database</span>
 </pre></div>
@@ -4655,6 +4672,40 @@ Whites can have a value of None.</p>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.bot.audio_converter_mac">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.bot.</span></span><span class="sig-name descname"><span class="pre">audio_converter_mac</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="headerlink" href="#modules.telegram.bot.audio_converter_mac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports transcode from ftransc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Transcode function from ftransc.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.bot.audio_converter_win">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.bot.</span></span><span class="sig-name descname"><span class="pre">audio_converter_win</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_audio_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.telegram.bot.audio_converter_win" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports AudioSegment from pydub.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_filename</strong> – Input filename.</p></li>
+<li><p><strong>output_audio_format</strong> – Output audio format.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Output filename if conversion is successful.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

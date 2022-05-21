@@ -1,12 +1,13 @@
+import functools
 import signal
-import time
 from contextlib import contextmanager
+from threading import Thread
 from types import FrameType
-from typing import NoReturn, Union
+from typing import Callable, NoReturn, Union
 
 
 @contextmanager
-def timeout(duration: Union[int, float], capture_frame: bool = True) -> NoReturn:
+def timeout_mac(duration: Union[int, float], capture_frame: bool = True) -> NoReturn:
     """Creates a timeout handler.
 
     Args:
@@ -33,40 +34,69 @@ def timeout(duration: Union[int, float], capture_frame: bool = True) -> NoReturn
                 f'Block timed out after {duration} seconds.'
             )
 
-    signal.signal(signalnum=signal.SIGALRM, handler=timeout_handler)
+    signal.signal(signalnum=signal.SIGALRM, handler=timeout_handler)  # noqa
     signal.alarm(duration)
     yield
     signal.alarm(0)
 
 
-if __name__ == '__main__':
-    import logging
+def timeout_win(duration: Union[float, int]) -> Callable:
+    """Timeout handler for Windows OS.
 
-    logger = logging.getLogger(__name__)
-    log_handler = logging.StreamHandler()
-    log_handler.setFormatter(fmt=logging.Formatter(
-        fmt="%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s",
-        datefmt="%b %d, %Y %H:%M:%S"
-    ))
-    logger.addHandler(hdlr=log_handler)
-    logger.setLevel(level=logging.DEBUG)
+    Args:
+        duration: Takes the duration as an argument.
 
-    def _sleeper(duration: Union[int, float]) -> NoReturn:
-        """Sleeps for the given duration and prints a finish message.
+    Returns:
+        Callable:
+        Returns the decorator method.
+    """
+
+    def decorator(func: Callable) -> Callable:
+        """Decorator for the function to be timed out.
 
         Args:
-            duration: Takes the duration in seconds as args.
-        """
-        start = time.time()
-        time.sleep(duration)
-        logger.info(f'Task Finished in {int(time.time() - start)}s')
+            func: Function that is to be timed out.
 
-    # Test1: Fails with a TimeoutError since sleep duration is longer than the set timeout
-    with timeout(duration=2):
-        try:
-            _sleeper(duration=5)
-        except TimeoutError as error:
-            logger.error(error)
-    # Test2: Passes since the sleep duration is less than the timeout and the function returns before hitting a timeout
-    with timeout(duration=3):
-        _sleeper(duration=2)
+        Returns:
+            Callable:
+            Returns the wrapper.
+        """
+
+        @functools.wraps(wrapped=func)
+        def wrapper(*args, **kwargs) -> TimeoutError:
+            """Wrapper for the function that has to be timed out.
+
+            Args:
+                *args: Arguments for the function.
+                **kwargs: Keyword arguments for the function.
+
+            Raises:
+                TimeoutError:
+                Raises TimeoutError as specified.
+            """
+            result = {'ERROR': TimeoutError(f'Function [{func.__name__}] exceeded the timeout [{duration} seconds]!')}
+
+            def place_holder() -> NoReturn:
+                """A place-holder function to be called by the thread."""
+                try:
+                    result['ERROR'] = func(*args, **kwargs)
+                except TimeoutError as error_:
+                    result['ERROR'] = error_
+
+            thread = Thread(target=place_holder, daemon=True)
+            try:
+                thread.start()
+                thread.join(timeout=duration)
+            except Exception as error:
+                print("called")
+                raise error
+            base_error = result['ERROR']
+            if isinstance(base_error, TimeoutError):
+                raise TimeoutError(
+                    base_error
+                )
+            return base_error
+
+        return wrapper
+
+    return decorator

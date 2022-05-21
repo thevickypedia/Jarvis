@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+6.0.4 (05/21/2022)
+------------------
+- Support voice commands via `TelegramAPI` on Windows
+- Create a timeout handler for windows
+- Use `ffmpeg` to convert `ogg` to `wav` on WindowsOS
+- Add default value for ip_scanner.py to avoid errors during internet disconnection
+- Add exception handler for windows specific process error
+
 6.0.3 (05/17/2022)
 ------------------
 - FEATURE::Jarvis can process voice commands via `TelegramAPI`
