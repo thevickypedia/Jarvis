@@ -26,8 +26,6 @@ def automator() -> NoReturn:
     """Place for long-running background tasks.
 
     See Also:
-        - Initiates ``meeting_file_writer`` and ``scan_smart_devices`` every hour in a dedicated process.
-        - Keeps waiting for the record ``request`` in the database table ``offline`` to invoke ``offline_communicator``
         - The automation file should be a dictionary within a dictionary that looks like the below:
 
             .. code-block:: yaml
@@ -37,9 +35,9 @@ def automator() -> NoReturn:
                 9:00 PM:
                   task: set my bedroom lights to 5%
 
-        - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't execute a task repeatedly.
+        - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't repeat execution within a minute.
     """
-    start_events = start_meetings = start_netgear = time.time()
+    start_events = start_meetings = time.time()
     events.event_app_launcher()
     dry_run = True
     while True:
@@ -64,15 +62,6 @@ def automator() -> NoReturn:
             start_meetings = time.time()
             logger.info("Getting calendar schedule from ICS.") if dry_run else None
             Process(target=icalendar.meetings_writer).start()
-
-        if start_netgear + env.sync_netgear <= time.time() or dry_run:
-            start_netgear = time.time()
-            if dry_run and env.router_pass:
-                logger.info("Scanning smart devices using netgear module.")
-            elif env.router_pass:
-                Process(target=support.scan_smart_devices).start()
-            else:
-                env.sync_netgear = 99_999_999  # NEVER RUN, since env vars are loaded only once during start up
 
         if alarm_state := support.lock_files(alarm_files=True):
             for each_alarm in alarm_state:

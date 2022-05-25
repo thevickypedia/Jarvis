@@ -1533,8 +1533,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul>
-<li><p>Initiates <code class="docutils literal notranslate"><span class="pre">meeting_file_writer</span></code> and <code class="docutils literal notranslate"><span class="pre">scan_smart_devices</span></code> every hour in a dedicated process.</p></li>
-<li><p>Keeps waiting for the record <code class="docutils literal notranslate"><span class="pre">request</span></code> in the database table <code class="docutils literal notranslate"><span class="pre">offline</span></code> to invoke <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code></p></li>
 <li><p>The automation file should be a dictionary within a dictionary that looks like the below:</p>
 <blockquote>
 <div><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">6:00 AM</span><span class="p p-Indicator">:</span><span class="w"></span>
@@ -1545,7 +1543,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </div>
 </div></blockquote>
 </li>
-<li><p>Jarvis creates/swaps a <code class="docutils literal notranslate"><span class="pre">status</span></code> flag upon execution, so that it doesn’t execute a task repeatedly.</p></li>
+<li><p>Jarvis creates/swaps a <code class="docutils literal notranslate"><span class="pre">status</span></code> flag upon execution, so that it doesn’t repeat execution within a minute.</p></li>
 </ul>
 </div>
 </dd></dl>
@@ -1952,40 +1950,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <li><p>BotInUse: Restarts polling to take control over.</p></li>
 <li><p>ConnectionError: Initiates after 10, 20 or 30 seconds. Depends on retry count. Shuts off after 3 attempts.</p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-executors.timeout">
-<span id="timeout"></span><h1>Timeout<a class="headerlink" href="#module-executors.timeout" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.timeout.timeout_mac">
-<span class="sig-prename descclassname"><span class="pre">executors.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout_mac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capture_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.timeout.timeout_mac" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a timeout handler.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>duration</strong> – Takes the duration as an argument.</p></li>
-<li><p><strong>capture_frame</strong> – Takes a boolean flag whether to raise a <code class="docutils literal notranslate"><span class="pre">TimeoutError</span></code> along with the frame information.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.timeout.timeout_win">
-<span class="sig-prename descclassname"><span class="pre">executors.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout_win</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="headerlink" href="#executors.timeout.timeout_win" title="Permalink to this definition">¶</a></dt>
-<dd><p>Timeout handler for Windows OS.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>duration</strong> – Takes the duration as an argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns the decorator method.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Callable</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3549,33 +3513,6 @@ Whites can have a value of None.</p>
 <hr class="docutils" />
 <span class="target" id="module-modules.lights.preset_values"></span><p>Dictionary values of color and preset number for the lights.</p>
 </section>
-<section id="module-modules.netgear.ip_scanner">
-<span id="local-ip-scanner"></span><h1>Local IP Scanner<a class="headerlink" href="#module-modules.netgear.ip_scanner" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="modules.netgear.ip_scanner.LocalIPScan">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.netgear.ip_scanner.</span></span><span class="sig-name descname"><span class="pre">LocalIPScan</span></span><a class="headerlink" href="#modules.netgear.ip_scanner.LocalIPScan" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connector to scan devices in the same IP range using <code class="docutils literal notranslate"><span class="pre">Netgear</span> <span class="pre">API</span></code>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LocalIPScan</span>
-</pre></div>
-</div>
-<p>Gets local host devices connected to the same network range.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="modules.netgear.ip_scanner.LocalIPScan.smart_devices">
-<span class="sig-name descname"><span class="pre">smart_devices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#modules.netgear.ip_scanner.LocalIPScan.smart_devices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the IP addresses of the smart devices listed in hostnames.yaml.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A dictionary of device category as key and list of IPs as value.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
 <section id="module-modules.dictionary.dictionary">
 <span id="meanings"></span><h1>Meanings<a class="headerlink" href="#module-modules.dictionary.dictionary" title="Permalink to this headline">¶</a></h1>
 <p>Module to get meanings of words from <a class="reference external" href="http://wordnetweb.princeton.edu/perl/webwn?s=">wordnetweb.princeton.edu</a>.</p>
@@ -3707,11 +3644,6 @@ Whites can have a value of None.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.frequent">
 <span class="sig-name descname"><span class="pre">frequent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.frequent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.hostnames">
-<span class="sig-name descname"><span class="pre">hostnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.hostnames" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3968,11 +3900,6 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.EnvConfig.router_pass">
-<span class="sig-name descname"><span class="pre">router_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.router_pass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.sensitivity">
 <span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sensitivity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3998,11 +3925,6 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.EnvConfig.sync_netgear">
-<span class="sig-name descname"><span class="pre">sync_netgear</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sync_netgear" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.timeout">
 <span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.timeout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4015,6 +3937,11 @@ Whites can have a value of None.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.tv_client_key">
 <span class="sig-name descname"><span class="pre">tv_client_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.tv_client_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.tv_mac">
+<span class="sig-name descname"><span class="pre">tv_mac</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.tv_mac" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4391,19 +4318,6 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="modules.utils.support.scan_smart_devices">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">scan_smart_devices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.utils.support.scan_smart_devices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves devices IP by doing a local IP range scan using Netgear API.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)</p></li>
-<li><p>Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted.</p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.size_converter">
 <span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">size_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">byte_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.support.size_converter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the current memory consumed and converts it to human friendly format.</p>
@@ -4591,7 +4505,7 @@ Whites can have a value of None.</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Response</p>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -4612,7 +4526,7 @@ Whites can have a value of None.</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Response</p>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -4633,7 +4547,7 @@ Whites can have a value of None.</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Response</p>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -4857,6 +4771,75 @@ Whites can have a value of None.</p>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
+</dd></dl>
+
+</section>
+<section id="module-modules.timeout.timeout">
+<span id="timeout"></span><h1>Timeout<a class="headerlink" href="#module-modules.timeout.timeout" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.timeout.timeout.timeout">
+<span class="sig-prename descclassname"><span class="pre">modules.timeout.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response"><span class="pre">modules.timeout.responder.Response</span></a></span></span><a class="headerlink" href="#modules.timeout.timeout.timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the given function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seconds</strong> – Timeout after which the said function has to be terminated.</p></li>
+<li><p><strong>function</strong> – Function to run and timeout.</p></li>
+<li><p><strong>args</strong> – Args to be passed to the function.</p></li>
+<li><p><strong>kwargs</strong> – Keyword args to be passed to the function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A custom response class to indicate whether the function completed within the set timeout.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response">Response</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="module-modules.timeout.responder"></span><dl class="py class">
+<dt class="sig sig-object py" id="modules.timeout.responder.Response">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.timeout.responder.</span></span><span class="sig-name descname"><span class="pre">Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.timeout.responder.Response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to format the response, so that it can be accessed as an object variable.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Response</span>
+</pre></div>
+</div>
+<p>Extracts the property <code class="docutils literal notranslate"><span class="pre">ok</span></code> from a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dictionary</strong> – Takes a dictionary of key-value pairs as an argument.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.timeout.responder.Response.info">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.timeout.responder.Response.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the extracted class variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> based on the arg value received.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.timeout.responder.Response.ok">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ok</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.timeout.responder.Response.ok" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the extracted class variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> based on the arg value received.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -5177,7 +5160,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-executors.robinhood">Robinhood</a></li>
 <li><a class="reference internal" href="#module-executors.system">System</a></li>
 <li><a class="reference internal" href="#module-executors.telegram">Telegram</a></li>
-<li><a class="reference internal" href="#module-executors.timeout">Timeout</a></li>
 <li><a class="reference internal" href="#module-executors.todo_list">To Do</a></li>
 <li><a class="reference internal" href="#module-executors.tv">TV</a></li>
 <li><a class="reference internal" href="#module-executors.unconditional">Unconditional</a></li>
@@ -5193,7 +5175,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-modules.exceptions">Exceptions</a></li>
 <li><a class="reference internal" href="#module-modules.face.facial_recognition">Face Recognition</a></li>
 <li><a class="reference internal" href="#id3">Lights</a></li>
-<li><a class="reference internal" href="#module-modules.netgear.ip_scanner">Local IP Scanner</a></li>
 <li><a class="reference internal" href="#module-modules.dictionary.dictionary">Meanings</a></li>
 <li><a class="reference internal" href="#module-modules.meetings.events">Meetings</a></li>
 <li><a class="reference internal" href="#models">Models</a></li>
@@ -5203,6 +5184,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-modules.utils.support">Support</a></li>
 <li><a class="reference internal" href="#id5">Telegram</a></li>
 <li><a class="reference internal" href="#module-modules.temperature.temperature">Temperature</a></li>
+<li><a class="reference internal" href="#module-modules.timeout.timeout">Timeout</a></li>
 <li><a class="reference internal" href="#module-modules.tv.tv_controls">TV Connector</a></li>
 <li><a class="reference internal" href="#module-modules.wakeonlan.wakeonlan">WakeOnLAN</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>

@@ -40,7 +40,6 @@ class EnvConfig(BaseSettings):
     offline_host: str = Field(default=socket.gethostbyname('localhost'), env='OFFLINE_HOST')
     offline_port: PositiveInt = Field(default=4483, env='OFFLINE_PORT')
     offline_pass: str = Field(default='OfflineComm', env='OFFLINE_PASS')
-    sync_netgear: PositiveInt = Field(default=3_600, env='SYNC_NETGEAR')
     sync_meetings: PositiveInt = Field(default=3_600, env='SYNC_MEETINGS')
     sync_events: PositiveInt = Field(default=3_600, env='SYNC_EVENTS')
     icloud_user: EmailStr = Field(default=None, env='ICLOUD_USER')
@@ -59,9 +58,9 @@ class EnvConfig(BaseSettings):
     git_user: str = Field(default=None, env='GIT_USER')
     git_pass: str = Field(default=None, env='GIT_PASS')
     tv_client_key: str = Field(default=None, env='TV_CLIENT_KEY')
+    tv_mac: str = Field(default=None, env='TV_MAC')
     root_user: str = Field(default=getpass.getuser(), env='USER')
     root_password: str = Field(default=None, env='ROOT_PASSWORD')
-    router_pass: str = Field(default=None, env='ROUTER_PASS')
     vpn_username: str = Field(default=None, env='VPN_USERNAME')
     vpn_password: str = Field(default=None, env='VPN_PASSWORD')
     birthday: str = Field(default=None, env='BIRTHDAY')
@@ -132,7 +131,6 @@ class FileIO(BaseModel):
     notes: FilePath = f'fileio{os.path.sep}notes.txt'
     robinhood: FilePath = f'fileio{os.path.sep}robinhood.html'
     smart_devices: FilePath = f'fileio{os.path.sep}smart_devices.yaml'
-    hostnames: FilePath = f'fileio{os.path.sep}hostnames.yaml'
     training: FilePath = f'fileio{os.path.sep}training_data.yaml'
     event_script: FilePath = f'fileio{os.path.sep}{env.event_app}.scpt'
     speech_synthesis_wav: FilePath = f'fileio{os.path.sep}speech_synthesis.wav'

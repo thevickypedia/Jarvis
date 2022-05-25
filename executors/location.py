@@ -59,18 +59,15 @@ def device_selector(phrase: str = None) -> Union[AppleDevice, None]:
         return
     icloud_api = PyiCloudService(env.icloud_user, env.icloud_pass)
     devices = [device for device in icloud_api.devices]
-    if phrase:
-        devices_str = [{str(device).split(":")[0].strip(): str(device).split(":")[1].strip()} for device in devices]
-        closest_match = [
-            (SequenceMatcher(a=phrase, b=key).ratio() + SequenceMatcher(a=phrase, b=val).ratio()) / 2
-            for device in devices_str for key, val in device.items()
-        ]
-        index = closest_match.index(max(closest_match))
-        return icloud_api.devices[index]
-    else:
-        base_list = [device for device in devices if device.get("name") == socket.gethostname() or
-                     socket.gethostname() == device.get("name") + ".local"] or devices
-        return base_list[0] or icloud_api.iphone
+    if not phrase:
+        phrase = socket.gethostname().split('.')[0]  # Temporary fix
+    devices_str = [{str(device).split(":")[0].strip(): str(device).split(":")[1].strip()} for device in devices]
+    closest_match = [
+        (SequenceMatcher(a=phrase, b=key).ratio() + SequenceMatcher(a=phrase, b=val).ratio()) / 2
+        for device in devices_str for key, val in device.items()
+    ]
+    index = closest_match.index(max(closest_match))
+    return icloud_api.devices[index]
 
 
 def get_coordinates_from_ip() -> Tuple[float, float]:
@@ -167,6 +164,20 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
 
 def write_current_location() -> NoReturn:
     """Extracts location information from public IP address and writes it to a yaml file."""
+    if os.path.isfile(fileio.location):
+        with open(fileio.location) as file:
+            try:
+                data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+            except yaml.YAMLError as error:
+                data = {}
+                logger.error(error)
+        address = data.get("address")
+        if data.get("reserved") and data.get("latitude") and data.get("longitude") and address and \
+                address.get("city", address.get("hamlet")) and address.get("country") and \
+                address.get("state", address.get("county")):
+            logger.info(f"{fileio.location} is reserved.")
+            logger.warning("Automatic location detection has been disabled!")
+            return
     current_lat, current_lon = get_coordinates_from_ip()
     location_info = get_location_from_coordinates(coordinates=(current_lat, current_lon))
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)

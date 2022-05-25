@@ -152,7 +152,6 @@ docker run \
 :bulb: &nbsp; Text to speech is optionally run on a docker container for better voices but the response might be slower. If you don't have docker installed or simply don't want to use it, set the `SPEECH_SYNTHESIS_TIMEOUT` env var to 0. This is also done automatically if failed to launch a docker container upon startup.
 
 **Background scans [Defaults to 1 hour]**
-- **SYNC_NETGEAR** - Interval in seconds to scan for smart devices using ``Netgear`` module.
 - **SYNC_MEETINGS** - Interval in seconds to generate ``meetings`` information using `ics` URL.
 - **SYNC_EVENTS** - Interval in seconds to generate ``events`` information using `calendar` or `outlook` application.
 
@@ -162,11 +161,7 @@ docker run \
 
 **[TV](https://github.com/thevickypedia/Jarvis/blob/master/modules/tv/tv_controls.py) controls** - Applies only for [LGWebOS](https://en.wikipedia.org/wiki/WebOS)
 - **TV_CLIENT_KEY** - TV's Client key. Auto-generated when used for the first time.
-
-**[IP Scanner](https://github.com/thevickypedia/Jarvis/blob/master/modules/netgear/ip_scanner.py)** - Applies only for [Netgear routers](https://github.com/MatMaul/pynetgear#supported-routers)
-- **ROUTER_PASS** - Router's admin password to get the available devices using `pynetgear` module.
-     > Note that this may be done even without the module by simply using the arp table.
-  > Using the module improves accuracy and support between different bandwidths since the devices are already connected to the router.
+- **TV_MAC** - TV's mac address.
 
 **[Car Controls](https://github.com/thevickypedia/Jarvis/blob/master/modules/car)** - Applies only for JLR vehicles using `InControl API`.
 - **CAR_EMAIL** - Email address to log in to InControl API.
@@ -180,14 +175,15 @@ docker run \
 </details>
 
 ### Smart Devices
-A source file `smart_devices.yaml` is used to store smart devices' IPs. `Jarvis` supports `MagicHome` lights and `LGWebOS` TVs.
+A source file `smart_devices.yaml` is used to store smart devices' hostnames. `Jarvis` supports `MagicHome` lights and `LGWebOS` TVs.
 
 <details>
 <summary><strong>Setup Instructions</strong></summary>
 
-- For the `Netgear` module to scan for smart devices, a `hostnames.yaml` file is required to be placed in `fileio` directory.
+> Note: Jarvis currently supports only one hostname for TV but multiple for lights.
+
 - The name used in the keys will be the identifier of those light bulbs.
-- The source file (`hostnames.yaml`) should be as following:
+- The source file (`smart_devices.yaml`) should be as following:
 
 ```yaml
 bedroom:
@@ -201,28 +197,6 @@ kitchen:
 living_room:
   - 'HOSTNAMES'
 tv: 'LGWEBOSTV'
-```
-
-> Note: Jarvis currently supports only one hostname for TV but multiple for lights.
-
-By using `smart_devices.yaml`, the `Netgear` module can be avoided at the cost of manually updating the source file in case of IP changes.
-
-- The name used in the keys will be the identifier of those light bulbs.
-- If the source file (`smart_devices.yaml`) is hand-created, it should be as following:
-
-```yaml
-bedroom:
-  - 'IP_ADDRESS'
-hallway:
-  - 'IP_ADDRESS'
-hallway_basement:
-  - 'IP_ADDRESS'
-kitchen:
-  - 'IP_ADDRESS'
-living_room:
-  - 'IP_ADDRESS'
-tv_ip: 'IP_ADDRESS'
-tv_mac: 'TV_MAC_ADDRESS'
 ```
 </details>
 

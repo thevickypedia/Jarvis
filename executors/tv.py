@@ -1,5 +1,6 @@
 import os
 import random
+import socket
 import sys
 import time
 from threading import Thread
@@ -34,16 +35,24 @@ def television(phrase: str) -> None:
         support.no_env_vars()
         return
 
-    with open(fileio.smart_devices) as file:
-        smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+    try:
+        with open(fileio.smart_devices) as file:
+            smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+    except yaml.YAMLError as error:
+        logger.error(error)
+        speaker.speak(text=f"I'm sorry {env.title}! I was unable to read your TV's source information.")
+        return
 
-    if not all([smart_devices.get('tv_ip'), smart_devices.get('tv_mac'), env.tv_client_key]):
-        if not all(smart_devices):
-            logger.warning(f"{fileio.smart_devices} is empty.")
-        else:
-            logger.warning("TV's IP, MacAddress and ClientKey not found.")
-            logger.warning(smart_devices)
+    pre_req = [smart_devices.get('tv'), env.tv_mac, env.tv_client_key]
+    if not all(pre_req):
+        logger.warning("IP, MacAddress [or] ClientKey not found.")
+        logger.warning(pre_req)
         support.no_env_vars()
+        return
+
+    tv_ip = socket.gethostbyname(smart_devices.get('tv'))
+    if not tv_ip.startswith('192'):
+        speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to get the IP address of your TV.")
         return
 
     power_controller = wakeonlan.WakeOnLan()
@@ -58,18 +67,18 @@ def television(phrase: str) -> None:
             Returns an integer value 0 if status succeeds else 512.
         """
         if env.mac:
-            return os.system(f"ping -c 1 -t 3 {smart_devices.get('tv_ip')} >/dev/null")
+            return os.system(f"ping -c 1 -t 3 {tv_ip} >/dev/null 2>&1")
         else:
-            return os.system(f"ping -c 1 -t 3 {smart_devices.get('tv_ip')} > NUL")
+            return os.system(f"ping -c 1 -t 3 {tv_ip} > NUL")
 
     if ('turn off' in phrase_lower or 'shutdown' in phrase_lower or 'shut down' in phrase_lower) and tv_status() != 0:
         speaker.speak(text=f"I wasn't able to connect to your TV {env.title}! I guess your TV is powered off already.")
         return
     elif tv_status():
         if shared.called_by_offline:
-            power_controller.create_packet(smart_devices.get('tv_mac'))
+            power_controller.send_packet(env.tv_mac)
         else:
-            Thread(target=power_controller.send_packet, args=[smart_devices.get('tv_mac')]).start()
+            Thread(target=power_controller.send_packet, args=[env.tv_mac]).start()
             speaker.speak(text=f"Looks like your TV is powered off {env.title}! Let me try to turn it back on!",
                           run=True)
 
@@ -84,7 +93,7 @@ def television(phrase: str) -> None:
 
     if not shared.tv:
         try:
-            shared.tv = TV(ip_address=smart_devices.get('tv_ip'), client_key=env.tv_client_key)
+            shared.tv = TV(ip_address=tv_ip, client_key=env.tv_client_key)
         except TVError as error:
             logger.error(f"Failed to connect to the TV. {error}")
             speaker.speak(text=f"I was unable to connect to the TV {env.title}! It appears to be a connection issue. "

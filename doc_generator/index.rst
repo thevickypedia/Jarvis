@@ -259,13 +259,6 @@ Telegram
    :members:
    :undoc-members:
 
-Timeout
-=======
-
-.. automodule:: executors.timeout
-   :members:
-   :undoc-members:
-
 To Do
 =====
 
@@ -415,13 +408,6 @@ Lights
    :undoc-members:
    :exclude-members: PRESET_VALUES
 
-Local IP Scanner
-================
-
-.. automodule:: modules.netgear.ip_scanner
-   :members:
-   :undoc-members:
-
 Meanings
 ========
 
@@ -494,6 +480,19 @@ Temperature
 ===========
 
 .. automodule:: modules.temperature.temperature
+   :members:
+   :undoc-members:
+
+Timeout
+=======
+
+.. automodule:: modules.timeout.timeout
+   :members:
+   :undoc-members:
+
+====
+
+.. automodule:: modules.timeout.responder
    :members:
    :undoc-members:
 

@@ -57,7 +57,7 @@ def stop_processes() -> NoReturn:
             logger.info(f"Sending [SIGKILL] to {func} with PID: {process.pid}")
             process.kill()
     try:
-        [os.remove(db) for db in [fileio.base_db, fileio.location] if os.path.isfile(db)]
+        os.remove(fileio.base_db) if os.path.isfile(fileio.base_db) else None
     except PermissionError as error:
         warnings.warn(
             str(error)

@@ -202,7 +202,6 @@
 <p>:bulb:   Text to speech is optionally run on a docker container for better voices but the response might be slower. If you don’t have docker installed or simply don’t want to use it, set the <code class="docutils literal notranslate"><span class="pre">SPEECH_SYNTHESIS_TIMEOUT</span></code> env var to 0. This is also done automatically if failed to launch a docker container upon startup.</p>
 <p><strong>Background scans [Defaults to 1 hour]</strong></p>
 <ul class="simple">
-<li><p><strong>SYNC_NETGEAR</strong> - Interval in seconds to scan for smart devices using <code class="docutils literal notranslate"><span class="pre">Netgear</span></code> module.</p></li>
 <li><p><strong>SYNC_MEETINGS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">meetings</span></code> information using <code class="docutils literal notranslate"><span class="pre">ics</span></code> URL.</p></li>
 <li><p><strong>SYNC_EVENTS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">events</span></code> information using <code class="docutils literal notranslate"><span class="pre">calendar</span></code> or <code class="docutils literal notranslate"><span class="pre">outlook</span></code> application.</p></li>
 </ul>
@@ -214,15 +213,7 @@
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/tv/tv_controls.py">TV</a> controls</strong> - Applies only for <a class="reference external" href="https://en.wikipedia.org/wiki/WebOS">LGWebOS</a></p>
 <ul class="simple">
 <li><p><strong>TV_CLIENT_KEY</strong> - TV’s Client key. Auto-generated when used for the first time.</p></li>
-</ul>
-<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/netgear/ip_scanner.py">IP Scanner</a></strong> - Applies only for <a class="reference external" href="https://github.com/MatMaul/pynetgear#supported-routers">Netgear routers</a></p>
-<ul>
-<li><p><strong>ROUTER_PASS</strong> - Router’s admin password to get the available devices using <code class="docutils literal notranslate"><span class="pre">pynetgear</span></code> module.</p>
-<blockquote>
-<div><p>Note that this may be done even without the module by simply using the arp table.
-Using the module improves accuracy and support between different bandwidths since the devices are already connected to the router.</p>
-</div></blockquote>
-</li>
+<li><p><strong>TV_MAC</strong> - TV’s mac address.</p></li>
 </ul>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/car">Car Controls</a></strong> - Applies only for JLR vehicles using <code class="docutils literal notranslate"><span class="pre">InControl</span> <span class="pre">API</span></code>.</p>
 <ul class="simple">
@@ -239,12 +230,14 @@ Using the module improves accuracy and support between different bandwidths sinc
 </details></section>
 <section id="smart-devices">
 <h2>Smart Devices<a class="headerlink" href="#smart-devices" title="Permalink to this headline">¶</a></h2>
-<p>A source file <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> is used to store smart devices’ IPs. <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> supports <code class="docutils literal notranslate"><span class="pre">MagicHome</span></code> lights and <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> TVs.</p>
+<p>A source file <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> is used to store smart devices’ hostnames. <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> supports <code class="docutils literal notranslate"><span class="pre">MagicHome</span></code> lights and <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> TVs.</p>
 <details>
-<summary><strong>Setup Instructions</strong></summary><ul class="simple">
-<li><p>For the <code class="docutils literal notranslate"><span class="pre">Netgear</span></code> module to scan for smart devices, a <code class="docutils literal notranslate"><span class="pre">hostnames.yaml</span></code> file is required to be placed in <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p></li>
+<summary><strong>Setup Instructions</strong></summary><blockquote>
+<div><p>Note: Jarvis currently supports only one hostname for TV but multiple for lights.</p>
+</div></blockquote>
+<ul class="simple">
 <li><p>The name used in the keys will be the identifier of those light bulbs.</p></li>
-<li><p>The source file (<code class="docutils literal notranslate"><span class="pre">hostnames.yaml</span></code>) should be as following:</p></li>
+<li><p>The source file (<code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code>) should be as following:</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">bedroom</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span><span class="w"></span>
@@ -257,28 +250,6 @@ Using the module improves accuracy and support between different bandwidths sinc
 <span class="nt">living_room</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span><span class="w"></span>
 <span class="nt">tv</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LGWEBOSTV&#39;</span><span class="w"></span>
-</pre></div>
-</div>
-<blockquote>
-<div><p>Note: Jarvis currently supports only one hostname for TV but multiple for lights.</p>
-</div></blockquote>
-<p>By using <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code>, the <code class="docutils literal notranslate"><span class="pre">Netgear</span></code> module can be avoided at the cost of manually updating the source file in case of IP changes.</p>
-<ul class="simple">
-<li><p>The name used in the keys will be the identifier of those light bulbs.</p></li>
-<li><p>If the source file (<code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code>) is hand-created, it should be as following:</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">bedroom</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;IP_ADDRESS&#39;</span><span class="w"></span>
-<span class="nt">hallway</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;IP_ADDRESS&#39;</span><span class="w"></span>
-<span class="nt">hallway_basement</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;IP_ADDRESS&#39;</span><span class="w"></span>
-<span class="nt">kitchen</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;IP_ADDRESS&#39;</span><span class="w"></span>
-<span class="nt">living_room</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;IP_ADDRESS&#39;</span><span class="w"></span>
-<span class="nt">tv_ip</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;IP_ADDRESS&#39;</span><span class="w"></span>
-<span class="nt">tv_mac</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;TV_MAC_ADDRESS&#39;</span><span class="w"></span>
 </pre></div>
 </div>
 </details></section>

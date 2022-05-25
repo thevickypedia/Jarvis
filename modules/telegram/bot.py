@@ -13,11 +13,11 @@ import requests
 from speech_recognition import AudioFile, Recognizer, UnknownValueError
 
 from executors.offline import offline_communicator
-from executors.timeout import timeout_mac, timeout_win
 from modules.audio.voices import voice_default
 from modules.exceptions import BotInUse
 from modules.models import config, models
 from modules.offline import compatibles
+from modules.timeout.timeout import timeout
 from modules.utils import shared, support
 
 env = models.env
@@ -500,11 +500,6 @@ class TelegramBot:
                 return
         self.send_message(chat_id=payload['from']['id'], response=response)
 
-    @timeout_win(duration=2)
-    def __audio_driver_executor(self) -> None:
-        """Audio driver to run and wait."""
-        self.audio_driver.runAndWait()
-
     def text_to_audio(self, text: str) -> Union[str, None]:
         """Converts text into an audio file.
 
@@ -521,17 +516,9 @@ class TelegramBot:
         else:
             tmp_file = f"{int(time.time())}.wav"
         self.audio_driver.save_to_file(filename=tmp_file, text=text)
-        if env.mac:
-            with timeout_mac(duration=2, capture_frame=False):
-                try:
-                    self.audio_driver.runAndWait()
-                except TimeoutError as error:
-                    logger.error(error)
-        else:
-            try:
-                self.__audio_driver_executor()
-            except TimeoutError as error:
-                logger.error(error)
+        response = timeout(function=self.audio_driver.runAndWait, seconds=2)
+        if not response.ok:
+            logger.warning(response.info)
         if os.path.isfile(tmp_file):
             return tmp_file
         logger.error("Failed to generate text to audio within the set timeout.")

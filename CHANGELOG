@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+6.0.5 (05/25/2022)
+------------------
+- Add a generic `function-timeout` module
+- Use sockets to get IP of hostname instead of using Netgear module
+- Update tv.py and lights.py to match using sockets to find IP address
+- Have an option to retain location.yaml file for accurate location information
+- Add exception handlers for loading yaml files
+- Remove the usage of hostnames.yaml
+- Detect lights that are not connected to the internet
+
 6.0.4 (05/21/2022)
 ------------------
 - Support voice commands via `TelegramAPI` on Windows

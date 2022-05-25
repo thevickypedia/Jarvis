@@ -5,7 +5,6 @@ from string import punctuation
 from typing import Union
 
 import yaml
-from yaml.scanner import ScannerError
 
 from executors.logger import logger
 from modules.audio import speaker
@@ -62,7 +61,8 @@ def auto_helper() -> Union[str, None]:
     with open(fileio.automation) as read_file:
         try:
             automation_data = yaml.load(stream=read_file, Loader=yaml.FullLoader) or {}
-        except ScannerError:
+        except yaml.YAMLError as error:
+            logger.error(error)
             warnings.warn(
                 "AUTOMATION FILE :: Invalid file format."
             )

@@ -1,5 +1,6 @@
-import os.path
+import os
 import random
+import socket
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from multiprocessing.pool import ThreadPool
 from threading import Thread
@@ -91,18 +92,30 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness').update_device(**args)
 
     if 'all' in phrase.split():
-        host_ip = [value for key, value in smart_devices.items()
-                   if isinstance(value, list)]  # Checking for list since lights are inserted as a list and tv as string
+        # Checking for list since lights are inserted as a list and tv as string
+        host_names = [value for key, value in smart_devices.items() if isinstance(value, list)]
+        light_location = ""
     else:
-        # Get the closest matching name provided in hostnames.yaml compared to what's requested by the user
-        host_ip = [smart_devices.get(support.get_closest_match(text=phrase.replace('room', ''),
-                                                               match_list=list(smart_devices.keys())))]
+        # Get the closest matching name provided in smart_devices.yaml compared to what's requested by the user
+        light_location = support.get_closest_match(text=phrase, match_list=list(smart_devices.keys()))
+        host_names = [smart_devices.get(light_location)]
+        light_location = light_location.replace('_', ' ').replace('-', '')
 
-    if not host_ip:
+    if not host_names:
         Thread(target=support.unrecognized_dumper, args=[{'LIGHTS': phrase}]).start()
         speaker.speak(text=f"I'm not sure which lights you meant {env.title}!")
         return
-    host_ip = support.matrix_to_flat_list(input_=host_ip)
+
+    host_names = support.matrix_to_flat_list(input_=host_names)
+    host_ip_raw = [socket.gethostbyname(hostname) for hostname in host_names]
+    host_ip = [tmp for tmp in host_ip_raw if tmp.startswith('192')]
+
+    if not host_ip:
+        plural = 'lights' if len(host_ip_raw) > 1 else 'light'
+        speaker.speak(text=f"I wasn't able to connect to your {light_location} {plural} {env.title}! "
+                           f"{support.number_to_words(input_=len(host_ip_raw), capitalize=True)} lights appear to be "
+                           "powered off.")
+        return
 
     def avail_check(function_to_call: Callable) -> NoReturn:
         """Speaks an error message if any of the lights aren't reachable.
@@ -136,7 +149,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
                 logger.error(f'Thread processing for {iterator} received an exception: {future.exception()}')
         return thread_except
 
-    plural = 'lights!' if len(host_ip) > 1 else 'light!'
+    plural = 'lights' if len(host_ip) > 1 else 'light'
     if 'turn on' in phrase or 'cool' in phrase or 'white' in phrase:
         tone = 'white' if 'white' in phrase else 'cool'
         if 'turn on' in phrase:

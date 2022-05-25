@@ -26,7 +26,6 @@ from executors import display_functions
 from executors.logger import logger
 from modules.audio import speaker, volume
 from modules.models import models
-from modules.netgear.ip_scanner import LocalIPScan
 
 env = models.env
 fileio = models.FileIO()
@@ -147,15 +146,22 @@ def unrecognized_dumper(train_data: dict) -> NoReturn:
         train_data: Takes the dictionary that has to be written as an argument.
     """
     dt_string = datetime.now().strftime("%B %d, %Y %H:%M:%S.%f")[:-3]
+    data = {}
     if os.path.isfile(fileio.training):
         with open(fileio.training) as reader:
-            data = yaml.safe_load(stream=reader) or {}
+            try:
+                data = yaml.load(stream=reader, Loader=yaml.FullLoader) or {}
+            except yaml.YAMLError as error:
+                logger.error(error)
+                os.rename(src=fileio.training,
+                          dst=str(fileio.training).replace(".", f"_{datetime.now().strftime('%m_%d_%Y_%H_%M')}."))
         for key, value in train_data.items():
             if data.get(key):
                 data[key].update({dt_string: value})
             else:
                 data.update({key: {dt_string: value}})
-    else:
+
+    if not data:
         data = {key1: {dt_string: value1} for key1, value1 in train_data.items()}
 
     with open(fileio.training, 'w') as writer:
@@ -384,18 +390,6 @@ def exit_message() -> str:
         exit_msg += f"\nAnd by the way, happy {event}"
 
     return exit_msg
-
-
-def scan_smart_devices() -> NoReturn:
-    """Retrieves devices IP by doing a local IP range scan using Netgear API.
-
-    See Also:
-        - This can also be done my manually passing the IP addresses in a list (for lights) or string (for TV)
-        - Using Netgear API will avoid the manual change required to rotate the IPs whenever the router is restarted.
-    """
-    smart_devices = LocalIPScan().smart_devices()
-    with open(fileio.smart_devices, 'w') as file:
-        yaml.dump(stream=file, data=smart_devices)
 
 
 def daytime_nighttime_swapper() -> NoReturn:
