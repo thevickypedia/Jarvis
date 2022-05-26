@@ -97,8 +97,12 @@ def frequently_used(function_name: str) -> NoReturn:
         - This function does not have purpose, but to analyze and re-order the conditions' module at a later time.
     """
     if os.path.isfile(fileio.frequent):
-        with open(fileio.frequent) as file:
-            data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+        try:
+            with open(fileio.frequent) as file:
+                data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+        except yaml.YAMLError as error:
+            data = {}
+            logger.error(error)
         if data.get(function_name):
             data[function_name] += 1
         else:

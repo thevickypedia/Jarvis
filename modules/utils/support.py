@@ -148,13 +148,13 @@ def unrecognized_dumper(train_data: dict) -> NoReturn:
     dt_string = datetime.now().strftime("%B %d, %Y %H:%M:%S.%f")[:-3]
     data = {}
     if os.path.isfile(fileio.training):
-        with open(fileio.training) as reader:
-            try:
+        try:
+            with open(fileio.training) as reader:
                 data = yaml.load(stream=reader, Loader=yaml.FullLoader) or {}
-            except yaml.YAMLError as error:
-                logger.error(error)
-                os.rename(src=fileio.training,
-                          dst=str(fileio.training).replace(".", f"_{datetime.now().strftime('%m_%d_%Y_%H_%M')}."))
+        except yaml.YAMLError as error:
+            logger.error(error)
+            os.rename(src=fileio.training,
+                      dst=str(fileio.training).replace(".", f"_{datetime.now().strftime('%m_%d_%Y_%H_%M')}."))
         for key, value in train_data.items():
             if data.get(key):
                 data[key].update({dt_string: value})

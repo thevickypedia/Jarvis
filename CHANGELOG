@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+6.0.6 (05/26/2022)
+------------------
+- Add exception handlers for loading `yaml` files
+- Delete pycache from all sub-dir during startup
+- Update README.md
+
 6.0.5 (05/25/2022)
 ------------------
 - Add a generic `function-timeout` module

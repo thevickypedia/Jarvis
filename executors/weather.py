@@ -45,8 +45,13 @@ def weather(phrase: str = None) -> None:
         lat = located.latitude
         lon = located.longitude
     else:
-        with open(fileio.location) as file:
-            current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+        try:
+            with open(fileio.location) as file:
+                current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+        except yaml.YAMLError as error:
+            logger.error(error)
+            speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to read your location.")
+            return
 
         address = current_location.get('address', {})
         city = address.get('city', address.get('hamlet', 'Unknown'))

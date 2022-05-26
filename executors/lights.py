@@ -34,8 +34,14 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         support.no_env_vars()
         return
 
-    with open(fileio.smart_devices) as file:
-        smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+    try:
+        with open(fileio.smart_devices) as file:
+            smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+    except yaml.YAMLError as error:
+        logger.error(error)
+        speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to read the source information. "
+                           "Please check the logs.")
+        return
 
     if not any(smart_devices):
         logger.warning(f"{fileio.smart_devices} is empty.")

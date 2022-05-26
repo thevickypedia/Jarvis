@@ -58,21 +58,21 @@ def auto_helper() -> Union[str, None]:
         str:
         Task to be executed.
     """
-    with open(fileio.automation) as read_file:
-        try:
+    try:
+        with open(fileio.automation) as read_file:
             automation_data = yaml.load(stream=read_file, Loader=yaml.FullLoader) or {}
-        except yaml.YAMLError as error:
-            logger.error(error)
-            warnings.warn(
-                "AUTOMATION FILE :: Invalid file format."
-            )
-            logger.error(f"Invalid file format. "
-                         f"Logging automation data and removing the file to avoid endless errors.\n"
-                         f"{''.join(['*' for _ in range(120)])}"
-                         f"\n\n{read_file.read()}\n\n"
-                         f"{''.join(['*' for _ in range(120)])}")
-            os.remove(fileio.automation)
-            return
+    except yaml.YAMLError as error:
+        logger.error(error)
+        warnings.warn(
+            "AUTOMATION FILE :: Invalid file format."
+        )
+        logger.error(f"Invalid file format. "
+                     f"Logging automation data and removing the file to avoid endless errors.\n"
+                     f"{''.join(['*' for _ in range(120)])}"
+                     f"\n\n{read_file.read()}\n\n"
+                     f"{''.join(['*' for _ in range(120)])}")
+        os.remove(fileio.automation)
+        return
 
     for automation_time, automation_info in automation_data.items():
         if not (exec_task := automation_info.get("task")) or \

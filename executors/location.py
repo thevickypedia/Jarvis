@@ -165,14 +165,14 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
 def write_current_location() -> NoReturn:
     """Extracts location information from public IP address and writes it to a yaml file."""
     if os.path.isfile(fileio.location):
-        with open(fileio.location) as file:
-            try:
+        try:
+            with open(fileio.location) as file:
                 data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-            except yaml.YAMLError as error:
-                data = {}
-                logger.error(error)
+        except yaml.YAMLError as error:
+            data = {}
+            logger.error(error)
         address = data.get("address")
-        if data.get("reserved") and data.get("latitude") and data.get("longitude") and address and \
+        if address and data.get("reserved") and data.get("latitude") and data.get("longitude") and \
                 address.get("city", address.get("hamlet")) and address.get("country") and \
                 address.get("state", address.get("county")):
             logger.info(f"{fileio.location} is reserved.")
@@ -190,8 +190,13 @@ def write_current_location() -> NoReturn:
 
 def location() -> NoReturn:
     """Gets the user's current location."""
-    with open(fileio.location) as file:
-        current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+    try:
+        with open(fileio.location) as file:
+            current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+    except yaml.YAMLError as error:
+        logger.error(error)
+        speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to get the location details. Please check the logs.")
+        return
     speaker.speak(text=f"I'm at {current_location.get('address', {}).get('road', '')} - "
                        f"{current_location.get('address', {}).get('city', '')} "
                        f"{current_location.get('address', {}).get('state', '')} - "
@@ -330,8 +335,13 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         start = desired_start.latitude, desired_start.longitude
         start_check = None
     else:
-        with open(fileio.location) as file:
-            current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+        try:
+            with open(fileio.location) as file:
+                current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+        except yaml.YAMLError as error:
+            logger.error(error)
+            speaker.speak(text=f"I neither received an origin location nor was able to get my location {env.title}!")
+            return
         start = (current_location["latitude"], current_location["longitude"])
         start_check = "My Location"
     sys.stdout.write("::TO::") if origin else sys.stdout.write("\r::TO::")
@@ -396,8 +406,12 @@ def locate_places(phrase: str = None) -> None:
                 before_keyword, keyword, after_keyword = converted.partition(keyword)
                 place = after_keyword.replace(" in", "").strip()
 
-    with open(fileio.location) as file:
-        current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+    try:
+        with open(fileio.location) as file:
+            current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+    except yaml.YAMLError as error:
+        logger.error(error)
+        current_location = {"address": {"country": "United States"}}
     try:
         destination_location = geo_locator.geocode(place)
         coordinates = destination_location.latitude, destination_location.longitude
@@ -468,9 +482,13 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     end_country = address["country"] if "country" in address else None
     end = f"{located.latitude},{located.longitude}"
 
-    with open(fileio.location) as file:
-        current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
-
+    try:
+        with open(fileio.location) as file:
+            current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+    except yaml.YAMLError as error:
+        logger.error(error)
+        speaker.speak(text=f"I wasn't able to get your current location to calculate the distance {env.title}!")
+        return
     start_country = current_location["address"]["country"]
     start = current_location["latitude"], current_location["longitude"]
     maps_url = f"https://www.google.com/maps/dir/{start}/{end}/"

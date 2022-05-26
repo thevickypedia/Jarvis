@@ -11,6 +11,7 @@ from geopy.distance import geodesic
 from search_engine_parser.core.engines.google import Search as GoogleSearch
 from search_engine_parser.core.exceptions import NoResultsOrTrafficError
 
+from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
@@ -160,8 +161,12 @@ def google_maps(query: str) -> bool:
     else:
         return False
 
-    with open(fileio.location) as file:
-        current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+    try:
+        with open(fileio.location) as file:
+            current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
+    except yaml.YAMLError as error:
+        logger.error(error)
+        return False
 
     results = len(required)
     speaker.speak(text=f"I found {results} results {env.title}!") if results != 1 else None

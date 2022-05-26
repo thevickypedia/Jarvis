@@ -1,5 +1,6 @@
 import os
 import random
+import shutil
 import stat
 import subprocess
 import sys
@@ -224,6 +225,15 @@ def clear_logs() -> NoReturn:
                 os.remove(f'{__path}/{file_}')  # removes the file if it is older than 48 hours
 
 
+def delete_pycache() -> NoReturn:
+    """Deletes ``__pycache__`` folder from all sub-dir."""
+    for __path, __directory, __file in os.walk(os.getcwd()):
+        if '__pycache__' in __directory:
+            deletion = os.path.join(__path, '__pycache__')
+            if os.path.exists(deletion):
+                shutil.rmtree(deletion)
+
+
 def starter() -> NoReturn:
     """Initiates crucial functions which needs to be called during start up.
 
@@ -237,6 +247,7 @@ def starter() -> NoReturn:
     volume.volume(level=50)
     voices.voice_default()
     clear_logs()
+    delete_pycache()
     # Used only during restart
     for file in os.listdir("fileio"):
         os.chmod(f"fileio{os.path.sep}{file}", os.stat(f"fileio{os.path.sep}{file}").st_mode | stat.S_IEXEC)

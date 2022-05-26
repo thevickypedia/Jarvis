@@ -78,11 +78,14 @@ def car(phrase: str) -> None:
                 extras += f"Your car is in {vehicle_position['city']} {vehicle_position['state']}, where the " \
                           f"current temperature is {current_temp}, so "
             else:
-                with open(fileio.location) as file:
-                    current_temp, target_temp = get_current_temp(location=yaml.load(stream=file,
-                                                                                    Loader=yaml.FullLoader))
-                extras += f"The current temperature is {current_temp}, so "
-
+                try:
+                    with open(fileio.location) as file:
+                        current_temp, target_temp = get_current_temp(location=yaml.load(stream=file,
+                                                                                        Loader=yaml.FullLoader))
+                        extras += f"The current temperature is {current_temp}, so "
+                except yaml.YAMLError as error:
+                    logger.error(error)
+                    target_temp = 69
         extras += f"I've configured the climate setting to {target_temp}°F"
         if car_name := vehicle(operation="START", temp=target_temp - 26):
             speaker.speak(text=f"Your {car_name} has been started {env.title}. {extras}")

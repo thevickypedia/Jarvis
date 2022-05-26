@@ -43,14 +43,12 @@ def television(phrase: str) -> None:
         speaker.speak(text=f"I'm sorry {env.title}! I was unable to read your TV's source information.")
         return
 
-    pre_req = [smart_devices.get('tv'), env.tv_mac, env.tv_client_key]
-    if not all(pre_req):
+    if not env.tv_mac or not env.tv_client_key:
         logger.warning("IP, MacAddress [or] ClientKey not found.")
-        logger.warning(pre_req)
         support.no_env_vars()
         return
 
-    tv_ip = socket.gethostbyname(smart_devices.get('tv'))
+    tv_ip = socket.gethostbyname(smart_devices.get('tv', 'LGWEBOSTV'))
     if not tv_ip.startswith('192'):
         speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to get the IP address of your TV.")
         return
