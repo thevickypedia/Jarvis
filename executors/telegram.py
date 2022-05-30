@@ -40,18 +40,9 @@ def handler() -> NoReturn:
         logger.critical(error)
         FAILED_CONNECTIONS['calls'] += 1
         if FAILED_CONNECTIONS['calls'] > 3:
-            logger.critical("Couldn't recover from connection error. Restarting main module..")
+            logger.critical("Couldn't recover from connection error. Restarting main module.")
             restart_control(quiet=True)
         else:
-            logger.info(f"Restarting in {FAILED_CONNECTIONS['calls'] * 10} seconds..")
+            logger.info(f"Restarting in {FAILED_CONNECTIONS['calls'] * 10} seconds.")
             time.sleep(FAILED_CONNECTIONS['calls'] * 10)
             handler()
-    # Expected exceptions
-    # except socket.timeout as error:
-    #     logger.critical(error)
-    # except urllib3.exceptions.ConnectTimeoutError as error:
-    #     logger.critical(error)
-    # except urllib3.exceptions.MaxRetryError as error:
-    #     logger.critical(error)
-    # except requests.exceptions.ConnectTimeout as error:
-    #     logger.critical(error)

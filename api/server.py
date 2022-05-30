@@ -2,7 +2,6 @@ import contextlib
 
 import requests
 import uvicorn
-from requests.exceptions import ConnectionError, Timeout
 
 from executors.logger import logger
 from executors.port_handler import is_port_in_use, kill_port_pid
@@ -50,8 +49,9 @@ def trigger_api() -> None:
             if res.ok:
                 logger.info(f'{url} is accessible.')
                 return
-            raise ConnectionError
-        except (ConnectionError, Timeout):  # Catching Timeout catches both ConnectTimeout and ReadTimeout errors
+            raise requests.exceptions.ConnectionError
+        # Catching Timeout catches both ConnectTimeout and ReadTimeout errors
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             logger.error('Unable to connect to existing uvicorn server.')
 
         if not kill_port_pid(port=env.offline_port):  # This might terminate Jarvis

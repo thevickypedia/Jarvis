@@ -42,7 +42,11 @@ def meetings_gatherer() -> str:
     """
     if not env.ics_url:
         return f"I wasn't given a calendar URL to look up your meetings {env.title}!"
-    response = requests.get(url=env.ics_url)
+    try:
+        response = requests.get(url=env.ics_url)
+    except (requests.ConnectionError, requests.exceptions.Timeout) as error:
+        logger.error(error)
+        return f"I was unable to connect to the internet {env.title}! Please check your connection."
     if not response.ok:
         logger.error(response.status_code)
         return "I wasn't able to read your calendar schedule sir! Please check the shared URL."

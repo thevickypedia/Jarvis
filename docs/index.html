@@ -3756,6 +3756,11 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.bot_voice_timeout">
+<span class="sig-name descname"><span class="pre">bot_voice_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.bot_voice_timeout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.car_email">
 <span class="sig-name descname"><span class="pre">car_email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.car_email" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4411,23 +4416,6 @@ Whites can have a value of None.</p>
 </div>
 <p>Initiates a session.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.audio_to_text">
-<span class="sig-name descname"><span class="pre">audio_to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.audio_to_text" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts audio to text using speech recognition.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> – Filename to process the information from.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns the string converted from the audio file.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.authenticate">
 <span class="sig-name descname"><span class="pre">authenticate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.authenticate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Authenticates the user with <code class="docutils literal notranslate"><span class="pre">userId</span></code> and <code class="docutils literal notranslate"><span class="pre">userName</span></code>.</p>
@@ -4559,18 +4547,18 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.text_to_audio">
-<span class="sig-name descname"><span class="pre">text_to_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.text_to_audio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts text into an audio file.</p>
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.verify_stop">
+<span class="sig-name descname"><span class="pre">verify_stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.verify_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops Jarvis by setting stop flag in <code class="docutils literal notranslate"><span class="pre">fileio.base_db</span></code> if stop is requested by the user with a bypass flag.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>text</strong> – Takes the text that has to be converted as audio.</p>
+<dd class="field-odd"><p><strong>payload</strong> – Payload received, to extract information from.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns the temporary filename.</p>
+<dd class="field-even"><p>Boolean flag to indicate whether to proceed.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4592,40 +4580,6 @@ Whites can have a value of None.</p>
 </dl>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.telegram.bot.audio_converter_mac">
-<span class="sig-prename descclassname"><span class="pre">modules.telegram.bot.</span></span><span class="sig-name descname"><span class="pre">audio_converter_mac</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="headerlink" href="#modules.telegram.bot.audio_converter_mac" title="Permalink to this definition">¶</a></dt>
-<dd><p>Imports transcode from ftransc.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Transcode function from ftransc.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Callable</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.telegram.bot.audio_converter_win">
-<span class="sig-prename descclassname"><span class="pre">modules.telegram.bot.</span></span><span class="sig-name descname"><span class="pre">audio_converter_win</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_audio_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.telegram.bot.audio_converter_win" title="Permalink to this definition">¶</a></dt>
-<dd><p>Imports AudioSegment from pydub.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_filename</strong> – Input filename.</p></li>
-<li><p><strong>output_audio_format</strong> – Output audio format.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Output filename if conversion is successful.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -4664,6 +4618,89 @@ Whites can have a value of None.</p>
 <span class="sig-prename descclassname"><span class="pre">modules.telegram.bot.</span></span><span class="sig-name descname"><span class="pre">intro</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.telegram.bot.intro" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a welcome message as a string.</p>
 <dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="module-modules.telegram.audio_handler"></span><dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.audio_handler.audio_converter_mac">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.audio_handler.</span></span><span class="sig-name descname"><span class="pre">audio_converter_mac</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="headerlink" href="#modules.telegram.audio_handler.audio_converter_mac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports transcode from ftransc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Transcode function from ftransc.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.audio_handler.audio_converter_win">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.audio_handler.</span></span><span class="sig-name descname"><span class="pre">audio_converter_win</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_audio_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.telegram.audio_handler.audio_converter_win" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports AudioSegment from pydub.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_filename</strong> – Input filename.</p></li>
+<li><p><strong>output_audio_format</strong> – Output audio format.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Output filename if conversion is successful.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.audio_handler.audio_to_text">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.audio_handler.</span></span><span class="sig-name descname"><span class="pre">audio_to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.telegram.audio_handler.audio_to_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts audio to text using speech recognition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – Filename to process the information from.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the string converted from the audio file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.audio_handler.generate_audio_file">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.audio_handler.</span></span><span class="sig-name descname"><span class="pre">generate_audio_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.telegram.audio_handler.generate_audio_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates an audio file from text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – Filename to be generated.</p></li>
+<li><p><strong>text</strong> – Text that has to be converted into audio.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.audio_handler.text_to_audio">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.audio_handler.</span></span><span class="sig-name descname"><span class="pre">text_to_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.telegram.audio_handler.text_to_audio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts text into an audio file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> – Takes the text that has to be converted as audio.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the temporary filename.</p>
+</dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
 </dd>

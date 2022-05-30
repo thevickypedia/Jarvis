@@ -106,6 +106,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **LEGACY_KEYWORDS** - List of wake words for legacy macOS. Defaults to `['jarvis']`
+- **SENSITIVITY** - Hot word detection sensitivity. Range: 0-1
 
 **[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py)**
 - **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`
@@ -172,6 +173,7 @@ docker run \
 - **BOT_TOKEN** - Telegram BOT token.
 - **BOT_CHAT_IDS** - UserID/ChatID for a particular user.
 - **BOT_USERS** - Usernames that should have access to Jarvis.
+- **BOT_VOICE_TIMEOUT** - Timeout to convert text to audio for voice commands. Range: [1-5] seconds.
 </details>
 
 ### Smart Devices

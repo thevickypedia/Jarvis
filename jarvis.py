@@ -110,6 +110,13 @@ class Activator:
                     else:
                         restart(quiet=True)
                     break
+                with db.connection:
+                    cursor = db.connection.cursor()
+                    flag = cursor.execute("SELECT flag, caller FROM stopper").fetchone()
+                if flag:
+                    logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
+                    self.stop()
+                    terminator()
         except StopSignal:
             self.stop()
             exit_process()

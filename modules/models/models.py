@@ -74,6 +74,7 @@ class EnvConfig(BaseSettings):
     bot_token: str = Field(default=None, env='BOT_TOKEN')
     bot_chat_ids: list = Field(default=[], env='BOT_CHAT_IDS')
     bot_users: list = Field(default=[], env='BOT_USERS')
+    bot_voice_timeout: Union[float, PositiveInt] = Field(default=3, le=5, ge=1, env='BOT_VOICE_TIMEOUT')
     legacy_keywords: list = Field(default=['jarvis'], env='LEGACY_KEYWORDS')
     speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
     speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')

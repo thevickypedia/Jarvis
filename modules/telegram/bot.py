@@ -6,21 +6,22 @@ import random
 import string
 import time
 from logging.config import dictConfig
-from typing import Callable, NoReturn, Union
+from typing import NoReturn, Union
 
-import pyttsx3
 import requests
-from speech_recognition import AudioFile, Recognizer, UnknownValueError
 
 from executors.offline import offline_communicator
-from modules.audio.voices import voice_default
+from modules.database import database
 from modules.exceptions import BotInUse
 from modules.models import config, models
 from modules.offline import compatibles
-from modules.timeout.timeout import timeout
+from modules.telegram import audio_handler
 from modules.utils import shared, support
 
 env = models.env
+fileio = models.FileIO()
+db = database.Database(database=fileio.base_db)
+db.create_table(table_name="stopper", columns=["flag", "caller"])
 
 importlib.reload(module=logging) if env.mac else None
 dictConfig(config.BotConfig().dict())
@@ -29,57 +30,6 @@ logger = logging.getLogger('telegram')
 offline_compatible = compatibles.offline_compatible()
 
 USER_TITLE = {}
-
-
-def audio_converter_mac() -> Callable:
-    """Imports transcode from ftransc.
-
-    Returns:
-        Callable:
-        Transcode function from ftransc.
-    """
-    try:
-        from ftransc.core.transcoders import transcode
-        return transcode
-    except SystemExit as error:
-        logger.error(error)
-
-
-def audio_converter_win(input_filename: str, output_audio_format: str) -> Union[str, None]:
-    """Imports AudioSegment from pydub.
-
-    Args:
-        input_filename: Input filename.
-        output_audio_format: Output audio format.
-
-    Returns:
-        str:
-        Output filename if conversion is successful.
-    """
-    ffmpeg_path = os.path.join(os.getcwd(), "ffmpeg", "bin")
-    if not os.path.exists(path=ffmpeg_path):
-        logger.warning("ffmpeg codec is missing!")
-        return
-    os.environ['PATH'] += ffmpeg_path
-    from pydub import AudioSegment
-    if input_filename.endswith(".ogg"):
-        audio = AudioSegment.from_ogg(input_filename)
-        output_filename = input_filename.replace(".ogg", f".{output_audio_format}")
-    elif input_filename.endswith(".wav"):
-        audio = AudioSegment.from_wav(input_filename)
-        output_filename = input_filename.replace(".wav", f".{output_audio_format}")
-    else:
-        return
-    try:
-        audio.export(input_filename, format=output_audio_format)
-        os.remove(input_filename)
-        if os.path.isfile(output_filename):
-            return output_filename
-        raise FileNotFoundError(
-            f"{output_filename} was not found after exporting audio to {output_audio_format}"
-        )
-    except FileNotFoundError as error:  # raised by audio.export when conversion fails
-        logger.error(error)
 
 
 def greeting() -> str:
@@ -159,6 +109,7 @@ class TelegramBot:
 
     BASE_URL = 'https://api.telegram.org/bot'
     FILE_CONTENT_URL = f'https://api.telegram.org/file/bot{env.bot_token}/' + '{file_path}'
+
     # TODO: Integrate feature to save document, photo and audio on server.
     # SUPPORTED_TYPES = ['text', 'audio', 'document', 'photo', 'voice']
 
@@ -166,9 +117,6 @@ class TelegramBot:
         """Initiates a session."""
         self.session = requests.Session()
         self.session.verify = True
-        self.recognizer = Recognizer()
-        self.audio_driver = pyttsx3.init()
-        voice_default(stdout=False)
 
     def _get_file(self, payload: dict) -> Union[bytes, None]:
         """Makes a request to get the file and file path.
@@ -300,25 +248,6 @@ class TelegramBot:
                     self.process_voice(payload=message)
                 offset = result['update_id'] + 1
 
-    def audio_to_text(self, filename: str) -> str:
-        """Converts audio to text using speech recognition.
-
-        Args:
-            filename: Filename to process the information from.
-
-        Returns:
-            str:
-            Returns the string converted from the audio file.
-        """
-        try:
-            file = AudioFile(filename_or_fileobject=filename)
-            with file as source:
-                audio = self.recognizer.record(source)
-            os.remove(filename)
-            return self.recognizer.recognize_google(audio)
-        except UnknownValueError:
-            logger.error("Unrecognized audio or language.")
-
     def authenticate(self, payload: dict) -> bool:
         """Authenticates the user with ``userId`` and ``userName``.
 
@@ -367,6 +296,29 @@ class TelegramBot:
                           response=f"Request timed out\nRequested: {request_time}\n"
                                    f"Processed: {time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(time.time()))}")
 
+    def verify_stop(self, payload: dict) -> bool:
+        """Stops Jarvis by setting stop flag in ``fileio.base_db`` if stop is requested by the user with a bypass flag.
+
+        Args:
+            payload: Payload received, to extract information from.
+
+        Returns:
+            bool:
+            Boolean flag to indicate whether to proceed.
+        """
+        if "stop" not in payload.get('text', '').lower():
+            return True
+        if "bypass" in payload.get('text', '').lower():
+            logger.info(f"{payload['from']['username']} requested a STOP bypass.")
+            self.reply_to(payload=payload, response=f"Shutting down now {env.title}!\n{support.exit_message()}")
+            with db.connection:
+                cursor = db.connection.cursor()
+                cursor.execute("INSERT INTO stopper (flag, caller) VALUES (?,?);", (True, 'TelegramAPI'))
+                cursor.connection.commit()
+        else:
+            self.reply_to(payload=payload,
+                          response="Jarvis cannot be stopped via offline communication without a 'bypass' flag.")
+
     def process_voice(self, payload: dict) -> None:
         """Processes the payload received after checking for authentication.
 
@@ -391,16 +343,16 @@ class TelegramBot:
                 file.write(bytes_obj)
             converted = False
             if env.mac:
-                transcode = audio_converter_mac()
+                transcode = audio_handler.audio_converter_mac()
                 if transcode and transcode(input_file_name=filename, output_audio_format="flac"):
                     converted = True
             else:
-                if audio_converter_win(input_filename=filename, output_audio_format="flac"):
+                if audio_handler.audio_converter_win(input_filename=filename, output_audio_format="flac"):
                     converted = True
             if converted:
                 os.remove(filename)
                 filename = filename.replace(".ogg", ".flac")
-                audio_to_text = self.audio_to_text(filename=filename)
+                audio_to_text = audio_handler.audio_to_text(filename=filename)
                 if audio_to_text:
                     payload['text'] = audio_to_text
                     self.jarvis(payload=payload)
@@ -408,18 +360,18 @@ class TelegramBot:
             else:
                 logger.error("Failed to transcode OPUS to Native FLAC")
         else:
-            logger.error("Unable to get file for the file_id in the payload received.")
+            logger.error("Unable to get file for the file id in the payload received.")
             logger.error(payload)
         # Catches both unconverted source ogg and unconverted audio to text
         title = USER_TITLE.get(payload['from']['username'], env.title)
-        if filename := self.text_to_audio(text=f"I'm sorry {title}! I was unable to process your "
-                                               "voice command. Please try again!"):
+        if filename := audio_handler.text_to_audio(text=f"I'm sorry {title}! I was unable to process your "
+                                                        "voice command. Please try again!"):
             self.send_audio(filename=filename, chat_id=payload['from']['id'])
             os.remove(filename)
         else:
             self.reply_to(payload=payload,
-                          response=f"I'm sorry {title}! I was neither to process your voice command, "
-                                   f"nor respond to you with one. Please try using text commands.")
+                          response=f"I'm sorry {title}! I was neither able to process your voice command, "
+                                   "nor respond to you with one. Please try using text commands.")
 
     def process_text(self, payload: dict) -> None:
         """Processes the payload received after checking for authentication.
@@ -430,6 +382,8 @@ class TelegramBot:
         if not self.authenticate(payload=payload):
             return
         if not self.verify_timeout(payload=payload):
+            return
+        if not self.verify_stop(payload=payload):
             return
         payload['text'] = payload.get('text', '').replace('bypass', '').replace('BYPASS', '')
         if any(word in payload.get('text') for word in ["hey", "hi", "hola", "what's up", "ssup", "whats up",
@@ -494,34 +448,11 @@ class TelegramBot:
         response = offline_communicator(command=command).replace(env.title, USER_TITLE.get(payload['from']['username']))
         logger.info(f'Response: {response}')
         if payload.get('voice'):
-            if filename := self.text_to_audio(text=response):
+            if filename := audio_handler.text_to_audio(text=response):
                 self.send_audio(chat_id=payload['from']['id'], filename=filename)
                 os.remove(filename)
                 return
         self.send_message(chat_id=payload['from']['id'], response=response)
-
-    def text_to_audio(self, text: str) -> Union[str, None]:
-        """Converts text into an audio file.
-
-        Args:
-            text: Takes the text that has to be converted as audio.
-
-        Returns:
-            str:
-            Returns the temporary filename.
-        """
-        if shared.offline_caller:
-            tmp_file = f"{shared.offline_caller}.wav"
-            shared.offline_caller = None  # Reset caller after using it
-        else:
-            tmp_file = f"{int(time.time())}.wav"
-        self.audio_driver.save_to_file(filename=tmp_file, text=text)
-        response = timeout(function=self.audio_driver.runAndWait, seconds=2)
-        if not response.ok:
-            logger.warning(response.info)
-        if os.path.isfile(tmp_file):
-            return tmp_file
-        logger.error("Failed to generate text to audio within the set timeout.")
 
 
 if __name__ == '__main__':

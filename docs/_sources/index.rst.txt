@@ -476,6 +476,12 @@ Telegram
    :members:
    :exclude-members: BASE_URL
 
+====
+
+.. automodule:: modules.telegram.audio_handler
+   :members:
+   :undoc-members:
+
 Temperature
 ===========
 

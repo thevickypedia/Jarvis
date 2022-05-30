@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+6.0.7 (05/30/2022)
+------------------
+- Add an option to terminate Jarvis via `TelegramAPI`
+- Move voice message handler to a dedicated module
+- Add optional timeout for voice message handling
+- Handle connection errors differently
+
 6.0.6 (05/26/2022)
 ------------------
 - Add exception handlers for loading `yaml` files
