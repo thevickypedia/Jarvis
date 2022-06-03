@@ -22,9 +22,8 @@ import psutil
 import yaml
 from holidays import country_holidays
 
-from executors import display_functions
 from executors.logger import logger
-from modules.audio import speaker, volume
+from modules.audio import speaker
 from modules.models import models
 
 env = models.env
@@ -164,8 +163,15 @@ def unrecognized_dumper(train_data: dict) -> NoReturn:
     if not data:
         data = {key1: {dt_string: value1} for key1, value1 in train_data.items()}
 
+    data = {
+        func: {
+            dt: unrec for dt, unrec in sorted(unrec_dict.items(), reverse=True,
+                                              key=lambda item: datetime.strptime(item[0], "%B %d, %Y %H:%M:%S.%f"))
+        } for func, unrec_dict in data.items()
+    }
+
     with open(fileio.training, 'w') as writer:
-        yaml.dump(data=data, stream=writer)
+        yaml.dump(data=data, stream=writer, sort_keys=False)
 
 
 def size_converter(byte_size: int) -> str:
@@ -392,41 +398,10 @@ def exit_message() -> str:
     return exit_msg
 
 
-def daytime_nighttime_swapper() -> NoReturn:
-    """Automatically puts the Mac on sleep and sets the volume to 25% after 9 PM and 50% after 6 AM."""
-    hour = int(datetime.now().strftime("%H"))
-    locker = """osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'"""
-    if 20 >= hour >= 7:
-        volume.volume(level=50)
-    elif hour >= 21 or hour <= 6:
-        volume.volume(level=30)
-        if env.mac:
-            display_functions.decrease_brightness()
-            os.system(locker)
-
-
 def no_env_vars() -> NoReturn:
     """Says a message about permissions when env vars are missing."""
     logger.error(f"Called by: {sys._getframe(1).f_code.co_name}")  # noqa
     speaker.speak(text=f"I'm sorry {env.title}! I lack the permissions!")
-
-
-def keygen(length: int, punctuation: bool = False) -> str:
-    """Generates random key.
-
-    Args:
-        length: Length of the keygen.
-        punctuation: A boolean flag to include punctuation in the keygen.
-
-    Returns:
-        str:
-        10 digit random key as a string.
-    """
-    if punctuation:
-        required_str = string.ascii_letters + string.digits + string.punctuation
-    else:
-        required_str = string.ascii_letters + string.digits
-    return "".join(random.choices(required_str, k=length))
 
 
 def flush_screen() -> NoReturn:
@@ -471,3 +446,21 @@ def token() -> str:
         Returns hashed UUID as a string.
     """
     return hashed(key=uuid.uuid4())
+
+
+def keygen(length: int, punctuation: bool = False) -> str:
+    """Generates random key.
+
+    Args:
+        length: Length of the keygen.
+        punctuation: A boolean flag to include punctuation in the keygen.
+
+    Returns:
+        str:
+        10 digit random key as a string.
+    """
+    if punctuation:
+        required_str = string.ascii_letters + string.digits + string.punctuation
+    else:
+        required_str = string.ascii_letters + string.digits
+    return "".join(random.choices(required_str, k=length))

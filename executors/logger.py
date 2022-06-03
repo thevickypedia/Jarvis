@@ -22,10 +22,11 @@ from modules.models import models
 
 env = models.env
 
-if not os.path.isdir(f'logs{os.path.sep}api'):
-    os.makedirs(f'logs{os.path.sep}api')  # Recursively creates both logs and api directories if unavailable
+api_logs = os.path.join('logs', 'api')
+if not os.path.isdir(api_logs):
+    os.makedirs(api_logs)  # Recursively creates both logs and api directories if unavailable
 
-log_file = datetime.now().strftime(f'logs{os.path.sep}jarvis_%d-%m-%Y.log')
+log_file = datetime.now().strftime(os.path.join('logs', 'jarvis_%d-%m-%Y.log'))
 write = ''.join(['*' for _ in range(120)])
 
 if current_process().name == 'MainProcess':

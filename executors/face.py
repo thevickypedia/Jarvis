@@ -43,7 +43,7 @@ def face_detection() -> None:
                            "so that I can add it to my database of known list? If you're ready, please tell me a name, "
                            "or simply say exit.", run=True)
         phrase = listener.listen(timeout=3, phrase_limit=5)
-        if phrase == 'SR_ERROR' or 'exit' in phrase or 'quit' in phrase or 'Xzibit' in phrase:
+        if not phrase or 'exit' in phrase or 'quit' in phrase or 'Xzibit' in phrase:
             os.remove('cv2_open.jpg')
             speaker.speak(text="I've deleted the image.", run=True)
         else:

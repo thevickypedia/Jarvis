@@ -52,8 +52,7 @@ def guard_enable() -> None:
     while True:
         # Listens for any recognizable speech and saves it to a notes file
         sys.stdout.write("\rSECURITY MODE")
-        converted = listener.listen(timeout=3, phrase_limit=10, sound=False)
-        if converted == 'SR_ERROR':
+        if not (converted := listener.listen(timeout=3, phrase_limit=10, sound=False)):
             continue
 
         if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable):

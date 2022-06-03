@@ -131,9 +131,9 @@ def renew() -> None:
             converted = listener.listen(timeout=3, phrase_limit=5)
         else:
             converted = listener.listen(timeout=3, phrase_limit=5, sound=False)
-        if converted == 'SR_ERROR':
+        if not converted:
             continue
-        remove = ['buddy', 'jarvis', 'hey', 'hello', 'sr_error']
+        remove = ['buddy', 'jarvis', 'hey', 'hello']
         converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
         if converted:
             if split_phrase(phrase=converted):  # should_return flag is not passed which will default to False
@@ -150,7 +150,7 @@ def initiator(phrase: str, should_return: bool = False) -> None:
         phrase: Takes the processed string from ``SentryMode`` as input.
         should_return: Flag to return the function if nothing is heard.
     """
-    if phrase == 'SR_ERROR' and should_return:
+    if not phrase and should_return:
         return
     support.flush_screen()
     if [word for word in phrase.lower().split() if word in ['morning', 'night', 'afternoon',

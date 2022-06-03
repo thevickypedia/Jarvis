@@ -162,7 +162,7 @@ docker run \
 
 **[TV](https://github.com/thevickypedia/Jarvis/blob/master/modules/tv/tv_controls.py) controls** - Applies only for [LGWebOS](https://en.wikipedia.org/wiki/WebOS)
 - **TV_CLIENT_KEY** - TV's Client key. Auto-generated when used for the first time.
-- **TV_MAC** - TV's mac address.
+- **TV_MAC** - TV's mac address. Can be single [str] or multiple [list] mac addresses (to include both wired and wireless macs).
 
 **[Car Controls](https://github.com/thevickypedia/Jarvis/blob/master/modules/car)** - Applies only for JLR vehicles using `InControl API`.
 - **CAR_EMAIL** - Email address to log in to InControl API.

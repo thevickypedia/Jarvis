@@ -5,9 +5,9 @@
 
 """
 
-current_date = ["today's date", "current date"]
+current_date = ["today's date", "current date", "what is the date", "what's the date", "what's the date today"]
 
-current_time = ["current time", "time now", "time in"]
+current_time = ["current time", "time now", "time in", "what is the time", "what's the time"]
 
 weather = ["weather", "temperature"]
 

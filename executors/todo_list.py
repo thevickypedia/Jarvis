@@ -49,13 +49,11 @@ def todo() -> None:
 def add_todo() -> None:
     """Adds new items to the to-do list."""
     speaker.speak(text=f"What's your plan {env.title}?", run=True)
-    item = listener.listen(timeout=3, phrase_limit=5)
-    if item == 'SR_ERROR' or 'exit' in item or 'quit' in item or 'Xzibit' in item:
+    if not (item := listener.listen(timeout=3, phrase_limit=5)) or 'exit' in item or 'quit' in item or 'Xzibit' in item:
         speaker.speak(text=f'Your to-do list has been left intact {env.title}.')
         return
     speaker.speak(text=f"I heard {item}. Which category you want me to add it to?", run=True)
-    category = listener.listen(timeout=3, phrase_limit=3)
-    if category == 'SR_ERROR':
+    if not (category := listener.listen(timeout=3, phrase_limit=3)):
         category = 'Unknown'
     if 'exit' in category or 'quit' in category or 'Xzibit' in category:
         speaker.speak(text=f'Your to-do list has been left intact {env.title}.')
@@ -83,8 +81,7 @@ def add_todo() -> None:
 def delete_todo_items() -> None:
     """Deletes items from an existing to-do list."""
     speaker.speak(text=f"Which one should I remove {env.title}?", run=True)
-    item = listener.listen(timeout=3, phrase_limit=5)
-    if item == 'SR_ERROR' or 'exit' in item or 'quit' in item or 'Xzibit' in item:
+    if not (item := listener.listen(timeout=3, phrase_limit=5)) or 'exit' in item or 'quit' in item or 'Xzibit' in item:
         speaker.speak(text=f'Your to-do list has been left intact {env.title}.')
         return
     with tdb.connection:

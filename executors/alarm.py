@@ -81,8 +81,7 @@ def set_alarm(phrase: str) -> None:
         if shared.called_by_offline:
             return
         speaker.speak(run=True)
-        converted = listener.listen(timeout=3, phrase_limit=4)
-        if converted != 'SR_ERROR':
+        if converted := listener.listen(timeout=3, phrase_limit=4):
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 return
             else:
@@ -101,8 +100,7 @@ def kill_alarm() -> None:
     else:
         speaker.speak(text=f"Your alarms are at {', and '.join(alarm_state).replace('.lock', '')}. "
                            "Please let me know which alarm you want to remove.", run=True)
-        converted = listener.listen(timeout=3, phrase_limit=4)
-        if converted == 'SR_ERROR':
+        if not (converted := listener.listen(timeout=3, phrase_limit=4)):
             return
         alarm_time = converted.split()[0]
         am_pm = converted.split()[-1]
@@ -126,4 +124,4 @@ def alarm_executor() -> NoReturn:
     volume.volume(level=100)
     subprocess.call(["open", indicators.alarm])
     time.sleep(200)
-    volume.volume(level=50)
+    volume.volume(level=env.volume)

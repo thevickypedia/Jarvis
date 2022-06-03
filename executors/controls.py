@@ -203,17 +203,16 @@ def shutdown(proceed: bool = False) -> None:
         converted = listener.listen(timeout=3, phrase_limit=3)
     else:
         converted = 'yes'
-    if converted != 'SR_ERROR':
-        if any(word in converted.lower() for word in keywords.ok):
-            stop_terminals()
-            if env.mac:
-                subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
-            else:
-                os.system("shutdown /s /t 1")
-            raise StopSignal
+    if converted and any(word in converted.lower() for word in keywords.ok):
+        stop_terminals()
+        if env.mac:
+            subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
         else:
-            speaker.speak(text=f"Machine state is left intact {env.title}!")
-            return
+            os.system("shutdown /s /t 1")
+        raise StopSignal
+    else:
+        speaker.speak(text=f"Machine state is left intact {env.title}!")
+        return
 
 
 def clear_logs() -> NoReturn:
@@ -243,11 +242,12 @@ def starter() -> NoReturn:
     """
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 10)  # increases the recursion limit by 10 times
-    volume.volume(level=50)
+    volume.volume(level=env.volume)
     voices.voice_default()
     clear_logs()
     delete_pycache()
     # Used only during restart
     for file in os.listdir("fileio"):
-        os.chmod(f"fileio{os.path.sep}{file}", os.stat(f"fileio{os.path.sep}{file}").st_mode | stat.S_IEXEC)
+        f_path = os.path.join("fileio", file)
+        os.chmod(f_path, os.stat(f_path).st_mode | stat.S_IEXEC)
     # [os.chmod(file, int('755', base=8) or 0o755) for file in os.listdir("fileio")]

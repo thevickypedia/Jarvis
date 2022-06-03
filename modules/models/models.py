@@ -6,7 +6,7 @@
 """
 
 import getpass
-import os.path
+import os
 import platform
 import socket
 from datetime import datetime
@@ -30,6 +30,7 @@ class EnvConfig(BaseSettings):
     """
 
     home: DirectoryPath = Field(default=os.path.expanduser('~'), env='HOME')
+    volume: PositiveInt = Field(default=50, env='VOLUME')
     weather_api: str = Field(default=None, env='WEATHER_API')
     gmail_user: EmailStr = Field(default=None, env='GMAIL_USER')
     gmail_pass: str = Field(default=None, env='GMAIL_PASS')
@@ -58,7 +59,7 @@ class EnvConfig(BaseSettings):
     git_user: str = Field(default=None, env='GIT_USER')
     git_pass: str = Field(default=None, env='GIT_PASS')
     tv_client_key: str = Field(default=None, env='TV_CLIENT_KEY')
-    tv_mac: str = Field(default=None, env='TV_MAC')
+    tv_mac: Union[str, list] = Field(default=None, env='TV_MAC')
     root_user: str = Field(default=getpass.getuser(), env='USER')
     root_password: str = Field(default=None, env='ROOT_PASSWORD')
     vpn_username: str = Field(default=None, env='VPN_USERNAME')
@@ -115,6 +116,9 @@ if env.ics_url and not env.ics_url.endswith('.ics'):
         "'ICS_URL' should end with .ics"
     )
 
+if env.tv_mac and isinstance(env.tv_mac, str):
+    env.tv_mac = [env.tv_mac]
+
 
 class FileIO(BaseModel):
     """Loads all the files' path required/created by Jarvis.
@@ -123,19 +127,19 @@ class FileIO(BaseModel):
 
     """
 
-    automation: FilePath = f'fileio{os.path.sep}automation.yaml'
-    tmp_automation: FilePath = f'fileio{os.path.sep}tmp_automation.yaml'
-    base_db: FilePath = f'fileio{os.path.sep}database.db'
-    task_db: FilePath = f'fileio{os.path.sep}tasks.db'
-    frequent: FilePath = f'fileio{os.path.sep}frequent.yaml'
-    location: FilePath = f'fileio{os.path.sep}location.yaml'
-    notes: FilePath = f'fileio{os.path.sep}notes.txt'
-    robinhood: FilePath = f'fileio{os.path.sep}robinhood.html'
-    smart_devices: FilePath = f'fileio{os.path.sep}smart_devices.yaml'
-    training: FilePath = f'fileio{os.path.sep}training_data.yaml'
-    event_script: FilePath = f'fileio{os.path.sep}{env.event_app}.scpt'
-    speech_synthesis_wav: FilePath = f'fileio{os.path.sep}speech_synthesis.wav'
-    speech_synthesis_log: FilePath = datetime.now().strftime(f'logs{os.path.sep}speech_synthesis_%d-%m-%Y.log')
+    automation: FilePath = os.path.join('fileio', 'automation.yaml')
+    tmp_automation: FilePath = os.path.join('fileio', 'tmp_automation.yaml')
+    base_db: FilePath = os.path.join('fileio', 'database.db')
+    task_db: FilePath = os.path.join('fileio', 'tasks.db')
+    frequent: FilePath = os.path.join('fileio', 'frequent.yaml')
+    location: FilePath = os.path.join('fileio', 'location.yaml')
+    notes: FilePath = os.path.join('fileio', 'notes.txt')
+    robinhood: FilePath = os.path.join('fileio', 'robinhood.html')
+    smart_devices: FilePath = os.path.join('fileio', 'smart_devices.yaml')
+    training: FilePath = os.path.join('fileio', 'training_data.yaml')
+    event_script: FilePath = os.path.join('fileio', f'{env.event_app}.scpt')
+    speech_synthesis_wav: FilePath = os.path.join('fileio', 'speech_synthesis.wav')
+    speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))
 
 
 class Indicators(BaseModel):
@@ -145,12 +149,12 @@ class Indicators(BaseModel):
 
     """
 
-    acknowledgement: FilePath = f'indicators{os.path.sep}acknowledgement.mp3'
-    alarm: FilePath = f'indicators{os.path.sep}alarm.mp3'
-    coin: FilePath = f'indicators{os.path.sep}coin.mp3'
-    end: FilePath = f'indicators{os.path.sep}end.mp3'
-    exhaust: FilePath = f'indicators{os.path.sep}exhaust.mp3'
-    initialize: FilePath = f'indicators{os.path.sep}initialize.mp3'
-    start: FilePath = f'indicators{os.path.sep}start.mp3'
-    tv_connect: FilePath = f'indicators{os.path.sep}tv_connect.mp3'
-    tv_scan: FilePath = f'indicators{os.path.sep}tv_scan.mp3'
+    acknowledgement: FilePath = os.path.join('indicators', 'acknowledgement.mp3')
+    alarm: FilePath = os.path.join('indicators', 'alarm.mp3')
+    coin: FilePath = os.path.join('indicators', 'coin.mp3')
+    end: FilePath = os.path.join('indicators', 'end.mp3')
+    exhaust: FilePath = os.path.join('indicators', 'exhaust.mp3')
+    initialize: FilePath = os.path.join('indicators', 'initialize.mp3')
+    start: FilePath = os.path.join('indicators', 'start.mp3')
+    tv_connect: FilePath = os.path.join('indicators', 'tv_connect.mp3')
+    tv_scan: FilePath = os.path.join('indicators', 'tv_scan.mp3')

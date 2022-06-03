@@ -198,8 +198,7 @@ def google_maps(query: str) -> bool:
                            f"{miles} away. {next_val}", run=True)
         sys.stdout.write(f"\r{item['Name']} -- {item['Rating']} -- "
                          f"{''.join([j for j in item['Address'] if not j.isdigit()])}")
-        converted = listener.listen(timeout=3, phrase_limit=3)
-        if converted != 'SR_ERROR':
+        if converted := listener.listen(timeout=3, phrase_limit=3):
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 break
             elif any(word in converted.lower() for word in keywords.ok):
@@ -227,9 +226,8 @@ def google_search(phrase: str = None) -> None:
     phrase = phrase.split('for')[-1] if 'for' in phrase else None
     if not phrase:
         speaker.speak(text="Please tell me the search phrase.", run=True)
-        converted = listener.listen(timeout=3, phrase_limit=5)
-        if converted == 'SR_ERROR' or 'exit' in converted or 'quit' in converted or 'xzibit' in converted or 'cancel' \
-                in converted:
+        if (converted := listener.listen(timeout=3, phrase_limit=5)) or 'exit' in converted or 'quit' in converted or \
+                'xzibit' in converted or 'cancel' in converted:
             return
         else:
             phrase = converted.lower()

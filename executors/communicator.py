@@ -29,8 +29,7 @@ def read_gmail() -> None:
             return
         speaker.speak(text=f'You have {response.count} unread emails {env.title}. Do you want me to check it?',
                       run=True)
-        confirmation = listener.listen(timeout=3, phrase_limit=3)
-        if confirmation == 'SR_ERROR':
+        if not (confirmation := listener.listen(timeout=3, phrase_limit=3)):
             return
         if not any(word in confirmation.lower() for word in keywords.ok):
             return
@@ -56,19 +55,16 @@ def send_sms(phrase: str) -> None:
         number = str(number)
     else:
         speaker.speak(text=f"Please tell me a number {env.title}!", run=True)
-        number = listener.listen(timeout=3, phrase_limit=7)
-        if number != 'SR_ERROR':
+        if number := listener.listen(timeout=3, phrase_limit=7):
             if 'exit' in number or 'quit' in number or 'Xzibit' in number:
                 return
     if len(number) != 10:
         speaker.speak(text=f"I don't think that's a right number {env.title}! Phone numbers are 10 digits. Try again!")
         return
     speaker.speak(text=f"What would you like to send {env.title}?", run=True)
-    body = listener.listen(timeout=3, phrase_limit=5)
-    if body != 'SR_ERROR':
+    if body := listener.listen(timeout=3, phrase_limit=5):
         speaker.speak(text=f'{body} to {number}. Do you want me to proceed?', run=True)
-        converted = listener.listen(timeout=3, phrase_limit=3)
-        if converted != 'SR_ERROR':
+        if converted := listener.listen(timeout=3, phrase_limit=3):
             if any(word in converted.lower() for word in keywords.ok):
                 logger.info(f'{body} -> {number}')
                 notify(user=env.gmail_user, password=env.gmail_pass, number=number, body=body)

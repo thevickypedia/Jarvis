@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+6.0.8 (06/03/2022)
+------------------
+- Add optional multi `macaddress` for the same television
+- Create threadpool to turn on a tv
+- Reduce ping timeout to check tv status
+- Install PyAudio for Windows using wheel file
+- Record audio frames and store it for analysis
+- Sort unrecognized dictionary as LIFO
+- Fix file paths by using joins
+- Add default volume as an env var
+- Remove usage of 'SR_ERROR' as string
+- Remove concurrent process response for offline communications
+- Remove unused functions
+- Update README.md, install.sh and requirements.txt
+
 6.0.7 (05/30/2022)
 ------------------
 - Add an option to terminate Jarvis via `TelegramAPI`

@@ -7,9 +7,6 @@ os_independent_packages() {
     # Installs non version specific packages using --upgrade and --no-cache flag
     python -m pip install --no-cache --upgrade setuptools gmail-connector vpn-server
 
-    # Install pre-commit checker to restrict commit if any step in .pre-commit-config.yaml fails.
-    pre-commit install
-
     # Get to the current directory and install the module specific packages from requirements.txt
     current_dir="$(dirname "$(realpath "$0")")"
     python -m pip install --no-cache-dir -r $current_dir/requirements.txt
@@ -17,10 +14,14 @@ os_independent_packages() {
 
 function download_from_ext_sources(){
     # Downloads SetVol.exe to control volume on Windows
-    curl https://thevickypedia.com/Jarvis/SetVol.exe --output SetVol.exe --silent
+    curl https://vigneshrao.com/Jarvis/SetVol.exe --output SetVol.exe --silent
 
     # Downloads FFmpeg for audio conversion when received voice commands from Telegram API
     curl -L https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-lgpl.zip --output ffmpeg.zip --silent && unzip ffmpeg.zip && rm -rf ffmpeg.zip && mv ffmpeg-master-latest-win64-lgpl ffmpeg
+
+    # Downloads PyAudio's wheel file to install it on Windows
+    curl https://vigneshrao.com/Jarvis/PyAudio-0.2.11-cp310-cp310-win_amd64.whl --output PyAudio-0.2.11-cp310-cp310-win_amd64.whl --silent
+    pip install PyAudio-0.2.11-cp310-cp310-win_amd64.whl
 
     if [[ "$1" == "MOVE" ]]
       then
@@ -119,10 +120,6 @@ elif [[ "$OSName" == MSYS* ]]; then
 
     # Installs the OS independent packages
     os_independent_packages
-
-    # Install pipwin and pyaudio
-    pip install pipwin
-    pipwin install pyaudio
 
     pip install git+https://github.com/bisoncorps/search-engine-parser
 

@@ -254,9 +254,7 @@ def locate(phrase: str) -> None:
     else:
         speaker.speak(text=f"Your {before_keyword} should be ringing now {env.title}!")
     speaker.speak(text="Would you like to get the location details?", run=True)
-    phrase_location = listener.listen(timeout=3, phrase_limit=3)
-
-    if phrase_location == "SR_ERROR":
+    if not (phrase_location := listener.listen(timeout=3, phrase_limit=3)):
         return
     elif not any(word in phrase_location.lower() for word in keywords.ok):
         return
@@ -320,8 +318,7 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         if shared.called_by_offline:
             return
         speaker.speak(run=True)
-        destination = listener.listen(timeout=3, phrase_limit=4)
-        if destination != "SR_ERROR":
+        if destination := listener.listen(timeout=3, phrase_limit=4):
             if len(destination.split()) > 2:
                 speaker.speak(text=f"I asked for a destination {env.title}, not a sentence. Try again.")
                 distance_controller()
@@ -396,15 +393,14 @@ def locate_places(phrase: str = None) -> None:
             speaker.speak(text=f"I need a location to get you the details {env.title}!")
             return
         speaker.speak(text="Tell me the name of a place!", run=True)
-        converted = listener.listen(timeout=3, phrase_limit=4)
-        if converted != "SR_ERROR":
-            if "exit" in converted or "quit" in converted or "Xzibit" in converted:
-                return
-            place = support.get_capitalized(phrase=converted)
-            if not place:
-                keyword = "is"
-                before_keyword, keyword, after_keyword = converted.partition(keyword)
-                place = after_keyword.replace(" in", "").strip()
+        if not (converted := listener.listen(timeout=3, phrase_limit=4)) or "exit" in converted or "quit" in converted \
+                or "Xzibit" in converted:
+            return
+        place = support.get_capitalized(phrase=converted)
+        if not place:
+            keyword = "is"
+            before_keyword, keyword, after_keyword = converted.partition(keyword)
+            place = after_keyword.replace(" in", "").strip()
 
     try:
         with open(fileio.location) as file:
@@ -459,9 +455,8 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     place = place.replace("I ", "").strip() if place else None
     if not place:
         speaker.speak(text="You might want to give a location.", run=True)
-        converted = listener.listen(timeout=3, phrase_limit=4)
-        if converted != "SR_ERROR":
-            place = support.get_capitalized(phrase=phrase)
+        if converted := listener.listen(timeout=3, phrase_limit=4):
+            place = support.get_capitalized(phrase=converted)
             place = place.replace("I ", "").strip()
             if not place:
                 if no_repeat:

@@ -16,7 +16,7 @@ from modules.exceptions import BotInUse
 from modules.models import config, models
 from modules.offline import compatibles
 from modules.telegram import audio_handler
-from modules.utils import shared, support
+from modules.utils import support
 
 env = models.env
 fileio = models.FileIO()
@@ -439,12 +439,6 @@ class TelegramBot:
             return
 
         logger.info(f'Request: {command}')
-
-        if shared.called_by_offline:
-            self.reply_to(payload=payload,
-                          response="Processing another offline request.\nPlease try again.")
-            return
-
         response = offline_communicator(command=command).replace(env.title, USER_TITLE.get(payload['from']['username']))
         logger.info(f'Response: {response}')
         if payload.get('voice'):

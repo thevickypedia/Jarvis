@@ -50,7 +50,7 @@ def dependencies() -> list:
         list:
         List of dependencies to be installed.
     """
-    requirement_file = os.path.dirname(os.path.realpath(__file__)) + f'{os.path.sep}lib{os.path.sep}requirements.txt'
+    requirement_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lib', 'requirements.txt')
     if os.path.isfile(requirement_file):
         with open(requirement_file) as requirements:
             install_requires = requirements.read().splitlines()

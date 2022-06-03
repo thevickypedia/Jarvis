@@ -28,7 +28,7 @@ def create_reminder(hour, minute, am_pm, message, to_about, timer: str = None) -
     """
     if not os.path.isdir('reminder'):
         os.mkdir('reminder')
-    pathlib.Path(f'reminder{os.path.sep}{hour}_{minute}_{am_pm}|{message.replace(" ", "_")}.lock').touch()
+    pathlib.Path(os.path.join("reminder", f"{hour}_{minute}_{am_pm}|{message.replace(' ', '_')}.lock")).touch()
     if timer:
         logger.info(f"Reminder created for '{message}' at {hour}:{minute} {am_pm}")
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
@@ -71,11 +71,9 @@ def reminder(phrase: str) -> None:
             speaker.speak(text='Reminder format should be::Remind me to do something, at some time.')
             return
         speaker.speak(text=f"When do you want to be reminded {env.title}?", run=True)
-        phrase = listener.listen(timeout=3, phrase_limit=4)
-        if phrase != 'SR_ERROR':
-            if not (extracted_time := support.extract_time(input_=phrase)):
-                return
-        else:
+        if not (phrase := listener.listen(timeout=3, phrase_limit=4)):
+            return
+        if not (extracted_time := support.extract_time(input_=phrase)):
             return
     message = message.group(1).strip()
     extracted_time = extracted_time[0]

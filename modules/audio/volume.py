@@ -20,13 +20,12 @@ def volume(phrase: str = None, level: int = None) -> None:
         level: Level of volume to which the system has to set.
     """
     if not level:
-        phrase_lower = phrase.lower()
-        if 'mute' in phrase_lower:
+        if 'mute' in phrase.lower():
             level = 0
-        elif 'max' in phrase_lower or 'full' in phrase_lower:
+        elif 'max' in phrase.lower() or 'full' in phrase.lower():
             level = 100
         else:
-            level = support.extract_nos(input_=phrase, method=int) or 50
+            level = support.extract_nos(input_=phrase, method=int) or env.volume
     support.flush_screen()
     if env.mac:
         os.system(f'osascript -e "set Volume {round((8 * level) / 100)}"')

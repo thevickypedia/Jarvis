@@ -14,7 +14,7 @@ class CronConfig(BaseModel):
 
     """
 
-    LOG_FILE = datetime.now().strftime(f'logs{os.path.sep}cron_%d-%m-%Y.log')
+    LOG_FILE = datetime.now().strftime(os.path.join('logs', 'cron_%d-%m-%Y.log'))
 
     version = 1
     disable_existing_loggers = True
@@ -44,8 +44,8 @@ class APIConfig(BaseModel):
 
     """
 
-    ACCESS_LOG_FILENAME = datetime.now().strftime(f'logs{os.path.sep}api{os.path.sep}access_%d-%m-%Y.log')
-    DEFAULT_LOG_FILENAME = datetime.now().strftime(f'logs{os.path.sep}api{os.path.sep}default_%d-%m-%Y.log')
+    ACCESS_LOG_FILENAME = datetime.now().strftime(os.path.join('logs', 'api', 'access_%d-%m-%Y.log'))
+    DEFAULT_LOG_FILENAME = datetime.now().strftime(os.path.join('logs', 'api', 'default_%d-%m-%Y.log'))
 
     ACCESS_LOG_FORMAT = '%(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'
     ERROR_LOG_FORMAT = '%(levelname)s\t %(message)s'
@@ -108,7 +108,7 @@ class BotConfig(BaseModel):
 
     """
 
-    LOG_FILE = datetime.now().strftime(f'logs{os.path.sep}telegram_%d-%m-%Y.log')
+    LOG_FILE = datetime.now().strftime(os.path.join('logs', 'telegram_%d-%m-%Y.log'))
 
     version = 1
     disable_existing_loggers = True

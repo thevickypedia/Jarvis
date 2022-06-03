@@ -1,11 +1,10 @@
-import json
 import os
 import subprocess
 import time
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
-from typing import AnyStr, NoReturn
+from typing import AnyStr, NoReturn, Union
 
 import requests
 
@@ -67,14 +66,14 @@ def automator() -> NoReturn:
             for each_alarm in alarm_state:
                 if each_alarm == datetime.now().strftime("%I_%M_%p.lock"):
                     Process(target=alarm_executor).start()
-                    os.remove(f'alarm{os.path.sep}{each_alarm}')
+                    os.remove(os.path.join("alarm", each_alarm))
         if reminder_state := support.lock_files(reminder_files=True):
             for each_reminder in reminder_state:
                 remind_time, remind_msg = each_reminder.split('|')
                 remind_msg = remind_msg.rstrip('.lock').replace('_', '')
                 if remind_time == datetime.now().strftime("%I_%M_%p"):
                     Thread(target=reminder_executor, args=[remind_msg]).start()
-                    os.remove(f'reminder{os.path.sep}{each_reminder}')
+                    os.remove(os.path.join("reminder", each_reminder))
 
         dry_run = False
 
@@ -106,33 +105,29 @@ def initiate_tunneling() -> NoReturn:
                     f'{endpoint}\\offline-communicator for API calls and {endpoint}\\docs for docs.')
 
 
-def on_demand_offline_automation(task: str) -> bool:
+def on_demand_offline_automation(task: str) -> Union[str, None]:
     """Makes a ``POST`` call to offline-communicator running on ``localhost`` to execute a said task.
 
     Args:
         task: Takes the command to be executed as an argument.
 
     Returns:
-        bool:
-        Returns a boolean ``True`` if the request was successful.
+        str:
+        Returns the response if request was successful.
     """
     headers = {
         'accept': 'application/json',
-        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {env.offline_pass}',
+        # Already added when passed json= but needed when passed data=
+        # 'Content-Type': 'application/json',
     }
-
-    data = {
-        'phrase': env.offline_pass,
-        'command': task
-    }
-
-    offline_endpoint = f"http://{env.offline_host}:{env.offline_port}/offline-communicator"
     try:
-        response = requests.post(url=offline_endpoint, headers=headers, data=json.dumps(data))
+        response = requests.post(url=f'http://{env.offline_host}:{env.offline_port}/offline-communicator',
+                                 headers=headers, json={'command': task})
     except ConnectionError:
-        return False
+        return
     if response.ok:
-        return True
+        return response.json()['detail'].split('\n')[-1]
 
 
 def offline_communicator(command: str) -> AnyStr:

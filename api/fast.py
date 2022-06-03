@@ -201,11 +201,8 @@ async def offline_communicator_api(input_data: GetData) -> NoReturn:
         raise APIResponse(status_code=422,
                           detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
                                  'Please try an instruction that does not require an user interaction.')
-    if shared.called_by_offline:
-        raise APIResponse(status_code=503,
-                          detail="Processing another offline request.\nPlease try again.")
 
-    # Alternate way for datetime conversions without first specifying a local timezone
+    # # Alternate way for datetime conversions without first specifying a local timezone
     # import dateutil.tz
     # dt_string = datetime.now().astimezone(dateutil.tz.tzlocal()).strftime("%A, %B %d, %Y %H:%M:%S")
     dt_string = datetime.now().astimezone(tz=shared.LOCAL_TIMEZONE).strftime("%A, %B %d, %Y %H:%M:%S")

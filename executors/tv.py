@@ -3,6 +3,7 @@ import random
 import socket
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from threading import Thread
 
 import yaml
@@ -65,18 +66,17 @@ def television(phrase: str) -> None:
             Returns an integer value 0 if status succeeds else 512.
         """
         if env.mac:
-            return os.system(f"ping -c 1 -t 3 {tv_ip} >/dev/null 2>&1")
+            return os.system(f"ping -c 1 -t 2 {tv_ip} >/dev/null 2>&1")
         else:
-            return os.system(f"ping -c 1 -t 3 {tv_ip} > NUL")
+            return os.system(f"ping -c 1 -t 2 {tv_ip} > NUL")
 
     if ('turn off' in phrase_lower or 'shutdown' in phrase_lower or 'shut down' in phrase_lower) and tv_status() != 0:
         speaker.speak(text=f"I wasn't able to connect to your TV {env.title}! I guess your TV is powered off already.")
         return
     elif tv_status():
+        with ThreadPoolExecutor(max_workers=len(env.tv_mac)) as executor:
+            executor.map(power_controller.send_packet, env.tv_mac)
         if shared.called_by_offline:
-            power_controller.send_packet(env.tv_mac)
-        else:
-            Thread(target=power_controller.send_packet, args=[env.tv_mac]).start()
             speaker.speak(text=f"Looks like your TV is powered off {env.title}! Let me try to turn it back on!",
                           run=True)
 
@@ -87,7 +87,7 @@ def television(phrase: str) -> None:
             speaker.speak(text=f"I wasn't able to connect to your TV {env.title}! Please make sure you are on the "
                                "same network as your TV, and your TV is connected to a power source.")
             return
-        time.sleep(1)
+        time.sleep(0.5)
 
     if not shared.tv:
         try:

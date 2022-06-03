@@ -3,10 +3,13 @@ import pathlib
 import platform
 import struct
 import sys
+from datetime import datetime
 from typing import NoReturn
 
+import numpy
 import packaging.version
 import pvporcupine
+import soundfile
 import speech_recognition
 from playsound import playsound
 from pyaudio import PyAudio, paInt16
@@ -41,11 +44,12 @@ class Activator:
         - The ``should_return`` flag ensures, the user is not disturbed when accidentally woke up by wake work engine.
     """
 
-    def __init__(self, input_device_index: int = None):
+    def __init__(self, input_device_index: int = None, save_recording: bool = True):
         """Initiates Porcupine object for hot word detection.
 
         Args:
             input_device_index: Index of Input Device to use.
+            save_recording: Boolean flag to indicate whether to store the recording into a wav file.
 
         See Also:
             - Instantiates an instance of Porcupine object and monitors audio stream for occurrences of keywords.
@@ -66,7 +70,9 @@ class Activator:
             keyword_paths=keyword_paths,
             sensitivities=[env.sensitivity]
         )
+        self.recorded_frames = []
         self.audio_stream = None
+        self.start(save_recording=save_recording)
 
     def open_stream(self) -> NoReturn:
         """Initializes an audio stream."""
@@ -84,8 +90,15 @@ class Activator:
         self.py_audio.close(stream=self.audio_stream)
         self.audio_stream = None
 
-    def start(self) -> NoReturn:
-        """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
+    def start(self, save_recording: bool) -> NoReturn:
+        """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard.
+
+        Args:
+            save_recording: Boolean flag to indicate whether to store the recording into a wav file.
+
+        Warnings:
+            Having the ``save_recording`` argument set to ``True`` will consume a lot of disk space.
+        """
         try:
             while True:
                 sys.stdout.write("\rSentry Mode")
@@ -93,11 +106,18 @@ class Activator:
                     self.open_stream()
                 pcm = self.audio_stream.read(num_frames=self.detector.frame_length, exception_on_overflow=False)
                 pcm = struct.unpack_from("h" * self.detector.frame_length, pcm)
+                if save_recording:
+                    self.recorded_frames.append(pcm)
                 if self.detector.process(pcm=pcm) >= 0:
                     playsound(sound=indicators.acknowledgement, block=False)
                     self.close_stream()
-                    initiator(phrase=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
-                              should_return=True)
+                    try:
+                        phrase = listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False)
+                    except ConnectionError:
+                        speaker.speak(text=f"I'm sorry {env.title}! There has been a problem with the connection.",
+                                      run=True)
+                        continue
+                    initiator(phrase=phrase, should_return=True)
                     speaker.speak(run=True)
                 with db.connection:
                     cursor = db.connection.cursor()
@@ -118,8 +138,8 @@ class Activator:
                     self.stop()
                     terminator()
         except StopSignal:
-            self.stop()
             exit_process()
+            self.stop()
             terminator()
 
     def stop(self) -> NoReturn:
@@ -139,6 +159,14 @@ class Activator:
             self.audio_stream.close()
         logger.info("Releasing PortAudio resources.")
         self.py_audio.terminate()
+        if self.recorded_frames:
+            recordings_location = os.path.join(os.getcwd(), 'recordings')
+            if not os.path.isdir(recordings_location):
+                os.makedirs(recordings_location)
+            filename = os.path.join(recordings_location, f"{datetime.now().strftime('%B_%d_%Y_%H%M')}.wav")
+            logger.info(f"Saving {len(self.recorded_frames)} audio frames into {filename}")
+            recorded_audio = numpy.concatenate(self.recorded_frames, axis=0).astype(dtype=numpy.int16)
+            soundfile.write(file=filename, data=recorded_audio, samplerate=self.detector.sample_rate, subtype='PCM_16')
 
 
 def sentry_mode() -> NoReturn:
@@ -167,6 +195,9 @@ def sentry_mode() -> NoReturn:
                     speech_recognition.WaitTimeoutError,
                     speech_recognition.RequestError):
                 sys.stdout.write("\r")
+            except ConnectionError as error:
+                logger.error(error)
+                speaker.speak(text=f"I'm sorry {env.title}! There has been a problem with the connection.", run=True)
             except StopSignal:
                 stop_processes()
                 exit_process()
@@ -194,13 +225,13 @@ def begin() -> None:
         sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
         speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.",
                       run=True)
-    sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: 50%")
+    sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: {env.volume}")
     shared.hosted_device = hosted_device_info()
     shared.processes = start_processes()
     if env.mac and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
         sentry_mode()
     else:
-        Activator().start()
+        Activator()
 
 
 if __name__ == '__main__':

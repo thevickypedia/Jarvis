@@ -42,8 +42,7 @@ db = database.Database(database=fileio.base_db)
 def repeat() -> NoReturn:
     """Repeats whatever is heard."""
     speaker.speak(text="Please tell me what to repeat.", run=True)
-    keyword = listener.listen(timeout=3, phrase_limit=10)
-    if keyword != 'SR_ERROR':
+    if keyword := listener.listen(timeout=3, phrase_limit=10):
         if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
             pass
         else:
@@ -63,8 +62,7 @@ def apps(phrase: str) -> None:
             speaker.speak(text=f'I need an app name to open {env.title}!')
             return
         speaker.speak(text=f"Which app shall I open {env.title}?", run=True)
-        keyword = listener.listen(timeout=3, phrase_limit=4)
-        if keyword != 'SR_ERROR':
+        if keyword := listener.listen(timeout=3, phrase_limit=4):
             if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
                 return
         else:
@@ -109,7 +107,7 @@ def music(phrase: str = None) -> NoReturn:
         phrase: Takes the phrase spoken as an argument.
     """
     sys.stdout.write("\rScanning music files...")
-    get_all_files = (os.path.join(root, f) for root, _, files in os.walk(f"{env.home}{os.path.sep}Music") for f in
+    get_all_files = (os.path.join(root, f) for root, _, files in os.walk(os.path.join(env.home, "Music")) for f in
                      files)
     if music_files := [file for file in get_all_files if os.path.splitext(file)[1] == '.mp3']:
         chosen = random.choice(music_files)
@@ -239,14 +237,11 @@ def meaning(phrase: str) -> None:
     if not keyword or keyword == 'word':
         speaker.speak(text="Please tell a keyword.", run=True)
         response = listener.listen(timeout=3, phrase_limit=3)
-        if response != 'SR_ERROR':
-            if any(word in response.lower() for word in keywords.exit_):
-                return
-            else:
-                meaning(phrase=response)
+        if not response or any(word in response.lower() for word in keywords.exit_):
+            return
+        meaning(phrase=response)
     else:
-        definition = dictionary.meaning(term=keyword)
-        if definition:
+        if definition := dictionary.meaning(term=keyword):
             n = 0
             vowel = ['A', 'E', 'I', 'O', 'U']
             for key, value in definition.items():
@@ -269,8 +264,8 @@ def meaning(phrase: str) -> None:
 
 def notes() -> None:
     """Listens to the user and saves it as a text file."""
-    converted = listener.listen(timeout=5, phrase_limit=10)
-    if converted == 'SR_ERROR' or 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
+    if (converted := listener.listen(timeout=5, phrase_limit=10)) or 'exit' in converted or 'quit' in converted or \
+            'Xzibit' in converted:
         return
     with open(fileio.notes, 'a') as writer:
         writer.write(f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"

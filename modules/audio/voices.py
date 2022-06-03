@@ -56,8 +56,7 @@ def voice_changer(phrase: str = None) -> None:
         else:
             speaker.speak(text=random.choice(choices_to_say))
         speaker.speak(run=True)
-        keyword = listener.listen(timeout=3, phrase_limit=3)
-        if keyword == "SR_ERROR":
+        if not (keyword := listener.listen(timeout=3, phrase_limit=3)):
             voice_default()
             speaker.speak(text=f"Sorry {env.title}! I had trouble understanding. I'm back to my default voice.")
             return

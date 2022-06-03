@@ -20,6 +20,9 @@ fileio/*.txt
 # Log files
 logs
 
+# Recordings
+recordings
+
 # training directory with images of faces for recognition
 train
 
