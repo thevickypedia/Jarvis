@@ -8,7 +8,7 @@ from threading import Thread
 
 import yaml
 
-from executors.internet import vpn_checker
+from executors.internet import ip_address, vpn_checker
 from executors.logger import logger
 from modules.audio import speaker
 from modules.conditions import conversation
@@ -50,7 +50,7 @@ def television(phrase: str) -> None:
         return
 
     tv_ip = socket.gethostbyname(smart_devices.get('tv', 'LGWEBOSTV'))
-    if not tv_ip.startswith('192'):
+    if tv_ip.split('.')[0] != ip_address().split('.')[0]:
         speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to get the IP address of your TV.")
         return
 
@@ -65,7 +65,7 @@ def television(phrase: str) -> None:
             int:
             Returns an integer value 0 if status succeeds else 512.
         """
-        if env.mac:
+        if env.macos:
             return os.system(f"ping -c 1 -t 2 {tv_ip} >/dev/null 2>&1")
         else:
             return os.system(f"ping -c 1 -t 2 {tv_ip} > NUL")

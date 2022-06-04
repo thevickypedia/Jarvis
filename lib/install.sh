@@ -38,7 +38,7 @@ if [[ "$OSName" == "Darwin" ]]; then
     ver=$(sw_vers | grep ProductVersion | cut -d':' -f2 | tr -d ' ')
     if awk "BEGIN {exit !($base_ver > $ver)}"; then
         echo -e '\n***************************************************************************************************'
-        echo "** You're running MacOS ${ver#"${ver%%[![:space:]]*}"}. Wake word library will not be supported in MacOS older than ${base_ver}. **"
+        echo " ** You're running MacOS ${ver#"${ver%%[![:space:]]*}"}. Wake word library is not supported in MacOS older than ${base_ver}. **"
         echo "** This means the audio listened, is converted into text and then condition checked to initiate. **"
         echo -e '***************************************************************************************************\n'
         sleep 3

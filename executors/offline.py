@@ -85,7 +85,7 @@ def initiate_tunneling() -> NoReturn:
         - ``forever_ngrok.py`` is a simple script that triggers ngrok connection in the given offline port.
         - The connection is tunneled through a public facing URL used to make ``POST`` requests to Jarvis API.
     """
-    if not env.mac:
+    if not env.macos:
         return
     pid_check = subprocess.check_output("ps -ef | grep forever_ngrok.py", shell=True)
     pid_list = pid_check.decode('utf-8').split('\n')

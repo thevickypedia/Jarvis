@@ -55,7 +55,7 @@ def bluetooth(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
-    if not env.mac:
+    if not env.macos:
         support.missing_windows_features()
         return
     phrase = phrase.lower()

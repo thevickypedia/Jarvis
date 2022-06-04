@@ -71,7 +71,6 @@ class EnvConfig(BaseSettings):
     sensitivity: Union[float, PositiveInt] = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
     timeout: Union[float, PositiveInt] = Field(default=3, env='TIMEOUT')
     phrase_limit: Union[float, PositiveInt] = Field(default=3, env='PHRASE_LIMIT')
-    legacy_phrase_limit: Union[float, PositiveInt] = Field(default=2, env='LEGACY_PHRASE_LIMIT')
     bot_token: str = Field(default=None, env='BOT_TOKEN')
     bot_chat_ids: list = Field(default=[], env='BOT_CHAT_IDS')
     bot_users: list = Field(default=[], env='BOT_USERS')
@@ -79,6 +78,7 @@ class EnvConfig(BaseSettings):
     legacy_keywords: list = Field(default=['jarvis'], env='LEGACY_KEYWORDS')
     speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
     speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
+    save_audio_timeout: int = Field(default=0, env='SAVE_AUDIO_TIMEOUT')
     title: str = Field(default='sir', env='TITLE')
     name: str = Field(default='Vignesh', env='NAME')
 
@@ -89,9 +89,9 @@ class EnvConfig(BaseSettings):
         env_file = ".env"
 
     if platform.system() == "Windows":
-        mac = 0
+        macos = 0
     elif platform.system() == "Darwin":
-        mac = 1
+        macos = 1
     else:
         raise UnsupportedOS(
             f"\n{''.join('*' for _ in range(80))}\n\n"

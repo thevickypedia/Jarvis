@@ -63,7 +63,7 @@ def trigger_api() -> None:
         "port": env.offline_port,
         "reload": True
     }
-    if not env.mac:
+    if not env.macos:
         del argument_dict['reload']
 
     config = uvicorn.Config(**argument_dict)

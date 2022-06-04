@@ -43,7 +43,7 @@ if not os.path.isfile(config.APIConfig().DEFAULT_LOG_FILENAME):
 
 offline_compatible = compatibles.offline_compatible()
 
-importlib.reload(module=logging) if env.mac else None
+importlib.reload(module=logging) if env.macos else None
 dictConfig(config=config.APIConfig().LOGGING_CONFIG)
 
 logging.getLogger("uvicorn.access").addFilter(InvestmentFilter())  # Adds token filter to the access logger
@@ -111,7 +111,7 @@ async def start_robinhood() -> Any:
     logger.info(f'Hosting at http://{env.offline_host}:{env.offline_port}')
     if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
         Process(target=run_robinhood).start()
-        if env.mac:
+        if env.macos:
             from api.cron import CronScheduler
             CronScheduler(logger=logger).controller()
 

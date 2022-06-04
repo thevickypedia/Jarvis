@@ -8,7 +8,7 @@ from typing import Callable, NoReturn, Union
 
 import yaml
 
-from executors.internet import vpn_checker
+from executors.internet import ip_address, vpn_checker
 from executors.logger import logger
 from modules.audio import speaker
 from modules.conditions import conversation
@@ -114,7 +114,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
 
     host_names = support.matrix_to_flat_list(input_=host_names)
     host_ip_raw = [socket.gethostbyname(hostname) for hostname in host_names]
-    host_ip = [tmp for tmp in host_ip_raw if tmp.startswith('192')]
+    host_ip = [tmp for tmp in host_ip_raw if tmp.split('.')[0] == ip_address().split('.')[0]]
 
     if not host_ip:
         plural = 'lights' if len(host_ip_raw) > 1 else 'light'

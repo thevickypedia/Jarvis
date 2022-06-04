@@ -51,7 +51,7 @@ def events_gatherer() -> str:
         - If no events, returns a message saying there are no events in the next 12 hours.
         - On failure, returns a message saying Jarvis was unable to read calendar/outlook.
     """
-    if not env.mac:
+    if not env.macos:
         return f"Reading events from {env.event_app} is not possible on Windows operating system."
     failure = None
     process = subprocess.Popen(["/usr/bin/osascript", fileio.event_script] + [str(arg) for arg in [1, 3]],

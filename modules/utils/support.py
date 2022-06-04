@@ -185,7 +185,7 @@ def size_converter(byte_size: int) -> str:
         Converted understandable size.
     """
     if not byte_size:
-        if env.mac:
+        if env.macos:
             import resource
             byte_size = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
         else:

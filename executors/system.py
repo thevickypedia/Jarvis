@@ -45,7 +45,7 @@ def system_vitals() -> None:
         - If confirmed, invokes `restart <https://thevickypedia.github.io/Jarvis/#jarvis.restart>`__ function.
     """
     output = ""
-    if env.mac:
+    if env.macos:
         if not env.root_password:
             speaker.speak(text=f"You haven't provided a root password for me to read system vitals {env.title}! "
                                "Add the root password as an environment variable for me to read.")
@@ -122,7 +122,7 @@ def hosted_device_info() -> dict:
         dict:
         A dictionary of key-value pairs with device type, operating system, os version.
     """
-    if env.mac:
+    if env.macos:
         system_kernel = subprocess.check_output("sysctl hw.model", shell=True).decode('utf-8').splitlines()
         device = support.extract_str(system_kernel[0].split(':')[1])
     else:

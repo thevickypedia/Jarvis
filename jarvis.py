@@ -10,7 +10,6 @@ import numpy
 import packaging.version
 import pvporcupine
 import soundfile
-import speech_recognition
 from playsound import playsound
 from pyaudio import PyAudio, paInt16
 
@@ -24,7 +23,8 @@ from modules.audio import listener, speaker
 from modules.database import database
 from modules.exceptions import StopSignal
 from modules.models import models
-from modules.utils import shared
+from modules.timeout import timeout
+from modules.utils import shared, support
 
 env = models.env
 fileio = models.FileIO()
@@ -44,12 +44,11 @@ class Activator:
         - The ``should_return`` flag ensures, the user is not disturbed when accidentally woke up by wake work engine.
     """
 
-    def __init__(self, input_device_index: int = None, save_recording: bool = True):
+    def __init__(self, input_device_index: int = None):
         """Initiates Porcupine object for hot word detection.
 
         Args:
             input_device_index: Index of Input Device to use.
-            save_recording: Boolean flag to indicate whether to store the recording into a wav file.
 
         See Also:
             - Instantiates an instance of Porcupine object and monitors audio stream for occurrences of keywords.
@@ -72,7 +71,7 @@ class Activator:
         )
         self.recorded_frames = []
         self.audio_stream = None
-        self.start(save_recording=save_recording)
+        self.start()
 
     def open_stream(self) -> NoReturn:
         """Initializes an audio stream."""
@@ -90,15 +89,8 @@ class Activator:
         self.py_audio.close(stream=self.audio_stream)
         self.audio_stream = None
 
-    def start(self, save_recording: bool) -> NoReturn:
-        """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard.
-
-        Args:
-            save_recording: Boolean flag to indicate whether to store the recording into a wav file.
-
-        Warnings:
-            Having the ``save_recording`` argument set to ``True`` will consume a lot of disk space.
-        """
+    def start(self) -> NoReturn:
+        """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
             while True:
                 sys.stdout.write("\rSentry Mode")
@@ -106,19 +98,22 @@ class Activator:
                     self.open_stream()
                 pcm = self.audio_stream.read(num_frames=self.detector.frame_length, exception_on_overflow=False)
                 pcm = struct.unpack_from("h" * self.detector.frame_length, pcm)
-                if save_recording:
-                    self.recorded_frames.append(pcm)
                 if self.detector.process(pcm=pcm) >= 0:
                     playsound(sound=indicators.acknowledgement, block=False)
                     self.close_stream()
+                    support.flush_screen()
                     try:
-                        phrase = listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False)
+                        if phrase := listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False):
+                            initiator(phrase=phrase, should_return=True)
+                            speaker.speak(run=True)
+                        else:
+                            continue
                     except ConnectionError:
                         speaker.speak(text=f"I'm sorry {env.title}! There has been a problem with the connection.",
                                       run=True)
                         continue
-                    initiator(phrase=phrase, should_return=True)
-                    speaker.speak(run=True)
+                if env.save_audio_timeout:
+                    self.recorded_frames.append(pcm)
                 with db.connection:
                     cursor = db.connection.cursor()
                     flag = cursor.execute("SELECT flag, caller FROM restart").fetchone()
@@ -159,14 +154,34 @@ class Activator:
             self.audio_stream.close()
         logger.info("Releasing PortAudio resources.")
         self.py_audio.terminate()
-        if self.recorded_frames:
-            recordings_location = os.path.join(os.getcwd(), 'recordings')
-            if not os.path.isdir(recordings_location):
-                os.makedirs(recordings_location)
-            filename = os.path.join(recordings_location, f"{datetime.now().strftime('%B_%d_%Y_%H%M')}.wav")
-            logger.info(f"Saving {len(self.recorded_frames)} audio frames into {filename}")
-            recorded_audio = numpy.concatenate(self.recorded_frames, axis=0).astype(dtype=numpy.int16)
-            soundfile.write(file=filename, data=recorded_audio, samplerate=self.detector.sample_rate, subtype='PCM_16')
+        if not self.recorded_frames:
+            return
+        status = timeout.timeout(seconds=env.save_audio_timeout, function=save_audio,
+                                 kwargs={"frames": self.recorded_frames, "sample_rate": self.detector.sample_rate})
+        if status.ok:
+            logger.info("Recording has been saved successfully.")
+            logger.info(status.info)
+        else:
+            logger.error("Failed to save the audio file within 60 seconds.")
+            logger.error(status.info)
+
+
+def save_audio(frames: list, sample_rate: int) -> NoReturn:
+    """Converts audio frames into a recording to store it in a wav file.
+
+    Args:
+        frames: List of frames.
+        sample_rate: Sample rate.
+    """
+    recordings_location = os.path.join(os.getcwd(), 'recordings')
+    if not os.path.isdir(recordings_location):
+        os.makedirs(recordings_location)
+    filename = os.path.join(recordings_location, f"{datetime.now().strftime('%B_%d_%Y_%H%M')}.wav")
+    logger.info(f"Saving {len(frames)} audio frames into {filename}")
+    sys.stdout.write(f"\rSaving {len(frames)} audio frames into {filename}")
+    recorded_audio = numpy.concatenate(frames, axis=0).astype(dtype=numpy.int16)
+    soundfile.write(file=filename, data=recorded_audio, samplerate=sample_rate, subtype='PCM_16')
+    support.flush_screen()
 
 
 def sentry_mode() -> NoReturn:
@@ -178,42 +193,47 @@ def sentry_mode() -> NoReturn:
         - The text is then condition matched for wake-up words.
         - Additional wake words can be passed in a list as an env var ``LEGACY_KEYWORDS``.
     """
-    recognizer = speech_recognition.Recognizer()
-    with speech_recognition.Microphone() as source:
-        while True:
-            try:
-                sys.stdout.write("\rSentry Mode")
-                listened = recognizer.listen(source=source, timeout=10, phrase_time_limit=env.legacy_phrase_limit)
-                sys.stdout.write("\r")
-                if not any(word in recognizer.recognize_google(listened).lower() for word in env.legacy_keywords):
-                    continue
-                playsound(sound=indicators.acknowledgement, block=True)
-                initiator(phrase=listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False),
-                          should_return=True)
-                speaker.speak(run=True)
-            except (speech_recognition.UnknownValueError,
-                    speech_recognition.WaitTimeoutError,
-                    speech_recognition.RequestError):
-                sys.stdout.write("\r")
-            except ConnectionError as error:
-                logger.error(error)
-                speaker.speak(text=f"I'm sorry {env.title}! There has been a problem with the connection.", run=True)
-            except StopSignal:
-                stop_processes()
-                exit_process()
-                terminator()
-                break
-            with db.connection:
-                cursor = db.connection.cursor()
-                flag = cursor.execute("SELECT flag, caller FROM restart").fetchone()
-            if flag:
-                logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
-                stop_processes()
-                if flag[1] == "restart_control":
-                    restart()
-                else:
-                    restart(quiet=True)
-                break
+    while True:
+        try:
+            sys.stdout.write("\rSentry Mode")
+            if not (wake_word := listener.listen(timeout=10, phrase_limit=2.5, sound=False)):
+                support.flush_screen()
+                continue
+            support.flush_screen()
+            if not any(word in wake_word.lower() for word in env.legacy_keywords):
+                continue
+            playsound(sound=indicators.acknowledgement, block=False)
+            if not (phrase := listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False)):
+                continue
+            initiator(phrase=phrase, should_return=True)
+            speaker.speak(run=True)
+        except ConnectionError as error:
+            logger.error(error)
+            speaker.speak(text=f"I'm sorry {env.title}! There has been a problem with the connection.", run=True)
+        except StopSignal:
+            stop_processes()
+            exit_process()
+            terminator()
+            break
+        with db.connection:
+            cursor = db.connection.cursor()
+            flag = cursor.execute("SELECT flag, caller FROM restart").fetchone()
+        if flag:
+            logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
+            stop_processes()
+            if flag[1] == "restart_control":
+                restart()
+            else:
+                restart(quiet=True)
+            break
+        with db.connection:
+            cursor = db.connection.cursor()
+            flag = cursor.execute("SELECT flag, caller FROM stopper").fetchone()
+        if flag:
+            logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
+            exit_process()
+            stop_processes()
+            terminator()
 
 
 def begin() -> None:
@@ -228,7 +248,7 @@ def begin() -> None:
     sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: {env.volume}")
     shared.hosted_device = hosted_device_info()
     shared.processes = start_processes()
-    if env.mac and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
+    if env.macos and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
         sentry_mode()
     else:
         Activator()

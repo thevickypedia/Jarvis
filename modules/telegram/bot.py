@@ -23,7 +23,7 @@ fileio = models.FileIO()
 db = database.Database(database=fileio.base_db)
 db.create_table(table_name="stopper", columns=["flag", "caller"])
 
-importlib.reload(module=logging) if env.mac else None
+importlib.reload(module=logging) if env.macos else None
 dictConfig(config.BotConfig().dict())
 logger = logging.getLogger('telegram')
 
@@ -342,7 +342,7 @@ class TelegramBot:
             with open(filename, 'wb') as file:
                 file.write(bytes_obj)
             converted = False
-            if env.mac:
+            if env.macos:
                 transcode = audio_handler.audio_converter_mac()
                 if transcode and transcode(input_file_name=filename, output_audio_format="flac"):
                     converted = True

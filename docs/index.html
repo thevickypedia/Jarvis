@@ -67,7 +67,7 @@
 <span id="jarvis-main-module"></span><h1>Jarvis - Main Module<a class="headerlink" href="#module-jarvis" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.Activator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">Activator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_device_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_recording</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.Activator" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">Activator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_device_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.Activator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Awaits for the keyword <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> and triggers <code class="docutils literal notranslate"><span class="pre">initiator</span></code> when heard.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Activator</span>
 </pre></div>
@@ -84,10 +84,7 @@
 <p>Initiates Porcupine object for hot word detection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_device_index</strong> – Index of Input Device to use.</p></li>
-<li><p><strong>save_recording</strong> – Boolean flag to indicate whether to store the recording into a wav file.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>input_device_index</strong> – Index of Input Device to use.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -116,17 +113,8 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.Activator.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_recording</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.Activator.start" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.Activator.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs <code class="docutils literal notranslate"><span class="pre">audio_stream</span></code> in a forever loop and calls <code class="docutils literal notranslate"><span class="pre">initiator</span></code> when the phrase <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> is heard.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>save_recording</strong> – Boolean flag to indicate whether to store the recording into a wav file.</p>
-</dd>
-</dl>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Having the <code class="docutils literal notranslate"><span class="pre">save_recording</span></code> argument set to <code class="docutils literal notranslate"><span class="pre">True</span></code> will consume a lot of disk space.</p>
-</div>
 </dd></dl>
 
 <dl class="py method">
@@ -150,6 +138,20 @@
 <dt class="sig sig-object py" id="jarvis.begin">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">begin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.begin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Starts main process to activate Jarvis after checking internet connection and initiating background processes.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.save_audio">
+<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">save_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.save_audio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts audio frames into a recording to store it in a wav file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frames</strong> – List of frames.</p></li>
+<li><p><strong>sample_rate</strong> – Sample rate.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -884,7 +886,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.commander.initiator">
-<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">initiator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.commander.initiator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">initiator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.commander.initiator" title="Permalink to this definition">¶</a></dt>
 <dd><p>When invoked by <code class="docutils literal notranslate"><span class="pre">Activator</span></code>, checks for the right keyword to wake up and gets into action.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2214,7 +2216,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.audio.listener.listen">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.listener.</span></span><span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.audio.listener.listen" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.audio.listener.</span></span><span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.audio.listener.listen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to activate listener, this function will be called by most upcoming functions to listen to user input.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -3842,11 +3844,6 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.EnvConfig.legacy_phrase_limit">
-<span class="sig-name descname"><span class="pre">legacy_phrase_limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.legacy_phrase_limit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.maps_api">
 <span class="sig-name descname"><span class="pre">maps_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.maps_api" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3919,6 +3916,11 @@ Whites can have a value of None.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.root_user">
 <span class="sig-name descname"><span class="pre">root_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.root_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.save_audio_timeout">
+<span class="sig-name descname"><span class="pre">save_audio_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.save_audio_timeout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

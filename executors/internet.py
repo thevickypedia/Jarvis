@@ -105,7 +105,7 @@ def get_ssid() -> Union[str, None]:
         str:
         Wi-Fi or Ethernet SSID.
     """
-    if env.mac:
+    if env.macos:
         process = subprocess.Popen(
             ["/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport", "-I"],
             stdout=subprocess.PIPE

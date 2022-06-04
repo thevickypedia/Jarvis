@@ -16,7 +16,7 @@ def brightness(phrase: str):
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if not env.mac:
+    if not env.macos:
         support.missing_windows_features()
         return
     phrase = phrase.lower()

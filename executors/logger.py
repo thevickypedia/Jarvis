@@ -37,12 +37,12 @@ if current_process().name == 'MainProcess':
         else:
             file.write(f"\n{write}\n")
 
-importlib.reload(module=logging) if env.mac else None
+importlib.reload(module=logging) if env.macos else None
 dictConfig({
     'version': 1,
     'disable_existing_loggers': True,
 })
-if not env.mac:
+if not env.macos:
     logging.getLogger("_code_cache").propagate = False
 logging.basicConfig(
     filename=log_file, filemode='a', level=logging.INFO,

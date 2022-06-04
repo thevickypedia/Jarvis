@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+6.0.9 (06/04/2022)
+------------------
+- Check network id of host machine against smart devices
+- Remove hard coded check for network id
+- Move save recording timeout arg to env vars
+- Remove print statements for listener
+
 6.0.8 (06/03/2022)
 ------------------
 - Add optional multi `macaddress` for the same television

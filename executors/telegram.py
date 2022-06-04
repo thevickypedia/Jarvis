@@ -13,7 +13,7 @@ from modules.telegram.bot import TelegramBot
 
 env = models.env
 
-importlib.reload(module=logging) if env.mac else None
+importlib.reload(module=logging) if env.macos else None
 dictConfig(config.BotConfig().dict())
 logger = logging.getLogger('telegram')
 

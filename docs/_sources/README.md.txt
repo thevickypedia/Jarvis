@@ -107,6 +107,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **LEGACY_KEYWORDS** - List of wake words for legacy macOS. Defaults to `['jarvis']`
 - **SENSITIVITY** - Hot word detection sensitivity. Range: 0-1
+- **SAVE_AUDIO_TIMEOUT** - Maximum wait time (in seconds) to allow Jarvis to store the audio recorded during a session.
 
 **[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py)**
 - **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`

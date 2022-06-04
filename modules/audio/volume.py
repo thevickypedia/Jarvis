@@ -27,7 +27,7 @@ def volume(phrase: str = None, level: int = None) -> None:
         else:
             level = support.extract_nos(input_=phrase, method=int) or env.volume
     support.flush_screen()
-    if env.mac:
+    if env.macos:
         os.system(f'osascript -e "set Volume {round((8 * level) / 100)}"')
     else:
         os.system(f'SetVol.exe {level}')
