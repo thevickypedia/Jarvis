@@ -20,7 +20,6 @@ from executors.logger import logger
 from executors.processor import start_processes, stop_processes
 from executors.system import hosted_device_info
 from modules.audio import listener, speaker
-from modules.database import database
 from modules.exceptions import StopSignal
 from modules.models import models
 from modules.timeout import timeout
@@ -29,7 +28,6 @@ from modules.utils import shared, support
 env = models.env
 fileio = models.FileIO()
 indicators = models.Indicators()
-db = database.Database(database=fileio.base_db)
 
 
 class Activator:
@@ -102,22 +100,12 @@ class Activator:
                     playsound(sound=indicators.acknowledgement, block=False)
                     self.close_stream()
                     support.flush_screen()
-                    try:
-                        if phrase := listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False):
-                            initiator(phrase=phrase, should_return=True)
-                            speaker.speak(run=True)
-                        else:
-                            continue
-                    except ConnectionError:
-                        speaker.speak(text=f"I'm sorry {env.title}! There has been a problem with the connection.",
-                                      run=True)
-                        continue
+                    if phrase := listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False):
+                        initiator(phrase=phrase, should_return=True)
+                        speaker.speak(run=True)
                 if env.save_audio_timeout:
                     self.recorded_frames.append(pcm)
-                with db.connection:
-                    cursor = db.connection.cursor()
-                    flag = cursor.execute("SELECT flag, caller FROM restart").fetchone()
-                if flag:
+                if flag := support.check_restart():
                     logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
                     self.stop()
                     if flag[1] == "restart_control":
@@ -125,10 +113,7 @@ class Activator:
                     else:
                         restart(quiet=True)
                     break
-                with db.connection:
-                    cursor = db.connection.cursor()
-                    flag = cursor.execute("SELECT flag, caller FROM stopper").fetchone()
-                if flag:
+                if flag := support.check_stop():
                     logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
                     self.stop()
                     terminator()
@@ -196,29 +181,19 @@ def sentry_mode() -> NoReturn:
     while True:
         try:
             sys.stdout.write("\rSentry Mode")
-            if not (wake_word := listener.listen(timeout=10, phrase_limit=2.5, sound=False)):
+            if wake_word := listener.listen(timeout=10, phrase_limit=2.5, sound=False):
                 support.flush_screen()
-                continue
-            support.flush_screen()
-            if not any(word in wake_word.lower() for word in env.legacy_keywords):
-                continue
-            playsound(sound=indicators.acknowledgement, block=False)
-            if not (phrase := listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False)):
-                continue
-            initiator(phrase=phrase, should_return=True)
-            speaker.speak(run=True)
-        except ConnectionError as error:
-            logger.error(error)
-            speaker.speak(text=f"I'm sorry {env.title}! There has been a problem with the connection.", run=True)
+                if any(word in wake_word.lower() for word in env.legacy_keywords):
+                    playsound(sound=indicators.acknowledgement, block=False)
+                    if phrase := listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False):
+                        initiator(phrase=phrase, should_return=True)
+                        speaker.speak(run=True)
         except StopSignal:
             stop_processes()
             exit_process()
             terminator()
             break
-        with db.connection:
-            cursor = db.connection.cursor()
-            flag = cursor.execute("SELECT flag, caller FROM restart").fetchone()
-        if flag:
+        if flag := support.check_restart():
             logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
             stop_processes()
             if flag[1] == "restart_control":
@@ -226,14 +201,11 @@ def sentry_mode() -> NoReturn:
             else:
                 restart(quiet=True)
             break
-        with db.connection:
-            cursor = db.connection.cursor()
-            flag = cursor.execute("SELECT flag, caller FROM stopper").fetchone()
-        if flag:
+        if flag := support.check_stop():
             logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
-            exit_process()
             stop_processes()
             terminator()
+            break
 
 
 def begin() -> None:

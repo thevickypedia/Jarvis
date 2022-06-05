@@ -41,3 +41,5 @@ def listen(timeout: Union[int, float], phrase_limit: Union[int, float], sound: b
             return recognized
         except (UnknownValueError, RequestError, WaitTimeoutError):
             return
+        except (ConnectionError, TimeoutError) as error:
+            logger.error(error)

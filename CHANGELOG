@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+6.1.0 (06/05/2022)
+------------------
+- Remove exit message when stopped via `TelegramAPI`
+- Remove continue statements to include future lines
+- Move listener related exception handlers to listener.py
+- Move db checks from main module to support.py
+
 6.0.9 (06/04/2022)
 ------------------
 - Check network id of host machine against smart devices

@@ -24,10 +24,13 @@ from holidays import country_holidays
 
 from executors.logger import logger
 from modules.audio import speaker
+from modules.database import database
 from modules.models import models
 
 env = models.env
 fileio = models.FileIO()
+
+db = database.Database(database=fileio.base_db)
 
 
 def celebrate() -> str:
@@ -362,6 +365,32 @@ def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> list:
         return [f for f in os.listdir("alarm") if not f.startswith(".")] if os.path.isdir("alarm") else None
     elif reminder_files:
         return [f for f in os.listdir("reminder") if not f.startswith(".")] if os.path.isdir("reminder") else None
+
+
+def check_restart() -> list:
+    """Checks for entries in the restart table in base db.
+
+    Returns:
+        list:
+        Returns the flag, caller from the restart table.
+    """
+    with db.connection:
+        cursor = db.connection.cursor()
+        flag = cursor.execute("SELECT flag, caller FROM restart").fetchone()
+    return flag
+
+
+def check_stop() -> list:
+    """Checks for entries in the stopper table in base db.
+
+    Returns:
+        list:
+        Returns the flag, caller from the stopper table.
+    """
+    with db.connection:
+        cursor = db.connection.cursor()
+        flag = cursor.execute("SELECT flag, caller FROM stopper").fetchone()
+    return flag
 
 
 def exit_message() -> str:
