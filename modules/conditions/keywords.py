@@ -87,9 +87,9 @@ brightness = ["brightness", "bright", "dim"]
 
 lights = ["light"]
 
-guard_enable = ["take care", "heading out", "keep an eye", "turn on security mode", "enable security mode"]
+guard_enable = ["turn on security mode", "enable security mode"]
 
-guard_disable = ["I'm back", "I am back", "turn off security mode", "disable security mode", "jarvis"]
+guard_disable = ["turn off security mode", "disable security mode"]
 
 flip_a_coin = ["head", "tail", "flip"]
 

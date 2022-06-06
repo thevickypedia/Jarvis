@@ -17,6 +17,7 @@ active_vpn = None
 text_spoken = None
 offline_caller = None
 tv = None
+source = None
 
 processes = {}
 hosted_device = {}

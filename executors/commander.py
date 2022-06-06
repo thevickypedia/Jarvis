@@ -65,10 +65,8 @@ def delay_calculator(phrase: str) -> Union[int, float]:
         delay = 3_600
     elif 'minute' in phrase:
         delay = 60
-    elif 'second' in phrase:
+    else:  # Default to # as seconds
         delay = 1
-    else:
-        delay = 0
     return count * delay
 
 

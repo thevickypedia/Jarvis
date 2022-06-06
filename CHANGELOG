@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+6.1.1 (06/06/2022)
+------------------
+- Use `Microphone` as a shared value across all modules
+- Avoid reopening audio stream for every iteration
+- Log timeout events optionally
+- Check response for car tasks
+- Default delay timeout type to second
+- Reduce duration for acknowledgement.mp3
+
 6.1.0 (06/05/2022)
 ------------------
 - Remove exit message when stopped via `TelegramAPI`

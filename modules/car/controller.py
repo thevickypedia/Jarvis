@@ -255,7 +255,7 @@ class Control:
         }
         self.post_data(command="attributes", headers=self.connection.head, data=attributes_data)
 
-    def lock(self, pin: int) -> None:
+    def lock(self, pin: int) -> dict:
         """Lock the vehicle.
 
         Args:
@@ -263,10 +263,10 @@ class Control:
         """
         headers = self.connection.head.copy()
         headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"
-        rdl_data = self._authenticate_service(pin=pin, service_name="RDL")
-        self.post_data(command="lock", headers=headers, data=rdl_data)
+        return self.post_data(command="lock", headers=headers,
+                              data=self._authenticate_service(pin=pin, service_name="RDL"))
 
-    def unlock(self, pin: int) -> None:
+    def unlock(self, pin: int) -> dict:
         """Unlock the vehicle.
 
         Args:
@@ -274,8 +274,8 @@ class Control:
         """
         headers = self.connection.head.copy()
         headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"
-        self.post_data(command="unlock", headers=headers,
-                       data=self._authenticate_service(pin=pin, service_name="RDU"))
+        return self.post_data(command="unlock", headers=headers,
+                              data=self._authenticate_service(pin=pin, service_name="RDU"))
 
     def reset_alarm(self, pin: int) -> None:
         """Reset the vehicle alarm.
@@ -289,15 +289,15 @@ class Control:
         self.post_data(command="unlock", headers=headers,
                        data=self._authenticate_service(pin=pin, service_name="ALOFF"))
 
-    def honk_blink(self) -> None:
+    def honk_blink(self) -> dict:
         """Honk the horn and flash the lights associated with the specified vehicle."""
         headers = self.connection.head.copy()
         headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json"
         headers["Content-Type"] = DEFAULT_CONTENT_TYPE
-        self.post_data(command="honkBlink", headers=headers,
-                       data=self._authenticate_vin_protected_service(service_name="HBLF"))
+        return self.post_data(command="honkBlink", headers=headers,
+                              data=self._authenticate_vin_protected_service(service_name="HBLF"))
 
-    def remote_engine_start(self, pin: int, target_temperature: int) -> None:
+    def remote_engine_start(self, pin: int, target_temperature: int) -> dict:
         """Starts the vehicle remotely.
 
         Args:
@@ -306,11 +306,11 @@ class Control:
         """
         headers = self.connection.head.copy()
         headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"
-        self.set_rcc_target_temperature(pin=pin, target_temperature=target_temperature)
-        self.post_data(command="engineOn", headers=headers,
-                       data=self._authenticate_service(pin=pin, service_name="REON"))
+        return {"set_rcc_temp": self.set_rcc_target_temperature(pin=pin, target_temperature=target_temperature),
+                "engine_on": self.post_data(command="engineOn", headers=headers,
+                                            data=self._authenticate_service(pin=pin, service_name="REON"))}
 
-    def remote_engine_stop(self, pin: int) -> None:
+    def remote_engine_stop(self, pin: int) -> dict:
         """Turn off the vehicle remotely.
 
         Args:
@@ -318,10 +318,10 @@ class Control:
         """
         headers = self.connection.head.copy()
         headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"
-        self.post_data(command="engineOff", headers=headers,
-                       data=self._authenticate_service(pin=pin, service_name="REOFF"))
+        return self.post_data(command="engineOff", headers=headers,
+                              data=self._authenticate_service(pin=pin, service_name="REOFF"))
 
-    def set_rcc_target_temperature(self, pin: int, target_temperature: int) -> None:
+    def set_rcc_target_temperature(self, pin: int, target_temperature: int) -> dict:
         """Set climate control with a target temperature.
 
         Args:
@@ -335,7 +335,7 @@ class Control:
             "value": str(target_temperature),
             "applied": 1
         }
-        self.post_data(command="settings", headers=headers, data=service_parameters)
+        return self.post_data(command="settings", headers=headers, data=service_parameters)
 
     def preconditioning_start(self, celsius: float) -> dict:
         """Start the climate preconditioning at the specified temperature.

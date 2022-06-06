@@ -12,6 +12,7 @@ import pvporcupine
 import soundfile
 from playsound import playsound
 from pyaudio import PyAudio, paInt16
+from speech_recognition import Microphone
 
 from executors.commander import initiator
 from executors.controls import exit_process, restart, starter, terminator
@@ -59,6 +60,7 @@ class Activator:
         logger.info(f"Initiating hot-word detector with sensitivity: {env.sensitivity}")
         keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in [pathlib.PurePath(__file__).stem]]
         self.input_device_index = input_device_index
+        self.recorded_frames = []
 
         self.py_audio = PyAudio()
         self.detector = pvporcupine.create(
@@ -67,12 +69,6 @@ class Activator:
             keyword_paths=keyword_paths,
             sensitivities=[env.sensitivity]
         )
-        self.recorded_frames = []
-        self.audio_stream = None
-        self.start()
-
-    def open_stream(self) -> NoReturn:
-        """Initializes an audio stream."""
         self.audio_stream = self.py_audio.open(
             rate=self.detector.sample_rate,
             channels=1,
@@ -82,24 +78,15 @@ class Activator:
             input_device_index=self.input_device_index
         )
 
-    def close_stream(self) -> NoReturn:
-        """Closes audio stream so that other listeners can use microphone."""
-        self.py_audio.close(stream=self.audio_stream)
-        self.audio_stream = None
-
     def start(self) -> NoReturn:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
             while True:
                 sys.stdout.write("\rSentry Mode")
-                if not self.audio_stream:
-                    self.open_stream()
                 pcm = self.audio_stream.read(num_frames=self.detector.frame_length, exception_on_overflow=False)
                 pcm = struct.unpack_from("h" * self.detector.frame_length, pcm)
                 if self.detector.process(pcm=pcm) >= 0:
                     playsound(sound=indicators.acknowledgement, block=False)
-                    self.close_stream()
-                    support.flush_screen()
                     if phrase := listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False):
                         initiator(phrase=phrase, should_return=True)
                         speaker.speak(run=True)
@@ -136,19 +123,21 @@ class Activator:
         self.detector.delete()
         if self.audio_stream and self.audio_stream.is_active():
             logger.info("Closing Audio Stream.")
+            self.py_audio.close(stream=self.audio_stream)
             self.audio_stream.close()
         logger.info("Releasing PortAudio resources.")
         self.py_audio.terminate()
         if not self.recorded_frames:
             return
-        status = timeout.timeout(seconds=env.save_audio_timeout, function=save_audio,
-                                 kwargs={"frames": self.recorded_frames, "sample_rate": self.detector.sample_rate})
-        if status.ok:
+        logger.info("Recording is being converted to audio.")
+        response = timeout.timeout(function=save_audio, seconds=env.save_audio_timeout, logger=logger,
+                                   kwargs={"frames": self.recorded_frames, "sample_rate": self.detector.sample_rate})
+        if response.ok:
             logger.info("Recording has been saved successfully.")
-            logger.info(status.info)
+            logger.info(response.info)
         else:
-            logger.error("Failed to save the audio file within 60 seconds.")
-            logger.error(status.info)
+            logger.error(f"Failed to save the audio file within {env.save_audio_timeout} seconds.")
+            logger.error(response.info)
 
 
 def save_audio(frames: list, sample_rate: int) -> NoReturn:
@@ -220,10 +209,12 @@ def begin() -> None:
     sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: {env.volume}")
     shared.hosted_device = hosted_device_info()
     shared.processes = start_processes()
-    if env.macos and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
-        sentry_mode()
-    else:
-        Activator()
+    with Microphone() as source:
+        shared.source = source
+        if env.macos and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
+            sentry_mode()
+        else:
+            Activator().start()
 
 
 if __name__ == '__main__':

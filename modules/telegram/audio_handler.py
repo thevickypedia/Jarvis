@@ -9,7 +9,7 @@ import pyttsx3
 from speech_recognition import AudioFile, Recognizer, UnknownValueError
 
 from modules.models import config, models
-from modules.timeout.timeout import timeout
+from modules.timeout import timeout
 from modules.utils import shared
 
 indicators = models.Indicators()
@@ -126,8 +126,8 @@ def text_to_audio(text: str) -> Union[str, None]:
         shared.offline_caller = None  # Reset caller after using it
     else:
         tmp_file = f"{int(time.time())}.wav"
-    response = timeout(function=generate_audio_file, seconds=env.bot_voice_timeout,
-                       kwargs={'filename': tmp_file, 'text': text})
+    response = timeout.timeout(function=generate_audio_file, seconds=env.bot_voice_timeout, logger=logger,
+                               kwargs={'filename': tmp_file, 'text': text})
     if not response.ok:
         logger.warning(response.info)
     if os.path.isfile(tmp_file):

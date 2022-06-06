@@ -160,18 +160,19 @@ def vehicle(operation: str, temp: int = None) -> Union[str, dict, None]:
         primary_vehicle = [each_vehicle for each_vehicle in vehicles if each_vehicle.get("role") == "Primary"][0]
         handler = controller.Control(vin=primary_vehicle.get("vin"), connection=connection)
 
+        response = {}
         if operation == "LOCK":
-            handler.lock(pin=env.car_pin)
+            response = handler.lock(pin=env.car_pin)
         elif operation == "UNLOCK":
-            handler.unlock(pin=env.car_pin)
+            response = handler.unlock(pin=env.car_pin)
         elif operation == "START":
-            handler.remote_engine_start(pin=env.car_pin, target_temperature=temp)
+            response = handler.remote_engine_start(pin=env.car_pin, target_temperature=temp)
         elif operation == "STOP":
-            handler.remote_engine_stop(pin=env.car_pin)
+            response = handler.remote_engine_stop(pin=env.car_pin)
         elif operation == "SECURE":
-            handler.enable_guardian_mode(pin=env.car_pin)
+            response = handler.enable_guardian_mode(pin=env.car_pin)
         elif operation == "HONK":
-            handler.honk_blink()
+            response = handler.honk_blink()
         elif operation == "LOCATE" or operation == "LOCATE_INTERNAL":
             if not (position := handler.get_position().get('position')):
                 logger.error("Unable to get position of the vehicle.")
@@ -195,6 +196,9 @@ def vehicle(operation: str, temp: int = None) -> Union[str, dict, None]:
             else:
                 address = data
             return f"Your {handler.get_attributes().get('vehicleBrand', 'car')} is at {address}"
+        if response.get("failureDescription"):
+            logger.fatal(response)
+            return
         return handler.get_attributes().get("vehicleBrand", "car")
     except (urllib.error.HTTPError, urllib.error.URLError) as error:
         if isinstance(error, urllib.error.URLError):

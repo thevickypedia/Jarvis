@@ -4,19 +4,19 @@
 >>> Listener
 
 """
-
+import sys
 from typing import Union
 
 from playsound import playsound
-from speech_recognition import (Microphone, Recognizer, RequestError,
-                                UnknownValueError, WaitTimeoutError)
+from speech_recognition import (Recognizer, RequestError, UnknownValueError,
+                                WaitTimeoutError)
 
 from executors.logger import logger
 from modules.models import models
+from modules.utils import shared, support
 
 indicators = models.Indicators()
 recognizer = Recognizer()  # initiates recognizer that uses google's translation
-microphone = Microphone()  # initiates microphone as a source for audio
 
 
 def listen(timeout: Union[int, float], phrase_limit: Union[int, float], sound: bool = True) -> Union[str, None]:
@@ -31,15 +31,14 @@ def listen(timeout: Union[int, float], phrase_limit: Union[int, float], sound: b
         str:
          - Returns recognized statement from the microphone.
     """
-    with microphone as source:
-        try:
-            playsound(sound=indicators.start, block=False) if sound else None
-            listened = recognizer.listen(source=source, timeout=timeout, phrase_time_limit=phrase_limit)
-            playsound(sound=indicators.end, block=False) if sound else None
-            recognized = recognizer.recognize_google(audio_data=listened)
-            logger.info(recognized)
-            return recognized
-        except (UnknownValueError, RequestError, WaitTimeoutError):
-            return
-        except (ConnectionError, TimeoutError) as error:
-            logger.error(error)
+    try:
+        playsound(sound=indicators.start, block=False) if sound else sys.stdout.write("\rListener activated...")
+        listened = recognizer.listen(source=shared.source, timeout=timeout, phrase_time_limit=phrase_limit)
+        playsound(sound=indicators.end, block=False) if sound else support.flush_screen()
+        recognized = recognizer.recognize_google(audio_data=listened)
+        logger.info(recognized)
+        return recognized
+    except (UnknownValueError, RequestError, WaitTimeoutError):
+        return
+    except (ConnectionError, TimeoutError) as error:
+        logger.error(error)
