@@ -1,6 +1,5 @@
 import os
 import random
-import socket
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from multiprocessing.pool import ThreadPool
 from threading import Thread
@@ -8,7 +7,7 @@ from typing import Callable, NoReturn, Union
 
 import yaml
 
-from executors.internet import ip_address, vpn_checker
+from executors.internet import vpn_checker
 from executors.logger import logger
 from modules.audio import speaker
 from modules.conditions import conversation
@@ -107,19 +106,24 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         host_names = [smart_devices.get(light_location)]
         light_location = light_location.replace('_', ' ').replace('-', '')
 
+    host_names = support.matrix_to_flat_list(input_=host_names)
+    host_names = list(filter(None, host_names))
+    if light_location and not host_names:
+        logger.warning(f"No hostname values found for {light_location} in {fileio.smart_devices}")
+        speaker.speak(text=f"I'm sorry {env.title}! You haven't mentioned the host names of '{light_location}' lights.")
+        return
     if not host_names:
         Thread(target=support.unrecognized_dumper, args=[{'LIGHTS': phrase}]).start()
         speaker.speak(text=f"I'm not sure which lights you meant {env.title}!")
         return
 
-    host_names = support.matrix_to_flat_list(input_=host_names)
-    host_ip_raw = [socket.gethostbyname(hostname) for hostname in host_names]
-    host_ip = [tmp for tmp in host_ip_raw if tmp.split('.')[0] == ip_address().split('.')[0]]
-
+    host_ip = [support.hostname_to_ip(hostname=hostname) for hostname in host_names]
+    # host_ip = list(filter(None, host_ip))
+    host_ip = support.matrix_to_flat_list(input_=host_ip)
     if not host_ip:
-        plural = 'lights' if len(host_ip_raw) > 1 else 'light'
+        plural = 'lights' if len(host_ip) > 1 else 'light'
         speaker.speak(text=f"I wasn't able to connect to your {light_location} {plural} {env.title}! "
-                           f"{support.number_to_words(input_=len(host_ip_raw), capitalize=True)} lights appear to be "
+                           f"{support.number_to_words(input_=len(host_ip), capitalize=True)} lights appear to be "
                            "powered off.")
         return
 
@@ -193,7 +197,9 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         elif 'dim' in phrase:
             level = 50
         else:
-            level = support.extract_nos(input_=phrase, method=int) or 100
+            level = support.extract_nos(input_=phrase, method=int)
+            if level is None:
+                level = 100
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
                            f"I've set {len(host_ip)} {plural} to {level}%!")
         level = round((255 * level) / 100)

@@ -10,6 +10,7 @@ import math
 import os
 import random
 import re
+import socket
 import string
 import sys
 import uuid
@@ -22,6 +23,7 @@ import psutil
 import yaml
 from holidays import country_holidays
 
+from executors.internet import ip_address
 from executors.logger import logger
 from modules.audio import speaker
 from modules.database import database
@@ -31,6 +33,44 @@ env = models.env
 fileio = models.FileIO()
 
 db = database.Database(database=fileio.base_db)
+
+
+def hostname_to_ip(hostname: str) -> list:
+    """Uses ``socket.gethostbyname_ex`` to translate a host name to IPv4 address format, extended interface.
+
+    See Also:
+        - A host may have multiple interfaces.
+        - | In case of true DNS being used or the host entry file is carefully handwritten, the system will look
+          | there to find the translation.
+        - | But depending on the configuration, the host name can be bound to all the available interfaces, including
+          | the loopback ones.
+        - ``gethostbyname`` returns the address of the first of those interfaces in its own order.
+        - | To get the assigned IP, ``gethostbyname_ex`` is used, which returns a list of all the interfaces, including
+          | the host spot connected, and loopback IPs.
+
+    References:
+        https://docs.python.org/3/library/socket.html#socket.gethostbyname_ex
+
+    Args:
+        hostname: Takes the hostname of a device as an argument.
+    """
+    try:
+        _hostname, _alias_list, _ipaddr_list = socket.gethostbyname_ex(hostname)
+    except socket.error as error:
+        logger.error(f"{error} on {hostname}")
+        return []
+    logger.info({"Hostname": _hostname, "Alias": _alias_list, "Interfaces": _ipaddr_list})
+    if not _ipaddr_list:
+        logger.critical(f"No interfaces found for {hostname}")
+    elif len(_ipaddr_list) > 1:
+        logger.warning(f"Host {hostname} has multiple interfaces. {_ipaddr_list}")
+        return _ipaddr_list
+    else:
+        ip_addr = ip_address()
+        if _ipaddr_list[0].split('.')[0] == ip_addr.split('.')[0]:
+            return _ipaddr_list
+        logger.error(f"NetworkID of the InterfaceIP of host {hostname} does not match the network id of DeviceIP.")
+    return []
 
 
 def celebrate() -> str:

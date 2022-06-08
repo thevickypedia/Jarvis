@@ -22,7 +22,9 @@ def brightness(phrase: str):
     phrase = phrase.lower()
     speaker.speak(text=random.choice(conversation.acknowledgement))
     if 'set' in phrase:
-        level = support.extract_nos(input_=phrase, method=int) or 50
+        level = support.extract_nos(input_=phrase, method=int)
+        if level is None:
+            level = 50
         Thread(target=set_brightness, args=[level]).start()
     elif 'decrease' in phrase or 'reduce' in phrase or 'lower' in phrase or \
             'dark' in phrase or 'dim' in phrase:

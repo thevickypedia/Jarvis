@@ -329,8 +329,9 @@ def time_travel() -> None:
     speaker.speak(run=True)
     with db.connection:
         cursor = db.connection.cursor()
-        meeting_status = cursor.execute("SELECT info FROM ics").fetchone()
-    if meeting_status and meeting_status[0].startswith('You'):
+        meeting_status = cursor.execute("SELECT info, date FROM ics").fetchone()
+    if meeting_status and meeting_status[0].startswith('You') and \
+            meeting_status[1] == datetime.now().strftime('%Y_%m_%d'):
         speaker.speak(text=meeting_status[0])
     with db.connection:
         cursor = db.connection.cursor()

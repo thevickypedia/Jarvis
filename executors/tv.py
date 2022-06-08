@@ -1,6 +1,5 @@
 import os
 import random
-import socket
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -8,7 +7,7 @@ from threading import Thread
 
 import yaml
 
-from executors.internet import ip_address, vpn_checker
+from executors.internet import vpn_checker
 from executors.logger import logger
 from modules.audio import speaker
 from modules.conditions import conversation
@@ -49,45 +48,60 @@ def television(phrase: str) -> None:
         support.no_env_vars()
         return
 
-    tv_ip = socket.gethostbyname(smart_devices.get('tv', 'LGWEBOSTV'))
-    if tv_ip.split('.')[0] != ip_address().split('.')[0]:
+    tv_ip_list = support.hostname_to_ip(hostname=smart_devices.get('tv', 'LGWEBOSTV'))
+    tv_ip_list = list(filter(None, tv_ip_list))
+    if not tv_ip_list:
         speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to get the IP address of your TV.")
         return
 
-    power_controller = wakeonlan.WakeOnLan()
     phrase_exc = phrase.replace('TV', '')
     phrase_lower = phrase_exc.lower()
 
-    def tv_status() -> int:
+    def tv_status(attempt: int = 0) -> str:
         """Pings the tv and returns the status. 0 if able to ping, 256 if unable to ping.
+
+        Args:
+            attempt: Takes iteration count as an argument.
 
         Returns:
             int:
-            Returns an integer value 0 if status succeeds else 512.
+            Returns the reachable IP address from the list.
         """
-        if env.macos:
-            return os.system(f"ping -c 1 -t 2 {tv_ip} >/dev/null 2>&1")
-        else:
-            return os.system(f"ping -c 1 -t 2 {tv_ip} > NUL")
+        for ip in tv_ip_list:
+            if env.macos:
+                if tv_stat := os.system(f"ping -c 1 -t 2 {ip} >/dev/null 2>&1"):
+                    logger.error(f"Connection timed out on {ip}. Ping result: {tv_stat}") if not attempt else None
+                else:
+                    return ip
+            else:
+                if tv_stat := os.system(f"ping -c 1 -t 2 {ip} > NUL"):
+                    logger.error(f"Connection timed out on {ip}. Ping result: {tv_stat}") if not attempt else None
+                else:
+                    return ip
 
-    if ('turn off' in phrase_lower or 'shutdown' in phrase_lower or 'shut down' in phrase_lower) and tv_status() != 0:
-        speaker.speak(text=f"I wasn't able to connect to your TV {env.title}! I guess your TV is powered off already.")
-        return
-    elif tv_status():
+    if 'turn off' in phrase_lower or 'shutdown' in phrase_lower or 'shut down' in phrase_lower:
+        if not (tv_ip := tv_status()):
+            speaker.speak(text=f"I wasn't able to connect to your TV {env.title}! "
+                               "I guess your TV is powered off already.")
+            return
+    elif not (tv_ip := tv_status()):
+        logger.info(f"Trying to power on the device using the mac addresses: {env.tv_mac}")
+        power_controller = wakeonlan.WakeOnLan()
         with ThreadPoolExecutor(max_workers=len(env.tv_mac)) as executor:
             executor.map(power_controller.send_packet, env.tv_mac)
-        if shared.called_by_offline:
+        if not shared.called_by_offline:
             speaker.speak(text=f"Looks like your TV is powered off {env.title}! Let me try to turn it back on!",
                           run=True)
 
-    for i in range(5):
-        if not tv_status():
-            break
-        elif i == 4:  # checks if the TV is turned ON (thrice) even before launching the TV connector
+    if not tv_ip:
+        for i in range(5):
+            if tv_ip := tv_status(attempt=i):
+                break
+            time.sleep(0.5)
+        else:
             speaker.speak(text=f"I wasn't able to connect to your TV {env.title}! Please make sure you are on the "
                                "same network as your TV, and your TV is connected to a power source.")
             return
-        time.sleep(0.5)
 
     if not shared.tv:
         try:
@@ -133,11 +147,12 @@ def television(phrase: str) -> None:
             shared.tv.forward()
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}!')
         elif 'set' in phrase_lower and 'volume' in phrase_lower:
-            if vol := support.extract_nos(input_=phrase_lower, method=int):
+            vol = support.extract_nos(input_=phrase_lower, method=int)
+            if vol is None:
+                speaker.speak(text=f"Requested volume doesn't match the right format {env.title}!")
+            else:
                 shared.tv.set_volume(target=vol)
                 speaker.speak(text=f"I've set the volume to {vol}% {env.title}.")
-            else:
-                speaker.speak(text=f"{vol} doesn't match the right format {env.title}!")
         elif 'volume' in phrase_lower:
             speaker.speak(text=f"The current volume on your TV is, {shared.tv.get_volume()}%")
         elif 'app' in phrase_lower or 'application' in phrase_lower:

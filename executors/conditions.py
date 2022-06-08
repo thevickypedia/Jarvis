@@ -58,22 +58,19 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     if any(word in converted_lower for word in keywords.lights):
         lights(converted)
 
-    elif any(word in converted_lower for word in keywords.volume):
-        volume(converted)
-
     elif any(word in converted_lower for word in keywords.television):
         television(converted)
+
+    elif any(word in converted_lower for word in keywords.volume):
+        volume(converted)
 
     elif any(word in converted_lower for word in keywords.car):
         car(converted_lower)
 
-    # # Only if weather takes precedence to car in condition order
-    # elif any(word in converted_lower for word in keywords.weather) and \
-    #         not any(word in converted_lower for word in keywords.car):
-    #     weather(converted)
-
     elif any(word in converted_lower for word in keywords.weather):
         weather(converted)
+
+    # ORDER OF THE ABOVE SHOULD BE RETAINED
 
     elif any(word in converted_lower for word in keywords.meetings):
         meetings()

@@ -106,10 +106,8 @@ def car(phrase: str) -> None:
         else:
             speaker.speak(text=disconnected)
     elif "unlock" in phrase:
-        if shared.called_by_offline:
-            speaker.speak(text="Cannot unlock the car via offline communicator due to security reasons.")
-            return
-        playsound(sound=indicators.exhaust, block=False)
+        if not shared.called_by_offline:
+            playsound(sound=indicators.exhaust, block=False)
         if car_name := vehicle(operation="UNLOCK"):
             speaker.speak(text=f"Your {car_name} has been unlocked {env.title}!")
         else:

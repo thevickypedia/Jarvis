@@ -109,23 +109,22 @@ def threat_notify(converted: str, date_extn: Union[str, None], gmail_user: str, 
         phone_number: Phone number to send SMS.
         recipient: Email address of the recipient.
     """
-    dt_string = f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}"
-    title_ = f'Intruder Alert on {dt_string}'
-
     if converted:
         communicator.notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
-                            body=f"{dt_string}\n{converted}")
+                            body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\n{converted}")
         body_ = f"""<html><head></head><body><h2>Conversation of Intruder:</h2><br>{converted}<br><br>
                                     <h2>Attached is a photo of the intruder.</h2>"""
     else:
         communicator.notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
-                            body=f"{dt_string}\nCheck your email for more information.")
+                            body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\n"
+                                 "Check your email for more information.")
         body_ = """<html><head></head><body><h2>No conversation was recorded,
                                 but attached is a photo of the intruder.</h2>"""
     if date_extn:
         attachment_ = f'threat/{date_extn}.jpg'
         response_ = SendEmail(gmail_user=gmail_user, gmail_pass=gmail_pass,
-                              recipient=recipient, subject=title_, body=body_, attachment=attachment_).send_email()
+                              recipient=recipient, body=body_, attachment=attachment_,
+                              subject=f"Intruder Alert on {datetime.now().strftime('%B %d, %Y %I:%M %p')}").send_email()
         if response_.ok:
             logger.info('Email has been sent!')
         else:

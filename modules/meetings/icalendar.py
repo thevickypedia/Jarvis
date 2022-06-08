@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 from multiprocessing import Process
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
@@ -16,7 +17,7 @@ from modules.utils import shared
 env = models.env
 fileio = models.FileIO()
 db = database.Database(database=fileio.base_db)
-db.create_table(table_name="ics", columns=["info"])
+db.create_table(table_name="ics", columns=["info", "date"])
 
 
 def meetings_writer() -> NoReturn:
@@ -24,10 +25,10 @@ def meetings_writer() -> NoReturn:
 
     This function runs in a dedicated process every hour to avoid wait time when meetings information is requested.
     """
-    meeting_info = meetings_gatherer()
+    info = meetings_gatherer()
     with db.connection:
         cursor = db.connection.cursor()
-        cursor.execute("INSERT OR REPLACE INTO ics (info) VALUES (?);", (meeting_info,))
+        cursor.execute(f"INSERT OR REPLACE INTO ics (info, date) VALUES {(info, datetime.now().strftime('%Y_%m_%d'))}")
         cursor.connection.commit()
 
 
@@ -77,18 +78,21 @@ def meetings_gatherer() -> str:
     return meeting_status
 
 
-def meetings() -> NoReturn:
+def meetings() -> None:
     """Controller for meetings."""
     with db.connection:
         cursor = db.connection.cursor()
-        meeting_status = cursor.execute("SELECT info FROM ics").fetchone()
-    if meeting_status:
+        meeting_status = cursor.execute("SELECT info, date FROM ics").fetchone()
+    if meeting_status and meeting_status[1] == datetime.now().strftime('%Y_%m_%d'):
         speaker.speak(text=meeting_status[0])
+    elif meeting_status:
+        Process(target=meetings_writer).start()
+        speaker.speak(text=f"Meetings table is outdated {env.title}. Please try again in a minute or two.")
     else:
         if shared.called_by_offline:
-            Process(target=meetings_gatherer).start()
+            Process(target=meetings_writer).start()
             speaker.speak(text=f"Meetings table is empty {env.title}. Please try again in a minute or two.")
-            return False
+            return
         meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)  # Runs parallely and awaits completion
         speaker.speak(text=f"Please give me a moment {env.title}! I'm working on it.", run=True)
         try:

@@ -3554,7 +3554,7 @@ Whites can have a value of None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.meetings.events.events">
-<span class="sig-prename descclassname"><span class="pre">modules.meetings.events.</span></span><span class="sig-name descname"><span class="pre">events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.meetings.events.events" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.meetings.events.</span></span><span class="sig-name descname"><span class="pre">events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.meetings.events.events" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controller for events.</p>
 </dd></dl>
 
@@ -3591,7 +3591,7 @@ Whites can have a value of None.</p>
 <hr class="docutils" />
 <span class="target" id="module-modules.meetings.icalendar"></span><dl class="py function">
 <dt class="sig sig-object py" id="modules.meetings.icalendar.meetings">
-<span class="sig-prename descclassname"><span class="pre">modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.meetings.icalendar.meetings" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.meetings.icalendar.meetings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controller for meetings.</p>
 </dd></dl>
 
@@ -4243,6 +4243,41 @@ Whites can have a value of None.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.hostname_to_ip">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">hostname_to_ip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.utils.support.hostname_to_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses <code class="docutils literal notranslate"><span class="pre">socket.gethostbyname_ex</span></code> to translate a host name to IPv4 address format, extended interface.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul>
+<li><p>A host may have multiple interfaces.</p></li>
+<li><div class="line-block">
+<div class="line">In case of true DNS being used or the host entry file is carefully handwritten, the system will look</div>
+<div class="line">there to find the translation.</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line">But depending on the configuration, the host name can be bound to all the available interfaces, including</div>
+<div class="line">the loopback ones.</div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gethostbyname</span></code> returns the address of the first of those interfaces in its own order.</p></li>
+<li><div class="line-block">
+<div class="line">To get the assigned IP, <code class="docutils literal notranslate"><span class="pre">gethostbyname_ex</span></code> is used, which returns a list of all the interfaces, including</div>
+<div class="line">the host spot connected, and loopback IPs.</div>
+</div>
+</li>
+</ul>
+</div>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.gethostbyname_ex">https://docs.python.org/3/library/socket.html#socket.gethostbyname_ex</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hostname</strong> – Takes the hostname of a device as an argument.</p>
 </dd>
 </dl>
 </dd></dl>

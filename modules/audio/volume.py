@@ -25,7 +25,9 @@ def volume(phrase: str = None, level: int = None) -> None:
         elif 'max' in phrase.lower() or 'full' in phrase.lower():
             level = 100
         else:
-            level = support.extract_nos(input_=phrase, method=int) or env.volume
+            level = support.extract_nos(input_=phrase, method=int)
+            if level is None:
+                level = env.volume
     support.flush_screen()
     if env.macos:
         os.system(f'osascript -e "set Volume {round((8 * level) / 100)}"')

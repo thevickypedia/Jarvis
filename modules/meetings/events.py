@@ -16,7 +16,7 @@ from modules.utils import shared
 env = models.env
 fileio = models.FileIO()
 db = database.Database(database=fileio.base_db)
-db.create_table(table_name=env.event_app, columns=['info'])
+db.create_table(table_name=env.event_app, columns=["info", "date"])
 
 
 def events_writer() -> NoReturn:
@@ -24,10 +24,11 @@ def events_writer() -> NoReturn:
 
     This function runs in a dedicated process to avoid wait time when events information is requested.
     """
-    event_info = events_gatherer()
+    info = events_gatherer()
+    query = f"INSERT OR REPLACE INTO {env.event_app} (info, date) VALUES {(info, datetime.now().strftime('%Y_%m_%d'))}"
     with db.connection:
         cursor = db.connection.cursor()
-        cursor.execute(f"INSERT OR REPLACE INTO {env.event_app} (info) VALUES (?);", (event_info,))
+        cursor.execute(query)
         cursor.connection.commit()
 
 
@@ -105,18 +106,21 @@ def events_gatherer() -> str:
     return event_status
 
 
-def events() -> NoReturn:
+def events() -> None:
     """Controller for events."""
     with db.connection:
         cursor = db.connection.cursor()
-        event_status = cursor.execute(f"SELECT info FROM {env.event_app}").fetchone()
-    if event_status:
+        event_status = cursor.execute(f"SELECT info, date FROM {env.event_app}").fetchone()
+    if event_status and event_status[1] == datetime.now().strftime('%Y_%m_%d'):
         speaker.speak(text=event_status[0])
+    elif event_status:
+        Process(target=events_writer).start()
+        speaker.speak(text=f"Events table is outdated {env.title}. Please try again in a minute or two.")
     else:
         if shared.called_by_offline:
-            Process(target=events_gatherer).start()
+            Process(target=events_writer).start()
             speaker.speak(text=f"Events table is empty {env.title}. Please try again in a minute or two.")
-            return False
+            return
         event = ThreadPool(processes=1).apply_async(func=events_gatherer)  # Runs parallely and awaits completion
         speaker.speak(text=f"Please give me a moment {env.title}! Let me check your {env.event_app}.", run=True)
         try:
