@@ -33,7 +33,8 @@ def split_phrase(phrase: str, should_return: bool = False) -> bool:
     exit_check = False  # this is specifically to catch the sleep command which should break the while loop in renew()
 
     if ' after ' in phrase:
-        if timed_delay(phrase=phrase):
+        if delay := timed_delay(phrase=phrase):
+            speaker.speak(text=f"I will execute it after {support.time_converter(seconds=delay)} {env.title}!")
             return False
 
     if ' and ' in phrase and not any(word in phrase.lower() for word in keywords.avoid):
@@ -83,7 +84,7 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
     offline_communicator(command=phrase)
 
 
-def timed_delay(phrase: str) -> bool:
+def timed_delay(phrase: str) -> Union[int, float]:
     """Checks pre-conditions if a delay is necessary.
 
     Args:
@@ -100,8 +101,7 @@ def timed_delay(phrase: str) -> bool:
         if split_[0].strip():
             delay = delay_calculator(phrase=split_[1].strip())
             Process(target=delay_condition, kwargs={'phrase': split_[0].strip(), 'delay': delay}).start()
-            speaker.speak(text=f"I will execute it after {support.time_converter(seconds=delay)} {env.title}!")
-            return True
+            return delay
 
 
 def initialize() -> None:

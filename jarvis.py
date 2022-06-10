@@ -83,15 +83,15 @@ class Activator:
         try:
             while True:
                 sys.stdout.write("\rSentry Mode")
-                pcm = self.audio_stream.read(num_frames=self.detector.frame_length, exception_on_overflow=False)
-                pcm = struct.unpack_from("h" * self.detector.frame_length, pcm)
+                pcm = struct.unpack_from("h" * self.detector.frame_length,
+                                         self.audio_stream.read(num_frames=self.detector.frame_length,
+                                                                exception_on_overflow=False))
+                self.recorded_frames.append(pcm)
                 if self.detector.process(pcm=pcm) >= 0:
                     playsound(sound=indicators.acknowledgement, block=False)
                     if phrase := listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False):
                         initiator(phrase=phrase, should_return=True)
                         speaker.speak(run=True)
-                if env.save_audio_timeout:
-                    self.recorded_frames.append(pcm)
                 if flag := support.check_restart():
                     logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
                     self.stop()
@@ -127,7 +127,7 @@ class Activator:
             self.audio_stream.close()
         logger.info("Releasing PortAudio resources.")
         self.py_audio.terminate()
-        if not self.recorded_frames:
+        if not env.save_audio_timeout:
             return
         logger.info("Recording is being converted to audio.")
         response = timeout.timeout(function=save_audio, seconds=env.save_audio_timeout, logger=logger,
@@ -167,8 +167,8 @@ def sentry_mode() -> NoReturn:
         - The text is then condition matched for wake-up words.
         - Additional wake words can be passed in a list as an env var ``LEGACY_KEYWORDS``.
     """
-    while True:
-        try:
+    try:
+        while True:
             sys.stdout.write("\rSentry Mode")
             if wake_word := listener.listen(timeout=10, phrase_limit=2.5, sound=False):
                 support.flush_screen()
@@ -177,24 +177,24 @@ def sentry_mode() -> NoReturn:
                     if phrase := listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False):
                         initiator(phrase=phrase, should_return=True)
                         speaker.speak(run=True)
-        except StopSignal:
-            stop_processes()
-            exit_process()
-            terminator()
-            break
-        if flag := support.check_restart():
-            logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
-            stop_processes()
-            if flag[1] == "restart_control":
-                restart()
-            else:
-                restart(quiet=True)
-            break
-        if flag := support.check_stop():
-            logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
-            stop_processes()
-            terminator()
-            break
+            if flag := support.check_restart():
+                logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
+                stop_processes()
+                if flag[1] == "restart_control":
+                    restart()
+                else:
+                    restart(quiet=True)
+                break
+            if flag := support.check_stop():
+                logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
+                stop_processes()
+                terminator()
+                break
+    except StopSignal:
+        stop_processes()
+        exit_process()
+        terminator()
+        return
 
 
 def begin() -> None:

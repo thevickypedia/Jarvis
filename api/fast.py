@@ -20,8 +20,10 @@ from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from api import authenticator
 from api.models import GetData, InvestmentFilter
 from api.report_gatherer import Investment
+from executors.commander import timed_delay
 from executors.offline import offline_communicator
 from modules.audio import speaker
+from modules.conditions import keywords
 from modules.exceptions import APIResponse
 from modules.models import config, models
 from modules.offline import compatibles
@@ -184,20 +186,17 @@ async def offline_communicator_api(input_data: GetData) -> NoReturn:
     if not (command := input_data.command.strip()):
         raise APIResponse(status_code=204, detail='Empy requests cannot be processed.')
 
+    logger.info(f"Request: {command}")
     command_lower = command.lower()
     if 'alarm' in command_lower or 'remind' in command_lower:
         command = command_lower
     else:
         command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
     if command_lower == 'test':
-        raise APIResponse(status_code=200, detail='Test message received.')
-    if 'and' in command.split() or 'also' in command.split():
-        raise APIResponse(status_code=413,
-                          detail='Jarvis can only process one command at a time via offline communicator.')
-    if 'after' in command.split():
-        raise APIResponse(status_code=413,
-                          detail='Jarvis cannot perform tasks at a later time using offline communicator.')
+        logger.info("Test message has been processed.")
+        raise APIResponse(status_code=200, detail="Test message received.")
     if not any(word in command_lower for word in offline_compatible):
+        logger.warning(f"'{command}' is not a part of offline compatible request.")
         raise APIResponse(status_code=422,
                           detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
                                  'Please try an instruction that does not require an user interaction.')
@@ -206,7 +205,25 @@ async def offline_communicator_api(input_data: GetData) -> NoReturn:
     # import dateutil.tz
     # dt_string = datetime.now().astimezone(dateutil.tz.tzlocal()).strftime("%A, %B %d, %Y %H:%M:%S")
     dt_string = datetime.now().astimezone(tz=shared.LOCAL_TIMEZONE).strftime("%A, %B %d, %Y %H:%M:%S")
+    if ' after ' in command_lower:
+        if delay := timed_delay(phrase=command):
+            logger.info(f"'{command}' will be executed after {support.time_converter(seconds=delay)}")
+            raise APIResponse(status_code=200, detail=f'{dt_string}\n\nI will execute it after '
+                                                      f'{support.time_converter(seconds=delay)} {env.title}!')
+    if ' and ' in command and not any(word in command.lower() for word in keywords.avoid):
+        and_response = ""
+        for each in command.split(' and '):
+            and_response += f"{offline_communicator(command=each)}\n"
+        logger.info(f"Response: {and_response}")
+        raise APIResponse(status_code=200, detail=f'{dt_string}\n\n{and_response}')
+    elif ' also ' in command and not any(word in command.lower() for word in keywords.avoid):
+        also_response = ""
+        for each in command.split(' also '):
+            also_response = f"{offline_communicator(command=each)}\n"
+        logger.info(f"Response: {also_response}")
+        raise APIResponse(status_code=200, detail=f'{dt_string}\n\n{also_response}')
     response = offline_communicator(command=command)
+    logger.info(f"Response: {response}")
     raise APIResponse(status_code=200, detail=f'{dt_string}\n\n{response}')
 
 

@@ -11,7 +11,7 @@ from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
-from modules.utils import support
+from modules.utils import shared, support
 
 env = models.env
 
@@ -44,7 +44,7 @@ def github(phrase: str) -> None:
         speaker.speak(
             text=f'You have {total} repositories {env.title}, out of which {forked} are forked, {private} are private, '
                  f'{licensed} are licensed, and {archived} archived.')
-    else:
+    elif not shared.called_by_offline:
         [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
          for word in phrase.lower().split() for item in repos for repo, clone_url in item.items()]
         if result:

@@ -1,3 +1,4 @@
+import re
 import sys
 
 from gmailconnector.read_email import ReadEmail
@@ -51,13 +52,25 @@ def send_sms(phrase: str) -> None:
     Args:
         phrase: Takes phrase spoken as an argument.
     """
+    message = re.search('send (.*) to ', phrase) or re.search('Send (.*) to ', phrase)
+    body = message.group(1) if message else None
     if number := support.extract_nos(input_=phrase, method=int):
         number = str(number)
-    else:
-        speaker.speak(text=f"Please tell me a number {env.title}!", run=True)
-        if number := listener.listen(timeout=3, phrase_limit=7):
-            if 'exit' in number or 'quit' in number or 'Xzibit' in number:
-                return
+    if len(number) != 10:
+        speaker.speak(text=f"I don't think that's a right number {env.title}! Phone numbers are 10 digits. Try again!")
+        return
+    if number and body and shared.called_by_offline:
+        notify(user=env.gmail_user, password=env.gmail_pass, number=number, body=body)
+        speaker.speak(text=f"Message has been sent {env.title}!")
+        return
+    elif shared.called_by_offline:
+        speaker.speak(text="Messenger format should be::send some message to some number.")
+        return
+    speaker.speak(text=f"Please tell me a number {env.title}!", run=True)
+    if not (number := listener.listen(timeout=3, phrase_limit=7)):
+        return
+    if 'exit' in number or 'quit' in number or 'Xzibit' in number:
+        return
     if len(number) != 10:
         speaker.speak(text=f"I don't think that's a right number {env.title}! Phone numbers are 10 digits. Try again!")
         return

@@ -10,7 +10,9 @@ from typing import NoReturn, Union
 
 import requests
 
+from executors.commander import timed_delay
 from executors.offline import offline_communicator
+from modules.conditions import keywords
 from modules.database import database
 from modules.exceptions import BotInUse
 from modules.models import config, models
@@ -288,7 +290,7 @@ class TelegramBot:
         request_time = time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(payload['date']))
         logger.warning(f"Request timed out when {payload['from']['username']} requested {payload.get('text')}")
         logger.warning(f"Request time: {request_time}")
-        if "bypass" in payload.get('text', '').lower():
+        if "bypass" in payload.get('text', '').lower() and "stop" not in payload.get('text', '').lower():
             logger.info(f"{payload['from']['username']} requested a timeout bypass.")
             return True
         else:
@@ -421,26 +423,46 @@ class TelegramBot:
         if command_lower == 'test':
             self.send_message(chat_id=payload['from']['id'], response="Test message received.")
             return
-
-        if 'and' in command.split() or 'also' in command.split():
-            self.send_message(chat_id=payload['from']['id'],
-                              response="Jarvis can only process one command at a time via offline communicator.")
-            return
-
-        if 'after' in command.split():
-            self.send_message(chat_id=payload['from']['id'],
-                              response="Jarvis cannot perform tasks at a later time using offline communicator.")
-            return
-
         if not any(word in command_lower for word in offline_compatible):
             self.send_message(chat_id=payload['from']['id'],
                               response=f"'{command}' is not a part of offline communicator compatible request.\n"
                                        "Using Telegram I'm limited to perform tasks that do not require an interaction")
             return
 
+        if ' after ' in command_lower:
+            if delay := timed_delay(phrase=command):
+                self.process_response(payload=payload,
+                                      response=f"I will execute it after {support.time_converter(seconds=delay)} "
+                                               f"{env.title}!")
+                return
+        if ' and ' in command and not any(word in command.lower() for word in keywords.avoid):
+            for each in command.split(' and '):
+                self.executor(command=each, payload=payload)
+        elif ' also ' in command and not any(word in command.lower() for word in keywords.avoid):
+            for each in command.split(' also '):
+                self.executor(command=each, payload=payload)
+        else:
+            self.executor(command=command, payload=payload)
+
+    def executor(self, command: str, payload: dict) -> NoReturn:
+        """Executes the command via offline communicator.
+
+        Args:
+            command: Command to be executed.
+            payload: Payload received, to extract information from.
+        """
         logger.info(f'Request: {command}')
         response = offline_communicator(command=command).replace(env.title, USER_TITLE.get(payload['from']['username']))
         logger.info(f'Response: {response}')
+        self.process_response(payload=payload, response=response)
+
+    def process_response(self, response: str, payload: dict) -> NoReturn:
+        """Processes the response via Telegram API.
+
+        Args:
+            response: Response from Jarvis.
+            payload: Payload received, to extract information from.
+        """
         if payload.get('voice'):
             if filename := audio_handler.text_to_audio(text=response):
                 self.send_audio(chat_id=payload['from']['id'], filename=filename)

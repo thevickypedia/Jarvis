@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+6.1.3 (06/10/2022)
+------------------
+- Add more options to run via offline communicator
+- Fix send_sms in communicator.py
+- Allow and, also and after conditions in offline communicators
+- Append recorded frames by default
+
 6.1.2 (06/08/2022)
 ------------------
 - Translate hostname to IPv4 address and extend interface

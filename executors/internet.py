@@ -14,7 +14,7 @@ from executors.location import geo_locator
 from executors.logger import logger
 from modules.audio import speaker
 from modules.models import models
-from modules.utils import support
+from modules.utils import shared, support
 
 env = models.env
 
@@ -145,7 +145,8 @@ def speed_test() -> None:
     download_process = Process(target=st.download, kwargs={"threads": threads_per_core})
     upload_process.start()
     download_process.start()
-    speaker.speak(text=f"Starting speed test {env.title}! I.S.P: {isp}. Location: {city} {state}", run=True)
+    if not shared.called_by_offline:
+        speaker.speak(text=f"Starting speed test {env.title}! I.S.P: {isp}. Location: {city} {state}", run=True)
     upload_process.join()
     download_process.join()
     ping = round(st.results.ping)
