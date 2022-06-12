@@ -114,10 +114,10 @@ def weather(phrase: str = None) -> None:
         temp_feel_f = int(temperature.k2f(response['daily'][key]['feels_like'][when]))
         sunrise = datetime.fromtimestamp(response['daily'][key]['sunrise']).strftime("%I:%M %p")
         sunset = datetime.fromtimestamp(response['daily'][key]['sunset']).strftime("%I:%M %p")
-        output = f"The weather in {weather_location} {tell} would be {temp_f}°F, with a high of {high}, and a low of " \
-                 f"{low}. "
+        output = f"The weather in {weather_location} {tell} would be {temp_f}\N{DEGREE SIGN}F, with a high of " \
+                 f"{high}, and a low of {low}. "
         if temp_feel_f != temp_f:
-            output += f"But due to {condition} it will fee like it is {temp_feel_f}°F. "
+            output += f"But due to {condition} it will fee like it is {temp_feel_f}\N{DEGREE SIGN}F. "
         output += f"Sunrise at {sunrise}. Sunset at {sunset}. "
         if alerts and start_alert and end_alert:
             output += f'There is a weather alert for {alerts} between {start_alert} and {end_alert}'
@@ -154,18 +154,20 @@ def weather(phrase: str = None) -> None:
             feeling, weather_suggest = '', ''
         wind_speed = response['current']['wind_speed']
         if wind_speed > 10:
-            output = f'The weather in {city} is {feeling} {temp_f}°, but due to the current wind conditions ' \
-                     f'(which is {wind_speed} miles per hour), it feels like {temp_feel_f}°. {weather_suggest}'
+            output = f'The weather in {city} is {feeling} {temp_f}\N{DEGREE SIGN}, but due to the current wind ' \
+                     f'conditions (which is {wind_speed} miles per hour), it feels like {temp_feel_f}\N{DEGREE SIGN}.' \
+                     f' {weather_suggest}'
         else:
-            output = f'The weather in {city} is {feeling} {temp_f}°, and it currently feels like {temp_feel_f}°. ' \
-                     f'{weather_suggest}'
+            output = f'The weather in {city} is {feeling} {temp_f}\N{DEGREE SIGN}, and it currently feels like ' \
+                     f'{temp_feel_f}\N{DEGREE SIGN}. {weather_suggest}'
     elif place or not shared.called['report']:
-        output = f'The weather in {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \
-                 f'It currently feels like {temp_feel_f}°F, and the current condition is {condition}.'
+        output = f'The weather in {weather_location} is {temp_f}\N{DEGREE SIGN}F, with a high of {high}, and a low ' \
+                 f'of {low}. It currently feels like {temp_feel_f}\N{DEGREE SIGN}F, and the current condition is ' \
+                 f'{condition}.'
     else:
-        output = f'The weather in {weather_location} is {temp_f}°F, with a high of {high}, and a low of {low}. ' \
-                 f'It currently feels Like {temp_feel_f}°F, and the current condition is {condition}. ' \
-                 f'Sunrise at {sunrise}. Sunset at {sunset}.'
+        output = f'The weather in {weather_location} is {temp_f}\N{DEGREE SIGN}F, with a high of {high}, and a low ' \
+                 f'of {low}. It currently feels Like {temp_feel_f}\N{DEGREE SIGN}F, and the current condition is ' \
+                 f'{condition}. Sunrise at {sunrise}. Sunset at {sunset}.'
     if 'alerts' in response:
         alerts = response['alerts'][0]['event']
         start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")

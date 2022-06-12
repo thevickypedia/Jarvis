@@ -5,10 +5,6 @@
 
 """
 
-from datetime import datetime, timezone
-
-LOCAL_TIMEZONE = datetime.now(tz=timezone.utc).astimezone().tzinfo
-
 greeting = False
 called_by_offline = False
 called_by_automator = False
@@ -17,7 +13,6 @@ active_vpn = None
 text_spoken = None
 offline_caller = None
 tv = None
-source = None
 
 processes = {}
 hosted_device = {}

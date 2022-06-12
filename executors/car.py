@@ -39,7 +39,7 @@ def get_current_temp(location: dict) -> Tuple[Union[int, str], int]:
         logger.error(error)
         return "unknown", 66
     target_temp = 83 if current_temp < 45 else 57 if current_temp > 70 else 66
-    return f"{current_temp}°F", target_temp
+    return f"{current_temp}\N{DEGREE SIGN}F", target_temp
 
 
 def car(phrase: str) -> None:
@@ -86,7 +86,7 @@ def car(phrase: str) -> None:
                 except yaml.YAMLError as error:
                     logger.error(error)
                     target_temp = 69
-        extras += f"I've configured the climate setting to {target_temp}°F"
+        extras += f"I've configured the climate setting to {target_temp}\N{DEGREE SIGN}F"
         if car_name := vehicle(operation="START", temp=target_temp - 26):
             speaker.speak(text=f"Your {car_name} has been started {env.title}. {extras}")
         else:

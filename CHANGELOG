@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+6.1.4 (06/11/2022)
+------------------
+- Close `audio_stream` before opening `Microphone`
+- Support `Jarvis_API` even further
+- Replace ° sign with unicode string
+- Add api paths for keywords.py, conversation.py and offline_compatible
+- Fix speech_synthesis module
+- Narrow conditions for speedtest
+- Remove special characters in conversation.py and keywords.py
+- Remove unused shared resources
+
 6.1.3 (06/10/2022)
 ------------------
 - Add more options to run via offline communicator

@@ -58,9 +58,6 @@ class SpeechSynthesizer:
 
     def synthesizer(self) -> NoReturn:
         """Initiates speech synthesizer using docker."""
-        if not env.speech_synthesis_timeout:
-            logger.warning("Speech synthesis disabled since the env var DOCKER_TIMEOUT is set to 0")
-            return
         if check_existing():
             return
         if not os.path.isfile(fileio.speech_synthesis_log):
@@ -70,5 +67,4 @@ class SpeechSynthesizer:
                 subprocess.call(self.docker, shell=True, stdout=output, stderr=output)
             except (subprocess.CalledProcessError, subprocess.SubprocessError, Exception) as error:
                 logger.error(error)
-                env.speech_synthesis_timeout = 0
                 return

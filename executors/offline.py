@@ -147,4 +147,5 @@ def offline_communicator(command: str) -> AnyStr:
         shared.text_spoken = None
         return response
     else:
+        logger.error(f"Offline request failed: {shared.text_spoken}")
         return f"I was unable to process the request: {command}"

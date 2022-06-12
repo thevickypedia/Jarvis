@@ -180,7 +180,8 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     elif any(word in converted_lower for word in keywords.face_detection):
         face_detection()
 
-    elif any(word in converted_lower for word in keywords.speed_test):
+    elif any(word in converted_lower for word in keywords.speed_test) and \
+            ('internet' in converted_lower or 'connection' in converted_lower or 'run' in converted_lower):
         speed_test()
 
     elif any(word in converted_lower for word in keywords.bluetooth):

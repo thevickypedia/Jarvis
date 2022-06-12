@@ -9,10 +9,10 @@ from modules.models import models
 
 env = models.env
 
-greeting = ["how are you", "how are you doing", "how have you been", "how do you do", "how's it going"]
+greeting = ["how are you", "how are you doing", "how have you been", "how do you do", "how's it going", "hows it going"]
 
 capabilities = ["what can you do", "what all can you do", "what are your capabilities", "what's your capacity",
-                "what are you capable of"]
+                "what are you capable of", "whats your capacity"]
 
 languages = ["what languages do you speak", "what are all the languages you can speak",
              "what languages do you know", "can you speak in a different language",
@@ -21,11 +21,11 @@ languages = ["what languages do you speak", "what are all the languages you can 
 
 what = ["what are you"]
 
-who = ["who are you", "what do I call you", "what's your name", "what is your name"]
+who = ["who are you", "what do I call you", "what's your name", "what is your name", "whats your name"]
 
-form = ["where is your body", "where's your body"]
+form = ["where is your body", "where's your body", "wheres your body"]
 
-whats_up = ["what's up", "what is up", "what's going on", "sup"]
+whats_up = ["what's up", "what is up", "what's going on", "sup", "whats up"]
 
 about_me = ["tell me about you", "tell me something about you", "i would like to get you know you",
             "tell me about yourself"]

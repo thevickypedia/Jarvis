@@ -5,9 +5,9 @@
 
 """
 
-current_date = ["today's date", "current date", "what is the date", "what's the date", "what's the date today"]
+current_date = ["today's date", "current date", "what is the date", "what's the date", "todays date", "whats the date"]
 
-current_time = ["current time", "time now", "time in", "what is the time", "what's the time"]
+current_time = ["current time", "time now", "time in", "what is the time", "what's the time", "whats the time"]
 
 weather = ["weather", "temperature"]
 
@@ -29,7 +29,7 @@ repeat = ["repeat", "train"]
 
 location = ["location", "where are you"]
 
-locate = ["locate", "where is my", "where's my"]
+locate = ["locate", "where is my", "where's my", "wheres my"]
 
 music = ["music", "songs", "play"]
 
@@ -49,7 +49,7 @@ avoid = ["sun", "moon", "mercury", "venus", "earth", "mars", "jupiter", "saturn"
          "a.m.", "p.m.", "update my to do list", "launch", "safari", "body", "human", "centimeter", "server",
          "cloud", "update"]
 
-locate_places = ["where is", "where's", "which city", "which state", "which country", "which county"]
+locate_places = ["where is", "where's", "which city", "which state", "which country", "which county", "wheres"]
 
 directions = ["take me", "get directions"]
 
@@ -116,7 +116,7 @@ ok = ["yeah", "yes", "yep", "go ahead", "proceed", "continue", "carry on", "plea
 restart_control = ["restart", "reboot"]
 
 exit_ = ["exit", "quit", "no", "nope", "thank you", "Xzibit", "bye", "good bye", "see you later", "talk to you later",
-         "that's it", "that is it", "never mind", "nevermind"]
+         "that's it", "that is it", "never mind", "nevermind", "thats it"]
 
 sleep_control = ["exit", "quit", "lock", "sleep", "Xzibit", "activate sentry mode"]
 

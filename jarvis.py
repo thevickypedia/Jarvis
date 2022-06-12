@@ -12,7 +12,6 @@ import pvporcupine
 import soundfile
 from playsound import playsound
 from pyaudio import PyAudio, paInt16
-from speech_recognition import Microphone
 
 from executors.commander import initiator
 from executors.controls import exit_process, restart, starter, terminator
@@ -69,6 +68,10 @@ class Activator:
             keyword_paths=keyword_paths,
             sensitivities=[env.sensitivity]
         )
+        self.audio_stream = None
+
+    def open_stream(self) -> NoReturn:
+        """Initializes an audio stream."""
         self.audio_stream = self.py_audio.open(
             rate=self.detector.sample_rate,
             channels=1,
@@ -78,17 +81,25 @@ class Activator:
             input_device_index=self.input_device_index
         )
 
+    def close_stream(self) -> NoReturn:
+        """Closes audio stream so that other listeners can use microphone."""
+        self.py_audio.close(stream=self.audio_stream)
+        self.audio_stream = None
+
     def start(self) -> NoReturn:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
             while True:
                 sys.stdout.write("\rSentry Mode")
+                if not self.audio_stream:
+                    self.open_stream()
                 pcm = struct.unpack_from("h" * self.detector.frame_length,
                                          self.audio_stream.read(num_frames=self.detector.frame_length,
                                                                 exception_on_overflow=False))
                 self.recorded_frames.append(pcm)
                 if self.detector.process(pcm=pcm) >= 0:
                     playsound(sound=indicators.acknowledgement, block=False)
+                    self.close_stream()
                     if phrase := listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False):
                         initiator(phrase=phrase, should_return=True)
                         speaker.speak(run=True)
@@ -129,6 +140,7 @@ class Activator:
         self.py_audio.terminate()
         if not env.save_audio_timeout:
             return
+        sys.stdout.write("\rRecording is being converted to audio.")
         logger.info("Recording is being converted to audio.")
         response = timeout.timeout(function=save_audio, seconds=env.save_audio_timeout, logger=logger,
                                    kwargs={"frames": self.recorded_frames, "sample_rate": self.detector.sample_rate})
@@ -170,7 +182,7 @@ def sentry_mode() -> NoReturn:
     try:
         while True:
             sys.stdout.write("\rSentry Mode")
-            if wake_word := listener.listen(timeout=10, phrase_limit=2.5, sound=False):
+            if wake_word := listener.listen(timeout=10, phrase_limit=2.5, sound=False, stdout=False):
                 support.flush_screen()
                 if any(word in wake_word.lower() for word in env.legacy_keywords):
                     playsound(sound=indicators.acknowledgement, block=False)
@@ -209,12 +221,10 @@ def begin() -> None:
     sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: {env.volume}")
     shared.hosted_device = hosted_device_info()
     shared.processes = start_processes()
-    with Microphone() as source:
-        shared.source = source
-        if env.macos and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
-            sentry_mode()
-        else:
-            Activator().start()
+    if env.macos and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
+        sentry_mode()
+    else:
+        Activator().start()
 
 
 if __name__ == '__main__':

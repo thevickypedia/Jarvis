@@ -23,11 +23,11 @@ from api.report_gatherer import Investment
 from executors.commander import timed_delay
 from executors.offline import offline_communicator
 from modules.audio import speaker
-from modules.conditions import keywords
+from modules.conditions import conversation, keywords
 from modules.exceptions import APIResponse
 from modules.models import config, models
 from modules.offline import compatibles
-from modules.utils import shared, support
+from modules.utils import support
 
 env = models.env
 fileio = models.FileIO()
@@ -129,7 +129,40 @@ async def redirect_index() -> str:
     return app.redoc_url
 
 
-@app.post(path='/speech-synthesis', response_class=RedirectResponse, dependencies=OFFLINE_PROTECTOR)
+@app.post(path='/keywords')
+async def _keywords() -> dict:
+    """Converts the keywords.py file into a dictionary of key-value pairs.
+
+    Returns:
+        dict:
+        Key-value pairs of the keywords file.
+    """
+    return {k: v for k, v in keywords.__dict__.items() if not k.title().startswith('_')}
+
+
+@app.post(path='/conversation')
+async def _conversations() -> dict:
+    """Converts the conversation.py file into a dictionary of key-value pairs.
+
+    Returns:
+        dict:
+        Key-value pairs of the conversation file.
+    """
+    return {k: v for k, v in conversation.__dict__.items() if not k.title().startswith('_')}
+
+
+@app.post(path='/api-compatible')
+async def _offline_compatible() -> dict:
+    """Returns the list of api compatible words.
+
+    Returns:
+        list:
+        Returns the list of api-compatible words.
+    """
+    return {"compatible": offline_compatible}
+
+
+@app.post(path='/speech-synthesis', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
 async def speech_synthesis(text: str) -> FileResponse:
     """Process request to convert text to speech if docker container is running.
 
@@ -201,30 +234,26 @@ async def offline_communicator_api(input_data: GetData) -> NoReturn:
                           detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
                                  'Please try an instruction that does not require an user interaction.')
 
-    # # Alternate way for datetime conversions without first specifying a local timezone
-    # import dateutil.tz
-    # dt_string = datetime.now().astimezone(dateutil.tz.tzlocal()).strftime("%A, %B %d, %Y %H:%M:%S")
-    dt_string = datetime.now().astimezone(tz=shared.LOCAL_TIMEZONE).strftime("%A, %B %d, %Y %H:%M:%S")
     if ' after ' in command_lower:
         if delay := timed_delay(phrase=command):
             logger.info(f"'{command}' will be executed after {support.time_converter(seconds=delay)}")
-            raise APIResponse(status_code=200, detail=f'{dt_string}\n\nI will execute it after '
-                                                      f'{support.time_converter(seconds=delay)} {env.title}!')
+            raise APIResponse(status_code=200, detail=f'I will execute it after {support.time_converter(seconds=delay)}'
+                                                      f' {env.title}!')
     if ' and ' in command and not any(word in command.lower() for word in keywords.avoid):
         and_response = ""
         for each in command.split(' and '):
             and_response += f"{offline_communicator(command=each)}\n"
         logger.info(f"Response: {and_response}")
-        raise APIResponse(status_code=200, detail=f'{dt_string}\n\n{and_response}')
+        raise APIResponse(status_code=200, detail=and_response)
     elif ' also ' in command and not any(word in command.lower() for word in keywords.avoid):
         also_response = ""
         for each in command.split(' also '):
             also_response = f"{offline_communicator(command=each)}\n"
         logger.info(f"Response: {also_response}")
-        raise APIResponse(status_code=200, detail=f'{dt_string}\n\n{also_response}')
+        raise APIResponse(status_code=200, detail=also_response)
     response = offline_communicator(command=command)
     logger.info(f"Response: {response}")
-    raise APIResponse(status_code=200, detail=f'{dt_string}\n\n{response}')
+    raise APIResponse(status_code=200, detail=response)
 
 
 @app.get(path="/favicon.ico", include_in_schema=False)

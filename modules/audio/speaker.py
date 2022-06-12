@@ -43,14 +43,15 @@ def speech_synthesizer(text: str, timeout: int = env.speech_synthesis_timeout) -
     try:
         response = requests.post(url=f"http://localhost:{env.speech_synthesis_port}/api/tts",
                                  headers={"Content-Type": "text/plain"},
-                                 params={"voice": "en-us_northern_english_male-glow_tts", "quality": "medium"},
+                                 params={"voice": "en-us_northern_english_male-glow_tts", "quality": "low"},
                                  data=text, verify=False, timeout=timeout)
-        logger.error(f"{response.status_code}::http://localhost:{env.speech_synthesis_port}/api/tts")
-        if not response.ok:
+        if response.ok:
+            with open(file=fileio.speech_synthesis_wav, mode="wb") as file:
+                file.write(response.content)
+            return True
+        else:
+            logger.error(f"{response.status_code}::http://localhost:{env.speech_synthesis_port}/api/tts")
             return False
-        with open(file=fileio.speech_synthesis_wav, mode="wb") as file:
-            file.write(response.content)
-        return True
     except (requests.exceptions.ConnectionError,
             requests.exceptions.Timeout) as error:
         # Timeout exception covers both connection timeout and read timeout

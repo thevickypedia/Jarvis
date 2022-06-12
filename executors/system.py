@@ -79,11 +79,13 @@ def system_vitals() -> None:
 
         if cpu_temp:
             cpu = f'Your current average CPU temperature is ' \
-                  f'{support.format_nos(input_=temperature.c2f(arg=support.extract_nos(input_=cpu_temp)))}°F. '
+                  f'{support.format_nos(input_=temperature.c2f(arg=support.extract_nos(input_=cpu_temp)))}' \
+                  f'\N{DEGREE SIGN}F. '
             output += cpu
             speaker.speak(text=cpu)
         if gpu_temp:
-            gpu = f'GPU temperature is {support.format_nos(temperature.c2f(support.extract_nos(gpu_temp)))}°F. '
+            gpu = f'GPU temperature is {support.format_nos(temperature.c2f(support.extract_nos(gpu_temp)))}' \
+                  f'\N{DEGREE SIGN}F. '
             output += gpu
             speaker.speak(text=gpu)
         if fan_speed:
