@@ -7,7 +7,7 @@
 import os.path
 import sys
 from threading import Thread
-from typing import NoReturn
+from typing import NoReturn, Union
 
 import pyttsx3
 import requests
@@ -29,29 +29,32 @@ CONVERSATION = [__conversation for __conversation in dir(conversation) if not __
 FUNCTIONS_TO_TRACK = KEYWORDS + CONVERSATION
 
 
-def speech_synthesizer(text: str, timeout: int = env.speech_synthesis_timeout) -> bool:
+def speech_synthesizer(text: str, timeout: Union[int, float] = env.speech_synthesis_timeout,
+                       quality: str = "high", voice: str = "en-us_northern_english_male-glow_tts") -> bool:
     """Makes a post call to docker container running on localhost for speech synthesis.
 
     Args:
         text: Takes the text that has to be spoken as an argument.
         timeout: Time to wait for the docker image to process text-to-speech request.
+        quality: Quality at which the conversion is to be done.
+        voice: Voice for speech synthesis.
 
     Returns:
         bool:
         A boolean flag to indicate whether speech synthesis has worked.
     """
+    logger.info(f"Request for speech synthesis: {text}")
     try:
         response = requests.post(url=f"http://localhost:{env.speech_synthesis_port}/api/tts",
                                  headers={"Content-Type": "text/plain"},
-                                 params={"voice": "en-us_northern_english_male-glow_tts", "quality": "low"},
+                                 params={"voice": voice, "quality": quality},
                                  data=text, verify=False, timeout=timeout)
         if response.ok:
             with open(file=fileio.speech_synthesis_wav, mode="wb") as file:
                 file.write(response.content)
             return True
-        else:
-            logger.error(f"{response.status_code}::http://localhost:{env.speech_synthesis_port}/api/tts")
-            return False
+        logger.error(f"{response.status_code}::http://localhost:{env.speech_synthesis_port}/api/tts")
+        return False
     except (requests.exceptions.ConnectionError,
             requests.exceptions.Timeout) as error:
         # Timeout exception covers both connection timeout and read timeout
@@ -69,20 +72,20 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
     caller = sys._getframe(1).f_code.co_name  # noqa
     if text:
         text = text.replace('\n', '\t').strip()
-        logger.info(f'Response: {text}')
         logger.info(f'Speaker called by: {caller}')
-        sys.stdout.write(f"\r{text}")
         shared.text_spoken = text
         if shared.called_by_offline:
             shared.offline_caller = caller
+            return
+        logger.info(f'Response: {text}')
+        sys.stdout.write(f"\r{text}")
+        if env.speech_synthesis_timeout and \
+                speech_synthesizer(text=text) and \
+                os.path.isfile(fileio.speech_synthesis_wav):
+            playsound(sound=fileio.speech_synthesis_wav, block=block)
+            os.remove(fileio.speech_synthesis_wav)
         else:
-            if env.speech_synthesis_timeout and \
-                    speech_synthesizer(text=text) and \
-                    os.path.isfile(fileio.speech_synthesis_wav):
-                playsound(sound=fileio.speech_synthesis_wav, block=block)
-                os.remove(fileio.speech_synthesis_wav)
-            else:
-                audio_driver.say(text=text)
+            audio_driver.say(text=text)
     if run:
         audio_driver.runAndWait()
     Thread(target=frequently_used, kwargs={"function_name": caller}).start() if caller in FUNCTIONS_TO_TRACK else None

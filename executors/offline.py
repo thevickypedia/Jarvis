@@ -96,7 +96,8 @@ def initiate_tunneling() -> NoReturn:
     if os.path.exists(f"{env.home}/JarvisHelper/venv/bin/activate"):
         logger.info('Initiating ngrok connection for offline communicator.')
         initiate = f'cd {env.home}/JarvisHelper && ' \
-                   f'source venv/bin/activate && export port={env.offline_port} && python forever_ngrok.py'
+                   f'source venv/bin/activate && export host={env.offline_host} ' \
+                   f'export port={env.offline_port} && python forever_ngrok.py'
         os.system(f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null""")
     else:
         logger.info(f'JarvisHelper is not available to trigger an ngrok tunneling through {env.offline_port}')

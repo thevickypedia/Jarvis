@@ -44,6 +44,7 @@ if [[ "$OSName" == "Darwin" ]]; then
         sleep 3
     fi
 
+    xcode-select --install
     # Looks for brew installation and installs only if brew is not found in /usr/local/bin
     brew_check=$(which brew)
     brew_condition="/usr/local/bin/brew"

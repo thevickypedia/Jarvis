@@ -11,14 +11,13 @@ from multiprocessing import Process
 from threading import Thread
 from typing import Any, NoReturn
 
-import requests
 from fastapi import Depends, FastAPI
 from fastapi import status as http_status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
 from api import authenticator
-from api.models import GetData, InvestmentFilter
+from api.models import GetData, GetText, InvestmentFilter
 from api.report_gatherer import Investment
 from executors.commander import timed_delay
 from executors.offline import offline_communicator
@@ -163,8 +162,16 @@ async def _offline_compatible() -> dict:
 
 
 @app.post(path='/speech-synthesis', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
-async def speech_synthesis(text: str) -> FileResponse:
+async def speech_synthesis(input_data: GetText) -> FileResponse:
     """Process request to convert text to speech if docker container is running.
+
+    Args:
+        - input_data: Takes the following arguments as ``GetText`` class instead of a QueryString.
+
+            - text: Text to be processed with speech synthesis.
+            - timeout: Timeout for speech-synthesis API call.
+            - quality: Quality of audio conversion.
+            - voice: Voice model ot be used.
 
     Returns:
         FileResponse:
@@ -174,23 +181,19 @@ async def speech_synthesis(text: str) -> FileResponse:
         - 404: If audio file was not found after successful response.
         - 500: If the connection fails.
     """
-    try:
-        response = requests.get(url=f"http://localhost:{env.speech_synthesis_port}", timeout=1)
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as error:
-        logger.error(error)
-        raise APIResponse(status_code=500, detail=error)
-    if response.ok:
-        if not speaker.speech_synthesizer(text=text, timeout=len(text)):
-            logger.error("Speech synthesis could not process the request.")
-            raise APIResponse(status_code=500, detail=http_status.HTTP_500_INTERNAL_SERVER_ERROR)
-        if os.path.isfile(path=fileio.speech_synthesis_wav):
-            Thread(target=remove_file, kwargs={'delay': 2, 'filepath': fileio.speech_synthesis_wav}).start()
-            return FileResponse(path=fileio.speech_synthesis_wav, media_type='application/octet-stream',
-                                filename="synthesized.wav")
-        logger.error(f'File Not Found: {fileio.speech_synthesis_wav}')
-        raise APIResponse(status_code=404, detail=http_status.HTTP_404_NOT_FOUND)
-    logger.error(f"{response.status_code}::{response.url} - {response.text}")
-    raise APIResponse(status_code=response.status_code, detail=response.text)
+    if not (text := input_data.text.strip()):
+        logger.error('Empty requests cannot be processed.')
+        raise APIResponse(status_code=204, detail='Empty requests cannot be processed.')
+    if not speaker.speech_synthesizer(text=text, timeout=input_data.timeout or len(text), quality=input_data.quality,
+                                      voice=input_data.voice):
+        logger.error("Speech synthesis could not process the request.")
+        raise APIResponse(status_code=500, detail=http_status.HTTP_500_INTERNAL_SERVER_ERROR)
+    if os.path.isfile(path=fileio.speech_synthesis_wav):
+        Thread(target=remove_file, kwargs={'delay': 2, 'filepath': fileio.speech_synthesis_wav}).start()
+        return FileResponse(path=fileio.speech_synthesis_wav, media_type='application/octet-stream',
+                            filename="synthesized.wav")
+    logger.error(f'File Not Found: {fileio.speech_synthesis_wav}')
+    raise APIResponse(status_code=404, detail=http_status.HTTP_404_NOT_FOUND)
 
 
 @app.get(path="/health", include_in_schema=False)
@@ -204,7 +207,7 @@ async def offline_communicator_api(input_data: GetData) -> NoReturn:
     """Offline Communicator API endpoint for Jarvis.
 
     Args:
-        - input_data: Takes the following arguments as data instead of a QueryString.
+        - input_data: Takes the following arguments as ``GetData`` class instead of a QueryString.
 
             - command: The task which Jarvis has to do.
 
@@ -217,7 +220,7 @@ async def offline_communicator_api(input_data: GetData) -> NoReturn:
         - Keeps waiting for the record ``response`` in the database table ``offline``
     """
     if not (command := input_data.command.strip()):
-        raise APIResponse(status_code=204, detail='Empy requests cannot be processed.')
+        raise APIResponse(status_code=204, detail='Empty requests cannot be processed.')
 
     logger.info(f"Request: {command}")
     command_lower = command.lower()

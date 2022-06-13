@@ -227,7 +227,7 @@
 <dd><p>Offline Communicator API endpoint for Jarvis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>- input_data</strong> – Takes the following arguments as data instead of a QueryString.</p>
+<dd class="field-odd"><p><strong>- input_data</strong> – Takes the following arguments as <code class="docutils literal notranslate"><span class="pre">GetData</span></code> class instead of a QueryString.</p>
 <ul class="simple">
 <li><p>command: The task which Jarvis has to do.</p></li>
 </ul>
@@ -312,17 +312,26 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.speech_synthesis">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">starlette.responses.FileResponse</span></span></span><a class="headerlink" href="#api.fast.speech_synthesis" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">api.models.GetText</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">starlette.responses.FileResponse</span></span></span><a class="headerlink" href="#api.fast.speech_synthesis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process request to convert text to speech if docker container is running.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Audio file to be downloaded.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>- input_data</strong> – Takes the following arguments as <code class="docutils literal notranslate"><span class="pre">GetText</span></code> class instead of a QueryString.</p>
+<ul class="simple">
+<li><p>text: Text to be processed with speech synthesis.</p></li>
+<li><p>timeout: Timeout for speech-synthesis API call.</p></li>
+<li><p>quality: Quality of audio conversion.</p></li>
+<li><p>voice: Voice model ot be used.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>FileResponse</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Audio file to be downloaded.</p>
 </dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><ul class="simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>FileResponse</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>- 404</strong> – If audio file was not found after successful response.</p></li>
 <li><p><strong>- 500</strong> – If the connection fails.</p></li>
 </ul>
@@ -2191,13 +2200,15 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.audio.speaker.speech_synthesizer">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.speaker.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.audio.speaker.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.audio.speaker.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'high'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'en-us_northern_english_male-glow_tts'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.audio.speaker.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes a post call to docker container running on localhost for speech synthesis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> – Takes the text that has to be spoken as an argument.</p></li>
 <li><p><strong>timeout</strong> – Time to wait for the docker image to process text-to-speech request.</p></li>
+<li><p><strong>quality</strong> – Quality at which the conversion is to be done.</p></li>
+<li><p><strong>voice</strong> – Voice for speech synthesis.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

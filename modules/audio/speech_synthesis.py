@@ -54,7 +54,7 @@ class SpeechSynthesizer:
             --user "$(id -u):$(id -g)" \
             rhasspy/larynx"""
         if env.speech_synthesis_port != 5002:
-            self.docker += " --port {env.speech_synthesis_port}"
+            self.docker += f" --port {env.speech_synthesis_port}"
 
     def synthesizer(self) -> NoReturn:
         """Initiates speech synthesizer using docker."""

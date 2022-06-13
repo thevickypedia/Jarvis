@@ -119,6 +119,11 @@ if env.ics_url and not env.ics_url.endswith('.ics'):
 if env.tv_mac and isinstance(env.tv_mac, str):
     env.tv_mac = [env.tv_mac]
 
+if env.speech_synthesis_port == env.offline_port:
+    raise InvalidEnvVars(
+        "Speech synthesizer and offline communicator cannot run simultaneously on the same port number."
+    )
+
 
 class FileIO(BaseModel):
     """Loads all the files' path required/created by Jarvis.

@@ -1,3 +1,4 @@
+import random
 import webbrowser
 from threading import Thread
 
@@ -218,8 +219,9 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         sprint_name()
 
     elif any(word in converted_lower for word in conversation.greeting):
-        if not alpha(text=converted):
-            speak(text='I am spectacular. I hope you are doing fine too.')
+        response = ['I am spectacular. I hope you are doing fine too.', 'I am doing well. Thank you.',
+                    'I am great. Thank you.']
+        speak(text=random.choice(response))
 
     elif any(word in converted_lower for word in conversation.capabilities):
         speak(text='There is a lot I can do. For example: I can get you the weather at any location, news around '

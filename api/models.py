@@ -1,4 +1,5 @@
 from logging import Filter, LogRecord
+from typing import Union
 
 from pydantic import BaseModel
 
@@ -12,7 +13,25 @@ class GetData(BaseModel):
         - ``command``: Offline command sent via API which ``Jarvis`` has to perform.
     """
 
-    command: str = None
+    command: str
+
+
+class GetText(BaseModel):
+    """BaseModel that handles input data for the API which is treated as members for the class ``GetText``.
+
+    >>> GetText
+
+    See Also:
+        - ``text``: Text to be processed with speech synthesis.
+        - ``timeout``: Timeout for speech-synthesis API call.
+        - ``quality``: Quality of speech synthesis.
+        - ``voice``: Voice module to be used.
+    """
+
+    text: str
+    timeout: Union[int, float] = None
+    quality: str = "high"
+    voice: str = "en-us_northern_english_male-glow_tts"
 
 
 class InvestmentFilter(Filter):
