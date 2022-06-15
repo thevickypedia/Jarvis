@@ -5,7 +5,9 @@
 
 """
 import os.path
+import re
 import sys
+from datetime import datetime
 from threading import Thread
 from typing import NoReturn, Union
 
@@ -31,7 +33,7 @@ FUNCTIONS_TO_TRACK = KEYWORDS + CONVERSATION
 
 def speech_synthesizer(text: str, timeout: Union[int, float] = env.speech_synthesis_timeout,
                        quality: str = "high", voice: str = "en-us_northern_english_male-glow_tts") -> bool:
-    """Makes a post call to docker container running on localhost for speech synthesis.
+    """Makes a post call to docker container for speech synthesis.
 
     Args:
         text: Takes the text that has to be spoken as an argument.
@@ -44,8 +46,15 @@ def speech_synthesizer(text: str, timeout: Union[int, float] = env.speech_synthe
         A boolean flag to indicate whether speech synthesis has worked.
     """
     logger.info(f"Request for speech synthesis: {text}")
+    if time_in_str := re.findall(r'(\d+:\d+\s?(?:AM|PM|am|pm:?))', text):
+        for t_12 in time_in_str:
+            t_24 = datetime.strftime(datetime.strptime(t_12, "%I:%M %p"), "%H:%M")
+            logger.info(f"Converted {t_12} -> {t_24}")
+            text = text.replace(t_12, t_24)
+    if 'IP' in text.split():
+        text = text.replace(' IP ', ' I.P. ')
     try:
-        response = requests.post(url=f"http://localhost:{env.speech_synthesis_port}/api/tts",
+        response = requests.post(url=f"http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/tts",
                                  headers={"Content-Type": "text/plain"},
                                  params={"voice": voice, "quality": quality},
                                  data=text, verify=False, timeout=timeout)
@@ -53,10 +62,9 @@ def speech_synthesizer(text: str, timeout: Union[int, float] = env.speech_synthe
             with open(file=fileio.speech_synthesis_wav, mode="wb") as file:
                 file.write(response.content)
             return True
-        logger.error(f"{response.status_code}::http://localhost:{env.speech_synthesis_port}/api/tts")
+        logger.error(f"{response.status_code}::http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/tts")
         return False
-    except (requests.exceptions.ConnectionError,
-            requests.exceptions.Timeout) as error:
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, UnicodeError) as error:
         # Timeout exception covers both connection timeout and read timeout
         logger.error(error)
 

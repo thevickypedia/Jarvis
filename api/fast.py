@@ -136,7 +136,7 @@ async def _keywords() -> dict:
         dict:
         Key-value pairs of the keywords file.
     """
-    return {k: v for k, v in keywords.__dict__.items() if not k.title().startswith('_')}
+    return {k: v for k, v in keywords.__dict__.items() if isinstance(v, list)}
 
 
 @app.post(path='/conversation')
@@ -147,7 +147,7 @@ async def _conversations() -> dict:
         dict:
         Key-value pairs of the conversation file.
     """
-    return {k: v for k, v in conversation.__dict__.items() if not k.title().startswith('_')}
+    return {k: v for k, v in conversation.__dict__.items() if isinstance(v, list)}
 
 
 @app.post(path='/api-compatible')
@@ -155,8 +155,8 @@ async def _offline_compatible() -> dict:
     """Returns the list of api compatible words.
 
     Returns:
-        list:
-        Returns the list of api-compatible words.
+        dict:
+        Returns the list of api-compatible words as a dictionary.
     """
     return {"compatible": offline_compatible}
 

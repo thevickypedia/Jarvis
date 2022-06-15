@@ -146,7 +146,7 @@ def conditions(converted: str, should_return: bool = False) -> bool:
         directions(converted)
 
     elif any(word in converted_lower for word in keywords.kill_alarm):
-        kill_alarm()
+        kill_alarm(converted)
 
     elif any(word in converted_lower for word in keywords.set_alarm):
         set_alarm(converted)

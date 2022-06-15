@@ -26,6 +26,7 @@ from holidays import country_holidays
 from executors.internet import ip_address
 from executors.logger import logger
 from modules.audio import speaker
+from modules.conditions import keywords
 from modules.database import database
 from modules.models import models
 
@@ -159,7 +160,7 @@ def get_capitalized(phrase: str, dot: bool = True) -> Union[str, None]:
     """
     place = ""
     for word in phrase.split():
-        if word[0].isupper():
+        if word[0].isupper() and word.lower() not in keywords.avoid:
             place += word + " "
         elif "." in word and dot:
             place += word + " "

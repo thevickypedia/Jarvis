@@ -34,11 +34,18 @@ def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = N
                            f"I will wake you up at {hour}:{minute} {am_pm}.")
     elif 'timer' in phrase and timer:
         logger.info(f"Timer set at {hour}:{minute} {am_pm}")
-        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
-                           f"I have set a timer for {timer}.")
+        response = [f"{random.choice(conversation.acknowledgement)}! I have set a timer for {timer}.",
+                    f"{timer}! Counting down.."]
+        speaker.speak(text=random.choice(response))
     else:
-        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
-                           f"Alarm has been set for {hour}:{minute} {am_pm}.")
+        if datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= \
+                datetime.strptime(f"{hour}:{minute} {am_pm}", "%I:%M %p"):
+            add = " tomorrow."
+        else:
+            add = "."
+        response = [f"Alarm has been set for {hour}:{minute} {am_pm}{add}",
+                    f"Your alarm is set for {hour}:{minute} {am_pm}{add}"]
+        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! {random.choice(response)}")
 
 
 def set_alarm(phrase: str) -> None:
@@ -88,18 +95,23 @@ def set_alarm(phrase: str) -> None:
                 set_alarm(converted)
 
 
-def kill_alarm() -> None:
-    """Removes lock file to stop the alarm which rings only when the certain lock file is present."""
+def kill_alarm(phrase: str) -> None:
+    """Removes lock file to stop the alarm which rings only when the certain lock file is present.
+
+    Args:
+        phrase: Takes the voice recognized statement as argument and extracts time from it.
+    """
+    word = 'timer' if 'timer' in phrase else 'alarm'
     alarm_state = support.lock_files(alarm_files=True)
     if not alarm_state:
-        speaker.speak(text=f"You have no alarms set {env.title}!")
+        speaker.speak(text=f"You have no {word}s set {env.title}!")
     elif len(alarm_state) == 1:
         hour, minute, am_pm = alarm_state[0][0:2], alarm_state[0][3:5], alarm_state[0][6:8]
         os.remove(f"alarm/{alarm_state[0]}")
-        speaker.speak(text=f"Your alarm at {hour}:{minute} {am_pm} has been silenced {env.title}!")
+        speaker.speak(text=f"Your {word} at {hour}:{minute} {am_pm} has been silenced {env.title}!")
     else:
-        speaker.speak(text=f"Your alarms are at {', and '.join(alarm_state).replace('.lock', '')}. "
-                           "Please let me know which alarm you want to remove.", run=True)
+        speaker.speak(text=f"Your {word}s are at {', and '.join(alarm_state).replace('.lock', '')}. "
+                           f"Please let me know which {word} you want to remove.", run=True)
         if not (converted := listener.listen(timeout=3, phrase_limit=4)):
             return
         alarm_time = converted.split()[0]
@@ -114,9 +126,9 @@ def kill_alarm() -> None:
         am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
         if os.path.exists(f'alarm/{hour}_{minute}_{am_pm}.lock'):
             os.remove(f"alarm/{hour}_{minute}_{am_pm}.lock")
-            speaker.speak(text=f"Your alarm at {hour}:{minute} {am_pm} has been silenced {env.title}!")
+            speaker.speak(text=f"Your {word} at {hour}:{minute} {am_pm} has been silenced {env.title}!")
         else:
-            speaker.speak(text=f"I wasn't able to find an alarm at {hour}:{minute} {am_pm}. Try again.")
+            speaker.speak(text=f"I wasn't able to find your {word} at {hour}:{minute} {am_pm}. Try again.")
 
 
 def alarm_executor() -> NoReturn:

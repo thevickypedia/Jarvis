@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+6.1.6 (06/14/2022)
+------------------
+- Add host for speech synthesis as an optional env var
+- Fix speech synthesis assuming timestamp to be in 24-hour format
+- Add different response messages for alarms and timers
+- Add an option to get only sun rise and sunset timings
+- Fix return values for a few api calls
+
 6.1.5 (06/13/2022)
 ------------------
 - Remove status call on speech synthesis

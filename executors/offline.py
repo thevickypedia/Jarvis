@@ -107,7 +107,7 @@ def initiate_tunneling() -> NoReturn:
 
 
 def on_demand_offline_automation(task: str) -> Union[str, None]:
-    """Makes a ``POST`` call to offline-communicator running on ``localhost`` to execute a said task.
+    """Makes a ``POST`` call to offline-communicator to execute a said task.
 
     Args:
         task: Takes the command to be executed as an argument.

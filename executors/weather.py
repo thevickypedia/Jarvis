@@ -34,6 +34,7 @@ def weather(phrase: str = None) -> None:
     place = None
     if phrase:
         place = support.get_capitalized(phrase=phrase)
+        phrase = phrase.lower()
     sys.stdout.write('\rGetting your weather info')
     if place:
         desired_location = geo_locator.geocode(place)
@@ -69,8 +70,8 @@ def weather(phrase: str = None) -> None:
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
 
-    if phrase and any(match_word in phrase.lower() for match_word in ['tomorrow', 'day after', 'next week', 'tonight',
-                                                                      'afternoon', 'evening']):
+    if phrase and any(match_word in phrase for match_word in ['tomorrow', 'day after', 'next week', 'tonight',
+                                                              'afternoon', 'evening']):
         if 'tonight' in phrase:
             key = 0
             tell = 'tonight'
@@ -107,13 +108,30 @@ def weather(phrase: str = None) -> None:
             end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
         else:
             alerts, start_alert, end_alert = None, None, None
-        condition = response['daily'][key]['weather'][0]['description']
-        high = int(temperature.k2f(response['daily'][key]['temp']['max']))
-        low = int(temperature.k2f(response['daily'][1]['temp']['min']))
-        temp_f = int(temperature.k2f(response['daily'][key]['temp'][when]))
-        temp_feel_f = int(temperature.k2f(response['daily'][key]['feels_like'][when]))
-        sunrise = datetime.fromtimestamp(response['daily'][key]['sunrise']).strftime("%I:%M %p")
-        sunset = datetime.fromtimestamp(response['daily'][key]['sunset']).strftime("%I:%M %p")
+        during_key = response['daily'][key]
+        condition = during_key['weather'][0]['description']
+        high = int(temperature.k2f(during_key['temp']['max']))
+        low = int(temperature.k2f(during_key['temp']['min']))
+        temp_f = int(temperature.k2f(during_key['temp'][when]))
+        temp_feel_f = int(temperature.k2f(during_key['feels_like'][when]))
+        sunrise = datetime.fromtimestamp(during_key['sunrise']).strftime("%I:%M %p")
+        sunset = datetime.fromtimestamp(during_key['sunset']).strftime("%I:%M %p")
+        if 'sunrise' in phrase or 'sun rise' in phrase or ('sun' in phrase and 'rise' in phrase):
+            if datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= \
+                    datetime.strptime(sunrise, "%I:%M %p"):
+                tense = "will be"
+            else:
+                tense = "was"
+            speaker.speak(text=f"{tell} in {weather_location}, sunrise {tense} at {sunrise}.")
+            return
+        if 'sunset' in phrase or 'sun set' in phrase or ('sun' in phrase and 'set' in phrase):
+            if datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= \
+                    datetime.strptime(sunset, "%I:%M %p"):
+                tense = "will be"
+            else:
+                tense = "was"
+            speaker.speak(text=f"{tell} in {weather_location}, sunset {tense} at {sunset}")
+            return
         output = f"The weather in {weather_location} {tell} would be {temp_f}\N{DEGREE SIGN}F, with a high of " \
                  f"{high}, and a low of {low}. "
         if temp_feel_f != temp_f:
@@ -131,6 +149,22 @@ def weather(phrase: str = None) -> None:
     temp_feel_f = int(temperature.k2f(arg=response['current']['feels_like']))
     sunrise = datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p")
+    if 'sunrise' in phrase or 'sun rise' in phrase or ('sun' in phrase and 'rise' in phrase):
+        if datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= \
+                datetime.strptime(sunrise, "%I:%M %p"):
+            tense = "will be"
+        else:
+            tense = "was"
+        speaker.speak(text=f"In {weather_location}, sunrise {tense} at {sunrise}.")
+        return
+    if 'sunset' in phrase or 'sun set' in phrase or ('sun' in phrase and 'set' in phrase):
+        if datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= \
+                datetime.strptime(sunset, "%I:%M %p"):
+            tense = "will be"
+        else:
+            tense = "was"
+        speaker.speak(text=f"In {weather_location}, sunset {tense} at {sunset}")
+        return
     if shared.called['time_travel']:
         if 'rain' in condition or 'showers' in condition:
             feeling = 'rainy'
@@ -160,10 +194,6 @@ def weather(phrase: str = None) -> None:
         else:
             output = f'The weather in {city} is {feeling} {temp_f}\N{DEGREE SIGN}, and it currently feels like ' \
                      f'{temp_feel_f}\N{DEGREE SIGN}. {weather_suggest}'
-    elif place or not shared.called['report']:
-        output = f'The weather in {weather_location} is {temp_f}\N{DEGREE SIGN}F, with a high of {high}, and a low ' \
-                 f'of {low}. It currently feels like {temp_feel_f}\N{DEGREE SIGN}F, and the current condition is ' \
-                 f'{condition}.'
     else:
         output = f'The weather in {weather_location} is {temp_f}\N{DEGREE SIGN}F, with a high of {high}, and a low ' \
                  f'of {low}. It currently feels Like {temp_feel_f}\N{DEGREE SIGN}F, and the current condition is ' \

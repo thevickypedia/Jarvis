@@ -112,9 +112,6 @@ class TelegramBot:
     BASE_URL = 'https://api.telegram.org/bot'
     FILE_CONTENT_URL = f'https://api.telegram.org/file/bot{env.bot_token}/' + '{file_path}'
 
-    # TODO: Integrate feature to save document, photo and audio on server.
-    # SUPPORTED_TYPES = ['text', 'audio', 'document', 'photo', 'voice']
-
     def __init__(self):
         """Initiates a session."""
         self.session = requests.Session()

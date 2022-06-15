@@ -645,8 +645,13 @@ name is specified, allow every event.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.alarm.kill_alarm">
-<span class="sig-prename descclassname"><span class="pre">executors.alarm.</span></span><span class="sig-name descname"><span class="pre">kill_alarm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.alarm.kill_alarm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.alarm.</span></span><span class="sig-name descname"><span class="pre">kill_alarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.alarm.kill_alarm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes lock file to stop the alarm which rings only when the certain lock file is present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument and extracts time from it.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1608,7 +1613,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.offline.on_demand_offline_automation">
 <span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">on_demand_offline_automation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.offline.on_demand_offline_automation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes a <code class="docutils literal notranslate"><span class="pre">POST</span></code> call to offline-communicator running on <code class="docutils literal notranslate"><span class="pre">localhost</span></code> to execute a said task.</p>
+<dd><p>Makes a <code class="docutils literal notranslate"><span class="pre">POST</span></code> call to offline-communicator to execute a said task.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>task</strong> – Takes the command to be executed as an argument.</p>
@@ -2201,7 +2206,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.audio.speaker.speech_synthesizer">
 <span class="sig-prename descclassname"><span class="pre">modules.audio.speaker.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'high'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'en-us_northern_english_male-glow_tts'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.audio.speaker.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes a post call to docker container running on localhost for speech synthesis.</p>
+<dd><p>Makes a post call to docker container for speech synthesis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -3938,6 +3943,11 @@ Whites can have a value of None.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.sensitivity">
 <span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sensitivity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.speech_synthesis_host">
+<span class="sig-name descname"><span class="pre">speech_synthesis_host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.speech_synthesis_host" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

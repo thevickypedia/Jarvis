@@ -9,7 +9,7 @@ current_date = ["today's date", "current date", "what is the date", "what's the 
 
 current_time = ["current time", "time now", "time in", "what is the time", "what's the time", "whats the time"]
 
-weather = ["weather", "temperature"]
+weather = ["weather", "temperature", "sunrise", "sun rise", "sunset", "sun set"]
 
 system_info = ["configuration"]
 
@@ -55,9 +55,12 @@ directions = ["take me", "get directions"]
 
 set_alarm = ["alarm", "wake me", "timer"]
 
-kill_alarm = ["stop alarm", "stop my alarm", "stop another alarm",
+kill_alarm = ["stop alarm", "stop my alarm", "stop another alarm", "stop an alarm",
+              "stop timer", "stop my timer", "stop another timer", "stop an timer",
               "turn off my alarm", "turn my alarm off", "stop another alarm", "turn off alarm",
-              "delete alarm", "delete my alarm", "delete another alarm"]
+              "turn off my timer", "turn my timer off", "stop another timer", "turn off timer",
+              "delete alarm", "delete my alarm", "delete another alarm", "delete an alarm",
+              "delete timer", "delete my timer", "delete another timer", "delete an timer"]
 
 reminder = ["remind", "reminder"]
 

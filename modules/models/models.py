@@ -77,6 +77,7 @@ class EnvConfig(BaseSettings):
     bot_voice_timeout: Union[float, PositiveInt] = Field(default=3, le=5, ge=1, env='BOT_VOICE_TIMEOUT')
     legacy_keywords: list = Field(default=['jarvis'], env='LEGACY_KEYWORDS')
     speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
+    speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'), env='SPEECH_SYNTHESIS_HOST')
     speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
     save_audio_timeout: int = Field(default=0, env='SAVE_AUDIO_TIMEOUT')
     title: str = Field(default='sir', env='TITLE')
