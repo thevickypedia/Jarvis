@@ -17,7 +17,6 @@ from modules.utils import shared
 env = models.env
 fileio = models.FileIO()
 db = database.Database(database=fileio.base_db)
-db.create_table(table_name="ics", columns=["info", "date"])
 
 
 def meetings_writer() -> NoReturn:

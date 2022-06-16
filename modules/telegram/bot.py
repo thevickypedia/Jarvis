@@ -23,7 +23,6 @@ from modules.utils import support
 env = models.env
 fileio = models.FileIO()
 db = database.Database(database=fileio.base_db)
-db.create_table(table_name="stopper", columns=["flag", "caller"])
 
 importlib.reload(module=logging) if env.macos else None
 dictConfig(config.BotConfig().dict())
@@ -155,10 +154,7 @@ class TelegramBot:
             Response:
             Response class.
         """
-        if files:
-            response = self.session.post(url=url, data=payload, files=files, timeout=(5, 60))
-        else:
-            response = self.session.post(url=url, data=payload, timeout=(5, 60))
+        response = self.session.post(url=url, data=payload, files=files, timeout=(5, 60))
         if not response.ok:
             logger.error(response.json())
         return response

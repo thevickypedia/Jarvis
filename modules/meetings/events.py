@@ -16,7 +16,6 @@ from modules.utils import shared
 env = models.env
 fileio = models.FileIO()
 db = database.Database(database=fileio.base_db)
-db.create_table(table_name=env.event_app, columns=["info", "date"])
 
 
 def events_writer() -> NoReturn:

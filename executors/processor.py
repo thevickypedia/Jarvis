@@ -3,6 +3,7 @@ import warnings
 from multiprocessing import Process
 from typing import Dict, NoReturn
 
+import psutil
 from playsound import playsound
 
 from api.server import trigger_api
@@ -11,12 +12,14 @@ from executors.logger import logger
 from executors.offline import automator, initiate_tunneling
 from executors.telegram import handler
 from modules.audio import speech_synthesis
+from modules.database import database
 from modules.models import models
 from modules.utils import shared
 
 env = models.env
 fileio = models.FileIO()
 indicators = models.Indicators()
+db = database.Database(database=fileio.base_db)
 docker_container = speech_synthesis.SpeechSynthesizer()
 
 
@@ -47,8 +50,30 @@ def start_processes() -> Dict[str, Process]:
     return processes
 
 
+def stop_child_processes() -> NoReturn:
+    """Stops sub processes (for meetings and events) triggered by child processes."""
+    with db.connection:
+        cursor_ = db.connection.cursor()
+        children = cursor_.execute("SELECT meetings, events FROM children").fetchone()
+    for pid in children:
+        if not pid:
+            continue
+        try:
+            proc = psutil.Process(pid)
+        except psutil.NoSuchProcess as error:
+            logger.error(error)
+            continue
+        if proc.is_running():
+            logger.info(f"Sending [SIGTERM] to child process with PID: {pid}")
+            proc.terminate()
+        if proc.is_running():
+            logger.info(f"Sending [SIGKILL] to child process with PID: {pid}")
+            proc.kill()
+
+
 def stop_processes() -> NoReturn:
     """Stops all background processes initiated during startup and removes database source file."""
+    stop_child_processes()
     for func, process in shared.processes.items():
         if process.is_alive():
             logger.info(f"Sending [SIGTERM] to {func} with PID: {process.pid}")

@@ -9,7 +9,6 @@ greeting = False
 called_by_offline = False
 called_by_automator = False
 
-active_vpn = None
 text_spoken = None
 offline_caller = None
 tv = None

@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+6.1.7 (06/16/2022)
+------------------
+- Stop `subprocess` created by child processes when stopped
+- Remove redundancy when making requests in bot.py
+- Move all table creation to modules.py
+- Add exception handler for invalid ticker symbol in report_gatherer.py
+- Move vpn state check to database instead of shared variable
+- Create a test database class in database.py
+
 6.1.6 (06/14/2022)
 ------------------
 - Add host for speech synthesis as an optional env var
@@ -19,7 +28,7 @@ Change Log
 - Stop logging speaker text in two places
 - Fix port number arg in docker command
 
-6.1.4 (06/11/2022)
+6.1.4 (06/12/2022)
 ------------------
 - Close `audio_stream` before opening `Microphone`
 - Support `Jarvis_API` even further

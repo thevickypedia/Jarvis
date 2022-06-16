@@ -13,12 +13,14 @@ from executors.automation import auto_helper
 from executors.conditions import conditions
 from executors.logger import logger
 from executors.remind import reminder_executor
+from modules.database import database
 from modules.meetings import events, icalendar
 from modules.models import models
 from modules.utils import shared, support
 
 env = models.env
 fileio = models.FileIO()
+db = database.Database(database=fileio.base_db)
 
 
 def automator() -> NoReturn:
@@ -46,8 +48,13 @@ def automator() -> NoReturn:
 
         if start_events + env.sync_events <= time.time() or dry_run:
             start_events = time.time()
+            event_process = Process(target=events.events_writer)
             logger.info(f"Getting calendar events from {env.event_app}") if dry_run else None
-            Process(target=events.events_writer).start()
+            event_process.start()
+            with db.connection:
+                cursor = db.connection.cursor()
+                cursor.execute("INSERT INTO children (events) VALUES (?);", (event_process.pid,))
+                db.connection.commit()
 
         if start_meetings + env.sync_meetings <= time.time() or dry_run:
             if dry_run and env.ics_url:
@@ -59,8 +66,13 @@ def automator() -> NoReturn:
                     logger.error(error)
                     env.sync_meetings = 99_999_999  # NEVER RUN, since env vars are loaded only once during start up
             start_meetings = time.time()
+            meeting_process = Process(target=icalendar.meetings_writer)
             logger.info("Getting calendar schedule from ICS.") if dry_run else None
-            Process(target=icalendar.meetings_writer).start()
+            meeting_process.start()
+            with db.connection:
+                cursor = db.connection.cursor()
+                cursor.execute("INSERT INTO children (meetings) VALUES (?);", (meeting_process.pid,))
+                db.connection.commit()
 
         if alarm_state := support.lock_files(alarm_files=True):
             for each_alarm in alarm_state:

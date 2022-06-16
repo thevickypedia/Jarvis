@@ -1864,6 +1864,12 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="executors.processor.stop_child_processes">
+<span class="sig-prename descclassname"><span class="pre">executors.processor.</span></span><span class="sig-name descname"><span class="pre">stop_child_processes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.processor.stop_child_processes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops sub processes (for meetings and events) triggered by child processes.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="executors.processor.stop_processes">
 <span class="sig-prename descclassname"><span class="pre">executors.processor.</span></span><span class="sig-name descname"><span class="pre">stop_processes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.processor.stop_processes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stops all background processes initiated during startup and removes database source file.</p>
@@ -2123,10 +2129,10 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.vpn_server.vpn_server_switch">
 <span class="sig-prename descclassname"><span class="pre">executors.vpn_server.</span></span><span class="sig-name descname"><span class="pre">vpn_server_switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.vpn_server.vpn_server_switch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Automator to <code class="docutils literal notranslate"><span class="pre">START</span></code> or <code class="docutils literal notranslate"><span class="pre">STOP</span></code> the VPN portal.</p>
+<dd><p>Automator to <code class="docutils literal notranslate"><span class="pre">create</span></code> or <code class="docutils literal notranslate"><span class="pre">destroy</span></code> a VPN server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>operation</strong> – Takes <code class="docutils literal notranslate"><span class="pre">START</span></code> or <code class="docutils literal notranslate"><span class="pre">STOP</span></code> as an argument.</p>
+<dd class="field-odd"><p><strong>operation</strong> – Takes <code class="docutils literal notranslate"><span class="pre">enabled</span></code> or <code class="docutils literal notranslate"><span class="pre">disabled</span></code> as an argument.</p>
 </dd>
 </dl>
 <div class="admonition seealso">

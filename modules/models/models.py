@@ -15,6 +15,7 @@ from typing import Union
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       FilePath, HttpUrl, PositiveInt)
 
+from modules.database import database
 from modules.exceptions import InvalidEnvVars, UnsupportedOS
 
 # Used by docs
@@ -164,3 +165,13 @@ class Indicators(BaseModel):
     start: FilePath = os.path.join('indicators', 'start.mp3')
     tv_connect: FilePath = os.path.join('indicators', 'tv_connect.mp3')
     tv_scan: FilePath = os.path.join('indicators', 'tv_scan.mp3')
+
+
+# Create all necessary DB tables during startup
+db = database.Database(database=FileIO().base_db)
+db.create_table(table_name=env.event_app, columns=["info", "date"])
+db.create_table(table_name="ics", columns=["info", "date"])
+db.create_table(table_name="stopper", columns=["flag", "caller"])
+db.create_table(table_name="restart", columns=["flag", "caller"])
+db.create_table(table_name="children", columns=["meetings", "events"])
+db.create_table(table_name="vpn", columns=["state"])
