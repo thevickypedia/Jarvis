@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+6.1.8 (06/20/2022)
+------------------
+- Add a `retry handler` for database functions during multiprocessing
+- Check python version in install.sh
+- Check lock status before trying to remote start the car
+- Set timeout for database connection
+- Bug fixes on speaker.py and weather.py
+
 6.1.7 (06/16/2022)
 ------------------
 - Stop `subprocess` created by child processes when stopped

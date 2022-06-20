@@ -52,7 +52,8 @@ def speech_synthesizer(text: str, timeout: Union[int, float] = env.speech_synthe
             logger.info(f"Converted {t_12} -> {t_24}")
             text = text.replace(t_12, t_24)
     if 'IP' in text.split():
-        text = text.replace(' IP ', ' I.P. ')
+        ip_new = '-'.join([i for i in text.split(' ')[-1]]).replace('-.-', ', ')  # 192.168.1.1 -> 1-9-2, 1-6-8, 1, 1
+        text = text.replace(text.split(' ')[-1], ip_new).replace(' IP ', ' I.P. ')
     try:
         response = requests.post(url=f"http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/tts",
                                  headers={"Content-Type": "text/plain"},

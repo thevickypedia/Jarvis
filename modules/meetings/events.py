@@ -1,5 +1,6 @@
 import os
 import re
+import sqlite3
 import subprocess
 from datetime import datetime
 from multiprocessing import Process
@@ -11,6 +12,7 @@ from executors.logger import logger
 from modules.audio import speaker
 from modules.database import database
 from modules.models import models
+from modules.retry import retry
 from modules.utils import shared
 
 env = models.env
@@ -18,6 +20,7 @@ fileio = models.FileIO()
 db = database.Database(database=fileio.base_db)
 
 
+@retry.retry(attempts=3, interval=2, exclude_exc=sqlite3.OperationalError)
 def events_writer() -> NoReturn:
     """Gets return value from ``events_gatherer`` function and writes it to events table in the database.
 
@@ -29,6 +32,7 @@ def events_writer() -> NoReturn:
         cursor = db.connection.cursor()
         cursor.execute(query)
         cursor.connection.commit()
+    return
 
 
 def event_app_launcher() -> NoReturn:

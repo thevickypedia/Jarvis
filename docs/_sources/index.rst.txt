@@ -448,6 +448,13 @@ Offline
    :members:
    :undoc-members:
 
+Retry Handler
+=============
+
+.. automodule:: modules.retry.retry
+   :members:
+   :undoc-members:
+
 Restart
 =======
 

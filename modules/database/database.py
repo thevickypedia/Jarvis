@@ -15,15 +15,16 @@ class Database:
 
     """
 
-    def __init__(self, database: Union[FilePath, str]):
+    def __init__(self, database: Union[FilePath, str], timeout: int = 10):
         """Instantiates the class ``Database`` to create a connection and a cursor.
 
         Args:
             database: Name of the database file.
+            timeout: Timeout for the connection to database.
         """
         if not database.endswith('.db'):
             database = database + '.db'
-        self.connection = sqlite3.connect(database=database, check_same_thread=False)
+        self.connection = sqlite3.connect(database=database, check_same_thread=False, timeout=timeout)
 
     def create_table(self, table_name: str, columns: list[str]) -> NoReturn:
         """Creates the table with the required columns.

@@ -1,4 +1,19 @@
-#!/bin/sh
+#!/bin/bash
+
+OSName=$(UNAME)
+ver=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
+echo_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')")
+
+echo -e '\n***************************************************************************************************'
+echo "                               $OSName running python $echo_ver"
+echo -e '***************************************************************************************************\n'
+
+if [ "$ver" -ge 38 ] && [ "$ver" -le 311 ]; then
+  pyaudio="PyAudio-0.2.11-cp$ver-cp$ver-win_amd64.whl"
+else
+  echo "Python version $echo_ver is unsupported for Jarvis. Please use any python version between 3.8.* and 3.11.*"
+  exit
+fi
 
 os_independent_packages() {
     # Upgrades pip module
@@ -9,10 +24,10 @@ os_independent_packages() {
 
     # Get to the current directory and install the module specific packages from requirements.txt
     current_dir="$(dirname "$(realpath "$0")")"
-    python -m pip install --no-cache-dir -r $current_dir/requirements.txt
+    python -m pip install --no-cache-dir -r "$current_dir"/requirements.txt
 }
 
-function download_from_ext_sources(){
+download_from_ext_sources() {
     # Downloads SetVol.exe to control volume on Windows
     curl https://vigneshrao.com/Jarvis/SetVol.exe --output SetVol.exe --silent
 
@@ -20,8 +35,8 @@ function download_from_ext_sources(){
     curl -L https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-lgpl.zip --output ffmpeg.zip --silent && unzip ffmpeg.zip && rm -rf ffmpeg.zip && mv ffmpeg-master-latest-win64-lgpl ffmpeg
 
     # Downloads PyAudio's wheel file to install it on Windows
-    curl https://vigneshrao.com/Jarvis/PyAudio-0.2.11-cp310-cp310-win_amd64.whl --output PyAudio-0.2.11-cp310-cp310-win_amd64.whl --silent
-    pip install PyAudio-0.2.11-cp310-cp310-win_amd64.whl
+    curl https://vigneshrao.com/Jarvis/"$pyaudio" --output "$pyaudio" --silent
+    pip install "$pyaudio"
 
     if [[ "$1" == "MOVE" ]]
       then
@@ -30,16 +45,15 @@ function download_from_ext_sources(){
     fi
 }
 
-OSName=$(UNAME)
-
 if [[ "$OSName" == "Darwin" ]]; then
     # Checks current version and throws a warning if older han 10.14
     base_ver="10.14"
-    ver=$(sw_vers | grep ProductVersion | cut -d':' -f2 | tr -d ' ')
-    if awk "BEGIN {exit !($base_ver > $ver)}"; then
+    os_ver=$(sw_vers | grep ProductVersion | cut -d':' -f2 | tr -d ' ')
+    if awk "BEGIN {exit !($base_ver > $os_ver)}"; then
         echo -e '\n***************************************************************************************************'
-        echo " ** You're running MacOS ${ver#"${ver%%[![:space:]]*}"}. Wake word library is not supported in MacOS older than ${base_ver}. **"
+        echo " ** You're running MacOS ${os_ver#"${os_ver%%[![:space:]]*}"}. Wake word library is not supported in MacOS older than ${base_ver}. **"
         echo "** This means the audio listened, is converted into text and then condition checked to initiate. **"
+        echo "                 ** This might delay processing speech -> text. **                 "
         echo -e '***************************************************************************************************\n'
         sleep 3
     fi
@@ -93,7 +107,7 @@ elif [[ "$OSName" == MSYS* ]]; then
     echo ""
     echo "*****************************************************************************************************************"
     echo "*****************************************************************************************************************"
-    read -p "Are you sure you want to continue? <Y/N> " prompt
+    read -r -p "Are you sure you want to continue? <Y/N> " prompt
     if ! [[ $prompt =~ [yY](es)* ]]; then
         echo ""
         echo "***************************************************************************************************************"
@@ -102,7 +116,7 @@ elif [[ "$OSName" == MSYS* ]]; then
         exit
     fi
 
-    current_working_dir=`pwd`
+    current_working_dir=$(pwd)
     if [[ $current_working_dir == *lib ]]
     then
       download_from_ext_sources "MOVE"

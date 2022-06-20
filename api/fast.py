@@ -234,7 +234,7 @@ async def offline_communicator_api(input_data: GetData) -> NoReturn:
     if not any(word in command_lower for word in offline_compatible):
         logger.warning(f"'{command}' is not a part of offline compatible request.")
         raise APIResponse(status_code=422,
-                          detail=f'"{command}" is not a part of offline communicator compatible request.\n\n'
+                          detail=f'"{command}" is not a part of off-line communicator compatible request.\n\n'
                                  'Please try an instruction that does not require an user interaction.')
 
     if ' after ' in command_lower:

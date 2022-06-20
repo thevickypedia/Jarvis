@@ -164,6 +164,14 @@ def vehicle(operation: str, temp: int = None) -> Union[str, dict, None]:
         elif operation == "UNLOCK":
             response = handler.unlock(pin=env.car_pin)
         elif operation == "START":
+            lock_status = {each_dict['key']: each_dict['value'] for each_dict in
+                           [key for key in handler.get_status().get('vehicleStatus').get('coreStatus')
+                            if key.get('key') in ["DOOR_IS_ALL_DOORS_LOCKED", "DOOR_BOOT_LOCK_STATUS"]]}
+            if lock_status.get('DOOR_IS_ALL_DOORS_LOCKED', 'FALSE') != 'TRUE' or \
+                    lock_status.get('DOOR_BOOT_LOCK_STATUS', 'UNLOCKED') != 'LOCKED':
+                logger.warning("Car is unlocked when tried to remote start!")
+                if lock_response := handler.lock(pin=env.car_pin).get("failureDescription"):
+                    logger.error(lock_response)
             response = handler.remote_engine_start(pin=env.car_pin, target_temperature=temp)
         elif operation == "STOP":
             response = handler.remote_engine_stop(pin=env.car_pin)

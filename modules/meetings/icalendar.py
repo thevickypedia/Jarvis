@@ -1,3 +1,4 @@
+import sqlite3
 import time
 from datetime import datetime
 from multiprocessing import Process
@@ -12,6 +13,7 @@ from executors.logger import logger
 from modules.audio import speaker
 from modules.database import database
 from modules.models import models
+from modules.retry import retry
 from modules.utils import shared
 
 env = models.env
@@ -19,6 +21,7 @@ fileio = models.FileIO()
 db = database.Database(database=fileio.base_db)
 
 
+@retry.retry(attempts=3, interval=2, exclude_exc=sqlite3.OperationalError)
 def meetings_writer() -> NoReturn:
     """Gets return value from ``meetings()`` and writes it to a file.
 
@@ -29,6 +32,7 @@ def meetings_writer() -> NoReturn:
         cursor = db.connection.cursor()
         cursor.execute(f"INSERT OR REPLACE INTO ics (info, date) VALUES {(info, datetime.now().strftime('%Y_%m_%d'))}")
         cursor.connection.commit()
+    return
 
 
 def meetings_gatherer() -> str:
