@@ -37,6 +37,7 @@ download_from_ext_sources() {
     # Downloads PyAudio's wheel file to install it on Windows
     curl https://vigneshrao.com/Jarvis/"$pyaudio" --output "$pyaudio" --silent
     pip install "$pyaudio"
+    rm "$pyaudio"
 
     if [[ "$1" == "MOVE" ]]
       then

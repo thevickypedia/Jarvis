@@ -7,8 +7,8 @@ from inflect import engine
 from executors.logger import logger
 
 
-def retry(attempts: int = 3, interval: Union[int, float] = 0, exclude_exc=None) -> \
-        Optional[Union[Callable, Any, NoReturn]]:
+def retry(attempts: int = 3, interval: Union[int, float] = 0, exclude_exc=None) -> Optional[Union[Callable, Any,
+                                                                                                  NoReturn]]:
     """Wrapper for any function that has to be retried upon failure.
 
     Args:
@@ -51,14 +51,14 @@ def retry(attempts: int = 3, interval: Union[int, float] = 0, exclude_exc=None) 
             for i in range(1, attempts + 1):
                 try:
                     return_val = func(*args, **kwargs)
-                    logger.info(msg=f"Succeeded in {engine().ordinal(num=i)} attempt.")
+                    logger.info(msg=f"{func.__name__} succeeded in {engine().ordinal(num=i)} attempt.")
                     return return_val
                 except exclude_exc or KeyboardInterrupt as excl_error:
                     logger.error(msg=excl_error)
                 except Exception as error:
                     return_exc = error
                 time.sleep(interval)
-            logger.error(msg=f"Exceeded retry count::{attempts}")
+            logger.error(msg=f"{func.__name__} exceeded retry count::{attempts}")
             if return_exc:
                 raise return_exc
 

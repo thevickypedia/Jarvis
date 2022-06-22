@@ -12,6 +12,7 @@ import requests
 
 from executors.commander import timed_delay
 from executors.offline import offline_communicator
+from modules.audio import tts_stt
 from modules.conditions import keywords
 from modules.database import database
 from modules.exceptions import BotInUse
@@ -347,7 +348,7 @@ class TelegramBot:
             if converted:
                 os.remove(filename)
                 filename = filename.replace(".ogg", ".flac")
-                audio_to_text = audio_handler.audio_to_text(filename=filename)
+                audio_to_text = tts_stt.audio_to_text(filename=filename)
                 if audio_to_text:
                     payload['text'] = audio_to_text
                     self.jarvis(payload=payload)
@@ -359,14 +360,10 @@ class TelegramBot:
             logger.error(payload)
         # Catches both unconverted source ogg and unconverted audio to text
         title = USER_TITLE.get(payload['from']['username'], env.title)
-        if filename := audio_handler.text_to_audio(text=f"I'm sorry {title}! I was unable to process your "
-                                                        "voice command. Please try again!"):
-            self.send_audio(filename=filename, chat_id=payload['from']['id'])
-            os.remove(filename)
-        else:
-            self.reply_to(payload=payload,
-                          response=f"I'm sorry {title}! I was neither able to process your voice command, "
-                                   "nor respond to you with one. Please try using text commands.")
+        filename = tts_stt.text_to_audio(text=f"I'm sorry {title}! I was unable to process your voice command. "
+                                              "Please try again!")
+        self.send_audio(filename=filename, chat_id=payload['from']['id'])
+        os.remove(filename)
 
     def process_text(self, payload: dict) -> None:
         """Processes the payload received after checking for authentication.
@@ -457,10 +454,10 @@ class TelegramBot:
             payload: Payload received, to extract information from.
         """
         if payload.get('voice'):
-            if filename := audio_handler.text_to_audio(text=response):
-                self.send_audio(chat_id=payload['from']['id'], filename=filename)
-                os.remove(filename)
-                return
+            filename = tts_stt.text_to_audio(text=response)
+            self.send_audio(chat_id=payload['from']['id'], filename=filename)
+            os.remove(filename)
+            return
         self.send_message(chat_id=payload['from']['id'], response=response)
 
 

@@ -9,6 +9,8 @@ import random
 import sys
 from typing import Union
 
+from pyttsx3.engine import Engine
+
 from modules.audio import listener, speaker
 from modules.conditions import conversation, keywords
 from modules.models import models
@@ -16,7 +18,7 @@ from modules.models import models
 env = models.env
 
 
-def voice_default(stdout: bool = True) -> None:
+def voice_default(stdout: bool = True) -> Engine:
     """Sets voice module to default.
 
     Args:
@@ -28,7 +30,8 @@ def voice_default(stdout: bool = True) -> None:
         if voice_id.name == voice_model or voice_model in voice_id.name:
             sys.stdout.write(f"\rVoice module has been configured to {ind_d}::{voice_id.name}") if stdout else None
             speaker.audio_driver.setProperty("voice", voices[ind_d].id)  # noqa
-            return
+            break
+    return speaker.audio_driver
 
 
 def voice_changer(phrase: str = None) -> None:

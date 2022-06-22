@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+6.1.9 (06/21/2022)
+------------------
+- Have an option to process audio in native voice
+- Move all text to speech and speech to text into a single module
+- Fix text to audio conversion
+- Remove pyaudio wheel file once installed
+
 6.1.8 (06/20/2022)
 ------------------
 - Add a `retry handler` for database functions during multiprocessing

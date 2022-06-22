@@ -14,6 +14,7 @@ class GetData(BaseModel):
     """
 
     command: str
+    native_audio: bool = False
 
 
 class GetText(BaseModel):

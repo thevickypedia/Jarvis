@@ -324,6 +324,12 @@ Audio
 
 ====
 
+.. automodule:: modules.audio.tts_stt
+   :members:
+   :undoc-members:
+
+====
+
 .. automodule:: modules.audio.voices
    :members:
    :undoc-members:

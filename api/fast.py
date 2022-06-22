@@ -9,7 +9,7 @@ from datetime import datetime
 from logging.config import dictConfig
 from multiprocessing import Process
 from threading import Thread
-from typing import Any, NoReturn
+from typing import Any, NoReturn, Union
 
 from fastapi import Depends, FastAPI
 from fastapi import status as http_status
@@ -21,7 +21,7 @@ from api.models import GetData, GetText, InvestmentFilter
 from api.report_gatherer import Investment
 from executors.commander import timed_delay
 from executors.offline import offline_communicator
-from modules.audio import speaker
+from modules.audio import speaker, tts_stt
 from modules.conditions import conversation, keywords
 from modules.exceptions import APIResponse
 from modules.models import config, models
@@ -203,7 +203,7 @@ async def health() -> NoReturn:
 
 
 @app.post(path="/offline-communicator", dependencies=OFFLINE_PROTECTOR)
-async def offline_communicator_api(input_data: GetData) -> NoReturn:
+async def offline_communicator_api(input_data: GetData) -> Union[FileResponse, NoReturn]:
     """Offline Communicator API endpoint for Jarvis.
 
     Args:
@@ -256,6 +256,12 @@ async def offline_communicator_api(input_data: GetData) -> NoReturn:
         raise APIResponse(status_code=200, detail=also_response)
     response = offline_communicator(command=command)
     logger.info(f"Response: {response}")
+    if input_data.native_audio:
+        native_audio_wav = tts_stt.text_to_audio(text=response)
+        logger.info(f"Storing response as {native_audio_wav} in native audio.")
+        Thread(target=remove_file, kwargs={'delay': 2, 'filepath': native_audio_wav}).start()
+        return FileResponse(path=native_audio_wav, media_type='application/octet-stream',
+                            filename="synthesized.wav")
     raise APIResponse(status_code=200, detail=response)
 
 
