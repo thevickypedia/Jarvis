@@ -1,19 +1,21 @@
 import functools
 import time
-from typing import Any, Callable, NoReturn, Optional, Union
+import warnings
+from typing import Any, Callable, NoReturn, Union
 
 from inflect import engine
 
 from executors.logger import logger
 
 
-def retry(attempts: int = 3, interval: Union[int, float] = 0, exclude_exc=None) -> Optional[Union[Callable, Any,
-                                                                                                  NoReturn]]:
+def retry(attempts: int = 3, interval: Union[int, float] = 0, warn: bool = False, exclude_exc=None) -> \
+        Union[Callable, Any, NoReturn, None]:
     """Wrapper for any function that has to be retried upon failure.
 
     Args:
         attempts: Number of retry attempts.
         interval: Seconds to wait between each iteration.
+        warn: Takes a boolean flag whether to throw a warning message instead of raising final exception.
         exclude_exc: Exception that has to be logged and ignored.
 
     Returns:
@@ -51,7 +53,8 @@ def retry(attempts: int = 3, interval: Union[int, float] = 0, exclude_exc=None) 
             for i in range(1, attempts + 1):
                 try:
                     return_val = func(*args, **kwargs)
-                    logger.info(msg=f"{func.__name__} succeeded in {engine().ordinal(num=i)} attempt.")
+                    # Log messages only when the function did not return during the first attempt
+                    logger.info(msg=f"{func.__name__} returned at {engine().ordinal(num=i)} attempt") if i > 1 else None
                     return return_val
                 except exclude_exc or KeyboardInterrupt as excl_error:
                     logger.error(msg=excl_error)
@@ -59,7 +62,11 @@ def retry(attempts: int = 3, interval: Union[int, float] = 0, exclude_exc=None) 
                     return_exc = error
                 time.sleep(interval)
             logger.error(msg=f"{func.__name__} exceeded retry count::{attempts}")
-            if return_exc:
+            if return_exc and warn:
+                warnings.warn(
+                    f"{type(return_exc).__name__}: {return_exc}"
+                )
+            elif return_exc:
                 raise return_exc
 
         return wrapper

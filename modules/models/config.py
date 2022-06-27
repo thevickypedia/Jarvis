@@ -1,4 +1,4 @@
-import os.path
+import os
 from datetime import datetime
 
 from pydantic import BaseModel

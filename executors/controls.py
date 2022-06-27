@@ -145,7 +145,7 @@ def restart_control(phrase: str = 'PlaceHolder', quiet: bool = False) -> NoRetur
     else:
         caller = sys._getframe(1).f_code.co_name  # noqa
         logger.info(f'Called by {caller}')
-        if quiet:  # restarted due internal errors or git update
+        if quiet or shared.called_by_offline:  # restarted due internal errors or git update or automator
             with db.connection:
                 cursor = db.connection.cursor()
                 cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, caller))

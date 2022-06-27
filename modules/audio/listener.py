@@ -12,6 +12,7 @@ from speech_recognition import (Microphone, Recognizer, RequestError,
                                 UnknownValueError, WaitTimeoutError)
 
 from executors.logger import logger
+from modules.exceptions import ConnectionError
 from modules.models import models
 from modules.utils import support
 
@@ -45,5 +46,5 @@ def listen(timeout: Union[int, float], phrase_limit: Union[int, float], sound: b
             return recognized
         except (UnknownValueError, RequestError, WaitTimeoutError):
             return
-        except (ConnectionError, TimeoutError) as error:
+        except ConnectionError as error:
             logger.error(error)

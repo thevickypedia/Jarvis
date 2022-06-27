@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+6.2.0 (06/26/2022)
+------------------
+- Add ability to perform scheduled restart with `automation.yaml`
+- Group all network errors into one class
+- Delete entries from DB when restarted or stopped
+- Log messages in retry module only if func failed in 1st attempt
+- Fix spacing bug in reminder executor
+- Set auth to empty string for offline communicator
+- Set retry module to raise warning instead or exception
+
 6.1.9 (06/21/2022)
 ------------------
 - Have an option to process audio in native voice

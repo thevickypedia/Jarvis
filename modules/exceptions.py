@@ -7,6 +7,7 @@
 
 import socket
 
+import requests
 from fastapi import HTTPException
 
 
@@ -90,9 +91,10 @@ class TVError(ConnectionResetError):
     """
 
 
-class NoInternetError(ConnectionError):
-    """Custom ``ConnectionError`` to indicate a connection issue.
+# noinspection PyShadowingBuiltins
+class ConnectionError(ConnectionError, requests.exceptions.RequestException, requests.exceptions.BaseHTTPError):
+    """Custom ``ConnectionError`` to indicate any kind of connection issue.
 
-    >>> NoInternetError
+    >>> ConnectionError
 
     """

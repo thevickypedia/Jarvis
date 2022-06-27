@@ -13,9 +13,12 @@ from executors.automation import auto_helper
 from executors.conditions import conditions
 from executors.logger import logger
 from executors.remind import reminder_executor
+from modules.conditions import keywords
 from modules.database import database
+from modules.exceptions import ConnectionError
 from modules.meetings import events, icalendar
 from modules.models import models
+from modules.offline import compatibles
 from modules.utils import shared, support
 
 env = models.env
@@ -38,12 +41,13 @@ def automator() -> NoReturn:
 
         - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't repeat execution within a minute.
     """
+    offline_list = compatibles.offline_compatible() + keywords.restart_control
     start_events = start_meetings = time.time()
     events.event_app_launcher()
     dry_run = True
     while True:
         if os.path.isfile(fileio.automation):
-            if exec_task := auto_helper():
+            if exec_task := auto_helper(offline_list=offline_list):
                 offline_communicator(command=exec_task)
 
         if start_events + env.sync_events <= time.time() or dry_run:
@@ -61,8 +65,7 @@ def automator() -> NoReturn:
                 try:
                     if requests.get(url=env.ics_url).status_code == 503:
                         env.sync_meetings = 21_600  # Set to 6 hours if unable to connect to the meetings URL
-                except (requests.exceptions.ConnectionError,
-                        requests.exceptions.HTTPError, requests.exceptions.Timeout) as error:
+                except ConnectionError as error:
                     logger.error(error)
                     env.sync_meetings = 99_999_999  # NEVER RUN, since env vars are loaded only once during start up
             start_meetings = time.time()
@@ -82,7 +85,7 @@ def automator() -> NoReturn:
         if reminder_state := support.lock_files(reminder_files=True):
             for each_reminder in reminder_state:
                 remind_time, remind_msg = each_reminder.split('|')
-                remind_msg = remind_msg.rstrip('.lock').replace('_', '')
+                remind_msg = remind_msg.rstrip('.lock').replace('_', ' ')
                 if remind_time == datetime.now().strftime("%I_%M_%p"):
                     Thread(target=reminder_executor, args=[remind_msg]).start()
                     os.remove(os.path.join("reminder", each_reminder))

@@ -1,5 +1,4 @@
 import os
-import warnings
 from multiprocessing import Process
 from typing import Dict, NoReturn
 
@@ -14,6 +13,7 @@ from executors.telegram import handler
 from modules.audio import speech_synthesis
 from modules.database import database
 from modules.models import models
+from modules.retry import retry
 from modules.utils import shared
 
 env = models.env
@@ -21,6 +21,19 @@ fileio = models.FileIO()
 indicators = models.Indicators()
 db = database.Database(database=fileio.base_db)
 docker_container = speech_synthesis.SpeechSynthesizer()
+
+
+@retry.retry(attempts=3, interval=2, warn=True)
+def delete_db() -> NoReturn:
+    """Delete base db if exists. Called upon restart or shut down."""
+    if os.path.isfile(fileio.base_db):
+        logger.info(f"Removing {fileio.base_db}")
+        os.remove(fileio.base_db)
+    if os.path.isfile(fileio.base_db):
+        raise FileExistsError(
+            f"{fileio.base_db} still exists!"
+        )
+    return
 
 
 def start_processes() -> Dict[str, Process]:
@@ -81,11 +94,4 @@ def stop_processes() -> NoReturn:
         if process.is_alive():
             logger.info(f"Sending [SIGKILL] to {func} with PID: {process.pid}")
             process.kill()
-    try:
-        if os.path.isfile(fileio.base_db):
-            logger.info(f"Removing {fileio.base_db}")
-            os.remove(fileio.base_db)
-    except PermissionError as error:
-        warnings.warn(
-            str(error)
-        )
+    delete_db()

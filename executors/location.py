@@ -28,7 +28,7 @@ from executors import controls
 from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
-from modules.exceptions import NoInternetError
+from modules.exceptions import ConnectionError
 from modules.models import models
 from modules.utils import shared, support
 
@@ -151,7 +151,7 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
         coordinates = get_coordinates_from_ip()
     except ConnectionError as error:
         logger.error(error)
-        raise NoInternetError
+        raise ConnectionError
 
     if location_info := get_location_from_coordinates(coordinates=coordinates):
         return *coordinates, location_info
@@ -211,7 +211,7 @@ def locate_device(target_device: AppleDevice) -> NoReturn:
     """
     try:
         ignore_lat, ignore_lon, location_info_ = location_services(device=target_device)
-    except NoInternetError:
+    except ConnectionError:
         speaker.speak(text="I was unable to connect to the internet. Please check your connection settings and retry.",
                       run=True)
         return

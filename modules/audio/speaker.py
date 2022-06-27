@@ -4,7 +4,7 @@
 >>> Speaker
 
 """
-import os.path
+import os
 import re
 import sys
 from datetime import datetime
@@ -18,6 +18,7 @@ from playsound import playsound
 
 from executors.logger import logger
 from modules.conditions import conversation, keywords
+from modules.exceptions import ConnectionError
 from modules.models import models
 from modules.utils import shared
 
@@ -65,8 +66,7 @@ def speech_synthesizer(text: str, timeout: Union[int, float] = env.speech_synthe
             return True
         logger.error(f"{response.status_code}::http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/tts")
         return False
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, UnicodeError) as error:
-        # Timeout exception covers both connection timeout and read timeout
+    except (ConnectionError, UnicodeError) as error:
         logger.error(error)
 
 

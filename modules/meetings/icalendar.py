@@ -12,6 +12,7 @@ from ics import Calendar
 from executors.logger import logger
 from modules.audio import speaker
 from modules.database import database
+from modules.exceptions import ConnectionError
 from modules.models import models
 from modules.retry import retry
 from modules.utils import shared
@@ -48,7 +49,7 @@ def meetings_gatherer() -> str:
         return f"I wasn't given a calendar URL to look up your meetings {env.title}!"
     try:
         response = requests.get(url=env.ics_url)
-    except (requests.ConnectionError, requests.exceptions.Timeout) as error:
+    except ConnectionError as error:
         logger.error(error)
         return f"I was unable to connect to the internet {env.title}! Please check your connection."
     if not response.ok:
@@ -57,7 +58,6 @@ def meetings_gatherer() -> str:
     calendar = Calendar(response.text)
     events = list(calendar.timeline.today())
     if not events:
-        logger.info("No meetings found!")
         return f"You don't have any meetings today {env.title}!"
     meeting_status, count = "", 0
     for index, event in enumerate(events):

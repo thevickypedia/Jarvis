@@ -418,6 +418,8 @@ def check_restart() -> list:
     with db.connection:
         cursor = db.connection.cursor()
         flag = cursor.execute("SELECT flag, caller FROM restart").fetchone()
+        cursor.execute("DELETE FROM restart WHERE flag=1")
+        db.connection.commit()
     return flag
 
 
@@ -431,6 +433,8 @@ def check_stop() -> list:
     with db.connection:
         cursor = db.connection.cursor()
         flag = cursor.execute("SELECT flag, caller FROM stopper").fetchone()
+        cursor.execute("DELETE FROM stopper WHERE flag=1")
+        db.connection.commit()
     return flag
 
 

@@ -9,11 +9,9 @@ import yaml
 from executors.logger import logger
 from modules.audio import speaker
 from modules.models import models
-from modules.offline import compatibles
 
 env = models.env
 fileio = models.FileIO()
-offline_list = compatibles.offline_compatible()
 
 
 def automation_handler(phrase: str) -> None:
@@ -51,8 +49,11 @@ def rewrite_automator(write_data: dict) -> None:
         yaml.dump(data=write_data, stream=file, indent=2, sort_keys=False)
 
 
-def auto_helper() -> Union[str, None]:
+def auto_helper(offline_list: list) -> Union[str, None]:
     """Runs in a thread to help the automator function in the main module.
+
+    Args:
+        offline_list: List of offline compatible keywords.
 
     Returns:
         str:

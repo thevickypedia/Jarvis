@@ -4,10 +4,8 @@ import time
 from logging.config import dictConfig
 from typing import NoReturn
 
-import requests
-
 from executors.controls import restart_control
-from modules.exceptions import BotInUse
+from modules.exceptions import BotInUse, ConnectionError
 from modules.models import config, models
 from modules.telegram.bot import TelegramBot
 
@@ -36,7 +34,7 @@ def handler() -> NoReturn:
         logger.error(error)
         logger.info("Restarting message poll to take over..")
         handler()
-    except (ConnectionError, requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError) as error:
+    except ConnectionError as error:
         logger.critical(error)
         FAILED_CONNECTIONS['calls'] += 1
         if FAILED_CONNECTIONS['calls'] > 3:

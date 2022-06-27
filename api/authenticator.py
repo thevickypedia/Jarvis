@@ -14,7 +14,7 @@ async def offline_has_access(token: HTTPBasicCredentials = Depends(security)) ->
     Args:
         token: Takes the authorization header token as an argument.
     """
-    auth = token.dict().get('credentials')
+    auth = token.dict().get('credentials', '')
     if auth.startswith('\\'):
         auth = bytes(auth, "utf-8").decode(encoding="unicode_escape")
     if auth == env.offline_pass:

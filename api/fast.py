@@ -11,7 +11,7 @@ from multiprocessing import Process
 from threading import Thread
 from typing import Any, NoReturn, Union
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Request
 from fastapi import status as http_status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
@@ -203,10 +203,11 @@ async def health() -> NoReturn:
 
 
 @app.post(path="/offline-communicator", dependencies=OFFLINE_PROTECTOR)
-async def offline_communicator_api(input_data: GetData) -> Union[FileResponse, NoReturn]:
+async def offline_communicator_api(request: Request, input_data: GetData) -> Union[FileResponse, NoReturn]:
     """Offline Communicator API endpoint for Jarvis.
 
     Args:
+        - request: Takes the ``Request`` class as an argument.
         - input_data: Takes the following arguments as ``GetData`` class instead of a QueryString.
 
             - command: The task which Jarvis has to do.
@@ -219,6 +220,8 @@ async def offline_communicator_api(input_data: GetData) -> Union[FileResponse, N
     See Also:
         - Keeps waiting for the record ``response`` in the database table ``offline``
     """
+    logger.info(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
+                f"{request.headers.get('user-agent')}")
     if not (command := input_data.command.strip()):
         raise APIResponse(status_code=204, detail='Empty requests cannot be processed.')
 

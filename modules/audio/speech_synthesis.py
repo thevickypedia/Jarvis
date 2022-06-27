@@ -1,12 +1,13 @@
-import os.path
+import os
 import pathlib
 import subprocess
 from typing import NoReturn
 
-import requests.exceptions
+import requests
 
 from executors.logger import logger
 from executors.port_handler import is_port_in_use, kill_port_pid
+from modules.exceptions import ConnectionError
 from modules.models import models
 
 fileio = models.FileIO()
@@ -28,8 +29,8 @@ def check_existing() -> bool:
                 logger.info(f'http://{env.speech_synthesis_host}:{env.speech_synthesis_port} is accessible.')
                 return True
             return False
-        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-            logger.error('Unable to connect to existing container.')
+        except ConnectionError as error:
+            logger.error(error)
             if not kill_port_pid(port=env.speech_synthesis_port):
                 logger.critical('Failed to kill existing PID. Attempting to re-create session.')
 
