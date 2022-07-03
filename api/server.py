@@ -5,7 +5,6 @@ import uvicorn
 
 from executors.logger import logger
 from executors.port_handler import is_port_in_use, kill_port_pid
-from modules.exceptions import ConnectionError
 from modules.models import models
 
 env = models.env
@@ -50,8 +49,8 @@ def trigger_api() -> None:
             if res.ok:
                 logger.info(f'{url} is accessible.')
                 return
-            raise ConnectionError
-        except ConnectionError:
+            raise requests.exceptions.ConnectionError
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             logger.error('Unable to connect to existing uvicorn server.')
 
         if not kill_port_pid(port=env.offline_port):  # This might terminate Jarvis

@@ -13,6 +13,7 @@ from difflib import SequenceMatcher
 from typing import NoReturn, Tuple, Union
 
 import certifi
+import requests
 import yaml
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
@@ -28,7 +29,6 @@ from executors import controls
 from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
-from modules.exceptions import ConnectionError
 from modules.models import models
 from modules.utils import shared, support
 
@@ -149,9 +149,11 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
                     pathlib.Path("pyicloud_error").touch()
                     controls.restart_control(quiet=True)
         coordinates = get_coordinates_from_ip()
-    except ConnectionError as error:
+    except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout) as error:
         logger.error(error)
-        raise ConnectionError
+        raise ConnectionError(
+            error
+        )
 
     if location_info := get_location_from_coordinates(coordinates=coordinates):
         return *coordinates, location_info

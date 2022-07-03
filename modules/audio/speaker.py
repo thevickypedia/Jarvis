@@ -18,7 +18,6 @@ from playsound import playsound
 
 from executors.logger import logger
 from modules.conditions import conversation, keywords
-from modules.exceptions import ConnectionError
 from modules.models import models
 from modules.utils import shared
 
@@ -66,7 +65,9 @@ def speech_synthesizer(text: str, timeout: Union[int, float] = env.speech_synthe
             return True
         logger.error(f"{response.status_code}::http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/tts")
         return False
-    except (ConnectionError, UnicodeError) as error:
+    except UnicodeError as error:
+        logger.error(error)
+    except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout) as error:
         logger.error(error)
 
 
@@ -81,11 +82,11 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
     caller = sys._getframe(1).f_code.co_name  # noqa
     if text:
         text = text.replace('\n', '\t').strip()
-        logger.info(f'Speaker called by: {caller}')
         shared.text_spoken = text
         if shared.called_by_offline:
             shared.offline_caller = caller
             return
+        logger.info(f'Speaker called by: {caller}')
         logger.info(f'Response: {text}')
         sys.stdout.write(f"\r{text}")
         if env.speech_synthesis_timeout and \

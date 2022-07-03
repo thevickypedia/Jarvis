@@ -226,37 +226,46 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
         raise APIResponse(status_code=204, detail='Empty requests cannot be processed.')
 
     logger.info(f"Request: {command}")
-    command_lower = command.lower()
-    if 'alarm' in command_lower or 'remind' in command_lower:
-        command = command_lower
+    if 'alarm' in command.lower() or 'remind' in command.lower():
+        command = command.lower()
     else:
         command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
-    if command_lower == 'test':
+    if command.lower() == 'test':
         logger.info("Test message has been processed.")
         raise APIResponse(status_code=200, detail="Test message received.")
-    if not any(word in command_lower for word in offline_compatible):
-        logger.warning(f"'{command}' is not a part of offline compatible request.")
-        raise APIResponse(status_code=422,
-                          detail=f'"{command}" is not a part of off-line communicator compatible request.\n\n'
-                                 'Please try an instruction that does not require an user interaction.')
 
-    if ' after ' in command_lower:
-        if delay := timed_delay(phrase=command):
-            logger.info(f"'{command}' will be executed after {support.time_converter(seconds=delay)}")
-            raise APIResponse(status_code=200, detail=f'I will execute it after {support.time_converter(seconds=delay)}'
-                                                      f' {env.title}!')
     if ' and ' in command and not any(word in command.lower() for word in keywords.avoid):
         and_response = ""
         for each in command.split(' and '):
-            and_response += f"{offline_communicator(command=each)}\n"
+            if not any(word in each.lower() for word in offline_compatible):
+                logger.warning(f"'{each}' is not a part of offline compatible request.")
+                and_response += f'"{each}" is not a part of off-line communicator compatible request.\n\n' \
+                                'Please try an instruction that does not require an user interaction.'
+            else:
+                and_response += f"{offline_communicator(command=each)}\n"
         logger.info(f"Response: {and_response}")
         raise APIResponse(status_code=200, detail=and_response)
     elif ' also ' in command and not any(word in command.lower() for word in keywords.avoid):
         also_response = ""
         for each in command.split(' also '):
-            also_response = f"{offline_communicator(command=each)}\n"
+            if not any(word in each.lower() for word in offline_compatible):
+                logger.warning(f"'{each}' is not a part of offline compatible request.")
+                also_response += f'"{each}" is not a part of off-line communicator compatible request.\n\n' \
+                                 'Please try an instruction that does not require an user interaction.'
+            else:
+                also_response = f"{offline_communicator(command=each)}\n"
         logger.info(f"Response: {also_response}")
         raise APIResponse(status_code=200, detail=also_response)
+    if not any(word in command.lower() for word in offline_compatible):
+        logger.warning(f"'{command}' is not a part of offline compatible request.")
+        raise APIResponse(status_code=422,
+                          detail=f'"{command}" is not a part of off-line communicator compatible request.\n\n'
+                                 'Please try an instruction that does not require an user interaction.')
+    if ' after ' in command.lower():
+        if delay := timed_delay(phrase=command):
+            logger.info(f"'{command}' will be executed after {support.time_converter(seconds=delay)}")
+            raise APIResponse(status_code=200, detail=f'I will execute it after {support.time_converter(seconds=delay)}'
+                                                      f' {env.title}!')
     response = offline_communicator(command=command)
     logger.info(f"Response: {response}")
     if input_data.native_audio:

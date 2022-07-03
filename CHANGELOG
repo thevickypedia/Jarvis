@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+6.2.1 (07/03/2022)
+------------------
+- Check offline compatible request during each iteration
+- Implement a timed delay between iterations
+- Remove grouping non-built-in exceptions
+- Remove logging speaker called by in main log during offline comm
+
 6.2.0 (06/26/2022)
 ------------------
 - Add ability to perform scheduled restart with `automation.yaml`

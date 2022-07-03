@@ -5,9 +5,6 @@
 
 """
 
-import socket
-
-import requests
 from fastapi import HTTPException
 
 
@@ -75,26 +72,9 @@ class InvalidArgument(ValueError):
     """
 
 
-class LightsError(socket.error):
-    """Custom ``socket.error`` to indicate lights IP isn't reachable.
-
-    >>> LightsError
-
-    """
-
-
 class TVError(ConnectionResetError):
     """Custom ``ConnectionResetError`` to indicate that the TV is not reachable.
 
     >>> TVError
-
-    """
-
-
-# noinspection PyShadowingBuiltins
-class ConnectionError(ConnectionError, requests.exceptions.RequestException, requests.exceptions.BaseHTTPError):
-    """Custom ``ConnectionError`` to indicate any kind of connection issue.
-
-    >>> ConnectionError
 
     """

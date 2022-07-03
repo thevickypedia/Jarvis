@@ -14,8 +14,6 @@ import requests
 from pyrh import Robinhood
 from pyrh.exceptions import InvalidTickerSymbol
 
-from modules.exceptions import ConnectionError
-
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
 if parent_dir != os.getcwd():
@@ -70,7 +68,7 @@ class Investment:
             share_id = str(data['instrument'].split('/')[-2])
             try:
                 raw_details = self.rh.get_quote(share_id)
-            except (ConnectionError, InvalidTickerSymbol) as error:
+            except (requests.exceptions.HTTPError, InvalidTickerSymbol) as error:
                 self.logger.error(error)
                 continue
             ticker = (raw_details['symbol'])

@@ -15,7 +15,6 @@ from executors.logger import logger
 from executors.remind import reminder_executor
 from modules.conditions import keywords
 from modules.database import database
-from modules.exceptions import ConnectionError
 from modules.meetings import events, icalendar
 from modules.models import models
 from modules.offline import compatibles
@@ -65,7 +64,8 @@ def automator() -> NoReturn:
                 try:
                     if requests.get(url=env.ics_url).status_code == 503:
                         env.sync_meetings = 21_600  # Set to 6 hours if unable to connect to the meetings URL
-                except ConnectionError as error:
+                except (ConnectionError, TimeoutError, requests.exceptions.RequestException,
+                        requests.exceptions.Timeout) as error:
                     logger.error(error)
                     env.sync_meetings = 99_999_999  # NEVER RUN, since env vars are loaded only once during start up
             start_meetings = time.time()
@@ -140,7 +140,7 @@ def on_demand_offline_automation(task: str) -> Union[str, None]:
     try:
         response = requests.post(url=f'http://{env.offline_host}:{env.offline_port}/offline-communicator',
                                  headers=headers, json={'command': task})
-    except ConnectionError:
+    except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout):
         return
     if response.ok:
         return response.json()['detail'].split('\n')[-1]

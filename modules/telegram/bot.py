@@ -4,6 +4,7 @@ import logging
 import os
 import random
 import string
+import sys
 import time
 from logging.config import dictConfig
 from typing import NoReturn, Union
@@ -413,38 +414,51 @@ class TelegramBot:
         if command_lower == 'test':
             self.send_message(chat_id=payload['from']['id'], response="Test message received.")
             return
-        if not any(word in command_lower for word in offline_compatible):
-            self.send_message(chat_id=payload['from']['id'],
-                              response=f"'{command}' is not a part of offline communicator compatible request.\n"
-                                       "Using Telegram I'm limited to perform tasks that do not require an interaction")
+
+        if ' and ' in command and not any(word in command.lower() for word in keywords.avoid):
+            for index, each in enumerate(command.split(' also '), 1 - len(command.split(' also '))):
+                sys.stdout.write(f"\r{each}")
+                if not any(word in each.lower() for word in offline_compatible):
+                    self.send_message(chat_id=payload['from']['id'],
+                                      response=f"'{each}' is not a part of offline communicator compatible request.")
+                else:
+                    self.executor(command=each, payload=payload)
+                    time.sleep(2) if index else None  # Avoid time.sleep during the last iteration
+        elif ' also ' in command and not any(word in command.lower() for word in keywords.avoid):
+            for index, each in enumerate(command.split(' also '), 1 - len(command.split(' also '))):
+                if not any(word in each.lower() for word in offline_compatible):
+                    self.send_message(chat_id=payload['from']['id'],
+                                      response=f"'{each}' is not a part of offline communicator compatible request.")
+                else:
+                    self.executor(command=each, payload=payload)
+                    time.sleep(2) if index else None  # Avoid time.sleep during the last iteration
             return
 
+        if not any(word in command_lower for word in offline_compatible):
+            self.send_message(chat_id=payload['from']['id'],
+                              response=f"'{command}' is not a part of offline communicator compatible request.")
+            return
         if ' after ' in command_lower:
             if delay := timed_delay(phrase=command):
                 self.process_response(payload=payload,
                                       response=f"I will execute it after {support.time_converter(seconds=delay)} "
                                                f"{env.title}!")
+                self.executor(command=command, payload=payload, respond=False)
                 return
-        if ' and ' in command and not any(word in command.lower() for word in keywords.avoid):
-            for each in command.split(' and '):
-                self.executor(command=each, payload=payload)
-        elif ' also ' in command and not any(word in command.lower() for word in keywords.avoid):
-            for each in command.split(' also '):
-                self.executor(command=each, payload=payload)
-        else:
-            self.executor(command=command, payload=payload)
+        self.executor(command=command, payload=payload)
 
-    def executor(self, command: str, payload: dict) -> NoReturn:
+    def executor(self, command: str, payload: dict, respond: bool = True) -> NoReturn:
         """Executes the command via offline communicator.
 
         Args:
             command: Command to be executed.
             payload: Payload received, to extract information from.
+            respond: Boolean flag to restrict the response after executing a command.
         """
         logger.info(f'Request: {command}')
         response = offline_communicator(command=command).replace(env.title, USER_TITLE.get(payload['from']['username']))
         logger.info(f'Response: {response}')
-        self.process_response(payload=payload, response=response)
+        self.process_response(payload=payload, response=response) if respond else None
 
     def process_response(self, response: str, payload: dict) -> NoReturn:
         """Processes the response via Telegram API.

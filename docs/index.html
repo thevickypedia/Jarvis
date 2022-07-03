@@ -3365,15 +3365,6 @@ Pass 155 for LO and 285 for HI.</p>
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py" id="modules.exceptions.ConnectionError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">ConnectionError</span></span><a class="headerlink" href="#modules.exceptions.ConnectionError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">ConnectionError</span></code> to indicate any kind of connection issue.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="ne">ConnectionError</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py exception">
 <dt class="sig sig-object py" id="modules.exceptions.InvalidArgument">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidArgument</span></span><a class="headerlink" href="#modules.exceptions.InvalidArgument" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> to indicate invalid args.</p>
@@ -3387,15 +3378,6 @@ Pass 155 for LO and 285 for HI.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidEnvVars</span></span><a class="headerlink" href="#modules.exceptions.InvalidEnvVars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> to indicate invalid env vars.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">InvalidEnvVars</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="modules.exceptions.LightsError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">LightsError</span></span><a class="headerlink" href="#modules.exceptions.LightsError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">socket.error</span></code> to indicate lights IP isn’t reachable.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LightsError</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -4614,13 +4596,14 @@ Whites can have a value of None.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.executor">
-<span class="sig-name descname"><span class="pre">executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.executor" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">respond</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.executor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes the command via offline communicator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>command</strong> – Command to be executed.</p></li>
 <li><p><strong>payload</strong> – Payload received, to extract information from.</p></li>
+<li><p><strong>respond</strong> – Boolean flag to restrict the response after executing a command.</p></li>
 </ul>
 </dd>
 </dl>
