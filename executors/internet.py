@@ -62,7 +62,8 @@ def internet_checker() -> Union[Speedtest, bool]:
     """
     try:
         return Speedtest()
-    except ConfigRetrievalError:
+    except ConfigRetrievalError as error:
+        logger.error(error)
         return False
 
 
@@ -105,11 +106,15 @@ def get_ssid() -> Union[str, None]:
         str:
         Wi-Fi or Ethernet SSID.
     """
-    if env.macos:
+    try:
         process = subprocess.Popen(
             ["/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport", "-I"],
             stdout=subprocess.PIPE
-        )
+        ) if env.macos else subprocess.check_output("netsh wlan show interfaces")
+    except (subprocess.CalledProcessError, subprocess.CalledProcessError, FileNotFoundError) as error:
+        logger.error(error)
+        return
+    if env.macos:
         out, err = process.communicate()
         if error := process.returncode:
             logger.error(f"Failed to fetch SSID with exit code: {error}\n{err}")
@@ -118,7 +123,7 @@ def get_ssid() -> Union[str, None]:
         return dict(map(str.strip, info.split(": ")) for info in out.decode("utf-8").splitlines()[:-1] if
                     len(info.split()) == 2).get("SSID")
     else:
-        if ssid := [i.decode().strip() for i in subprocess.check_output("netsh wlan show interfaces").splitlines() if
+        if ssid := [i.decode().strip() for i in process.splitlines() if
                     i.decode().strip().startswith('SSID')]:
             return ssid[0].split(':')[-1].strip()
         else:

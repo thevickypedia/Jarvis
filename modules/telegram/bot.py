@@ -263,7 +263,7 @@ class TelegramBot:
             return False
         if chat['id'] not in env.bot_chat_ids or chat['username'] not in env.bot_users:
             logger.error(f"Unauthorized chatID ({chat['id']}) or userName ({chat['username']})")
-            self.send_message(chat_id=chat['id'], response=f"401 {chat['username']} UNAUTHORIZED")
+            self.send_message(chat_id=chat['id'], response=f"401 Unauthorized user: ({chat['username']})")
             return False
         logger.info(f"{chat['username']}: {payload['text']}") if payload.get('text') else None
         if not USER_TITLE.get(payload['from']['username']):
@@ -379,8 +379,8 @@ class TelegramBot:
         if not self.verify_stop(payload=payload):
             return
         payload['text'] = payload.get('text', '').replace('bypass', '').replace('BYPASS', '')
-        if any(word in payload.get('text') for word in ["hey", "hi", "hola", "what's up", "ssup", "whats up",
-                                                        "hello", "howdy", "hey", "chao", "hiya", "aloha"]):
+        if any(word in payload.get('text').lower() for word in ["hey", "hi", "hola", "what's up", "ssup", "whats up",
+                                                                "hello", "howdy", "hey", "chao", "hiya", "aloha"]):
             self.reply_to(payload=payload,
                           response=f"{greeting()} {payload['from']['first_name']}!\n"
                                    f"Good {support.part_of_day()}! How can I be of service today?")

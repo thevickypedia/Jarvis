@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+6.2.2 (07/06/2022)
+------------------
+- Fix bug on start up for wired internet connections
+- Remove case-sensitive check on Telegram greetings
+- Check real path in report_gatherer.py
+- Update install.sh to include git for windows
+
 6.2.1 (07/03/2022)
 ------------------
 - Check offline compatible request during each iteration

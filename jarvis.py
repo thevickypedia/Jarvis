@@ -213,7 +213,7 @@ def begin() -> None:
     """Starts main process to activate Jarvis after checking internet connection and initiating background processes."""
     starter()
     if internet_checker():
-        sys.stdout.write(f"\rINTERNET::Connected to {get_ssid()}.")
+        sys.stdout.write(f"\rINTERNET::Connected to {get_ssid() or 'the internet'}.")
     else:
         sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
         speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.",

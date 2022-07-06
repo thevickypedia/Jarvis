@@ -4,6 +4,7 @@ import inspect
 import logging.config
 import math
 import os
+import pathlib
 import sys
 import time
 import warnings
@@ -16,10 +17,12 @@ from pyrh.exceptions import InvalidTickerSymbol
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
-if parent_dir != os.getcwd():
-    warnings.warn('Parent directory does not match the current working directory.\n'
-                  f'Parent: {parent_dir}\n'
-                  f'CWD: {os.getcwd()}')
+if os.path.realpath(parent_dir) != os.path.realpath(os.getcwd()):
+    warnings.warn(
+        f'Parent directory of "{pathlib.PurePath(__file__).name}" does not match the current working directory.\n'
+        f'Parent: {parent_dir}\n'
+        f'CWD: {os.getcwd()}'
+    )
 sys.path.insert(0, parent_dir)
 
 from api.rh_helper import CustomTemplate  # noqa
