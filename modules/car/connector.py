@@ -261,5 +261,8 @@ class Connect:
             dict:
             JSON loaded response from post request.
         """
-        return self.post_data(command="en", url=f"{self.IF9_BASE_URL}/geocode/reverse/{latitude:.6f}/{longitude:.6f}",
-                              headers=self.head)
+        try:
+            return self.post_data(url=f"{self.IF9_BASE_URL}/geocode/reverse/{latitude:.6f}/{longitude:.6f}",
+                                  command="en", headers=self.head)
+        except urllib.error.HTTPError as error:
+            logger.error(error)

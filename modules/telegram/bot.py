@@ -262,10 +262,10 @@ class TelegramBot:
                               response=f"Sorry {chat['first_name']}! I can't process requests from bots.")
             return False
         if chat['id'] not in env.bot_chat_ids or chat['username'] not in env.bot_users:
+            logger.info(f"{chat['username']}: {payload['text']}") if payload.get('text') else None
             logger.error(f"Unauthorized chatID ({chat['id']}) or userName ({chat['username']})")
             self.send_message(chat_id=chat['id'], response=f"401 Unauthorized user: ({chat['username']})")
             return False
-        logger.info(f"{chat['username']}: {payload['text']}") if payload.get('text') else None
         if not USER_TITLE.get(payload['from']['username']):
             USER_TITLE[payload['from']['username']] = get_title_by_name(name=payload['from']['first_name'])
         return True

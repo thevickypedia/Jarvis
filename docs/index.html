@@ -239,7 +239,7 @@
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>- 200</strong> – A dictionary with the command requested and the response for it from Jarvis.</p></li>
-<li><p><strong>- 413</strong> – If request command has ‘and’ or ‘also’ in the phrase.</p></li>
+<li><p><strong>- 204</strong> – If empty command was received.</p></li>
 <li><p><strong>- 422</strong> – If the request is not part of offline compatible words.</p></li>
 </ul>
 </dd>
@@ -294,6 +294,13 @@
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>HTMLResponse</p>
 </dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>- 403</strong> – If token is <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></li>
+<li><p><strong>- 404</strong> – If the HTML file is not found.</p></li>
+<li><p><strong>- 417</strong> – If token doesn’t match the auto-generated value.</p></li>
+</ul>
+</dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -337,7 +344,8 @@
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>- 404</strong> – If audio file was not found after successful response.</p></li>
-<li><p><strong>- 500</strong> – If the connection fails.</p></li>
+<li><p><strong>- 500</strong> – If the connection to speech synthesizer fails.</p></li>
+<li><p><strong>- 204</strong> – If speech synthesis file wasn’t found.</p></li>
 </ul>
 </dd>
 </dl>

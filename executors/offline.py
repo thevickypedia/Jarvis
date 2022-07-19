@@ -13,7 +13,6 @@ from executors.automation import auto_helper
 from executors.conditions import conditions
 from executors.logger import logger
 from executors.remind import reminder_executor
-from modules.conditions import keywords
 from modules.database import database
 from modules.meetings import events, icalendar
 from modules.models import models
@@ -40,7 +39,8 @@ def automator() -> NoReturn:
 
         - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't repeat execution within a minute.
     """
-    offline_list = compatibles.offline_compatible() + keywords.restart_control
+    # TODO: Restart background processes alone and remove restarting main module to avoid memory leak
+    offline_list = compatibles.offline_compatible()
     start_events = start_meetings = time.time()
     events.event_app_launcher()
     dry_run = True

@@ -146,15 +146,13 @@ def restart_control(phrase: str = 'PlaceHolder', quiet: bool = False) -> NoRetur
         caller = sys._getframe(1).f_code.co_name  # noqa
         logger.info(f'Called by {caller}')
         if quiet or shared.called_by_offline:  # restarted due internal errors or git update or automator
-            with db.connection:
-                cursor = db.connection.cursor()
-                cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, caller))
-                cursor.connection.commit()
-        else:  # restarted requested via voice command
-            with db.connection:
-                cursor = db.connection.cursor()
-                cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, 'restart_control'))
-                cursor.connection.commit()
+            logger.info("Restarting quietly!") if quiet else logger.info("Restarting via offline!")
+        else:
+            caller = "restart_control"
+        with db.connection:
+            cursor = db.connection.cursor()
+            cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, caller))
+            cursor.connection.commit()
 
 
 def stop_terminals(apps: tuple = ("iterm", "terminal")) -> NoReturn:

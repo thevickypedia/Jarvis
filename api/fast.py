@@ -6,13 +6,13 @@ import pathlib
 import string
 import time
 from datetime import datetime
+from http import HTTPStatus
 from logging.config import dictConfig
 from multiprocessing import Process
 from threading import Thread
 from typing import Any, NoReturn, Union
 
 from fastapi import Depends, FastAPI, Request
-from fastapi import status as http_status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
@@ -179,27 +179,29 @@ async def speech_synthesis(input_data: GetText) -> FileResponse:
 
     Raises:
         - 404: If audio file was not found after successful response.
-        - 500: If the connection fails.
+        - 500: If the connection to speech synthesizer fails.
+        - 204: If speech synthesis file wasn't found.
     """
     if not (text := input_data.text.strip()):
         logger.error('Empty requests cannot be processed.')
-        raise APIResponse(status_code=204, detail='Empty requests cannot be processed.')
+        raise APIResponse(status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.__dict__['phrase'])
     if not speaker.speech_synthesizer(text=text, timeout=input_data.timeout or len(text), quality=input_data.quality,
                                       voice=input_data.voice):
         logger.error("Speech synthesis could not process the request.")
-        raise APIResponse(status_code=500, detail=http_status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise APIResponse(status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real,
+                          detail=HTTPStatus.INTERNAL_SERVER_ERROR.__dict__['phrase'])
     if os.path.isfile(path=fileio.speech_synthesis_wav):
         Thread(target=remove_file, kwargs={'delay': 2, 'filepath': fileio.speech_synthesis_wav}).start()
         return FileResponse(path=fileio.speech_synthesis_wav, media_type='application/octet-stream',
-                            filename="synthesized.wav")
+                            filename="synthesized.wav", status_code=HTTPStatus.OK.real)
     logger.error(f'File Not Found: {fileio.speech_synthesis_wav}')
-    raise APIResponse(status_code=404, detail=http_status.HTTP_404_NOT_FOUND)
+    raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.__dict__['phrase'])
 
 
 @app.get(path="/health", include_in_schema=False)
 async def health() -> NoReturn:
     """Health Check for OfflineCommunicator."""
-    raise APIResponse(status_code=200, detail=http_status.HTTP_200_OK)
+    raise APIResponse(status_code=HTTPStatus.OK, detail=HTTPStatus.OK.__dict__['phrase'])
 
 
 @app.post(path="/offline-communicator", dependencies=OFFLINE_PROTECTOR)
@@ -214,7 +216,7 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
 
     Raises:
         - 200: A dictionary with the command requested and the response for it from Jarvis.
-        - 413: If request command has 'and' or 'also' in the phrase.
+        - 204: If empty command was received.
         - 422: If the request is not part of offline compatible words.
 
     See Also:
@@ -223,7 +225,7 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
     logger.info(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
                 f"{request.headers.get('user-agent')}")
     if not (command := input_data.command.strip()):
-        raise APIResponse(status_code=204, detail='Empty requests cannot be processed.')
+        raise APIResponse(status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.__dict__['phrase'])
 
     logger.info(f"Request: {command}")
     if 'alarm' in command.lower() or 'remind' in command.lower():
@@ -231,8 +233,8 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
     else:
         command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
     if command.lower() == 'test':
-        logger.info("Test message has been processed.")
-        raise APIResponse(status_code=200, detail="Test message received.")
+        logger.info("Test message received.")
+        raise APIResponse(status_code=HTTPStatus.OK.real, detail="Test message received.")
 
     if ' and ' in command and not any(word in command.lower() for word in keywords.avoid):
         and_response = ""
@@ -244,7 +246,7 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
             else:
                 and_response += f"{offline_communicator(command=each)}\n"
         logger.info(f"Response: {and_response}")
-        raise APIResponse(status_code=200, detail=and_response)
+        raise APIResponse(status_code=HTTPStatus.OK.real, detail=and_response)
     elif ' also ' in command and not any(word in command.lower() for word in keywords.avoid):
         also_response = ""
         for each in command.split(' also '):
@@ -255,17 +257,17 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
             else:
                 also_response = f"{offline_communicator(command=each)}\n"
         logger.info(f"Response: {also_response}")
-        raise APIResponse(status_code=200, detail=also_response)
+        raise APIResponse(status_code=HTTPStatus.OK.real, detail=also_response)
     if not any(word in command.lower() for word in offline_compatible):
         logger.warning(f"'{command}' is not a part of offline compatible request.")
-        raise APIResponse(status_code=422,
+        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f'"{command}" is not a part of off-line communicator compatible request.\n\n'
                                  'Please try an instruction that does not require an user interaction.')
     if ' after ' in command.lower():
         if delay := timed_delay(phrase=command):
             logger.info(f"'{command}' will be executed after {support.time_converter(seconds=delay)}")
-            raise APIResponse(status_code=200, detail=f'I will execute it after {support.time_converter(seconds=delay)}'
-                                                      f' {env.title}!')
+            raise APIResponse(status_code=HTTPStatus.OK.real,
+                              detail=f'I will execute it after {support.time_converter(seconds=delay)} {env.title}!')
     response = offline_communicator(command=command)
     logger.info(f"Response: {response}")
     if input_data.native_audio:
@@ -273,8 +275,8 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
         logger.info(f"Storing response as {native_audio_wav} in native audio.")
         Thread(target=remove_file, kwargs={'delay': 2, 'filepath': native_audio_wav}).start()
         return FileResponse(path=native_audio_wav, media_type='application/octet-stream',
-                            filename="synthesized.wav")
-    raise APIResponse(status_code=200, detail=response)
+                            filename="synthesized.wav", status_code=HTTPStatus.OK.real)
+    raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
 
 @app.get(path="/favicon.ico", include_in_schema=False)
@@ -286,7 +288,7 @@ async def get_favicon() -> FileResponse:
         Uses FileResponse to send the favicon.ico to support the robinhood script's robinhood.html.
     """
     if os.path.isfile('favicon.ico'):
-        return FileResponse('favicon.ico')
+        return FileResponse(filename='favicon.ico', path=os.getcwd(), status_code=HTTPStatus.OK.real)
 
 
 # Conditional endpoint: Condition matches without env vars during docs generation
@@ -306,7 +308,7 @@ if not os.getcwd().endswith("Jarvis") or all([env.robinhood_user, env.robinhood_
             - The token is deleted from env var as soon as it is verified, making page-refresh useless.
         """
         robinhood_token['token'] = support.token()
-        raise APIResponse(status_code=200, detail=f"?token={robinhood_token['token']}")
+        raise APIResponse(status_code=HTTPStatus.OK.real, detail=f"?token={robinhood_token['token']}")
 
 
 # Conditional endpoint: Condition matches without env vars during docs generation
@@ -322,6 +324,11 @@ if not os.getcwd().endswith("Jarvis") or all([env.robinhood_user, env.robinhood_
             HTMLResponse:
             Renders the html page.
 
+        Raises:
+            - 403: If token is ``null``.
+            - 404: If the HTML file is not found.
+            - 417: If token doesn't match the auto-generated value.
+
         See Also:
             - This endpoint is secured behind two-factor authentication.
             - Initial check is done by the function authenticate_robinhood behind the path "/robinhood-authenticate"
@@ -331,16 +338,18 @@ if not os.getcwd().endswith("Jarvis") or all([env.robinhood_user, env.robinhood_
             - Page refresh doesn't work because the env var is deleted as soon as it is authed once.
         """
         if not token:
-            raise APIResponse(status_code=400, detail='Request needs to be authorized with a single-use token.')
+            raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
+                              detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
         if token == robinhood_token['token']:
             robinhood_token['token'] = ''
             if not os.path.isfile(fileio.robinhood):
-                raise APIResponse(status_code=404, detail='Static file was not found on server.')
+                raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail='Static file was not found on server.')
             with open(fileio.robinhood) as static_file:
                 html_content = static_file.read()
             content_type, _ = mimetypes.guess_type(html_content)
-            return HTMLResponse(content=html_content, media_type=content_type)  # serves as a static webpage
+            return HTMLResponse(status_code=HTTPStatus.TEMPORARY_REDIRECT.real,
+                                content=html_content, media_type=content_type)  # serves as a static webpage
         else:
             logger.warning('/investment was accessed with an expired token.')
-            raise APIResponse(status_code=419,
-                              detail='Session expired. Requires authentication since endpoint uses single-use token.')
+            raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
+                              detail='Requires authentication since endpoint uses single-use token.')

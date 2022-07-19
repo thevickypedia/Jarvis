@@ -80,9 +80,10 @@ def car(phrase: str) -> None:
             else:
                 try:
                     with open(fileio.location) as file:
-                        current_temp, target_temp = get_current_temp(location=yaml.load(stream=file,
-                                                                                        Loader=yaml.FullLoader))
-                        extras += f"The current temperature is {current_temp}, so "
+                        position = yaml.load(stream=file, Loader=yaml.FullLoader)
+                        current_temp, target_temp = get_current_temp(location=position)
+                        extras += f"The current temperature in " \
+                                  f"{position.get('address', {}).get('city', 'unknown city')} is {current_temp}, so "
                 except yaml.YAMLError as error:
                     logger.error(error)
                     target_temp = 69
@@ -156,60 +157,57 @@ def vehicle(operation: str, temp: int = None) -> Union[str, dict, None]:
             return
         vehicles = connection.get_vehicles(headers=connection.head).get("vehicles")
         primary_vehicle = [each_vehicle for each_vehicle in vehicles if each_vehicle.get("role") == "Primary"][0]
-        handler = controller.Control(vin=primary_vehicle.get("vin"), connection=connection)
+        control = controller.Control(vin=primary_vehicle.get("vin"), connection=connection)
 
         response = {}
         if operation == "LOCK":
-            response = handler.lock(pin=env.car_pin)
+            response = control.lock(pin=env.car_pin)
         elif operation == "UNLOCK":
-            response = handler.unlock(pin=env.car_pin)
+            response = control.unlock(pin=env.car_pin)
         elif operation == "START":
             lock_status = {each_dict['key']: each_dict['value'] for each_dict in
-                           [key for key in handler.get_status().get('vehicleStatus').get('coreStatus')
+                           [key for key in control.get_status().get('vehicleStatus').get('coreStatus')
                             if key.get('key') in ["DOOR_IS_ALL_DOORS_LOCKED", "DOOR_BOOT_LOCK_STATUS"]]}
             if lock_status.get('DOOR_IS_ALL_DOORS_LOCKED', 'FALSE') != 'TRUE' or \
                     lock_status.get('DOOR_BOOT_LOCK_STATUS', 'UNLOCKED') != 'LOCKED':
                 logger.warning("Car is unlocked when tried to remote start!")
-                if lock_response := handler.lock(pin=env.car_pin).get("failureDescription"):
+                if lock_response := control.lock(pin=env.car_pin).get("failureDescription"):
                     logger.error(lock_response)
-            response = handler.remote_engine_start(pin=env.car_pin, target_temperature=temp)
+            response = control.remote_engine_start(pin=env.car_pin, target_temperature=temp)
         elif operation == "STOP":
-            response = handler.remote_engine_stop(pin=env.car_pin)
+            response = control.remote_engine_stop(pin=env.car_pin)
         elif operation == "SECURE":
-            response = handler.enable_guardian_mode(pin=env.car_pin)
+            response = control.enable_guardian_mode(pin=env.car_pin)
         elif operation == "HONK":
-            response = handler.honk_blink()
+            response = control.honk_blink()
         elif operation == "LOCATE" or operation == "LOCATE_INTERNAL":
-            if not (position := handler.get_position().get('position')):
+            if not (position := control.get_position().get('position')):
                 logger.error("Unable to get position of the vehicle.")
                 return
-            if not (data := handler.connection.reverse_geocode(latitude=position.get('latitude'),
-                                                               longitude=position.get('longitude'))):
+            if not (data := connection.reverse_geocode(latitude=position.get('latitude'),
+                                                       longitude=position.get('longitude'))):
                 logger.error("Unable to get location details of the vehicle.")
                 data = get_location_from_coordinates(coordinates=(position['latitude'], position['longitude']))
-            number = data.get('streetNumber', data.get('house_number'))
+            number = data.get('streetNumber', data.get('house_number', ''))
             street = data.get('street', data.get('road'))
-            state = data.get('region', data.get('state'))
-            city, country = data.get('city'), data.get('country')
+            state = data.get('region', data.get('state', data.get('county')))
+            city, country = data.get('city', data.get('residential')), data.get('country')
             if operation == "LOCATE_INTERNAL":
                 position['city'] = city
                 position['state'] = state
                 return position
-            if all([number, street, state, city, country]):
-                address = f"{number} {street}, {city} {state}, {country}"
+            if all([street, state, city, country]):
+                address = f"{number} {street}, {city} {state}, {country}".strip()
             elif data.get('formattedAddress'):
                 address = data['formattedAddress']
             else:
                 address = data
-            return f"Your {handler.get_attributes().get('vehicleBrand', 'car')} is at {address}"
+            return f"Your {control.get_attributes().get('vehicleBrand', 'car')} is at {address}"
         if response.get("failureDescription"):
             logger.fatal(response)
             return
-        return handler.get_attributes().get("vehicleBrand", "car")
+        return control.get_attributes().get("vehicleBrand", "car")
     except (urllib.error.HTTPError, urllib.error.URLError) as error:
-        if isinstance(error, urllib.error.URLError):
-            logger.fatal("UNKNOWN ERROR! REQUIRES INVESTIGATION!")
-            logger.fatal(error)
-        else:
-            logger.error(error)
-            logger.error(f"Failed to connect {error.url} with error code: {error.code}")
+        logger.error(error.__dict__)
+        if hasattr(error, "url") and hasattr(error, "code"):
+            logger.error(f"Failed to connect to {error.url} with error code: {error.code} while performing {operation}")

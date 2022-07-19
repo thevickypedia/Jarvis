@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+6.2.3 (07/19/2022)
+------------------
+- Handle broken reverse-geocode call in `JLR API`
+- Replace HTTP status codes with built-in
+- Remove redundancy on restart module
+- Remove offline restart feature for future improvement
+- Add local commit check on CHANGELOG update
+
 6.2.2 (07/06/2022)
 ------------------
 - Fix bug on start up for wired internet connections
