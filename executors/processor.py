@@ -1,6 +1,6 @@
 import os
 from multiprocessing import Process
-from typing import Dict, NoReturn
+from typing import Dict, NoReturn, Union
 
 import psutil
 from playsound import playsound
@@ -36,7 +36,7 @@ def delete_db() -> NoReturn:
     return
 
 
-def start_processes() -> Dict[str, Process]:
+def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]:
     """Initiates multiple background processes to achieve parallelization.
 
     Methods
@@ -49,18 +49,20 @@ def start_processes() -> Dict[str, Process]:
         - playsound: Plays a start-up sound.
     """
     processes = {
-        "telegram": Process(target=handler),
-        "api": Process(target=trigger_api),
+        "handler": Process(target=handler),
+        "trigger_api": Process(target=trigger_api),
         "automator": Process(target=automator),
-        "ngrok": Process(target=initiate_tunneling),
-        "location": Process(target=write_current_location),
-        "speech_synthesis": Process(target=docker_container.synthesizer)
+        "initiate_tunneling": Process(target=initiate_tunneling),
+        "write_current_location": Process(target=write_current_location),
+        "synthesizer": Process(target=docker_container.synthesizer)
     }
+    if func_name:
+        processes = {func_name: processes[func_name]}
     for func, process in processes.items():
         process.start()
         logger.info(f"Started function: {func} {process.sentinel} with PID: {process.pid}")
-    playsound(sound=indicators.initialize, block=False)
-    return processes
+    playsound(sound=indicators.initialize, block=False) if not func_name else None
+    return processes[func_name] if func_name else processes
 
 
 def stop_child_processes() -> NoReturn:
@@ -74,7 +76,7 @@ def stop_child_processes() -> NoReturn:
         try:
             proc = psutil.Process(pid)
         except psutil.NoSuchProcess as error:
-            logger.error(error)
+            logger.error(error)  # Occurs commonly since child processes run only for a short time
             continue
         if proc.is_running():
             logger.info(f"Sending [SIGTERM] to child process with PID: {pid}")
@@ -84,14 +86,16 @@ def stop_child_processes() -> NoReturn:
             proc.kill()
 
 
-def stop_processes() -> NoReturn:
+def stop_processes(func_name: str = None) -> NoReturn:
     """Stops all background processes initiated during startup and removes database source file."""
-    stop_child_processes()
+    stop_child_processes() if func_name in ["automator"] else None
     for func, process in shared.processes.items():
+        if func_name and func_name != func:
+            continue
         if process.is_alive():
             logger.info(f"Sending [SIGTERM] to {func} with PID: {process.pid}")
             process.terminate()
         if process.is_alive():
             logger.info(f"Sending [SIGKILL] to {func} with PID: {process.pid}")
             process.kill()
-    delete_db()
+    delete_db() if not func_name else None

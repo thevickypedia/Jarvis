@@ -24,12 +24,8 @@ fileio = models.FileIO()
 db = database.Database(database=fileio.base_db)
 
 
-def restart(target: str = None, quiet: bool = False) -> None:
+def restart(target: str = None) -> None:
     """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
-
-    Notes:
-        - Doing this changes the PID to avoid any Fatal Errors occurred by long-running threads.
-        - restart(PC) will restart the machine after getting confirmation.
 
     Warnings:
         - | Restarts the machine without approval when ``uptime`` is more than 2 days as the confirmation is requested
@@ -38,9 +34,7 @@ def restart(target: str = None, quiet: bool = False) -> None:
 
     Args:
         target:
-            - ``None``: Restarts Jarvis to reset PID
             - ``PC``: Restarts the machine after getting confirmation.
-        quiet: If a boolean ``True`` is passed, a silent restart will be performed.
 
     Raises:
         StopSignal: To stop Jarvis' PID.
@@ -63,15 +57,6 @@ def restart(target: str = None, quiet: bool = False) -> None:
         else:
             speaker.speak(text=f"Machine state is left intact {env.title}!")
             return
-    sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}\t"
-                     f"Total runtime: {support.time_converter(time.perf_counter())}")
-    if not quiet:
-        try:
-            speaker.speak(text=f'Restarting now {env.title}! I will be up and running momentarily.', run=True)
-        except RuntimeError as error:
-            logger.critical(error)
-    os.system('python restart.py')
-    exit(1)
 
 
 def exit_process() -> NoReturn:
@@ -131,24 +116,27 @@ def sleep_control(phrase: str) -> bool:
     return True
 
 
-def restart_control(phrase: str = 'PlaceHolder', quiet: bool = False) -> NoReturn:
+def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
     """Controls the restart functions based on the user request.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
         quiet: Take a boolean flag to restart without warning.
     """
-    phrase = phrase.lower()
-    if 'pc' in phrase or 'computer' in phrase or 'imac' in phrase:
+    if phrase and ('pc' in phrase.lower() or 'computer' in phrase.lower() or 'machine' in phrase.lower()):
         logger.info(f'JARVIS::Restart for {shared.hosted_device.get("device")} has been requested.')
         restart(target='PC')
     else:
         caller = sys._getframe(1).f_code.co_name  # noqa
         logger.info(f'Called by {caller}')
-        if quiet or shared.called_by_offline:  # restarted due internal errors or git update or automator
-            logger.info("Restarting quietly!") if quiet else logger.info("Restarting via offline!")
+        if quiet:  # restarted due internal errors
+            logger.info(f"Restarting {caller}")
+        elif shared.called_by_offline:  # restarted via automator
+            logger.info("Restarting all background processes!")
+            caller = "OFFLINE"
         else:
-            caller = "restart_control"
+            speaker.speak(text="I didn't quite get that. Did you mean restart your computer?")
+            return
         with db.connection:
             cursor = db.connection.cursor()
             cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, caller))

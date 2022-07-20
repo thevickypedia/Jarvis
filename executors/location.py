@@ -1,7 +1,6 @@
 import json
 import math
 import os
-import pathlib
 import re
 import socket
 import ssl
@@ -25,7 +24,6 @@ from pyicloud.services.findmyiphone import AppleDevice
 from speedtest import Speedtest
 from timezonefinder import TimezoneFinder
 
-from executors import controls
 from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
@@ -138,16 +136,8 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
         os.remove("pyicloud_error") if os.path.isfile("pyicloud_error") else None
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException) as error:
         if device:
-            logger.error(f"Unable to retrieve location::{error}")
             caller = sys._getframe(1).f_code.co_name  # noqa
-            if caller == "<module>":
-                if os.path.isfile("pyicloud_error"):
-                    logger.error(f"Exception raised by {caller} once again. Proceeding...")
-                    os.remove("pyicloud_error")
-                else:
-                    logger.error(f"Exception raised by {caller}. Restarting.")
-                    pathlib.Path("pyicloud_error").touch()
-                    controls.restart_control(quiet=True)
+            logger.error(f"Unable to retrieve location when called by {caller}::{error}")
         coordinates = get_coordinates_from_ip()
     except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout) as error:
         logger.error(error)
@@ -157,11 +147,6 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
 
     if location_info := get_location_from_coordinates(coordinates=coordinates):
         return *coordinates, location_info
-    else:
-        logger.error("Error retrieving address from latitude and longitude information. Initiating self reboot.")
-        speaker.speak(text=f"Received an error while retrieving your address {env.title}! "
-                           "I think a restart should fix this.")
-        controls.restart_control(quiet=True)
 
 
 def write_current_location() -> NoReturn:

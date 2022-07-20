@@ -12,6 +12,14 @@ from modules.exceptions import BotInUse
 from modules.models import config, models
 from modules.telegram.bot import TelegramBot
 
+env = models.env
+
+importlib.reload(module=logging) if env.macos else None
+dictConfig(config.BotConfig().dict())
+logger = logging.getLogger('telegram')
+
+FAILED_CONNECTIONS = {'count': 0}
+
 
 def handler() -> NoReturn:
     """Initiates polling for new messages.
@@ -20,14 +28,6 @@ def handler() -> NoReturn:
         - BotInUse: Restarts polling to take control over.
         - ConnectionError: Initiates after 10, 20 or 30 seconds. Depends on retry count. Shuts off after 3 attempts.
     """
-    env = models.env
-
-    importlib.reload(module=logging) if env.macos else None
-    dictConfig(config.BotConfig().dict())
-    logger = logging.getLogger('telegram')
-
-    failed_connections = 0
-
     if not env.bot_token:
         logger.info("Bot token is required to start the Telegram Bot")
         return
@@ -41,13 +41,13 @@ def handler() -> NoReturn:
         handler()
     except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout) as error:
         logger.critical(error)
-        failed_connections += 1
-        if failed_connections > 3:
-            logger.critical("Couldn't recover from connection error. Restarting main module.")
+        FAILED_CONNECTIONS['count'] += 1
+        if FAILED_CONNECTIONS['count'] > 3:
+            logger.critical("Couldn't recover from connection error. Restarting current process.")
             restart_control(quiet=True)
         else:
-            logger.info(f"Restarting in {failed_connections * 10} seconds.")
-            time.sleep(failed_connections * 10)
+            logger.info(f"Restarting in {FAILED_CONNECTIONS['count'] * 10} seconds.")
+            time.sleep(FAILED_CONNECTIONS['count'] * 10)
             handler()
     except RecursionError as error:
         logger.error(error)

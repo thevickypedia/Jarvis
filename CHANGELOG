@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+6.2.4 (07/19/2022)
+------------------
+- Remove self restart functionality
+- Restart sub processes via offline communicator
+- Fix failed connections bug in telegram.py
+
 6.2.3 (07/19/2022)
 ------------------
 - Handle broken reverse-geocode call in `JLR API`

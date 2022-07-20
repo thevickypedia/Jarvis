@@ -6,7 +6,6 @@ import git
 import requests
 from requests.auth import HTTPBasicAuth
 
-from executors.controls import restart_control
 from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import keywords
@@ -107,7 +106,7 @@ def update() -> None:
         if 'files changed' in each:
             status = each.split(',')[0].strip()
             break
-    speaker.speak(text=f"I've updated myself to the latest version {env.title}!")
+    speaker.speak(text=f"I've updated myself to the latest version {env.title}! "
+                       "However, you might need to restart the main process for the changes to take effect.")
     if status:
         speaker.speak(text=status)
-    restart_control(quiet=True)

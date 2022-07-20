@@ -14,7 +14,7 @@ from playsound import playsound
 from pyaudio import PyAudio, paInt16
 
 from executors.commander import initiator
-from executors.controls import exit_process, restart, starter, terminator
+from executors.controls import exit_process, starter, terminator
 from executors.internet import get_ssid, internet_checker
 from executors.logger import logger
 from executors.processor import start_processes, stop_processes
@@ -105,12 +105,12 @@ class Activator:
                         speaker.speak(run=True)
                 if flag := support.check_restart():
                     logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
-                    self.stop()
-                    if flag[1] == "restart_control":
-                        restart()
+                    if flag[1] == "OFFLINE":
+                        stop_processes()
+                        shared.processes = start_processes()
                     else:
-                        restart(quiet=True)
-                    break
+                        stop_processes(func_name=flag[1])
+                        shared.processes[flag[1]] = start_processes(func_name=flag[1])
                 if flag := support.check_stop():
                     logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
                     self.stop()
@@ -191,12 +191,12 @@ def sentry_mode() -> NoReturn:
                         speaker.speak(run=True)
             if flag := support.check_restart():
                 logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
-                stop_processes()
-                if flag[1] == "restart_control":
-                    restart()
+                if flag[1] == "OFFLINE":
+                    stop_processes()
+                    shared.processes = start_processes()
                 else:
-                    restart(quiet=True)
-                break
+                    stop_processes(flag[1])
+                    shared.processes[flag[1]] = start_processes(flag[1])
             if flag := support.check_stop():
                 logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
                 stop_processes()
