@@ -26,16 +26,40 @@ api_logs = os.path.join('logs', 'api')
 if not os.path.isdir(api_logs):
     os.makedirs(api_logs)  # Recursively creates both logs and api directories if unavailable
 
-log_file = datetime.now().strftime(os.path.join('logs', 'jarvis_%d-%m-%Y.log'))
-write = ''.join(['*' for _ in range(120)])
+log_format = logging.Formatter(fmt='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s',
+                               datefmt='%b-%d-%Y %I:%M:%S %p')
 
-if current_process().name == 'MainProcess':
-    with open(log_file, 'a+') as file:
-        file.seek(0)
-        if not file.read():
-            file.write(f"{write}\n")
-        else:
-            file.write(f"\n{write}\n")
+
+def log_file() -> str:
+    """Creates a log file and writes the headers into it.
+
+    Returns:
+        str:
+        Log filename.
+    """
+    filename = datetime.now().strftime(os.path.join('logs', 'jarvis_%d-%m-%Y.log'))
+    write = ''.join(['*' for _ in range(120)])
+    if current_process().name == 'MainProcess':
+        with open(filename, 'a+') as file:
+            file.seek(0)
+            if not file.read():
+                file.write(f"{write}\n")
+            else:
+                file.write(f"\n{write}\n")
+    return filename
+
+
+def custom_handler() -> logging.FileHandler:
+    """Creates a FileHandler, sets the log format and returns it.
+
+    Returns:
+        logging.FileHandler:
+        Returns file handler.
+    """
+    handler = logging.FileHandler(filename=log_file(), mode='a')
+    handler.setFormatter(fmt=log_format)
+    return handler
+
 
 importlib.reload(module=logging) if env.macos else None
 dictConfig({
@@ -44,12 +68,10 @@ dictConfig({
 })
 if not env.macos:
     logging.getLogger("_code_cache").propagate = False
-logging.basicConfig(
-    filename=log_file, filemode='a', level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s',
-    datefmt='%b-%d-%Y %I:%M:%S %p'
-)
+
 logger = logging.getLogger('jarvis')
+logger.addHandler(hdlr=custom_handler())
+logger.setLevel(level=logging.INFO)
 
 
 class TestLogger:

@@ -98,4 +98,3 @@ def stop_processes(func_name: str = None) -> NoReturn:
         if process.is_alive():
             logger.info(f"Sending [SIGKILL] to {func} with PID: {process.pid}")
             process.kill()
-    delete_db() if not func_name else None

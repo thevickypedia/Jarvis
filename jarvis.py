@@ -1,3 +1,4 @@
+import logging
 import os
 import pathlib
 import platform
@@ -16,8 +17,8 @@ from pyaudio import PyAudio, paInt16
 from executors.commander import initiator
 from executors.controls import exit_process, starter, terminator
 from executors.internet import get_ssid, internet_checker
-from executors.logger import logger
-from executors.processor import start_processes, stop_processes
+from executors.logger import custom_handler, logger
+from executors.processor import delete_db, start_processes, stop_processes
 from executors.system import hosted_device_info
 from modules.audio import listener, speaker
 from modules.exceptions import StopSignal
@@ -107,10 +108,16 @@ class Activator:
                     logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
                     if flag[1] == "OFFLINE":
                         stop_processes()
+                        for _handler in logger.handlers:
+                            if isinstance(_handler, logging.FileHandler):
+                                logger.removeHandler(hdlr=_handler)
+                        handler = custom_handler()
+                        logger.info(f"Switching to {handler.baseFilename}")
+                        logger.addHandler(hdlr=handler)
                         shared.processes = start_processes()
                     else:
                         stop_processes(func_name=flag[1])
-                        shared.processes[flag[1]] = start_processes(func_name=flag[1])
+                        shared.processes[flag[1]] = start_processes(flag[1])
                 if flag := support.check_stop():
                     logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
                     self.stop()
@@ -118,6 +125,7 @@ class Activator:
         except StopSignal:
             exit_process()
             self.stop()
+            delete_db()
             terminator()
 
     def stop(self) -> NoReturn:
@@ -193,9 +201,15 @@ def sentry_mode() -> NoReturn:
                 logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
                 if flag[1] == "OFFLINE":
                     stop_processes()
+                    for _handler in logger.handlers:
+                        if isinstance(_handler, logging.FileHandler):
+                            logger.removeHandler(hdlr=_handler)
+                    handler = custom_handler()
+                    logger.info(f"Switching to {handler.baseFilename}")
+                    logger.addHandler(hdlr=handler)
                     shared.processes = start_processes()
                 else:
-                    stop_processes(flag[1])
+                    stop_processes(func_name=flag[1])
                     shared.processes[flag[1]] = start_processes(flag[1])
             if flag := support.check_stop():
                 logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
@@ -203,10 +217,10 @@ def sentry_mode() -> NoReturn:
                 terminator()
                 break
     except StopSignal:
-        stop_processes()
         exit_process()
+        stop_processes()
+        delete_db()
         terminator()
-        return
 
 
 def begin() -> None:

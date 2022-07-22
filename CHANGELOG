@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+6.2.5 (07/22/2022)
+------------------
+- Log difference between old and new data in automation
+- Avoid baseConfig and replace it with logging handler
+- Delete DB only when terminating main module
+- Fix restart main module vs child processes
+- Write into new log file after restart
+
 6.2.4 (07/19/2022)
 ------------------
 - Remove self restart functionality

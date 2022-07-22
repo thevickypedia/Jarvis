@@ -5,6 +5,7 @@ from string import punctuation
 from typing import Union
 
 import yaml
+from deepdiff import DeepDiff
 
 from executors.logger import logger
 from modules.audio import speaker
@@ -44,8 +45,15 @@ def rewrite_automator(write_data: dict) -> None:
     Args:
         write_data: Takes the new dictionary as an argument.
     """
+    logger.info("Data has been modified. Rewriting automation data into YAML file.")
+    with open(fileio.automation) as file:
+        try:
+            read_data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+        except yaml.YAMLError as error:
+            logger.error(error)
+            read_data = {}
+    logger.info(DeepDiff(read_data, write_data, ignore_order=True))
     with open(fileio.automation, 'w') as file:
-        logger.info("Data has been modified. Rewriting automation data into YAML file.")
         yaml.dump(data=write_data, stream=file, indent=2, sort_keys=False)
 
 
