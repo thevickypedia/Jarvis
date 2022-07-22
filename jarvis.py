@@ -125,7 +125,6 @@ class Activator:
         except StopSignal:
             exit_process()
             self.stop()
-            delete_db()
             terminator()
 
     def stop(self) -> NoReturn:
@@ -138,6 +137,7 @@ class Activator:
             - Releases port audio resources.
         """
         stop_processes()
+        delete_db()
         logger.info("Releasing resources acquired by Porcupine.")
         self.detector.delete()
         if self.audio_stream and self.audio_stream.is_active():
@@ -214,6 +214,7 @@ def sentry_mode() -> NoReturn:
             if flag := support.check_stop():
                 logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
                 stop_processes()
+                delete_db()
                 terminator()
                 break
     except StopSignal:

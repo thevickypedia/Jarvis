@@ -249,20 +249,3 @@ class Connect:
         headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.User-v3+json; charset=utf-8"
         self.post_data(command=self.user_id, url=f"{self.IF9_BASE_URL}/users", headers=headers,
                        data=user_info_data)
-
-    def reverse_geocode(self, latitude: Union[float, str], longitude: Union[float, str]) -> dict:
-        """Uses reverse geocoding to get the location from latitude and longitude.
-
-        Args:
-            latitude: Latitude of location.
-            longitude: Longitude or location.
-
-        Returns:
-            dict:
-            JSON loaded response from post request.
-        """
-        try:
-            return self.post_data(url=f"{self.IF9_BASE_URL}/geocode/reverse/{latitude:.6f}/{longitude:.6f}",
-                                  command="en", headers=self.head)
-        except urllib.error.HTTPError as error:
-            logger.error(error)

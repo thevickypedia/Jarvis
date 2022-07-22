@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+6.2.6 (07/22/2022)
+------------------
+- Remove JLR api call for reverse geocoding and use default
+- Delete DB only when main module is stopped
+- Fix restart module args
+
 6.2.5 (07/22/2022)
 ------------------
 - Log difference between old and new data in automation

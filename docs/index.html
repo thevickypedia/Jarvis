@@ -1004,7 +1004,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.controls.restart">
-<span class="sig-prename descclassname"><span class="pre">executors.controls.</span></span><span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.controls.restart" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.controls.</span></span><span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.controls.restart" title="Permalink to this definition">¶</a></dt>
 <dd><p>Restart triggers <code class="docutils literal notranslate"><span class="pre">restart.py</span></code> which in turn starts Jarvis after 5 seconds.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -1019,10 +1019,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>target</strong> –</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">PC</span></code>: Restarts the machine after getting confirmation.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>ask</strong> – Boolean flag to get confirmation from user.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference internal" href="#modules.exceptions.StopSignal" title="modules.exceptions.StopSignal"><strong>StopSignal</strong></a> – To stop Jarvis’ PID.</p>
@@ -2481,26 +2478,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="modules.car.connector.Connect.refresh_tokens">
 <span class="sig-name descname"><span class="pre">refresh_tokens</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.car.connector.Connect.refresh_tokens" title="Permalink to this definition">¶</a></dt>
 <dd><p>Refresh the token, register the device and login.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="modules.car.connector.Connect.reverse_geocode">
-<span class="sig-name descname"><span class="pre">reverse_geocode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#modules.car.connector.Connect.reverse_geocode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses reverse geocoding to get the location from latitude and longitude.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>latitude</strong> – Latitude of location.</p></li>
-<li><p><strong>longitude</strong> – Longitude or location.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>JSON loaded response from post request.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">

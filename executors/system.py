@@ -114,7 +114,7 @@ def system_vitals() -> None:
             response = listener.listen(timeout=3, phrase_limit=3)
             if any(word in response.lower() for word in keywords.ok):
                 logger.info(f'JARVIS::Restarting {shared.hosted_device.get("device")}')
-                restart(target='PC_Proceed')
+                restart(ask=False)
 
 
 def hosted_device_info() -> dict:

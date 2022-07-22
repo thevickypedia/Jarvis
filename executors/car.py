@@ -184,10 +184,7 @@ def vehicle(operation: str, temp: int = None) -> Union[str, dict, None]:
             if not (position := control.get_position().get('position')):
                 logger.error("Unable to get position of the vehicle.")
                 return
-            if not (data := connection.reverse_geocode(latitude=position.get('latitude'),
-                                                       longitude=position.get('longitude'))):
-                logger.error("Unable to get location details of the vehicle.")
-                data = get_location_from_coordinates(coordinates=(position['latitude'], position['longitude']))
+            data = get_location_from_coordinates(coordinates=(position['latitude'], position['longitude']))
             number = data.get('streetNumber', data.get('house_number', ''))
             street = data.get('street', data.get('road'))
             state = data.get('region', data.get('state', data.get('county')))

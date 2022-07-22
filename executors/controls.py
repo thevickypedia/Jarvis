@@ -24,7 +24,7 @@ fileio = models.FileIO()
 db = database.Database(database=fileio.base_db)
 
 
-def restart(target: str = None) -> None:
+def restart(ask: bool = True) -> None:
     """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
 
     Warnings:
@@ -33,30 +33,28 @@ def restart(target: str = None) -> None:
         - This is done ONLY when the system vitals are read, and the uptime is more than 2 days.
 
     Args:
-        target:
-            - ``PC``: Restarts the machine after getting confirmation.
+        ask: Boolean flag to get confirmation from user.
 
     Raises:
         StopSignal: To stop Jarvis' PID.
     """
-    if target:
-        if target == 'PC':
-            speaker.speak(text=f"{random.choice(conversation.confirmation)} restart your "
-                               f"{shared.hosted_device.get('device')}?",
-                          run=True)
-            converted = listener.listen(timeout=3, phrase_limit=3)
+    if ask:
+        speaker.speak(text=f"{random.choice(conversation.confirmation)} restart your "
+                           f"{shared.hosted_device.get('device')}?",
+                      run=True)
+        converted = listener.listen(timeout=3, phrase_limit=3)
+    else:
+        converted = 'yes'
+    if any(word in converted.lower() for word in keywords.ok):
+        stop_terminals()
+        if env.macos:
+            subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
         else:
-            converted = 'yes'
-        if any(word in converted.lower() for word in keywords.ok):
-            stop_terminals()
-            if env.macos:
-                subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
-            else:
-                os.system("shutdown /r /t 1")
-            raise StopSignal
-        else:
-            speaker.speak(text=f"Machine state is left intact {env.title}!")
-            return
+            os.system("shutdown /r /t 1")
+        raise StopSignal
+    else:
+        speaker.speak(text=f"Machine state is left intact {env.title}!")
+        return
 
 
 def exit_process() -> NoReturn:
@@ -125,7 +123,7 @@ def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
     """
     if phrase and ('pc' in phrase.lower() or 'computer' in phrase.lower() or 'machine' in phrase.lower()):
         logger.info(f'JARVIS::Restart for {shared.hosted_device.get("device")} has been requested.')
-        restart(target='PC')
+        restart()
     else:
         caller = sys._getframe(1).f_code.co_name  # noqa
         logger.info(f'Called by {caller}')
@@ -231,7 +229,6 @@ def starter() -> NoReturn:
     voices.voice_default()
     clear_logs()
     delete_pycache()
-    # Used only during restart
     for file in os.listdir("fileio"):
         f_path = os.path.join("fileio", file)
         os.chmod(f_path, os.stat(f_path).st_mode | stat.S_IEXEC)
