@@ -41,7 +41,7 @@ def automator() -> NoReturn:
         - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't repeat execution within a minute.
     """
     offline_list = compatibles.offline_compatible() + keywords.restart_control
-    start_events = start_meetings = time.time()
+    start_events = start_meetings = start_tasks = time.time()
     events.event_app_launcher()
     dry_run = True
     while True:
@@ -76,6 +76,15 @@ def automator() -> NoReturn:
                 cursor = db.connection.cursor()
                 cursor.execute("INSERT INTO children (meetings) VALUES (?);", (meeting_process.pid,))
                 db.connection.commit()
+
+        for task in env.tasks:
+            if start_tasks + task.seconds <= time.time():
+                start_tasks = time.time()
+                if any(word in task.task.lower() for word in offline_list):
+                    offline_communicator(command=task.task)
+                else:
+                    logger.error(f"{task.task} is not a part of offline communication. Removing entry.")
+                    env.tasks.remove(task)
 
         if alarm_state := support.lock_files(alarm_files=True):
             for each_alarm in alarm_state:

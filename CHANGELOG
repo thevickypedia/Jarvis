@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+6.2.7 (07/26/2022)
+------------------
+- Add an option to set up scheduled tasks
+- Run starter function upon restart
+- Support remind now
+- Remove restart.py
+- Update README.md
+
 6.2.6 (07/22/2022)
 ------------------
 - Remove JLR api call for reverse geocoding and use default

@@ -10,10 +10,10 @@ import os
 import platform
 import socket
 from datetime import datetime
-from typing import Union
+from typing import List, Union
 
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
-                      FilePath, HttpUrl, PositiveInt)
+                      FilePath, HttpUrl, PositiveInt, constr, validator)
 
 from modules.database import database
 from modules.exceptions import InvalidEnvVars, UnsupportedOS
@@ -21,6 +21,20 @@ from modules.exceptions import InvalidEnvVars, UnsupportedOS
 # Used by docs
 if not os.path.isdir('fileio'):
     os.makedirs(name='fileio')
+
+
+class CustomDict(BaseModel):
+    """Custom links model."""
+
+    seconds: int
+    task: constr(strip_whitespace=True)
+
+    @validator('task')
+    def check_empty_string(cls, v, values, **kwargs):
+        """Validate task field in tasks."""
+        if v:
+            return v
+        raise ValueError('Bad value')
 
 
 class EnvConfig(BaseSettings):
@@ -81,6 +95,7 @@ class EnvConfig(BaseSettings):
     speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'), env='SPEECH_SYNTHESIS_HOST')
     speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
     save_audio_timeout: int = Field(default=0, env='SAVE_AUDIO_TIMEOUT')
+    tasks: List[CustomDict] = Field(default=[], env="TASKS")
     title: str = Field(default='sir', env='TITLE')
     name: str = Field(default='Vignesh', env='NAME')
 

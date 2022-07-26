@@ -461,13 +461,6 @@ Retry Handler
    :members:
    :undoc-members:
 
-Restart
-=======
-
-.. automodule:: restart
-   :members:
-   :undoc-members:
-
 Shared Resources
 ================
 

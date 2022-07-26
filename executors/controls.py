@@ -24,8 +24,8 @@ fileio = models.FileIO()
 db = database.Database(database=fileio.base_db)
 
 
-def restart(ask: bool = True) -> None:
-    """Restart triggers ``restart.py`` which in turn starts Jarvis after 5 seconds.
+def restart(ask: bool = True) -> NoReturn:
+    """Restart the host machine.
 
     Warnings:
         - | Restarts the machine without approval when ``uptime`` is more than 2 days as the confirmation is requested
@@ -40,7 +40,7 @@ def restart(ask: bool = True) -> None:
     """
     if ask:
         speaker.speak(text=f"{random.choice(conversation.confirmation)} restart your "
-                           f"{shared.hosted_device.get('device')}?",
+                           f"{shared.hosted_device.get('device', 'machine')}?",
                       run=True)
         converted = listener.listen(timeout=3, phrase_limit=3)
     else:
@@ -54,7 +54,6 @@ def restart(ask: bool = True) -> None:
         raise StopSignal
     else:
         speaker.speak(text=f"Machine state is left intact {env.title}!")
-        return
 
 
 def exit_process() -> NoReturn:
@@ -163,16 +162,21 @@ def terminator() -> NoReturn:
     pid = os.getpid()
     proc = psutil.Process(pid=pid)
     logger.info(f"Terminating process: {pid}")
-    try:
-        proc.wait(timeout=5)
-    except psutil.TimeoutExpired:
-        logger.warning(f"Failed to terminate process in 5 seconds: {pid}")
+    process_info = proc.as_dict()
+    if process_info.get('environ'):
+        del process_info['environ']
+    logger.info(process_info)
     if proc.is_running():
-        logger.info(f"{pid} is still running. Killing it.")
+        logger.info(f"{pid} is running. Terminating it.")
+        proc.terminate()
+    time.sleep(1)
+    if proc.is_running():
+        logger.warning(f"{pid} is still running. Killing it.")
         proc.kill()
+    os._exit(1)  # noqa
 
 
-def shutdown(proceed: bool = False) -> None:
+def shutdown(proceed: bool = False) -> NoReturn:
     """Gets confirmation and turns off the machine.
 
     Args:
@@ -195,7 +199,6 @@ def shutdown(proceed: bool = False) -> None:
         raise StopSignal
     else:
         speaker.speak(text=f"Machine state is left intact {env.title}!")
-        return
 
 
 def clear_logs() -> NoReturn:

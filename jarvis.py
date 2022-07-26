@@ -114,6 +114,7 @@ class Activator:
                         handler = custom_handler()
                         logger.info(f"Switching to {handler.baseFilename}")
                         logger.addHandler(hdlr=handler)
+                        starter()
                         shared.processes = start_processes()
                     else:
                         stop_processes(func_name=flag[1])
@@ -207,6 +208,7 @@ def sentry_mode() -> NoReturn:
                     handler = custom_handler()
                     logger.info(f"Switching to {handler.baseFilename}")
                     logger.addHandler(hdlr=handler)
+                    starter()
                     shared.processes = start_processes()
                 else:
                     stop_processes(func_name=flag[1])
@@ -224,7 +226,7 @@ def sentry_mode() -> NoReturn:
         terminator()
 
 
-def begin() -> None:
+def begin() -> NoReturn:
     """Starts main process to activate Jarvis after checking internet connection and initiating background processes."""
     starter()
     if internet_checker():

@@ -52,7 +52,8 @@ def reminder(phrase: str) -> None:
         speaker.speak(text='Reminder format should be::Remind me to do something, at some time.')
         return
     to_about = 'about' if 'about' in phrase else 'to'
-    if 'minute' in phrase:
+    if 'minute' in phrase or "now" in phrase:
+        phrase = phrase.replace("a minute", "1 minute").replace("now", "1 minute")
         if minutes := support.extract_nos(input_=phrase, method=int):
             min_ = 'minutes' if minutes > 1 else 'minute'
             hour, minute, am_pm = (datetime.now() + timedelta(minutes=minutes)).strftime("%I %M %p").split()

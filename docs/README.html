@@ -207,6 +207,16 @@
 <li><p><strong>SYNC_MEETINGS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">meetings</span></code> information using <code class="docutils literal notranslate"><span class="pre">ics</span></code> URL.</p></li>
 <li><p><strong>SYNC_EVENTS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">events</span></code> information using <code class="docutils literal notranslate"><span class="pre">calendar</span></code> or <code class="docutils literal notranslate"><span class="pre">outlook</span></code> application.</p></li>
 </ul>
+<p><strong>Timed tasks [Optional]</strong></p>
+<ul class="simple">
+<li><p><strong>TASKS</strong> -</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">{</span><span class="s">&quot;seconds&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">10800</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;task&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;remind</span><span class="nv"> </span><span class="s">me</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">drink</span><span class="nv"> </span><span class="s">water&quot;</span><span class="p p-Indicator">},</span><span class="w">  </span><span class="c1"># Runs every 3 hours</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">{</span><span class="s">&quot;seconds&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">21600</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;task&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;turn</span><span class="nv"> </span><span class="s">off</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">lights&quot;</span><span class="p p-Indicator">}</span><span class="w">  </span><span class="c1"># Runs every 6 hours</span><span class="w"></span>
+<span class="p p-Indicator">]</span><span class="w"></span>
+</pre></div>
+</div>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/vpn-server">VPNServer</a> integration</strong></p>
 <ul class="simple">
 <li><p><strong>VPN_USERNAME</strong> - Username to create vpn-server. Defaults to profile username or <code class="docutils literal notranslate"><span class="pre">openvpn</span></code></p></li>

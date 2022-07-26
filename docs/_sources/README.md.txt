@@ -157,6 +157,16 @@ docker run \
 - **SYNC_MEETINGS** - Interval in seconds to generate ``meetings`` information using `ics` URL.
 - **SYNC_EVENTS** - Interval in seconds to generate ``events`` information using `calendar` or `outlook` application.
 
+**Timed tasks [Optional]**
+- **TASKS** -
+
+```yaml
+[
+  {"seconds": 10800, "task": "remind me to drink water"},  # Runs every 3 hours
+  {"seconds": 21600, "task": "turn off all lights"}  # Runs every 6 hours
+]
+```
+
 **[VPNServer](https://github.com/thevickypedia/vpn-server) integration**
 - **VPN_USERNAME** - Username to create vpn-server. Defaults to profile username or `openvpn`
 - **VPN_PASSWORD** - Password to authenticate vpn-server. Defaults to profile password or `aws_vpn_2021`
