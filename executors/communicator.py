@@ -106,7 +106,7 @@ def notify(user: str, password: str, number: str, body: str, subject: str = None
         subject = "Message from Jarvis" if number == env.phone_number else f"Jarvis::Message from {env.name}"
     response = Messenger(gmail_user=user, gmail_pass=password, phone=number, subject=subject,
                          message=body).send_sms()
-    if response.ok and response.status == 200:
+    if response.ok:
         logger.info('SMS notification has been sent.')
     else:
         logger.error(f'Unable to send SMS notification.\n{response.body}')

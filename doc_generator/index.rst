@@ -140,6 +140,13 @@ Controls
    :members:
    :undoc-members:
 
+Crontab
+=======
+
+.. automodule:: executors.crontab
+   :members:
+   :undoc-members:
+
 DateTime
 ========
 
@@ -379,6 +386,13 @@ Config
    :members:
    :exclude-members:
 
+Crontab
+=======
+
+.. autoclass:: modules.crontab.expression
+   :members:
+   :exclude-members:
+
 Database
 ========
 
@@ -458,6 +472,13 @@ Retry Handler
 =============
 
 .. automodule:: modules.retry.retry
+   :members:
+   :undoc-members:
+
+Repeated Timer
+==============
+
+.. automodule:: modules.timer.executor
    :members:
    :undoc-members:
 

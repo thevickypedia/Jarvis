@@ -4,25 +4,47 @@ import time
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
-from typing import AnyStr, NoReturn, Union
+from typing import AnyStr, List, NoReturn, Union
 
 import requests
 
 from executors.alarm import alarm_executor
 from executors.automation import auto_helper
 from executors.conditions import conditions
+from executors.crontab import crontab_executor
 from executors.logger import logger
 from executors.remind import reminder_executor
 from modules.conditions import keywords
+from modules.crontab import expression
 from modules.database import database
 from modules.meetings import events, icalendar
 from modules.models import models
 from modules.offline import compatibles
+from modules.timer.executor import RepeatedTimer
 from modules.utils import shared, support
 
 env = models.env
 fileio = models.FileIO()
 db = database.Database(database=fileio.base_db)
+offline_compatible = compatibles.offline_compatible()
+
+
+def repeated_tasks() -> Union[List[RepeatedTimer], List]:
+    """Runs tasks on a timed basis.
+
+    Returns:
+        list:
+        Returns a list of RepeatedTimer object(s).
+    """
+    tasks = []
+    logger.info(f"Background tasks: {len(env.tasks)}")
+    for task in env.tasks:
+        if any(word in task.task.lower() for word in offline_compatible):
+            tasks.append(RepeatedTimer(task.seconds, offline_communicator, task.task))
+        else:
+            logger.error(f"{task.task} is not a part of offline communication. Removing entry.")
+            env.tasks.remove(task)
+    return tasks
 
 
 def automator() -> NoReturn:
@@ -40,8 +62,8 @@ def automator() -> NoReturn:
 
         - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't repeat execution within a minute.
     """
-    offline_list = compatibles.offline_compatible() + keywords.restart_control
-    start_events = start_meetings = start_tasks = time.time()
+    offline_list = offline_compatible + keywords.restart_control
+    start_events = start_meetings = start_cron = time.time()
     events.event_app_launcher()
     dry_run = True
     while True:
@@ -77,14 +99,17 @@ def automator() -> NoReturn:
                 cursor.execute("INSERT INTO children (meetings) VALUES (?);", (meeting_process.pid,))
                 db.connection.commit()
 
-        for task in env.tasks:
-            if start_tasks + task.seconds <= time.time():
-                start_tasks = time.time()
-                if any(word in task.task.lower() for word in offline_list):
-                    offline_communicator(command=task.task)
-                else:
-                    logger.error(f"{task.task} is not a part of offline communication. Removing entry.")
-                    env.tasks.remove(task)
+        if start_cron + 60 <= time.time():  # Condition passes every minute
+            start_cron = time.time()
+            for cron in env.crontab:
+                job = expression.CronExpression(line=cron)
+                if job.check_trigger(date_tuple=tuple(map(int, datetime.now().strftime("%Y,%m,%d,%H,%M").split(",")))):
+                    cron_process = Process(target=crontab_executor, args=(job.comment,))
+                    cron_process.start()
+                    with db.connection:
+                        cursor = db.connection.cursor()
+                        cursor.execute("INSERT INTO children (crontab) VALUES (?);", (cron_process.pid,))
+                        db.connection.commit()
 
         if alarm_state := support.lock_files(alarm_files=True):
             for each_alarm in alarm_state:

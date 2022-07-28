@@ -157,13 +157,19 @@ docker run \
 - **SYNC_MEETINGS** - Interval in seconds to generate ``meetings`` information using `ics` URL.
 - **SYNC_EVENTS** - Interval in seconds to generate ``events`` information using `calendar` or `outlook` application.
 
-**Timed tasks [Optional]**
-- **TASKS** -
-
+- **TASKS** - Runs certain tasks at certain intervals.
 ```yaml
 [
-  {"seconds": 10800, "task": "remind me to drink water"},  # Runs every 3 hours
-  {"seconds": 21600, "task": "turn off all lights"}  # Runs every 6 hours
+  {"seconds": 10_800, "task": "remind me to drink water"},  # Runs every 3 hours
+  {"seconds": 21_600, "task": "turn off all lights"}  # Runs every 6 hours
+]
+```
+
+- **CRONTAB** - Runs scheduled tasks using cron expressions without using actual crontab.
+```yaml
+[
+  "0 0 * * 1-5/2 find /var/log -delete",
+  "0 5 * * 1 tar -zcf /var/backups/home.tgz /home/"
 ]
 ```
 

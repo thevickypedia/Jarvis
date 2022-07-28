@@ -112,9 +112,6 @@ async def start_robinhood() -> Any:
     logger.info(f'Hosting at http://{env.offline_host}:{env.offline_port}')
     if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
         Process(target=run_robinhood).start()
-        if env.macos:
-            from api.cron import CronScheduler
-            CronScheduler(logger=logger).controller()
 
 
 @app.get(path="/", response_class=RedirectResponse, include_in_schema=False)

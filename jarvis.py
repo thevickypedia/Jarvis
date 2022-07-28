@@ -18,6 +18,7 @@ from executors.commander import initiator
 from executors.controls import exit_process, starter, terminator
 from executors.internet import get_ssid, internet_checker
 from executors.logger import custom_handler, logger
+from executors.offline import repeated_tasks
 from executors.processor import delete_db, start_processes, stop_processes
 from executors.system import hosted_device_info
 from modules.audio import listener, speaker
@@ -70,6 +71,7 @@ class Activator:
             sensitivities=[env.sensitivity]
         )
         self.audio_stream = None
+        self.tasks = repeated_tasks()
 
     def open_stream(self) -> NoReturn:
         """Initializes an audio stream."""
@@ -137,6 +139,9 @@ class Activator:
             - Closes audio stream.
             - Releases port audio resources.
         """
+        if self.tasks:
+            for task in self.tasks:
+                task.stop()
         stop_processes()
         delete_db()
         logger.info("Releasing resources acquired by Porcupine.")
@@ -189,6 +194,7 @@ def sentry_mode() -> NoReturn:
         - Additional wake words can be passed in a list as an env var ``LEGACY_KEYWORDS``.
     """
     try:
+        tasks = repeated_tasks()
         while True:
             sys.stdout.write("\rSentry Mode")
             if wake_word := listener.listen(timeout=10, phrase_limit=2.5, sound=False, stdout=False):
@@ -215,6 +221,9 @@ def sentry_mode() -> NoReturn:
                     shared.processes[flag[1]] = start_processes(flag[1])
             if flag := support.check_stop():
                 logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
+                if tasks:
+                    for task in tasks:
+                        task.stop()
                 stop_processes()
                 delete_db()
                 terminator()

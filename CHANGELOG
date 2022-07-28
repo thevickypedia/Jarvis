@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+6.2.8 (07/27/2022)
+------------------
+- Support crontab expressions from env vars
+- Remove external dependency for crontab
+- Create a new module for tasks execution at set intervals
+- Stop all child processes including crontab
+- Start and stop background tasks in the main module
+
 6.2.7 (07/26/2022)
 ------------------
 - Add an option to set up scheduled tasks

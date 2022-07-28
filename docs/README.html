@@ -206,14 +206,20 @@
 <ul class="simple">
 <li><p><strong>SYNC_MEETINGS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">meetings</span></code> information using <code class="docutils literal notranslate"><span class="pre">ics</span></code> URL.</p></li>
 <li><p><strong>SYNC_EVENTS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">events</span></code> information using <code class="docutils literal notranslate"><span class="pre">calendar</span></code> or <code class="docutils literal notranslate"><span class="pre">outlook</span></code> application.</p></li>
-</ul>
-<p><strong>Timed tasks [Optional]</strong></p>
-<ul class="simple">
-<li><p><strong>TASKS</strong> -</p></li>
+<li><p><strong>TASKS</strong> - Runs certain tasks at certain intervals.</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">{</span><span class="s">&quot;seconds&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">10800</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;task&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;remind</span><span class="nv"> </span><span class="s">me</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">drink</span><span class="nv"> </span><span class="s">water&quot;</span><span class="p p-Indicator">},</span><span class="w">  </span><span class="c1"># Runs every 3 hours</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">{</span><span class="s">&quot;seconds&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">21600</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;task&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;turn</span><span class="nv"> </span><span class="s">off</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">lights&quot;</span><span class="p p-Indicator">}</span><span class="w">  </span><span class="c1"># Runs every 6 hours</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">{</span><span class="s">&quot;seconds&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">10_800</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;task&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;remind</span><span class="nv"> </span><span class="s">me</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">drink</span><span class="nv"> </span><span class="s">water&quot;</span><span class="p p-Indicator">},</span><span class="w">  </span><span class="c1"># Runs every 3 hours</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">{</span><span class="s">&quot;seconds&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">21_600</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;task&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;turn</span><span class="nv"> </span><span class="s">off</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">lights&quot;</span><span class="p p-Indicator">}</span><span class="w">  </span><span class="c1"># Runs every 6 hours</span><span class="w"></span>
+<span class="p p-Indicator">]</span><span class="w"></span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>CRONTAB</strong> - Runs scheduled tasks using cron expressions without using actual crontab.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="w"></span>
+<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1-5/2</span><span class="nv"> </span><span class="s">find</span><span class="nv"> </span><span class="s">/var/log</span><span class="nv"> </span><span class="s">-delete&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
+<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1</span><span class="nv"> </span><span class="s">tar</span><span class="nv"> </span><span class="s">-zcf</span><span class="nv"> </span><span class="s">/var/backups/home.tgz</span><span class="nv"> </span><span class="s">/home/&quot;</span><span class="w"></span>
 <span class="p p-Indicator">]</span><span class="w"></span>
 </pre></div>
 </div>

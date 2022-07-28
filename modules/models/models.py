@@ -15,6 +15,8 @@ from typing import List, Union
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       FilePath, HttpUrl, PositiveInt, constr, validator)
 
+from api import cron
+from modules.crontab.expression import CronExpression
 from modules.database import database
 from modules.exceptions import InvalidEnvVars, UnsupportedOS
 
@@ -30,7 +32,7 @@ class CustomDict(BaseModel):
     task: constr(strip_whitespace=True)
 
     @validator('task')
-    def check_empty_string(cls, v, values, **kwargs):
+    def check_empty_string(cls, v, values, **kwargs):  # noqa
         """Validate task field in tasks."""
         if v:
             return v
@@ -98,6 +100,7 @@ class EnvConfig(BaseSettings):
     tasks: List[CustomDict] = Field(default=[], env="TASKS")
     title: str = Field(default='sir', env='TITLE')
     name: str = Field(default='Vignesh', env='NAME')
+    crontab: List[str] = Field(default=[], env='CRONTAB')
 
     class Config:
         """Environment variables configuration."""
@@ -188,5 +191,12 @@ db.create_table(table_name=env.event_app, columns=["info", "date"])
 db.create_table(table_name="ics", columns=["info", "date"])
 db.create_table(table_name="stopper", columns=["flag", "caller"])
 db.create_table(table_name="restart", columns=["flag", "caller"])
-db.create_table(table_name="children", columns=["meetings", "events"])
+db.create_table(table_name="children", columns=["meetings", "events", "crontab"])
 db.create_table(table_name="vpn", columns=["state"])
+
+if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
+    env.crontab.append(cron.expression(extended=True))
+
+# Validates crontab expression if provided
+for expression in env.crontab:
+    CronExpression(expression)

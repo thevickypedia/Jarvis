@@ -428,59 +428,22 @@
 </section>
 <section id="module-api.cron">
 <span id="api-crontab"></span><h1>API CronTab<a class="headerlink" href="#module-api.cron" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="api.cron.CronScheduler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.cron.</span></span><span class="sig-name descname"><span class="pre">CronScheduler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">logging.Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.cron.CronScheduler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates CronScheduler object to check for existing schedule and add if not.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CronScheduler</span>
-</pre></div>
-</div>
-<p>Instantiates <code class="docutils literal notranslate"><span class="pre">CronTab</span></code> object and <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>logger</strong> – Takes the class <code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code> as an argument.</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="api.cron.CronScheduler.checker">
-<span class="sig-name descname"><span class="pre">checker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.cron.CronScheduler.checker" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if an existing cron schedule for <code class="docutils literal notranslate"><span class="pre">robinhood</span></code> is present.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>True if an existing schedule is found.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="api.cron.CronScheduler.controller">
-<span class="sig-name descname"><span class="pre">controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hours_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'EXTENDED'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.cron.CronScheduler.controller" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.cron.expression">
+<span class="sig-prename descclassname"><span class="pre">api.cron.</span></span><span class="sig-name descname"><span class="pre">expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extended</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#api.cron.expression" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines the start and end time based on the current timezone.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>hours_type</strong> – Takes either <code class="docutils literal notranslate"><span class="pre">EXTENDED</span></code> or <code class="docutils literal notranslate"><span class="pre">REGULAR</span></code> as argument.</p>
+<dd class="field-odd"><p><strong>extended</strong> – Uses extended hours.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="api.cron.CronScheduler.scheduler">
-<span class="sig-name descname"><span class="pre">scheduler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weekend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.cron.CronScheduler.scheduler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a crontab schedule to run every 30 minutes between the <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code> time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> – Time when the schedule starts every day.</p></li>
-<li><p><strong>end</strong> – Time when the schedule ends every day.</p></li>
-<li><p><strong>weekend</strong> – Takes a boolean flag to decide whether the cron has to be scheduled for weekends.</p></li>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>extended: 1 before and after market hours.</p></li>
+<li><p>default(regular): Regular market hours.</p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
+</div>
 </dd></dl>
 
 </section>
@@ -1109,6 +1072,34 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
+<section id="module-executors.crontab">
+<span id="crontab"></span><h1>Crontab<a class="headerlink" href="#module-executors.crontab" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.crontab.crontab_executor">
+<span class="sig-prename descclassname"><span class="pre">executors.crontab.</span></span><span class="sig-name descname"><span class="pre">crontab_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.crontab.crontab_executor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a cron statement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>statement</strong> – Cron statement to be executed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.crontab.log_file">
+<span class="sig-prename descclassname"><span class="pre">executors.crontab.</span></span><span class="sig-name descname"><span class="pre">log_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#executors.crontab.log_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a log file and writes the headers into it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Log filename.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-executors.date_time">
 <span id="datetime"></span><h1>DateTime<a class="headerlink" href="#module-executors.date_time" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
@@ -1653,6 +1644,20 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.offline.repeated_tasks">
+<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">repeated_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.timer.executor.RepeatedTimer" title="modules.timer.executor.RepeatedTimer"><span class="pre">modules.timer.executor.RepeatedTimer</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.offline.repeated_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs tasks on a timed basis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns a list of RepeatedTimer object(s).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3299,6 +3304,15 @@ Pass 155 for LO and 285 for HI.</p>
 </dd></dl>
 
 </section>
+<section id="id3">
+<h1>Crontab<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h1>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.crontab.expression">
+<span class="sig-prename descclassname"><span class="pre">modules.crontab.</span></span><span class="sig-name descname"><span class="pre">expression</span></span><a class="headerlink" href="#modules.crontab.expression" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of &lt;module ‘modules.crontab.expression’ from ‘/Users/vicky/Desktop/git/Jarvis/modules/crontab/expression.py’&gt;</p>
+</dd></dl>
+
+</section>
 <section id="module-modules.database.database">
 <span id="database"></span><h1>Database<a class="headerlink" href="#module-modules.database.database" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
@@ -3463,8 +3477,8 @@ None - NoneType if no face was recognized.</p>
 </dd></dl>
 
 </section>
-<section id="id3">
-<h1>Lights<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h1>
+<section id="id4">
+<h1>Lights<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="module-modules.lights.smart_lights"></span><dl class="py class">
 <dt class="sig sig-object py" id="modules.lights.smart_lights.MagicHomeApi">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.lights.smart_lights.</span></span><span class="sig-name descname"><span class="pre">MagicHomeApi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi" title="Permalink to this definition">¶</a></dt>
@@ -3849,6 +3863,11 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.crontab">
+<span class="sig-name descname"><span class="pre">crontab</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.crontab" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.event_app">
 <span class="sig-name descname"><span class="pre">event_app</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.event_app" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4071,8 +4090,8 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
-<section id="id4">
-<h1>Offline<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h1>
+<section id="id5">
+<h1>Offline<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="module-modules.offline.compatibles"></span><dl class="py function">
 <dt class="sig sig-object py" id="modules.offline.compatibles.offline_compatible">
 <span class="sig-prename descclassname"><span class="pre">modules.offline.compatibles.</span></span><span class="sig-name descname"><span class="pre">offline_compatible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.offline.compatibles.offline_compatible" title="Permalink to this definition">¶</a></dt>
@@ -4118,6 +4137,41 @@ Whites can have a value of None.</p>
 <dd class="field-odd"><p>Callable</p>
 </dd>
 </dl>
+</dd></dl>
+
+</section>
+<section id="module-modules.timer.executor">
+<span id="repeated-timer"></span><h1>Repeated Timer<a class="headerlink" href="#module-modules.timer.executor" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.timer.executor.RepeatedTimer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.timer.executor.</span></span><span class="sig-name descname"><span class="pre">RepeatedTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.timer.executor.RepeatedTimer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiated RepeatedTimer object to run a task repeated after given intervals.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">RepeatedTimer</span>
+</pre></div>
+</div>
+<p>Instantiates class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interval</strong> – Seconds after which the task should be triggered repeatedly.</p></li>
+<li><p><strong>function</strong> – Function that has to be called.</p></li>
+<li><p><strong>*args</strong> – Arguments.</p></li>
+<li><p><strong>**kwargs</strong> – Keyword arguments.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.timer.executor.RepeatedTimer.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.timer.executor.RepeatedTimer.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if task is running, schedules a thread timer otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.timer.executor.RepeatedTimer.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.timer.executor.RepeatedTimer.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flips the running flag to False and cancels the existing timer.</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -4568,8 +4622,8 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
-<section id="id5">
-<h1>Telegram<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h1>
+<section id="id6">
+<h1>Telegram<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="module-modules.telegram.bot"></span><dl class="py class">
 <dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.telegram.bot.</span></span><span class="sig-name descname"><span class="pre">TelegramBot</span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot" title="Permalink to this definition">¶</a></dt>
@@ -5331,6 +5385,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-executors.conditions">Conditions</a></li>
 <li><a class="reference internal" href="#module-executors.commander">Commander</a></li>
 <li><a class="reference internal" href="#module-executors.controls">Controls</a></li>
+<li><a class="reference internal" href="#module-executors.crontab">Crontab</a></li>
 <li><a class="reference internal" href="#module-executors.date_time">DateTime</a></li>
 <li><a class="reference internal" href="#module-executors.display_functions">DisplayFunctions</a></li>
 <li><a class="reference internal" href="#module-executors.face">Face</a></li>
@@ -5359,18 +5414,20 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#id1">Car</a></li>
 <li><a class="reference internal" href="#id2">Conditions</a></li>
 <li><a class="reference internal" href="#config">Config</a></li>
+<li><a class="reference internal" href="#id3">Crontab</a></li>
 <li><a class="reference internal" href="#module-modules.database.database">Database</a></li>
 <li><a class="reference internal" href="#module-modules.exceptions">Exceptions</a></li>
 <li><a class="reference internal" href="#module-modules.face.facial_recognition">Face Recognition</a></li>
-<li><a class="reference internal" href="#id3">Lights</a></li>
+<li><a class="reference internal" href="#id4">Lights</a></li>
 <li><a class="reference internal" href="#module-modules.dictionary.dictionary">Meanings</a></li>
 <li><a class="reference internal" href="#module-modules.meetings.events">Meetings</a></li>
 <li><a class="reference internal" href="#models">Models</a></li>
-<li><a class="reference internal" href="#id4">Offline</a></li>
+<li><a class="reference internal" href="#id5">Offline</a></li>
 <li><a class="reference internal" href="#module-modules.retry.retry">Retry Handler</a></li>
+<li><a class="reference internal" href="#module-modules.timer.executor">Repeated Timer</a></li>
 <li><a class="reference internal" href="#module-modules.utils.shared">Shared Resources</a></li>
 <li><a class="reference internal" href="#module-modules.utils.support">Support</a></li>
-<li><a class="reference internal" href="#id5">Telegram</a></li>
+<li><a class="reference internal" href="#id6">Telegram</a></li>
 <li><a class="reference internal" href="#module-modules.temperature.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-modules.timeout.timeout">Timeout</a></li>
 <li><a class="reference internal" href="#module-modules.tv.tv_controls">TV Connector</a></li>

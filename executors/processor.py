@@ -69,26 +69,27 @@ def stop_child_processes() -> NoReturn:
     """Stops sub processes (for meetings and events) triggered by child processes."""
     with db.connection:
         cursor_ = db.connection.cursor()
-        children = cursor_.execute("SELECT meetings, events FROM children").fetchone()
-    for pid in children:
-        if not pid:
-            continue
-        try:
-            proc = psutil.Process(pid)
-        except psutil.NoSuchProcess as error:
-            logger.error(error)  # Occurs commonly since child processes run only for a short time
-            continue
-        if proc.is_running():
-            logger.info(f"Sending [SIGTERM] to child process with PID: {pid}")
-            proc.terminate()
-        if proc.is_running():
-            logger.info(f"Sending [SIGKILL] to child process with PID: {pid}")
-            proc.kill()
+        children = cursor_.execute("SELECT meetings, events, crontab FROM children").fetchall()
+    for pids in children:
+        for pid in pids:
+            if not pid:
+                continue
+            try:
+                proc = psutil.Process(pid)
+            except psutil.NoSuchProcess as error:
+                logger.error(error)  # Occurs commonly since child processes run only for a short time
+                continue
+            if proc.is_running():
+                logger.info(f"Sending [SIGTERM] to child process with PID: {pid}")
+                proc.terminate()
+            if proc.is_running():
+                logger.info(f"Sending [SIGKILL] to child process with PID: {pid}")
+                proc.kill()
 
 
 def stop_processes(func_name: str = None) -> NoReturn:
     """Stops all background processes initiated during startup and removes database source file."""
-    stop_child_processes() if func_name in ["automator"] else None
+    stop_child_processes() if not func_name or func_name in ["automator"] else None
     for func, process in shared.processes.items():
         if func_name and func_name != func:
             continue
