@@ -3829,7 +3829,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.bot_chat_ids">
-<span class="sig-name descname"><span class="pre">bot_chat_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.bot_chat_ids" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">bot_chat_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.bot_chat_ids" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3839,7 +3839,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.bot_users">
-<span class="sig-name descname"><span class="pre">bot_users</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.bot_users" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">bot_users</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.bot_users" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3869,7 +3869,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.event_app">
-<span class="sig-name descname"><span class="pre">event_app</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.event_app" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">event_app</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">modules.models.models.EventApp</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.event_app" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3918,8 +3918,13 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.EnvConfig.legacy_keywords">
-<span class="sig-name descname"><span class="pre">legacy_keywords</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.legacy_keywords" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.legacy">
+<span class="sig-name descname"><span class="pre">legacy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.legacy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.macos">
+<span class="sig-name descname"><span class="pre">macos</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.macos" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3951,6 +3956,12 @@ Whites can have a value of None.</p>
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.offline_port">
 <span class="sig-name descname"><span class="pre">offline_port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.offline_port" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.parse_birthday">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_birthday</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.models.models.EnvConfig.parse_birthday" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates date value to be in DD-MM format.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.phone_number">
@@ -4073,13 +4084,18 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.wake_words">
+<span class="sig-name descname"><span class="pre">wake_words</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.wake_words" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.weather_api">
 <span class="sig-name descname"><span class="pre">weather_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.weather_api" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.website">
-<span class="sig-name descname"><span class="pre">website</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.website" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">website</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.HttpUrl</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.website" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

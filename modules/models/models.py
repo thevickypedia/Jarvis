@@ -7,11 +7,16 @@
 
 import getpass
 import os
+import pathlib
 import platform
 import socket
+import sys
 from datetime import datetime
+from enum import Enum
 from typing import List, Union
 
+import pvporcupine
+from packaging.version import parse as parser
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       FilePath, HttpUrl, PositiveInt, constr, validator)
 
@@ -25,13 +30,24 @@ if not os.path.isdir('fileio'):
     os.makedirs(name='fileio')
 
 
+class EventApp(str, Enum):
+    """Types of event applications supported by Jarvis.
+
+    >>> EventApp
+
+    """
+
+    CALENDAR = 'calendar'
+    OUTLOOK = 'outlook'
+
+
 class CustomDict(BaseModel):
     """Custom links model."""
 
     seconds: int
     task: constr(strip_whitespace=True)
 
-    @validator('task')
+    @validator('task', allow_reuse=True)
     def check_empty_string(cls, v, values, **kwargs):  # noqa
         """Validate task field in tasks."""
         if v:
@@ -54,7 +70,7 @@ class EnvConfig(BaseSettings):
     alt_gmail_user: EmailStr = Field(default=None, env='ALT_GMAIL_USER')
     alt_gmail_pass: str = Field(default=None, env='ALT_GMAIL_PASS')
     recipient: EmailStr = Field(default=None, env='RECIPIENT')
-    phone_number: str = Field(default=None, env='PHONE_NUMBER')
+    phone_number: str = Field(default=None, regex="\\d{10}$", env='PHONE_NUMBER')
     offline_host: str = Field(default=socket.gethostbyname('localhost'), env='OFFLINE_HOST')
     offline_port: PositiveInt = Field(default=4483, env='OFFLINE_PORT')
     offline_pass: str = Field(default='OfflineComm', env='OFFLINE_PASS')
@@ -67,9 +83,9 @@ class EnvConfig(BaseSettings):
     robinhood_pass: str = Field(default=None, env='ROBINHOOD_PASS')
     robinhood_qr: str = Field(default=None, env='ROBINHOOD_QR')
     robinhood_endpoint_auth: str = Field(default=None, env='ROBINHOOD_ENDPOINT_AUTH')
-    event_app: str = Field(default='calendar', env='EVENT_APP')
+    event_app: EventApp = Field(default=EventApp.CALENDAR, env='EVENT_APP')
     ics_url: HttpUrl = Field(default=None, env='ICS_URL')
-    website: str = Field(default='vigneshrao.com', env='WEBSITE')
+    website: HttpUrl = Field(default='https://vigneshrao.com', env='WEBSITE')
     wolfram_api_key: str = Field(default=None, env='WOLFRAM_API_KEY')
     maps_api: str = Field(default=None, env='MAPS_API')
     news_api: str = Field(default=None, env='NEWS_API')
@@ -89,17 +105,17 @@ class EnvConfig(BaseSettings):
     timeout: Union[float, PositiveInt] = Field(default=3, env='TIMEOUT')
     phrase_limit: Union[float, PositiveInt] = Field(default=3, env='PHRASE_LIMIT')
     bot_token: str = Field(default=None, env='BOT_TOKEN')
-    bot_chat_ids: list = Field(default=[], env='BOT_CHAT_IDS')
-    bot_users: list = Field(default=[], env='BOT_USERS')
+    bot_chat_ids: List[int] = Field(default=[], env='BOT_CHAT_IDS')
+    bot_users: List[str] = Field(default=[], env='BOT_USERS')
     bot_voice_timeout: Union[float, PositiveInt] = Field(default=3, le=5, ge=1, env='BOT_VOICE_TIMEOUT')
-    legacy_keywords: list = Field(default=['jarvis'], env='LEGACY_KEYWORDS')
+    wake_words: List[str] = Field(default=[pathlib.PurePath(sys.argv[0]).stem], env='WAKE_WORDS')
     speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
     speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'), env='SPEECH_SYNTHESIS_HOST')
     speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
     save_audio_timeout: int = Field(default=0, env='SAVE_AUDIO_TIMEOUT')
-    tasks: List[CustomDict] = Field(default=[], env="TASKS")
     title: str = Field(default='sir', env='TITLE')
     name: str = Field(default='Vignesh', env='NAME')
+    tasks: List[CustomDict] = Field(default=[], env="TASKS")
     crontab: List[str] = Field(default=[], env='CRONTAB')
 
     class Config:
@@ -108,10 +124,22 @@ class EnvConfig(BaseSettings):
         env_prefix = ""
         env_file = ".env"
 
+    # noinspection PyMethodParameters
+    @validator("birthday", pre=True, allow_reuse=True)
+    def parse_birthday(cls, value: str) -> Union[str, None]:
+        """Validates date value to be in DD-MM format."""
+        if not value:
+            return
+        try:
+            if datetime.strptime(value, "%d-%B"):
+                return value
+        except ValueError:
+            raise InvalidEnvVars('Format should be DD-MM')
+
     if platform.system() == "Windows":
-        macos = 0
+        macos: bool = False
     elif platform.system() == "Darwin":
-        macos = 1
+        macos: bool = True
     else:
         raise UnsupportedOS(
             f"\n{''.join('*' for _ in range(80))}\n\n"
@@ -120,14 +148,19 @@ class EnvConfig(BaseSettings):
             "To reach out: https://vigneshrao.com/contact\n"
             f"\n{''.join('*' for _ in range(80))}\n"
         )
+    legacy: bool = True if macos and parser(platform.mac_ver()[0]) < parser('10.14') else False
 
 
 env = EnvConfig()
+env.website = env.website.lstrip(f"{env.website.scheme}://")
 
-if env.event_app not in ('calendar', 'outlook'):
-    raise InvalidEnvVars(
-        "'EVENT_APP' can only be either 'outlook' OR 'calendar'"
-    )
+if not env.legacy and env.wake_words != [pathlib.PurePath(sys.argv[0]).stem]:
+    for keyword in env.wake_words:
+        if not pvporcupine.KEYWORD_PATHS.get(keyword) or not os.path.isfile(pvporcupine.KEYWORD_PATHS[keyword]):
+            raise InvalidEnvVars(
+                f"Detecting '{keyword}' is unsupported!\n"
+                f"Available keywords are: {', '.join(list(pvporcupine.KEYWORD_PATHS.keys()))}"
+            )
 
 # Note: Pydantic validation for ICS_URL can be implemented using regex=".*ics$"
 # However it will NOT work in this use case, since the type hint is HttpUrl
@@ -143,6 +176,13 @@ if env.speech_synthesis_port == env.offline_port:
     raise InvalidEnvVars(
         "Speech synthesizer and offline communicator cannot run simultaneously on the same port number."
     )
+
+if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
+    env.crontab.append(cron.expression(extended=True))
+
+# Validates crontab expression if provided
+for expression in env.crontab:
+    CronExpression(expression)
 
 
 class FileIO(BaseModel):
@@ -193,10 +233,3 @@ db.create_table(table_name="stopper", columns=["flag", "caller"])
 db.create_table(table_name="restart", columns=["flag", "caller"])
 db.create_table(table_name="children", columns=["meetings", "events", "crontab"])
 db.create_table(table_name="vpn", columns=["state"])
-
-if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
-    env.crontab.append(cron.expression(extended=True))
-
-# Validates crontab expression if provided
-for expression in env.crontab:
-    CronExpression(expression)

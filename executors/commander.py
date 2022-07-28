@@ -131,12 +131,11 @@ def renew() -> None:
             converted = listener.listen(timeout=3, phrase_limit=5, sound=False)
         if not converted:
             continue
-        remove = ['buddy', 'jarvis', 'hey', 'hello']
-        converted = ' '.join([i for i in converted.split() if i.lower() not in remove])
+        converted = ' '.join([i for i in converted.split() if i.lower() not in env.wake_words])
         if converted:
             if split_phrase(phrase=converted):  # should_return flag is not passed which will default to False
                 break  # split_phrase() returns a boolean flag from conditions. conditions return True only for sleep
-        elif any(word in converted.lower() for word in remove):
+        elif any(word in converted.lower() for word in env.wake_words):
             continue
         speaker.speak(run=True)
 
@@ -160,7 +159,7 @@ def initiator(phrase: str = None, should_return: bool = False) -> None:
             Thread(target=pc_sleep).start() if env.macos else None
         time_travel()
         shared.called['time_travel'] = False
-    elif 'you there' in phrase.lower() or any(word in phrase.lower() for word in env.legacy_keywords):
+    elif 'you there' in phrase.lower() or any(word in phrase.lower() for word in env.wake_words):
         speaker.speak(text=f'{random.choice(conversation.wake_up1)}')
         initialize()
     elif any(word in phrase.lower() for word in ['look alive', 'wake up', 'wakeup', 'show time', 'showtime']):

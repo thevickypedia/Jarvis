@@ -1,14 +1,11 @@
 import logging
 import os
-import pathlib
-import platform
 import struct
 import sys
 from datetime import datetime
 from typing import NoReturn
 
 import numpy
-import packaging.version
 import pvporcupine
 import soundfile
 from playsound import playsound
@@ -59,7 +56,7 @@ class Activator:
             - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
         """
         logger.info(f"Initiating hot-word detector with sensitivity: {env.sensitivity}")
-        keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in [pathlib.PurePath(__file__).stem]]
+        keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in env.wake_words]
         self.input_device_index = input_device_index
         self.recorded_frames = []
 
@@ -139,9 +136,8 @@ class Activator:
             - Closes audio stream.
             - Releases port audio resources.
         """
-        if self.tasks:
-            for task in self.tasks:
-                task.stop()
+        for task in self.tasks:
+            task.stop()
         stop_processes()
         delete_db()
         logger.info("Releasing resources acquired by Porcupine.")
@@ -199,7 +195,7 @@ def sentry_mode() -> NoReturn:
             sys.stdout.write("\rSentry Mode")
             if wake_word := listener.listen(timeout=10, phrase_limit=2.5, sound=False, stdout=False):
                 support.flush_screen()
-                if any(word in wake_word.lower() for word in env.legacy_keywords):
+                if any(word in wake_word.lower() for word in env.wake_words):
                     playsound(sound=indicators.acknowledgement, block=False)
                     if phrase := listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False):
                         initiator(phrase=phrase, should_return=True)
@@ -221,9 +217,8 @@ def sentry_mode() -> NoReturn:
                     shared.processes[flag[1]] = start_processes(flag[1])
             if flag := support.check_stop():
                 logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
-                if tasks:
-                    for task in tasks:
-                        task.stop()
+                for task in tasks:
+                    task.stop()
                 stop_processes()
                 delete_db()
                 terminator()
@@ -247,10 +242,7 @@ def begin() -> NoReturn:
     sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: {env.volume}")
     shared.hosted_device = hosted_device_info()
     shared.processes = start_processes()
-    if env.macos and packaging.version.parse(platform.mac_ver()[0]) < packaging.version.parse('10.14'):
-        sentry_mode()
-    else:
-        Activator().start()
+    sentry_mode() if env.legacy else Activator().start()
 
 
 if __name__ == '__main__':
