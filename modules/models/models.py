@@ -20,7 +20,7 @@ from packaging.version import parse as parser
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       FilePath, HttpUrl, PositiveInt, constr, validator)
 
-from api import cron
+from api.rh_helper import cron_schedule
 from modules.crontab.expression import CronExpression
 from modules.database import database
 from modules.exceptions import InvalidEnvVars, UnsupportedOS
@@ -178,7 +178,7 @@ if env.speech_synthesis_port == env.offline_port:
     )
 
 if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
-    env.crontab.append(cron.expression(extended=True))
+    env.crontab.append(cron_schedule(extended=True))
 
 # Validates crontab expression if provided
 for expression in env.crontab:

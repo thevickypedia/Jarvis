@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
@@ -13,6 +13,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -42,7 +43,7 @@
           <div class="body" role="main">
             
   <section id="welcome-to-jarvis-s-documentation">
-<h1>Welcome to Jarvis’s documentation!<a class="headerlink" href="#welcome-to-jarvis-s-documentation" title="Permalink to this headline">¶</a></h1>
+<h1>Welcome to Jarvis’s documentation!<a class="headerlink" href="#welcome-to-jarvis-s-documentation" title="Permalink to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Read Me:</span></p>
 <ul>
@@ -64,7 +65,7 @@
 </div>
 </section>
 <section id="module-jarvis">
-<span id="jarvis-main-module"></span><h1>Jarvis - Main Module<a class="headerlink" href="#module-jarvis" title="Permalink to this headline">¶</a></h1>
+<span id="jarvis-main-module"></span><h1>Jarvis - Main Module<a class="headerlink" href="#module-jarvis" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.Activator">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">Activator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_device_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.Activator" title="Permalink to this definition">¶</a></dt>
@@ -171,10 +172,10 @@
 
 </section>
 <section id="jarvis-api">
-<h1>———-Jarvis API———-<a class="headerlink" href="#jarvis-api" title="Permalink to this headline">¶</a></h1>
+<h1>———-Jarvis API———-<a class="headerlink" href="#jarvis-api" title="Permalink to this heading">¶</a></h1>
 </section>
 <section id="module-api.fast">
-<span id="api-handler"></span><h1>API Handler<a class="headerlink" href="#module-api.fast" title="Permalink to this headline">¶</a></h1>
+<span id="api-handler"></span><h1>API Handler<a class="headerlink" href="#module-api.fast" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.authenticate_robinhood">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">authenticate_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.authenticate_robinhood" title="Permalink to this definition">¶</a></dt>
@@ -203,7 +204,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.get_favicon">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">get_favicon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">starlette.responses.FileResponse</span></span></span><a class="headerlink" href="#api.fast.get_favicon" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">get_favicon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FileResponse</span></span></span><a class="headerlink" href="#api.fast.get_favicon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the favicon.ico and adds to the API endpoint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -223,7 +224,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.offline_communicator_api">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">offline_communicator_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">starlette.requests.Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.GetData" title="api.models.GetData"><span class="pre">api.models.GetData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">starlette.responses.FileResponse</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.fast.offline_communicator_api" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">offline_communicator_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.GetData" title="api.models.GetData"><span class="pre">GetData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FileResponse</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.fast.offline_communicator_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Offline Communicator API endpoint for Jarvis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -282,7 +283,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.robinhood">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">starlette.responses.HTMLResponse</span></span></span><a class="headerlink" href="#api.fast.robinhood" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">HTMLResponse</span></span></span><a class="headerlink" href="#api.fast.robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Serves static file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -323,7 +324,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.speech_synthesis">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">api.models.GetText</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">starlette.responses.FileResponse</span></span></span><a class="headerlink" href="#api.fast.speech_synthesis" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GetText</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FileResponse</span></span></span><a class="headerlink" href="#api.fast.speech_synthesis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process request to convert text to speech if docker container is running.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -359,10 +360,10 @@
 
 </section>
 <section id="module-api.authenticator">
-<span id="api-authenticator"></span><h1>API Authenticator<a class="headerlink" href="#module-api.authenticator" title="Permalink to this headline">¶</a></h1>
+<span id="api-authenticator"></span><h1>API Authenticator<a class="headerlink" href="#module-api.authenticator" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.authenticator.offline_has_access">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.authenticator.</span></span><span class="sig-name descname"><span class="pre">offline_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">fastapi.security.http.HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.authenticator.offline_has_access" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.authenticator.</span></span><span class="sig-name descname"><span class="pre">offline_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.authenticator.offline_has_access" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates the token if mentioned as a dependency.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -373,7 +374,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.authenticator.robinhood_has_access">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.authenticator.</span></span><span class="sig-name descname"><span class="pre">robinhood_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">fastapi.security.http.HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.authenticator.robinhood_has_access" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.authenticator.</span></span><span class="sig-name descname"><span class="pre">robinhood_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.authenticator.robinhood_has_access" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates the token if mentioned as a dependency.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -384,10 +385,10 @@
 
 </section>
 <section id="module-api.server">
-<span id="api-server"></span><h1>API Server<a class="headerlink" href="#module-api.server" title="Permalink to this headline">¶</a></h1>
+<span id="api-server"></span><h1>API Server<a class="headerlink" href="#module-api.server" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="api.server.APIServer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.server.</span></span><span class="sig-name descname"><span class="pre">APIServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">uvicorn.config.Config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.server.APIServer" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.server.</span></span><span class="sig-name descname"><span class="pre">APIServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.server.APIServer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shared servers state that is available between all protocol instances.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">APIServer</span>
 </pre></div>
@@ -426,29 +427,8 @@
 </dd></dl>
 
 </section>
-<section id="module-api.cron">
-<span id="api-crontab"></span><h1>API CronTab<a class="headerlink" href="#module-api.cron" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="api.cron.expression">
-<span class="sig-prename descclassname"><span class="pre">api.cron.</span></span><span class="sig-name descname"><span class="pre">expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extended</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#api.cron.expression" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determines the start and end time based on the current timezone.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>extended</strong> – Uses extended hours.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>extended: 1 before and after market hours.</p></li>
-<li><p>default(regular): Regular market hours.</p></li>
-</ul>
-</div>
-</dd></dl>
-
-</section>
 <section id="api-models">
-<h1>API Models<a class="headerlink" href="#api-models" title="Permalink to this headline">¶</a></h1>
+<h1>API Models<a class="headerlink" href="#api-models" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="api.models.GetData">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">GetData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.GetData" title="Permalink to this definition">¶</a></dt>
@@ -487,7 +467,7 @@ children, will have its events allowed through the filter. If no
 name is specified, allow every event.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="api.models.InvestmentFilter.filter">
-<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">logging.LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.models.InvestmentFilter.filter" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.models.InvestmentFilter.filter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filter out logging at <code class="docutils literal notranslate"><span class="pre">/investment?token=</span></code> from log streams.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -506,11 +486,11 @@ name is specified, allow every event.</p>
 
 </section>
 <section id="module-api.report_gatherer">
-<span id="api-robinhood"></span><h1>API Robinhood<a class="headerlink" href="#module-api.report_gatherer" title="Permalink to this headline">¶</a></h1>
+<span id="api-robinhood"></span><h1>API Robinhood<a class="headerlink" href="#module-api.report_gatherer" title="Permalink to this heading">¶</a></h1>
 <p>Runs once during API startup and continues to run in a cron scheduler as per market hours.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="api.report_gatherer.Investment">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.report_gatherer.</span></span><span class="sig-name descname"><span class="pre">Investment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">logging.Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.report_gatherer.Investment" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.report_gatherer.</span></span><span class="sig-name descname"><span class="pre">Investment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.report_gatherer.Investment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">Investment</span></code> which gathers portfolio information.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Investment</span>
 </pre></div>
@@ -565,7 +545,7 @@ name is specified, allow every event.</p>
 
 </section>
 <section id="api-robinhood-helper">
-<h1>API Robinhood Helper<a class="headerlink" href="#api-robinhood-helper" title="Permalink to this headline">¶</a></h1>
+<h1>API Robinhood Helper<a class="headerlink" href="#api-robinhood-helper" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="api.rh_helper.CustomTemplate">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.rh_helper.</span></span><span class="sig-name descname"><span class="pre">CustomTemplate</span></span><a class="headerlink" href="#api.rh_helper.CustomTemplate" title="Permalink to this definition">¶</a></dt>
@@ -591,10 +571,10 @@ name is specified, allow every event.</p>
 
 </section>
 <section id="executors">
-<h1>———-Executors———-<a class="headerlink" href="#executors" title="Permalink to this headline">¶</a></h1>
+<h1>———-Executors———-<a class="headerlink" href="#executors" title="Permalink to this heading">¶</a></h1>
 </section>
 <section id="module-executors.alarm">
-<span id="alarm"></span><h1>Alarm<a class="headerlink" href="#module-executors.alarm" title="Permalink to this headline">¶</a></h1>
+<span id="alarm"></span><h1>Alarm<a class="headerlink" href="#module-executors.alarm" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.alarm.alarm_executor">
 <span class="sig-prename descclassname"><span class="pre">executors.alarm.</span></span><span class="sig-name descname"><span class="pre">alarm_executor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.alarm.alarm_executor" title="Permalink to this definition">¶</a></dt>
@@ -642,7 +622,7 @@ name is specified, allow every event.</p>
 
 </section>
 <section id="module-executors.automation">
-<span id="automation"></span><h1>Automation<a class="headerlink" href="#module-executors.automation" title="Permalink to this headline">¶</a></h1>
+<span id="automation"></span><h1>Automation<a class="headerlink" href="#module-executors.automation" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.automation.auto_helper">
 <span class="sig-prename descclassname"><span class="pre">executors.automation.</span></span><span class="sig-name descname"><span class="pre">auto_helper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offline_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.automation.auto_helper" title="Permalink to this definition">¶</a></dt>
@@ -684,7 +664,7 @@ name is specified, allow every event.</p>
 
 </section>
 <section id="module-executors.bluetooth">
-<span id="bluetooth"></span><h1>Bluetooth<a class="headerlink" href="#module-executors.bluetooth" title="Permalink to this headline">¶</a></h1>
+<span id="bluetooth"></span><h1>Bluetooth<a class="headerlink" href="#module-executors.bluetooth" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.bluetooth.bluetooth">
 <span class="sig-prename descclassname"><span class="pre">executors.bluetooth.</span></span><span class="sig-name descname"><span class="pre">bluetooth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.bluetooth.bluetooth" title="Permalink to this definition">¶</a></dt>
@@ -718,7 +698,7 @@ name is specified, allow every event.</p>
 
 </section>
 <section id="module-executors.car">
-<span id="car"></span><h1>Car<a class="headerlink" href="#module-executors.car" title="Permalink to this headline">¶</a></h1>
+<span id="car"></span><h1>Car<a class="headerlink" href="#module-executors.car" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.car.car">
 <span class="sig-prename descclassname"><span class="pre">executors.car.</span></span><span class="sig-name descname"><span class="pre">car</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.car.car" title="Permalink to this definition">¶</a></dt>
@@ -774,7 +754,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.communicator">
-<span id="communicator"></span><h1>Communicator<a class="headerlink" href="#module-executors.communicator" title="Permalink to this headline">¶</a></h1>
+<span id="communicator"></span><h1>Communicator<a class="headerlink" href="#module-executors.communicator" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.communicator.notify">
 <span class="sig-prename descclassname"><span class="pre">executors.communicator.</span></span><span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.communicator.notify" title="Permalink to this definition">¶</a></dt>
@@ -814,7 +794,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.conditions">
-<span id="conditions"></span><h1>Conditions<a class="headerlink" href="#module-executors.conditions" title="Permalink to this headline">¶</a></h1>
+<span id="conditions"></span><h1>Conditions<a class="headerlink" href="#module-executors.conditions" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.conditions.conditions">
 <span class="sig-prename descclassname"><span class="pre">executors.conditions.</span></span><span class="sig-name descname"><span class="pre">conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.conditions.conditions" title="Permalink to this definition">¶</a></dt>
@@ -838,7 +818,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.commander">
-<span id="commander"></span><h1>Commander<a class="headerlink" href="#module-executors.commander" title="Permalink to this headline">¶</a></h1>
+<span id="commander"></span><h1>Commander<a class="headerlink" href="#module-executors.commander" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.commander.delay_calculator">
 <span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">delay_calculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.commander.delay_calculator" title="Permalink to this definition">¶</a></dt>
@@ -940,7 +920,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.controls">
-<span id="controls"></span><h1>Controls<a class="headerlink" href="#module-executors.controls" title="Permalink to this headline">¶</a></h1>
+<span id="controls"></span><h1>Controls<a class="headerlink" href="#module-executors.controls" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.controls.clear_logs">
 <span class="sig-prename descclassname"><span class="pre">executors.controls.</span></span><span class="sig-name descname"><span class="pre">clear_logs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.controls.clear_logs" title="Permalink to this definition">¶</a></dt>
@@ -1073,7 +1053,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.crontab">
-<span id="crontab"></span><h1>Crontab<a class="headerlink" href="#module-executors.crontab" title="Permalink to this headline">¶</a></h1>
+<span id="crontab"></span><h1>Crontab<a class="headerlink" href="#module-executors.crontab" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.crontab.crontab_executor">
 <span class="sig-prename descclassname"><span class="pre">executors.crontab.</span></span><span class="sig-name descname"><span class="pre">crontab_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.crontab.crontab_executor" title="Permalink to this definition">¶</a></dt>
@@ -1101,7 +1081,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.date_time">
-<span id="datetime"></span><h1>DateTime<a class="headerlink" href="#module-executors.date_time" title="Permalink to this headline">¶</a></h1>
+<span id="datetime"></span><h1>DateTime<a class="headerlink" href="#module-executors.date_time" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.date_time.current_date">
 <span class="sig-prename descclassname"><span class="pre">executors.date_time.</span></span><span class="sig-name descname"><span class="pre">current_date</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.date_time.current_date" title="Permalink to this definition">¶</a></dt>
@@ -1121,7 +1101,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.display_functions">
-<span id="displayfunctions"></span><h1>DisplayFunctions<a class="headerlink" href="#module-executors.display_functions" title="Permalink to this headline">¶</a></h1>
+<span id="displayfunctions"></span><h1>DisplayFunctions<a class="headerlink" href="#module-executors.display_functions" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.display_functions.brightness">
 <span class="sig-prename descclassname"><span class="pre">executors.display_functions.</span></span><span class="sig-name descname"><span class="pre">brightness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#executors.display_functions.brightness" title="Permalink to this definition">¶</a></dt>
@@ -1165,7 +1145,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.face">
-<span id="face"></span><h1>Face<a class="headerlink" href="#module-executors.face" title="Permalink to this headline">¶</a></h1>
+<span id="face"></span><h1>Face<a class="headerlink" href="#module-executors.face" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.face.face_detection">
 <span class="sig-prename descclassname"><span class="pre">executors.face.</span></span><span class="sig-name descname"><span class="pre">face_detection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.face.face_detection" title="Permalink to this definition">¶</a></dt>
@@ -1174,7 +1154,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.github">
-<span id="github"></span><h1>GitHub<a class="headerlink" href="#module-executors.github" title="Permalink to this headline">¶</a></h1>
+<span id="github"></span><h1>GitHub<a class="headerlink" href="#module-executors.github" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.github.github">
 <span class="sig-prename descclassname"><span class="pre">executors.github.</span></span><span class="sig-name descname"><span class="pre">github</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.github.github" title="Permalink to this definition">¶</a></dt>
@@ -1206,7 +1186,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.guard">
-<span id="guard"></span><h1>Guard<a class="headerlink" href="#module-executors.guard" title="Permalink to this headline">¶</a></h1>
+<span id="guard"></span><h1>Guard<a class="headerlink" href="#module-executors.guard" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.guard.guard_enable">
 <span class="sig-prename descclassname"><span class="pre">executors.guard.</span></span><span class="sig-name descname"><span class="pre">guard_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.guard.guard_enable" title="Permalink to this definition">¶</a></dt>
@@ -1240,7 +1220,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.internet">
-<span id="internet"></span><h1>Internet<a class="headerlink" href="#module-executors.internet" title="Permalink to this headline">¶</a></h1>
+<span id="internet"></span><h1>Internet<a class="headerlink" href="#module-executors.internet" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.internet.get_ssid">
 <span class="sig-prename descclassname"><span class="pre">executors.internet.</span></span><span class="sig-name descname"><span class="pre">get_ssid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.internet.get_ssid" title="Permalink to this definition">¶</a></dt>
@@ -1257,7 +1237,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.internet.internet_checker">
-<span class="sig-prename descclassname"><span class="pre">executors.internet.</span></span><span class="sig-name descname"><span class="pre">internet_checker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">speedtest.Speedtest</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.internet.internet_checker" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.internet.</span></span><span class="sig-name descname"><span class="pre">internet_checker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Speedtest</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.internet.internet_checker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses speed test api to check for internet connection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1322,7 +1302,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.lights">
-<span id="lights"></span><h1>Lights<a class="headerlink" href="#module-executors.lights" title="Permalink to this headline">¶</a></h1>
+<span id="lights"></span><h1>Lights<a class="headerlink" href="#module-executors.lights" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.lights.lights">
 <span class="sig-prename descclassname"><span class="pre">executors.lights.</span></span><span class="sig-name descname"><span class="pre">lights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.lights.lights" title="Permalink to this definition">¶</a></dt>
@@ -1336,10 +1316,10 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.location">
-<span id="location"></span><h1>Location<a class="headerlink" href="#module-executors.location" title="Permalink to this headline">¶</a></h1>
+<span id="location"></span><h1>Location<a class="headerlink" href="#module-executors.location" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.location.device_selector">
-<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">device_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.location.device_selector" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">device_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">AppleDevice</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.location.device_selector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selects a device using the received input string.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1450,7 +1430,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.location.locate_device">
-<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">locate_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.location.locate_device" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">locate_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AppleDevice</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.location.locate_device" title="Permalink to this definition">¶</a></dt>
 <dd><p>Speaks the location information of the target device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1478,7 +1458,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.location.location_services">
-<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">location_services</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pyicloud.services.findmyiphone.AppleDevice</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">NoReturn</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.location.location_services" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">location_services</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AppleDevice</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">NoReturn</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.location.location_services" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the current location of an Apple device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1508,7 +1488,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.logger">
-<span id="logger"></span><h1>Logger<a class="headerlink" href="#module-executors.logger" title="Permalink to this headline">¶</a></h1>
+<span id="logger"></span><h1>Logger<a class="headerlink" href="#module-executors.logger" title="Permalink to this heading">¶</a></h1>
 <p>Initiates a custom logger to be accessed across modules.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CustomLogger</span>
 </pre></div>
@@ -1525,7 +1505,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <p>Instantiates logger to self.logger which is used by the function methods.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="executors.logger.TestLogger.custom_time">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">custom_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">logging.Formatter</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">time.time</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">time.struct_time</span></span></span><a class="headerlink" href="#executors.logger.TestLogger.custom_time" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">custom_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Formatter</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">time</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">struct_time</span></span></span><a class="headerlink" href="#executors.logger.TestLogger.custom_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates custom timezone for <code class="docutils literal notranslate"><span class="pre">logging</span></code> which gets used only when invoked by <code class="docutils literal notranslate"><span class="pre">Docker</span></code>.</p>
 <p>This is used only when triggered within a <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">container</span></code> as it uses UTC timezone.</p>
 <dl class="field-list simple">
@@ -1552,7 +1532,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.logger.custom_handler">
-<span class="sig-prename descclassname"><span class="pre">executors.logger.</span></span><span class="sig-name descname"><span class="pre">custom_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">logging.FileHandler</span></span></span><a class="headerlink" href="#executors.logger.custom_handler" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.logger.</span></span><span class="sig-name descname"><span class="pre">custom_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FileHandler</span></span></span><a class="headerlink" href="#executors.logger.custom_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a FileHandler, sets the log format and returns it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1580,7 +1560,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.offline">
-<span id="offline"></span><h1>Offline<a class="headerlink" href="#module-executors.offline" title="Permalink to this headline">¶</a></h1>
+<span id="offline"></span><h1>Offline<a class="headerlink" href="#module-executors.offline" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.offline.automator">
 <span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">automator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.offline.automator" title="Permalink to this definition">¶</a></dt>
@@ -1650,7 +1630,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.offline.repeated_tasks">
-<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">repeated_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.timer.executor.RepeatedTimer" title="modules.timer.executor.RepeatedTimer"><span class="pre">modules.timer.executor.RepeatedTimer</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.offline.repeated_tasks" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">repeated_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.timer.executor.RepeatedTimer" title="modules.timer.executor.RepeatedTimer"><span class="pre">RepeatedTimer</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.offline.repeated_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs tasks on a timed basis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1664,7 +1644,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.others">
-<span id="others"></span><h1>Others<a class="headerlink" href="#module-executors.others" title="Permalink to this headline">¶</a></h1>
+<span id="others"></span><h1>Others<a class="headerlink" href="#module-executors.others" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.others.apps">
 <span class="sig-prename descclassname"><span class="pre">executors.others.</span></span><span class="sig-name descname"><span class="pre">apps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.others.apps" title="Permalink to this definition">¶</a></dt>
@@ -1797,7 +1777,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.port_handler">
-<span id="port-handler"></span><h1>Port Handler<a class="headerlink" href="#module-executors.port_handler" title="Permalink to this headline">¶</a></h1>
+<span id="port-handler"></span><h1>Port Handler<a class="headerlink" href="#module-executors.port_handler" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.port_handler.get_free_port">
 <span class="sig-prename descclassname"><span class="pre">executors.port_handler.</span></span><span class="sig-name descname"><span class="pre">get_free_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#executors.port_handler.get_free_port" title="Permalink to this definition">¶</a></dt>
@@ -1879,7 +1859,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.processor">
-<span id="processor"></span><h1>Processor<a class="headerlink" href="#module-executors.processor" title="Permalink to this headline">¶</a></h1>
+<span id="processor"></span><h1>Processor<a class="headerlink" href="#module-executors.processor" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.processor.delete_db">
 <span class="sig-prename descclassname"><span class="pre">executors.processor.</span></span><span class="sig-name descname"><span class="pre">delete_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.processor.delete_db" title="Permalink to this definition">¶</a></dt>
@@ -1888,7 +1868,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.processor.start_processes">
-<span class="sig-prename descclassname"><span class="pre">executors.processor.</span></span><span class="sig-name descname"><span class="pre">start_processes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">multiprocessing.context.Process</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">multiprocessing.context.Process</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.processor.start_processes" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.processor.</span></span><span class="sig-name descname"><span class="pre">start_processes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Process</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Process</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.processor.start_processes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates multiple background processes to achieve parallelization.</p>
 <dl class="simple">
 <dt>Methods</dt><dd><ul class="simple">
@@ -1918,7 +1898,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.remind">
-<span id="remind"></span><h1>Remind<a class="headerlink" href="#module-executors.remind" title="Permalink to this headline">¶</a></h1>
+<span id="remind"></span><h1>Remind<a class="headerlink" href="#module-executors.remind" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.remind.create_reminder">
 <span class="sig-prename descclassname"><span class="pre">executors.remind.</span></span><span class="sig-name descname"><span class="pre">create_reminder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">am_pm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_about</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.remind.create_reminder" title="Permalink to this definition">¶</a></dt>
@@ -1961,7 +1941,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.robinhood">
-<span id="robinhood"></span><h1>Robinhood<a class="headerlink" href="#module-executors.robinhood" title="Permalink to this headline">¶</a></h1>
+<span id="robinhood"></span><h1>Robinhood<a class="headerlink" href="#module-executors.robinhood" title="Permalink to this heading">¶</a></h1>
 <p>Initiates robinhood client to get the portfolio details.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.robinhood.robinhood">
@@ -1985,7 +1965,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.system">
-<span id="system"></span><h1>System<a class="headerlink" href="#module-executors.system" title="Permalink to this headline">¶</a></h1>
+<span id="system"></span><h1>System<a class="headerlink" href="#module-executors.system" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.system.hosted_device_info">
 <span class="sig-prename descclassname"><span class="pre">executors.system.</span></span><span class="sig-name descname"><span class="pre">hosted_device_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#executors.system.hosted_device_info" title="Permalink to this definition">¶</a></dt>
@@ -2021,7 +2001,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.telegram">
-<span id="telegram"></span><h1>Telegram<a class="headerlink" href="#module-executors.telegram" title="Permalink to this headline">¶</a></h1>
+<span id="telegram"></span><h1>Telegram<a class="headerlink" href="#module-executors.telegram" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.telegram.handler">
 <span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.telegram.handler" title="Permalink to this definition">¶</a></dt>
@@ -2037,7 +2017,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.todo_list">
-<span id="to-do"></span><h1>To Do<a class="headerlink" href="#module-executors.todo_list" title="Permalink to this headline">¶</a></h1>
+<span id="to-do"></span><h1>To Do<a class="headerlink" href="#module-executors.todo_list" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.todo_list.add_todo">
 <span class="sig-prename descclassname"><span class="pre">executors.todo_list.</span></span><span class="sig-name descname"><span class="pre">add_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.todo_list.add_todo" title="Permalink to this definition">¶</a></dt>
@@ -2064,7 +2044,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.tv">
-<span id="tv"></span><h1>TV<a class="headerlink" href="#module-executors.tv" title="Permalink to this headline">¶</a></h1>
+<span id="tv"></span><h1>TV<a class="headerlink" href="#module-executors.tv" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.tv.television">
 <span class="sig-prename descclassname"><span class="pre">executors.tv.</span></span><span class="sig-name descname"><span class="pre">television</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.tv.television" title="Permalink to this definition">¶</a></dt>
@@ -2078,7 +2058,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.unconditional">
-<span id="unconditional"></span><h1>Unconditional<a class="headerlink" href="#module-executors.unconditional" title="Permalink to this headline">¶</a></h1>
+<span id="unconditional"></span><h1>Unconditional<a class="headerlink" href="#module-executors.unconditional" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.unconditional.alpha">
 <span class="sig-prename descclassname"><span class="pre">executors.unconditional.</span></span><span class="sig-name descname"><span class="pre">alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.unconditional.alpha" title="Permalink to this definition">¶</a></dt>
@@ -2155,7 +2135,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.vpn_server">
-<span id="vpn-server"></span><h1>VPN Server<a class="headerlink" href="#module-executors.vpn_server" title="Permalink to this headline">¶</a></h1>
+<span id="vpn-server"></span><h1>VPN Server<a class="headerlink" href="#module-executors.vpn_server" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.vpn_server.vpn_server">
 <span class="sig-prename descclassname"><span class="pre">executors.vpn_server.</span></span><span class="sig-name descname"><span class="pre">vpn_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.vpn_server.vpn_server" title="Permalink to this definition">¶</a></dt>
@@ -2186,7 +2166,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.weather">
-<span id="weather"></span><h1>Weather<a class="headerlink" href="#module-executors.weather" title="Permalink to this headline">¶</a></h1>
+<span id="weather"></span><h1>Weather<a class="headerlink" href="#module-executors.weather" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.weather.weather">
 <span class="sig-prename descclassname"><span class="pre">executors.weather.</span></span><span class="sig-name descname"><span class="pre">weather</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.weather.weather" title="Permalink to this definition">¶</a></dt>
@@ -2201,7 +2181,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="module-executors.wiki">
-<span id="wikipedia"></span><h1>Wikipedia<a class="headerlink" href="#module-executors.wiki" title="Permalink to this headline">¶</a></h1>
+<span id="wikipedia"></span><h1>Wikipedia<a class="headerlink" href="#module-executors.wiki" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.wiki.wikipedia_">
 <span class="sig-prename descclassname"><span class="pre">executors.wiki.</span></span><span class="sig-name descname"><span class="pre">wikipedia_</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.wiki.wikipedia_" title="Permalink to this definition">¶</a></dt>
@@ -2210,10 +2190,10 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="modules">
-<h1>———-Modules———-<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
+<h1>———-Modules———-<a class="headerlink" href="#modules" title="Permalink to this heading">¶</a></h1>
 </section>
 <section id="module-modules.audio.speaker">
-<span id="audio"></span><h1>Audio<a class="headerlink" href="#module-modules.audio.speaker" title="Permalink to this headline">¶</a></h1>
+<span id="audio"></span><h1>Audio<a class="headerlink" href="#module-modules.audio.speaker" title="Permalink to this heading">¶</a></h1>
 <p>Module for speaker and voice options.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Speaker</span>
 </pre></div>
@@ -2340,7 +2320,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.audio.tts_stt.audio_to_text">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.tts_stt.</span></span><span class="sig-name descname"><span class="pre">audio_to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">pydantic.types.FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.audio.tts_stt.audio_to_text" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.audio.tts_stt.</span></span><span class="sig-name descname"><span class="pre">audio_to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.audio.tts_stt.audio_to_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts audio to text using speech recognition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2357,7 +2337,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.audio.tts_stt.text_to_audio">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.tts_stt.</span></span><span class="sig-name descname"><span class="pre">text_to_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">pydantic.types.FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">pydantic.types.FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.audio.tts_stt.text_to_audio" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.audio.tts_stt.</span></span><span class="sig-name descname"><span class="pre">text_to_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.audio.tts_stt.text_to_audio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts text into an audio file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2387,7 +2367,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.audio.voices.voice_default">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.voices.</span></span><span class="sig-name descname"><span class="pre">voice_default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stdout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyttsx3.engine.Engine</span></span></span><a class="headerlink" href="#modules.audio.voices.voice_default" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.audio.voices.</span></span><span class="sig-name descname"><span class="pre">voice_default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stdout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Engine</span></span></span><a class="headerlink" href="#modules.audio.voices.voice_default" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets voice module to default.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2398,11 +2378,11 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 </section>
 <section id="id1">
-<h1>Car<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<h1>Car<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-modules.car.connector"></span><p><strong>API Reference:</strong> <a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo">https://documenter.getpostman.com/view/6250319/RznBMzqo</a> for Jaguar LandRover InControl API.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.car.connector.Connect">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.car.connector.</span></span><span class="sig-name descname"><span class="pre">Connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">uuid.UUID</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refresh_token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">china_servers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth_expiry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.car.connector.Connect" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.car.connector.</span></span><span class="sig-name descname"><span class="pre">Connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">UUID</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refresh_token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">china_servers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth_expiry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.car.connector.Connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates Connection object to connect to the Jaguar LandRover InControl Remote Car API.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connect</span>
 </pre></div>
@@ -2502,7 +2482,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <span class="target" id="module-modules.car.controller"></span><p><strong>API Reference:</strong> <a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo">https://documenter.getpostman.com/view/6250319/RznBMzqo</a> for Jaguar LandRover InControl API.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.car.controller.Control">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.car.controller.</span></span><span class="sig-name descname"><span class="pre">Control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modules.car.connector.Connect" title="modules.car.connector.Connect"><span class="pre">modules.car.connector.Connect</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.car.controller.Control" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.car.controller.</span></span><span class="sig-name descname"><span class="pre">Control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modules.car.connector.Connect" title="modules.car.connector.Connect"><span class="pre">Connect</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.car.controller.Control" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates Vehicle object to perform remote actions after connecting to the InControl API.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Control</span>
 </pre></div>
@@ -3255,7 +3235,7 @@ Pass 155 for LO and 285 for HI.</p>
 
 </section>
 <section id="id2">
-<h1>Conditions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h1>
+<h1>Conditions<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-modules.conditions.conversation"></span><p>List of conversational keywords for each variable which is condition matched in main module.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Conditions</span>
 </pre></div>
@@ -3267,7 +3247,7 @@ Pass 155 for LO and 285 for HI.</p>
 </div>
 </section>
 <section id="config">
-<h1>Config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h1>
+<h1>Config<a class="headerlink" href="#config" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.models.config.CronConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.config.</span></span><span class="sig-name descname"><span class="pre">CronConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.config.CronConfig" title="Permalink to this definition">¶</a></dt>
@@ -3305,19 +3285,103 @@ Pass 155 for LO and 285 for HI.</p>
 
 </section>
 <section id="id3">
-<h1>Crontab<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h1>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.crontab.expression">
-<span class="sig-prename descclassname"><span class="pre">modules.crontab.</span></span><span class="sig-name descname"><span class="pre">expression</span></span><a class="headerlink" href="#modules.crontab.expression" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of &lt;module ‘modules.crontab.expression’ from ‘/Users/vicky/Desktop/git/Jarvis/modules/crontab/expression.py’&gt;</p>
+<h1>Crontab<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h1>
+<span class="target" id="module-modules.crontab.expression"></span><dl class="py class">
+<dt class="sig sig-object py" id="modules.crontab.expression.CronExpression">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.crontab.expression.</span></span><span class="sig-name descname"><span class="pre">CronExpression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epoch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(1970,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epoch_utc_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.crontab.expression.CronExpression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates CronExpression object to validate a crontab entry.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CronExpression</span>
+</pre></div>
+</div>
+<p>Instantiates a CronExpression object with an optionally defined epoch.</p>
+<p class="rubric">Notes</p>
+<dl class="simple">
+<dt>If the epoch is defined, the UTC offset can be specified one of two ways:</dt><dd><ul class="simple">
+<li><p>As the sixth element in ‘epoch’ or supplied in epoch_utc_offset.</p></li>
+<li><p>The epoch should be defined down to the minute sorted by descending significance.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.crontab.expression.CronExpression.check_trigger">
+<span class="sig-name descname"><span class="pre">check_trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_tuple</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">utc_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.crontab.expression.CronExpression.check_trigger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns boolean indicating if the trigger is active at the given time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date_tuple</strong> – Tuple of year, month, date, hour and minute.</p></li>
+<li><p><strong>utc_offset</strong> – UTC offset.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul>
+<li><div class="line-block">
+<div class="line">The date tuple should be in the local time. Unless periodicities are used, utc_offset does not need to</div>
+<div class="line">be specified. If periodicities are used, specifically in the hour and minutes fields, it is crucial that</div>
+<div class="line">the utc_offset is specified.</div>
+</div>
+</li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A boolean flag to indicate whether the given datetime matches the crontab entry.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.crontab.expression.CronExpression.compute_numtab">
+<span class="sig-name descname"><span class="pre">compute_numtab</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.crontab.expression.CronExpression.compute_numtab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recomputes the sets for the static ranges of the trigger time.</p>
+<p class="rubric">Notes</p>
+<p>This method should only be called by the user if the string_tab member is modified.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.crontab.expression.parse_atom">
+<span class="sig-prename descclassname"><span class="pre">modules.crontab.expression.</span></span><span class="sig-name descname"><span class="pre">parse_atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minmax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span></span></span><a class="headerlink" href="#modules.crontab.expression.parse_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a set containing valid values for a given cron-style range of numbers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parse</strong> – Element to be parsed.</p></li>
+<li><p><strong>minmax</strong> – Two element iterable containing the inclusive upper and lower limits of the expression</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_atom</span><span class="p">(</span><span class="s2">&quot;1-5&quot;</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="go">set([1, 2, 3, 4, 5])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_atom</span><span class="p">(</span><span class="s2">&quot;*/6&quot;</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">23</span><span class="p">))</span>
+<span class="go">set([0, 6, 12, 18])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_atom</span><span class="p">(</span><span class="s2">&quot;18-6/4&quot;</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">23</span><span class="p">))</span>
+<span class="go">set([18, 22, 0, 4])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_atom</span><span class="p">(</span><span class="s2">&quot;*/9&quot;</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">23</span><span class="p">))</span>
+<span class="go">set([0, 9, 18])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
 <section id="module-modules.database.database">
-<span id="database"></span><h1>Database<a class="headerlink" href="#module-modules.database.database" title="Permalink to this headline">¶</a></h1>
+<span id="database"></span><h1>Database<a class="headerlink" href="#module-modules.database.database" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.database.database.Database">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.database.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">pydantic.types.FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.database.database.Database" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.database.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.database.database.Database" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a connection to the base DB.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Database</span>
 </pre></div>
@@ -3349,7 +3413,7 @@ Pass 155 for LO and 285 for HI.</p>
 
 </section>
 <section id="module-modules.exceptions">
-<span id="exceptions"></span><h1>Exceptions<a class="headerlink" href="#module-modules.exceptions" title="Permalink to this headline">¶</a></h1>
+<span id="exceptions"></span><h1>Exceptions<a class="headerlink" href="#module-modules.exceptions" title="Permalink to this heading">¶</a></h1>
 <p>This is a space for custom exceptions and errors masking defaults with meaningful names.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Exceptions</span>
 </pre></div>
@@ -3437,7 +3501,7 @@ Pass 155 for LO and 285 for HI.</p>
 
 </section>
 <section id="module-modules.face.facial_recognition">
-<span id="face-recognition"></span><h1>Face Recognition<a class="headerlink" href="#module-modules.face.facial_recognition" title="Permalink to this headline">¶</a></h1>
+<span id="face-recognition"></span><h1>Face Recognition<a class="headerlink" href="#module-modules.face.facial_recognition" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.face.facial_recognition.Face">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.face.facial_recognition.</span></span><span class="sig-name descname"><span class="pre">Face</span></span><a class="headerlink" href="#modules.face.facial_recognition.Face" title="Permalink to this definition">¶</a></dt>
@@ -3478,7 +3542,7 @@ None - NoneType if no face was recognized.</p>
 
 </section>
 <section id="id4">
-<h1>Lights<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h1>
+<h1>Lights<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-modules.lights.smart_lights"></span><dl class="py class">
 <dt class="sig sig-object py" id="modules.lights.smart_lights.MagicHomeApi">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.lights.smart_lights.</span></span><span class="sig-name descname"><span class="pre">MagicHomeApi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi" title="Permalink to this definition">¶</a></dt>
@@ -3607,7 +3671,7 @@ Whites can have a value of None.</p>
 <span class="target" id="module-modules.lights.preset_values"></span><p>Dictionary values of color and preset number for the lights.</p>
 </section>
 <section id="module-modules.dictionary.dictionary">
-<span id="meanings"></span><h1>Meanings<a class="headerlink" href="#module-modules.dictionary.dictionary" title="Permalink to this headline">¶</a></h1>
+<span id="meanings"></span><h1>Meanings<a class="headerlink" href="#module-modules.dictionary.dictionary" title="Permalink to this heading">¶</a></h1>
 <p>Module to get meanings of words from <a class="reference external" href="http://wordnetweb.princeton.edu/perl/webwn?s=">wordnetweb.princeton.edu</a>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Dictionary</span>
 </pre></div>
@@ -3631,7 +3695,7 @@ Whites can have a value of None.</p>
 
 </section>
 <section id="module-modules.meetings.events">
-<span id="meetings"></span><h1>Meetings<a class="headerlink" href="#module-modules.meetings.events" title="Permalink to this headline">¶</a></h1>
+<span id="meetings"></span><h1>Meetings<a class="headerlink" href="#module-modules.meetings.events" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.meetings.events.event_app_launcher">
 <span class="sig-prename descclassname"><span class="pre">modules.meetings.events.</span></span><span class="sig-name descname"><span class="pre">event_app_launcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.meetings.events.event_app_launcher" title="Permalink to this definition">¶</a></dt>
@@ -3709,7 +3773,7 @@ Whites can have a value of None.</p>
 
 </section>
 <section id="models">
-<h1>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h1>
+<h1>Models<a class="headerlink" href="#models" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.models.models.FileIO">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.models.</span></span><span class="sig-name descname"><span class="pre">FileIO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.models.FileIO" title="Permalink to this definition">¶</a></dt>
@@ -3721,67 +3785,67 @@ Whites can have a value of None.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.automation">
-<span class="sig-name descname"><span class="pre">automation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.automation" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">automation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.automation" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.base_db">
-<span class="sig-name descname"><span class="pre">base_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.base_db" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">base_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.base_db" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.event_script">
-<span class="sig-name descname"><span class="pre">event_script</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.event_script" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">event_script</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.event_script" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.frequent">
-<span class="sig-name descname"><span class="pre">frequent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.frequent" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">frequent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.frequent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.location">
-<span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.location" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.location" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.notes">
-<span class="sig-name descname"><span class="pre">notes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.notes" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">notes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.notes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.robinhood">
-<span class="sig-name descname"><span class="pre">robinhood</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.robinhood" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">robinhood</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.robinhood" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.smart_devices">
-<span class="sig-name descname"><span class="pre">smart_devices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.smart_devices" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">smart_devices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.smart_devices" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.speech_synthesis_log">
-<span class="sig-name descname"><span class="pre">speech_synthesis_log</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.speech_synthesis_log" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">speech_synthesis_log</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.speech_synthesis_log" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.speech_synthesis_wav">
-<span class="sig-name descname"><span class="pre">speech_synthesis_wav</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.speech_synthesis_wav" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">speech_synthesis_wav</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.speech_synthesis_wav" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.task_db">
-<span class="sig-name descname"><span class="pre">task_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.task_db" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">task_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.task_db" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.tmp_automation">
-<span class="sig-name descname"><span class="pre">tmp_automation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.tmp_automation" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">tmp_automation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.tmp_automation" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.FileIO.training">
-<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.training" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.training" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -3819,7 +3883,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.alt_gmail_user">
-<span class="sig-name descname"><span class="pre">alt_gmail_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.alt_gmail_user" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">alt_gmail_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.alt_gmail_user" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3844,12 +3908,12 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.bot_voice_timeout">
-<span class="sig-name descname"><span class="pre">bot_voice_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.bot_voice_timeout" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">bot_voice_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.bot_voice_timeout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.car_email">
-<span class="sig-name descname"><span class="pre">car_email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.car_email" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">car_email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.car_email" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3869,7 +3933,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.event_app">
-<span class="sig-name descname"><span class="pre">event_app</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">modules.models.models.EventApp</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.event_app" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">event_app</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EventApp</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.event_app" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3889,12 +3953,12 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.gmail_user">
-<span class="sig-name descname"><span class="pre">gmail_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.gmail_user" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">gmail_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.gmail_user" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.home">
-<span class="sig-name descname"><span class="pre">home</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.DirectoryPath</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.home" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">home</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DirectoryPath</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.home" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3909,12 +3973,12 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.icloud_user">
-<span class="sig-name descname"><span class="pre">icloud_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.icloud_user" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">icloud_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.icloud_user" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.ics_url">
-<span class="sig-name descname"><span class="pre">ics_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.HttpUrl</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.ics_url" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">ics_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HttpUrl</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.ics_url" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3954,7 +4018,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.offline_port">
-<span class="sig-name descname"><span class="pre">offline_port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.offline_port" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">offline_port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.offline_port" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -3970,12 +4034,12 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.phrase_limit">
-<span class="sig-name descname"><span class="pre">phrase_limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.phrase_limit" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">phrase_limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.phrase_limit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.recipient">
-<span class="sig-name descname"><span class="pre">recipient</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.recipient" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">recipient</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.recipient" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3995,7 +4059,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.robinhood_user">
-<span class="sig-name descname"><span class="pre">robinhood_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.robinhood_user" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">robinhood_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.robinhood_user" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4015,7 +4079,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.sensitivity">
-<span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sensitivity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sensitivity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4035,22 +4099,22 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.sync_events">
-<span class="sig-name descname"><span class="pre">sync_events</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sync_events" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">sync_events</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sync_events" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.sync_meetings">
-<span class="sig-name descname"><span class="pre">sync_meetings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sync_meetings" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">sync_meetings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sync_meetings" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.tasks">
-<span class="sig-name descname"><span class="pre">tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">modules.models.models.CustomDict</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.tasks" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">CustomDict</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.tasks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.timeout">
-<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.timeout" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.timeout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4070,7 +4134,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.volume">
-<span class="sig-name descname"><span class="pre">volume</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.volume" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">volume</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.volume" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4095,7 +4159,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.website">
-<span class="sig-name descname"><span class="pre">website</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.HttpUrl</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.website" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">website</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HttpUrl</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.website" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4107,7 +4171,7 @@ Whites can have a value of None.</p>
 
 </section>
 <section id="id5">
-<h1>Offline<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h1>
+<h1>Offline<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-modules.offline.compatibles"></span><dl class="py function">
 <dt class="sig sig-object py" id="modules.offline.compatibles.offline_compatible">
 <span class="sig-prename descclassname"><span class="pre">modules.offline.compatibles.</span></span><span class="sig-name descname"><span class="pre">offline_compatible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.offline.compatibles.offline_compatible" title="Permalink to this definition">¶</a></dt>
@@ -4132,7 +4196,7 @@ Whites can have a value of None.</p>
 
 </section>
 <section id="module-modules.retry.retry">
-<span id="retry-handler"></span><h1>Retry Handler<a class="headerlink" href="#module-modules.retry.retry" title="Permalink to this headline">¶</a></h1>
+<span id="retry-handler"></span><h1>Retry Handler<a class="headerlink" href="#module-modules.retry.retry" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.retry.retry.retry">
 <span class="sig-prename descclassname"><span class="pre">modules.retry.retry.</span></span><span class="sig-name descname"><span class="pre">retry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attempts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_exc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.retry.retry.retry" title="Permalink to this definition">¶</a></dt>
@@ -4157,7 +4221,7 @@ Whites can have a value of None.</p>
 
 </section>
 <section id="module-modules.timer.executor">
-<span id="repeated-timer"></span><h1>Repeated Timer<a class="headerlink" href="#module-modules.timer.executor" title="Permalink to this headline">¶</a></h1>
+<span id="repeated-timer"></span><h1>Repeated Timer<a class="headerlink" href="#module-modules.timer.executor" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.timer.executor.RepeatedTimer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.timer.executor.</span></span><span class="sig-name descname"><span class="pre">RepeatedTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.timer.executor.RepeatedTimer" title="Permalink to this definition">¶</a></dt>
@@ -4192,14 +4256,14 @@ Whites can have a value of None.</p>
 
 </section>
 <section id="module-modules.utils.shared">
-<span id="shared-resources"></span><h1>Shared Resources<a class="headerlink" href="#module-modules.utils.shared" title="Permalink to this headline">¶</a></h1>
+<span id="shared-resources"></span><h1>Shared Resources<a class="headerlink" href="#module-modules.utils.shared" title="Permalink to this heading">¶</a></h1>
 <p>This is a space for variables shared across multiple modules.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Shared</span>
 </pre></div>
 </div>
 </section>
 <section id="module-modules.utils.support">
-<span id="support"></span><h1>Support<a class="headerlink" href="#module-modules.utils.support" title="Permalink to this headline">¶</a></h1>
+<span id="support"></span><h1>Support<a class="headerlink" href="#module-modules.utils.support" title="Permalink to this heading">¶</a></h1>
 <p>This is a space for support functions used across different modules.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Support</span>
 </pre></div>
@@ -4402,7 +4466,7 @@ Whites can have a value of None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.hashed">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">hashed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">uuid.UUID</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.support.hashed" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">hashed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UUID</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.support.hashed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates sha from UUID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -4639,7 +4703,7 @@ Whites can have a value of None.</p>
 
 </section>
 <section id="id6">
-<h1>Telegram<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h1>
+<h1>Telegram<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-modules.telegram.bot"></span><dl class="py class">
 <dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.telegram.bot.</span></span><span class="sig-name descname"><span class="pre">TelegramBot</span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot" title="Permalink to this definition">¶</a></dt>
@@ -4747,7 +4811,7 @@ Whites can have a value of None.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.reply_to">
-<span class="sig-name descname"><span class="pre">reply_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">requests.models.Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.reply_to" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">reply_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.reply_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a payload to reply to a message received.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -4768,7 +4832,7 @@ Whites can have a value of None.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.send_audio">
-<span class="sig-name descname"><span class="pre">send_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HTML'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">requests.models.Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.send_audio" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">send_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HTML'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.send_audio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends an audio file to the user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -4789,7 +4853,7 @@ Whites can have a value of None.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.send_message">
-<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">requests.models.Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.send_message" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.send_message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a payload to reply to a message received.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -4903,7 +4967,7 @@ Whites can have a value of None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.telegram.audio_handler.audio_converter_win">
-<span class="sig-prename descclassname"><span class="pre">modules.telegram.audio_handler.</span></span><span class="sig-name descname"><span class="pre">audio_converter_win</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">pydantic.types.FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_audio_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.telegram.audio_handler.audio_converter_win" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.audio_handler.</span></span><span class="sig-name descname"><span class="pre">audio_converter_win</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_audio_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.telegram.audio_handler.audio_converter_win" title="Permalink to this definition">¶</a></dt>
 <dd><p>Imports AudioSegment from pydub.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -4923,7 +4987,7 @@ Whites can have a value of None.</p>
 
 </section>
 <section id="module-modules.temperature.temperature">
-<span id="temperature"></span><h1>Temperature<a class="headerlink" href="#module-modules.temperature.temperature" title="Permalink to this headline">¶</a></h1>
+<span id="temperature"></span><h1>Temperature<a class="headerlink" href="#module-modules.temperature.temperature" title="Permalink to this heading">¶</a></h1>
 <p>Convert common temperature values used in the main module.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Temperature</span>
 </pre></div>
@@ -5032,10 +5096,10 @@ Whites can have a value of None.</p>
 
 </section>
 <section id="module-modules.timeout.timeout">
-<span id="timeout"></span><h1>Timeout<a class="headerlink" href="#module-modules.timeout.timeout" title="Permalink to this headline">¶</a></h1>
+<span id="timeout"></span><h1>Timeout<a class="headerlink" href="#module-modules.timeout.timeout" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.timeout.timeout.timeout">
-<span class="sig-prename descclassname"><span class="pre">modules.timeout.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">logging.Logger</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response"><span class="pre">modules.timeout.responder.Response</span></a></span></span><a class="headerlink" href="#modules.timeout.timeout.timeout" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.timeout.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Logger</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response"><span class="pre">Response</span></a></span></span><a class="headerlink" href="#modules.timeout.timeout.timeout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs the given function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5102,7 +5166,7 @@ Whites can have a value of None.</p>
 
 </section>
 <section id="module-modules.tv.tv_controls">
-<span id="tv-connector"></span><h1>TV Connector<a class="headerlink" href="#module-modules.tv.tv_controls" title="Permalink to this headline">¶</a></h1>
+<span id="tv-connector"></span><h1>TV Connector<a class="headerlink" href="#module-modules.tv.tv_controls" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.tv.tv_controls.</span></span><span class="sig-name descname"><span class="pre">TV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.tv.tv_controls.TV" title="Permalink to this definition">¶</a></dt>
@@ -5310,7 +5374,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 
 </section>
 <section id="module-modules.wakeonlan.wakeonlan">
-<span id="wakeonlan"></span><h1>WakeOnLAN<a class="headerlink" href="#module-modules.wakeonlan.wakeonlan" title="Permalink to this headline">¶</a></h1>
+<span id="wakeonlan"></span><h1>WakeOnLAN<a class="headerlink" href="#module-modules.wakeonlan.wakeonlan" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.wakeonlan.wakeonlan.WakeOnLan">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.wakeonlan.wakeonlan.</span></span><span class="sig-name descname"><span class="pre">WakeOnLan</span></span><a class="headerlink" href="#modules.wakeonlan.wakeonlan.WakeOnLan" title="Permalink to this definition">¶</a></dt>
@@ -5364,7 +5428,7 @@ mac address given as a parameter.</p>
 
 </section>
 <section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
@@ -5388,7 +5452,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-api.fast">API Handler</a></li>
 <li><a class="reference internal" href="#module-api.authenticator">API Authenticator</a></li>
 <li><a class="reference internal" href="#module-api.server">API Server</a></li>
-<li><a class="reference internal" href="#module-api.cron">API CronTab</a></li>
 <li><a class="reference internal" href="#api-models">API Models</a></li>
 <li><a class="reference internal" href="#module-api.report_gatherer">API Robinhood</a></li>
 <li><a class="reference internal" href="#api-robinhood-helper">API Robinhood Helper</a></li>
@@ -5473,7 +5536,7 @@ mac address given as a parameter.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -5496,7 +5559,7 @@ mac address given as a parameter.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2021, Vignesh Sivanandha Rao.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     </div>
   </body>
 </html>

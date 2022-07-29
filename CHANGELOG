@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+6.3.0 (07/29/2022)
+------------------
+- Move default cron expression to rh_helper.py
+- Fix docs alias
+
 6.2.9 (07/28/2022)
 ------------------
 - Configure more than one wake word for Jarvis

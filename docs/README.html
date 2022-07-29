@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
@@ -13,6 +13,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -89,10 +90,10 @@
 <p><strong>Reach Out</strong></p>
 <p><a class="reference external" href="https://vigneshrao.com/contact"><img alt="Ask Me | Anything " src="https://img.shields.io/badge/Ask%20me-Anything-1abc9c.svg" /></a></p>
 <section id="jarvis">
-<h1>Jarvis<a class="headerlink" href="#jarvis" title="Permalink to this headline">¶</a></h1>
+<h1>Jarvis<a class="headerlink" href="#jarvis" title="Permalink to this heading">¶</a></h1>
 <p>IronMan’s Jarvis with python</p>
 <section id="prep">
-<h2>Prep<a class="headerlink" href="#prep" title="Permalink to this headline">¶</a></h2>
+<h2>Prep<a class="headerlink" href="#prep" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><strong>MacOS</strong> <br> <em>Tested on <strong>MacOS High Sierra, Mojave, Catalina, Big Sur, and Monterey</strong></em></p>
 <ul>
@@ -123,7 +124,7 @@
 </ul>
 </section>
 <section id="setup">
-<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Clone this <a class="reference external" href="https://github.com/thevickypedia/Jarvis.git">repository</a> or download it from <a class="reference external" href="https://pypi.org/project/jarvis-ironman/">pypi</a></p></li>
 <li><p>Run the following commands in a command-line/terminal:</p>
@@ -143,7 +144,7 @@
 </ul>
 </section>
 <section id="env-variables">
-<h2>ENV Variables<a class="headerlink" href="#env-variables" title="Permalink to this headline">¶</a></h2>
+<h2>ENV Variables<a class="headerlink" href="#env-variables" title="Permalink to this heading">¶</a></h2>
 <p>Environment variables are loaded from a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file and validated using <code class="docutils literal notranslate"><span class="pre">pydantic</span></code></p>
 <details>
 <summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary><ul class="simple">
@@ -250,7 +251,7 @@ for wake word detection.</p>
 </ul>
 </details></section>
 <section id="smart-devices">
-<h2>Smart Devices<a class="headerlink" href="#smart-devices" title="Permalink to this headline">¶</a></h2>
+<h2>Smart Devices<a class="headerlink" href="#smart-devices" title="Permalink to this heading">¶</a></h2>
 <p>A source file <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> is used to store smart devices’ hostnames. <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> supports <code class="docutils literal notranslate"><span class="pre">MagicHome</span></code> lights and <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> TVs.</p>
 <details>
 <summary><strong>Setup Instructions</strong></summary><blockquote>
@@ -275,7 +276,7 @@ for wake word detection.</p>
 </div>
 </details></section>
 <section id="automation-setup-optional">
-<h2>Automation Setup [Optional]<a class="headerlink" href="#automation-setup-optional" title="Permalink to this headline">¶</a></h2>
+<h2>Automation Setup [Optional]<a class="headerlink" href="#automation-setup-optional" title="Permalink to this heading">¶</a></h2>
 <p>Executes <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/offline/compatibles.py">offline compatible</a> tasks
 at pre-defined times without any user interaction. Uses an <code class="docutils literal notranslate"><span class="pre">automation.yaml</span></code> file as source which should be stored
 within the directory <code class="docutils literal notranslate"><span class="pre">fileio</span></code></p>
@@ -304,14 +305,14 @@ within the directory <code class="docutils literal notranslate"><span class="pre
 </div>
 </details></section>
 <section id="coding-standards">
-<h2>Coding Standards<a class="headerlink" href="#coding-standards" title="Permalink to this headline">¶</a></h2>
+<h2>Coding Standards<a class="headerlink" href="#coding-standards" title="Permalink to this heading">¶</a></h2>
 <p>Docstring format: <a class="reference external" href="https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings"><code class="docutils literal notranslate"><span class="pre">Google</span></code></a> <br>
 Styling conventions: <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/"><code class="docutils literal notranslate"><span class="pre">PEP</span> <span class="pre">8</span></code></a> <br>
 Clean code with pre-commit hooks: <a class="reference external" href="https://flake8.pycqa.org/en/latest/"><code class="docutils literal notranslate"><span class="pre">flake8</span></code></a> and
 <a class="reference external" href="https://pycqa.github.io/isort/"><code class="docutils literal notranslate"><span class="pre">isort</span></code></a></p>
 </section>
 <section id="linting">
-<h2>Linting<a class="headerlink" href="#linting" title="Permalink to this headline">¶</a></h2>
+<h2>Linting<a class="headerlink" href="#linting" title="Permalink to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">PreCommit</span></code> will ensure linting, and the doc creation are run on every commit.</p>
 <p><strong>Requirement</strong>
 <br>
@@ -321,22 +322,22 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">run</span> <span class="pre">--all-files</span></code></p>
 </section>
 <section id="feature-s-implementation">
-<h2>Feature(s) Implementation<a class="headerlink" href="#feature-s-implementation" title="Permalink to this headline">¶</a></h2>
+<h2>Feature(s) Implementation<a class="headerlink" href="#feature-s-implementation" title="Permalink to this heading">¶</a></h2>
 <p>Please refer <a class="reference external" href="https://github.com/thevickypedia/Jarvis/wiki">wiki</a> for API usage, access controls, env variables,
 features’ overview and demo videos.</p>
 </section>
 <section id="pypi-package">
-<h2>Pypi Package<a class="headerlink" href="#pypi-package" title="Permalink to this headline">¶</a></h2>
+<h2>Pypi Package<a class="headerlink" href="#pypi-package" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://packaging.python.org/tutorials/packaging-projects/"><img alt="pypi-module" src="https://img.shields.io/badge/Software%20Repository-pypi-1f425f.svg" /></a></p>
 <p><a class="reference external" href="https://pypi.org/project/jarvis-ironman/">https://pypi.org/project/jarvis-ironman/</a></p>
 </section>
 <section id="runbook">
-<h2>Runbook<a class="headerlink" href="#runbook" title="Permalink to this headline">¶</a></h2>
+<h2>Runbook<a class="headerlink" href="#runbook" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html"><img alt="made-with-sphinx-doc" src="https://img.shields.io/badge/Code%20Docs-Sphinx-1f425f.svg" /></a></p>
 <p><a class="reference external" href="https://thevickypedia.github.io/Jarvis/">https://thevickypedia.github.io/Jarvis/</a></p>
 </section>
 <section id="license-copyright">
-<h2>License &amp; copyright<a class="headerlink" href="#license-copyright" title="Permalink to this headline">¶</a></h2>
+<h2>License &amp; copyright<a class="headerlink" href="#license-copyright" title="Permalink to this heading">¶</a></h2>
 <p>© Vignesh Sivanandha Rao</p>
 <p>Licensed under the <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/LICENSE">MIT License</a></p>
 </section>
@@ -390,7 +391,7 @@ features’ overview and demo videos.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -413,7 +414,7 @@ features’ overview and demo videos.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2021, Vignesh Sivanandha Rao.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     </div>
   </body>
 </html>

@@ -1,3 +1,13 @@
+import os
+from datetime import datetime
+
+if os.path.exists(os.path.join(os.getcwd(), "venv", "bin", "activate")):
+    venv = os.path.join("venv", "bin", "activate")
+    COMMAND = f"cd {os.getcwd()} && source {venv} && python api{os.path.sep}report_gatherer.py && deactivate"
+else:
+    COMMAND = f"cd {os.getcwd()} && python api{os.path.sep}report_gatherer.py && deactivate"
+
+
 class MarketHours:
     """Initiates MarketHours object to store the market hours for each timezone in USA.
 
@@ -174,3 +184,23 @@ class CustomTemplate:
     </body>
 </html>
 """
+
+
+def cron_schedule(extended: bool = False) -> str:
+    """Determines the start and end time based on the current timezone.
+
+    Args:
+        extended: Uses extended hours.
+
+    See Also:
+        - extended: 1 before and after market hours.
+        - default(regular): Regular market hours.
+
+    Returns:
+        str:
+        A crontab expression running every 30 minutes during market hours based on the current timezone.
+    """
+    tz = datetime.utcnow().astimezone().tzname()
+    start = MarketHours.hours['EXTENDED'][tz]['OPEN'] if extended else MarketHours.hours['REGULAR'][tz]['OPEN']
+    end = MarketHours.hours['EXTENDED'][tz]['CLOSE'] if extended else MarketHours.hours['REGULAR'][tz]['CLOSE']
+    return f"*/30 {start}-{end} * * 1-5 {COMMAND}"

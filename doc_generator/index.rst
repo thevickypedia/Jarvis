@@ -42,13 +42,6 @@ API Server
    :members:
    :undoc-members:
 
-API CronTab
-===========
-
-.. automodule:: api.cron
-   :members:
-   :exclude-members: COMMAND
-
 API Models
 ==========
 
@@ -389,7 +382,7 @@ Config
 Crontab
 =======
 
-.. autoclass:: modules.crontab.expression
+.. automodule:: modules.crontab.expression
    :members:
    :exclude-members:
 
