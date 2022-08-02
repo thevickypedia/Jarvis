@@ -16,7 +16,7 @@ from executors.controls import exit_process, starter, terminator
 from executors.internet import get_ssid, internet_checker
 from executors.logger import custom_handler, logger
 from executors.offline import repeated_tasks
-from executors.processor import delete_db, start_processes, stop_processes
+from executors.processor import clear_db, start_processes, stop_processes
 from executors.system import hosted_device_info
 from modules.audio import listener, speaker
 from modules.exceptions import StopSignal
@@ -139,7 +139,7 @@ class Activator:
         for task in self.tasks:
             task.stop()
         stop_processes()
-        delete_db()
+        clear_db()
         logger.info("Releasing resources acquired by Porcupine.")
         self.detector.delete()
         if self.audio_stream and self.audio_stream.is_active():
@@ -220,13 +220,13 @@ def sentry_mode() -> NoReturn:
                 for task in tasks:
                     task.stop()
                 stop_processes()
-                delete_db()
+                clear_db()
                 terminator()
                 break
     except StopSignal:
         exit_process()
         stop_processes()
-        delete_db()
+        clear_db()
         terminator()
 
 

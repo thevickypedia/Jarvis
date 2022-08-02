@@ -18,9 +18,9 @@ from executors.lights import lights
 from executors.location import (directions, distance, locate, locate_places,
                                 location)
 from executors.logger import logger
-from executors.others import (apps, facts, flip_a_coin, google_home, jokes,
-                              meaning, music, news, notes, repeat, report,
-                              sprint_name)
+from executors.others import (abusive, apps, facts, flip_a_coin, google_home,
+                              jokes, meaning, music, news, notes, repeat,
+                              report, sprint_name)
 from executors.remind import reminder
 from executors.robinhood import robinhood
 from executors.system import system_info, system_vitals
@@ -56,7 +56,10 @@ def conditions(converted: str, should_return: bool = False) -> bool:
     converted_lower = converted.lower()
     todo_checks = ['to do', 'to-do', 'todo']
 
-    if any(word in converted_lower for word in keywords.lights):
+    if "*" in converted_lower:
+        abusive(converted)
+
+    elif any(word in converted_lower for word in keywords.lights):
         lights(converted)
 
     elif any(word in converted_lower for word in keywords.television):

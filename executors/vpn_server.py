@@ -62,7 +62,7 @@ def vpn_server_switch(operation: str) -> None:
                            phone=env.phone_number, log='FILE')
     with db.connection:
         cursor = db.connection.cursor()
-        cursor.execute("INSERT INTO vpn (state) VALUES (?);", (operation,))
+        cursor.execute("INSERT or REPLACE INTO vpn (state) VALUES (?);", (operation,))
         db.connection.commit()
     if operation == 'enabled':
         vpn_object.create_vpn_server()

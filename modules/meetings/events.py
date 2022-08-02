@@ -30,6 +30,8 @@ def events_writer() -> NoReturn:
     query = f"INSERT OR REPLACE INTO {env.event_app} (info, date) VALUES {(info, datetime.now().strftime('%Y_%m_%d'))}"
     with db.connection:
         cursor = db.connection.cursor()
+        cursor.execute(f"DELETE FROM {env.event_app}")
+        cursor.connection.commit()
         cursor.execute(query)
         cursor.connection.commit()
     return
@@ -118,6 +120,8 @@ def events() -> None:
         speaker.speak(text=event_status[0])
     elif event_status:
         Process(target=events_writer).start()
+        logger.warning(f"Date in event status ({event_status[1]}) does not match the current date "
+                       f"({datetime.now().strftime('%Y_%m_%d')})")
         speaker.speak(text=f"Events table is outdated {env.title}. Please try again in a minute or two.")
     else:
         if shared.called_by_offline:

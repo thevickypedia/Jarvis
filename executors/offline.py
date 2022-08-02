@@ -1,5 +1,4 @@
 import os
-import subprocess
 import time
 from datetime import datetime
 from multiprocessing import Process
@@ -78,7 +77,7 @@ def automator() -> NoReturn:
             event_process.start()
             with db.connection:
                 cursor = db.connection.cursor()
-                cursor.execute("INSERT INTO children (events) VALUES (?);", (event_process.pid,))
+                cursor.execute("INSERT or REPLACE INTO children (events) VALUES (?);", (event_process.pid,))
                 db.connection.commit()
 
         if start_meetings + env.sync_meetings <= time.time() or dry_run:
@@ -96,7 +95,7 @@ def automator() -> NoReturn:
             meeting_process.start()
             with db.connection:
                 cursor = db.connection.cursor()
-                cursor.execute("INSERT INTO children (meetings) VALUES (?);", (meeting_process.pid,))
+                cursor.execute("INSERT or REPLACE INTO children (meetings) VALUES (?);", (meeting_process.pid,))
                 db.connection.commit()
 
         if start_cron + 60 <= time.time():  # Condition passes every minute
@@ -108,7 +107,7 @@ def automator() -> NoReturn:
                     cron_process.start()
                     with db.connection:
                         cursor = db.connection.cursor()
-                        cursor.execute("INSERT INTO children (crontab) VALUES (?);", (cron_process.pid,))
+                        cursor.execute("INSERT or REPLACE INTO children (crontab) VALUES (?);", (cron_process.pid,))
                         db.connection.commit()
 
         if alarm_state := support.lock_files(alarm_files=True):
@@ -136,17 +135,19 @@ def initiate_tunneling() -> NoReturn:
     """
     if not env.macos:
         return
-    pid_check = subprocess.check_output("ps -ef | grep forever_ngrok.py", shell=True)
-    pid_list = pid_check.decode('utf-8').split('\n')
-    for id_ in pid_list:
-        if id_ and 'grep' not in id_ and '/bin/sh' not in id_:
-            logger.info('An instance of ngrok tunnel for offline communicator is running already.')
-            return
+    url = "http://localhost:4040/api/tunnels"
+    response = requests.get(url=url)
+    if response.ok:
+        for each_tunnel in (response.json().get('tunnels', {})):
+            if hosted := each_tunnel.get('config', {}).get('addr', []):
+                if int(hosted.split(':')[-1]) == env.offline_port:
+                    logger.info('An instance of ngrok tunnel for offline communicator is running already.')
+                    return
     if os.path.exists(f"{env.home}/JarvisHelper/venv/bin/activate"):
         logger.info('Initiating ngrok connection for offline communicator.')
         initiate = f'cd {env.home}/JarvisHelper && ' \
                    f'source venv/bin/activate && export host={env.offline_host} ' \
-                   f'export port={env.offline_port} && python forever_ngrok.py'
+                   f'export PORT={env.offline_port} && python forever_ngrok.py'
         os.system(f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null""")
     else:
         logger.info(f'JarvisHelper is not available to trigger an ngrok tunneling through {env.offline_port}')

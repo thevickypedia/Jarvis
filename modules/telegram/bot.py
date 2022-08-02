@@ -310,7 +310,7 @@ class TelegramBot:
             self.reply_to(payload=payload, response=f"Shutting down now {env.title}!\n{support.exit_message()}")
             with db.connection:
                 cursor = db.connection.cursor()
-                cursor.execute("INSERT INTO stopper (flag, caller) VALUES (?,?);", (True, 'TelegramAPI'))
+                cursor.execute("INSERT or REPLACE INTO stopper (flag, caller) VALUES (?,?);", (True, 'TelegramAPI'))
                 cursor.connection.commit()
         else:
             self.reply_to(payload=payload,

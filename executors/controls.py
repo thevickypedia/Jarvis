@@ -136,7 +136,7 @@ def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
             return
         with db.connection:
             cursor = db.connection.cursor()
-            cursor.execute("INSERT INTO restart (flag, caller) VALUES (?,?);", (True, caller))
+            cursor.execute("INSERT or REPLACE INTO restart (flag, caller) VALUES (?,?);", (True, caller))
             cursor.connection.commit()
 
 

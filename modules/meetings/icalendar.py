@@ -30,6 +30,8 @@ def meetings_writer() -> NoReturn:
     info = meetings_gatherer()
     with db.connection:
         cursor = db.connection.cursor()
+        cursor.execute("DELETE FROM ics")
+        cursor.connection.commit()
         cursor.execute(f"INSERT OR REPLACE INTO ics (info, date) VALUES {(info, datetime.now().strftime('%Y_%m_%d'))}")
         cursor.connection.commit()
     return
@@ -89,6 +91,8 @@ def meetings() -> None:
         speaker.speak(text=meeting_status[0])
     elif meeting_status:
         Process(target=meetings_writer).start()
+        logger.warning(f"Date in meeting status ({meeting_status[1]}) does not match the current date "
+                       f"({datetime.now().strftime('%Y_%m_%d')})")
         speaker.speak(text=f"Meetings table is outdated {env.title}. Please try again in a minute or two.")
     else:
         if shared.called_by_offline:

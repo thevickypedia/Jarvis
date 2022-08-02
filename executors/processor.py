@@ -36,6 +36,23 @@ def delete_db() -> NoReturn:
     return
 
 
+def clear_db() -> NoReturn:
+    """Deletes entries from all databases except for VPN."""
+    with db.connection:
+        cursor = db.connection.cursor()
+        logger.info(f"Deleting data from {env.event_app}: {cursor.execute(f'SELECT * FROM {env.event_app}').fetchall()}"
+                    )
+        cursor.execute(f"DELETE FROM {env.event_app}")
+        logger.info(f"Deleting data from ics: {cursor.execute(f'SELECT * FROM ics').fetchall()}")
+        cursor.execute("DELETE FROM ics")
+        logger.info(f"Deleting data from stopper: {cursor.execute(f'SELECT * FROM stopper').fetchall()}")
+        cursor.execute("DELETE FROM stopper")
+        logger.info(f"Deleting data from restart: {cursor.execute(f'SELECT * FROM restart').fetchall()}")
+        cursor.execute("DELETE FROM restart")
+        logger.info(f"Deleting data from children: {cursor.execute(f'SELECT * FROM children').fetchall()}")
+        cursor.execute("DELETE FROM children")
+
+
 def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]:
     """Initiates multiple background processes to achieve parallelization.
 
@@ -68,8 +85,8 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
 def stop_child_processes() -> NoReturn:
     """Stops sub processes (for meetings and events) triggered by child processes."""
     with db.connection:
-        cursor_ = db.connection.cursor()
-        children = cursor_.execute("SELECT meetings, events, crontab FROM children").fetchall()
+        cursor = db.connection.cursor()
+        children = cursor.execute("SELECT meetings, events, crontab FROM children").fetchall()
     for pids in children:
         for pid in pids:
             if not pid:

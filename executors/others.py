@@ -355,3 +355,13 @@ def sprint_name() -> NoReturn:
     soup = BeautifulSoup(response.content, 'html.parser')
     name = soup.find('span', {'class': 'sprint-name'}).text
     speaker.speak(text=name)
+
+
+def abusive(phrase: str) -> NoReturn:
+    """Response for abusive phrases.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+    """
+    logger.warning(phrase)
+    speaker.speak(text="I don't respond to abusive words. Ask me nicely, you'll get a response.")

@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+6.3.1 (08/02/2022)
+------------------
+- Support timezones with robinhood report generation
+- Modify extended market hours in rh_helper.py
+- Configure response for phrases with abusive words
+- Remove delete db during stop process and replace with clear db
+- Replace INSERT statements with INSERT or REPLACE
+- Clear tables before inserting new values
+- Modify existing ngrok tunnel check
+
 6.3.0 (07/29/2022)
 ------------------
 - Move default cron expression to rh_helper.py
