@@ -246,10 +246,10 @@ def meaning(phrase: str) -> None:
             vowel = ['A', 'E', 'I', 'O', 'U']
             for key, value in definition.items():
                 insert = 'an' if key[0] in vowel else 'a'
-                repeated = 'also' if n != 0 else ''
+                repeated = ' also ' if n != 0 else ' '
                 n += 1
                 mean = ', '.join(value[0:2])
-                speaker.speak(text=f'{keyword} is {repeated} {insert} {key}, which means {mean}.')
+                speaker.speak(text=f'{keyword} is{repeated}{insert} {key}, which means {mean}.')
             if shared.called_by_offline:
                 return
             speaker.speak(text=f'Do you wanna know how {keyword} is spelled?', run=True)

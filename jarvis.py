@@ -13,7 +13,7 @@ from pyaudio import PyAudio, paInt16
 
 from executors.commander import initiator
 from executors.controls import exit_process, starter, terminator
-from executors.internet import get_ssid, internet_checker
+from executors.internet import get_ssid, ip_address
 from executors.logger import custom_handler, logger
 from executors.offline import repeated_tasks
 from executors.processor import clear_db, start_processes, stop_processes
@@ -233,7 +233,7 @@ def sentry_mode() -> NoReturn:
 def begin() -> NoReturn:
     """Starts main process to activate Jarvis after checking internet connection and initiating background processes."""
     starter()
-    if internet_checker():
+    if ip_address():
         sys.stdout.write(f"\rINTERNET::Connected to {get_ssid() or 'the internet'}.")
     else:
         sys.stdout.write("\rBUMMER::Unable to connect to the Internet")

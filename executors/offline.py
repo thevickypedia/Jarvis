@@ -68,7 +68,10 @@ def automator() -> NoReturn:
     while True:
         if os.path.isfile(fileio.automation):
             if exec_task := auto_helper(offline_list=offline_list):
-                offline_communicator(command=exec_task)
+                try:
+                    offline_communicator(command=exec_task)
+                except Exception as error:
+                    logger.error(error)
 
         if start_events + env.sync_events <= time.time() or dry_run:
             start_events = time.time()
@@ -77,6 +80,7 @@ def automator() -> NoReturn:
             event_process.start()
             with db.connection:
                 cursor = db.connection.cursor()
+                cursor.execute("UPDATE children SET events=null")
                 cursor.execute("INSERT or REPLACE INTO children (events) VALUES (?);", (event_process.pid,))
                 db.connection.commit()
 
@@ -95,6 +99,7 @@ def automator() -> NoReturn:
             meeting_process.start()
             with db.connection:
                 cursor = db.connection.cursor()
+                cursor.execute("UPDATE children SET meetings=null")
                 cursor.execute("INSERT or REPLACE INTO children (meetings) VALUES (?);", (meeting_process.pid,))
                 db.connection.commit()
 
@@ -135,14 +140,16 @@ def initiate_tunneling() -> NoReturn:
     """
     if not env.macos:
         return
-    url = "http://localhost:4040/api/tunnels"
-    response = requests.get(url=url)
-    if response.ok:
-        for each_tunnel in (response.json().get('tunnels', {})):
-            if hosted := each_tunnel.get('config', {}).get('addr', []):
-                if int(hosted.split(':')[-1]) == env.offline_port:
-                    logger.info('An instance of ngrok tunnel for offline communicator is running already.')
-                    return
+    try:
+        response = requests.get(url="http://localhost:4040/api/tunnels")
+        if response.ok:
+            for each_tunnel in response.json().get('tunnels', {}):
+                if hosted := each_tunnel.get('config', {}).get('addr'):
+                    if int(hosted.split(':')[-1]) == env.offline_port:
+                        logger.info('An instance of ngrok tunnel for offline communicator is running already.')
+                        return
+    except (requests.exceptions.RequestException, requests.exceptions.JSONDecodeError) as error:
+        logger.error(error)
     if os.path.exists(f"{env.home}/JarvisHelper/venv/bin/activate"):
         logger.info('Initiating ngrok connection for offline communicator.')
         initiate = f'cd {env.home}/JarvisHelper && ' \

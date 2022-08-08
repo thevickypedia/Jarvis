@@ -56,10 +56,10 @@ def send_sms(phrase: str) -> None:
     body = message.group(1) if message else None
     if number := support.extract_nos(input_=phrase, method=int):
         number = str(number)
-    if len(number) != 10:
-        speaker.speak(text=f"I don't think that's a right number {env.title}! Phone numbers are 10 digits. Try again!")
-        return
     if number and body and shared.called_by_offline:
+        if len(number) != 10:
+            speaker.speak(text=f"I don't think that's a right number {env.title}! Phone numbers are 10 digits.")
+            return
         notify(user=env.gmail_user, password=env.gmail_pass, number=number, body=body)
         speaker.speak(text=f"Message has been sent {env.title}!")
         return

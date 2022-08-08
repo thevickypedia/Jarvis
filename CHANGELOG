@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+6.3.2 (08/08/2022)
+------------------
+- Handle broad exception clause during offline execution
+- Renew only thrice
+- Fix message feature without a phone number
+- Fix ip address vs internet checker
+- Fix ngrok tunneling check
+- Fix failed tv request from turning on the tv
+- Fix extra spacing issues
+
 6.3.1 (08/02/2022)
 ------------------
 - Support timezones with robinhood report generation

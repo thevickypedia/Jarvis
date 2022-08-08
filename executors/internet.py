@@ -10,7 +10,7 @@ from typing import Union
 import psutil
 from speedtest import ConfigRetrievalError, Speedtest
 
-from executors.location import geo_locator
+from executors.location import get_location_from_coordinates
 from executors.logger import logger
 from modules.audio import speaker
 from modules.models import models
@@ -19,7 +19,7 @@ from modules.utils import shared, support
 env = models.env
 
 
-def ip_address() -> str:
+def ip_address() -> Union[str, None]:
     """Uses simple check on network id to see if it is connected to local host or not.
 
     Returns:
@@ -27,7 +27,11 @@ def ip_address() -> str:
         Private IP address of host machine.
     """
     socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    socket_.connect(("8.8.8.8", 80))
+    try:
+        socket_.connect(("8.8.8.8", 80))
+    except OSError as error:
+        logger.error(error)
+        return
     ip_address_ = socket_.getsockname()[0]
     socket_.close()
     return ip_address_
@@ -40,31 +44,37 @@ def vpn_checker() -> Union[bool, str]:
         bool or str:
         Returns a ``False`` flag if VPN is detected, else the IP address.
     """
-    ip_address_ = ip_address()
+    if not (ip_address_ := ip_address()):
+        speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.")
+        return False
     if ip_address_.startswith("192") or ip_address_.startswith("127"):
         return ip_address_
     else:
-        info = json.load(urllib.request.urlopen(url="https://ipinfo.io/json"))
-        speaker.speak(text=f"You have your VPN turned on {env.title}! A connection has been detected to "
-                           f"{info.get('ip')} at {info.get('city')} {info.get('region')}, "
-                           f"maintained by {info.get('org')}. Please note that none of the home integrations will "
-                           "work with VPN enabled.")
+        if info := public_ip_info():
+            speaker.speak(text=f"You have your VPN turned on {env.title}! A connection has been detected to "
+                               f"{info.get('ip')} at {info.get('city')} {info.get('region')}, "
+                               f"maintained by {info.get('org')}. Please note that none of the home integrations will "
+                               "work with VPN enabled.")
+        else:
+            speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.")
         return False
 
 
-def internet_checker() -> Union[Speedtest, bool]:
-    """Uses speed test api to check for internet connection.
+def public_ip_info() -> dict:
+    """Get public IP information.
 
     Returns:
-        ``Speedtest`` or bool:
-        - On success, returns Speedtest module.
-        - On failure, returns boolean False.
+        dict:
+        Public IP information.
     """
     try:
-        return Speedtest()
-    except ConfigRetrievalError as error:
+        return json.load(urllib.request.urlopen(url='https://ipinfo.io/json'))
+    except (urllib.error.HTTPError, urllib.error.URLError) as error:
         logger.error(error)
-        return False
+    try:
+        return json.loads(urllib.request.urlopen(url='http://ip.jsontest.com').read())
+    except (urllib.error.HTTPError, urllib.error.URLError) as error:
+        logger.error(error)
 
 
 def ip_info(phrase: str) -> None:
@@ -74,25 +84,16 @@ def ip_info(phrase: str) -> None:
         phrase: Takes the spoken phrase an argument and tells the public IP if requested.
     """
     if "public" in phrase.lower():
-        if not internet_checker():
+        if not ip_address():
             speaker.speak(text=f"You are not connected to the internet {env.title}!")
             return
         if ssid := get_ssid():
             ssid = f"for the connection {ssid} "
         else:
             ssid = ""
-        output = None
-        try:
-            output = f"My public IP {ssid}is " \
-                     f"{json.load(urllib.request.urlopen(url='https://ipinfo.io/json')).get('ip')}"
-        except (urllib.error.HTTPError, urllib.error.URLError) as error:
-            logger.error(error)
-        try:
-            output = output or f"My public IP {ssid}is " \
-                               f"{json.loads(urllib.request.urlopen(url='http://ip.jsontest.com').read()).get('ip')}"
-        except (urllib.error.HTTPError, urllib.error.URLError) as error:
-            logger.error(error)
-        if not output:
+        if public_ip := public_ip_info():
+            output = f"My public IP {ssid}is {public_ip.get('ip')}"
+        else:
             output = f"I was unable to fetch the public IP {env.title}!"
     else:
         output = f"My local IP address for {socket.gethostname().split('.')[0]} is {ip_address()}"
@@ -136,11 +137,13 @@ def speed_test() -> None:
     References:
         Number of threads per core: https://psutil.readthedocs.io/en/latest/#psutil.cpu_count
     """
-    if not (st := internet_checker()):
-        speaker.speak(text=f"You're not connected to the internet {env.title}!")
+    try:
+        st = Speedtest()
+    except ConfigRetrievalError as error:
+        logger.error(error)
+        speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to connect to the speed test server.")
         return
-    client_locator = geo_locator.reverse(st.lat_lon, language="en")
-    client_location = client_locator.raw["address"]
+    client_location = get_location_from_coordinates(coordinates=st.lat_lon)
     city = client_location.get("city") or client_location.get("residential") or \
         client_location.get("hamlet") or client_location.get("county")
     state = client_location.get("state")

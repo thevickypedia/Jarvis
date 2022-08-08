@@ -21,7 +21,7 @@ from pyicloud import PyiCloudService
 from pyicloud.exceptions import (PyiCloudAPIResponseException,
                                  PyiCloudFailedLoginException)
 from pyicloud.services.findmyiphone import AppleDevice
-from speedtest import Speedtest
+from speedtest import ConfigRetrievalError, Speedtest
 from timezonefinder import TimezoneFinder
 
 from executors.logger import logger
@@ -68,24 +68,36 @@ def device_selector(phrase: str = None) -> Union[AppleDevice, None]:
     return icloud_api.devices[index]
 
 
-def get_coordinates_from_ip() -> Tuple[float, float]:
+def public_ip_info() -> dict:
+    """Get public IP information.
+
+    Returns:
+        dict:
+        Public IP information.
+    """
+    try:
+        return json.load(urllib.request.urlopen(url='https://ipinfo.io/json')) or \
+            json.loads(urllib.request.urlopen(url='http://ip.jsontest.com').read())
+    except (urllib.error.HTTPError, urllib.error.URLError) as error:
+        logger.error(error)
+
+
+def get_coordinates_from_ip() -> Union[Tuple[float, float], Tuple[float, ...]]:
     """Uses public IP to retrieve latitude and longitude. If fails, uses ``Speedtest`` module.
 
     Returns:
         tuple:
         Returns latitude and longitude as a tuple.
     """
-    try:
-        info = json.load(urllib.request.urlopen(url="https://ipinfo.io/json"))
-        coordinates = tuple(map(float, info.get('loc', '0,0').split(',')))
-    except urllib.error.HTTPError as error:
-        logger.error(error)
-        coordinates = (0.0, 0.0)
-    if coordinates == (0.0, 0.0):
-        st = Speedtest()
-        return float(st.results.client["lat"]), float(st.results.client["lon"])
+    if info := public_ip_info():
+        return tuple(map(float, info.get('loc', '0,0').split(',')))
     else:
-        return coordinates
+        try:
+            st = Speedtest()
+        except ConfigRetrievalError as error:
+            logger.error(error)
+            return 37.230881, -93.3710393  # Default to SGF IP address
+        return float(st.results.client["lat"]), float(st.results.client["lon"])
 
 
 def get_location_from_coordinates(coordinates: tuple) -> dict:
@@ -197,21 +209,21 @@ def locate_device(target_device: AppleDevice) -> NoReturn:
         target_device: Takes the target device as an argument.
     """
     try:
-        ignore_lat, ignore_lon, location_info_ = location_services(device=target_device)
+        ignore_lat, ignore_lon, loc = location_services(device=target_device)
     except ConnectionError:
         speaker.speak(text="I was unable to connect to the internet. Please check your connection settings and retry.",
                       run=True)
         return
     lookup = str(target_device).split(":")[0].strip()
-    if not location_info_:
+    if not loc:
         speaker.speak(text=f"I wasn't able to locate your {lookup} {env.title}! It is probably offline.")
     else:
         if shared.called_by_offline:
-            post_code = location_info_["postcode"].split("-")[0]
+            post_code = loc.get("postcode", "").split("-")[0]
         else:
-            post_code = '"'.join(list(location_info_["postcode"].split("-")[0]))
-        iphone_location = f"Your {lookup} is near {location_info_['road']}, {location_info_['city']} " \
-                          f"{location_info_['state']}. Zipcode: {post_code}, {location_info_['country']}"
+            post_code = '"'.join(list(loc.get("postcode", "").split("-")[0]))
+        iphone_location = f"Your {lookup} is near {loc.get('road')}, {loc.get('city', loc.get('residential'))} " \
+                          f"{loc.get('state')}. Zipcode: {post_code}, {loc.get('country')}"
         stat = target_device.status()
         bat_percent = f"Battery: {round(stat['batteryLevel'] * 100)} %, " if stat["batteryLevel"] else ""
         device_model = stat["deviceDisplayName"]

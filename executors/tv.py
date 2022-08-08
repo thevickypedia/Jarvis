@@ -27,6 +27,14 @@ def television(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
+    if not any(word in phrase.lower() for word in
+               ['turn on', 'connect', 'shutdown', 'shut down', 'turn off', 'increase', 'decrease', 'reduce', 'mute',
+                'stop', 'content', 'stop', 'pause', 'resume', 'play', 'rewind', 'forward', 'set', 'volume', 'volume',
+                'app', 'application', 'open', 'launch', "what's", 'currently', 'change', 'source']):
+        speaker.speak(text=f"I didn't quite get that {env.title}! What do you want me to do to your tv?")
+        Thread(target=support.unrecognized_dumper, args=[{'TV': phrase}]).start()
+        return
+
     if not vpn_checker():
         return
 

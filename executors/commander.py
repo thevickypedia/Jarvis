@@ -81,7 +81,10 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
     logger.info(f"'{phrase}' will be executed after {support.time_converter(seconds=delay)}")
     time.sleep(delay)
     logger.info(f"Executing '{phrase}'")
-    offline_communicator(command=phrase)
+    try:
+        offline_communicator(command=phrase)
+    except Exception as error:
+        logger.error(error)
 
 
 def timed_delay(phrase: str) -> Union[int, float]:
@@ -122,13 +125,11 @@ def renew() -> None:
         - split_phrase(converted) is a condition so that, loop breaks when if sleep in ``conditions()`` returns True.
     """
     speaker.speak(run=True)
-    waiter = 0
-    while waiter < 12:
-        waiter += 1
-        if waiter == 1:
-            converted = listener.listen(timeout=3, phrase_limit=5)
-        else:
+    for i in range(3):
+        if i:
             converted = listener.listen(timeout=3, phrase_limit=5, sound=False)
+        else:
+            converted = listener.listen(timeout=3, phrase_limit=5)
         if not converted:
             continue
         converted = ' '.join([i for i in converted.split() if i.lower() not in env.wake_words])

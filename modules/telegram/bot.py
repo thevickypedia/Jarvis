@@ -456,7 +456,12 @@ class TelegramBot:
             respond: Boolean flag to restrict the response after executing a command.
         """
         logger.info(f'Request: {command}')
-        response = offline_communicator(command=command).replace(env.title, USER_TITLE.get(payload['from']['username']))
+        try:
+            response = offline_communicator(command=command).replace(env.title,
+                                                                     USER_TITLE.get(payload['from']['username']))
+        except Exception as error:
+            logger.error(error)
+            response = f"Jarvis failed to process the response.\n\n`{error}`"
         logger.info(f'Response: {response}')
         self.process_response(payload=payload, response=response) if respond else None
 
