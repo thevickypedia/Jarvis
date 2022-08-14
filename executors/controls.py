@@ -12,16 +12,17 @@ import psutil
 
 from executors.display_functions import decrease_brightness
 from executors.logger import logger
-from modules.audio import listener, speaker, voices, volume
+from executors.volume import volume
+from modules.audio import listener, speaker, voices
 from modules.conditions import conversation, keywords
 from modules.database import database
 from modules.exceptions import StopSignal
 from modules.models import models
 from modules.utils import shared, support
 
-env = models.env
-fileio = models.FileIO()
-db = database.Database(database=fileio.base_db)
+settings = models.Settings()
+db = database.Database(database=models.fileio.base_db)
+ram = support.size_converter(byte_size=models.settings.ram).replace('.0', '')
 
 
 def restart(ask: bool = True) -> NoReturn:
@@ -47,13 +48,13 @@ def restart(ask: bool = True) -> NoReturn:
         converted = 'yes'
     if any(word in converted.lower() for word in keywords.ok):
         stop_terminals()
-        if env.macos:
+        if models.settings.macos:
             subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
         else:
             os.system("shutdown /r /t 1")
         raise StopSignal
     else:
-        speaker.speak(text=f"Machine state is left intact {env.title}!")
+        speaker.speak(text=f"Machine state is left intact {models.env.title}!")
 
 
 def exit_process() -> NoReturn:
@@ -67,18 +68,18 @@ def exit_process() -> NoReturn:
     if reminders:
         logger.info(f'JARVIS::Deleting Reminders - {reminders}')
         if len(reminders) == 1:
-            speaker.speak(text=f'You have a pending reminder {env.title}!')
+            speaker.speak(text=f'You have a pending reminder {models.env.title}!')
         else:
-            speaker.speak(text=f'You have {len(reminders)} pending reminders {env.title}!')
+            speaker.speak(text=f'You have {len(reminders)} pending reminders {models.env.title}!')
         for key, value in reminders.items():
             speaker.speak(text=f"{value.replace('_', ' ')} at {key.lstrip('0').replace('00', '').replace('_', ' ')}")
     if alarms:
         alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
         alarms = alarms.replace('.lock', '').replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')
-        speaker.speak(text=f"You have a pending alarm at {alarms} {env.title}!")
+        speaker.speak(text=f"You have a pending alarm at {alarms} {models.env.title}!")
     if reminders or alarms:
         speaker.speak(text="This will not be executed while I'm asleep!")
-    speaker.speak(text=f"Shutting down now {env.title}!")
+    speaker.speak(text=f"Shutting down now {models.env.title}!")
     try:
         speaker.speak(text=support.exit_message(), run=True)
     except RuntimeError as error:
@@ -96,6 +97,28 @@ def pc_sleep() -> NoReturn:
         speaker.speak(text=random.choice(conversation.acknowledgement))
 
 
+def check_memory_leak() -> NoReturn:
+    """Check memory utilization."""
+    for func, process in shared.processes.items():
+        if not process.is_alive():
+            logger.warning(f"{func}[{process.pid}] is not running anymore.")
+            return func
+        try:
+            proc = psutil.Process(pid=process.pid)
+            percent_raw = int(proc.as_dict().get('memory_percent', 1))
+            if percent_raw > 20:
+                percent = support.size_converter(byte_size=percent_raw).replace(' B', ' %')
+                ram_used = support.size_converter(byte_size=proc.memory_info().rss)
+                logger.info(f"{process.pid}: {ram_used}/{ram} :: {percent}")
+                with db.connection:
+                    cursor = db.connection.cursor()
+                    cursor.execute("INSERT or REPLACE INTO restart (flag, caller) VALUES (?,?);", (True, func))
+                    cursor.connection.commit()
+        except psutil.NoSuchProcess:
+            logger.warning(f"{func}[{process.pid}] is not running anymore.")
+            return func
+
+
 def sleep_control(phrase: str) -> bool:
     """Controls whether to stop listening or to put the host device on sleep.
 
@@ -105,9 +128,9 @@ def sleep_control(phrase: str) -> bool:
     phrase = phrase.lower()
     if 'pc' in phrase or 'computer' in phrase or 'imac' in phrase or \
             'screen' in phrase:
-        pc_sleep() if env.macos else support.missing_windows_features()
+        pc_sleep() if models.settings.macos else support.missing_windows_features()
     else:
-        speaker.speak(text=f"Activating sentry mode, enjoy yourself {env.title}!")
+        speaker.speak(text=f"Activating sentry mode, enjoy yourself {models.env.title}!")
         if shared.greeting:
             shared.greeting = False
     return True
@@ -159,19 +182,18 @@ def terminator() -> NoReturn:
 
     Using this, eliminates the hassle of forcing multiple threads to stop.
     """
-    pid = os.getpid()
-    proc = psutil.Process(pid=pid)
-    logger.info(f"Terminating process: {pid}")
+    proc = psutil.Process(pid=models.settings.pid)
+    logger.info(f"Terminating process: {models.settings.pid}")
     process_info = proc.as_dict()
     if process_info.get('environ'):
         del process_info['environ']
     logger.info(process_info)
     if proc.is_running():
-        logger.info(f"{pid} is running. Terminating it.")
+        logger.info(f"{models.settings.pid} is running. Terminating it.")
         proc.terminate()
     time.sleep(1)
     if proc.is_running():
-        logger.warning(f"{pid} is still running. Killing it.")
+        logger.warning(f"{models.settings.pid} is still running. Killing it.")
         proc.kill()
     os._exit(1)  # noqa
 
@@ -192,13 +214,13 @@ def shutdown(proceed: bool = False) -> NoReturn:
         converted = 'yes'
     if converted and any(word in converted.lower() for word in keywords.ok):
         stop_terminals()
-        if env.macos:
+        if models.settings.macos:
             subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
         else:
             os.system("shutdown /s /t 1")
         raise StopSignal
     else:
-        speaker.speak(text=f"Machine state is left intact {env.title}!")
+        speaker.speak(text=f"Machine state is left intact {models.env.title}!")
 
 
 def clear_logs() -> NoReturn:
@@ -228,7 +250,8 @@ def starter() -> NoReturn:
     """
     limit = sys.getrecursionlimit()  # fetches current recursion limit
     sys.setrecursionlimit(limit * 10)  # increases the recursion limit by 10 times
-    volume.volume(level=env.volume)
+    logger.info(f"Set recursion limit to {limit * 10}")
+    volume(level=models.env.volume)
     voices.voice_default()
     clear_logs()
     delete_pycache()

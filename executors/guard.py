@@ -15,8 +15,6 @@ from modules.conditions import keywords
 from modules.models import models
 from modules.utils import support
 
-env = models.env
-
 
 def guard_enable() -> None:
     """Security Mode will enable camera and microphone in the background.
@@ -26,8 +24,8 @@ def guard_enable() -> None:
         - Notifications will be triggered only after 5 minutes of previous notification.
     """
     logger.info('Enabled Security Mode')
-    speaker.speak(text=f"Enabled security mode {env.title}! I will look out for potential threats and keep you posted. "
-                       f"Have a nice {support.part_of_day()}, and enjoy yourself {env.title}!", run=True)
+    speaker.speak(text=f"Enabled security mode {models.env.title}! I will look out for potential threats and keep you "
+                       f"posted. Have a nice {support.part_of_day()}, and enjoy yourself {models.env.title}!", run=True)
 
     cam_source, cam = None, None
     for i in range(0, 3):
@@ -41,8 +39,8 @@ def guard_enable() -> None:
     if cam_source is None:
         cam_error = 'Guarding mode disabled as I was unable to access any of the cameras.'
         logger.error(cam_error)
-        communicator.notify(user=env.gmail_user, password=env.gmail_pass, number=env.phone_number, body=cam_error,
-                            subject="IMPORTANT::Guardian mode faced an exception.")
+        communicator.notify(user=models.env.gmail_user, password=models.env.gmail_pass, number=models.env.phone_number,
+                            body=cam_error, subject="IMPORTANT::Guardian mode faced an exception.")
         return
 
     scale_factor = 1.1  # Parameter specifying how much the image size is reduced at each image scale.
@@ -56,9 +54,9 @@ def guard_enable() -> None:
             continue
 
         if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable):
-            speaker.speak(text=f'Welcome back {env.title}! Good {support.part_of_day()}.')
+            speaker.speak(text=f'Welcome back {models.env.title}! Good {support.part_of_day()}.')
             if os.path.exists(f'threat/{date_extn}.jpg'):
-                speaker.speak(text=f"We had a potential threat {env.title}! Please check your email to confirm.")
+                speaker.speak(text=f"We had a potential threat {models.env.title}! Please check your email to confirm.")
             speaker.speak(run=True)
             logger.info('Disabled security mode')
             sys.stdout.write('\rDisabled Security Mode')
@@ -88,9 +86,11 @@ def guard_enable() -> None:
         # if no notification was sent yet or if a phrase or face is detected notification thread will be triggered
         if (not notified or float(time.time() - notified) > 300) and (converted or date_extn):
             notified = time.time()
-            Thread(target=threat_notify, kwargs=({"converted": converted, "phone_number": env.phone_number,
-                                                  "gmail_user": env.gmail_user, "gmail_pass": env.gmail_pass,
-                                                  "recipient": env.recipient or env.alt_gmail_user or env.gmail_user,
+            Thread(target=threat_notify, kwargs=({"converted": converted, "phone_number": models.env.phone_number,
+                                                  "gmail_user": models.env.gmail_user,
+                                                  "gmail_pass": models.env.gmail_pass,
+                                                  "recipient": models.env.recipient or models.env.alt_gmail_user or
+                                                  models.env.gmail_user,
                                                   "date_extn": date_extn})).start()
 
 

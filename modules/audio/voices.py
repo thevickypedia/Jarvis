@@ -7,29 +7,25 @@
 
 import random
 import sys
+from multiprocessing import current_process
 from typing import Union
 
 from pyttsx3.engine import Engine
 
+from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import conversation, keywords
 from modules.models import models
 
-env = models.env
 
-
-def voice_default(stdout: bool = True) -> Engine:
-    """Sets voice module to default.
-
-    Args:
-        stdout: Takes a boolean flag whether to display voice module configuration name.
-    """
-    voices = speaker.audio_driver.getProperty("voices")  # gets the list of voices available
-    voice_model = "Daniel" if env.macos else "David"
-    for ind_d, voice_id in enumerate(voices):  # noqa
-        if voice_id.name == voice_model or voice_model in voice_id.name:
-            sys.stdout.write(f"\rVoice module has been configured to {ind_d}::{voice_id.name}") if stdout else None
-            speaker.audio_driver.setProperty("voice", voices[ind_d].id)  # noqa
+def voice_default() -> Engine:
+    """Sets voice module to default."""
+    voice_model = "Daniel" if models.settings.macos else "David"
+    for voice in speaker.audio_driver.getProperty("voices"):
+        if voice.name == voice_model or voice_model in voice.name:
+            if current_process().name == 'MainProcess':
+                logger.info(voice.__dict__)
+            speaker.audio_driver.setProperty("voice", voice.id)
             break
     return speaker.audio_driver
 
@@ -52,7 +48,7 @@ def voice_changer(phrase: str = None) -> None:
 
     for ind, voice in enumerate(voices):
         speaker.audio_driver.setProperty("voice", voices[ind].id)
-        speaker.speak(text=f"I am {voice.name} {env.title}!")
+        speaker.speak(text=f"I am {voice.name} {models.env.title}!")
         sys.stdout.write(f"\rVoice module has been re-configured to {ind}::{voice.name}")
         if ind < len(choices_to_say):
             speaker.speak(text=choices_to_say[ind])
@@ -61,11 +57,11 @@ def voice_changer(phrase: str = None) -> None:
         speaker.speak(run=True)
         if not (keyword := listener.listen(timeout=3, phrase_limit=3)):
             voice_default()
-            speaker.speak(text=f"Sorry {env.title}! I had trouble understanding. I'm back to my default voice.")
+            speaker.speak(text=f"Sorry {models.env.title}! I had trouble understanding. I'm back to my default voice.")
             return
         elif "exit" in keyword or "quit" in keyword or "Xzibit" in keyword:
             voice_default()
-            speaker.speak(text=f"Reverting the changes to default voice module {env.title}!")
+            speaker.speak(text=f"Reverting the changes to default voice module {models.env.title}!")
             return
         elif any(word in keyword.lower() for word in keywords.ok):
             speaker.speak(text=random.choice(conversation.acknowledgement))

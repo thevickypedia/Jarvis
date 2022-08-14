@@ -10,25 +10,23 @@ from modules.conditions import keywords
 from modules.models import models
 from modules.utils import shared, support
 
-env = models.env
-
 
 def read_gmail() -> None:
     """Reads unread emails from the gmail account for which the credentials are stored in env variables."""
-    if not all([env.gmail_user, env.gmail_pass]):
+    if not all([models.env.gmail_user, models.env.gmail_pass]):
         logger.warning("Gmail username and password not found.")
         support.no_env_vars()
         return
 
     sys.stdout.write("\rFetching unread emails..")
-    reader = ReadEmail(gmail_user=env.gmail_user, gmail_pass=env.gmail_pass)
+    reader = ReadEmail(gmail_user=models.env.gmail_user, gmail_pass=models.env.gmail_pass)
     response = reader.instantiate()
     if response.ok:
         if shared.called_by_offline:
-            speaker.speak(text=f'You have {response.count} unread email {env.title}.') if response.count == 1 else \
-                speaker.speak(text=f'You have {response.count} unread emails {env.title}.')
+            speaker.speak(text=f'You have {response.count} unread email {models.env.title}.') if response.count == 1 \
+                else speaker.speak(text=f'You have {response.count} unread emails {models.env.title}.')
             return
-        speaker.speak(text=f'You have {response.count} unread emails {env.title}. Do you want me to check it?',
+        speaker.speak(text=f'You have {response.count} unread emails {models.env.title}. Do you want me to check it?',
                       run=True)
         if not (confirmation := listener.listen(timeout=3, phrase_limit=3)):
             return
@@ -39,9 +37,9 @@ def read_gmail() -> None:
             speaker.speak(text=f"You have an email from, {mail.get('sender').strip()}, with subject, "
                                f"{mail.get('subject').strip()}, {mail.get('datetime').strip()}", run=True)
     elif response.status == 204:
-        speaker.speak(text=f"You don't have any emails to catch up {env.title}!")
+        speaker.speak(text=f"You don't have any emails to catch up {models.env.title}!")
     else:
-        speaker.speak(text=f"I was unable to read your email {env.title}!")
+        speaker.speak(text=f"I was unable to read your email {models.env.title}!")
 
 
 def send_sms(phrase: str) -> None:
@@ -58,32 +56,33 @@ def send_sms(phrase: str) -> None:
         number = str(number)
     if number and body and shared.called_by_offline:
         if len(number) != 10:
-            speaker.speak(text=f"I don't think that's a right number {env.title}! Phone numbers are 10 digits.")
+            speaker.speak(text=f"I don't think that's a right number {models.env.title}! Phone numbers are 10 digits.")
             return
-        notify(user=env.gmail_user, password=env.gmail_pass, number=number, body=body)
-        speaker.speak(text=f"Message has been sent {env.title}!")
+        notify(user=models.env.gmail_user, password=models.env.gmail_pass, number=number, body=body)
+        speaker.speak(text=f"Message has been sent {models.env.title}!")
         return
     elif shared.called_by_offline:
         speaker.speak(text="Messenger format should be::send some message to some number.")
         return
-    speaker.speak(text=f"Please tell me a number {env.title}!", run=True)
+    speaker.speak(text=f"Please tell me a number {models.env.title}!", run=True)
     if not (number := listener.listen(timeout=3, phrase_limit=7)):
         return
     if 'exit' in number or 'quit' in number or 'Xzibit' in number:
         return
     if len(number) != 10:
-        speaker.speak(text=f"I don't think that's a right number {env.title}! Phone numbers are 10 digits. Try again!")
+        speaker.speak(text=f"I don't think that's a right number {models.env.title}! Phone numbers are 10 digits. "
+                           "Try again!")
         return
-    speaker.speak(text=f"What would you like to send {env.title}?", run=True)
+    speaker.speak(text=f"What would you like to send {models.env.title}?", run=True)
     if body := listener.listen(timeout=3, phrase_limit=5):
         speaker.speak(text=f'{body} to {number}. Do you want me to proceed?', run=True)
         if converted := listener.listen(timeout=3, phrase_limit=3):
             if any(word in converted.lower() for word in keywords.ok):
                 logger.info(f'{body} -> {number}')
-                notify(user=env.gmail_user, password=env.gmail_pass, number=number, body=body)
-                speaker.speak(text=f"Message has been sent {env.title}!")
+                notify(user=models.env.gmail_user, password=models.env.gmail_pass, number=number, body=body)
+                speaker.speak(text=f"Message has been sent {models.env.title}!")
             else:
-                speaker.speak(text=f"Message will not be sent {env.title}!")
+                speaker.speak(text=f"Message will not be sent {models.env.title}!")
 
 
 def notify(user: str, password: str, number: str, body: str, subject: str = None) -> None:
@@ -99,12 +98,12 @@ def notify(user: str, password: str, number: str, body: str, subject: str = None
         body: Content of the message.
         subject: Takes subject as an optional argument.
     """
-    if not any([env.phone_number, number]):
+    if not any([models.env.phone_number, number]):
         logger.error('No phone number was stored in env vars to trigger a notification.')
         return
     if not subject:
-        subject = "Message from Jarvis" if number == env.phone_number else f"Jarvis::Message from {env.name}"
-    response = Messenger(gmail_user=user, gmail_pass=password, phone=number or env.phone_number, subject=subject,
+        subject = "Message from Jarvis" if number == models.env.phone_number else f"Message from {models.env.name}"
+    response = Messenger(gmail_user=user, gmail_pass=password, phone=number or models.env.phone_number, subject=subject,
                          message=body).send_sms()
     if response.ok:
         logger.info('SMS notification has been sent.')

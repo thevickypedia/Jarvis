@@ -8,10 +8,7 @@ from pydantic import FilePath
 
 from modules.models import config, models
 
-indicators = models.Indicators()
-
-env = models.env
-importlib.reload(module=logging) if env.macos else None
+importlib.reload(module=logging) if models.settings.macos else None
 dictConfig(config.BotConfig().dict())
 logger = logging.getLogger('telegram')
 

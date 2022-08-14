@@ -16,8 +16,6 @@ from modules.audio import speaker
 from modules.models import models
 from modules.utils import shared, support
 
-env = models.env
-
 
 def ip_address() -> Union[str, None]:
     """Uses simple check on network id to see if it is connected to local host or not.
@@ -45,18 +43,19 @@ def vpn_checker() -> Union[bool, str]:
         Returns a ``False`` flag if VPN is detected, else the IP address.
     """
     if not (ip_address_ := ip_address()):
-        speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.")
+        speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! Please check your connection.")
         return False
     if ip_address_.startswith("192") or ip_address_.startswith("127"):
         return ip_address_
     else:
         if info := public_ip_info():
-            speaker.speak(text=f"You have your VPN turned on {env.title}! A connection has been detected to "
+            speaker.speak(text=f"You have your VPN turned on {models.env.title}! A connection has been detected to "
                                f"{info.get('ip')} at {info.get('city')} {info.get('region')}, "
                                f"maintained by {info.get('org')}. Please note that none of the home integrations will "
                                "work with VPN enabled.")
         else:
-            speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.")
+            speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! "
+                               "Please check your connection.")
         return False
 
 
@@ -85,7 +84,7 @@ def ip_info(phrase: str) -> None:
     """
     if "public" in phrase.lower():
         if not ip_address():
-            speaker.speak(text=f"You are not connected to the internet {env.title}!")
+            speaker.speak(text=f"You are not connected to the internet {models.env.title}!")
             return
         if ssid := get_ssid():
             ssid = f"for the connection {ssid} "
@@ -94,7 +93,7 @@ def ip_info(phrase: str) -> None:
         if public_ip := public_ip_info():
             output = f"My public IP {ssid}is {public_ip.get('ip')}"
         else:
-            output = f"I was unable to fetch the public IP {env.title}!"
+            output = f"I was unable to fetch the public IP {models.env.title}!"
     else:
         output = f"My local IP address for {socket.gethostname().split('.')[0]} is {ip_address()}"
     speaker.speak(text=output)
@@ -111,11 +110,11 @@ def get_ssid() -> Union[str, None]:
         process = subprocess.Popen(
             ["/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport", "-I"],
             stdout=subprocess.PIPE
-        ) if env.macos else subprocess.check_output("netsh wlan show interfaces")
+        ) if models.settings.macos else subprocess.check_output("netsh wlan show interfaces")
     except (subprocess.CalledProcessError, subprocess.CalledProcessError, FileNotFoundError) as error:
         logger.error(error)
         return
-    if env.macos:
+    if models.settings.macos:
         out, err = process.communicate()
         if error := process.returncode:
             logger.error(f"Failed to fetch SSID with exit code: {error}\n{err}")
@@ -141,7 +140,7 @@ def speed_test() -> None:
         st = Speedtest()
     except ConfigRetrievalError as error:
         logger.error(error)
-        speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to connect to the speed test server.")
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to connect to the speed test server.")
         return
     client_location = get_location_from_coordinates(coordinates=st.lat_lon)
     city = client_location.get("city") or client_location.get("residential") or \
@@ -154,7 +153,7 @@ def speed_test() -> None:
     upload_process.start()
     download_process.start()
     if not shared.called_by_offline:
-        speaker.speak(text=f"Starting speed test {env.title}! I.S.P: {isp}. Location: {city} {state}", run=True)
+        speaker.speak(text=f"Starting speed test {models.env.title}! I.S.P: {isp}. Location: {city} {state}", run=True)
     upload_process.join()
     download_process.join()
     ping = round(st.results.ping)

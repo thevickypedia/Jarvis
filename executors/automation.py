@@ -11,9 +11,6 @@ from executors.logger import logger
 from modules.audio import speaker
 from modules.models import models
 
-env = models.env
-fileio = models.FileIO()
-
 
 def automation_handler(phrase: str) -> None:
     """Handles automation file resets by renaming it to tmp if requested to disable.
@@ -22,21 +19,21 @@ def automation_handler(phrase: str) -> None:
         phrase: Takes the recognized phrase as an argument.
     """
     if "enable" in phrase:
-        if os.path.isfile(fileio.tmp_automation):
-            os.rename(src=fileio.tmp_automation, dst=fileio.automation)
-            speaker.speak(text=f"Automation has been enabled {env.title}!")
-        elif os.path.isfile(fileio.automation):
-            speaker.speak(text=f"Automation was never disabled {env.title}!")
+        if os.path.isfile(models.fileio.tmp_automation):
+            os.rename(src=models.fileio.tmp_automation, dst=models.fileio.automation)
+            speaker.speak(text=f"Automation has been enabled {models.env.title}!")
+        elif os.path.isfile(models.fileio.automation):
+            speaker.speak(text=f"Automation was never disabled {models.env.title}!")
         else:
-            speaker.speak(text=f"I couldn't not find the source file to enable automation {env.title}!")
+            speaker.speak(text=f"I couldn't not find the source file to enable automation {models.env.title}!")
     elif "disable" in phrase:
-        if os.path.isfile(fileio.automation):
-            os.rename(src=fileio.automation, dst=fileio.tmp_automation)
-            speaker.speak(text=f"Automation has been disabled {env.title}!")
-        elif os.path.isfile(fileio.tmp_automation):
-            speaker.speak(text=f"Automation was never enabled {env.title}!")
+        if os.path.isfile(models.fileio.automation):
+            os.rename(src=models.fileio.automation, dst=models.fileio.tmp_automation)
+            speaker.speak(text=f"Automation has been disabled {models.env.title}!")
+        elif os.path.isfile(models.fileio.tmp_automation):
+            speaker.speak(text=f"Automation was never enabled {models.env.title}!")
         else:
-            speaker.speak(text=f"I couldn't not find the source file to disable automation {env.title}!")
+            speaker.speak(text=f"I couldn't not find the source file to disable automation {models.env.title}!")
 
 
 def rewrite_automator(write_data: dict) -> None:
@@ -46,14 +43,14 @@ def rewrite_automator(write_data: dict) -> None:
         write_data: Takes the new dictionary as an argument.
     """
     logger.info("Data has been modified. Rewriting automation data into YAML file.")
-    with open(fileio.automation) as file:
+    with open(models.fileio.automation) as file:
         try:
             read_data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
         except yaml.YAMLError as error:
             logger.error(error)
             read_data = {}
     logger.info(DeepDiff(read_data, write_data, ignore_order=True))
-    with open(fileio.automation, 'w') as file:
+    with open(models.fileio.automation, 'w') as file:
         yaml.dump(data=write_data, stream=file, indent=2, sort_keys=False)
 
 
@@ -68,7 +65,7 @@ def auto_helper(offline_list: list) -> Union[str, None]:
         Task to be executed.
     """
     try:
-        with open(fileio.automation) as read_file:
+        with open(models.fileio.automation) as read_file:
             automation_data = yaml.load(stream=read_file, Loader=yaml.FullLoader) or {}
     except yaml.YAMLError as error:
         logger.error(error)
@@ -80,7 +77,7 @@ def auto_helper(offline_list: list) -> Union[str, None]:
                      f"{''.join(['*' for _ in range(120)])}"
                      f"\n\n{read_file.read()}\n\n"
                      f"{''.join(['*' for _ in range(120)])}")
-        os.remove(fileio.automation)
+        os.remove(models.fileio.automation)
         return
 
     for automation_time, automation_info in automation_data.items():
@@ -96,7 +93,7 @@ def auto_helper(offline_list: list) -> Union[str, None]:
         except ValueError:
             logger.error(f"Incorrect Datetime format: {automation_time}. "
                          "Datetime string should be in the format: 6:00 AM. "
-                         f"Removing the key-value from {fileio.automation}")
+                         f"Removing the key-value from {models.fileio.automation}")
             automation_data.pop(automation_time)
             rewrite_automator(write_data=automation_data)
             break  # Using break instead of continue as python doesn't like dict size change in-between a loop

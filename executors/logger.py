@@ -20,8 +20,6 @@ from pytz import timezone, utc
 
 from modules.models import models
 
-env = models.env
-
 api_logs = os.path.join('logs', 'api')
 if not os.path.isdir(api_logs):
     os.makedirs(api_logs)  # Recursively creates both logs and api directories if unavailable
@@ -61,12 +59,12 @@ def custom_handler() -> logging.FileHandler:
     return handler
 
 
-importlib.reload(module=logging) if env.macos else None
+importlib.reload(module=logging) if models.settings.macos else None
 dictConfig({
     'version': 1,
     'disable_existing_loggers': True,
 })
-if not env.macos:
+if not models.settings.macos:
     logging.getLogger("_code_cache").propagate = False
 
 logger = logging.getLogger('jarvis')

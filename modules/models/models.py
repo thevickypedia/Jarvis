@@ -15,10 +15,12 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Union
 
+import psutil
 import pvporcupine
 from packaging.version import parse as parser
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
-                      FilePath, HttpUrl, PositiveInt, constr, validator)
+                      FilePath, HttpUrl, PositiveFloat, PositiveInt, constr,
+                      validator)
 
 from api.rh_helper import cron_schedule
 from modules.crontab.expression import CronExpression
@@ -28,6 +30,36 @@ from modules.exceptions import InvalidEnvVars, UnsupportedOS
 # Used by docs
 if not os.path.isdir('fileio'):
     os.makedirs(name='fileio')
+
+
+class Settings(BaseSettings):
+    """Loads most common system values that do not change.
+
+    >>> Settings
+
+    """
+
+    pid: PositiveInt = os.getpid()
+    ram: Union[PositiveInt, PositiveFloat] = psutil.virtual_memory().total
+    physical_cores: PositiveInt = psutil.cpu_count(logical=False)
+    logical_cores: PositiveInt = psutil.cpu_count(logical=True)
+
+    if platform.system() == "Windows":
+        macos: bool = False
+    elif platform.system() == "Darwin":
+        macos: bool = True
+    else:
+        raise UnsupportedOS(
+            f"\n{''.join('*' for _ in range(80))}\n\n"
+            "Unsupported Operating System. Currently Jarvis can run only on Mac and Windows OS.\n\n"
+            "To raise an issue: https://github.com/thevickypedia/Jarvis/issues/new\n"
+            "To reach out: https://vigneshrao.com/contact\n"
+            f"\n{''.join('*' for _ in range(80))}\n"
+        )
+    legacy: bool = True if macos and parser(platform.mac_ver()[0]) < parser('10.14') else False
+
+
+settings = Settings()
 
 
 class EventApp(str, Enum):
@@ -102,8 +134,8 @@ class EnvConfig(BaseSettings):
     car_pass: str = Field(default=None, env='CAR_PASS')
     car_pin: str = Field(default=None, regex="\\d{4}$", env='CAR_PIN')
     sensitivity: Union[float, PositiveInt] = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
-    timeout: Union[float, PositiveInt] = Field(default=3, env='TIMEOUT')
-    phrase_limit: Union[float, PositiveInt] = Field(default=3, env='PHRASE_LIMIT')
+    timeout: Union[PositiveFloat, PositiveInt] = Field(default=3, env='TIMEOUT')
+    phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=3, env='PHRASE_LIMIT')
     bot_token: str = Field(default=None, env='BOT_TOKEN')
     bot_chat_ids: List[int] = Field(default=[], env='BOT_CHAT_IDS')
     bot_users: List[str] = Field(default=[], env='BOT_USERS')
@@ -112,7 +144,6 @@ class EnvConfig(BaseSettings):
     speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
     speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'), env='SPEECH_SYNTHESIS_HOST')
     speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
-    save_audio_timeout: int = Field(default=0, env='SAVE_AUDIO_TIMEOUT')
     title: str = Field(default='sir', env='TITLE')
     name: str = Field(default='Vignesh', env='NAME')
     tasks: List[CustomDict] = Field(default=[], env="TASKS")
@@ -136,25 +167,11 @@ class EnvConfig(BaseSettings):
         except ValueError:
             raise InvalidEnvVars('Format should be DD-MM')
 
-    if platform.system() == "Windows":
-        macos: bool = False
-    elif platform.system() == "Darwin":
-        macos: bool = True
-    else:
-        raise UnsupportedOS(
-            f"\n{''.join('*' for _ in range(80))}\n\n"
-            "Unsupported Operating System. Currently Jarvis can run only on Mac and Windows OS.\n\n"
-            "To raise an issue: https://github.com/thevickypedia/Jarvis/issues/new\n"
-            "To reach out: https://vigneshrao.com/contact\n"
-            f"\n{''.join('*' for _ in range(80))}\n"
-        )
-    legacy: bool = True if macos and parser(platform.mac_ver()[0]) < parser('10.14') else False
-
 
 env = EnvConfig()
 env.website = env.website.lstrip(f"{env.website.scheme}://")
 
-if not env.legacy and env.wake_words != [pathlib.PurePath(sys.argv[0]).stem]:
+if not settings.legacy and env.wake_words != [pathlib.PurePath(sys.argv[0]).stem]:
     for keyword in env.wake_words:
         if not pvporcupine.KEYWORD_PATHS.get(keyword) or not os.path.isfile(pvporcupine.KEYWORD_PATHS[keyword]):
             raise InvalidEnvVars(
@@ -207,6 +224,9 @@ class FileIO(BaseModel):
     speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))
 
 
+fileio = FileIO()
+
+
 class Indicators(BaseModel):
     """Loads all the mp3 files' path required by Jarvis.
 
@@ -223,6 +243,9 @@ class Indicators(BaseModel):
     start: FilePath = os.path.join('indicators', 'start.mp3')
     tv_connect: FilePath = os.path.join('indicators', 'tv_connect.mp3')
     tv_scan: FilePath = os.path.join('indicators', 'tv_scan.mp3')
+
+
+indicators = Indicators()
 
 
 # Create all necessary DB tables during startup

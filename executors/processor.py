@@ -16,22 +16,19 @@ from modules.models import models
 from modules.retry import retry
 from modules.utils import shared
 
-env = models.env
-fileio = models.FileIO()
-indicators = models.Indicators()
-db = database.Database(database=fileio.base_db)
+db = database.Database(database=models.fileio.base_db)
 docker_container = speech_synthesis.SpeechSynthesizer()
 
 
 @retry.retry(attempts=3, interval=2, warn=True)
 def delete_db() -> NoReturn:
     """Delete base db if exists. Called upon restart or shut down."""
-    if os.path.isfile(fileio.base_db):
-        logger.info(f"Removing {fileio.base_db}")
-        os.remove(fileio.base_db)
-    if os.path.isfile(fileio.base_db):
+    if os.path.isfile(models.fileio.base_db):
+        logger.info(f"Removing {models.fileio.base_db}")
+        os.remove(models.fileio.base_db)
+    if os.path.isfile(models.fileio.base_db):
         raise FileExistsError(
-            f"{fileio.base_db} still exists!"
+            f"{models.fileio.base_db} still exists!"
         )
     return
 
@@ -40,9 +37,9 @@ def clear_db() -> NoReturn:
     """Deletes entries from all databases except for VPN."""
     with db.connection:
         cursor = db.connection.cursor()
-        logger.info(f"Deleting data from {env.event_app}: {cursor.execute(f'SELECT * FROM {env.event_app}').fetchall()}"
-                    )
-        cursor.execute(f"DELETE FROM {env.event_app}")
+        logger.info(f"Deleting data from {models.env.event_app}: "
+                    f"{cursor.execute(f'SELECT * FROM {models.env.event_app}').fetchall()}")
+        cursor.execute(f"DELETE FROM {models.env.event_app}")
         logger.info(f"Deleting data from ics: {cursor.execute(f'SELECT * FROM ics').fetchall()}")
         cursor.execute("DELETE FROM ics")
         logger.info(f"Deleting data from stopper: {cursor.execute(f'SELECT * FROM stopper').fetchall()}")
@@ -78,7 +75,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
     for func, process in processes.items():
         process.start()
         logger.info(f"Started function: {func} {process.sentinel} with PID: {process.pid}")
-    playsound(sound=indicators.initialize, block=False) if not func_name else None
+    playsound(sound=models.indicators.initialize, block=False) if not func_name else None
     return processes[func_name] if func_name else processes
 
 
@@ -92,7 +89,7 @@ def stop_child_processes() -> NoReturn:
             if not pid:
                 continue
             try:
-                proc = psutil.Process(pid)
+                proc = psutil.Process(pid=pid)
             except psutil.NoSuchProcess as error:
                 logger.error(error)  # Occurs commonly since child processes run only for a short time
                 continue

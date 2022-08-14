@@ -1,11 +1,8 @@
 import os
+import shutil
 from datetime import datetime
 
-if os.path.exists(os.path.join(os.getcwd(), "venv", "bin", "activate")):
-    venv = os.path.join("venv", "bin", "activate")
-    COMMAND = f"cd {os.getcwd()} && source {venv} && python api{os.path.sep}report_gatherer.py && deactivate"
-else:
-    COMMAND = f"cd {os.getcwd()} && python api{os.path.sep}report_gatherer.py && deactivate"
+COMMAND = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join('api', 'report_gatherer.py')}"
 
 
 class MarketHours:

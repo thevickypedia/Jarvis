@@ -27,12 +27,12 @@ from executors.system import system_info, system_vitals
 from executors.todo_list import add_todo, delete_todo, delete_todo_items, todo
 from executors.tv import television
 from executors.unconditional import alpha, google, google_maps, google_search
+from executors.volume import volume
 from executors.vpn_server import vpn_server
 from executors.weather import weather
 from executors.wiki import wikipedia_
 from modules.audio.speaker import speak
 from modules.audio.voices import voice_changer
-from modules.audio.volume import volume
 from modules.conditions import conversation, keywords
 from modules.exceptions import StopSignal
 from modules.meetings.events import events

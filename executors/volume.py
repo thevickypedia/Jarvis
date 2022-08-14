@@ -1,12 +1,11 @@
 import os
 import random
 
-from modules.audio import speaker
+from executors.logger import logger
+from modules.audio import speaker, win_volume
 from modules.conditions import conversation
 from modules.models import models
 from modules.utils import support
-
-env = models.env
 
 
 def volume(phrase: str = None, level: int = None) -> None:
@@ -19,7 +18,7 @@ def volume(phrase: str = None, level: int = None) -> None:
         phrase: Takes the phrase spoken as an argument.
         level: Level of volume to which the system has to set.
     """
-    if not level:
+    if not level and phrase:
         if 'mute' in phrase.lower():
             level = 0
         elif 'max' in phrase.lower() or 'full' in phrase.lower():
@@ -27,12 +26,11 @@ def volume(phrase: str = None, level: int = None) -> None:
         else:
             level = support.extract_nos(input_=phrase, method=int)
             if level is None:
-                level = env.volume
-    support.flush_screen()
-    if env.macos:
+                level = models.env.volume
+    logger.info(f"Set volume to {level}")
+    if models.settings.macos:
         os.system(f'osascript -e "set Volume {round((8 * level) / 100)}"')
     else:
-        os.system(f'SetVol.exe {level}')
-    support.flush_screen()
+        win_volume.set_volume(level=level)
     if phrase:
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}!")

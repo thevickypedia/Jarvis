@@ -7,8 +7,6 @@ from executors.logger import logger
 from executors.port_handler import is_port_in_use, kill_port_pid
 from modules.models import models
 
-env = models.env
-
 
 class APIServer(uvicorn.Server):
     """Shared servers state that is available between all protocol instances.
@@ -39,10 +37,10 @@ def trigger_api() -> None:
         - Checks if the port is being used. If so, makes a ``GET`` request to the endpoint.
         - Attempts to kill the process listening to the port, if the endpoint doesn't respond.
     """
-    url = f'http://{env.offline_host}:{env.offline_port}'
+    url = f'http://{models.env.offline_host}:{models.env.offline_port}'
 
-    if is_port_in_use(port=env.offline_port):
-        logger.info(f'{env.offline_port} is currently in use.')
+    if is_port_in_use(port=models.env.offline_port):
+        logger.info(f'{models.env.offline_port} is currently in use.')
 
         try:
             res = requests.get(url=url, timeout=1)
@@ -53,16 +51,16 @@ def trigger_api() -> None:
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             logger.error('Unable to connect to existing uvicorn server.')
 
-        if not kill_port_pid(port=env.offline_port):  # This might terminate Jarvis
+        if not kill_port_pid(port=models.env.offline_port):  # This might terminate Jarvis
             logger.critical('Failed to kill existing PID. Attempting to re-create session.')
 
     argument_dict = {
         "app": "api.fast:app",
-        "host": env.offline_host,
-        "port": env.offline_port,
+        "host": models.env.offline_host,
+        "port": models.env.offline_port,
         "reload": True
     }
-    if not env.macos:
+    if not models.settings.macos:
         del argument_dict['reload']
 
     config = uvicorn.Config(**argument_dict)

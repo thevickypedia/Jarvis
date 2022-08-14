@@ -12,8 +12,6 @@ from modules.conditions import keywords
 from modules.models import models
 from modules.utils import shared, support
 
-env = models.env
-
 
 def github(phrase: str) -> None:
     """Pre-process to check the phrase received and call the ``GitHub`` function as necessary.
@@ -25,11 +23,11 @@ def github(phrase: str) -> None:
         update()
         return
 
-    if not all([env.git_user, env.git_pass]):
+    if not all([models.env.git_user, models.env.git_pass]):
         logger.warning("Github username or token not found.")
         support.no_env_vars()
         return
-    auth = HTTPBasicAuth(env.git_user, env.git_pass)
+    auth = HTTPBasicAuth(models.env.git_user, models.env.git_pass)
     response = requests.get('https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
     result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
     for i in range(len(response)):
@@ -41,15 +39,15 @@ def github(phrase: str) -> None:
         repos.append({response[i]['name'].replace('_', ' ').replace('-', ' '): response[i]['clone_url']})
     if 'how many' in phrase:
         speaker.speak(
-            text=f'You have {total} repositories {env.title}, out of which {forked} are forked, {private} are private, '
-                 f'{licensed} are licensed, and {archived} archived.')
+            text=f'You have {total} repositories {models.env.title}, out of which {forked} are forked, {private} are '
+                 f'private, {licensed} are licensed, and {archived} archived.')
     elif not shared.called_by_offline:
         [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
          for word in phrase.lower().split() for item in repos for repo, clone_url in item.items()]
         if result:
             github_controller(target=result)
         else:
-            speaker.speak(text=f"Sorry {env.title}! I did not find that repo.")
+            speaker.speak(text=f"Sorry {models.env.title}! I did not find that repo.")
 
 
 def github_controller(target: list) -> None:
@@ -61,15 +59,15 @@ def github_controller(target: list) -> None:
         target: Takes repository name as argument which has to be cloned.
     """
     if len(target) == 1:
-        os.system(f"cd {env.home} && git clone -q {target[0]}")
+        os.system(f"cd {models.env.home} && git clone -q {target[0]}")
         cloned = target[0].split('/')[-1].replace('.git', '')
-        speaker.speak(text=f"I've cloned {cloned} on your home directory {env.title}!")
+        speaker.speak(text=f"I've cloned {cloned} on your home directory {models.env.title}!")
         return
     elif len(target) <= 3:
         newest = [new.split('/')[-1] for new in target]
         sys.stdout.write(f"\r{', '.join(newest)}")
-        speaker.speak(text=f"I found {len(target)} results. On your screen {env.title}! Which one shall I clone?",
-                      run=True)
+        speaker.speak(text=f"I found {len(target)} results. On your screen {models.env.title}! "
+                           "Which one shall I clone?", run=True)
         if not (converted := listener.listen(timeout=3, phrase_limit=5)):
             if any(word in converted.lower() for word in keywords.exit_):
                 return
@@ -81,24 +79,24 @@ def github_controller(target: list) -> None:
                 item = 3
             else:
                 item = None
-                speaker.speak(text=f"Only first second or third can be accepted {env.title}! Try again!")
+                speaker.speak(text=f"Only first second or third can be accepted {models.env.title}! Try again!")
                 github_controller(target)
-            os.system(f"cd {env.home} && git clone -q {target[item]}")
+            os.system(f"cd {models.env.home} && git clone -q {target[item]}")
             cloned = target[item].split('/')[-1].replace('.git', '')
-            speaker.speak(text=f"I've cloned {cloned} on your home directory {env.title}!")
+            speaker.speak(text=f"I've cloned {cloned} on your home directory {models.env.title}!")
     else:
-        speaker.speak(text=f"I found {len(target)} repositories {env.title}! You may want to be more specific.")
+        speaker.speak(text=f"I found {len(target)} repositories {models.env.title}! You may want to be more specific.")
 
 
 def update() -> None:
     """Pulls the latest version of ``Jarvis`` and restarts if there were any changes."""
     output = git.cmd.Git('Jarvis').pull()
     if not output:
-        speaker.speak(text=f"I was not able to update myself {env.title}!")
+        speaker.speak(text=f"I was not able to update myself {models.env.title}!")
         return
 
     if output.strip() == 'Already up to date.':
-        speaker.speak(text=f"I'm already running on the latest version {env.title}!")
+        speaker.speak(text=f"I'm already running on the latest version {models.env.title}!")
         return
 
     status = None
@@ -106,7 +104,7 @@ def update() -> None:
         if 'files changed' in each:
             status = each.split(',')[0].strip()
             break
-    speaker.speak(text=f"I've updated myself to the latest version {env.title}! "
+    speaker.speak(text=f"I've updated myself to the latest version {models.env.title}! "
                        "However, you might need to restart the main process for the changes to take effect.")
     if status:
         speaker.speak(text=status)

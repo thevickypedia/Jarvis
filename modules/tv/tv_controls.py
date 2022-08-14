@@ -14,9 +14,6 @@ from modules.exceptions import TVError
 from modules.models import models
 from modules.utils import shared
 
-env = models.env
-indicators = models.Indicators()
-
 
 class TV:
     """All the TV controls wrapped in dedicated methods.
@@ -47,7 +44,7 @@ class TV:
             logger.error(error)
             self.reconnect = True
             if not shared.called_by_offline:
-                playsound(sound=indicators.tv_scan, block=False)
+                playsound(sound=models.indicators.tv_scan, block=False)
             if discovered := WebOSClient.discover():
                 self.client = discovered[0]
                 try:
@@ -66,13 +63,13 @@ class TV:
                 sys.stdout.write('\rConnected to the TV.')
                 break
             elif status == WebOSClient.PROMPTED:
-                playsound(sound=indicators.tv_connect, block=False)
+                playsound(sound=models.indicators.tv_connect, block=False)
                 self.reconnect = True
                 sys.stdout.write('\rPlease accept the connection request on your TV.')
 
         if self.reconnect:
             self.reconnect = False
-            if os.path.isfile('.env') and env.tv_client_key != store.get('client_key'):
+            if os.path.isfile('.env') and models.env.tv_client_key != store.get('client_key'):
                 set_key(dotenv_path='.env', key_to_set='TV_CLIENT_KEY', value_to_set=store.get('client_key'))
             else:
                 logger.critical('Client key has been generated. Store it in env vars to re-use.')

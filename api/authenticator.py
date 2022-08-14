@@ -6,7 +6,6 @@ from fastapi.security import HTTPBasicCredentials, HTTPBearer
 from modules.exceptions import APIResponse
 from modules.models import models
 
-env = models.env
 security = HTTPBearer()
 
 
@@ -19,7 +18,7 @@ async def offline_has_access(token: HTTPBasicCredentials = Depends(security)) ->
     auth = token.dict().get('credentials', '')
     if auth.startswith('\\'):
         auth = bytes(auth, "utf-8").decode(encoding="unicode_escape")
-    if auth == env.offline_pass:
+    if auth == models.env.offline_pass:
         return
     raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
 
@@ -33,6 +32,6 @@ async def robinhood_has_access(token: HTTPBasicCredentials = Depends(security)) 
     auth = token.dict().get('credentials')
     if auth.startswith('\\'):
         auth = bytes(auth, "utf-8").decode(encoding="unicode_escape")
-    if auth == env.robinhood_endpoint_auth:
+    if auth == models.env.robinhood_endpoint_auth:
         return
     raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])

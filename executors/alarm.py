@@ -7,13 +7,11 @@ from datetime import datetime, timedelta
 from typing import NoReturn
 
 from executors.logger import logger
-from modules.audio import listener, speaker, volume
+from executors.volume import volume
+from modules.audio import listener, speaker
 from modules.conditions import conversation
 from modules.models import models
 from modules.utils import shared, support
-
-env = models.env
-indicators = models.Indicators()
 
 
 def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = None) -> NoReturn:
@@ -84,7 +82,7 @@ def set_alarm(phrase: str) -> None:
             speaker.speak(text=f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
                                f"I don't think a time like that exists on Earth.")
     else:
-        speaker.speak(text=f"Please tell me a time {env.title}!")
+        speaker.speak(text=f"Please tell me a time {models.env.title}!")
         if shared.called_by_offline:
             return
         speaker.speak(run=True)
@@ -104,11 +102,11 @@ def kill_alarm(phrase: str) -> None:
     word = 'timer' if 'timer' in phrase else 'alarm'
     alarm_state = support.lock_files(alarm_files=True)
     if not alarm_state:
-        speaker.speak(text=f"You have no {word}s set {env.title}!")
+        speaker.speak(text=f"You have no {word}s set {models.env.title}!")
     elif len(alarm_state) == 1:
         hour, minute, am_pm = alarm_state[0][0:2], alarm_state[0][3:5], alarm_state[0][6:8]
         os.remove(f"alarm/{alarm_state[0]}")
-        speaker.speak(text=f"Your {word} at {hour}:{minute} {am_pm} has been silenced {env.title}!")
+        speaker.speak(text=f"Your {word} at {hour}:{minute} {am_pm} has been silenced {models.env.title}!")
     else:
         speaker.speak(text=f"Your {word}s are at {', and '.join(alarm_state).replace('.lock', '')}. "
                            f"Please let me know which {word} you want to remove.", run=True)
@@ -126,14 +124,14 @@ def kill_alarm(phrase: str) -> None:
         am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
         if os.path.exists(f'alarm/{hour}_{minute}_{am_pm}.lock'):
             os.remove(f"alarm/{hour}_{minute}_{am_pm}.lock")
-            speaker.speak(text=f"Your {word} at {hour}:{minute} {am_pm} has been silenced {env.title}!")
+            speaker.speak(text=f"Your {word} at {hour}:{minute} {am_pm} has been silenced {models.env.title}!")
         else:
             speaker.speak(text=f"I wasn't able to find your {word} at {hour}:{minute} {am_pm}. Try again.")
 
 
 def alarm_executor() -> NoReturn:
     """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
-    volume.volume(level=100)
-    subprocess.call(["open", indicators.alarm])
+    volume(level=100)
+    subprocess.call(["open", models.indicators.alarm])
     time.sleep(200)
-    volume.volume(level=env.volume)
+    volume(level=models.env.volume)

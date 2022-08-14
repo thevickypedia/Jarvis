@@ -7,8 +7,6 @@
 
 from modules.models import models
 
-env = models.env
-
 greeting = ["how are you", "how are you doing", "how have you been", "how do you do", "how's it going", "hows it going"]
 
 capabilities = ["what can you do", "what all can you do", "what are your capabilities", "what's your capacity",
@@ -30,16 +28,18 @@ whats_up = ["what's up", "what is up", "what's going on", "sup", "whats up"]
 about_me = ["tell me about you", "tell me something about you", "i would like to get you know you",
             "tell me about yourself"]
 
-wake_up1 = [f"For you {env.title}! Always!", f"At your service {env.title}!"]
+wake_up1 = [f"For you {models.env.title}! Always!", f"At your service {models.env.title}!"]
 
-wake_up2 = [f"Up and running {env.title}!", f"We are online and ready {env.title}!",
-            f"I have indeed been uploaded {env.title}!",
-            f"My listeners have been activated {env.title}!"]
+wake_up2 = [f"Up and running {models.env.title}!", f"We are online and ready {models.env.title}!",
+            f"I have indeed been uploaded {models.env.title}!",
+            f"My listeners have been activated {models.env.title}!"]
 
-wake_up3 = [f"I'm here {env.title}!"]
+wake_up3 = [f"I'm here {models.env.title}!"]
 
-confirmation = [f"Requesting confirmation {env.title}! Did you mean", f"{env.title}, are you sure you want to"]
+confirmation = [f"Requesting confirmation {models.env.title}! Did you mean",
+                f"{models.env.title}, are you sure you want to"]
 
-acknowledgement = ["Check", "Roger that!", f"Will do {env.title}!", f"You got it {env.title}!", f"Done {env.title}!",
-                   f"By all means {env.title}!", f"Indeed {env.title}!", f"Gladly {env.title}!", f"Sure {env.title}!",
-                   f"Without fail {env.title}!", f"Buttoned up {env.title}!", f"Executed {env.title}!"]
+acknowledgement = ["Check", "Roger that!", f"Will do {models.env.title}!", f"You got it {models.env.title}!",
+                   f"Done {models.env.title}!", f"By all means {models.env.title}!", f"Indeed {models.env.title}!",
+                   f"Gladly {models.env.title}!", f"Sure {models.env.title}!", f"Without fail {models.env.title}!",
+                   f"Buttoned up {models.env.title}!", f"Executed {models.env.title}!"]

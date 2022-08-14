@@ -9,8 +9,6 @@ from modules.audio import speaker
 from modules.models import models
 from modules.utils import shared, support
 
-env = models.env
-
 
 def current_time(converted: str = None) -> None:
     """Says current time at the requested location if any, else with respect to the current timezone.
@@ -56,6 +54,6 @@ def current_date() -> None:
         dt_string = f'{dt_string} {date_}, {year}'
     speaker.speak(text=f"It's {dt_string}")
     if event and event == 'Birthday':
-        speaker.speak(text=f"It's also your {event} {env.title}!")
+        speaker.speak(text=f"It's also your {event} {models.env.title}!")
     elif event:
-        speaker.speak(text=f"It's also {event} {env.title}!")
+        speaker.speak(text=f"It's also {event} {models.env.title}!")

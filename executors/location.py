@@ -30,9 +30,6 @@ from modules.conditions import keywords
 from modules.models import models
 from modules.utils import shared, support
 
-env = models.env
-fileio = models.FileIO()
-
 # stores necessary values for geolocation to receive the latitude, longitude and address
 options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
 geo_locator = Nominatim(scheme="http", user_agent="test/1", timeout=3)
@@ -52,10 +49,10 @@ def device_selector(phrase: str = None) -> Union[AppleDevice, None]:
         AppleDevice:
         Returns the selected device from the class ``AppleDevice``
     """
-    if not all([env.icloud_user, env.icloud_pass]):
+    if not all([models.env.icloud_user, models.env.icloud_pass]):
         logger.warning("ICloud username or password not found.")
         return
-    icloud_api = PyiCloudService(env.icloud_user, env.icloud_pass)
+    icloud_api = PyiCloudService(models.env.icloud_user, models.env.icloud_pass)
     devices = [device for device in icloud_api.devices]
     if not phrase:
         phrase = socket.gethostname().split('.')[0]  # Temporary fix
@@ -163,9 +160,9 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
 
 def write_current_location() -> NoReturn:
     """Extracts location information from public IP address and writes it to a yaml file."""
-    if os.path.isfile(fileio.location):
+    if os.path.isfile(models.fileio.location):
         try:
-            with open(fileio.location) as file:
+            with open(models.fileio.location) as file:
                 data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
         except yaml.YAMLError as error:
             data = {}
@@ -174,14 +171,14 @@ def write_current_location() -> NoReturn:
         if address and data.get("reserved") and data.get("latitude") and data.get("longitude") and \
                 address.get("city", address.get("hamlet")) and address.get("country") and \
                 address.get("state", address.get("county")):
-            logger.info(f"{fileio.location} is reserved.")
+            logger.info(f"{models.fileio.location} is reserved.")
             logger.warning("Automatic location detection has been disabled!")
             return
     current_lat, current_lon = get_coordinates_from_ip()
     location_info = get_location_from_coordinates(coordinates=(current_lat, current_lon))
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
-    logger.info(f"Writing location info in {fileio.location}")
-    with open(fileio.location, 'w') as location_writer:
+    logger.info(f"Writing location info in {models.fileio.location}")
+    with open(models.fileio.location, 'w') as location_writer:
         yaml.dump(data={"timezone": current_tz, "latitude": current_lat, "longitude": current_lon,
                         "address": location_info},
                   stream=location_writer, default_flow_style=False)
@@ -190,11 +187,12 @@ def write_current_location() -> NoReturn:
 def location() -> NoReturn:
     """Gets the user's current location."""
     try:
-        with open(fileio.location) as file:
+        with open(models.fileio.location) as file:
             current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
     except yaml.YAMLError as error:
         logger.error(error)
-        speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to get the location details. Please check the logs.")
+        speaker.speak(text=f"I'm sorry {models.env.title}! "
+                           "I wasn't able to get the location details. Please check the logs.")
         return
     speaker.speak(text=f"I'm at {current_location.get('address', {}).get('road', '')} - "
                        f"{current_location.get('address', {}).get('city', '')} "
@@ -216,7 +214,7 @@ def locate_device(target_device: AppleDevice) -> NoReturn:
         return
     lookup = str(target_device).split(":")[0].strip()
     if not loc:
-        speaker.speak(text=f"I wasn't able to locate your {lookup} {env.title}! It is probably offline.")
+        speaker.speak(text=f"I wasn't able to locate your {lookup} {models.env.title}! It is probably offline.")
     else:
         if shared.called_by_offline:
             post_code = loc.get("postcode", "").split("-")[0]
@@ -248,10 +246,10 @@ def locate(phrase: str) -> None:
     target_device.play_sound()
     before_keyword, keyword, after_keyword = str(target_device).partition(":")  # partitions the hostname info
     if before_keyword == "Accessory":
-        after_keyword = after_keyword.replace(f"{env.name}’s", "").replace(f"{env.name}'s", "").strip()
-        speaker.speak(text=f"I've located your {after_keyword} {env.title}!")
+        after_keyword = after_keyword.replace(f"{models.env.name}’s", "").replace(f"{models.env.name}'s", "").strip()
+        speaker.speak(text=f"I've located your {after_keyword} {models.env.title}!")
     else:
-        speaker.speak(text=f"Your {before_keyword} should be ringing now {env.title}!")
+        speaker.speak(text=f"Your {before_keyword} should be ringing now {models.env.title}!")
     speaker.speak(text="Would you like to get the location details?", run=True)
     if not (phrase_location := listener.listen(timeout=3, phrase_limit=3)):
         return
@@ -259,14 +257,14 @@ def locate(phrase: str) -> None:
         return
 
     locate_device(target_device=target_device)
-    if env.icloud_recovery:
+    if models.env.icloud_recovery:
         speaker.speak(text="I can also enable lost mode. Would you like to do it?", run=True)
         phrase_lost = listener.listen(timeout=3, phrase_limit=3)
         if any(word in phrase_lost.lower() for word in keywords.ok):
-            target_device.lost_device(number=env.icloud_recovery, text="Return my phone immediately.")
+            target_device.lost_device(number=models.env.icloud_recovery, text="Return my phone immediately.")
             speaker.speak(text="I've enabled lost mode on your phone.")
         else:
-            speaker.speak(text=f"No action taken {env.title}!")
+            speaker.speak(text=f"No action taken {models.env.title}!")
 
 
 def distance(phrase) -> NoReturn:
@@ -319,7 +317,7 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         speaker.speak(run=True)
         if destination := listener.listen(timeout=3, phrase_limit=4):
             if len(destination.split()) > 2:
-                speaker.speak(text=f"I asked for a destination {env.title}, not a sentence. Try again.")
+                speaker.speak(text=f"I asked for a destination {models.env.title}, not a sentence. Try again.")
                 distance_controller()
             if "exit" in destination or "quit" in destination or "Xzibit" in destination:
                 return
@@ -332,11 +330,12 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         start_check = None
     else:
         try:
-            with open(fileio.location) as file:
+            with open(models.fileio.location) as file:
                 current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
         except yaml.YAMLError as error:
             logger.error(error)
-            speaker.speak(text=f"I neither received an origin location nor was able to get my location {env.title}!")
+            speaker.speak(text="I neither received an origin location nor was able to get my location "
+                               f"{models.env.title}!")
             return
         start = (current_location["latitude"], current_location["longitude"])
         start_check = "My Location"
@@ -347,7 +346,7 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
     else:
         end = destination[0], destination[1]
     if not all(isinstance(v, float) for v in start) or not all(isinstance(v, float) for v in end):
-        speaker.speak(text=f"I don't think {destination} exists {env.title}!")
+        speaker.speak(text=f"I don't think {destination} exists {models.env.title}!")
         return
     miles = round(geodesic(start, end).miles)  # calculates miles from starting point to destination
     sys.stdout.write(f"** {desired_location.address} - {miles}")
@@ -358,15 +357,15 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         t_taken = miles / avg_speed
         if miles < avg_speed:
             drive_time = int(t_taken * 60)
-            speaker.speak(text=f"It might take you about {drive_time} minutes to get there {env.title}!")
+            speaker.speak(text=f"It might take you about {drive_time} minutes to get there {models.env.title}!")
         else:
             drive_time = math.ceil(t_taken)
             if drive_time == 1:
-                speaker.speak(text=f"It might take you about {drive_time} hour to get there {env.title}!")
+                speaker.speak(text=f"It might take you about {drive_time} hour to get there {models.env.title}!")
             else:
-                speaker.speak(text=f"It might take you about {drive_time} hours to get there {env.title}!")
+                speaker.speak(text=f"It might take you about {drive_time} hours to get there {models.env.title}!")
     elif start_check:
-        text = f"{env.title}! You're {miles} miles away from {destination}. "
+        text = f"{models.env.title}! You're {miles} miles away from {destination}. "
         if not shared.called["locate_places"]:
             text += f"You may also ask where is {destination}"
         speaker.speak(text=text)
@@ -389,7 +388,7 @@ def locate_places(phrase: str = None) -> None:
         place = after_keyword.replace(" in", "").strip()
     if not place:
         if shared.called_by_offline:
-            speaker.speak(text=f"I need a location to get you the details {env.title}!")
+            speaker.speak(text=f"I need a location to get you the details {models.env.title}!")
             return
         speaker.speak(text="Tell me the name of a place!", run=True)
         if not (converted := listener.listen(timeout=3, phrase_limit=4)) or "exit" in converted or "quit" in converted \
@@ -402,7 +401,7 @@ def locate_places(phrase: str = None) -> None:
             place = after_keyword.replace(" in", "").strip()
 
     try:
-        with open(fileio.location) as file:
+        with open(models.fileio.location) as file:
             current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
     except yaml.YAMLError as error:
         logger.error(error)
@@ -434,7 +433,7 @@ def locate_places(phrase: str = None) -> None:
             return
         shared.called["locate_places"] = True
     except (TypeError, AttributeError):
-        speaker.speak(text=f"{place} is not a real place on Earth {env.title}! Try again.")
+        speaker.speak(text=f"{place} is not a real place on Earth {models.env.title}! Try again.")
         if shared.called_by_offline:
             return
         locate_places(phrase=None)
@@ -460,7 +459,7 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
             if not place:
                 if no_repeat:
                     return
-                speaker.speak(text=f"I can't take you to anywhere without a location {env.title}!")
+                speaker.speak(text=f"I can't take you to anywhere without a location {models.env.title}!")
                 directions(phrase=None, no_repeat=True)
             if "exit" in place or "quit" in place or "Xzibit" in place:
                 return
@@ -477,17 +476,17 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     end = f"{located.latitude},{located.longitude}"
 
     try:
-        with open(fileio.location) as file:
+        with open(models.fileio.location) as file:
             current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
     except yaml.YAMLError as error:
         logger.error(error)
-        speaker.speak(text=f"I wasn't able to get your current location to calculate the distance {env.title}!")
+        speaker.speak(text=f"I wasn't able to get your current location to calculate the distance {models.env.title}!")
         return
     start_country = current_location["address"]["country"]
     start = current_location["latitude"], current_location["longitude"]
     maps_url = f"https://www.google.com/maps/dir/{start}/{end}/"
     webbrowser.open(maps_url)
-    speaker.speak(text=f"Directions on your screen {env.title}!")
+    speaker.speak(text=f"Directions on your screen {models.env.title}!")
     if start_country and end_country:
         if re.match(start_country, end_country, flags=re.IGNORECASE):
             shared.called["directions"] = True

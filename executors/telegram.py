@@ -12,9 +12,7 @@ from modules.exceptions import BotInUse
 from modules.models import config, models
 from modules.telegram.bot import TelegramBot
 
-env = models.env
-
-importlib.reload(module=logging) if env.macos else None
+importlib.reload(module=logging) if models.settings.macos else None
 dictConfig(config.BotConfig().dict())
 logger = logging.getLogger('telegram')
 
@@ -28,7 +26,7 @@ def handler() -> NoReturn:
         - BotInUse: Restarts polling to take control over.
         - ConnectionError: Initiates after 10, 20 or 30 seconds. Depends on retry count. Shuts off after 3 attempts.
     """
-    if not env.bot_token:
+    if not models.env.bot_token:
         logger.info("Bot token is required to start the Telegram Bot")
         return
     limit = sys.getrecursionlimit()  # fetches current recursion limit

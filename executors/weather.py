@@ -14,9 +14,6 @@ from modules.models import models
 from modules.temperature import temperature
 from modules.utils import shared, support
 
-env = models.env
-fileio = models.FileIO()
-
 
 def weather(phrase: str = None) -> None:
     """Says weather at any location if a specific location is mentioned.
@@ -26,7 +23,7 @@ def weather(phrase: str = None) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if not env.weather_api:
+    if not models.env.weather_api:
         logger.warning("Weather apikey not found.")
         support.no_env_vars()
         return
@@ -47,11 +44,11 @@ def weather(phrase: str = None) -> None:
         lon = located.longitude
     else:
         try:
-            with open(fileio.location) as file:
+            with open(models.fileio.location) as file:
                 current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
         except yaml.YAMLError as error:
             logger.error(error)
-            speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to read your location.")
+            speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to read your location.")
             return
 
         address = current_location.get('address', {})
@@ -60,12 +57,12 @@ def weather(phrase: str = None) -> None:
         lat = current_location['latitude']
         lon = current_location['longitude']
     weather_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,' \
-                  f'hourly&appid={env.weather_api}'
+                  f'hourly&appid={models.env.weather_api}'
     try:
         response = json.loads(urllib.request.urlopen(url=weather_url).read())  # loads the response in a json
     except (urllib.error.HTTPError, urllib.error.URLError) as error:
         logger.error(error)
-        speaker.speak(text=f"I'm sorry {env.title}! I ran into an exception. Please check your logs.")
+        speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an exception. Please check your logs.")
         return
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state

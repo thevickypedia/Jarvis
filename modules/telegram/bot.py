@@ -22,11 +22,10 @@ from modules.offline import compatibles
 from modules.telegram import audio_handler
 from modules.utils import support
 
-env = models.env
-fileio = models.FileIO()
-db = database.Database(database=fileio.base_db)
+settings = models.Settings()
+db = database.Database(database=models.fileio.base_db)
 
-importlib.reload(module=logging) if env.macos else None
+importlib.reload(module=logging) if models.settings.macos else None
 dictConfig(config.BotConfig().dict())
 logger = logging.getLogger('telegram')
 
@@ -111,7 +110,7 @@ class TelegramBot:
     """
 
     BASE_URL = 'https://api.telegram.org/bot'
-    FILE_CONTENT_URL = f'https://api.telegram.org/file/bot{env.bot_token}/' + '{file_path}'
+    FILE_CONTENT_URL = f'https://api.telegram.org/file/bot{models.env.bot_token}/' + '{file_path}'
 
     def __init__(self):
         """Initiates a session."""
@@ -128,7 +127,7 @@ class TelegramBot:
             bytes:
             Returns the file content as bytes.
         """
-        response = self._make_request(url=self.BASE_URL + env.bot_token + '/getFile',
+        response = self._make_request(url=self.BASE_URL + models.env.bot_token + '/getFile',
                                       payload={'file_id': payload['file_id']})
         try:
             json_response = json.loads(response.content)
@@ -175,7 +174,7 @@ class TelegramBot:
         """
         with open(filename, 'rb') as audio:
             files = {'audio': audio.read()}
-        return self._make_request(url=self.BASE_URL + env.bot_token + '/sendAudio', files=files,
+        return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendAudio', files=files,
                                   payload={'chat_id': chat_id, 'title': filename, 'parse_mode': parse_mode})
 
     def reply_to(self, payload: dict, response: str, parse_mode: str = 'markdown') -> requests.Response:
@@ -190,7 +189,7 @@ class TelegramBot:
             Response:
             Response class.
         """
-        return self._make_request(url=self.BASE_URL + env.bot_token + '/sendMessage',
+        return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendMessage',
                                   payload={'chat_id': payload['from']['id'],
                                            'reply_to_message_id': payload['message_id'],
                                            'text': response, 'parse_mode': parse_mode})
@@ -207,7 +206,7 @@ class TelegramBot:
             Response:
             Response class.
         """
-        return self._make_request(url=self.BASE_URL + env.bot_token + '/sendMessage',
+        return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendMessage',
                                   payload={'chat_id': chat_id, 'text': response, 'parse_mode': parse_mode})
 
     def poll_for_messages(self) -> NoReturn:
@@ -223,7 +222,7 @@ class TelegramBot:
         offset = 0
         logger.info(msg="Polling for incoming messages..")
         while True:
-            response = self._make_request(url=self.BASE_URL + env.bot_token + '/getUpdates',
+            response = self._make_request(url=self.BASE_URL + models.env.bot_token + '/getUpdates',
                                           payload={'offset': offset, 'timeout': 60})
             if response.ok:
                 response = response.json()
@@ -261,7 +260,7 @@ class TelegramBot:
             self.send_message(chat_id=chat['id'],
                               response=f"Sorry {chat['first_name']}! I can't process requests from bots.")
             return False
-        if chat['id'] not in env.bot_chat_ids or chat['username'] not in env.bot_users:
+        if chat['id'] not in models.env.bot_chat_ids or chat['username'] not in models.env.bot_users:
             logger.info(f"{chat['username']}: {payload['text']}") if payload.get('text') else None
             logger.error(f"Unauthorized chatID ({chat['id']}) or userName ({chat['username']})")
             self.send_message(chat_id=chat['id'], response=f"401 Unauthorized user: ({chat['username']})")
@@ -307,7 +306,7 @@ class TelegramBot:
             return True
         if "bypass" in payload.get('text', '').lower():
             logger.info(f"{payload['from']['username']} requested a STOP bypass.")
-            self.reply_to(payload=payload, response=f"Shutting down now {env.title}!\n{support.exit_message()}")
+            self.reply_to(payload=payload, response=f"Shutting down now {models.env.title}!\n{support.exit_message()}")
             with db.connection:
                 cursor = db.connection.cursor()
                 cursor.execute("INSERT or REPLACE INTO stopper (flag, caller) VALUES (?,?);", (True, 'TelegramAPI'))
@@ -339,7 +338,7 @@ class TelegramBot:
             with open(filename, 'wb') as file:
                 file.write(bytes_obj)
             converted = False
-            if env.macos:
+            if models.settings.macos:
                 transcode = audio_handler.audio_converter_mac()
                 if transcode and transcode(input_file_name=filename, output_audio_format="flac"):
                     converted = True
@@ -360,7 +359,7 @@ class TelegramBot:
             logger.error("Unable to get file for the file id in the payload received.")
             logger.error(payload)
         # Catches both unconverted source ogg and unconverted audio to text
-        title = USER_TITLE.get(payload['from']['username'], env.title)
+        title = USER_TITLE.get(payload['from']['username'], models.env.title)
         filename = tts_stt.text_to_audio(text=f"I'm sorry {title}! I was unable to process your voice command. "
                                               "Please try again!")
         self.send_audio(filename=filename, chat_id=payload['from']['id'])
@@ -379,8 +378,9 @@ class TelegramBot:
         if not self.verify_stop(payload=payload):
             return
         payload['text'] = payload.get('text', '').replace('bypass', '').replace('BYPASS', '')
-        if any(word in payload.get('text').lower() for word in ["hey", "hi", "hola", "what's up", "ssup", "whats up",
-                                                                "hello", "howdy", "hey", "chao", "hiya", "aloha"]):
+        if any(word in payload.get('text').lower().split() for word in ["hey", "hi", "hola", "what's up", "ssup",
+                                                                        "whats up", "hello", "howdy", "hey", "chao",
+                                                                        "hiya", "aloha"]):
             self.reply_to(payload=payload,
                           response=f"{greeting()} {payload['from']['first_name']}!\n"
                                    f"Good {support.part_of_day()}! How can I be of service today?")
@@ -442,7 +442,7 @@ class TelegramBot:
             if delay := timed_delay(phrase=command):
                 self.process_response(payload=payload,
                                       response=f"I will execute it after {support.time_converter(seconds=delay)} "
-                                               f"{env.title}!")
+                                               f"{models.env.title}!")
                 self.executor(command=command, payload=payload, respond=False)
                 return
         self.executor(command=command, payload=payload)
@@ -457,7 +457,7 @@ class TelegramBot:
         """
         logger.info(f'Request: {command}')
         try:
-            response = offline_communicator(command=command).replace(env.title,
+            response = offline_communicator(command=command).replace(models.env.title,
                                                                      USER_TITLE.get(payload['from']['username']))
         except Exception as error:
             logger.error(error)

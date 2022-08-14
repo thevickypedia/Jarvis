@@ -15,7 +15,6 @@ from modules.models import models
 from modules.offline import compatibles
 from modules.utils import shared, support
 
-env = models.env
 offline_list = compatibles.offline_compatible()
 
 
@@ -30,11 +29,11 @@ def split_phrase(phrase: str, should_return: bool = False) -> bool:
         bool:
         Return value from ``conditions()``
     """
-    exit_check = False  # this is specifically to catch the sleep command which should break the while loop in renew()
+    exit_check = False  # this is specifically to catch the sleep command which should break the loop in renew()
 
     if ' after ' in phrase:
         if delay := timed_delay(phrase=phrase):
-            speaker.speak(text=f"I will execute it after {support.time_converter(seconds=delay)} {env.title}!")
+            speaker.speak(text=f"I will execute it after {support.time_converter(seconds=delay)} {models.env.title}!")
             return False
 
     if ' and ' in phrase and not any(word in phrase.lower() for word in keywords.avoid):
@@ -114,6 +113,7 @@ def initialize() -> None:
     else:
         speaker.speak(text=f'Good {support.part_of_day()}.')
         shared.greeting = True
+    speaker.speak(run=True)
     renew()
 
 
@@ -124,20 +124,15 @@ def renew() -> None:
         - This function runs only for a minute.
         - split_phrase(converted) is a condition so that, loop breaks when if sleep in ``conditions()`` returns True.
     """
-    speaker.speak(run=True)
     for i in range(3):
         if i:
-            converted = listener.listen(timeout=3, phrase_limit=5, sound=False)
+            converted = listener.listen(timeout=3, phrase_limit=5, sound=False) or ""
         else:
-            converted = listener.listen(timeout=3, phrase_limit=5)
-        if not converted:
+            converted = listener.listen(timeout=3, phrase_limit=5) or ""
+        if any(word in converted.lower() for word in models.env.wake_words):
             continue
-        converted = ' '.join([i for i in converted.split() if i.lower() not in env.wake_words])
-        if converted:
-            if split_phrase(phrase=converted):  # should_return flag is not passed which will default to False
-                break  # split_phrase() returns a boolean flag from conditions. conditions return True only for sleep
-        elif any(word in converted.lower() for word in env.wake_words):
-            continue
+        if split_phrase(phrase=converted):  # should_return flag is not passed which will default to False
+            break  # split_phrase() returns a boolean flag from conditions. conditions return True only for sleep
         speaker.speak(run=True)
 
 
@@ -157,10 +152,10 @@ def initiator(phrase: str = None, should_return: bool = False) -> None:
         if (event := support.celebrate()) and 'night' not in phrase.lower():
             speaker.speak(text=f'Happy {event}!')
         if 'night' in phrase.split() or 'goodnight' in phrase.split():
-            Thread(target=pc_sleep).start() if env.macos else None
+            Thread(target=pc_sleep).start() if models.settings.macos else None
         time_travel()
         shared.called['time_travel'] = False
-    elif 'you there' in phrase.lower() or any(word in phrase.lower() for word in env.wake_words):
+    elif 'you there' in phrase.lower() or any(word in phrase.lower() for word in models.env.wake_words):
         speaker.speak(text=f'{random.choice(conversation.wake_up1)}')
         initialize()
     elif any(word in phrase.lower() for word in ['look alive', 'wake up', 'wakeup', 'show time', 'showtime']):

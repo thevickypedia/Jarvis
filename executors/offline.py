@@ -22,9 +22,7 @@ from modules.offline import compatibles
 from modules.timer.executor import RepeatedTimer
 from modules.utils import shared, support
 
-env = models.env
-fileio = models.FileIO()
-db = database.Database(database=fileio.base_db)
+db = database.Database(database=models.fileio.base_db)
 offline_compatible = compatibles.offline_compatible()
 
 
@@ -36,13 +34,13 @@ def repeated_tasks() -> Union[List[RepeatedTimer], List]:
         Returns a list of RepeatedTimer object(s).
     """
     tasks = []
-    logger.info(f"Background tasks: {len(env.tasks)}")
-    for task in env.tasks:
+    logger.info(f"Background tasks: {len(models.env.tasks)}")
+    for task in models.env.tasks:
         if any(word in task.task.lower() for word in offline_compatible):
             tasks.append(RepeatedTimer(task.seconds, offline_communicator, task.task))
         else:
             logger.error(f"{task.task} is not a part of offline communication. Removing entry.")
-            env.tasks.remove(task)
+            models.env.tasks.remove(task)
     return tasks
 
 
@@ -66,17 +64,17 @@ def automator() -> NoReturn:
     events.event_app_launcher()
     dry_run = True
     while True:
-        if os.path.isfile(fileio.automation):
+        if os.path.isfile(models.fileio.automation):
             if exec_task := auto_helper(offline_list=offline_list):
                 try:
                     offline_communicator(command=exec_task)
                 except Exception as error:
                     logger.error(error)
 
-        if start_events + env.sync_events <= time.time() or dry_run:
+        if start_events + models.env.sync_events <= time.time() or dry_run:
             start_events = time.time()
             event_process = Process(target=events.events_writer)
-            logger.info(f"Getting calendar events from {env.event_app}") if dry_run else None
+            logger.info(f"Getting calendar events from {models.env.event_app}") if dry_run else None
             event_process.start()
             with db.connection:
                 cursor = db.connection.cursor()
@@ -84,15 +82,15 @@ def automator() -> NoReturn:
                 cursor.execute("INSERT or REPLACE INTO children (events) VALUES (?);", (event_process.pid,))
                 db.connection.commit()
 
-        if start_meetings + env.sync_meetings <= time.time() or dry_run:
-            if dry_run and env.ics_url:
+        if start_meetings + models.env.sync_meetings <= time.time() or dry_run:
+            if dry_run and models.env.ics_url:
                 try:
-                    if requests.get(url=env.ics_url).status_code == 503:
-                        env.sync_meetings = 21_600  # Set to 6 hours if unable to connect to the meetings URL
+                    if requests.get(url=models.env.ics_url).status_code == 503:
+                        models.env.sync_meetings = 21_600  # Set to 6 hours if unable to connect to the meetings URL
                 except (ConnectionError, TimeoutError, requests.exceptions.RequestException,
                         requests.exceptions.Timeout) as error:
                     logger.error(error)
-                    env.sync_meetings = 99_999_999  # NEVER RUN, since env vars are loaded only once during start up
+                    models.env.sync_meetings = 99_999_999  # NEVER RUNs, as env vars are loaded only during start up
             start_meetings = time.time()
             meeting_process = Process(target=icalendar.meetings_writer)
             logger.info("Getting calendar schedule from ICS.") if dry_run else None
@@ -105,7 +103,7 @@ def automator() -> NoReturn:
 
         if start_cron + 60 <= time.time():  # Condition passes every minute
             start_cron = time.time()
-            for cron in env.crontab:
+            for cron in models.env.crontab:
                 job = expression.CronExpression(line=cron)
                 if job.check_trigger(date_tuple=tuple(map(int, datetime.now().strftime("%Y,%m,%d,%H,%M").split(",")))):
                     cron_process = Process(target=crontab_executor, args=(job.comment,))
@@ -138,27 +136,27 @@ def initiate_tunneling() -> NoReturn:
         - ``forever_ngrok.py`` is a simple script that triggers ngrok connection in the given offline port.
         - The connection is tunneled through a public facing URL used to make ``POST`` requests to Jarvis API.
     """
-    if not env.macos:
+    if not models.settings.macos:
         return
     try:
         response = requests.get(url="http://localhost:4040/api/tunnels")
         if response.ok:
             for each_tunnel in response.json().get('tunnels', {}):
                 if hosted := each_tunnel.get('config', {}).get('addr'):
-                    if int(hosted.split(':')[-1]) == env.offline_port:
+                    if int(hosted.split(':')[-1]) == models.env.offline_port:
                         logger.info('An instance of ngrok tunnel for offline communicator is running already.')
                         return
     except (requests.exceptions.RequestException, requests.exceptions.JSONDecodeError) as error:
         logger.error(error)
-    if os.path.exists(f"{env.home}/JarvisHelper/venv/bin/activate"):
+    if os.path.exists(f"{models.env.home}/JarvisHelper/venv/bin/activate"):
         logger.info('Initiating ngrok connection for offline communicator.')
-        initiate = f'cd {env.home}/JarvisHelper && ' \
-                   f'source venv/bin/activate && export host={env.offline_host} ' \
-                   f'export PORT={env.offline_port} && python forever_ngrok.py'
+        initiate = f'cd {models.env.home}/JarvisHelper && ' \
+                   f'source venv/bin/activate && export host={models.env.offline_host} ' \
+                   f'export PORT={models.env.offline_port} && python forever_ngrok.py'
         os.system(f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null""")
     else:
-        logger.info(f'JarvisHelper is not available to trigger an ngrok tunneling through {env.offline_port}')
-        endpoint = rf'http:\\{env.offline_host}:{env.offline_port}'
+        logger.info(f'JarvisHelper is not available to trigger an ngrok tunneling through {models.env.offline_port}')
+        endpoint = rf'http:\\{models.env.offline_host}:{models.env.offline_port}'
         logger.info('However offline communicator can still be accessed via '
                     f'{endpoint}\\offline-communicator for API calls and {endpoint}\\docs for docs.')
 
@@ -175,12 +173,12 @@ def on_demand_offline_automation(task: str) -> Union[str, None]:
     """
     headers = {
         'accept': 'application/json',
-        'Authorization': f'Bearer {env.offline_pass}',
+        'Authorization': f'Bearer {models.env.offline_pass}',
         # Already added when passed json= but needed when passed data=
         # 'Content-Type': 'application/json',
     }
     try:
-        response = requests.post(url=f'http://{env.offline_host}:{env.offline_port}/offline-communicator',
+        response = requests.post(url=f'http://{models.env.offline_host}:{models.env.offline_port}/offline-communicator',
                                  headers=headers, json={'command': task})
     except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout):
         return

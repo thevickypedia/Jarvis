@@ -16,9 +16,6 @@ from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
 
-env = models.env
-fileio = models.FileIO()
-
 
 def alpha(text: str) -> bool:
     """Uses wolfram alpha API to fetch results for uncategorized phrases heard.
@@ -36,9 +33,9 @@ def alpha(text: str) -> bool:
     References:
         `Error 1000 <https://products.wolframalpha.com/show-steps-api/documentation/#:~:text=(Error%201000)>`__
     """
-    if not env.wolfram_api_key:
+    if not models.env.wolfram_api_key:
         return False
-    alpha_client = wolframalpha.Client(app_id=env.wolfram_api_key)
+    alpha_client = wolframalpha.Client(app_id=models.env.wolfram_api_key)
     try:
         res = alpha_client.query(text)
     except Exception:  # noqa
@@ -138,11 +135,11 @@ def google_maps(query: str) -> bool:
         bool:
         Boolean True if Google's maps API is unable to fetch consumable results.
     """
-    if not env.maps_api:
+    if not models.env.maps_api:
         return False
 
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
-    response = requests.get(maps_url + 'query=' + query + '&key=' + env.maps_api)
+    response = requests.get(maps_url + 'query=' + query + '&key=' + models.env.maps_api)
     collection = response.json()['results']
     required = []
     for element in range(len(collection)):
@@ -162,14 +159,14 @@ def google_maps(query: str) -> bool:
         return False
 
     try:
-        with open(fileio.location) as file:
+        with open(models.fileio.location) as file:
             current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
     except yaml.YAMLError as error:
         logger.error(error)
         return False
 
     results = len(required)
-    speaker.speak(text=f"I found {results} results {env.title}!") if results != 1 else None
+    speaker.speak(text=f"I found {results} results {models.env.title}!") if results != 1 else None
     start = current_location['latitude'], current_location['longitude']
     n = 0
     for item in required:
@@ -183,10 +180,10 @@ def google_maps(query: str) -> bool:
         n += 1
         if results == 1:
             option = 'only option I found is'
-            next_val = f"Do you want to head there {env.title}?"
+            next_val = f"Do you want to head there {models.env.title}?"
         elif n <= 2:
             option = f'{inflect.engine().ordinal(n)} option is'
-            next_val = f"Do you want to head there {env.title}?"
+            next_val = f"Do you want to head there {models.env.title}?"
         elif n <= 5:
             option = 'next option would be'
             next_val = "Would you like to try that?"
@@ -204,12 +201,12 @@ def google_maps(query: str) -> bool:
             elif any(word in converted.lower() for word in keywords.ok):
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                 webbrowser.open(url=maps_url)
-                speaker.speak(text=f"Directions on your screen {env.title}!")
+                speaker.speak(text=f"Directions on your screen {models.env.title}!")
                 return True
             elif results == 1:
                 return True
             elif n == results:
-                speaker.speak(text=f"I've run out of options {env.title}!")
+                speaker.speak(text=f"I've run out of options {models.env.title}!")
                 return True
             else:
                 continue

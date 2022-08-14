@@ -1,5 +1,6 @@
 import os
 import random
+import subprocess
 from threading import Thread
 
 from modules.audio import speaker
@@ -7,7 +8,7 @@ from modules.conditions import conversation
 from modules.models import models
 from modules.utils import support
 
-env = models.env
+POWERSHELL = '(Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods).WmiSetBrightness(1,' + '{l}' + ')'
 
 
 def brightness(phrase: str):
@@ -16,9 +17,6 @@ def brightness(phrase: str):
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if not env.macos:
-        support.missing_windows_features()
-        return
     phrase = phrase.lower()
     speaker.speak(text=random.choice(conversation.acknowledgement))
     if 'set' in phrase:
@@ -36,27 +34,35 @@ def brightness(phrase: str):
 
 def increase_brightness() -> None:
     """Increases the brightness to maximum in macOS."""
-    for _ in range(32):
-        os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
+    if models.settings.macos:
+        for _ in range(16):
+            os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
+    else:
+        subprocess.run(["powershell", POWERSHELL.format(level=0)])
 
 
 def decrease_brightness() -> None:
     """Decreases the brightness to bare minimum in macOS."""
-    for _ in range(32):
-        os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
+    if models.settings.macos:
+        for _ in range(16):
+            os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
+    else:
+        subprocess.run(["powershell", POWERSHELL.format(level=100)])
 
 
 def set_brightness(level: int) -> None:
     """Set brightness to a custom level.
 
-    - | Since Jarvis uses in-built apple script, the only way to achieve this is to set the brightness to absolute
-      | minimum/maximum and increase/decrease the required % from there.
+    - | Since Jarvis uses in-built apple script (for macOS), the only way to achieve this is to set the brightness to
+      | absolute minimum/maximum and increase/decrease the required % from there.
 
     Args:
         level: Percentage of brightness to be set.
     """
-    level = round((32 * int(level)) / 100)
-    for _ in range(32):
-        os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
-    for _ in range(level):
-        os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
+    if models.settings.macos:
+        level = round((16 * int(level)) / 100)
+        decrease_brightness()
+        for _ in range(level):
+            os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
+    else:
+        subprocess.run(["powershell", POWERSHELL.format(l=level)])

@@ -1,13 +1,10 @@
 """Runs once during API startup and continues to run in a cron scheduler as per market hours."""
 
-import inspect
 import logging.config
 import math
 import os
-import pathlib
 import sys
 import time
-import warnings
 from datetime import datetime
 
 import jinja2
@@ -15,21 +12,10 @@ import requests
 from pyrh import Robinhood
 from pyrh.exceptions import InvalidTickerSymbol
 
-current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parent_dir = os.path.dirname(current_dir)
-if os.path.realpath(parent_dir) != os.path.realpath(os.getcwd()):
-    warnings.warn(
-        f'Parent directory of "{pathlib.PurePath(__file__).name}" does not match the current working directory.\n'
-        f'Parent: {parent_dir}\n'
-        f'CWD: {os.getcwd()}'
-    )
-sys.path.insert(0, parent_dir)
+sys.path.insert(0, os.getcwd())
 
 from api.rh_helper import CustomTemplate  # noqa
 from modules.models import config, models  # noqa
-
-env = models.env
-fileio = models.FileIO()
 
 
 class Investment:
@@ -46,10 +32,15 @@ class Investment:
             logger: Takes the class ``logging.Logger`` as an argument.
         """
         rh = Robinhood()
-        rh.login(username=env.robinhood_user, password=env.robinhood_pass, qr_code=env.robinhood_qr)
+        rh.login(username=models.env.robinhood_user, password=models.env.robinhood_pass,
+                 qr_code=models.env.robinhood_qr)
         raw_result = rh.positions()
         self.logger = logger
-        self.result = raw_result['results']
+        if result := raw_result.get('results'):
+            self.result = result
+        else:
+            logger.error(raw_result.get('detail', raw_result))
+            self.result = []
         self.rh = rh
 
     def watcher(self) -> tuple:
@@ -57,7 +48,7 @@ class Investment:
 
         Returns:
             tuple:
-            Returns a tuple of portfolio header, profit stat, loss stat, and current profit/loss compared to purchased.
+            Returns a tuple of portfolio header, profit, loss, and current profit/loss compared from purchased.
         """
         shares_total, loss_dict, profit_dict = [], {}, {}
         n, n_ = 0, 0
@@ -176,6 +167,8 @@ class Investment:
 
     def report_gatherer(self) -> None:
         """Gathers all the necessary information and creates an ``index.html`` using a ``Jinja`` template."""
+        if not self.result:
+            return
         current_time = datetime.now()
 
         port_head, profit, loss, overall_result = self.watcher()
@@ -196,7 +189,7 @@ class Investment:
         template = CustomTemplate.source.strip()
         rendered = jinja2.Template(template).render(TITLE=title, SUMMARY=web_text, PROFIT=profit_web, LOSS=loss_web,
                                                     WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)
-        with open(fileio.robinhood, 'w') as static_file:
+        with open(models.fileio.robinhood, 'w') as static_file:
             static_file.write(rendered)
 
         self.logger.info(f'Static file generated in {round(float(time.perf_counter()), 2)}s')

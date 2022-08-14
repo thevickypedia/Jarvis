@@ -33,10 +33,7 @@ from modules.dictionary import dictionary
 from modules.models import models
 from modules.utils import shared, support
 
-env = models.env
-fileio = models.FileIO()
-indicators = models.Indicators()
-db = database.Database(database=fileio.base_db)
+db = database.Database(database=models.fileio.base_db)
 
 
 def repeat() -> NoReturn:
@@ -59,9 +56,9 @@ def apps(phrase: str) -> None:
     ignore = ['app', 'application']
     if not keyword or keyword in ignore:
         if shared.called_by_offline:
-            speaker.speak(text=f'I need an app name to open {env.title}!')
+            speaker.speak(text=f'I need an app name to open {models.env.title}!')
             return
-        speaker.speak(text=f"Which app shall I open {env.title}?", run=True)
+        speaker.speak(text=f"Which app shall I open {models.env.title}?", run=True)
         if keyword := listener.listen(timeout=3, phrase_limit=4):
             if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
                 return
@@ -69,7 +66,7 @@ def apps(phrase: str) -> None:
             speaker.speak(text="I didn't quite get that. Try again.")
             return
 
-    if not env.macos:
+    if not models.settings.macos:
         status = os.system(f'start {keyword}')
         if status == 0:
             speaker.speak(text=f'I have opened {keyword}')
@@ -94,7 +91,7 @@ def apps(phrase: str) -> None:
     app_status = os.system(f"open /Applications/'{keyword}' > /dev/null 2>&1")
     keyword = keyword.replace('.app', '')
     if app_status == 256:
-        speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to launch {keyword}. "
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to launch {keyword}. "
                            "You might need to check its permissions.")
     else:
         speaker.speak(text=f"I have opened {keyword}")
@@ -107,21 +104,21 @@ def music(phrase: str = None) -> NoReturn:
         phrase: Takes the phrase spoken as an argument.
     """
     sys.stdout.write("\rScanning music files...")
-    get_all_files = (os.path.join(root, f) for root, _, files in os.walk(os.path.join(env.home, "Music")) for f in
-                     files)
+    get_all_files = (os.path.join(root, f) for root, _, files in os.walk(os.path.join(models.env.home, "Music")) for f
+                     in files)
     if music_files := [file for file in get_all_files if os.path.splitext(file)[1] == '.mp3']:
         chosen = random.choice(music_files)
         if phrase and 'speaker' in phrase:
             google_home(device=phrase, file=chosen)
         else:
-            if env.macos:
+            if models.settings.macos:
                 subprocess.call(["open", chosen])
             else:
                 os.system(f'start wmplayer "{chosen}"')
             support.flush_screen()
-            speaker.speak(text=f"Enjoy your music {env.title}!")
+            speaker.speak(text=f"Enjoy your music {models.env.title}!")
     else:
-        speaker.speak(text=f'No music files were found {env.title}!')
+        speaker.speak(text=f'No music files were found {models.env.title}!')
 
 
 def google_home(device: str = None, file: str = None) -> None:
@@ -153,7 +150,7 @@ def google_home(device: str = None, file: str = None) -> None:
         return
 
     if not shared.called_by_offline:
-        speaker.speak(text=f'Scanning your IP range for Google Home devices {env.title}!', run=True)
+        speaker.speak(text=f'Scanning your IP range for Google Home devices {models.env.title}!', run=True)
         sys.stdout.write('\rScanning your IP range for Google Home devices..')
     network_id = '.'.join(network_id.split('.')[0:3])
 
@@ -185,15 +182,15 @@ def google_home(device: str = None, file: str = None) -> None:
 
     if not device or not file:
         support.flush_screen()
-        speaker.speak(text=f"You have {len(devices)} devices in your IP range {env.title}! "
+        speaker.speak(text=f"You have {len(devices)} devices in your IP range {models.env.title}! "
                            f"{support.comma_separator(list(devices.keys()))}. You can choose one and ask me to play "
                            f"some music on any of these.")
         return
     else:
         chosen = [value for key, value in devices.items() if key.lower() in device.lower()]
         if not chosen:
-            speaker.speak(text=f"I don't see any matching devices {env.title}!. Let me help you. "
-                               f"You have {len(devices)} devices in your IP range {env.title}! "
+            speaker.speak(text=f"I don't see any matching devices {models.env.title}!. Let me help you. "
+                               f"You have {len(devices)} devices in your IP range {models.env.title}! "
                                f"{support.comma_separator(list(devices.keys()))}.")
             return
         for target in chosen:
@@ -204,9 +201,9 @@ def google_home(device: str = None, file: str = None) -> None:
             support.release_print()
         if len(chosen) > 1:
             speaker.speak(text=f"That's interesting, you've asked me to play on {len(chosen)} devices at a time. "
-                               f"I hope you'll enjoy this {env.title}.", run=True)
+                               f"I hope you'll enjoy this {models.env.title}.", run=True)
         else:
-            speaker.speak(text=f"Enjoy your music {env.title}!", run=True)
+            speaker.speak(text=f"Enjoy your music {models.env.title}!", run=True)
 
 
 def jokes() -> NoReturn:
@@ -216,10 +213,9 @@ def jokes() -> NoReturn:
 
 def flip_a_coin() -> NoReturn:
     """Says ``heads`` or ``tails`` from a random choice."""
-    playsound(sound=indicators.coin, block=True) if not shared.called_by_offline else None
-    speaker.speak(
-        text=f"""{random.choice(['You got', 'It landed on', "It's"])} {random.choice(['heads', 'tails'])} {env.title}"""
-    )
+    playsound(sound=models.indicators.coin, block=True) if not shared.called_by_offline else None
+    speaker.speak(text=f"""{random.choice(['You got', 'It landed on',
+                                           "It's"])} {random.choice(['heads', 'tails'])} {models.env.title}""")
 
 
 def facts() -> NoReturn:
@@ -259,7 +255,7 @@ def meaning(phrase: str) -> None:
                     speaker.speak(text=letter)
                 speaker.speak(run=True)
         else:
-            speaker.speak(text=f"I'm sorry {env.title}! I was unable to get meaning for the word: {keyword}")
+            speaker.speak(text=f"I'm sorry {models.env.title}! I was unable to get meaning for the word: {keyword}")
 
 
 def notes() -> None:
@@ -267,7 +263,7 @@ def notes() -> None:
     if (converted := listener.listen(timeout=5, phrase_limit=10)) or 'exit' in converted or 'quit' in converted or \
             'Xzibit' in converted:
         return
-    with open(fileio.notes, 'a') as writer:
+    with open(models.fileio.notes, 'a') as writer:
         writer.write(f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"
                      f"{converted}\n")
 
@@ -278,17 +274,17 @@ def news(news_source: str = 'fox') -> None:
     Args:
         news_source: Source from where the news has to be fetched. Defaults to ``fox``.
     """
-    if not env.news_api:
+    if not models.env.news_api:
         logger.warning("News apikey not found.")
         support.no_env_vars()
         return
 
     sys.stdout.write(f'\rGetting news from {news_source} news.')
-    news_client = NewsApiClient(api_key=env.news_api)
+    news_client = NewsApiClient(api_key=models.env.news_api)
     try:
         all_articles = news_client.get_top_headlines(sources=f'{news_source}-news')
     except newsapi_exception.NewsAPIException:
-        speaker.speak(text=f"I wasn't able to get the news {env.title}! "
+        speaker.speak(text=f"I wasn't able to get the news {models.env.title}! "
                            "I think the News API broke, you may try after sometime.")
         return
 
@@ -318,7 +314,7 @@ def report() -> NoReturn:
 def time_travel() -> None:
     """Triggered only from ``initiator()`` to give a quick update on the user's daily routine."""
     part_day = support.part_of_day()
-    speaker.speak(text=f"Good {part_day} {env.name}!")
+    speaker.speak(text=f"Good {part_day} {models.env.name}!")
     if part_day == 'Night':
         if event := support.celebrate():
             speaker.speak(text=f'Happy {event}!')
@@ -335,7 +331,7 @@ def time_travel() -> None:
         speaker.speak(text=meeting_status[0])
     with db.connection:
         cursor = db.connection.cursor()
-        event_status = cursor.execute(f"SELECT info FROM {env.event_app}").fetchone()
+        event_status = cursor.execute(f"SELECT info FROM {models.env.event_app}").fetchone()
     if event_status and event_status[0].startswith('You'):
         speaker.speak(text=event_status[0])
     todo()

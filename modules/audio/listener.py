@@ -16,7 +16,6 @@ from executors.logger import logger
 from modules.models import models
 from modules.utils import support
 
-indicators = models.Indicators()
 recognizer = Recognizer()  # initiates recognizer that uses google's translation
 
 
@@ -36,10 +35,10 @@ def listen(timeout: Union[int, float], phrase_limit: Union[int, float], sound: b
     """
     with Microphone() as source:
         try:
-            playsound(sound=indicators.start, block=False) if sound else None
+            playsound(sound=models.indicators.start, block=False) if sound else None
             sys.stdout.write("\rListener activated...") if stdout else None
             listened = recognizer.listen(source=source, timeout=timeout, phrase_time_limit=phrase_limit)
-            playsound(sound=indicators.end, block=False) if sound else None
+            playsound(sound=models.indicators.end, block=False) if sound else None
             support.flush_screen()
             recognized = recognizer.recognize_google(audio_data=listened)
             logger.info(recognized)

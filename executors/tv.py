@@ -17,9 +17,6 @@ from modules.tv.tv_controls import TV
 from modules.utils import shared, support
 from modules.wakeonlan import wakeonlan
 
-env = models.env
-fileio = models.FileIO()
-
 
 def television(phrase: str) -> None:
     """Controls all actions on a TV (LG Web OS).
@@ -31,27 +28,27 @@ def television(phrase: str) -> None:
                ['turn on', 'connect', 'shutdown', 'shut down', 'turn off', 'increase', 'decrease', 'reduce', 'mute',
                 'stop', 'content', 'stop', 'pause', 'resume', 'play', 'rewind', 'forward', 'set', 'volume', 'volume',
                 'app', 'application', 'open', 'launch', "what's", 'currently', 'change', 'source']):
-        speaker.speak(text=f"I didn't quite get that {env.title}! What do you want me to do to your tv?")
+        speaker.speak(text=f"I didn't quite get that {models.env.title}! What do you want me to do to your tv?")
         Thread(target=support.unrecognized_dumper, args=[{'TV': phrase}]).start()
         return
 
     if not vpn_checker():
         return
 
-    if not os.path.isfile(fileio.smart_devices):
-        logger.warning(f"{fileio.smart_devices} not found.")
+    if not os.path.isfile(models.fileio.smart_devices):
+        logger.warning(f"{models.fileio.smart_devices} not found.")
         support.no_env_vars()
         return
 
     try:
-        with open(fileio.smart_devices) as file:
+        with open(models.fileio.smart_devices) as file:
             smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
     except yaml.YAMLError as error:
         logger.error(error)
-        speaker.speak(text=f"I'm sorry {env.title}! I was unable to read your TV's source information.")
+        speaker.speak(text=f"I'm sorry {models.env.title}! I was unable to read your TV's source information.")
         return
 
-    if not env.tv_mac or not env.tv_client_key:
+    if not models.env.tv_mac or not models.env.tv_client_key:
         logger.warning("IP, MacAddress [or] ClientKey not found.")
         support.no_env_vars()
         return
@@ -59,7 +56,7 @@ def television(phrase: str) -> None:
     tv_ip_list = support.hostname_to_ip(hostname=smart_devices.get('tv', 'LGWEBOSTV'))
     tv_ip_list = list(filter(None, tv_ip_list))
     if not tv_ip_list:
-        speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to get the IP address of your TV.")
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to get the IP address of your TV.")
         return
 
     phrase_exc = phrase.replace('TV', '')
@@ -76,7 +73,7 @@ def television(phrase: str) -> None:
             Returns the reachable IP address from the list.
         """
         for ip in tv_ip_list:
-            if env.macos:
+            if models.settings.macos:
                 if tv_stat := os.system(f"ping -c 1 -t 2 {ip} >/dev/null 2>&1"):
                     logger.error(f"Connection timed out on {ip}. Ping result: {tv_stat}") if not attempt else None
                 else:
@@ -89,16 +86,16 @@ def television(phrase: str) -> None:
 
     if 'turn off' in phrase_lower or 'shutdown' in phrase_lower or 'shut down' in phrase_lower:
         if not (tv_ip := tv_status()):
-            speaker.speak(text=f"I wasn't able to connect to your TV {env.title}! "
+            speaker.speak(text=f"I wasn't able to connect to your TV {models.env.title}! "
                                "I guess your TV is powered off already.")
             return
     elif not (tv_ip := tv_status()):
-        logger.info(f"Trying to power on the device using the mac addresses: {env.tv_mac}")
+        logger.info(f"Trying to power on the device using the mac addresses: {models.env.tv_mac}")
         power_controller = wakeonlan.WakeOnLan()
-        with ThreadPoolExecutor(max_workers=len(env.tv_mac)) as executor:
-            executor.map(power_controller.send_packet, env.tv_mac)
+        with ThreadPoolExecutor(max_workers=len(models.env.tv_mac)) as executor:
+            executor.map(power_controller.send_packet, models.env.tv_mac)
         if not shared.called_by_offline:
-            speaker.speak(text=f"Looks like your TV is powered off {env.title}! Let me try to turn it back on!",
+            speaker.speak(text=f"Looks like your TV is powered off {models.env.title}! Let me try to turn it back on!",
                           run=True)
 
     if not tv_ip:
@@ -107,25 +104,25 @@ def television(phrase: str) -> None:
                 break
             time.sleep(0.5)
         else:
-            speaker.speak(text=f"I wasn't able to connect to your TV {env.title}! Please make sure you are on the "
-                               "same network as your TV, and your TV is connected to a power source.")
+            speaker.speak(text=f"I wasn't able to connect to your TV {models.env.title}! Please make sure you are on "
+                               f"the same network as your TV, and your TV is connected to a power source.")
             return
 
     if not shared.tv:
         try:
-            shared.tv = TV(ip_address=tv_ip, client_key=env.tv_client_key)
+            shared.tv = TV(ip_address=tv_ip, client_key=models.env.tv_client_key)
         except TVError as error:
             logger.error(f"Failed to connect to the TV. {error}")
-            speaker.speak(text=f"I was unable to connect to the TV {env.title}! It appears to be a connection issue. "
-                               "You might want to try again later.")
+            speaker.speak(text=f"I was unable to connect to the TV {models.env.title}! It appears to be a connection "
+                               "issue. You might want to try again later.")
             return
         if 'turn on' in phrase_lower or 'connect' in phrase_lower:
-            speaker.speak(text=f"TV features have been integrated {env.title}!")
+            speaker.speak(text=f"TV features have been integrated {models.env.title}!")
             return
 
     if shared.tv:
         if 'turn on' in phrase_lower or 'connect' in phrase_lower:
-            speaker.speak(text=f'Your TV is already powered on {env.title}!')
+            speaker.speak(text=f'Your TV is already powered on {models.env.title}!')
         elif 'shutdown' in phrase_lower or 'shut down' in phrase_lower or 'turn off' in phrase_lower:
             Thread(target=shared.tv.shutdown).start()
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning your TV off.')
@@ -157,22 +154,22 @@ def television(phrase: str) -> None:
         elif 'set' in phrase_lower and 'volume' in phrase_lower:
             vol = support.extract_nos(input_=phrase_lower, method=int)
             if vol is None:
-                speaker.speak(text=f"Requested volume doesn't match the right format {env.title}!")
+                speaker.speak(text=f"Requested volume doesn't match the right format {models.env.title}!")
             else:
                 shared.tv.set_volume(target=vol)
-                speaker.speak(text=f"I've set the volume to {vol}% {env.title}.")
+                speaker.speak(text=f"I've set the volume to {vol}% {models.env.title}.")
         elif 'volume' in phrase_lower:
             speaker.speak(text=f"The current volume on your TV is, {shared.tv.get_volume()}%")
         elif 'app' in phrase_lower or 'application' in phrase_lower:
             sys.stdout.write(f'\r{shared.tv.get_apps()}')
-            speaker.speak(text=f'App list on your screen {env.title}!', run=True)
+            speaker.speak(text=f'App list on your screen {models.env.title}!', run=True)
             time.sleep(5)
         elif 'open' in phrase_lower or 'launch' in phrase_lower:
             cleaned = ' '.join([w for w in phrase.split() if w not in ['launch', 'open', 'tv', 'on', 'my', 'the']])
             app_name = support.get_closest_match(text=cleaned, match_list=shared.tv.get_apps())
             logger.info(f'{phrase} -> {app_name}')
             shared.tv.launch_app(app_name=app_name)
-            speaker.speak(text=f"I've launched {app_name} on your TV {env.title}!")
+            speaker.speak(text=f"I've launched {app_name} on your TV {models.env.title}!")
         elif "what's" in phrase_lower or 'currently' in phrase_lower:
             speaker.speak(text=f'{shared.tv.current_app()} is running on your TV.')
         elif 'change' in phrase_lower or 'source' in phrase_lower:
@@ -187,4 +184,4 @@ def television(phrase: str) -> None:
             Thread(target=support.unrecognized_dumper, args=[{'TV': phrase}]).start()
     else:
         phrase = phrase.replace('my', 'your').replace('please', '').replace('will you', '').strip()
-        speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to {phrase}, as the TV state is unknown!")
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to {phrase}, as the TV state is unknown!")

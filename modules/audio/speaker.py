@@ -21,9 +21,6 @@ from modules.conditions import conversation, keywords
 from modules.models import models
 from modules.utils import shared
 
-fileio = models.FileIO()
-env = models.env
-
 audio_driver = pyttsx3.init()
 
 KEYWORDS = [__keyword for __keyword in dir(keywords) if not __keyword.startswith('__')]
@@ -31,7 +28,7 @@ CONVERSATION = [__conversation for __conversation in dir(conversation) if not __
 FUNCTIONS_TO_TRACK = KEYWORDS + CONVERSATION
 
 
-def speech_synthesizer(text: str, timeout: Union[int, float] = env.speech_synthesis_timeout,
+def speech_synthesizer(text: str, timeout: Union[int, float] = models.env.speech_synthesis_timeout,
                        quality: str = "high", voice: str = "en-us_northern_english_male-glow_tts") -> bool:
     """Makes a post call to docker container for speech synthesis.
 
@@ -55,15 +52,17 @@ def speech_synthesizer(text: str, timeout: Union[int, float] = env.speech_synthe
         ip_new = '-'.join([i for i in text.split(' ')[-1]]).replace('-.-', ', ')  # 192.168.1.1 -> 1-9-2, 1-6-8, 1, 1
         text = text.replace(text.split(' ')[-1], ip_new).replace(' IP ', ' I.P. ')
     try:
-        response = requests.post(url=f"http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/tts",
-                                 headers={"Content-Type": "text/plain"},
-                                 params={"voice": voice, "quality": quality},
-                                 data=text, verify=False, timeout=timeout)
+        response = requests.post(
+            url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/tts",
+            headers={"Content-Type": "text/plain"}, params={"voice": voice, "quality": quality}, data=text,
+            verify=False, timeout=timeout
+        )
         if response.ok:
-            with open(file=fileio.speech_synthesis_wav, mode="wb") as file:
+            with open(file=models.fileio.speech_synthesis_wav, mode="wb") as file:
                 file.write(response.content)
             return True
-        logger.error(f"{response.status_code}::http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/tts")
+        logger.error(f"{response.status_code}::"
+                     f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/tts")
         return False
     except UnicodeError as error:
         logger.error(error)
@@ -89,11 +88,11 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
         logger.info(f'Speaker called by: {caller}')
         logger.info(f'Response: {text}')
         sys.stdout.write(f"\r{text}")
-        if env.speech_synthesis_timeout and \
+        if models.env.speech_synthesis_timeout and \
                 speech_synthesizer(text=text) and \
-                os.path.isfile(fileio.speech_synthesis_wav):
-            playsound(sound=fileio.speech_synthesis_wav, block=block)
-            os.remove(fileio.speech_synthesis_wav)
+                os.path.isfile(models.fileio.speech_synthesis_wav):
+            playsound(sound=models.fileio.speech_synthesis_wav, block=block)
+            os.remove(models.fileio.speech_synthesis_wav)
         else:
             audio_driver.say(text=text)
     if run:
@@ -110,9 +109,9 @@ def frequently_used(function_name: str) -> NoReturn:
     See Also:
         - This function does not have purpose, but to analyze and re-order the conditions' module at a later time.
     """
-    if os.path.isfile(fileio.frequent):
+    if os.path.isfile(models.fileio.frequent):
         try:
-            with open(fileio.frequent) as file:
+            with open(models.fileio.frequent) as file:
                 data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
         except yaml.YAMLError as error:
             data = {}
@@ -123,6 +122,6 @@ def frequently_used(function_name: str) -> NoReturn:
             data[function_name] = 1
     else:
         data = {function_name: 1}
-    with open(fileio.frequent, 'w') as file:
+    with open(models.fileio.frequent, 'w') as file:
         yaml.dump(data={k: v for k, v in sorted(data.items(), key=lambda x: x[1], reverse=True)},
                   stream=file, sort_keys=False)

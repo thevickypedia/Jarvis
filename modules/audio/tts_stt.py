@@ -20,7 +20,7 @@ from modules.utils import shared
 
 recognizer = Recognizer()
 
-audio_driver = voices.voice_default(stdout=False)
+audio_driver = voices.voice_default()
 
 
 def _generate_audio_file(filename: Union[FilePath, str], text: str) -> NoReturn:

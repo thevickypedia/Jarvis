@@ -30,10 +30,7 @@ from modules.conditions import keywords
 from modules.database import database
 from modules.models import models
 
-env = models.env
-fileio = models.FileIO()
-
-db = database.Database(database=fileio.base_db)
+db = database.Database(database=models.fileio.base_db)
 
 
 def hostname_to_ip(hostname: str) -> list:
@@ -88,7 +85,7 @@ def celebrate() -> str:
         return in_holidays
     elif us_holidays and "Observed" not in us_holidays:
         return us_holidays
-    elif env.birthday == datetime.now().strftime("%d-%B"):
+    elif models.env.birthday == datetime.now().strftime("%d-%B"):
         return "Birthday"
 
 
@@ -190,14 +187,14 @@ def unrecognized_dumper(train_data: dict) -> NoReturn:
     """
     dt_string = datetime.now().strftime("%B %d, %Y %H:%M:%S.%f")[:-3]
     data = {}
-    if os.path.isfile(fileio.training):
+    if os.path.isfile(models.fileio.training):
         try:
-            with open(fileio.training) as reader:
+            with open(models.fileio.training) as reader:
                 data = yaml.load(stream=reader, Loader=yaml.FullLoader) or {}
         except yaml.YAMLError as error:
             logger.error(error)
-            os.rename(src=fileio.training,
-                      dst=str(fileio.training).replace(".", f"_{datetime.now().strftime('%m_%d_%Y_%H_%M')}."))
+            os.rename(src=models.fileio.training,
+                      dst=str(models.fileio.training).replace(".", f"_{datetime.now().strftime('%m_%d_%Y_%H_%M')}."))
         for key, value in train_data.items():
             if data.get(key):
                 data[key].update({dt_string: value})
@@ -214,7 +211,7 @@ def unrecognized_dumper(train_data: dict) -> NoReturn:
         } for func, unrec_dict in data.items()
     }
 
-    with open(fileio.training, 'w') as writer:
+    with open(models.fileio.training, 'w') as writer:
         yaml.dump(data=data, stream=writer, sort_keys=False)
 
 
@@ -229,11 +226,7 @@ def size_converter(byte_size: int) -> str:
         Converted understandable size.
     """
     if not byte_size:
-        if env.macos:
-            import resource
-            byte_size = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-        else:
-            byte_size = psutil.Process(os.getpid()).memory_info().peak_wset
+        byte_size = psutil.Process(pid=models.settings.pid).memory_info().rss
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
     index = int(math.floor(math.log(byte_size, 1024)))
     return f"{round(byte_size / pow(1024, index), 2)} {size_name[index]}"
@@ -475,7 +468,7 @@ def exit_message() -> str:
 def no_env_vars() -> NoReturn:
     """Says a message about permissions when env vars are missing."""
     logger.error(f"Called by: {sys._getframe(1).f_code.co_name}")  # noqa
-    speaker.speak(text=f"I'm sorry {env.title}! I lack the permissions!")
+    speaker.speak(text=f"I'm sorry {models.env.title}! I lack the permissions!")
 
 
 def flush_screen() -> NoReturn:
@@ -496,7 +489,7 @@ def release_print() -> NoReturn:
 
 def missing_windows_features() -> NoReturn:
     """Speaker for unsupported features in Windows."""
-    speaker.speak(text=f"Requested feature is not available in Windows {env.title}")
+    speaker.speak(text=f"Requested feature is not available in Windows {models.env.title}")
 
 
 def hashed(key: uuid.UUID) -> str:

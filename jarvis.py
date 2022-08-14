@@ -1,18 +1,15 @@
 import logging
-import os
 import struct
 import sys
-from datetime import datetime
 from typing import NoReturn
 
-import numpy
 import pvporcupine
-import soundfile
 from playsound import playsound
 from pyaudio import PyAudio, paInt16
 
 from executors.commander import initiator
-from executors.controls import exit_process, starter, terminator
+from executors.controls import (check_memory_leak, exit_process, starter,
+                                terminator)
 from executors.internet import get_ssid, ip_address
 from executors.logger import custom_handler, logger
 from executors.offline import repeated_tasks
@@ -21,12 +18,7 @@ from executors.system import hosted_device_info
 from modules.audio import listener, speaker
 from modules.exceptions import StopSignal
 from modules.models import models
-from modules.timeout import timeout
 from modules.utils import shared, support
-
-env = models.env
-fileio = models.FileIO()
-indicators = models.Indicators()
 
 
 class Activator:
@@ -55,17 +47,16 @@ class Activator:
         References:
             - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
         """
-        logger.info(f"Initiating hot-word detector with sensitivity: {env.sensitivity}")
-        keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in env.wake_words]
+        logger.info(f"Initiating hot-word detector with sensitivity: {models.env.sensitivity}")
+        keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words]
         self.input_device_index = input_device_index
-        self.recorded_frames = []
 
         self.py_audio = PyAudio()
         self.detector = pvporcupine.create(
             library_path=pvporcupine.LIBRARY_PATH,
             model_path=pvporcupine.MODEL_PATH,
             keyword_paths=keyword_paths,
-            sensitivities=[env.sensitivity]
+            sensitivities=[models.env.sensitivity]
         )
         self.audio_stream = None
         self.tasks = repeated_tasks()
@@ -96,17 +87,18 @@ class Activator:
                 pcm = struct.unpack_from("h" * self.detector.frame_length,
                                          self.audio_stream.read(num_frames=self.detector.frame_length,
                                                                 exception_on_overflow=False))
-                self.recorded_frames.append(pcm)
                 if self.detector.process(pcm=pcm) >= 0:
-                    playsound(sound=indicators.acknowledgement, block=False)
+                    playsound(sound=models.indicators.acknowledgement, block=False)
                     self.close_stream()
-                    if phrase := listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False):
+                    if phrase := listener.listen(timeout=models.env.timeout, phrase_limit=models.env.phrase_limit,
+                                                 sound=False):
                         initiator(phrase=phrase, should_return=True)
                         speaker.speak(run=True)
                 if flag := support.check_restart():
                     logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
                     if flag[1] == "OFFLINE":
                         stop_processes()
+                        logger.propagate = False
                         for _handler in logger.handlers:
                             if isinstance(_handler, logging.FileHandler):
                                 logger.removeHandler(hdlr=_handler)
@@ -122,6 +114,8 @@ class Activator:
                     logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
                     self.stop()
                     terminator()
+                if proc := check_memory_leak():
+                    del shared.processes[proc]
         except StopSignal:
             exit_process()
             self.stop()
@@ -148,36 +142,6 @@ class Activator:
             self.audio_stream.close()
         logger.info("Releasing PortAudio resources.")
         self.py_audio.terminate()
-        if not env.save_audio_timeout:
-            return
-        sys.stdout.write("\rRecording is being converted to audio.")
-        logger.info("Recording is being converted to audio.")
-        response = timeout.timeout(function=save_audio, seconds=env.save_audio_timeout, logger=logger,
-                                   kwargs={"frames": self.recorded_frames, "sample_rate": self.detector.sample_rate})
-        if response.ok:
-            logger.info("Recording has been saved successfully.")
-            logger.info(response.info)
-        else:
-            logger.error(f"Failed to save the audio file within {env.save_audio_timeout} seconds.")
-            logger.error(response.info)
-
-
-def save_audio(frames: list, sample_rate: int) -> NoReturn:
-    """Converts audio frames into a recording to store it in a wav file.
-
-    Args:
-        frames: List of frames.
-        sample_rate: Sample rate.
-    """
-    recordings_location = os.path.join(os.getcwd(), 'recordings')
-    if not os.path.isdir(recordings_location):
-        os.makedirs(recordings_location)
-    filename = os.path.join(recordings_location, f"{datetime.now().strftime('%B_%d_%Y_%H%M')}.wav")
-    logger.info(f"Saving {len(frames)} audio frames into {filename}")
-    sys.stdout.write(f"\rSaving {len(frames)} audio frames into {filename}")
-    recorded_audio = numpy.concatenate(frames, axis=0).astype(dtype=numpy.int16)
-    soundfile.write(file=filename, data=recorded_audio, samplerate=sample_rate, subtype='PCM_16')
-    support.flush_screen()
 
 
 def sentry_mode() -> NoReturn:
@@ -195,9 +159,10 @@ def sentry_mode() -> NoReturn:
             sys.stdout.write("\rSentry Mode")
             if wake_word := listener.listen(timeout=10, phrase_limit=2.5, sound=False, stdout=False):
                 support.flush_screen()
-                if any(word in wake_word.lower() for word in env.wake_words):
-                    playsound(sound=indicators.acknowledgement, block=False)
-                    if phrase := listener.listen(timeout=env.timeout, phrase_limit=env.phrase_limit, sound=False):
+                if any(word in wake_word.lower() for word in models.env.wake_words):
+                    playsound(sound=models.indicators.acknowledgement, block=False)
+                    if phrase := listener.listen(timeout=models.env.timeout, phrase_limit=models.env.phrase_limit,
+                                                 sound=False):
                         initiator(phrase=phrase, should_return=True)
                         speaker.speak(run=True)
             if flag := support.check_restart():
@@ -232,17 +197,18 @@ def sentry_mode() -> NoReturn:
 
 def begin() -> NoReturn:
     """Starts main process to activate Jarvis after checking internet connection and initiating background processes."""
+    logger.info(f"Current Process ID: {models.settings.pid}")
     starter()
     if ip_address():
         sys.stdout.write(f"\rINTERNET::Connected to {get_ssid() or 'the internet'}.")
     else:
         sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
-        speaker.speak(text=f"I was unable to connect to the internet {env.title}! Please check your connection.",
+        speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! Please check your connection.",
                       run=True)
-    sys.stdout.write(f"\rCurrent Process ID: {os.getpid()}\tCurrent Volume: {env.volume}")
+    sys.stdout.write(f"\rCurrent Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
     shared.hosted_device = hosted_device_info()
     shared.processes = start_processes()
-    sentry_mode() if env.legacy else Activator().start()
+    sentry_mode() if models.settings.legacy else Activator().start()
 
 
 if __name__ == '__main__':

@@ -18,8 +18,6 @@ from modules.models import models
 from modules.temperature import temperature
 from modules.utils import shared, support
 
-env = models.env
-
 
 def system_info() -> NoReturn:
     """Tells the system configuration."""
@@ -27,14 +25,12 @@ def system_info() -> NoReturn:
     total = support.size_converter(byte_size=total)
     used = support.size_converter(byte_size=used)
     free = support.size_converter(byte_size=free)
-    ram = support.size_converter(byte_size=psutil.virtual_memory().total).replace('.0', '')
+    ram = support.size_converter(byte_size=models.settings.ram).replace('.0', '')
     ram_used = support.size_converter(byte_size=psutil.virtual_memory().percent).replace(' B', ' %')
-    physical = psutil.cpu_count(logical=False)
-    logical = psutil.cpu_count(logical=True)
-    speaker.speak(text=f"You're running {platform.platform(terse=True)}, with {physical} physical cores and "
-                       f"{logical} logical cores. Your physical drive capacity is {total}. You have used up {used} of "
-                       f"space. Your free space is {free}. Your RAM capacity is {ram}. You are currently utilizing "
-                       f"{ram_used} of your memory.")
+    speaker.speak(text=f"You're running {platform.platform(terse=True)}, with {models.settings.physical_cores} "
+                       f"physical cores and {models.settings.logical_cores} logical cores. Your physical drive "
+                       f"capacity is {total}. You have used up {used} of space. Your free space is {free}. Your "
+                       f"RAM capacity is {ram}. You are currently utilizing {ram_used} of your memory.")
 
 
 def system_vitals() -> None:
@@ -45,9 +41,9 @@ def system_vitals() -> None:
         - If confirmed, invokes `restart <https://thevickypedia.github.io/Jarvis/#jarvis.restart>`__ function.
     """
     output = ""
-    if env.macos:
-        if not env.root_password:
-            speaker.speak(text=f"You haven't provided a root password for me to read system vitals {env.title}! "
+    if models.settings.macos:
+        if not models.env.root_password:
+            speaker.speak(text=f"You haven't provided a root password for me to read system vitals {models.env.title}! "
                                "Add the root password as an environment variable for me to read.")
             return
 
@@ -60,7 +56,7 @@ def system_vitals() -> None:
             shared.hosted_device = hosted_device_info()
         if packaging.version.parse(shared.hosted_device.get('os_version')) > packaging.version.parse('10.14'):
             critical_info = [each.strip() for each in (os.popen(
-                f'echo {env.root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
+                f'echo {models.env.root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
             )).read().split('\n') if each != '']
             support.flush_screen()
 
@@ -73,7 +69,7 @@ def system_vitals() -> None:
                     fan_speed = info.strip('Fan: ').replace(' rpm', '').strip()
         else:
             fan_speed = subprocess.check_output(
-                f'echo {env.root_password} | sudo -S spindump 1 1 -file /tmp/spindump.txt > /dev/null 2>&1;grep '
+                f'echo {models.env.root_password} | sudo -S spindump 1 1 -file /tmp/spindump.txt > /dev/null 2>&1;grep '
                 f'"Fan speed" /tmp/spindump.txt;sudo rm /tmp/spindump.txt', shell=True
             ).decode('utf-8')
 
@@ -107,9 +103,9 @@ def system_vitals() -> None:
     if second >= 259_200:  # 3 days
         if boot_extreme := re.search('(.*) days', restart_duration):
             warn = int(boot_extreme.group().replace(' days', '').strip())
-            speaker.speak(text=f"{env.title}! your {shared.hosted_device.get('device')} has been running for more "
-                               f"than {warn} days. You must consider a reboot for better performance. Would you like "
-                               f"me to restart it for you {env.title}?",
+            speaker.speak(text=f"{models.env.title}! your {shared.hosted_device.get('device')} has been running for "
+                               f"more than {warn} days. You must consider a reboot for better performance. Would you "
+                               f"like me to restart it for you {models.env.title}?",
                           run=True)
             response = listener.listen(timeout=3, phrase_limit=3)
             if any(word in response.lower() for word in keywords.ok):
@@ -124,7 +120,7 @@ def hosted_device_info() -> dict:
         dict:
         A dictionary of key-value pairs with device type, operating system, os version.
     """
-    if env.macos:
+    if models.settings.macos:
         system_kernel = subprocess.check_output("sysctl hw.model", shell=True).decode('utf-8').splitlines()
         device = support.extract_str(system_kernel[0].split(':')[1])
     else:

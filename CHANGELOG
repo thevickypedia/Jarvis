@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+6.3.3 (08/13/2022)
+------------------
+- Fix memory leak due to audio frames storage
+- Add display controls for Windows OS
+- Remove external dependencies for volume controls on Windows OS
+- Fix OS specific bugs in report_gatherer.py
+- Create a new pydantic class for Settings
+- Remove redundant variables
+
 6.3.2 (08/08/2022)
 ------------------
 - Handle broad exception clause during offline execution

@@ -1,13 +1,14 @@
 import contextlib
 import os
 import signal
+import socket
 import subprocess
 import sys
 import warnings
-from socket import AF_INET, SO_REUSEADDR, SOCK_STREAM, SOL_SOCKET, socket
 from typing import Union
 
 from executors.logger import logger
+from modules.models import models
 
 
 def get_free_port() -> int:
@@ -30,9 +31,9 @@ def get_free_port() -> int:
         int:
         Randomly chosen port number that is not in use.
     """
-    with contextlib.closing(socket(AF_INET, SOCK_STREAM)) as sock:
+    with contextlib.closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
         sock.bind(('', 0))
-        sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         return sock.getsockname()[1]
 
 
@@ -46,7 +47,7 @@ def is_port_in_use(port: int) -> bool:
         bool:
         A boolean flag to indicate whether a port is open.
     """
-    with socket(AF_INET, SOCK_STREAM) as sock:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         return sock.connect_ex(('localhost', port)) == 0
 
 
@@ -74,7 +75,7 @@ def kill_port_pid(port: int, protocol: str = 'tcp') -> Union[bool, None]:
             if each_split[0].strip() == 'Python':
                 logger.info(f'Application hosted on {each_split[-2]} is listening to port: {port}')
                 pid = int(each_split[1])
-                if pid == os.getpid():
+                if pid == models.settings.pid:
                     called_function = sys._getframe(1).f_code.co_name  # noqa
                     called_file = sys._getframe(1).f_code.co_filename.replace(f'{os.getcwd()}/', '')  # noqa
                     logger.warning(f"{called_function} from {called_file} tried to kill the running process.")

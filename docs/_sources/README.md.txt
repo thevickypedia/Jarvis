@@ -106,7 +106,6 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **SENSITIVITY** - Hot word detection sensitivity. Range: 0-1
-- **SAVE_AUDIO_TIMEOUT** - Maximum wait time (in seconds) to allow Jarvis to store the audio recorded during a session.
 - **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']`
 
 :warning: Windows10 and MacOS (version 10.14 and newer) have limitations on the wake words as they rely on ML libraries 

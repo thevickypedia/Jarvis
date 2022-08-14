@@ -7,10 +7,7 @@ from modules.database import database
 from modules.models import models
 from modules.utils import shared
 
-env = models.env
-fileio = models.FileIO()
-
-tdb = database.Database(database=fileio.task_db)
+tdb = database.Database(database=models.fileio.task_db)
 tdb.create_table(table_name="tasks", columns=["category", "item"])
 
 
@@ -36,11 +33,11 @@ def todo() -> None:
             response = f"{item}, in {category} category."
             speaker.speak(text=response)
     elif shared.called['report'] and not shared.called['time_travel']:
-        speaker.speak(text=f"You don't have any tasks in your to-do list {env.title}.")
+        speaker.speak(text=f"You don't have any tasks in your to-do list {models.env.title}.")
     elif shared.called['time_travel']:
         pass
     else:
-        speaker.speak(text=f"You don't have any tasks in your to-do list {env.title}.")
+        speaker.speak(text=f"You don't have any tasks in your to-do list {models.env.title}.")
 
     if shared.called['report'] or shared.called['time_travel']:
         speaker.speak(run=True)
@@ -48,15 +45,15 @@ def todo() -> None:
 
 def add_todo() -> None:
     """Adds new items to the to-do list."""
-    speaker.speak(text=f"What's your plan {env.title}?", run=True)
+    speaker.speak(text=f"What's your plan {models.env.title}?", run=True)
     if not (item := listener.listen(timeout=3, phrase_limit=5)) or 'exit' in item or 'quit' in item or 'Xzibit' in item:
-        speaker.speak(text=f'Your to-do list has been left intact {env.title}.')
+        speaker.speak(text=f'Your to-do list has been left intact {models.env.title}.')
         return
     speaker.speak(text=f"I heard {item}. Which category you want me to add it to?", run=True)
     if not (category := listener.listen(timeout=3, phrase_limit=3)):
         category = 'Unknown'
     if 'exit' in category or 'quit' in category or 'Xzibit' in category:
-        speaker.speak(text=f'Your to-do list has been left intact {env.title}.')
+        speaker.speak(text=f'Your to-do list has been left intact {models.env.title}.')
         return
     with tdb.connection:
         cursor = tdb.connection.cursor()
@@ -80,15 +77,15 @@ def add_todo() -> None:
 
 def delete_todo_items() -> None:
     """Deletes items from an existing to-do list."""
-    speaker.speak(text=f"Which one should I remove {env.title}?", run=True)
+    speaker.speak(text=f"Which one should I remove {models.env.title}?", run=True)
     if not (item := listener.listen(timeout=3, phrase_limit=5)) or 'exit' in item or 'quit' in item or 'Xzibit' in item:
-        speaker.speak(text=f'Your to-do list has been left intact {env.title}.')
+        speaker.speak(text=f'Your to-do list has been left intact {models.env.title}.')
         return
     with tdb.connection:
         cursor = tdb.connection.cursor()
         cursor.execute(f"DELETE FROM tasks WHERE item='{item}' OR category='{item}'")
         cursor.connection.commit()
-    speaker.speak(text=f'Done {env.title}!', run=True)
+    speaker.speak(text=f'Done {models.env.title}!', run=True)
 
 
 def delete_todo() -> None:
@@ -97,4 +94,4 @@ def delete_todo() -> None:
         cursor = tdb.connection.cursor()
         cursor.execute('DROP TABLE IF EXISTS tasks')
         cursor.connection.commit()
-    speaker.speak(text=f"I've dropped the table: tasks from the database {env.title}.")
+    speaker.speak(text=f"I've dropped the table: tasks from the database {models.env.title}.")

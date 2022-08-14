@@ -28,9 +28,6 @@ from modules.models import config, models
 from modules.offline import compatibles
 from modules.utils import support
 
-env = models.env
-fileio = models.FileIO()
-
 OFFLINE_PROTECTOR = [Depends(dependency=authenticator.offline_has_access)]
 ROBINHOOD_PROTECTOR = [Depends(dependency=authenticator.robinhood_has_access)]
 
@@ -44,7 +41,7 @@ if not os.path.isfile(config.APIConfig().DEFAULT_LOG_FILENAME):
 
 offline_compatible = compatibles.offline_compatible()
 
-importlib.reload(module=logging) if env.macos else None
+importlib.reload(module=logging) if models.settings.macos else None
 dictConfig(config=config.APIConfig().LOGGING_CONFIG)
 
 logging.getLogger("uvicorn.access").addFilter(InvestmentFilter())  # Adds token filter to the access logger
@@ -74,9 +71,9 @@ def remove_file(delay: int, filepath: str) -> NoReturn:
 
 def run_robinhood() -> NoReturn:
     """Runs in a dedicated process during startup, if the file was modified earlier than the past hour."""
-    if os.path.isfile(fileio.robinhood):
-        modified = int(os.stat(fileio.robinhood).st_mtime)
-        logger.info(f"{fileio.robinhood} was generated on {datetime.fromtimestamp(modified).strftime('%c')}.")
+    if os.path.isfile(models.fileio.robinhood):
+        modified = int(os.stat(models.fileio.robinhood).st_mtime)
+        logger.info(f"{models.fileio.robinhood} was generated on {datetime.fromtimestamp(modified).strftime('%c')}.")
         if int(time.time()) - modified < 3_600:  # generates new file only if the file is older than an hour
             return
     logger.info('Initiated robinhood gatherer.')
@@ -89,10 +86,10 @@ async def enable_cors() -> NoReturn:
     origins = [
         "http://localhost.com",
         "https://localhost.com",
-        f"http://{env.website}",
-        f"https://{env.website}",
-        f"http://{env.website}/*",
-        f"https://{env.website}/*",
+        f"http://{models.env.website}",
+        f"https://{models.env.website}",
+        f"http://{models.env.website}/*",
+        f"https://{models.env.website}/*",
     ]
 
     app.add_middleware(
@@ -109,8 +106,8 @@ async def enable_cors() -> NoReturn:
 async def start_robinhood() -> Any:
     """Initiates robinhood gatherer in a process and adds a cron schedule if not present already."""
     await enable_cors()
-    logger.info(f'Hosting at http://{env.offline_host}:{env.offline_port}')
-    if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
+    logger.info(f'Hosting at http://{models.env.offline_host}:{models.env.offline_port}')
+    if all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_pass]):
         Process(target=run_robinhood).start()
 
 
@@ -187,11 +184,11 @@ async def speech_synthesis(input_data: GetText) -> FileResponse:
         logger.error("Speech synthesis could not process the request.")
         raise APIResponse(status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real,
                           detail=HTTPStatus.INTERNAL_SERVER_ERROR.__dict__['phrase'])
-    if os.path.isfile(path=fileio.speech_synthesis_wav):
-        Thread(target=remove_file, kwargs={'delay': 2, 'filepath': fileio.speech_synthesis_wav}).start()
-        return FileResponse(path=fileio.speech_synthesis_wav, media_type='application/octet-stream',
+    if os.path.isfile(path=models.fileio.speech_synthesis_wav):
+        Thread(target=remove_file, kwargs={'delay': 2, 'filepath': models.fileio.speech_synthesis_wav}).start()
+        return FileResponse(path=models.fileio.speech_synthesis_wav, media_type='application/octet-stream',
                             filename="synthesized.wav", status_code=HTTPStatus.OK.real)
-    logger.error(f'File Not Found: {fileio.speech_synthesis_wav}')
+    logger.error(f'File Not Found: {models.fileio.speech_synthesis_wav}')
     raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.__dict__['phrase'])
 
 
@@ -264,7 +261,8 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
         if delay := timed_delay(phrase=command):
             logger.info(f"'{command}' will be executed after {support.time_converter(seconds=delay)}")
             raise APIResponse(status_code=HTTPStatus.OK.real,
-                              detail=f'I will execute it after {support.time_converter(seconds=delay)} {env.title}!')
+                              detail=f'I will execute it after {support.time_converter(seconds=delay)} '
+                                     f'{models.env.title}!')
     response = offline_communicator(command=command)
     logger.info(f"Response: {response}")
     if input_data.native_audio:
@@ -289,7 +287,8 @@ async def get_favicon() -> FileResponse:
 
 
 # Conditional endpoint: Condition matches without env vars during docs generation
-if not os.getcwd().endswith("Jarvis") or all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
+if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
+                                              models.env.robinhood_pass]):
     @app.post(path="/robinhood-authenticate", dependencies=ROBINHOOD_PROTECTOR)
     async def authenticate_robinhood() -> NoReturn:
         """Authenticates the request. Uses a two-factor authentication by generating single use tokens.
@@ -309,7 +308,8 @@ if not os.getcwd().endswith("Jarvis") or all([env.robinhood_user, env.robinhood_
 
 
 # Conditional endpoint: Condition matches without env vars during docs generation
-if not os.getcwd().endswith("Jarvis") or all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
+if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
+                                              models.env.robinhood_pass]):
     @app.get(path="/investment", response_class=HTMLResponse, include_in_schema=False)
     async def robinhood(token: str = None) -> HTMLResponse:
         """Serves static file.
@@ -339,9 +339,9 @@ if not os.getcwd().endswith("Jarvis") or all([env.robinhood_user, env.robinhood_
                               detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
         if token == robinhood_token['token']:
             robinhood_token['token'] = ''
-            if not os.path.isfile(fileio.robinhood):
+            if not os.path.isfile(models.fileio.robinhood):
                 raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail='Static file was not found on server.')
-            with open(fileio.robinhood) as static_file:
+            with open(models.fileio.robinhood) as static_file:
                 html_content = static_file.read()
             content_type, _ = mimetypes.guess_type(html_content)
             return HTMLResponse(status_code=HTTPStatus.TEMPORARY_REDIRECT.real,

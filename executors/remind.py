@@ -12,8 +12,6 @@ from modules.conditions import conversation
 from modules.models import models
 from modules.utils import shared, support
 
-env = models.env
-
 
 def create_reminder(hour, minute, am_pm, message, to_about, timer: str = None) -> NoReturn:
     """Creates the lock file necessary to set a reminder.
@@ -71,7 +69,7 @@ def reminder(phrase: str) -> None:
         if shared.called_by_offline:
             speaker.speak(text='Reminder format should be::Remind me to do something, at some time.')
             return
-        speaker.speak(text=f"When do you want to be reminded {env.title}?", run=True)
+        speaker.speak(text=f"When do you want to be reminded {models.env.title}?", run=True)
         if not (phrase := listener.listen(timeout=3, phrase_limit=4)):
             return
         if not (extracted_time := support.extract_time(input_=phrase)):
@@ -102,7 +100,7 @@ def reminder_executor(message: str) -> NoReturn:
     Args:
         message: Takes the reminder message as an argument.
     """
-    communicator.notify(user=env.gmail_user, password=env.gmail_pass, number=env.phone_number, body=message,
-                        subject="REMINDER from Jarvis")
-    if env.macos:
+    communicator.notify(user=models.env.gmail_user, password=models.env.gmail_pass, number=models.env.phone_number,
+                        body=message, subject="REMINDER from Jarvis")
+    if models.settings.macos:
         os.system(f"""osascript -e 'display notification "{message}" with title "REMINDER from Jarvis"'""")

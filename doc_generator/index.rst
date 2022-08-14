@@ -280,6 +280,13 @@ Unconditional
    :members:
    :undoc-members:
 
+Volume
+======
+
+.. automodule:: executors.volume
+   :members:
+   :undoc-members:
+
 VPN Server
 ==========
 
@@ -331,6 +338,12 @@ Audio
 ====
 
 .. automodule:: modules.audio.voices
+   :members:
+   :undoc-members:
+
+====
+
+.. automodule:: modules.audio.win_volume
    :members:
    :undoc-members:
 

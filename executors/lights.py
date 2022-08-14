@@ -15,9 +15,6 @@ from modules.lights import preset_values, smart_lights
 from modules.models import models
 from modules.utils import shared, support
 
-env = models.env
-fileio = models.FileIO()
-
 
 def lights(phrase: str) -> Union[None, NoReturn]:
     """Controller for smart lights.
@@ -28,22 +25,22 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     if not vpn_checker():
         return
 
-    if not os.path.isfile(fileio.smart_devices):
-        logger.warning(f"{fileio.smart_devices} not found.")
+    if not os.path.isfile(models.fileio.smart_devices):
+        logger.warning(f"{models.fileio.smart_devices} not found.")
         support.no_env_vars()
         return
 
     try:
-        with open(fileio.smart_devices) as file:
+        with open(models.fileio.smart_devices) as file:
             smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
     except yaml.YAMLError as error:
         logger.error(error)
-        speaker.speak(text=f"I'm sorry {env.title}! I wasn't able to read the source information. "
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to read the source information. "
                            "Please check the logs.")
         return
 
     if not any(smart_devices):
-        logger.warning(f"{fileio.smart_devices} is empty.")
+        logger.warning(f"{models.fileio.smart_devices} is empty.")
         support.no_env_vars()
         return
 
@@ -109,12 +106,13 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     host_names = support.matrix_to_flat_list(input_=host_names)
     host_names = list(filter(None, host_names))
     if light_location and not host_names:
-        logger.warning(f"No hostname values found for {light_location} in {fileio.smart_devices}")
-        speaker.speak(text=f"I'm sorry {env.title}! You haven't mentioned the host names of '{light_location}' lights.")
+        logger.warning(f"No hostname values found for {light_location} in {models.fileio.smart_devices}")
+        speaker.speak(text=f"I'm sorry {models.env.title}! You haven't mentioned the host names of '{light_location}' "
+                           "lights.")
         return
     if not host_names:
         Thread(target=support.unrecognized_dumper, args=[{'LIGHTS': phrase}]).start()
-        speaker.speak(text=f"I'm not sure which lights you meant {env.title}!")
+        speaker.speak(text=f"I'm not sure which lights you meant {models.env.title}!")
         return
 
     host_ip = [support.hostname_to_ip(hostname=hostname) for hostname in host_names]
@@ -122,7 +120,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     host_ip = support.matrix_to_flat_list(input_=host_ip)
     if not host_ip:
         plural = 'lights' if len(host_ip) > 1 else 'light'
-        speaker.speak(text=f"I wasn't able to connect to your {light_location} {plural} {env.title}! "
+        speaker.speak(text=f"I wasn't able to connect to your {light_location} {plural} {models.env.title}! "
                            f"{support.number_to_words(input_=len(host_ip), capitalize=True)} lights appear to be "
                            "powered off.")
         return
@@ -180,7 +178,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! '
                                f'Setting {len(host_ip)} {plural} to yellow!')
         else:
-            speaker.speak(text=f'Sure {env.title}! Setting {len(host_ip)} {plural} to warm!')
+            speaker.speak(text=f'Sure {models.env.title}! Setting {len(host_ip)} {plural} to warm!')
         Thread(target=thread_worker, args=[warm]).start() if shared.called_by_offline else \
             avail_check(function_to_call=warm)
     elif any(word in phrase for word in list(preset_values.PRESET_VALUES.keys())):
@@ -206,5 +204,5 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         for light_ip in host_ip:
             lumen(host=light_ip, rgb=level)
     else:
-        speaker.speak(text=f"I didn't quite get that {env.title}! What do you want me to do to your {plural}?")
+        speaker.speak(text=f"I didn't quite get that {models.env.title}! What do you want me to do to your {plural}?")
         Thread(target=support.unrecognized_dumper, args=[{'LIGHTS': phrase}]).start()
