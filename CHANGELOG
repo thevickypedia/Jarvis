@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+6.3.6 (08/19/2022)
+------------------
+- Bug fix: Move logger disable to function level
+- Bug fix: Don't log in word_mach when called by automation
+
 6.3.5 (08/19/2022)
 ------------------
 - Integrate `MyQ` garage open and close feature

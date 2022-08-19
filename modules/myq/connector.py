@@ -8,8 +8,6 @@ from aiohttp import ClientSession
 from executors.logger import logger
 from modules.models import models
 
-dictConfig({'version': 1, 'disable_existing_loggers': True})
-
 
 class Operation(str, Enum):
     """Operations allowed on garage door.
@@ -39,6 +37,7 @@ async def garage_controller(operation: str) -> Union[Dict, NoReturn]:
         dict:
         Device state information as a dictionary.
     """
+    dictConfig({'version': 1, 'disable_existing_loggers': True})
     async with ClientSession() as web_session:
         myq = await pymyq.login(username=models.env.myq_username, password=models.env.myq_password,
                                 websession=web_session)
