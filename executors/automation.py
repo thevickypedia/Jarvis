@@ -8,6 +8,7 @@ import yaml
 from deepdiff import DeepDiff
 
 from executors.logger import logger
+from executors.word_match import word_match
 from modules.audio import speaker
 from modules.models import models
 
@@ -82,7 +83,7 @@ def auto_helper(offline_list: list) -> Union[str, None]:
 
     for automation_time, automation_info in automation_data.items():
         if not (exec_task := automation_info.get("task")) or \
-                not any(word in exec_task.lower() for word in offline_list):
+                not word_match(phrase=exec_task, match_list=offline_list):
             logger.error("Following entry doesn't have a task or the task is not a part of offline compatible.")
             logger.error(f"{automation_time} - {automation_info}")
             automation_data.pop(automation_time)
@@ -114,7 +115,7 @@ def auto_helper(offline_list: list) -> Union[str, None]:
                 else:
                     continue
 
-        if automation_time != datetime.now().strftime("%-I:%M %p"):  # "%-I" to consider 06:05 AM as 6:05 AM
+        if automation_time != datetime.now().strftime("%I:%M %p"):
             if automation_info.get("status"):
                 logger.info(f"Reverting execution status flag for task: {exec_task} runs at {automation_time}")
                 del automation_data[automation_time]["status"]

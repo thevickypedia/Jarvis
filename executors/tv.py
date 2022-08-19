@@ -9,6 +9,7 @@ import yaml
 
 from executors.internet import vpn_checker
 from executors.logger import logger
+from executors.word_match import word_match
 from modules.audio import speaker
 from modules.conditions import conversation
 from modules.exceptions import TVError
@@ -24,10 +25,11 @@ def television(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument.
     """
-    if not any(word in phrase.lower() for word in
-               ['turn on', 'connect', 'shutdown', 'shut down', 'turn off', 'increase', 'decrease', 'reduce', 'mute',
-                'stop', 'content', 'stop', 'pause', 'resume', 'play', 'rewind', 'forward', 'set', 'volume', 'volume',
-                'app', 'application', 'open', 'launch', "what's", 'currently', 'change', 'source']):
+    if not word_match(phrase=phrase,
+                      match_list=['turn on', 'connect', 'shutdown', 'shut down', 'turn off', 'increase',
+                                  'decrease', 'reduce', 'mute', 'stop', 'content', 'stop', 'pause', 'resume', 'play',
+                                  'rewind', 'forward', 'set', 'volume', 'volume', 'app', 'application', 'open',
+                                  'launch', "what's", 'currently', 'change', 'source']):
         speaker.speak(text=f"I didn't quite get that {models.env.title}! What do you want me to do to your tv?")
         Thread(target=support.unrecognized_dumper, args=[{'TV': phrase}]).start()
         return

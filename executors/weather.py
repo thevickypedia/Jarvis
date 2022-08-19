@@ -9,6 +9,7 @@ from inflect import engine
 
 from executors.location import geo_locator
 from executors.logger import logger
+from executors.word_match import word_match
 from modules.audio import speaker
 from modules.models import models
 from modules.temperature import temperature
@@ -67,8 +68,8 @@ def weather(phrase: str = None) -> None:
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
 
-    if phrase and any(match_word in phrase for match_word in ['tomorrow', 'day after', 'next week', 'tonight',
-                                                              'afternoon', 'evening']):
+    if phrase and word_match(phrase=phrase,
+                             match_list=['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']):
         if 'tonight' in phrase:
             key = 0
             tell = 'tonight'

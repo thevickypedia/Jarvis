@@ -4,7 +4,6 @@ import logging
 import os
 import random
 import string
-import sys
 import time
 from logging.config import dictConfig
 from typing import NoReturn, Union
@@ -13,6 +12,7 @@ import requests
 
 from executors.commander import timed_delay
 from executors.offline import offline_communicator
+from executors.word_match import word_match
 from modules.audio import tts_stt
 from modules.conditions import keywords
 from modules.database import database
@@ -378,9 +378,9 @@ class TelegramBot:
         if not self.verify_stop(payload=payload):
             return
         payload['text'] = payload.get('text', '').replace('bypass', '').replace('BYPASS', '')
-        if any(word in payload.get('text').lower().split() for word in ["hey", "hi", "hola", "what's up", "ssup",
-                                                                        "whats up", "hello", "howdy", "hey", "chao",
-                                                                        "hiya", "aloha"]):
+        if word_match(phrase=payload.get('text').lower(), match_list=["hey", "hi", "hola", "what's up",
+                                                                      "ssup", "whats up", "hello", "howdy",
+                                                                      "hey", "chao", "hiya", "aloha"]):
             self.reply_to(payload=payload,
                           response=f"{greeting()} {payload['from']['first_name']}!\n"
                                    f"Good {support.part_of_day()}! How can I be of service today?")
@@ -415,18 +415,17 @@ class TelegramBot:
             self.send_message(chat_id=payload['from']['id'], response="Test message received.")
             return
 
-        if ' and ' in command and not any(word in command.lower() for word in keywords.avoid):
+        if ' and ' in command and not word_match(phrase=command, match_list=keywords.avoid):
             for index, each in enumerate(command.split(' also '), 1 - len(command.split(' also '))):
-                sys.stdout.write(f"\r{each}")
-                if not any(word in each.lower() for word in offline_compatible):
+                if not word_match(phrase=each, match_list=offline_compatible):
                     self.send_message(chat_id=payload['from']['id'],
                                       response=f"'{each}' is not a part of offline communicator compatible request.")
                 else:
                     self.executor(command=each, payload=payload)
                     time.sleep(2) if index else None  # Avoid time.sleep during the last iteration
-        elif ' also ' in command and not any(word in command.lower() for word in keywords.avoid):
+        elif ' also ' in command and not word_match(phrase=command, match_list=keywords.avoid):
             for index, each in enumerate(command.split(' also '), 1 - len(command.split(' also '))):
-                if not any(word in each.lower() for word in offline_compatible):
+                if not word_match(phrase=each, match_list=offline_compatible):
                     self.send_message(chat_id=payload['from']['id'],
                                       response=f"'{each}' is not a part of offline communicator compatible request.")
                 else:
@@ -434,7 +433,7 @@ class TelegramBot:
                     time.sleep(2) if index else None  # Avoid time.sleep during the last iteration
             return
 
-        if not any(word in command_lower for word in offline_compatible):
+        if not word_match(phrase=command, match_list=offline_compatible):
             self.send_message(chat_id=payload['from']['id'],
                               response=f"'{command}' is not a part of offline communicator compatible request.")
             return

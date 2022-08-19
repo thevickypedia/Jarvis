@@ -12,6 +12,7 @@ import psutil
 
 from executors.controls import restart
 from executors.logger import logger
+from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
@@ -108,7 +109,7 @@ def system_vitals() -> None:
                                f"like me to restart it for you {models.env.title}?",
                           run=True)
             response = listener.listen(timeout=3, phrase_limit=3)
-            if any(word in response.lower() for word in keywords.ok):
+            if word_match(phrase=response.lower(), match_list=keywords.ok):
                 logger.info(f'JARVIS::Restarting {shared.hosted_device.get("device")}')
                 restart(ask=False)
 

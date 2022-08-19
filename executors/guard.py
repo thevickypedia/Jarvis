@@ -10,6 +10,7 @@ from gmailconnector.send_email import SendEmail
 
 from executors import communicator
 from executors.logger import logger
+from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
@@ -53,7 +54,7 @@ def guard_enable() -> None:
         if not (converted := listener.listen(timeout=3, phrase_limit=10, sound=False)):
             continue
 
-        if converted and any(word.lower() in converted.lower() for word in keywords.guard_disable):
+        if converted and word_match(phrase=converted, match_list=keywords.guard_disable):
             speaker.speak(text=f'Welcome back {models.env.title}! Good {support.part_of_day()}.')
             if os.path.exists(f'threat/{date_extn}.jpg'):
                 speaker.speak(text=f"We had a potential threat {models.env.title}! Please check your email to confirm.")

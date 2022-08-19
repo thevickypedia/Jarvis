@@ -2,6 +2,7 @@ import sys
 
 import wikipedia
 
+from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
@@ -12,7 +13,7 @@ def wikipedia_() -> None:
     """Gets any information from wikipedia using its API."""
     speaker.speak(text="Please tell the keyword.", run=True)
     if keyword := listener.listen(timeout=3, phrase_limit=5):
-        if any(word in keyword.lower() for word in keywords.exit_):
+        if word_match(phrase=keyword, match_list=keywords.exit_):
             return
         else:
             sys.stdout.write(f"\rGetting your info from Wikipedia API for {keyword}")
@@ -35,5 +36,5 @@ def wikipedia_() -> None:
             formatted = ". ".join(result.split(". ")[0:2]) + "."
             speaker.speak(text=f"{formatted}. Do you want me to continue {models.env.title}?", run=True)
             if response := listener.listen(timeout=3, phrase_limit=3):
-                if any(word in response.lower() for word in keywords.ok):
+                if word_match(phrase=response, match_list=keywords.ok):
                     speaker.speak(text=". ".join(result.split(". ")[3:]))

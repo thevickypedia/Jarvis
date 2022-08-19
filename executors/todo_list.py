@@ -1,6 +1,7 @@
 import json
 import sys
 
+from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.database import database
@@ -69,7 +70,7 @@ def add_todo() -> None:
     speaker.speak(text=f"I've added the item: {item} to the category: {category}. "
                        "Do you want to add anything else to your to-do list?", run=True)
     category_continue = listener.listen(timeout=3, phrase_limit=3)
-    if any(word in category_continue.lower() for word in keywords.ok):
+    if word_match(phrase=category_continue.lower(), match_list=keywords.ok):
         add_todo()
     else:
         speaker.speak(text='Alright')

@@ -7,6 +7,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 from executors.logger import logger
+from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
@@ -69,7 +70,7 @@ def github_controller(target: list) -> None:
         speaker.speak(text=f"I found {len(target)} results. On your screen {models.env.title}! "
                            "Which one shall I clone?", run=True)
         if not (converted := listener.listen(timeout=3, phrase_limit=5)):
-            if any(word in converted.lower() for word in keywords.exit_):
+            if word_match(phrase=converted, match_list=keywords.exit_):
                 return
             if 'first' in converted.lower():
                 item = 1

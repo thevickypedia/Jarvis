@@ -25,6 +25,7 @@ from executors.logger import logger
 from executors.robinhood import robinhood
 from executors.todo_list import todo
 from executors.weather import weather
+from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.audio.listener import listen
 from modules.conditions import keywords
@@ -233,7 +234,7 @@ def meaning(phrase: str) -> None:
     if not keyword or keyword == 'word':
         speaker.speak(text="Please tell a keyword.", run=True)
         response = listener.listen(timeout=3, phrase_limit=3)
-        if not response or any(word in response.lower() for word in keywords.exit_):
+        if not response or word_match(phrase=response, match_list=keywords.exit_):
             return
         meaning(phrase=response)
     else:
@@ -250,7 +251,7 @@ def meaning(phrase: str) -> None:
                 return
             speaker.speak(text=f'Do you wanna know how {keyword} is spelled?', run=True)
             response = listener.listen(timeout=3, phrase_limit=3)
-            if any(word in response.lower() for word in keywords.ok):
+            if word_match(phrase=response, match_list=keywords.ok):
                 for letter in list(keyword.lower()):
                     speaker.speak(text=letter)
                 speaker.speak(run=True)
@@ -338,7 +339,7 @@ def time_travel() -> None:
     read_gmail()
     speaker.speak(text='Would you like to hear the latest news?', run=True)
     phrase = listen(timeout=3, phrase_limit=3)
-    if any(word in phrase.lower() for word in keywords.ok):
+    if word_match(phrase=phrase.lower(), match_list=keywords.ok):
         news()
 
 

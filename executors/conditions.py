@@ -31,249 +31,250 @@ from executors.volume import volume
 from executors.vpn_server import vpn_server
 from executors.weather import weather
 from executors.wiki import wikipedia_
+from executors.word_match import word_match
 from modules.audio.speaker import speak
 from modules.audio.voices import voice_changer
 from modules.conditions import conversation, keywords
 from modules.exceptions import StopSignal
 from modules.meetings.events import events
 from modules.meetings.icalendar import meetings
+from modules.models.models import settings
 from modules.utils import support
 
 
-def conditions(converted: str, should_return: bool = False) -> bool:
+def conditions(phrase: str, should_return: bool = False) -> bool:
     """Conditions function is used to check the message processed.
 
     Uses the keywords to match pre-defined conditions and trigger the appropriate function which has dedicated task.
 
     Args:
-        converted: Takes the voice recognized statement as argument.
+        phrase: Takes the voice recognized statement as argument.
         should_return: A boolean flag sent by ``Activator`` to indicate that the ``else`` part shouldn't be executed.
 
     Returns:
         bool:
         Boolean True only when asked to sleep for conditioned sleep message.
     """
-    converted_lower = converted.lower()
     todo_checks = ['to do', 'to-do', 'todo']
 
-    if "*" in converted_lower:
-        abusive(converted)
+    if "*" in phrase:
+        abusive(phrase)
 
-    elif any(word in converted_lower for word in keywords.lights):
-        lights(converted)
+    elif word_match(phrase=phrase, match_list=keywords.lights):
+        lights(phrase)
 
-    elif any(word in converted_lower for word in keywords.television):
-        television(converted)
+    elif word_match(phrase=phrase, match_list=keywords.television):
+        television(phrase)
 
-    elif any(word in converted_lower for word in keywords.volume):
-        volume(converted)
+    elif word_match(phrase=phrase, match_list=keywords.volume):
+        volume(phrase)
 
-    elif any(word in converted_lower for word in keywords.car):
-        car(converted_lower)
+    elif word_match(phrase=phrase, match_list=keywords.car):
+        car(phrase.lower())
 
-    elif any(word in converted_lower for word in keywords.weather):
-        weather(converted)
+    elif word_match(phrase=phrase, match_list=keywords.weather):
+        weather(phrase)
 
     # ORDER OF THE ABOVE SHOULD BE RETAINED
 
-    elif any(word in converted_lower for word in keywords.meetings):
+    elif word_match(phrase=phrase, match_list=keywords.meetings):
         meetings()
 
-    elif any(word in converted_lower for word in keywords.current_date) and \
-            not any(word in converted_lower for word in keywords.avoid):
+    elif word_match(phrase=phrase, match_list=keywords.current_date) and \
+            not word_match(phrase=phrase, match_list=keywords.avoid):
         current_date()
 
-    elif any(word in converted_lower for word in keywords.current_time) and \
-            not any(word in converted_lower for word in keywords.avoid):
-        current_time(converted)
+    elif word_match(phrase=phrase, match_list=keywords.current_time) and \
+            not word_match(phrase=phrase, match_list=keywords.avoid):
+        current_time(phrase)
 
-    elif any(word in converted_lower for word in keywords.system_info):
+    elif word_match(phrase=phrase, match_list=keywords.system_info):
         system_info()
 
-    elif any(word in converted_lower for word in keywords.ip_info) or 'IP' in converted.split():
-        ip_info(converted)
+    elif word_match(phrase=phrase, match_list=keywords.ip_info) or 'IP' in phrase.split():
+        ip_info(phrase)
 
-    elif any(word in converted_lower for word in keywords.wikipedia_):
+    elif word_match(phrase=phrase, match_list=keywords.wikipedia_):
         wikipedia_()
 
-    elif any(word in converted_lower for word in keywords.news):
+    elif word_match(phrase=phrase, match_list=keywords.news):
         news()
 
-    elif any(word in converted_lower for word in keywords.report):
+    elif word_match(phrase=phrase, match_list=keywords.report):
         report()
 
-    elif any(word in converted_lower for word in keywords.robinhood):
+    elif word_match(phrase=phrase, match_list=keywords.robinhood):
         robinhood()
 
-    elif any(word in converted_lower for word in keywords.repeat):
+    elif word_match(phrase=phrase, match_list=keywords.repeat):
         repeat()
 
-    elif any(word in converted_lower for word in keywords.location):
+    elif word_match(phrase=phrase, match_list=keywords.location):
         location()
 
-    elif any(word in converted_lower for word in keywords.locate):
-        locate(converted)
+    elif word_match(phrase=phrase, match_list=keywords.locate):
+        locate(phrase)
 
-    elif any(word in converted_lower for word in keywords.read_gmail):
+    elif word_match(phrase=phrase, match_list=keywords.read_gmail):
         read_gmail()
 
-    elif any(word in converted_lower for word in keywords.meaning):
-        meaning(converted)
+    elif word_match(phrase=phrase, match_list=keywords.meaning):
+        meaning(phrase)
 
-    elif any(word in converted_lower for word in keywords.delete_todo) and 'items' in converted_lower and \
-            any(word in converted_lower for word in todo_checks):
+    elif word_match(phrase=phrase, match_list=keywords.delete_todo) and 'items' in phrase.lower() and \
+            word_match(phrase=phrase, match_list=todo_checks):
         delete_todo_items()
 
-    elif any(word in converted_lower for word in keywords.todo):
+    elif word_match(phrase=phrase, match_list=keywords.todo):
         todo()
 
-    elif any(word in converted_lower for word in keywords.add_todo) and \
-            any(word in converted_lower for word in todo_checks):
+    elif word_match(phrase=phrase, match_list=keywords.add_todo) and \
+            word_match(phrase=phrase, match_list=todo_checks):
         add_todo()
 
-    elif any(word in converted_lower for word in keywords.delete_todo) and \
-            any(word in converted_lower for word in todo_checks):
+    elif word_match(phrase=phrase, match_list=keywords.delete_todo) and \
+            word_match(phrase=phrase, match_list=todo_checks):
         delete_todo()
 
-    elif any(word in converted_lower for word in keywords.distance) and \
-            not any(word in converted_lower for word in keywords.avoid):
-        distance(converted)
+    elif word_match(phrase=phrase, match_list=keywords.distance) and \
+            not word_match(phrase=phrase, match_list=keywords.avoid):
+        distance(phrase)
 
-    elif any(word in converted_lower for word in conversation.form):
+    elif word_match(phrase=phrase, match_list=conversation.form):
         speak(text="I am a program, I'm without form.")
 
-    elif any(word in converted_lower for word in keywords.locate_places):
-        locate_places(converted)
+    elif word_match(phrase=phrase, match_list=keywords.locate_places):
+        locate_places(phrase)
 
-    elif any(word in converted_lower for word in keywords.directions):
-        directions(converted)
+    elif word_match(phrase=phrase, match_list=keywords.directions):
+        directions(phrase)
 
-    elif any(word in converted_lower for word in keywords.kill_alarm):
-        kill_alarm(converted)
+    elif word_match(phrase=phrase, match_list=keywords.kill_alarm):
+        kill_alarm(phrase)
 
-    elif any(word in converted_lower for word in keywords.set_alarm):
-        set_alarm(converted)
+    elif word_match(phrase=phrase, match_list=keywords.set_alarm):
+        set_alarm(phrase)
 
-    elif any(word in converted_lower for word in keywords.google_home):
+    elif word_match(phrase=phrase, match_list=keywords.google_home):
         google_home()
 
-    elif any(word in converted_lower for word in keywords.jokes):
+    elif word_match(phrase=phrase, match_list=keywords.jokes):
         jokes()
 
-    elif any(word in converted_lower for word in keywords.reminder):
-        reminder(converted)
+    elif word_match(phrase=phrase, match_list=keywords.reminder):
+        reminder(phrase)
 
-    elif any(word in converted_lower for word in keywords.notes):
+    elif word_match(phrase=phrase, match_list=keywords.notes):
         notes()
 
-    elif any(word in converted_lower for word in keywords.github):
-        github(converted)
+    elif word_match(phrase=phrase, match_list=keywords.github):
+        github(phrase)
 
-    elif any(word in converted_lower for word in keywords.send_sms):
-        send_sms(converted)
+    elif word_match(phrase=phrase, match_list=keywords.send_sms):
+        send_sms(phrase)
 
-    elif any(word in converted_lower for word in keywords.google_search):
-        google_search(converted)
+    elif word_match(phrase=phrase, match_list=keywords.google_search):
+        google_search(phrase)
 
-    elif any(word in converted_lower for word in keywords.apps):
-        apps(converted)
+    elif word_match(phrase=phrase, match_list=keywords.apps):
+        apps(phrase)
 
-    elif any(word in converted_lower for word in keywords.music):
-        music(converted)
+    elif word_match(phrase=phrase, match_list=keywords.music):
+        music(phrase)
 
-    elif any(word in converted_lower for word in keywords.face_detection):
+    elif word_match(phrase=phrase, match_list=keywords.face_detection):
         face_detection()
 
-    elif any(word in converted_lower for word in keywords.speed_test) and \
-            ('internet' in converted_lower or 'connection' in converted_lower or 'run' in converted_lower):
+    elif word_match(phrase=phrase, match_list=keywords.speed_test) and \
+            ('internet' in phrase.lower() or 'connection' in phrase.lower() or 'run' in phrase.lower()):
         speed_test()
 
-    elif any(word in converted_lower for word in keywords.bluetooth):
-        bluetooth(converted)
+    elif word_match(phrase=phrase, match_list=keywords.bluetooth):
+        bluetooth(phrase)
 
-    elif any(word in converted_lower for word in keywords.brightness):
-        brightness(converted)
+    elif word_match(phrase=phrase, match_list=keywords.brightness):
+        brightness(phrase)
 
-    elif any(word in converted_lower for word in keywords.guard_enable):
+    elif word_match(phrase=phrase, match_list=keywords.guard_enable):
         guard_enable()
 
-    elif any(word in converted_lower for word in keywords.flip_a_coin):
+    elif word_match(phrase=phrase, match_list=keywords.flip_a_coin):
         flip_a_coin()
 
-    elif any(word in converted_lower for word in keywords.facts):
+    elif word_match(phrase=phrase, match_list=keywords.facts):
         facts()
 
-    elif any(word in converted_lower for word in keywords.events):
+    elif word_match(phrase=phrase, match_list=keywords.events):
         events()
 
-    elif any(word in converted_lower for word in keywords.voice_changer):
-        voice_changer(converted)
+    elif word_match(phrase=phrase, match_list=keywords.voice_changer):
+        voice_changer(phrase)
 
-    elif any(word in converted_lower for word in keywords.system_vitals):
+    elif word_match(phrase=phrase, match_list=keywords.system_vitals):
         system_vitals()
 
-    elif any(word in converted_lower for word in keywords.vpn_server):
-        vpn_server(converted)
+    elif word_match(phrase=phrase, match_list=keywords.vpn_server):
+        vpn_server(phrase)
 
-    elif any(word in converted_lower for word in keywords.automation):
-        automation_handler(converted_lower)
+    elif word_match(phrase=phrase, match_list=keywords.automation):
+        automation_handler(phrase.lower())
 
-    elif any(word in converted_lower for word in keywords.sprint):
+    elif word_match(phrase=phrase, match_list=keywords.sprint):
         sprint_name()
 
-    elif any(word in converted_lower for word in conversation.greeting):
+    elif word_match(phrase=phrase, match_list=conversation.greeting):
         response = ['I am spectacular. I hope you are doing fine too.', 'I am doing well. Thank you.',
                     'I am great. Thank you.']
         speak(text=random.choice(response))
 
-    elif any(word in converted_lower for word in conversation.capabilities):
+    elif word_match(phrase=phrase, match_list=conversation.capabilities):
         speak(text='There is a lot I can do. For example: I can get you the weather at any location, news around '
                    'you, meanings of words, launch applications, create a to-do list, check your emails, get your '
                    'system configuration, tell your investment details, locate your phone, find distance between '
                    'places, set an alarm, play music on smart devices around you, control your TV, tell a joke, send'
                    ' a message, set reminders, scan and clone your GitHub repositories, and much more. Time to ask,.')
 
-    elif any(word in converted_lower for word in conversation.languages):
+    elif word_match(phrase=phrase, match_list=conversation.languages):
         speak(text="Tricky question!. I'm configured in python, and I can speak English.")
 
-    elif any(word in converted_lower for word in conversation.whats_up):
+    elif word_match(phrase=phrase, match_list=conversation.whats_up):
         speak(text="My listeners are up. There is nothing I cannot process. So ask me anything..")
 
-    elif any(word in converted_lower for word in conversation.what):
-        speak(text="I'm just a pre-programmed virtual assistant.")
+    elif word_match(phrase=phrase, match_list=conversation.what):
+        speak(text=f"The name is {settings.bot}. I'm just a pre-programmed virtual assistant.")
 
-    elif any(word in converted_lower for word in conversation.who):
-        speak(text="I am Jarvis. A virtual assistant designed by Mr.Raauv.")
+    elif word_match(phrase=phrase, match_list=conversation.who):
+        speak(text=f"I am {settings.bot}. A virtual assistant designed by Mr.Raauv.")
 
-    elif any(word in converted_lower for word in conversation.about_me):
-        speak(text="I am Jarvis. A virtual assistant designed by Mr.Raauv. "
+    elif word_match(phrase=phrase, match_list=conversation.about_me):
+        speak(text=f"I am {settings.bot}. A virtual assistant designed by Mr.Raauv. "
                    "I'm just a pre-programmed virtual assistant, trying to become a natural language UI. "
                    "I can seamlessly take care of your daily tasks, and also help with most of your work!")
 
-    elif any(word in converted_lower for word in keywords.sleep_control):
-        return controls.sleep_control(converted)
+    elif word_match(phrase=phrase, match_list=keywords.sleep_control):
+        return controls.sleep_control(phrase)
 
-    elif any(word in converted_lower for word in keywords.restart_control):
-        controls.restart_control(converted)
+    elif word_match(phrase=phrase, match_list=keywords.restart_control):
+        controls.restart_control(phrase)
 
-    elif any(word in converted_lower for word in keywords.kill) and \
-            not any(word in converted_lower for word in keywords.avoid):
+    elif word_match(phrase=phrase, match_list=keywords.kill) and \
+            not word_match(phrase=phrase, match_list=keywords.avoid):
         raise StopSignal
 
-    elif any(word in converted_lower for word in keywords.shutdown):
+    elif word_match(phrase=phrase, match_list=keywords.shutdown):
         controls.shutdown()
 
     elif should_return:
-        Thread(target=support.unrecognized_dumper, args=[{'ACTIVATOR': converted}]).start()
+        Thread(target=support.unrecognized_dumper, args=[{'ACTIVATOR': phrase}]).start()
         return False
 
     else:
-        logger.info(f'Received unrecognized lookup parameter: {converted}')
-        Thread(target=support.unrecognized_dumper, args=[{'CONDITIONS': converted}]).start()
-        if not alpha(text=converted):
-            if not google_maps(query=converted):
-                if google(query=converted):
+        logger.info(f'Received unrecognized lookup parameter: {phrase}')
+        Thread(target=support.unrecognized_dumper, args=[{'CONDITIONS': phrase}]).start()
+        if not alpha(text=phrase):
+            if not google_maps(query=phrase):
+                if google(query=phrase):
                     # if none of the conditions above are met, opens a Google search on default browser
-                    search_query = str(converted).replace(' ', '+')
+                    search_query = str(phrase).replace(' ', '+')
                     unknown_url = f"https://www.google.com/search?q={search_query}"
                     webbrowser.open(url=unknown_url)

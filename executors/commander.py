@@ -9,6 +9,7 @@ from executors.controls import pc_sleep
 from executors.logger import logger
 from executors.offline import offline_communicator
 from executors.others import time_travel
+from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import conversation, keywords
 from modules.models import models
@@ -36,16 +37,16 @@ def split_phrase(phrase: str, should_return: bool = False) -> bool:
             speaker.speak(text=f"I will execute it after {support.time_converter(seconds=delay)} {models.env.title}!")
             return False
 
-    if ' and ' in phrase and not any(word in phrase.lower() for word in keywords.avoid):
+    if ' and ' in phrase and not word_match(phrase=phrase, match_list=keywords.avoid):
         for each in phrase.split(' and '):
-            exit_check = conditions(converted=each.strip(), should_return=should_return)
+            exit_check = conditions(phrase=each.strip(), should_return=should_return)
             speaker.speak(run=True)
-    elif ' also ' in phrase and not any(word in phrase.lower() for word in keywords.avoid):
+    elif ' also ' in phrase and not word_match(phrase=phrase, match_list=keywords.avoid):
         for each in phrase.split(' also '):
-            exit_check = conditions(converted=each.strip(), should_return=should_return)
+            exit_check = conditions(phrase=each.strip(), should_return=should_return)
             speaker.speak(run=True)
     else:
-        exit_check = conditions(converted=phrase.strip(), should_return=should_return)
+        exit_check = conditions(phrase=phrase.strip(), should_return=should_return)
     return exit_check
 
 
@@ -96,9 +97,9 @@ def timed_delay(phrase: str) -> Union[int, float]:
         bool:
         Returns a boolean flag whether the time delay should be applied.
     """
-    if any(word in phrase.lower() for word in offline_list) and \
-            not any(word in phrase.lower() for word in keywords.set_alarm) and \
-            not any(word in phrase.lower() for word in keywords.reminder):
+    if word_match(phrase=phrase, match_list=offline_list) and \
+            not word_match(phrase=phrase, match_list=keywords.set_alarm) and \
+            not word_match(phrase=phrase, match_list=keywords.reminder):
         split_ = phrase.split('after')
         if split_[0].strip():
             delay = delay_calculator(phrase=split_[1].strip())
@@ -129,7 +130,7 @@ def renew() -> None:
             converted = listener.listen(timeout=3, phrase_limit=5, sound=False) or ""
         else:
             converted = listener.listen(timeout=3, phrase_limit=5) or ""
-        if any(word in converted.lower() for word in models.env.wake_words):
+        if word_match(phrase=converted, match_list=models.env.wake_words):
             continue
         if split_phrase(phrase=converted):  # should_return flag is not passed which will default to False
             break  # split_phrase() returns a boolean flag from conditions. conditions return True only for sleep
@@ -155,10 +156,11 @@ def initiator(phrase: str = None, should_return: bool = False) -> None:
             Thread(target=pc_sleep).start() if models.settings.macos else None
         time_travel()
         shared.called['time_travel'] = False
-    elif 'you there' in phrase.lower() or any(word in phrase.lower() for word in models.env.wake_words):
+    elif 'you there' in phrase.lower() or word_match(phrase=phrase, match_list=models.env.wake_words):
         speaker.speak(text=f'{random.choice(conversation.wake_up1)}')
         initialize()
-    elif any(word in phrase.lower() for word in ['look alive', 'wake up', 'wakeup', 'show time', 'showtime']):
+    elif word_match(phrase=phrase, match_list=['look alive', 'wake up', 'wakeup', 'show time',
+                                               'showtime']):
         speaker.speak(text=f'{random.choice(conversation.wake_up2)}')
         initialize()
     else:

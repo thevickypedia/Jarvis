@@ -43,6 +43,7 @@ class Settings(BaseSettings):
     ram: Union[PositiveInt, PositiveFloat] = psutil.virtual_memory().total
     physical_cores: PositiveInt = psutil.cpu_count(logical=False)
     logical_cores: PositiveInt = psutil.cpu_count(logical=True)
+    limited: bool = True if physical_cores < 4 else False
 
     if platform.system() == "Windows":
         macos: bool = False
@@ -148,6 +149,7 @@ class EnvConfig(BaseSettings):
     name: str = Field(default='Vignesh', env='NAME')
     tasks: List[CustomDict] = Field(default=[], env="TASKS")
     crontab: List[str] = Field(default=[], env='CRONTAB')
+    limited: bool = Field(default=False, env='LIMITED')
 
     class Config:
         """Environment variables configuration."""
@@ -196,6 +198,10 @@ if env.speech_synthesis_port == env.offline_port:
 
 if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
     env.crontab.append(cron_schedule(extended=True))
+
+# Forces limited version if env var is set, otherwise it is enforced based on the number of physical cores
+if env.limited:
+    settings.limited = True
 
 # Validates crontab expression if provided
 for expression in env.crontab:

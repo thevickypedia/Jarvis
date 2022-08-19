@@ -21,6 +21,7 @@ from api.models import GetData, GetText, InvestmentFilter
 from api.report_gatherer import Investment
 from executors.commander import timed_delay
 from executors.offline import offline_communicator
+from executors.word_match import word_match
 from modules.audio import speaker, tts_stt
 from modules.conditions import conversation, keywords
 from modules.exceptions import APIResponse
@@ -230,10 +231,10 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
         logger.info("Test message received.")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail="Test message received.")
 
-    if ' and ' in command and not any(word in command.lower() for word in keywords.avoid):
+    if ' and ' in command and not word_match(phrase=command, match_list=keywords.avoid):
         and_response = ""
         for each in command.split(' and '):
-            if not any(word in each.lower() for word in offline_compatible):
+            if not word_match(phrase=each, match_list=offline_compatible):
                 logger.warning(f"'{each}' is not a part of offline compatible request.")
                 and_response += f'"{each}" is not a part of off-line communicator compatible request.\n\n' \
                                 'Please try an instruction that does not require an user interaction.'
@@ -241,10 +242,10 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
                 and_response += f"{offline_communicator(command=each)}\n"
         logger.info(f"Response: {and_response}")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=and_response)
-    elif ' also ' in command and not any(word in command.lower() for word in keywords.avoid):
+    elif ' also ' in command and not word_match(phrase=command, match_list=keywords.avoid):
         also_response = ""
         for each in command.split(' also '):
-            if not any(word in each.lower() for word in offline_compatible):
+            if not word_match(phrase=each, match_list=offline_compatible):
                 logger.warning(f"'{each}' is not a part of offline compatible request.")
                 also_response += f'"{each}" is not a part of off-line communicator compatible request.\n\n' \
                                  'Please try an instruction that does not require an user interaction.'
@@ -252,7 +253,7 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
                 also_response = f"{offline_communicator(command=each)}\n"
         logger.info(f"Response: {also_response}")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=also_response)
-    if not any(word in command.lower() for word in offline_compatible):
+    if not word_match(phrase=command, match_list=offline_compatible):
         logger.warning(f"'{command}' is not a part of offline compatible request.")
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f'"{command}" is not a part of off-line communicator compatible request.\n\n'

@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+6.3.4 (08/18/2022)
+------------------
+- Add `LIMITED` run feature for machines with lower performance
+- Avoid using the method "any" for performance and logging ability
+- Remove redundancy in variable re-declarations
+- Remove uncovered exception in lights.py for offline communicator
+- Update README.md
+- Minor bug fixes
+
 6.3.3 (08/13/2022)
 ------------------
 - Fix memory leak due to audio frames storage

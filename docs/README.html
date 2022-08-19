@@ -95,7 +95,7 @@
 <section id="prep">
 <h2>Prep<a class="headerlink" href="#prep" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><strong>MacOS</strong> <br> <em>Tested on <strong>MacOS High Sierra, Mojave, Catalina, Big Sur, and Monterey</strong></em></p>
+<li><p><strong>MacOS</strong> <br> <em>Tested on <strong>macOS High Sierra, Mojave, Catalina, Big Sur, and Monterey</strong></em></p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">System</span> <span class="pre">Preferences</span></code> → <code class="docutils literal notranslate"><span class="pre">Security</span> <span class="pre">&amp;</span> <span class="pre">Privacy</span></code> → <code class="docutils literal notranslate"><span class="pre">Privacy</span></code></p></li>
 <li><p>Click <code class="docutils literal notranslate"><span class="pre">+</span></code> sign and add the preferred <code class="docutils literal notranslate"><span class="pre">IDE</span></code> and <code class="docutils literal notranslate"><span class="pre">Terminal</span></code> in the following sections in left pane.</p>
@@ -115,7 +115,7 @@
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">Microphone</span></code> - <strong>Required</strong> to listen and respond.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Camera</span></code> - <strong>[Optional]</strong> Required only during face recognition/detection.</p></li>
-<li><p>Unlike MacOS, <code class="docutils literal notranslate"><span class="pre">Windows</span></code> pops a confirmation window to <strong>Allow</strong> or <strong>Deny</strong> access to files and folders.</p></li>
+<li><p>Unlike macOS, <code class="docutils literal notranslate"><span class="pre">Windows</span></code> pops a confirmation window to <strong>Allow</strong> or <strong>Deny</strong> access to files and folders.</p></li>
 </ul>
 </li>
 <li><p>Install <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/">Anaconda</a> or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html#windows-installers">Miniconda</a>, and <a class="reference external" href="https://visualstudio.microsoft.com/visual-cpp-build-tools/">VisualStudio C++ BuildTools</a></p></li>
@@ -152,8 +152,10 @@
 <li><p><strong>NAME</strong> - Name which Jarvis should address the user by. Defaults to <code class="docutils literal notranslate"><span class="pre">Vignesh</span></code></p></li>
 <li><p><strong>SENSITIVITY</strong> - Hot word detection sensitivity. Range: 0-1</p></li>
 <li><p><strong>WAKE_WORDS</strong> - List of wake words to initiate Jarvis’ listener. Defaults to <code class="docutils literal notranslate"><span class="pre">['jarvis']</span></code></p></li>
+<li><p><strong>LIMITED</strong> - Runs only the main version of <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> skipping all other background processes. Enforced based on the
+number of CPU cores. It can also be enabled with env-var.</p></li>
 </ul>
-<p>:warning: Windows10 and MacOS (version 10.14 and newer) have limitations on the wake words as they rely on ML libraries
+<p>:warning: Windows10 and macOS (version 10.14 and newer) have limitations on the wake words as they rely on ML libraries
 for wake word detection.</p>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py">Offline communicator</a></strong></p>
 <ul class="simple">
@@ -166,7 +168,7 @@ for wake word detection.</p>
 <li><p><strong>GIT_PASS</strong> - GitHub Token</p></li>
 <li><p><strong>WEATHER_API</strong> - API Key from <a class="reference external" href="https://openweathermap.org/">openweathermap</a></p></li>
 <li><p><strong>NEWS_API</strong> - API Key from <a class="reference external" href="https://newsapi.org/docs/client-libraries/python">newsapi</a></p></li>
-<li><p><strong>MAPS_API</strong> - API Key for maps from <a class="reference external" href="https://developers.google.com/maps/documentation/maps-static/get-api-key">google</a></p></li>
+<li><p><strong>MAPS_API</strong> - API Key for maps from <a class="reference external" href="https://developers.google.com/maps/documentation/maps-static/get-api-key">Google</a></p></li>
 <li><p><strong>GMAIL_USER</strong> - Gmail account username to send and read emails.</p></li>
 <li><p><strong>GMAIL_PASS</strong> - Gmail account password to send and read emails.</p></li>
 <li><p><strong>ALT_GMAIL_USER</strong> - Alternate gmail account username to send an SMS. (<code class="docutils literal notranslate"><span class="pre">GMAIL_USER</span></code> can be re-used)</p></li>
@@ -284,21 +286,22 @@ within the directory <code class="docutils literal notranslate"><span class="pre
 <p><strong>OPTIONAL:</strong> The key, <code class="docutils literal notranslate"><span class="pre">day</span></code> can be a <code class="docutils literal notranslate"><span class="pre">list</span></code> of days, or a <code class="docutils literal notranslate"><span class="pre">str</span></code> of a specific day or simply a <code class="docutils literal notranslate"><span class="pre">str</span></code> saying <code class="docutils literal notranslate"><span class="pre">weekday</span></code> or
 <code class="docutils literal notranslate"><span class="pre">weekend</span></code> when the particular automation should be executed.</p>
 <blockquote>
-<div><p>Not having the key <code class="docutils literal notranslate"><span class="pre">day</span></code> will run the automation daily.</p>
+<div><p>Not having the key <code class="docutils literal notranslate"><span class="pre">day</span></code> will run the automation daily.
+Date format should match exactly as described below.</p>
 </div></blockquote>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">6:00 AM</span><span class="p p-Indicator">:</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">06:00 AM</span><span class="p p-Indicator">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">day</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weekday</span><span class="w">  </span><span class="c1"># Runs only between Monday and Friday</span><span class="w"></span>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 50%</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">6:30 AM</span><span class="p p-Indicator">:</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">06:30 AM</span><span class="p p-Indicator">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">day</span><span class="p">:</span><span class="w">  </span><span class="c1"># Runs only on Monday, Wednesday and Friday</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Monday</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wednesday</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FRIDAY</span><span class="w"></span>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 100%</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">8:00 AM</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="c1"># Runs only on Saturday and Sunday</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">08:00 AM</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="c1"># Runs only on Saturday and Sunday</span><span class="w"></span>
 <span class="w">  </span><span class="nt">day</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weekend</span><span class="w"></span>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 100%</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">9:00 PM</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="c1"># Runs daily</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">09:00 PM</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="c1"># Runs daily</span><span class="w"></span>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 5%</span><span class="w"></span>
 </pre></div>
 </div>

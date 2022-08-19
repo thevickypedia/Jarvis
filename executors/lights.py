@@ -9,11 +9,12 @@ import yaml
 
 from executors.internet import vpn_checker
 from executors.logger import logger
+from executors.word_match import word_match
 from modules.audio import speaker
 from modules.conditions import conversation
 from modules.lights import preset_values, smart_lights
 from modules.models import models
-from modules.utils import shared, support
+from modules.utils import support
 
 
 def lights(phrase: str) -> Union[None, NoReturn]:
@@ -119,9 +120,9 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     # host_ip = list(filter(None, host_ip))
     host_ip = support.matrix_to_flat_list(input_=host_ip)
     if not host_ip:
-        plural = 'lights' if len(host_ip) > 1 else 'light'
+        plural = 'lights' if len(host_names) > 1 else 'light'
         speaker.speak(text=f"I wasn't able to connect to your {light_location} {plural} {models.env.title}! "
-                           f"{support.number_to_words(input_=len(host_ip), capitalize=True)} lights appear to be "
+                           f"{support.number_to_words(input_=len(host_names), capitalize=True)} {plural} appear to be "
                            "powered off.")
         return
 
@@ -166,24 +167,21 @@ def lights(phrase: str) -> Union[None, NoReturn]:
             speaker.speak(
                 text=f'{random.choice(conversation.acknowledgement)}! Setting {len(host_ip)} {plural} to {tone}!'
             )
-        Thread(target=thread_worker, args=[cool]).start() if shared.called_by_offline else \
-            avail_check(function_to_call=cool)
+        avail_check(function_to_call=cool)
     elif 'turn off' in phrase:
         speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning off {len(host_ip)} {plural}')
         Thread(target=thread_worker, args=[cool]).run()
-        Thread(target=thread_worker, args=[turn_off]).start() if shared.called_by_offline else \
-            avail_check(function_to_call=turn_off)
+        avail_check(function_to_call=turn_off)
     elif 'warm' in phrase or 'yellow' in phrase:
         if 'yellow' in phrase:
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! '
                                f'Setting {len(host_ip)} {plural} to yellow!')
         else:
             speaker.speak(text=f'Sure {models.env.title}! Setting {len(host_ip)} {plural} to warm!')
-        Thread(target=thread_worker, args=[warm]).start() if shared.called_by_offline else \
-            avail_check(function_to_call=warm)
-    elif any(word in phrase for word in list(preset_values.PRESET_VALUES.keys())):
+        avail_check(function_to_call=warm)
+    elif color := word_match(phrase=phrase, match_list=list(preset_values.PRESET_VALUES.keys())):
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
-                           f"I've changed {len(host_ip)} {plural} to red!")
+                           f"I've changed {len(host_ip)} {plural} to {color}!")
         for light_ip in host_ip:
             preset(host=light_ip,
                    value=[preset_values.PRESET_VALUES[_type] for _type in

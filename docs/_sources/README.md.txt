@@ -71,7 +71,7 @@
 IronMan's Jarvis with python
 
 ### Prep
-   - **MacOS** <br> _Tested on **MacOS High Sierra, Mojave, Catalina, Big Sur, and Monterey**_
+   - **MacOS** <br> _Tested on **macOS High Sierra, Mojave, Catalina, Big Sur, and Monterey**_
      - `System Preferences` → `Security & Privacy` → `Privacy`
      - Click `+` sign and add the preferred `IDE` and `Terminal` in the following sections in left pane.
        - `Microphone` - **Required** to listen and respond.
@@ -83,7 +83,7 @@ IronMan's Jarvis with python
      - `Settings` → `Privacy`
        - `Microphone` - **Required** to listen and respond.
        - `Camera` - **[Optional]** Required only during face recognition/detection.
-       - Unlike MacOS, `Windows` pops a confirmation window to **Allow** or **Deny** access to files and folders.
+       - Unlike macOS, `Windows` pops a confirmation window to **Allow** or **Deny** access to files and folders.
      - Install [Anaconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html#windows-installers), and [VisualStudio C++ BuildTools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
 ### Setup
@@ -107,8 +107,10 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **SENSITIVITY** - Hot word detection sensitivity. Range: 0-1
 - **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']`
+- **LIMITED** - Runs only the main version of `Jarvis` skipping all other background processes. Enforced based on the
+number of CPU cores. It can also be enabled with env-var.
 
-:warning: Windows10 and MacOS (version 10.14 and newer) have limitations on the wake words as they rely on ML libraries 
+:warning: Windows10 and macOS (version 10.14 and newer) have limitations on the wake words as they rely on ML libraries 
 for wake word detection.
 
 **[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py)**
@@ -120,7 +122,7 @@ for wake word detection.
 - **GIT_PASS** - GitHub Token
 - **WEATHER_API** - API Key from [openweathermap](https://openweathermap.org/) 
 - **NEWS_API** - API Key from [newsapi](https://newsapi.org/docs/client-libraries/python)
-- **MAPS_API** - API Key for maps from [google](https://developers.google.com/maps/documentation/maps-static/get-api-key)
+- **MAPS_API** - API Key for maps from [Google](https://developers.google.com/maps/documentation/maps-static/get-api-key)
 - **GMAIL_USER** - Gmail account username to send and read emails.
 - **GMAIL_PASS** - Gmail account password to send and read emails.
 - **ALT_GMAIL_USER** - Alternate gmail account username to send an SMS. (`GMAIL_USER` can be re-used)
@@ -235,21 +237,22 @@ The YAML file should be a dictionary within a dictionary that looks like the bel
 `weekend` when the particular automation should be executed.
 
 > Not having the key `day` will run the automation daily.
+> Date format should match exactly as described below.
 
 ```yaml
-6:00 AM:
+06:00 AM:
   day: weekday  # Runs only between Monday and Friday
   task: set my bedroom lights to 50%
-6:30 AM:
+06:30 AM:
   day:  # Runs only on Monday, Wednesday and Friday
   - Monday
   - wednesday
   - FRIDAY
   task: set my bedroom lights to 100%
-8:00 AM:  # Runs only on Saturday and Sunday
+08:00 AM:  # Runs only on Saturday and Sunday
   day: weekend
   task: set my bedroom lights to 100%
-9:00 PM:  # Runs daily
+09:00 PM:  # Runs daily
   task: set my bedroom lights to 5%
 ```
 </details>

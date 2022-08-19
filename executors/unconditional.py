@@ -12,6 +12,7 @@ from search_engine_parser.core.engines.google import Search as GoogleSearch
 from search_engine_parser.core.exceptions import NoResultsOrTrafficError
 
 from executors.logger import logger
+from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.models import models
@@ -198,7 +199,7 @@ def google_maps(query: str) -> bool:
         if converted := listener.listen(timeout=3, phrase_limit=3):
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 break
-            elif any(word in converted.lower() for word in keywords.ok):
+            elif word_match(phrase=converted.lower(), match_list=keywords.ok):
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                 webbrowser.open(url=maps_url)
                 speaker.speak(text=f"Directions on your screen {models.env.title}!")

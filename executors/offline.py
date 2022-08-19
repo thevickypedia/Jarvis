@@ -13,6 +13,7 @@ from executors.conditions import conditions
 from executors.crontab import crontab_executor
 from executors.logger import logger
 from executors.remind import reminder_executor
+from executors.word_match import word_match
 from modules.conditions import keywords
 from modules.crontab import expression
 from modules.database import database
@@ -36,7 +37,7 @@ def repeated_tasks() -> Union[List[RepeatedTimer], List]:
     tasks = []
     logger.info(f"Background tasks: {len(models.env.tasks)}")
     for task in models.env.tasks:
-        if any(word in task.task.lower() for word in offline_compatible):
+        if word_match(phrase=task.task, match_list=offline_compatible):
             tasks.append(RepeatedTimer(task.seconds, offline_communicator, task.task))
         else:
             logger.error(f"{task.task} is not a part of offline communication. Removing entry.")
@@ -61,7 +62,7 @@ def automator() -> NoReturn:
     """
     offline_list = offline_compatible + keywords.restart_control
     start_events = start_meetings = start_cron = time.time()
-    events.event_app_launcher()
+    events.event_app_launcher() if models.settings.macos else None
     dry_run = True
     while True:
         if os.path.isfile(models.fileio.automation):
@@ -197,7 +198,7 @@ def offline_communicator(command: str) -> AnyStr:
         Response from Jarvis.
     """
     shared.called_by_offline = True
-    conditions(converted=command, should_return=True)
+    conditions(phrase=command, should_return=True)
     shared.called_by_offline = False
     if response := shared.text_spoken:
         shared.text_spoken = None

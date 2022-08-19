@@ -13,6 +13,7 @@ from typing import Union
 from pyttsx3.engine import Engine
 
 from executors.logger import logger
+from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import conversation, keywords
 from modules.models import models
@@ -63,6 +64,6 @@ def voice_changer(phrase: str = None) -> None:
             voice_default()
             speaker.speak(text=f"Reverting the changes to default voice module {models.env.title}!")
             return
-        elif any(word in keyword.lower() for word in keywords.ok):
+        elif word_match(phrase=keyword.lower(), match_list=keywords.ok):
             speaker.speak(text=random.choice(conversation.acknowledgement))
             return

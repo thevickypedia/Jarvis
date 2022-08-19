@@ -3,7 +3,6 @@ from multiprocessing import Process
 from typing import Dict, NoReturn, Union
 
 import psutil
-from playsound import playsound
 
 from api.server import trigger_api
 from executors.location import write_current_location
@@ -75,7 +74,6 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
     for func, process in processes.items():
         process.start()
         logger.info(f"Started function: {func} {process.sentinel} with PID: {process.pid}")
-    playsound(sound=models.indicators.initialize, block=False) if not func_name else None
     return processes[func_name] if func_name else processes
 
 

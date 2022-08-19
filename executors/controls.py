@@ -13,6 +13,7 @@ import psutil
 from executors.display_functions import decrease_brightness
 from executors.logger import logger
 from executors.volume import volume
+from executors.word_match import word_match
 from modules.audio import listener, speaker, voices
 from modules.conditions import conversation, keywords
 from modules.database import database
@@ -46,7 +47,7 @@ def restart(ask: bool = True) -> NoReturn:
         converted = listener.listen(timeout=3, phrase_limit=3)
     else:
         converted = 'yes'
-    if any(word in converted.lower() for word in keywords.ok):
+    if word_match(phrase=converted, match_list=keywords.ok):
         stop_terminals()
         if models.settings.macos:
             subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
@@ -170,7 +171,7 @@ def stop_terminals(apps: tuple = ("iterm", "terminal")) -> NoReturn:
         apps: Default apps that have to be shutdown when ``deep`` argument is not set.
     """
     for proc in psutil.process_iter():
-        if any(word in proc.name().lower() for word in apps):
+        if word_match(phrase=proc.name(), match_list=apps):
             proc.terminate()
             time.sleep(0.5)
             if proc.is_running():
@@ -212,7 +213,7 @@ def shutdown(proceed: bool = False) -> NoReturn:
         converted = listener.listen(timeout=3, phrase_limit=3)
     else:
         converted = 'yes'
-    if converted and any(word in converted.lower() for word in keywords.ok):
+    if converted and word_match(phrase=converted, match_list=keywords.ok):
         stop_terminals()
         if models.settings.macos:
             subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])

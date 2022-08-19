@@ -1,6 +1,7 @@
 import logging
 import struct
 import sys
+from datetime import datetime
 from typing import NoReturn
 
 import pvporcupine
@@ -15,10 +16,31 @@ from executors.logger import custom_handler, logger
 from executors.offline import repeated_tasks
 from executors.processor import clear_db, start_processes, stop_processes
 from executors.system import hosted_device_info
+from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.exceptions import StopSignal
 from modules.models import models
 from modules.utils import shared, support
+
+
+def restart_checker() -> NoReturn:
+    """Operations performed during internal/external request to restart."""
+    if flag := support.check_restart():
+        logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
+        if flag[1] == "OFFLINE":
+            stop_processes()
+            logger.propagate = False
+            for _handler in logger.handlers:
+                if isinstance(_handler, logging.FileHandler):
+                    logger.removeHandler(hdlr=_handler)
+            handler = custom_handler()
+            logger.info(f"Switching to {handler.baseFilename}")
+            logger.addHandler(hdlr=handler)
+            starter()
+            shared.processes = start_processes()
+        else:
+            stop_processes(func_name=flag[1])
+            shared.processes[flag[1]] = start_processes(flag[1])
 
 
 class Activator:
@@ -87,29 +109,19 @@ class Activator:
                 pcm = struct.unpack_from("h" * self.detector.frame_length,
                                          self.audio_stream.read(num_frames=self.detector.frame_length,
                                                                 exception_on_overflow=False))
-                if self.detector.process(pcm=pcm) >= 0:
+                result = self.detector.process(pcm=pcm)
+                if result >= 0:
+                    logger.debug(f"Detected {models.env.wake_words[result]} at {datetime.now()}")
                     playsound(sound=models.indicators.acknowledgement, block=False)
                     self.close_stream()
                     if phrase := listener.listen(timeout=models.env.timeout, phrase_limit=models.env.phrase_limit,
                                                  sound=False):
                         initiator(phrase=phrase, should_return=True)
                         speaker.speak(run=True)
-                if flag := support.check_restart():
-                    logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
-                    if flag[1] == "OFFLINE":
-                        stop_processes()
-                        logger.propagate = False
-                        for _handler in logger.handlers:
-                            if isinstance(_handler, logging.FileHandler):
-                                logger.removeHandler(hdlr=_handler)
-                        handler = custom_handler()
-                        logger.info(f"Switching to {handler.baseFilename}")
-                        logger.addHandler(hdlr=handler)
-                        starter()
-                        shared.processes = start_processes()
-                    else:
-                        stop_processes(func_name=flag[1])
-                        shared.processes[flag[1]] = start_processes(flag[1])
+                if models.settings.limited:
+                    continue
+                support.flush_screen()
+                restart_checker()
                 if flag := support.check_stop():
                     logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
                     self.stop()
@@ -159,27 +171,16 @@ def sentry_mode() -> NoReturn:
             sys.stdout.write("\rSentry Mode")
             if wake_word := listener.listen(timeout=10, phrase_limit=2.5, sound=False, stdout=False):
                 support.flush_screen()
-                if any(word in wake_word.lower() for word in models.env.wake_words):
+                if word := word_match(phrase=wake_word.lower(), match_list=models.env.wake_words):
+                    logger.debug(f"Detected {word} at {datetime.now()}")
                     playsound(sound=models.indicators.acknowledgement, block=False)
                     if phrase := listener.listen(timeout=models.env.timeout, phrase_limit=models.env.phrase_limit,
                                                  sound=False):
                         initiator(phrase=phrase, should_return=True)
                         speaker.speak(run=True)
-            if flag := support.check_restart():
-                logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
-                if flag[1] == "OFFLINE":
-                    stop_processes()
-                    for _handler in logger.handlers:
-                        if isinstance(_handler, logging.FileHandler):
-                            logger.removeHandler(hdlr=_handler)
-                    handler = custom_handler()
-                    logger.info(f"Switching to {handler.baseFilename}")
-                    logger.addHandler(hdlr=handler)
-                    starter()
-                    shared.processes = start_processes()
-                else:
-                    stop_processes(func_name=flag[1])
-                    shared.processes[flag[1]] = start_processes(flag[1])
+            if models.settings.limited:
+                continue
+            restart_checker()
             if flag := support.check_stop():
                 logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
                 for task in tasks:
@@ -187,7 +188,8 @@ def sentry_mode() -> NoReturn:
                 stop_processes()
                 clear_db()
                 terminator()
-                break
+            if proc := check_memory_leak():
+                del shared.processes[proc]
     except StopSignal:
         exit_process()
         stop_processes()
@@ -207,7 +209,9 @@ def begin() -> NoReturn:
                       run=True)
     sys.stdout.write(f"\rCurrent Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
     shared.hosted_device = hosted_device_info()
-    shared.processes = start_processes()
+    if not models.settings.limited:
+        shared.processes = start_processes()
+    playsound(sound=models.indicators.initialize, block=False)
     sentry_mode() if models.settings.legacy else Activator().start()
 
 

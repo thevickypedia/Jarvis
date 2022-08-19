@@ -301,6 +301,13 @@ Weather
    :members:
    :undoc-members:
 
+Word Match
+==========
+
+.. automodule:: executors.word_match
+   :members:
+   :undoc-members:
+
 Wikipedia
 =========
 
@@ -464,6 +471,12 @@ Models
 ====
 
 .. autoclass:: modules.models.models.EnvConfig(pydantic.BaseSettings)
+   :members:
+   :undoc-members:
+
+====
+
+.. autoclass:: modules.models.models.Settings(pydantic.BaseSettings)
    :members:
    :undoc-members:
 
