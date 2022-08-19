@@ -110,6 +110,8 @@ vpn_server = ["vpn"]
 
 car = ["car", "vehicle"]
 
+garage = ["garage"]
+
 automation = ["automation"]
 
 sprint = ["sprint"]

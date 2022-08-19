@@ -46,6 +46,7 @@ def offline_compatible() -> list:
                      keywords.meetings,
                      keywords.events,
                      keywords.car,
+                     keywords.garage,
                      keywords.github,
                      keywords.sprint,
                      keywords.speed_test,

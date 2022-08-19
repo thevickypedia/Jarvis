@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+6.3.5 (08/19/2022)
+------------------
+- Integrate `MyQ` garage open and close feature
+
 6.3.4 (08/18/2022)
 ------------------
 - Add `LIMITED` run feature for machines with lower performance

@@ -11,6 +11,7 @@ from executors.communicator import read_gmail, send_sms
 from executors.date_time import current_date, current_time
 from executors.display_functions import brightness
 from executors.face import face_detection
+from executors.garage import garage_door
 from executors.github import github
 from executors.guard import guard_enable
 from executors.internet import ip_info, speed_test
@@ -71,6 +72,9 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
 
     elif word_match(phrase=phrase, match_list=keywords.car):
         car(phrase.lower())
+
+    elif word_match(phrase=phrase, match_list=keywords.garage):
+        garage_door(phrase.lower())
 
     elif word_match(phrase=phrase, match_list=keywords.weather):
         weather(phrase)

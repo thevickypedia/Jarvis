@@ -144,7 +144,8 @@ class Activator:
         """
         for task in self.tasks:
             task.stop()
-        stop_processes()
+        if not models.settings.limited:
+            stop_processes()
         clear_db()
         logger.info("Releasing resources acquired by Porcupine.")
         self.detector.delete()
@@ -185,14 +186,16 @@ def sentry_mode() -> NoReturn:
                 logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
                 for task in tasks:
                     task.stop()
-                stop_processes()
+                if not models.settings.limited:
+                    stop_processes()
                 clear_db()
                 terminator()
             if proc := check_memory_leak():
                 del shared.processes[proc]
     except StopSignal:
         exit_process()
-        stop_processes()
+        if not models.settings.limited:
+            stop_processes()
         clear_db()
         terminator()
 

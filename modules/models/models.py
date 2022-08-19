@@ -134,6 +134,8 @@ class EnvConfig(BaseSettings):
     car_email: EmailStr = Field(default=None, env='CAR_EMAIL')
     car_pass: str = Field(default=None, env='CAR_PASS')
     car_pin: str = Field(default=None, regex="\\d{4}$", env='CAR_PIN')
+    myq_username: EmailStr = Field(default=None, env='MYQ_USERNAME')
+    myq_password: str = Field(default=None, env='MYQ_PASSWORD')
     sensitivity: Union[float, PositiveInt] = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
     timeout: Union[PositiveFloat, PositiveInt] = Field(default=3, env='TIMEOUT')
     phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=3, env='PHRASE_LIMIT')

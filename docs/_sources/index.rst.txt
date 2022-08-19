@@ -161,6 +161,13 @@ Face
    :members:
    :undoc-members:
 
+Garage Door
+===========
+
+.. automodule:: executors.garage
+   :members:
+   :undoc-members:
+
 GitHub
 ======
 
@@ -464,7 +471,13 @@ Meetings
 Models
 ======
 
-.. autoclass:: modules.models.models.FileIO(pydantic.BaseModel)
+.. autoclass:: modules.models.models.EventApp(Enum)
+   :members:
+   :undoc-members:
+
+====
+
+.. autoclass:: modules.models.models.CustomDict(pydantic.BaseModel)
    :members:
    :undoc-members:
 
@@ -476,7 +489,24 @@ Models
 
 ====
 
+.. autoclass:: modules.models.models.FileIO(pydantic.BaseModel)
+   :members:
+   :undoc-members:
+
+====
+
 .. autoclass:: modules.models.models.Settings(pydantic.BaseSettings)
+   :members:
+   :undoc-members:
+
+MyQ
+===
+
+.. autoclass:: modules.myq.connector.Operation(Enum)
+   :members:
+   :undoc-members:
+
+.. autoclass:: modules.myq.connector.garage_controller
    :members:
    :undoc-members:
 

@@ -1151,6 +1151,20 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
+<section id="module-executors.garage">
+<span id="garage-door"></span><h1>Garage Door<a class="headerlink" href="#module-executors.garage" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.garage.garage_door">
+<span class="sig-prename descclassname"><span class="pre">executors.garage.</span></span><span class="sig-name descname"><span class="pre">garage_door</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.garage.garage_door" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handler for the garage door controller.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the recognized phrase as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-executors.github">
 <span id="github"></span><h1>GitHub<a class="headerlink" href="#module-executors.github" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
@@ -4061,77 +4075,45 @@ Whites can have a value of None.</p>
 <section id="models">
 <h1>Models<a class="headerlink" href="#models" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="modules.models.models.FileIO">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.models.</span></span><span class="sig-name descname"><span class="pre">FileIO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.models.FileIO" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads all the files’ path required/created by Jarvis.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">FileIO</span>
+<dt class="sig sig-object py" id="modules.models.models.EventApp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.models.</span></span><span class="sig-name descname"><span class="pre">EventApp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.models.EventApp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Types of event applications supported by Jarvis.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">EventApp</span>
 </pre></div>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EventApp.CALENDAR">
+<span class="sig-name descname"><span class="pre">CALENDAR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'calendar'</span></em><a class="headerlink" href="#modules.models.models.EventApp.CALENDAR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EventApp.OUTLOOK">
+<span class="sig-name descname"><span class="pre">OUTLOOK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'outlook'</span></em><a class="headerlink" href="#modules.models.models.EventApp.OUTLOOK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.models.models.CustomDict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.models.</span></span><span class="sig-name descname"><span class="pre">CustomDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.models.CustomDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom links model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.models.models.CustomDict.check_empty_string">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_empty_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.models.CustomDict.check_empty_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate task field in tasks.</p>
+</dd></dl>
+
 <dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.automation">
-<span class="sig-name descname"><span class="pre">automation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.automation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.models.models.CustomDict.seconds">
+<span class="sig-name descname"><span class="pre">seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.models.models.CustomDict.seconds" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.base_db">
-<span class="sig-name descname"><span class="pre">base_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.base_db" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.event_script">
-<span class="sig-name descname"><span class="pre">event_script</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.event_script" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.frequent">
-<span class="sig-name descname"><span class="pre">frequent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.frequent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.location">
-<span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.location" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.notes">
-<span class="sig-name descname"><span class="pre">notes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.notes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.robinhood">
-<span class="sig-name descname"><span class="pre">robinhood</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.robinhood" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.smart_devices">
-<span class="sig-name descname"><span class="pre">smart_devices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.smart_devices" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.speech_synthesis_log">
-<span class="sig-name descname"><span class="pre">speech_synthesis_log</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.speech_synthesis_log" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.speech_synthesis_wav">
-<span class="sig-name descname"><span class="pre">speech_synthesis_wav</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.speech_synthesis_wav" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.task_db">
-<span class="sig-name descname"><span class="pre">task_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.task_db" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.tmp_automation">
-<span class="sig-name descname"><span class="pre">tmp_automation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.tmp_automation" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.FileIO.training">
-<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.training" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.models.models.CustomDict.task">
+<span class="sig-name descname"><span class="pre">task</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ConstrainedStrValue</span></em><a class="headerlink" href="#modules.models.models.CustomDict.task" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -4219,7 +4201,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.event_app">
-<span class="sig-name descname"><span class="pre">event_app</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EventApp</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.event_app" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">event_app</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#modules.models.models.EventApp" title="modules.models.models.EventApp"><span class="pre">EventApp</span></a></em><a class="headerlink" href="#modules.models.models.EnvConfig.event_app" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4275,6 +4257,16 @@ Whites can have a value of None.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.maps_api">
 <span class="sig-name descname"><span class="pre">maps_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.maps_api" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.myq_password">
+<span class="sig-name descname"><span class="pre">myq_password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.myq_password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.EnvConfig.myq_username">
+<span class="sig-name descname"><span class="pre">myq_username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.myq_username" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4385,7 +4377,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.tasks">
-<span class="sig-name descname"><span class="pre">tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">CustomDict</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.tasks" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.models.models.CustomDict" title="modules.models.models.CustomDict"><span class="pre">CustomDict</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.tasks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4447,6 +4439,83 @@ Whites can have a value of None.</p>
 
 <hr class="docutils" />
 <dl class="py class">
+<dt class="sig sig-object py" id="modules.models.models.FileIO">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.models.</span></span><span class="sig-name descname"><span class="pre">FileIO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.models.FileIO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads all the files’ path required/created by Jarvis.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">FileIO</span>
+</pre></div>
+</div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.automation">
+<span class="sig-name descname"><span class="pre">automation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.automation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.base_db">
+<span class="sig-name descname"><span class="pre">base_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.base_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.event_script">
+<span class="sig-name descname"><span class="pre">event_script</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.event_script" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.frequent">
+<span class="sig-name descname"><span class="pre">frequent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.frequent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.location">
+<span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.location" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.notes">
+<span class="sig-name descname"><span class="pre">notes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.notes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.robinhood">
+<span class="sig-name descname"><span class="pre">robinhood</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.robinhood" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.smart_devices">
+<span class="sig-name descname"><span class="pre">smart_devices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.smart_devices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.speech_synthesis_log">
+<span class="sig-name descname"><span class="pre">speech_synthesis_log</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.speech_synthesis_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.speech_synthesis_wav">
+<span class="sig-name descname"><span class="pre">speech_synthesis_wav</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.speech_synthesis_wav" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.task_db">
+<span class="sig-name descname"><span class="pre">task_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.task_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.tmp_automation">
+<span class="sig-name descname"><span class="pre">tmp_automation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.tmp_automation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.FileIO.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.models.FileIO.training" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
 <dt class="sig sig-object py" id="modules.models.models.Settings">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.models.</span></span><span class="sig-name descname"><span class="pre">Settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseSettings</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.models.Settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads most common system values that do not change.</p>
@@ -4490,6 +4559,65 @@ Whites can have a value of None.</p>
 <span class="sig-name descname"><span class="pre">ram</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.Settings.ram" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="myq">
+<h1>MyQ<a class="headerlink" href="#myq" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.myq.connector.Operation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.myq.connector.</span></span><span class="sig-name descname"><span class="pre">Operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.myq.connector.Operation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Operations allowed on garage door.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Operation</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.myq.connector.Operation.CLOSE">
+<span class="sig-name descname"><span class="pre">CLOSE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'close'</span></em><a class="headerlink" href="#modules.myq.connector.Operation.CLOSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.myq.connector.Operation.CLOSED">
+<span class="sig-name descname"><span class="pre">CLOSED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'closed'</span></em><a class="headerlink" href="#modules.myq.connector.Operation.CLOSED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.myq.connector.Operation.CLOSING">
+<span class="sig-name descname"><span class="pre">CLOSING</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'closing'</span></em><a class="headerlink" href="#modules.myq.connector.Operation.CLOSING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.myq.connector.Operation.OPEN">
+<span class="sig-name descname"><span class="pre">OPEN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'open'</span></em><a class="headerlink" href="#modules.myq.connector.Operation.OPEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.myq.connector.Operation.OPENING">
+<span class="sig-name descname"><span class="pre">OPENING</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'opening'</span></em><a class="headerlink" href="#modules.myq.connector.Operation.OPENING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.myq.connector.Operation.STATE">
+<span class="sig-name descname"><span class="pre">STATE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'state'</span></em><a class="headerlink" href="#modules.myq.connector.Operation.STATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.myq.connector.garage_controller">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.myq.connector.</span></span><span class="sig-name descname"><span class="pre">garage_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.myq.connector.garage_controller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an aiohttp session and run an operation on garage door.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>operation</strong> – Takes the operation to be performed as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Device state information as a dictionary.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -5791,6 +5919,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-executors.date_time">DateTime</a></li>
 <li><a class="reference internal" href="#module-executors.display_functions">DisplayFunctions</a></li>
 <li><a class="reference internal" href="#module-executors.face">Face</a></li>
+<li><a class="reference internal" href="#module-executors.garage">Garage Door</a></li>
 <li><a class="reference internal" href="#module-executors.github">GitHub</a></li>
 <li><a class="reference internal" href="#module-executors.guard">Guard</a></li>
 <li><a class="reference internal" href="#module-executors.internet">Internet</a></li>
@@ -5826,6 +5955,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-modules.dictionary.dictionary">Meanings</a></li>
 <li><a class="reference internal" href="#module-modules.meetings.events">Meetings</a></li>
 <li><a class="reference internal" href="#models">Models</a></li>
+<li><a class="reference internal" href="#myq">MyQ</a></li>
 <li><a class="reference internal" href="#id5">Offline</a></li>
 <li><a class="reference internal" href="#module-modules.retry.retry">Retry Handler</a></li>
 <li><a class="reference internal" href="#module-modules.timer.executor">Repeated Timer</a></li>
