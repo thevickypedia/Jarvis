@@ -42,7 +42,7 @@ if not os.path.isfile(config.APIConfig().DEFAULT_LOG_FILENAME):
 
 offline_compatible = compatibles.offline_compatible()
 
-importlib.reload(module=logging) if models.settings.macos else None
+importlib.reload(module=logging)
 dictConfig(config=config.APIConfig().LOGGING_CONFIG)
 
 logging.getLogger("uvicorn.access").addFilter(InvestmentFilter())  # Adds token filter to the access logger

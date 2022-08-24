@@ -44,6 +44,7 @@ class Settings(BaseSettings):
     physical_cores: PositiveInt = psutil.cpu_count(logical=False)
     logical_cores: PositiveInt = psutil.cpu_count(logical=True)
     limited: bool = True if physical_cores < 4 else False
+    bot: str = pathlib.PurePath(sys.argv[0]).stem
 
     if platform.system() == "Windows":
         macos: bool = False
@@ -111,7 +112,7 @@ class EnvConfig(BaseSettings):
     sync_events: PositiveInt = Field(default=3_600, env='SYNC_EVENTS')
     icloud_user: EmailStr = Field(default=None, env='ICLOUD_USER')
     icloud_pass: str = Field(default=None, env='ICLOUD_PASS')
-    icloud_recovery: str = Field(default=None, env='ICLOUD_RECOVERY')
+    icloud_recovery: str = Field(default=None, regex="\\d{10}$", env='ICLOUD_RECOVERY')
     robinhood_user: EmailStr = Field(default=None, env='ROBINHOOD_USER')
     robinhood_pass: str = Field(default=None, env='ROBINHOOD_PASS')
     robinhood_qr: str = Field(default=None, env='ROBINHOOD_QR')
@@ -143,7 +144,7 @@ class EnvConfig(BaseSettings):
     bot_chat_ids: List[int] = Field(default=[], env='BOT_CHAT_IDS')
     bot_users: List[str] = Field(default=[], env='BOT_USERS')
     bot_voice_timeout: Union[float, PositiveInt] = Field(default=3, le=5, ge=1, env='BOT_VOICE_TIMEOUT')
-    wake_words: List[str] = Field(default=[pathlib.PurePath(sys.argv[0]).stem], env='WAKE_WORDS')
+    wake_words: List[str] = Field(default=[settings.bot], env='WAKE_WORDS')
     speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
     speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'), env='SPEECH_SYNTHESIS_HOST')
     speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')

@@ -59,7 +59,7 @@ def custom_handler() -> logging.FileHandler:
     return handler
 
 
-importlib.reload(module=logging) if models.settings.macos else None
+importlib.reload(module=logging)
 dictConfig({
     'version': 1,
     'disable_existing_loggers': True,

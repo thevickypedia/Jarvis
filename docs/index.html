@@ -2366,23 +2366,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="module-modules.audio.speech_synthesis"></span><dl class="py class">
-<dt class="sig sig-object py" id="modules.audio.speech_synthesis.SpeechSynthesizer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">SpeechSynthesizer</span></span><a class="headerlink" href="#modules.audio.speech_synthesis.SpeechSynthesizer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates the docker container to process text-to-speech requests.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SpeechSynthesizer</span>
-</pre></div>
-</div>
-<p>Creates log file and initiates port number and docker command to run.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="modules.audio.speech_synthesis.SpeechSynthesizer.synthesizer">
-<span class="sig-name descname"><span class="pre">synthesizer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.audio.speech_synthesis.SpeechSynthesizer.synthesizer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates speech synthesizer using docker.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
+<span class="target" id="module-modules.audio.speech_synthesis"></span><dl class="py function">
 <dt class="sig sig-object py" id="modules.audio.speech_synthesis.check_existing">
 <span class="sig-prename descclassname"><span class="pre">modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">check_existing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.audio.speech_synthesis.check_existing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for existing connection.</p>
@@ -2394,6 +2378,12 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.audio.speech_synthesis.synthesizer">
+<span class="sig-prename descclassname"><span class="pre">modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">synthesizer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.audio.speech_synthesis.synthesizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates speech synthesizer using docker.</p>
 </dd></dl>
 
 <hr class="docutils" />
@@ -4524,6 +4514,11 @@ Whites can have a value of None.</p>
 </div>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.models.Settings.bot">
+<span class="sig-name descname"><span class="pre">bot</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.models.Settings.bot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.Settings.legacy">
 <span class="sig-name descname"><span class="pre">legacy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.models.models.Settings.legacy" title="Permalink to this definition">¶</a></dt>

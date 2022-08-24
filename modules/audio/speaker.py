@@ -68,6 +68,8 @@ def speech_synthesizer(text: str, timeout: Union[int, float] = models.env.speech
         logger.error(error)
     except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout) as error:
         logger.error(error)
+        logger.info("Disabling speech synthesis")
+        models.env.speech_synthesis_timeout = 0
 
 
 def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:

@@ -6,9 +6,9 @@ from typing import Callable, Union
 
 from pydantic import FilePath
 
-from modules.models import config, models
+from modules.models import config
 
-importlib.reload(module=logging) if models.settings.macos else None
+importlib.reload(module=logging)
 dictConfig(config.BotConfig().dict())
 logger = logging.getLogger('telegram')
 

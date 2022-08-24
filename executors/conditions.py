@@ -1,6 +1,9 @@
 import random
 import webbrowser
+from datetime import datetime
 from threading import Thread
+
+from dateutil.relativedelta import relativedelta
 
 from executors import controls
 from executors.alarm import kill_alarm, set_alarm
@@ -227,9 +230,8 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
         sprint_name()
 
     elif word_match(phrase=phrase, match_list=conversation.greeting):
-        response = ['I am spectacular. I hope you are doing fine too.', 'I am doing well. Thank you.',
-                    'I am great. Thank you.']
-        speak(text=random.choice(response))
+        speak(text=random.choice(['I am spectacular. I hope you are doing fine too.', 'I am doing well. Thank you.',
+                                  'I am great. Thank you.']))
 
     elif word_match(phrase=phrase, match_list=conversation.capabilities):
         speak(text='There is a lot I can do. For example: I can get you the weather at any location, news around '
@@ -249,6 +251,24 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
 
     elif word_match(phrase=phrase, match_list=conversation.who):
         speak(text=f"I am {settings.bot}. A virtual assistant designed by Mr.Raauv.")
+
+    elif word_match(phrase=phrase, match_list=conversation.age):
+        relative_date = relativedelta(dt1=datetime.strptime(datetime.strftime(datetime.now(), "%Y-%m-%d"), "%Y-%m-%d"),
+                                      dt2=datetime.strptime("2020-09-06", "%Y-%m-%d"))
+        statement = f"{relative_date.years} years, {relative_date.months} months and {relative_date.days} days."
+        if not relative_date.years:
+            statement = statement.replace(f"{relative_date.years} years, ", "")
+        elif relative_date.years == 1:
+            statement = statement.replace("years", "year")
+        if not relative_date.months:
+            statement = statement.replace(f"{relative_date.months} months", "")
+        elif relative_date.months == 1:
+            statement = statement.replace("months", "month")
+        if not relative_date.days:
+            statement = statement.replace(f"{relative_date.days} days", "")
+        elif relative_date.days == 1:
+            statement = statement.replace("days", "day")
+        speak(text=f"I'm {statement} old.")
 
     elif word_match(phrase=phrase, match_list=conversation.about_me):
         speak(text=f"I am {settings.bot}. A virtual assistant designed by Mr.Raauv. "

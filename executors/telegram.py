@@ -12,7 +12,7 @@ from modules.exceptions import BotInUse
 from modules.models import config, models
 from modules.telegram.bot import TelegramBot
 
-importlib.reload(module=logging) if models.settings.macos else None
+importlib.reload(module=logging)
 dictConfig(config.BotConfig().dict())
 logger = logging.getLogger('telegram')
 

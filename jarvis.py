@@ -111,7 +111,8 @@ class Activator:
                                                                 exception_on_overflow=False))
                 result = self.detector.process(pcm=pcm)
                 if result >= 0:
-                    logger.debug(f"Detected {models.env.wake_words[result]} at {datetime.now()}")
+                    models.settings.bot = models.env.wake_words[result]
+                    logger.debug(f"Detected {models.settings.bot} at {datetime.now()}")
                     playsound(sound=models.indicators.acknowledgement, block=False)
                     self.close_stream()
                     if phrase := listener.listen(timeout=models.env.timeout, phrase_limit=models.env.phrase_limit,
@@ -173,6 +174,7 @@ def sentry_mode() -> NoReturn:
             if wake_word := listener.listen(timeout=10, phrase_limit=2.5, sound=False, stdout=False):
                 support.flush_screen()
                 if word := word_match(phrase=wake_word.lower(), match_list=models.env.wake_words):
+                    models.settings.bot = word
                     logger.debug(f"Detected {word} at {datetime.now()}")
                     playsound(sound=models.indicators.acknowledgement, block=False)
                     if phrase := listener.listen(timeout=models.env.timeout, phrase_limit=models.env.phrase_limit,

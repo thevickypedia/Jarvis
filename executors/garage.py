@@ -51,6 +51,7 @@ def garage_door(phrase: str) -> NoReturn:
             return
         logger.info(f"Opening {status['name']}.")
         asyncio.run(garage_controller(operation=Operation.OPEN))
+        speaker.speak(text=f"Opening your {status['name']} {models.env.title}!")
     elif "close" in phrase:
         if status['state']['door_state'] == Operation.CLOSED:
             speaker.speak(text=f"Your {status['name']} is already closed {models.env.title}!")
@@ -63,6 +64,7 @@ def garage_door(phrase: str) -> NoReturn:
                                "You may want to try to after a minute or two!")
             return
         logger.info(f"Closing {status['name']}.")
+        speaker.speak(text=f"Closing your {status['name']} {models.env.title}!")
         asyncio.run(garage_controller(operation=Operation.CLOSE))
     else:
         logger.info(f"{status['name']}: {status['state']['door_state']}")

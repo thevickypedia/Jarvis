@@ -1,8 +1,8 @@
 import os
 import pathlib
-import subprocess
 from typing import NoReturn
 
+import docker
 import requests
 
 from executors.logger import logger
@@ -34,36 +34,27 @@ def check_existing() -> bool:
                 logger.critical('Failed to kill existing PID. Attempting to re-create session.')
 
 
-class SpeechSynthesizer:
-    """Initiates the docker container to process text-to-speech requests.
-
-    >>> SpeechSynthesizer
-
-    """
-
-    def __init__(self):
-        """Creates log file and initiates port number and docker command to run."""
-        self.docker = f"""docker run \
-            -p {models.env.speech_synthesis_port}:{models.env.speech_synthesis_port} \
-            -e "HOME={models.env.home}" \
-            -v "$HOME:{models.env.home}" \
-            -v /usr/share/ca-certificates:/usr/share/ca-certificates \
-            -v /etc/ssl/certs:/etc/ssl/certs \
-            -w "{os.getcwd()}" \
-            --user "$(id -u):$(id -g)" \
-            rhasspy/larynx"""
-        if models.env.speech_synthesis_port != 5002:
-            self.docker += f" --port {models.env.speech_synthesis_port}"
-
-    def synthesizer(self) -> NoReturn:
-        """Initiates speech synthesizer using docker."""
-        if check_existing():
+def synthesizer() -> NoReturn:
+    """Initiates speech synthesizer using docker."""
+    if check_existing():
+        return
+    client = docker.from_env()
+    if not os.path.isfile(models.fileio.speech_synthesis_log):
+        pathlib.Path(models.fileio.speech_synthesis_log).touch()
+    with open(models.fileio.speech_synthesis_log, "a") as log_file:
+        try:
+            result = client.containers.run(
+                image="rhasspy/larynx",
+                ports={f"{models.env.speech_synthesis_port}/tcp": models.env.speech_synthesis_port},
+                environment=[f"HOME={models.env.home}"],
+                volumes={models.env.home: {"bind": models.env.home, "mode": "rw"}},
+                working_dir=os.getcwd(),
+                user=f"{os.getuid()}:{os.getgid()}", detach=True
+            )
+            container = client.containers.get(container_id=result.short_id)
+            for line in container.logs(stream=True):
+                log_file.write(str(line).strip())
+        except Exception as error:
+            log_file.write(str(error))
+            models.env.speech_synthesis_timeout = 0
             return
-        if not os.path.isfile(models.fileio.speech_synthesis_log):
-            pathlib.Path(models.fileio.speech_synthesis_log).touch()
-        with open(models.fileio.speech_synthesis_log, "a") as output:
-            try:
-                subprocess.call(self.docker, shell=True, stdout=output, stderr=output)
-            except (subprocess.CalledProcessError, subprocess.SubprocessError, Exception) as error:
-                logger.error(error)
-                return

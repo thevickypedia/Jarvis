@@ -95,7 +95,7 @@ def car(phrase: str) -> None:
             speaker.speak(text=f"Your {car_name} has been turned off {models.env.title}!")
         else:
             speaker.speak(text=disconnected)
-    elif "secure" in phrase:
+    elif "secure" in phrase or "guardian" in phrase or "security" in phrase:
         if not shared.called_by_offline:
             playsound(sound=models.indicators.exhaust, block=False)
         if car_name := vehicle(operation="SECURE"):

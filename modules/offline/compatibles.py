@@ -54,6 +54,7 @@ def offline_compatible() -> list:
                      keywords.send_sms,
                      keywords.television,
                      keywords.automation,
+                     conversation.age,
                      conversation.about_me,
                      conversation.capabilities,
                      conversation.form,

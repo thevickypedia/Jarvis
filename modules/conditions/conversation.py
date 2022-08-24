@@ -21,6 +21,8 @@ what = ["what are you"]
 
 who = ["who are you", "what do I call you", "what's your name", "what is your name", "whats your name"]
 
+age = ["how old are you", "what is your age", "what's your age", "whats your age"]
+
 form = ["where is your body", "where's your body", "wheres your body"]
 
 whats_up = ["what's up", "what is up", "what's going on", "sup", "whats up"]

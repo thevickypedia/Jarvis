@@ -25,7 +25,7 @@ from modules.utils import support
 settings = models.Settings()
 db = database.Database(database=models.fileio.base_db)
 
-importlib.reload(module=logging) if models.settings.macos else None
+importlib.reload(module=logging)
 dictConfig(config.BotConfig().dict())
 logger = logging.getLogger('telegram')
 
@@ -416,13 +416,14 @@ class TelegramBot:
             return
 
         if ' and ' in command and not word_match(phrase=command, match_list=keywords.avoid):
-            for index, each in enumerate(command.split(' also '), 1 - len(command.split(' also '))):
+            for index, each in enumerate(command.split(' and '), 1 - len(command.split(' and '))):
                 if not word_match(phrase=each, match_list=offline_compatible):
                     self.send_message(chat_id=payload['from']['id'],
                                       response=f"'{each}' is not a part of offline communicator compatible request.")
                 else:
                     self.executor(command=each, payload=payload)
                     time.sleep(2) if index else None  # Avoid time.sleep during the last iteration
+            return
         elif ' also ' in command and not word_match(phrase=command, match_list=keywords.avoid):
             for index, each in enumerate(command.split(' also '), 1 - len(command.split(' also '))):
                 if not word_match(phrase=each, match_list=offline_compatible):
