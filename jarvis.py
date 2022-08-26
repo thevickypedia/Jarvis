@@ -16,7 +16,6 @@ from executors.logger import custom_handler, logger
 from executors.offline import repeated_tasks
 from executors.processor import clear_db, start_processes, stop_processes
 from executors.system import hosted_device_info
-from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.exceptions import StopSignal
 from modules.models import models
@@ -74,12 +73,19 @@ class Activator:
         self.input_device_index = input_device_index
 
         self.py_audio = PyAudio()
-        self.detector = pvporcupine.create(
-            library_path=pvporcupine.LIBRARY_PATH,
-            model_path=pvporcupine.MODEL_PATH,
-            keyword_paths=keyword_paths,
-            sensitivities=[models.env.sensitivity]
-        )
+        arguments = {
+            "library_path": pvporcupine.LIBRARY_PATH,
+            "sensitivities": [models.env.sensitivity]
+        }
+        if models.settings.legacy:
+            arguments["keywords"] = models.env.wake_words
+            arguments["model_file_path"] = pvporcupine.MODEL_PATH
+            arguments["keyword_file_paths"] = keyword_paths
+        else:
+            arguments["model_path"] = pvporcupine.MODEL_PATH
+            arguments["keyword_paths"] = keyword_paths
+
+        self.detector = pvporcupine.create(**arguments)
         self.audio_stream = None
         self.tasks = repeated_tasks()
 
@@ -99,6 +105,16 @@ class Activator:
         self.py_audio.close(stream=self.audio_stream)
         self.audio_stream = None
 
+    def executor(self) -> NoReturn:
+        """Calls the listener for actionable phrase and runs the speaker node for response."""
+        logger.debug(f"Detected {models.settings.bot} at {datetime.now()}")
+        playsound(sound=models.indicators.acknowledgement, block=False)
+        self.close_stream()
+        if phrase := listener.listen(timeout=models.env.timeout, phrase_limit=models.env.phrase_limit,
+                                     sound=False):
+            initiator(phrase=phrase, should_return=True)
+            speaker.speak(run=True)
+
     def start(self) -> NoReturn:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
@@ -110,15 +126,17 @@ class Activator:
                                          self.audio_stream.read(num_frames=self.detector.frame_length,
                                                                 exception_on_overflow=False))
                 result = self.detector.process(pcm=pcm)
-                if result >= 0:
-                    models.settings.bot = models.env.wake_words[result]
-                    logger.debug(f"Detected {models.settings.bot} at {datetime.now()}")
-                    playsound(sound=models.indicators.acknowledgement, block=False)
-                    self.close_stream()
-                    if phrase := listener.listen(timeout=models.env.timeout, phrase_limit=models.env.phrase_limit,
-                                                 sound=False):
-                        initiator(phrase=phrase, should_return=True)
-                        speaker.speak(run=True)
+                if models.settings.legacy:
+                    if len(models.env.wake_words) == 1 and result:
+                        models.settings.bot = models.env.wake_words[0]
+                        self.executor()
+                    elif len(models.env.wake_words) > 1 and result >= 0:
+                        models.settings.bot = models.env.wake_words[result]
+                        self.executor()
+                else:
+                    if result >= 0:
+                        models.settings.bot = models.env.wake_words[result]
+                        self.executor()
                 if models.settings.limited:
                     continue
                 support.flush_screen()
@@ -158,50 +176,6 @@ class Activator:
         self.py_audio.terminate()
 
 
-def sentry_mode() -> NoReturn:
-    """Listens forever and invokes ``initiator()`` when recognized. Stops when ``restart`` table has an entry.
-
-    See Also:
-        - Gets invoked only when run from Mac-OS older than 10.14.
-        - A regular listener is used to convert audio to text.
-        - The text is then condition matched for wake-up words.
-        - Additional wake words can be passed in a list as an env var ``LEGACY_KEYWORDS``.
-    """
-    try:
-        tasks = repeated_tasks()
-        while True:
-            sys.stdout.write("\rSentry Mode")
-            if wake_word := listener.listen(timeout=10, phrase_limit=2.5, sound=False, stdout=False):
-                support.flush_screen()
-                if word := word_match(phrase=wake_word.lower(), match_list=models.env.wake_words):
-                    models.settings.bot = word
-                    logger.debug(f"Detected {word} at {datetime.now()}")
-                    playsound(sound=models.indicators.acknowledgement, block=False)
-                    if phrase := listener.listen(timeout=models.env.timeout, phrase_limit=models.env.phrase_limit,
-                                                 sound=False):
-                        initiator(phrase=phrase, should_return=True)
-                        speaker.speak(run=True)
-            if models.settings.limited:
-                continue
-            restart_checker()
-            if flag := support.check_stop():
-                logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
-                for task in tasks:
-                    task.stop()
-                if not models.settings.limited:
-                    stop_processes()
-                clear_db()
-                terminator()
-            if proc := check_memory_leak():
-                del shared.processes[proc]
-    except StopSignal:
-        exit_process()
-        if not models.settings.limited:
-            stop_processes()
-        clear_db()
-        terminator()
-
-
 def begin() -> NoReturn:
     """Starts main process to activate Jarvis after checking internet connection and initiating background processes."""
     logger.info(f"Current Process ID: {models.settings.pid}")
@@ -217,7 +191,7 @@ def begin() -> NoReturn:
     if not models.settings.limited:
         shared.processes = start_processes()
     playsound(sound=models.indicators.initialize, block=False)
-    sentry_mode() if models.settings.legacy else Activator().start()
+    Activator().start()
 
 
 if __name__ == '__main__':

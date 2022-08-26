@@ -176,13 +176,25 @@ class EnvConfig(BaseSettings):
 env = EnvConfig()
 env.website = env.website.lstrip(f"{env.website.scheme}://")
 
-if not settings.legacy and env.wake_words != [pathlib.PurePath(sys.argv[0]).stem]:
-    for keyword in env.wake_words:
-        if not pvporcupine.KEYWORD_PATHS.get(keyword) or not os.path.isfile(pvporcupine.KEYWORD_PATHS[keyword]):
-            raise InvalidEnvVars(
-                f"Detecting '{keyword}' is unsupported!\n"
-                f"Available keywords are: {', '.join(list(pvporcupine.KEYWORD_PATHS.keys()))}"
-            )
+if settings.legacy:
+    pvporcupine.KEYWORD_PATHS = {}
+    pvporcupine.MODEL_PATH = os.path.join(os.path.dirname(pvporcupine.__file__),
+                                          'lib/common/porcupine_params.pv')
+    pvporcupine.LIBRARY_PATH = os.path.join(os.path.dirname(pvporcupine.__file__),
+                                            f'lib/mac/{platform.machine()}/libpv_porcupine.dylib')
+    keyword_files = os.listdir(os.path.join(os.path.dirname(pvporcupine.__file__), "resources/keyword_files/mac/"))
+    for x in keyword_files:
+        pvporcupine.KEYWORD_PATHS[x.split('_')[0]] = os.path.join(os.path.dirname(pvporcupine.__file__),
+                                                                  f"resources/keyword_files/mac/{x}")
+
+for keyword in env.wake_words:
+    if keyword == 'sphinx-build':
+        break
+    if not pvporcupine.KEYWORD_PATHS.get(keyword) or not os.path.isfile(pvporcupine.KEYWORD_PATHS[keyword]):
+        raise InvalidEnvVars(
+            f"Detecting '{keyword}' is unsupported!\n"
+            f"Available keywords are: {', '.join(list(pvporcupine.KEYWORD_PATHS.keys()))}"
+        )
 
 # Note: Pydantic validation for ICS_URL can be implemented using regex=".*ics$"
 # However it will NOT work in this use case, since the type hint is HttpUrl

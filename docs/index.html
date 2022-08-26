@@ -107,6 +107,12 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="jarvis.Activator.executor">
+<span class="sig-name descname"><span class="pre">executor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.Activator.executor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the listener for actionable phrase and runs the speaker node for response.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="jarvis.Activator.open_stream">
 <span class="sig-name descname"><span class="pre">open_stream</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.Activator.open_stream" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes an audio stream.</p>
@@ -145,21 +151,6 @@
 <dt class="sig sig-object py" id="jarvis.restart_checker">
 <span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">restart_checker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.restart_checker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Operations performed during internal/external request to restart.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.sentry_mode">
-<span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">sentry_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.sentry_mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listens forever and invokes <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> when recognized. Stops when <code class="docutils literal notranslate"><span class="pre">restart</span></code> table has an entry.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>Gets invoked only when run from Mac-OS older than 10.14.</p></li>
-<li><p>A regular listener is used to convert audio to text.</p></li>
-<li><p>The text is then condition matched for wake-up words.</p></li>
-<li><p>Additional wake words can be passed in a list as an env var <code class="docutils literal notranslate"><span class="pre">LEGACY_KEYWORDS</span></code>.</p></li>
-</ul>
-</div>
 </dd></dl>
 
 </section>

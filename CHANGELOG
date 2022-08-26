@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+6.3.8 (08/26/2022)
+------------------
+- Add wake-word detection feature for macOS older than 10.14
+- Build docker client within exception handler
+- Update requirements.txt and install.sh
+
 6.3.7 (08/24/2022)
 ------------------
 - Run speech synthesis via `docker-py`

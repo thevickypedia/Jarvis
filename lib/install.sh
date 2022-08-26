@@ -43,18 +43,6 @@ download_from_ext_sources() {
 }
 
 if [[ "$OSName" == "Darwin" ]]; then
-    # Checks current version and throws a warning if older han 10.14
-    base_ver="10.14"
-    os_ver=$(sw_vers | grep ProductVersion | cut -d':' -f2 | tr -d ' ')
-    if awk "BEGIN {exit !($base_ver > $os_ver)}"; then
-        echo -e '\n***************************************************************************************************'
-        echo " ** You're running MacOS ${os_ver#"${os_ver%%[![:space:]]*}"}. Wake word library is not supported in MacOS older than ${base_ver}. **"
-        echo "** This means the audio listened, is converted into text and then condition checked to initiate. **"
-        echo "                 ** This might delay processing speech -> text. **                 "
-        echo -e '***************************************************************************************************\n'
-        sleep 3
-    fi
-
     xcode-select --install
     # Looks for brew installation and installs only if brew is not found in /usr/local/bin
     brew_check=$(which brew)
@@ -84,6 +72,15 @@ if [[ "$OSName" == "Darwin" ]]; then
 
     # Mac specifics
     python -m pip install PyAudio==0.2.11 playsound==1.3.0 ftransc==7.0.3
+
+    # Checks current version and installs legacy pvporcupine version if macOS is older han 10.14
+    base_ver="10.14"
+    os_ver=$(sw_vers | grep ProductVersion | cut -d':' -f2 | tr -d ' ')
+    if awk "BEGIN {exit !($base_ver > $os_ver)}"; then
+      pip install 'pvporcupine==1.6.0'
+    else
+      pip install 'pvporcupine==1.9.5'
+    fi
 
     # Install face-recognition/detection dependencies as stand alone so users aren't blocked until then
     python -m pip install opencv-python==4.4.0.44

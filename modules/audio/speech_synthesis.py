@@ -38,11 +38,11 @@ def synthesizer() -> NoReturn:
     """Initiates speech synthesizer using docker."""
     if check_existing():
         return
-    client = docker.from_env()
     if not os.path.isfile(models.fileio.speech_synthesis_log):
         pathlib.Path(models.fileio.speech_synthesis_log).touch()
     with open(models.fileio.speech_synthesis_log, "a") as log_file:
         try:
+            client = docker.from_env()
             result = client.containers.run(
                 image="rhasspy/larynx",
                 ports={f"{models.env.speech_synthesis_port}/tcp": models.env.speech_synthesis_port},
