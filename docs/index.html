@@ -646,40 +646,6 @@ name is specified, allow every event.</p>
 </dd></dl>
 
 </section>
-<section id="module-executors.bluetooth">
-<span id="bluetooth"></span><h1>Bluetooth<a class="headerlink" href="#module-executors.bluetooth" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.bluetooth.bluetooth">
-<span class="sig-prename descclassname"><span class="pre">executors.bluetooth.</span></span><span class="sig-name descname"><span class="pre">bluetooth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.bluetooth.bluetooth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find and connect to bluetooth devices nearby.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.bluetooth.connector">
-<span class="sig-prename descclassname"><span class="pre">executors.bluetooth.</span></span><span class="sig-name descname"><span class="pre">connector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.bluetooth.connector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scans bluetooth devices in range and establishes connection with the matching device in phrase.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>phrase</strong> – Takes the spoken phrase as an argument.</p></li>
-<li><p><strong>targets</strong> – Takes a dictionary of scanned devices as argument.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean True or False based on connection status.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="module-executors.car">
 <span id="car"></span><h1>Car<a class="headerlink" href="#module-executors.car" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
@@ -1906,7 +1872,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <li><p>trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.</p></li>
 <li><p>automator: Initiates automator that executes offline commands and certain functions at said time.</p></li>
 <li><p>initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
-<li><p>write_current_location: Writes current location details into a yaml file.</p></li>
 <li><p>speech_synthesis: Initiates larynx docker image.</p></li>
 <li><p>playsound: Plays a start-up sound.</p></li>
 </ul>
@@ -5895,7 +5860,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#executors">———-Executors———-</a></li>
 <li><a class="reference internal" href="#module-executors.alarm">Alarm</a></li>
 <li><a class="reference internal" href="#module-executors.automation">Automation</a></li>
-<li><a class="reference internal" href="#module-executors.bluetooth">Bluetooth</a></li>
 <li><a class="reference internal" href="#module-executors.car">Car</a></li>
 <li><a class="reference internal" href="#module-executors.communicator">Communicator</a></li>
 <li><a class="reference internal" href="#module-executors.conditions">Conditions</a></li>

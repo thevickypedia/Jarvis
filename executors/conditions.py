@@ -8,7 +8,6 @@ from dateutil.relativedelta import relativedelta
 from executors import controls
 from executors.alarm import kill_alarm, set_alarm
 from executors.automation import automation_handler
-from executors.bluetooth import bluetooth
 from executors.car import car
 from executors.communicator import read_gmail, send_sms
 from executors.date_time import current_date, current_time
@@ -195,9 +194,6 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
     elif word_match(phrase=phrase, match_list=keywords.speed_test) and \
             ('internet' in phrase.lower() or 'connection' in phrase.lower() or 'run' in phrase.lower()):
         speed_test()
-
-    elif word_match(phrase=phrase, match_list=keywords.bluetooth):
-        bluetooth(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.brightness):
         brightness(phrase)

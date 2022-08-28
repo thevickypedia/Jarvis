@@ -84,8 +84,6 @@ face_detection = ["face", "recognize", "who am i", "detect", "facial", "recognit
 
 speed_test = ["speed", "fast"]
 
-bluetooth = ["bluetooth"]
-
 brightness = ["brightness", "bright", "dim"]
 
 lights = ["light"]

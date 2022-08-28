@@ -91,13 +91,6 @@ Automation
    :members:
    :undoc-members:
 
-Bluetooth
-=========
-
-.. automodule:: executors.bluetooth
-   :members:
-   :undoc-members:
-
 Car
 ===
 

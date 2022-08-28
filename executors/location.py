@@ -5,6 +5,7 @@ import re
 import socket
 import ssl
 import sys
+import time
 import urllib.error
 import urllib.request
 import webbrowser
@@ -87,15 +88,17 @@ def get_coordinates_from_ip() -> Union[Tuple[float, float], Tuple[float, ...]]:
         tuple:
         Returns latitude and longitude as a tuple.
     """
-    if info := public_ip_info():
-        return tuple(map(float, info.get('loc', '0,0').split(',')))
-    else:
-        try:
-            st = Speedtest()
-        except ConfigRetrievalError as error:
-            logger.error(error)
-            return 37.230881, -93.3710393  # Default to SGF IP address
-        return float(st.results.client["lat"]), float(st.results.client["lon"])
+    if (info := public_ip_info()) and info.get('lcc'):
+        return tuple(map(float, info.get('loc').split(',')))
+    try:
+        st = Speedtest()
+    except ConfigRetrievalError as error:
+        logger.error(error)
+        sys.stdout.write("\rFailed to get location based on IP. Hand modify it at "
+                         f"'{os.path.abspath(models.fileio.location)}'")
+        time.sleep(5)
+        return 37.230881, -93.3710393  # Default to SGF latitude and longitude
+    return float(st.results.client["lat"]), float(st.results.client["lon"])
 
 
 def get_location_from_coordinates(coordinates: tuple) -> dict:

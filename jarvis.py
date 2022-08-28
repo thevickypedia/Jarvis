@@ -9,9 +9,9 @@ from playsound import playsound
 from pyaudio import PyAudio, paInt16
 
 from executors.commander import initiator
-from executors.controls import (check_memory_leak, exit_process, starter,
-                                terminator)
-from executors.internet import get_ssid, ip_address
+from executors.controls import exit_process, starter, terminator
+from executors.internet import get_ssid, ip_address, public_ip_info
+from executors.location import write_current_location
 from executors.logger import custom_handler, logger
 from executors.offline import repeated_tasks
 from executors.processor import clear_db, start_processes, stop_processes
@@ -119,9 +119,9 @@ class Activator:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
             while True:
-                sys.stdout.write("\rSentry Mode")
                 if not self.audio_stream:
                     self.open_stream()
+                sys.stdout.write(f"\rAwaiting: [{', '.join(models.env.wake_words).upper()}]")
                 pcm = struct.unpack_from("h" * self.detector.frame_length,
                                          self.audio_stream.read(num_frames=self.detector.frame_length,
                                                                 exception_on_overflow=False))
@@ -145,8 +145,6 @@ class Activator:
                     logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
                     self.stop()
                     terminator()
-                if proc := check_memory_leak():
-                    del shared.processes[proc]
         except StopSignal:
             exit_process()
             self.stop()
@@ -180,7 +178,7 @@ def begin() -> NoReturn:
     """Starts main process to activate Jarvis after checking internet connection and initiating background processes."""
     logger.info(f"Current Process ID: {models.settings.pid}")
     starter()
-    if ip_address():
+    if ip_address() and public_ip_info():
         sys.stdout.write(f"\rINTERNET::Connected to {get_ssid() or 'the internet'}.")
     else:
         sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
@@ -190,6 +188,7 @@ def begin() -> NoReturn:
     shared.hosted_device = hosted_device_info()
     if not models.settings.limited:
         shared.processes = start_processes()
+    write_current_location()
     playsound(sound=models.indicators.initialize, block=False)
     Activator().start()
 

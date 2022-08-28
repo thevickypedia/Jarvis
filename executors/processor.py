@@ -5,7 +5,6 @@ from typing import Dict, List, NoReturn, Tuple, Union
 import psutil
 
 from api.server import trigger_api
-from executors.location import write_current_location
 from executors.logger import logger
 from executors.offline import automator, initiate_tunneling
 from executors.telegram import handler
@@ -56,7 +55,6 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         - trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.
         - automator: Initiates automator that executes offline commands and certain functions at said time.
         - initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
-        - write_current_location: Writes current location details into a yaml file.
         - speech_synthesis: Initiates larynx docker image.
         - playsound: Plays a start-up sound.
     """
@@ -65,7 +63,6 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         "trigger_api": Process(target=trigger_api),
         "automator": Process(target=automator),
         "initiate_tunneling": Process(target=initiate_tunneling),
-        "write_current_location": Process(target=write_current_location),
         "synthesizer": Process(target=synthesizer)
     }
     if func_name:
@@ -87,10 +84,8 @@ def stop_child_processes() -> NoReturn:
         children['events']: List[Tuple[Union[None, str]]] = cursor.execute("SELECT crontab FROM children").fetchall()
     logger.info(children)
     for category, pids in children.items():
-        pids = pids[0]
-        if not pids:
-            continue
         for pid in pids:
+            pid = pid[0]
             if not pid:
                 continue
             try:

@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+6.3.9 (08/28/2022)
+------------------
+- Fix missing location file in `LIMITED` mode
+- Avoid location coordinates being 0.0
+- Remove redundancy in loop stopping child processes
+- Remove bluetooth feature as it is unreliable and slow
+
 6.3.8 (08/26/2022)
 ------------------
 - Add wake-word detection feature for macOS older than 10.14

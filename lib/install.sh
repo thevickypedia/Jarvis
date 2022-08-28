@@ -65,7 +65,6 @@ if [[ "$OSName" == "Darwin" ]]; then
 
     # Packages installed using homebrew
     brew install portaudio coreutils ffmpeg lame
-    git clone https://github.com/toy/blueutil.git && cd blueutil && make && make install && cd ../ && rm -rf blueutil
 
     # Installs the OS independent packages
     os_independent_packages
