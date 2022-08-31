@@ -16,6 +16,7 @@ classifiers = [
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
     'Topic :: Multimedia :: Sound/Audio :: Speech',
     'Topic :: Scientific/Engineering :: Human Machine Interfaces',
     'Topic :: Scientific/Engineering :: Image Recognition',

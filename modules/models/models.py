@@ -64,6 +64,16 @@ class Settings(BaseSettings):
 settings = Settings()
 
 
+class Sensitivity(float or PositiveInt, Enum):
+    """Allowed values for sensitivity.
+
+    >>> Sensitivity
+
+    """
+
+    sensitivity: Union[float, PositiveInt]
+
+
 class EventApp(str, Enum):
     """Types of event applications supported by Jarvis.
 
@@ -137,13 +147,12 @@ class EnvConfig(BaseSettings):
     car_pin: str = Field(default=None, regex="\\d{4}$", env='CAR_PIN')
     myq_username: EmailStr = Field(default=None, env='MYQ_USERNAME')
     myq_password: str = Field(default=None, env='MYQ_PASSWORD')
-    sensitivity: Union[float, PositiveInt] = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
+    sensitivity: Union[Sensitivity, List[Sensitivity]] = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
     timeout: Union[PositiveFloat, PositiveInt] = Field(default=3, env='TIMEOUT')
     phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=3, env='PHRASE_LIMIT')
     bot_token: str = Field(default=None, env='BOT_TOKEN')
     bot_chat_ids: List[int] = Field(default=[], env='BOT_CHAT_IDS')
     bot_users: List[str] = Field(default=[], env='BOT_USERS')
-    bot_voice_timeout: Union[float, PositiveInt] = Field(default=3, le=5, ge=1, env='BOT_VOICE_TIMEOUT')
     wake_words: List[str] = Field(default=[settings.bot], env='WAKE_WORDS')
     speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
     speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'), env='SPEECH_SYNTHESIS_HOST')
@@ -195,6 +204,10 @@ for keyword in env.wake_words:
             f"Detecting '{keyword}' is unsupported!\n"
             f"Available keywords are: {', '.join(list(pvporcupine.KEYWORD_PATHS.keys()))}"
         )
+
+# If sensitivity is an integer or float, converts it to a list
+if isinstance(env.sensitivity, float) or isinstance(env.sensitivity, PositiveInt):
+    env.sensitivity = [env.sensitivity] * len(env.wake_words)
 
 # Note: Pydantic validation for ICS_URL can be implemented using regex=".*ics$"
 # However it will NOT work in this use case, since the type hint is HttpUrl

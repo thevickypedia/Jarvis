@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+6.4.0 (08/31/2022)
+------------------
+- Add individual sensitivity values for wake words
+- Run asynchronous functions using threads when called by API
+- Create custom class for validating sensitivity
+- Update README.md and setup.py
+
 6.3.9 (08/28/2022)
 ------------------
 - Fix missing location file in `LIMITED` mode

@@ -1,5 +1,6 @@
 import asyncio
-from typing import NoReturn
+from threading import Thread
+from typing import Any, Callable, NoReturn
 
 from pymyq.errors import AuthenticationError, InvalidCredentialsError, MyQError
 
@@ -8,6 +9,53 @@ from modules.audio import speaker
 from modules.models import models
 from modules.myq.connector import Operation, garage_controller
 from modules.utils import support
+
+
+class AsyncThread(Thread):
+    """Runs asynchronosly using threading.
+
+    >>> AsyncThread
+
+    """
+
+    def __init__(self, func: Callable, args: Any, kwargs: Any):
+        """Initiates ``AsyncThread`` object as a super class.
+
+        Args:
+            func: Function that has to be triggered.
+            args: Arguments.
+            kwargs: Keyword arguments.
+        """
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
+        self.result = None
+        super().__init__()
+
+    def run(self) -> NoReturn:
+        """Initiates ``asyncio.run`` with arguments passed."""
+        self.result = asyncio.run(self.func(*self.args, **self.kwargs))
+
+
+def run_async(func: Callable, *args: Any, **kwargs: Any) -> Any:
+    """Checks if an existing loop is running in asyncio and triggers the loop with or without a thread accordingly.
+
+    Args:
+        func: Function that has to be triggered.
+        args: Arguments.
+        kwargs: Keyword arguments.
+    """
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+    if loop and loop.is_running():
+        thread = AsyncThread(func, args, kwargs)
+        thread.start()
+        thread.join()
+        return thread.result
+    else:
+        return asyncio.run(func(*args, **kwargs))
 
 
 def garage_door(phrase: str) -> NoReturn:
@@ -22,7 +70,7 @@ def garage_door(phrase: str) -> NoReturn:
 
     logger.info("Getting status of the garage door.")
     try:
-        status = asyncio.run(garage_controller(operation=Operation.STATE))
+        status = run_async(func=garage_controller, operation=Operation.STATE)
     except InvalidCredentialsError as error:
         logger.error(error)
         speaker.speak(text=f"I'm sorry {models.env.title}! Your credentials do not match.")
@@ -50,8 +98,8 @@ def garage_door(phrase: str) -> NoReturn:
                                "You may want to try to after a minute or two!")
             return
         logger.info(f"Opening {status['name']}.")
-        asyncio.run(garage_controller(operation=Operation.OPEN))
         speaker.speak(text=f"Opening your {status['name']} {models.env.title}!")
+        run_async(func=garage_controller, operation=Operation.OPEN)
     elif "close" in phrase:
         if status['state']['door_state'] == Operation.CLOSED:
             speaker.speak(text=f"Your {status['name']} is already closed {models.env.title}!")
@@ -65,7 +113,7 @@ def garage_door(phrase: str) -> NoReturn:
             return
         logger.info(f"Closing {status['name']}.")
         speaker.speak(text=f"Closing your {status['name']} {models.env.title}!")
-        asyncio.run(garage_controller(operation=Operation.CLOSE))
+        run_async(func=garage_controller, operation=Operation.CLOSE)
     else:
         logger.info(f"{status['name']}: {status['state']['door_state']}")
         speaker.speak(text=f"Your {status['name']} is currently {status['state']['door_state']} {models.env.title}! "

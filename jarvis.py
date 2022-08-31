@@ -75,7 +75,7 @@ class Activator:
         self.py_audio = PyAudio()
         arguments = {
             "library_path": pvporcupine.LIBRARY_PATH,
-            "sensitivities": [models.env.sensitivity]
+            "sensitivities": models.env.sensitivity
         }
         if models.settings.legacy:
             arguments["keywords"] = models.env.wake_words

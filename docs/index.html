@@ -1110,6 +1110,31 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </section>
 <section id="module-executors.garage">
 <span id="garage-door"></span><h1>Garage Door<a class="headerlink" href="#module-executors.garage" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="executors.garage.AsyncThread">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">executors.garage.</span></span><span class="sig-name descname"><span class="pre">AsyncThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#executors.garage.AsyncThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs asynchronosly using threading.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AsyncThread</span>
+</pre></div>
+</div>
+<p>Initiates <code class="docutils literal notranslate"><span class="pre">AsyncThread</span></code> object as a super class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – Function that has to be triggered.</p></li>
+<li><p><strong>args</strong> – Arguments.</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="executors.garage.AsyncThread.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.garage.AsyncThread.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">asyncio.run</span></code> with arguments passed.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.garage.garage_door">
 <span class="sig-prename descclassname"><span class="pre">executors.garage.</span></span><span class="sig-name descname"><span class="pre">garage_door</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.garage.garage_door" title="Permalink to this definition">¶</a></dt>
@@ -1117,6 +1142,21 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the recognized phrase as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.garage.run_async">
+<span class="sig-prename descclassname"><span class="pre">executors.garage.</span></span><span class="sig-name descname"><span class="pre">run_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#executors.garage.run_async" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if an existing loop is running in asyncio and triggers the loop with or without a thread accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – Function that has to be triggered.</p></li>
+<li><p><strong>args</strong> – Arguments.</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -4121,11 +4161,6 @@ Whites can have a value of None.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models.EnvConfig.bot_voice_timeout">
-<span class="sig-name descname"><span class="pre">bot_voice_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.bot_voice_timeout" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.car_email">
 <span class="sig-name descname"><span class="pre">car_email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#modules.models.models.EnvConfig.car_email" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4293,7 +4328,7 @@ Whites can have a value of None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.models.EnvConfig.sensitivity">
-<span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sensitivity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Sensitivity</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Sensitivity</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.models.EnvConfig.sensitivity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
