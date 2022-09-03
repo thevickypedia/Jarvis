@@ -438,11 +438,12 @@ class TelegramBot:
                               response=f"'{command}' is not a part of offline communicator compatible request.")
             return
         if ' after ' in command_lower:
-            if delay := timed_delay(phrase=command):
+            if delay_info := timed_delay(phrase=command):
+                logger.info(f'Request: {delay_info[0]}')
                 self.process_response(payload=payload,
-                                      response=f"I will execute it after {support.time_converter(seconds=delay)} "
-                                               f"{models.env.title}!")
-                self.executor(command=command, payload=payload, respond=False)
+                                      response="I will execute it after "
+                                               f"{support.time_converter(seconds=delay_info[1])} {models.env.title}!")
+                logger.info(f'Response: Task will be executed after {delay_info[1]} seconds')
                 return
         self.executor(command=command, payload=payload)
 

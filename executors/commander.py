@@ -2,7 +2,7 @@ import random
 import time
 from multiprocessing import Process
 from threading import Thread
-from typing import Union
+from typing import Tuple, Union
 
 from executors.conditions import conditions
 from executors.controls import pc_sleep
@@ -33,8 +33,9 @@ def split_phrase(phrase: str, should_return: bool = False) -> bool:
     exit_check = False  # this is specifically to catch the sleep command which should break the loop in renew()
 
     if ' after ' in phrase:
-        if delay := timed_delay(phrase=phrase):
-            speaker.speak(text=f"I will execute it after {support.time_converter(seconds=delay)} {models.env.title}!")
+        if delay_info := timed_delay(phrase=phrase):
+            speaker.speak(text=f"I will execute it after {support.time_converter(seconds=delay_info[1])} "
+                               f"{models.env.title}!")
             return False
 
     if ' and ' in phrase and not word_match(phrase=phrase, match_list=keywords.avoid):
@@ -87,7 +88,7 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
         logger.error(error)
 
 
-def timed_delay(phrase: str) -> Union[int, float]:
+def timed_delay(phrase: str) -> Tuple[str, Union[int, float]]:
     """Checks pre-conditions if a delay is necessary.
 
     Args:
@@ -101,10 +102,10 @@ def timed_delay(phrase: str) -> Union[int, float]:
             not word_match(phrase=phrase, match_list=keywords.set_alarm) and \
             not word_match(phrase=phrase, match_list=keywords.reminder):
         split_ = phrase.split('after')
-        if split_[0].strip():
+        if task := split_[0].strip():
             delay = delay_calculator(phrase=split_[1].strip())
-            Process(target=delay_condition, kwargs={'phrase': split_[0].strip(), 'delay': delay}).start()
-            return delay
+            Process(target=delay_condition, kwargs={'phrase': task, 'delay': delay}).start()
+            return task, delay
 
 
 def initialize() -> None:

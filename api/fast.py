@@ -118,7 +118,7 @@ async def redirect_index() -> str:
 
     Returns:
         str:
-        Redirects the root endpoint ``/`` url to read-only docs location.
+        Redirects the root endpoint ``/`` url to read-only doc location.
     """
     return app.redoc_url
 
@@ -259,10 +259,10 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
                           detail=f'"{command}" is not a part of off-line communicator compatible request.\n\n'
                                  'Please try an instruction that does not require an user interaction.')
     if ' after ' in command.lower():
-        if delay := timed_delay(phrase=command):
-            logger.info(f"'{command}' will be executed after {support.time_converter(seconds=delay)}")
+        if delay_info := timed_delay(phrase=command):
+            logger.info(f"'{delay_info[0]}' will be executed after {support.time_converter(seconds=delay_info[1])}")
             raise APIResponse(status_code=HTTPStatus.OK.real,
-                              detail=f'I will execute it after {support.time_converter(seconds=delay)} '
+                              detail=f'I will execute it after {support.time_converter(seconds=delay_info[1])} '
                                      f'{models.env.title}!')
     response = offline_communicator(command=command)
     logger.info(f"Response: {response}")

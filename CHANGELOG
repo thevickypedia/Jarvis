@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+6.4.2 (09/03/2022)
+------------------
+- Fix task execution using `after` sent via `TelegramAPI`
+- Default wake words for legacy macOS to working modules
+
 6.4.1 (09/03/2022)
 ------------------
 - Improve wait time after wake word detection

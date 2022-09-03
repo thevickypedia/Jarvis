@@ -145,7 +145,10 @@ class EnvConfig(BaseSettings):
     bot_token: str = Field(default=None, env='BOT_TOKEN')
     bot_chat_ids: List[int] = Field(default=[], env='BOT_CHAT_IDS')
     bot_users: List[str] = Field(default=[], env='BOT_USERS')
-    wake_words: List[str] = Field(default=[settings.bot], env='WAKE_WORDS')
+    if settings.legacy:
+        wake_words: List[str] = Field(default=['alexa'], env='WAKE_WORDS')
+    else:
+        wake_words: List[str] = Field(default=[settings.bot], env='WAKE_WORDS')
     speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
     speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'), env='SPEECH_SYNTHESIS_HOST')
     speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')

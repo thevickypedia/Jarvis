@@ -106,7 +106,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **SENSITIVITY** - Hot word detection sensitivity. Range: 0-1
-- **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']`
+- **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']` (Defaults to `['alexa']` in legacy macOS)
 - **LIMITED** - Runs only the main version of `Jarvis` skipping all other background processes. Enforced based on the
 number of CPU cores. It can also be enabled with env-var.
 
