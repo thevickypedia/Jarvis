@@ -21,7 +21,6 @@ from modules.exceptions import StopSignal
 from modules.models import models
 from modules.utils import shared, support
 
-settings = models.Settings()
 db = database.Database(database=models.fileio.base_db)
 ram = support.size_converter(byte_size=models.settings.ram).replace('.0', '')
 

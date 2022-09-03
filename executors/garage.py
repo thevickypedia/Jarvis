@@ -7,7 +7,7 @@ from pymyq.errors import AuthenticationError, InvalidCredentialsError, MyQError
 from executors.logger import logger
 from modules.audio import speaker
 from modules.models import models
-from modules.myq.connector import Operation, garage_controller
+from modules.myq import myq
 from modules.utils import support
 
 
@@ -70,7 +70,7 @@ def garage_door(phrase: str) -> NoReturn:
 
     logger.info("Getting status of the garage door.")
     try:
-        status = run_async(func=garage_controller, operation=Operation.STATE)
+        status = run_async(func=myq.garage_controller, operation=myq.Operation.STATE)
     except InvalidCredentialsError as error:
         logger.error(error)
         speaker.speak(text=f"I'm sorry {models.env.title}! Your credentials do not match.")
@@ -86,34 +86,34 @@ def garage_door(phrase: str) -> NoReturn:
         return
 
     logger.info(status)
-    if "open" in phrase:
-        if status['state']['door_state'] == Operation.OPEN:
+    if myq.Operation.OPEN in phrase:
+        if status['state']['door_state'] == myq.Operation.OPEN:
             speaker.speak(text=f"Your {status['name']} is already open {models.env.title}!")
             return
-        elif status['state']['door_state'] == Operation.OPENING:
+        elif status['state']['door_state'] == myq.Operation.OPENING:
             speaker.speak(text=f"Your {status['name']} is currently opening {models.env.title}!")
             return
-        elif status['state']['door_state'] == Operation.CLOSING:
+        elif status['state']['door_state'] == myq.Operation.CLOSING:
             speaker.speak(text=f"Your {status['name']} is currently closing {models.env.title}! "
                                "You may want to try to after a minute or two!")
             return
         logger.info(f"Opening {status['name']}.")
         speaker.speak(text=f"Opening your {status['name']} {models.env.title}!")
-        run_async(func=garage_controller, operation=Operation.OPEN)
-    elif "close" in phrase:
-        if status['state']['door_state'] == Operation.CLOSED:
+        run_async(func=myq.garage_controller, operation=myq.Operation.OPEN)
+    elif myq.Operation.CLOSE in phrase:
+        if status['state']['door_state'] == myq.Operation.CLOSED:
             speaker.speak(text=f"Your {status['name']} is already closed {models.env.title}!")
             return
-        elif status['state']['door_state'] == Operation.CLOSING:
+        elif status['state']['door_state'] == myq.Operation.CLOSING:
             speaker.speak(text=f"Your {status['name']} is currently closing {models.env.title}!")
             return
-        elif status['state']['door_state'] == Operation.OPENING:
+        elif status['state']['door_state'] == myq.Operation.OPENING:
             speaker.speak(text=f"Your {status['name']} is currently opening {models.env.title}! "
                                "You may want to try to after a minute or two!")
             return
         logger.info(f"Closing {status['name']}.")
         speaker.speak(text=f"Closing your {status['name']} {models.env.title}!")
-        run_async(func=garage_controller, operation=Operation.CLOSE)
+        run_async(func=myq.garage_controller, operation=myq.Operation.CLOSE)
     else:
         logger.info(f"{status['name']}: {status['state']['door_state']}")
         speaker.speak(text=f"Your {status['name']} is currently {status['state']['door_state']} {models.env.title}! "

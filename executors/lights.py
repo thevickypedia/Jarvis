@@ -202,5 +202,6 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         for light_ip in host_ip:
             lumen(host=light_ip, rgb=level)
     else:
-        speaker.speak(text=f"I didn't quite get that {models.env.title}! What do you want me to do to your {plural}?")
+        speaker.speak(text=f"I didn't quite get that {models.env.title}! What do you want me to do to your "
+                           f"{light_location} {plural}?")
         Thread(target=support.unrecognized_dumper, args=[{'LIGHTS': phrase}]).start()

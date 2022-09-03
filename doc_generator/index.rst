@@ -406,6 +406,43 @@ Crontab
    :members:
    :exclude-members:
 
+Classes
+=======
+
+.. autoclass:: modules.models.classes.EventApp(Enum)
+   :members:
+   :undoc-members:
+
+====
+
+.. autoclass:: modules.models.classes.CustomDict(pydantic.BaseModel)
+   :members:
+   :undoc-members:
+
+====
+
+.. autoclass:: modules.models.classes.EnvConfig(pydantic.BaseSettings)
+   :members:
+   :undoc-members:
+
+====
+
+.. autoclass:: modules.models.classes.FileIO(pydantic.BaseModel)
+   :members:
+   :undoc-members:
+
+====
+
+.. autoclass:: modules.models.classes.Indicators(pydantic.BaseModel)
+   :members:
+   :undoc-members:
+
+====
+
+.. autoclass:: modules.models.classes.Settings(pydantic.BaseSettings)
+   :members:
+   :undoc-members:
+
 Database
 ========
 
@@ -464,42 +501,18 @@ Meetings
 Models
 ======
 
-.. autoclass:: modules.models.models.EventApp(Enum)
-   :members:
-   :undoc-members:
-
-====
-
-.. autoclass:: modules.models.models.CustomDict(pydantic.BaseModel)
-   :members:
-   :undoc-members:
-
-====
-
-.. autoclass:: modules.models.models.EnvConfig(pydantic.BaseSettings)
-   :members:
-   :undoc-members:
-
-====
-
-.. autoclass:: modules.models.models.FileIO(pydantic.BaseModel)
-   :members:
-   :undoc-members:
-
-====
-
-.. autoclass:: modules.models.models.Settings(pydantic.BaseSettings)
+.. autoclass:: modules.models.models
    :members:
    :undoc-members:
 
 MyQ
 ===
 
-.. autoclass:: modules.myq.connector.Operation(Enum)
+.. autoclass:: modules.myq.myq.Operation(Enum)
    :members:
    :undoc-members:
 
-.. autoclass:: modules.myq.connector.garage_controller
+.. autoclass:: modules.myq.myq.garage_controller
    :members:
    :undoc-members:
 

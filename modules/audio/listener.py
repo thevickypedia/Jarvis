@@ -17,6 +17,7 @@ from modules.models import models
 from modules.utils import support
 
 recognizer = Recognizer()  # initiates recognizer that uses google's translation
+microphone = Microphone()  # initiates microphone object
 
 
 def listen(timeout: Union[int, float], phrase_limit: Union[int, float], sound: bool = True,
@@ -33,7 +34,7 @@ def listen(timeout: Union[int, float], phrase_limit: Union[int, float], sound: b
         str:
          - Returns recognized statement from the microphone.
     """
-    with Microphone() as source:
+    with microphone as source:
         try:
             playsound(sound=models.indicators.start, block=False) if sound else None
             sys.stdout.write("\rListener activated...") if stdout else None

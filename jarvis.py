@@ -6,7 +6,7 @@ from typing import NoReturn
 
 import pvporcupine
 from playsound import playsound
-from pyaudio import PyAudio, paInt16
+from pyaudio import PyAudio, Stream, paInt16
 
 from executors.commander import initiator
 from executors.controls import exit_process, starter, terminator
@@ -86,12 +86,17 @@ class Activator:
             arguments["keyword_paths"] = keyword_paths
 
         self.detector = pvporcupine.create(**arguments)
-        self.audio_stream = None
+        self.audio_stream = self.open_stream()
         self.tasks = repeated_tasks()
 
-    def open_stream(self) -> NoReturn:
-        """Initializes an audio stream."""
-        self.audio_stream = self.py_audio.open(
+    def open_stream(self) -> Stream:
+        """Initializes an audio stream.
+
+        Returns:
+            Stream:
+            PyAudio stream.
+        """
+        return self.py_audio.open(
             rate=self.detector.sample_rate,
             channels=1,
             format=paInt16,
@@ -100,27 +105,21 @@ class Activator:
             input_device_index=self.input_device_index
         )
 
-    def close_stream(self) -> NoReturn:
-        """Closes audio stream so that other listeners can use microphone."""
-        self.py_audio.close(stream=self.audio_stream)
-        self.audio_stream = None
-
     def executor(self) -> NoReturn:
         """Calls the listener for actionable phrase and runs the speaker node for response."""
         logger.debug(f"Detected {models.settings.bot} at {datetime.now()}")
         playsound(sound=models.indicators.acknowledgement, block=False)
-        self.close_stream()
+        self.py_audio.close(stream=self.audio_stream)
         if phrase := listener.listen(timeout=models.env.timeout, phrase_limit=models.env.phrase_limit,
                                      sound=False):
             initiator(phrase=phrase, should_return=True)
             speaker.speak(run=True)
+        self.audio_stream = self.open_stream()
 
     def start(self) -> NoReturn:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
             while True:
-                if not self.audio_stream:
-                    self.open_stream()
                 sys.stdout.write(f"\rAwaiting: [{', '.join(models.env.wake_words).upper()}]")
                 pcm = struct.unpack_from("h" * self.detector.frame_length,
                                          self.audio_stream.read(num_frames=self.detector.frame_length,
@@ -147,6 +146,7 @@ class Activator:
                     terminator()
         except StopSignal:
             exit_process()
+            self.audio_stream = None
             self.stop()
             terminator()
 

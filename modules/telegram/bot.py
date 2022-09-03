@@ -22,7 +22,6 @@ from modules.offline import compatibles
 from modules.telegram import audio_handler
 from modules.utils import support
 
-settings = models.Settings()
 db = database.Database(database=models.fileio.base_db)
 
 importlib.reload(module=logging)
