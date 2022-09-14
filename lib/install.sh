@@ -130,8 +130,6 @@ elif [[ "$OSName" == MSYS* ]]; then
     # Installs the OS independent packages
     os_independent_packages
 
-    pip install git+https://github.com/bisoncorps/search-engine-parser
-
     # Install Windows specifics
     python -m pip install pywin32==300 playsound==1.2.2 pydub==0.25.1
 

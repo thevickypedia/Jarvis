@@ -1,5 +1,4 @@
 import random
-import webbrowser
 from datetime import datetime
 from threading import Thread
 
@@ -29,7 +28,7 @@ from executors.robinhood import robinhood
 from executors.system import system_info, system_vitals
 from executors.todo_list import add_todo, delete_todo, delete_todo_items, todo
 from executors.tv import television
-from executors.unconditional import alpha, google, google_maps, google_search
+from executors.unconditional import alpha, google_maps, google_search
 from executors.volume import volume
 from executors.vpn_server import vpn_server
 from executors.weather import weather
@@ -292,9 +291,4 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
         logger.info(f'Received unrecognized lookup parameter: {phrase}')
         Thread(target=support.unrecognized_dumper, args=[{'CONDITIONS': phrase}]).start()
         if not alpha(text=phrase):
-            if not google_maps(query=phrase):
-                if google(query=phrase):
-                    # if none of the conditions above are met, opens a Google search on default browser
-                    search_query = str(phrase).replace(' ', '+')
-                    unknown_url = f"https://www.google.com/search?q={search_query}"
-                    webbrowser.open(url=unknown_url)
+            google_maps(query=phrase)

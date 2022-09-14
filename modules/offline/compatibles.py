@@ -50,6 +50,7 @@ def offline_compatible() -> list:
                      keywords.github,
                      keywords.sprint,
                      keywords.speed_test,
+                     keywords.ngrok,
                      keywords.locate,
                      keywords.send_sms,
                      keywords.television,

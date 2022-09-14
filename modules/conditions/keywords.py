@@ -66,6 +66,8 @@ reminder = ["remind", "reminder"]
 
 google_home = ["google home", "googlehome"]
 
+ngrok = ["ngrok", "public url"]
+
 jokes = ["joke", "jokes", "make me laugh"]
 
 notes = ["notes", "note"]

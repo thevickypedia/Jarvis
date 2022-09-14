@@ -6,6 +6,7 @@ from threading import Thread
 from typing import AnyStr, List, NoReturn, Union
 
 import requests
+from pydantic import HttpUrl
 
 from executors.alarm import alarm_executor
 from executors.automation import auto_helper
@@ -130,6 +131,24 @@ def automator() -> NoReturn:
         dry_run = False
 
 
+def get_ngrok() -> Union[HttpUrl, NoReturn]:
+    """Checks for any active public URL tunneled using Ngrok.
+
+    Returns:
+        HttpUrl:
+        Ngrok public URL.
+    """
+    try:
+        response = requests.get(url="http://localhost:4040/api/tunnels")
+        if response.ok:
+            for each_tunnel in response.json().get('tunnels', {}):
+                if hosted := each_tunnel.get('config', {}).get('addr'):
+                    if int(hosted.split(':')[-1]) == models.env.offline_port:
+                        return each_tunnel.get('public_url')
+    except (requests.exceptions.RequestException, requests.exceptions.JSONDecodeError) as error:
+        logger.error(error)
+
+
 def initiate_tunneling() -> NoReturn:
     """Initiates Ngrok to tunnel requests from external sources if they aren't running already.
 
@@ -139,16 +158,11 @@ def initiate_tunneling() -> NoReturn:
     """
     if not models.settings.macos:
         return
-    try:
-        response = requests.get(url="http://localhost:4040/api/tunnels")
-        if response.ok:
-            for each_tunnel in response.json().get('tunnels', {}):
-                if hosted := each_tunnel.get('config', {}).get('addr'):
-                    if int(hosted.split(':')[-1]) == models.env.offline_port:
-                        logger.info('An instance of ngrok tunnel for offline communicator is running already.')
-                        return
-    except (requests.exceptions.RequestException, requests.exceptions.JSONDecodeError) as error:
-        logger.error(error)
+
+    if get_ngrok():
+        logger.info('An instance of ngrok tunnel for offline communicator is running already.')
+        return
+
     if os.path.exists(f"{models.env.home}/JarvisHelper/venv/bin/activate"):
         logger.info('Initiating ngrok connection for offline communicator.')
         initiate = f'cd {models.env.home}/JarvisHelper && ' \
@@ -198,6 +212,11 @@ def offline_communicator(command: str) -> AnyStr:
         Response from Jarvis.
     """
     shared.called_by_offline = True
+    if word_match(phrase=command, match_list=keywords.ngrok):
+        if public_url := get_ngrok():
+            return public_url
+        else:
+            return "Failed to retrieve the public URL"
     conditions(phrase=command, should_return=True)
     shared.called_by_offline = False
     if response := shared.text_spoken:

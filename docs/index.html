@@ -1605,6 +1605,20 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="executors.offline.get_ngrok">
+<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">get_ngrok</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">HttpUrl</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.offline.get_ngrok" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for any active public URL tunneled using Ngrok.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Ngrok public URL.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>HttpUrl</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="executors.offline.initiate_tunneling">
 <span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">initiate_tunneling</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.offline.initiate_tunneling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates Ngrok to tunnel requests from external sources if they aren’t running already.</p>
@@ -2117,28 +2131,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dl>
 <p class="rubric">References</p>
 <p><a class="reference external" href="https://products.wolframalpha.com/show-steps-api/documentation/#:~:text=(Error%201000)">Error 1000</a></p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.unconditional.google">
-<span class="sig-prename descclassname"><span class="pre">executors.unconditional.</span></span><span class="sig-name descname"><span class="pre">google</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suggestion_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.unconditional.google" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses Google’s search engine parser and gets the first result that shows up on a Google search.</p>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>If it is unable to get the result, Jarvis sends a request to <code class="docutils literal notranslate"><span class="pre">suggestqueries.google.com</span></code></p></li>
-<li><p>This is to rephrase the query and then looks up using the search engine parser once again.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">suggestion_count</span></code> is used to limit the number of times suggestions are used.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">suggestion_count</span></code> is also used to make sure the suggestions and parsing don’t run on an infinite loop.</p></li>
-<li><p>This happens when <code class="docutils literal notranslate"><span class="pre">google</span></code> gets the exact search as suggested ones which failed to fetch results earlier.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>suggestion_count</strong> – Integer value that keeps incrementing when <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> looks up for suggestions.</p></li>
-<li><p><strong>query</strong> – Takes the voice recognized statement as argument.</p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">

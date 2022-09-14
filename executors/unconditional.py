@@ -5,11 +5,8 @@ import webbrowser
 import inflect
 import requests
 import wolframalpha
-import wordninja
 import yaml
 from geopy.distance import geodesic
-from search_engine_parser.core.engines.google import Search as GoogleSearch
-from search_engine_parser.core.exceptions import NoResultsOrTrafficError
 
 from executors.logger import logger
 from executors.word_match import word_match
@@ -53,75 +50,6 @@ def alpha(text: str) -> bool:
             return True
         except (StopIteration, AttributeError):
             return False
-
-
-def google(query: str, suggestion_count: int = 0) -> None:
-    """Uses Google's search engine parser and gets the first result that shows up on a Google search.
-
-    Notes:
-        - If it is unable to get the result, Jarvis sends a request to ``suggestqueries.google.com``
-        - This is to rephrase the query and then looks up using the search engine parser once again.
-        - ``suggestion_count`` is used to limit the number of times suggestions are used.
-        - ``suggestion_count`` is also used to make sure the suggestions and parsing don't run on an infinite loop.
-        - This happens when ``google`` gets the exact search as suggested ones which failed to fetch results earlier.
-
-    Args:
-        suggestion_count: Integer value that keeps incrementing when ``Jarvis`` looks up for suggestions.
-        query: Takes the voice recognized statement as argument.
-    """
-    results = []
-    try:
-        google_results = GoogleSearch().search(query, cache=False)
-        results = [result['titles'] for result in google_results]
-    except NoResultsOrTrafficError:
-        suggest_url = "https://suggestqueries.google.com/complete/search"
-        params = {
-            "client": "firefox",
-            "q": query,
-        }
-        response = requests.get(suggest_url, params)
-        if not response:
-            return
-        try:
-            suggestion = response.json()[1][1]
-            suggestion_count += 1
-            if suggestion_count >= 3:  # avoids infinite suggestions over the same suggestion
-                speaker.speak(text=response.json()[1][0].replace('=', ''),
-                              run=True)  # picks the closest match and Google's it
-                return
-            else:
-                google(suggestion, suggestion_count)
-        except IndexError:
-            return
-
-    if not results:
-        return
-
-    for result in results:
-        if len(result.split()) < 3:
-            results.remove(result)
-
-    if not results:
-        return
-
-    results = results[0:3]  # picks top 3 (first appeared on Google)
-    results.sort(key=lambda x: len(x.split()), reverse=True)  # sorts in reverse by the word count of each sentence
-    output = results[0]  # picks the top most result
-    if '\n' in output:
-        required = output.split('\n')
-        modify = required[0].strip()
-        split_val = ' '.join(wordninja.split(modify.replace('.', 'rEpLaCInG')))
-        sentence = split_val.replace(' rEpLaCInG ', '.')
-        repeats = []  # Captures repeated words by adding them to the empty list
-        [repeats.append(word) for word in sentence.split() if word not in repeats]
-        refined = ' '.join(repeats)
-        output = refined + required[1] + '.' + required[2]
-    output = output.replace('\\', ' or ')
-    match_word = re.search(r'(\w{3},|\w{3}) (\d,|\d|\d{2},|\d{2}) \d{4}', output)
-    if match_word:
-        output = output.replace(match_word.group(), '')
-    output = output.replace('\\', ' or ')
-    speaker.speak(text=output, run=True)
 
 
 def google_maps(query: str) -> bool:
