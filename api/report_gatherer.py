@@ -6,6 +6,7 @@ import os
 import sys
 import time
 from datetime import datetime
+from typing import Tuple
 
 import jinja2
 import requests
@@ -43,7 +44,7 @@ class Investment:
             self.result = []
         self.rh = rh
 
-    def watcher(self) -> tuple:
+    def watcher(self) -> Tuple[str, str, str, str]:
         """Gathers all the information and wraps into parts of strings to create an HTML file.
 
         Returns:
@@ -122,7 +123,7 @@ class Investment:
             output += f"\nCurrent Spike: ${two_day_diff:,}"
         return port_msg, profit_output, loss_output, output
 
-    def watchlist(self, interval: str = 'hour', strict: bool = False) -> tuple:
+    def watchlist(self, interval: str = 'hour', strict: bool = False) -> Tuple[str, str]:
         """Sweeps all watchlist stocks and compares current price with historical data (24h ago) to wrap as a string.
 
         Args:

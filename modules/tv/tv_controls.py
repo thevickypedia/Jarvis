@@ -2,6 +2,7 @@ import os
 import socket
 import sys
 import time
+from typing import List, NoReturn
 
 from dotenv import set_key
 from playsound import playsound
@@ -82,13 +83,13 @@ class TV:
         self.source_control = SourceControl(self.client)
         self._init_status = True
 
-    def increase_volume(self) -> None:
+    def increase_volume(self) -> NoReturn:
         """Increases the volume by ``10`` units."""
         for _ in range(10):
             self.media.volume_up()
         self.system.notify(f"Jarvis::Increased Volume: {self.media.get_volume()['volume']}%")
 
-    def decrease_volume(self) -> None:
+    def decrease_volume(self) -> NoReturn:
         """Decreases the volume by ``10`` units."""
         for _ in range(10):
             self.media.volume_down()
@@ -104,7 +105,7 @@ class TV:
         self.system.notify(f"Jarvis::Current Volume: {self.media.get_volume()['volume']}%")
         return self.media.get_volume()['volume']
 
-    def set_volume(self, target: int) -> None:
+    def set_volume(self, target: int) -> NoReturn:
         """The argument is an integer from 1 to 100.
 
         Args:
@@ -113,37 +114,37 @@ class TV:
         self.system.notify(f"Jarvis::Volume has been set to: {self.media.get_volume()['volume']}%")
         self.media.set_volume(target)
 
-    def mute(self) -> None:
+    def mute(self) -> NoReturn:
         """Mutes the TV."""
         self.system.notify("Jarvis::Muted")
         self.media.mute(True)
 
-    def play(self) -> None:
+    def play(self) -> NoReturn:
         """Plays the paused content on the TV."""
         self.system.notify("Jarvis::Play")
         self.media.play()
 
-    def pause(self) -> None:
+    def pause(self) -> NoReturn:
         """Pauses the playing content on TV."""
         self.system.notify("Jarvis::Paused")
         self.media.pause()
 
-    def stop(self) -> None:
+    def stop(self) -> NoReturn:
         """Stop the playing content on TV."""
         self.system.notify("Jarvis::Stop")
         self.media.stop()
 
-    def rewind(self) -> None:
+    def rewind(self) -> NoReturn:
         """Rewinds the playing content on TV."""
         self.system.notify("Jarvis::Rewind")
         self.media.rewind()
 
-    def forward(self) -> None:
+    def forward(self) -> NoReturn:
         """Forwards the playing content on TV."""
         self.system.notify("Jarvis::Forward")
         self.media.fast_forward()
 
-    def get_apps(self) -> list:
+    def get_apps(self) -> List[str]:
         """Checks the applications installed on the TV.
 
         Returns:
@@ -152,7 +153,7 @@ class TV:
         """
         return [app["title"] for app in self.app.list_apps()]
 
-    def launch_app(self, app_name: str) -> None:
+    def launch_app(self, app_name: str) -> NoReturn:
         """Launches an application.
 
         Args:
@@ -161,7 +162,7 @@ class TV:
         app_launcher = [x for x in self.app.list_apps() if app_name.lower() in x["title"].lower()][0]
         self.app.launch(app_launcher, content_id=None)
 
-    def close_app(self, app_name: str) -> None:
+    def close_app(self, app_name: str) -> NoReturn:
         """Closes a particular app using the launch_info received from launch_app method.
 
         Args:
@@ -169,7 +170,7 @@ class TV:
         """
         self.app.close(self.launch_app(app_name))
 
-    def get_sources(self) -> list:
+    def get_sources(self) -> List[str]:
         """Checks for the input sources on the TV.
 
         Returns:
@@ -178,7 +179,7 @@ class TV:
         """
         return [source['label'] for source in self.source_control.list_sources()]
 
-    def set_source(self, val: str) -> None:
+    def set_source(self, val: str) -> NoReturn:
         """Sets an ``InputSource`` instance.
 
         Args:
@@ -198,7 +199,7 @@ class TV:
         app_id = self.app.get_current()
         return [x for x in self.app.list_apps() if app_id == x["id"]][0]['title']
 
-    def audio_output(self) -> None:
+    def audio_output(self) -> NoReturn:
         """Writes the currently used audio output source as AudioOutputSource instance on the screen."""
         media_output_source = self.media.get_audio_output()
         sys.stdout.write(f'{media_output_source}')
@@ -214,11 +215,11 @@ class TV:
         sys.stdout.write(f'{audio_outputs}')
         return audio_outputs
 
-    def set_audio_output_source(self) -> None:
+    def set_audio_output_source(self) -> NoReturn:
         """Sets to a particular AudioOutputSource instance."""
         self.media.set_audio_output(self.audio_output_source[0])  # noqa
 
-    def shutdown(self) -> None:
+    def shutdown(self) -> NoReturn:
         """Notifies the TV about shutdown and shuts down after 3 seconds."""
         self.system.notify('Jarvis::SHUTTING DOWN now')
         time.sleep(3)

@@ -1,13 +1,10 @@
+from typing import List
+
 from modules.conditions import conversation, keywords
 
 
-def offline_compatible() -> list:
-    """Calls ``Keywords`` and ``Conversation`` classes to get the variables that are compatible.
-
-    See Also:
-        - ``offline_communicator`` cannot process commands that require an interaction with the user.
-        - This is because ``audio_driver.stop()`` will stop the ``audio_driver.runAndWait()`` in an interaction.
-        - This action will raise a ``RuntimeError`` since the ``audio_driver.endLoop()`` would have already started.
+def offline_compatible() -> List[str]:
+    """Calls ``Keywords`` and ``Conversation`` classes to get the variables that do not require user interaction.
 
     Returns:
         list:

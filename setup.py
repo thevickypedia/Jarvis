@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 from setuptools import setup
 
@@ -44,7 +45,7 @@ def read(name: str) -> str:
     return content
 
 
-def dependencies() -> list:
+def dependencies() -> List[str]:
     """Gathers dependencies from requirements file.
 
     Returns:

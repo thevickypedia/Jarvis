@@ -131,7 +131,7 @@ def automator() -> NoReturn:
         dry_run = False
 
 
-def get_ngrok() -> Union[HttpUrl, NoReturn]:
+def get_tunnel() -> Union[HttpUrl, NoReturn]:
     """Checks for any active public URL tunneled using Ngrok.
 
     Returns:
@@ -159,7 +159,7 @@ def initiate_tunneling() -> NoReturn:
     if not models.settings.macos:
         return
 
-    if get_ngrok():
+    if get_tunnel():
         logger.info('An instance of ngrok tunnel for offline communicator is running already.')
         return
 
@@ -201,7 +201,7 @@ def on_demand_offline_automation(task: str) -> Union[str, None]:
         return response.json()['detail'].split('\n')[-1]
 
 
-def offline_communicator(command: str) -> AnyStr:
+def offline_communicator(command: str) -> Union[AnyStr, HttpUrl]:
     """Initiates conditions after flipping ``status`` flag in ``called_by_offline`` dict which suppresses the speaker.
 
     Args:
@@ -212,11 +212,12 @@ def offline_communicator(command: str) -> AnyStr:
         Response from Jarvis.
     """
     shared.called_by_offline = True
+    # Specific for offline communication and not needed for live conversations
     if word_match(phrase=command, match_list=keywords.ngrok):
-        if public_url := get_ngrok():
+        if public_url := get_tunnel():
             return public_url
         else:
-            return "Failed to retrieve the public URL"
+            raise LookupError("Failed to retrieve the public URL")
     conditions(phrase=command, should_return=True)
     shared.called_by_offline = False
     if response := shared.text_spoken:

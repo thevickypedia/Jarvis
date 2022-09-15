@@ -5,8 +5,8 @@ from datetime import datetime
 from typing import NoReturn
 
 import pvporcupine
+import pyaudio
 from playsound import playsound
-from pyaudio import PyAudio, Stream, paInt16
 
 from executors.commander import initiator
 from executors.controls import exit_process, starter, terminator
@@ -72,7 +72,7 @@ class Activator:
         keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words]
         self.input_device_index = input_device_index
 
-        self.py_audio = PyAudio()
+        self.py_audio = pyaudio.PyAudio()
         arguments = {
             "library_path": pvporcupine.LIBRARY_PATH,
             "sensitivities": models.env.sensitivity
@@ -89,17 +89,17 @@ class Activator:
         self.audio_stream = self.open_stream()
         self.tasks = repeated_tasks()
 
-    def open_stream(self) -> Stream:
+    def open_stream(self) -> pyaudio.Stream:
         """Initializes an audio stream.
 
         Returns:
-            Stream:
-            PyAudio stream.
+            pyaudio.Stream:
+            Audio stream from pyaudio.
         """
         return self.py_audio.open(
             rate=self.detector.sample_rate,
             channels=1,
-            format=paInt16,
+            format=pyaudio.paInt16,
             input=True,
             frames_per_buffer=self.detector.frame_length,
             input_device_index=self.input_device_index
@@ -112,7 +112,12 @@ class Activator:
         self.py_audio.close(stream=self.audio_stream)
         if phrase := listener.listen(timeout=models.env.timeout, phrase_limit=models.env.phrase_limit,
                                      sound=False):
-            initiator(phrase=phrase, should_return=True)
+            try:
+                initiator(phrase=phrase, should_return=True)
+            except Exception as error:
+                logger.fatal(error)
+                speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an unknown error. "
+                                   "Please check the logs for more information.")
             speaker.speak(run=True)
         self.audio_stream = self.open_stream()
 

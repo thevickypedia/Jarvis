@@ -5,7 +5,7 @@ import shutil
 import subprocess
 import sys
 from datetime import datetime
-from typing import NoReturn
+from typing import Dict, NoReturn
 
 import packaging.version
 import psutil
@@ -114,7 +114,7 @@ def system_vitals() -> None:
                 restart(ask=False)
 
 
-def hosted_device_info() -> dict:
+def hosted_device_info() -> Dict[str, str]:
     """Gets basic information of the hosted device.
 
     Returns:

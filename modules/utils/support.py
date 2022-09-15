@@ -33,7 +33,7 @@ from modules.models import models
 db = database.Database(database=models.fileio.base_db)
 
 
-def hostname_to_ip(hostname: str) -> list:
+def hostname_to_ip(hostname: str) -> List[str]:
     """Uses ``socket.gethostbyname_ex`` to translate a host name to IPv4 address format, extended interface.
 
     See Also:
@@ -245,7 +245,7 @@ def comma_separator(list_: list) -> str:
     return ", and ".join([", ".join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
 
 
-def extract_time(input_: str) -> list:
+def extract_time(input_: str) -> List[str]:
     """Extracts 12-hour time value from a string.
 
     Args:
@@ -384,7 +384,7 @@ def number_to_words(input_: Union[int, str], capitalize: bool = False) -> str:
     return result[0].upper() + result[1:] if capitalize else result
 
 
-def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> list:
+def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> List[str]:
     """Checks for ``*.lock`` files within the ``alarm`` directory if present.
 
     Args:
@@ -401,7 +401,7 @@ def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> list:
         return [f for f in os.listdir("reminder") if not f.startswith(".")] if os.path.isdir("reminder") else None
 
 
-def check_restart() -> list:
+def check_restart() -> List[str]:
     """Checks for entries in the restart table in base db.
 
     Returns:
@@ -416,7 +416,7 @@ def check_restart() -> list:
     return flag
 
 
-def check_stop() -> list:
+def check_stop() -> List[str]:
     """Checks for entries in the stopper table in base db.
 
     Returns:

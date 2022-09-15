@@ -10,7 +10,7 @@ from http import HTTPStatus
 from logging.config import dictConfig
 from multiprocessing import Process
 from threading import Thread
-from typing import Any, NoReturn, Union
+from typing import Any, Dict, List, NoReturn, Union
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -123,8 +123,8 @@ async def redirect_index() -> str:
     return app.redoc_url
 
 
-@app.post(path='/keywords')
-async def _keywords() -> dict:
+@app.post(path='/keywords', dependencies=OFFLINE_PROTECTOR)
+async def _keywords() -> Dict[str, List[str]]:
     """Converts the keywords.py file into a dictionary of key-value pairs.
 
     Returns:
@@ -134,8 +134,8 @@ async def _keywords() -> dict:
     return {k: v for k, v in keywords.__dict__.items() if isinstance(v, list)}
 
 
-@app.post(path='/conversation')
-async def _conversations() -> dict:
+@app.post(path='/conversation', dependencies=OFFLINE_PROTECTOR)
+async def _conversations() -> Dict[str, List[str]]:
     """Converts the conversation.py file into a dictionary of key-value pairs.
 
     Returns:
@@ -145,8 +145,8 @@ async def _conversations() -> dict:
     return {k: v for k, v in conversation.__dict__.items() if isinstance(v, list)}
 
 
-@app.post(path='/api-compatible')
-async def _offline_compatible() -> dict:
+@app.post(path='/api-compatible', dependencies=OFFLINE_PROTECTOR)
+async def _offline_compatible() -> Dict[str, List[str]]:
     """Returns the list of api compatible words.
 
     Returns:

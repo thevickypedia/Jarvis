@@ -112,10 +112,10 @@
 <dd><p>Initializes an audio stream.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>PyAudio stream.</p>
+<dd class="field-odd"><p>Audio stream from pyaudio.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Stream</p>
+<dd class="field-even"><p>pyaudio.Stream</p>
 </dd>
 </dl>
 </dd></dl>
@@ -494,7 +494,7 @@ name is specified, allow every event.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="api.report_gatherer.Investment.watcher">
-<span class="sig-name descname"><span class="pre">watcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#api.report_gatherer.Investment.watcher" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">watcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.report_gatherer.Investment.watcher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gathers all the information and wraps into parts of strings to create an HTML file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -508,7 +508,7 @@ name is specified, allow every event.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="api.report_gatherer.Investment.watchlist">
-<span class="sig-name descname"><span class="pre">watchlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'hour'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#api.report_gatherer.Investment.watchlist" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">watchlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'hour'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.report_gatherer.Investment.watchlist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sweeps all watchlist stocks and compares current price with historical data (24h ago) to wrap as a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1605,8 +1605,8 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.offline.get_ngrok">
-<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">get_ngrok</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">HttpUrl</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.offline.get_ngrok" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="executors.offline.get_tunnel">
+<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">get_tunnel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">HttpUrl</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.offline.get_tunnel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for any active public URL tunneled using Ngrok.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1631,7 +1631,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.offline.offline_communicator">
-<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AnyStr</span></span></span><a class="headerlink" href="#executors.offline.offline_communicator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">AnyStr</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">HttpUrl</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.offline.offline_communicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates conditions after flipping <code class="docutils literal notranslate"><span class="pre">status</span></code> flag in <code class="docutils literal notranslate"><span class="pre">called_by_offline</span></code> dict which suppresses the speaker.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2019,7 +2019,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <span id="system"></span><h1>System<a class="headerlink" href="#module-executors.system" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.system.hosted_device_info">
-<span class="sig-prename descclassname"><span class="pre">executors.system.</span></span><span class="sig-name descname"><span class="pre">hosted_device_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#executors.system.hosted_device_info" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.system.</span></span><span class="sig-name descname"><span class="pre">hosted_device_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.system.hosted_device_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets basic information of the hosted device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2682,7 +2682,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.car.connector.Connect.connect">
-<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.car.connector.Connect.connect" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.car.connector.Connect.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Authenticates device and establishes connection.</p>
 </dd></dl>
 
@@ -2747,7 +2747,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.car.connector.Connect.update_user_info">
-<span class="sig-name descname"><span class="pre">update_user_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_info_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.car.connector.Connect.update_user_info" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">update_user_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_info_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.car.connector.Connect.update_user_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update user information to the profile.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -4671,16 +4671,8 @@ Whites can have a value of None.</p>
 <h1>Offline<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-modules.offline.compatibles"></span><dl class="py function">
 <dt class="sig sig-object py" id="modules.offline.compatibles.offline_compatible">
-<span class="sig-prename descclassname"><span class="pre">modules.offline.compatibles.</span></span><span class="sig-name descname"><span class="pre">offline_compatible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.offline.compatibles.offline_compatible" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">Keywords</span></code> and <code class="docutils literal notranslate"><span class="pre">Conversation</span></code> classes to get the variables that are compatible.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code> cannot process commands that require an interaction with the user.</p></li>
-<li><p>This is because <code class="docutils literal notranslate"><span class="pre">audio_driver.stop()</span></code> will stop the <code class="docutils literal notranslate"><span class="pre">audio_driver.runAndWait()</span></code> in an interaction.</p></li>
-<li><p>This action will raise a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> since the <code class="docutils literal notranslate"><span class="pre">audio_driver.endLoop()</span></code> would have already started.</p></li>
-</ul>
-</div>
+<span class="sig-prename descclassname"><span class="pre">modules.offline.compatibles.</span></span><span class="sig-name descname"><span class="pre">offline_compatible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.offline.compatibles.offline_compatible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">Keywords</span></code> and <code class="docutils literal notranslate"><span class="pre">Conversation</span></code> classes to get the variables that do not require user interaction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Flat list from a matrix (list of lists) after removing the duplicates.</p>
@@ -4787,7 +4779,7 @@ Whites can have a value of None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.check_restart">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">check_restart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.utils.support.check_restart" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">check_restart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.utils.support.check_restart" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for entries in the restart table in base db.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -4801,7 +4793,7 @@ Whites can have a value of None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.check_stop">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">check_stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.utils.support.check_stop" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">check_stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.utils.support.check_stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for entries in the stopper table in base db.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -4883,7 +4875,7 @@ Whites can have a value of None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.extract_time">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">extract_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.utils.support.extract_time" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">extract_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.utils.support.extract_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts 12-hour time value from a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -4980,7 +4972,7 @@ Whites can have a value of None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.hostname_to_ip">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">hostname_to_ip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.utils.support.hostname_to_ip" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">hostname_to_ip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.utils.support.hostname_to_ip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses <code class="docutils literal notranslate"><span class="pre">socket.gethostbyname_ex</span></code> to translate a host name to IPv4 address format, extended interface.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -5035,7 +5027,7 @@ Whites can have a value of None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.lock_files">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">lock_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alarm_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reminder_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.utils.support.lock_files" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">lock_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alarm_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reminder_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.utils.support.lock_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for <code class="docutils literal notranslate"><span class="pre">*.lock</span></code> files within the <code class="docutils literal notranslate"><span class="pre">alarm</span></code> directory if present.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5684,7 +5676,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.audio_output">
-<span class="sig-name descname"><span class="pre">audio_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.audio_output" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">audio_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.audio_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes the currently used audio output source as AudioOutputSource instance on the screen.</p>
 </dd></dl>
 
@@ -5704,7 +5696,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.close_app">
-<span class="sig-name descname"><span class="pre">close_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.close_app" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">close_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.close_app" title="Permalink to this definition">¶</a></dt>
 <dd><p>Closes a particular app using the launch_info received from launch_app method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5729,19 +5721,19 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.decrease_volume">
-<span class="sig-name descname"><span class="pre">decrease_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.decrease_volume" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">decrease_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.decrease_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decreases the volume by <code class="docutils literal notranslate"><span class="pre">10</span></code> units.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.forward" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forwards the playing content on TV.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.get_apps">
-<span class="sig-name descname"><span class="pre">get_apps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.get_apps" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_apps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.get_apps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the applications installed on the TV.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -5755,7 +5747,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.get_sources">
-<span class="sig-name descname"><span class="pre">get_sources</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.get_sources" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_sources</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.get_sources" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for the input sources on the TV.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -5783,13 +5775,13 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.increase_volume">
-<span class="sig-name descname"><span class="pre">increase_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.increase_volume" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">increase_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.increase_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Increases the volume by <code class="docutils literal notranslate"><span class="pre">10</span></code> units.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.launch_app">
-<span class="sig-name descname"><span class="pre">launch_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.launch_app" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">launch_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.launch_app" title="Permalink to this definition">¶</a></dt>
 <dd><p>Launches an application.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5800,19 +5792,19 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.mute">
-<span class="sig-name descname"><span class="pre">mute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.mute" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">mute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.mute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mutes the TV.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.pause">
-<span class="sig-name descname"><span class="pre">pause</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.pause" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">pause</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.pause" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pauses the playing content on TV.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.play">
-<span class="sig-name descname"><span class="pre">play</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.play" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">play</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.play" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plays the paused content on the TV.</p>
 </dd></dl>
 
@@ -5823,19 +5815,19 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.rewind">
-<span class="sig-name descname"><span class="pre">rewind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.rewind" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">rewind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.rewind" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rewinds the playing content on TV.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.set_audio_output_source">
-<span class="sig-name descname"><span class="pre">set_audio_output_source</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.set_audio_output_source" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_audio_output_source</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.set_audio_output_source" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets to a particular AudioOutputSource instance.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.set_source">
-<span class="sig-name descname"><span class="pre">set_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.set_source" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.set_source" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets an <code class="docutils literal notranslate"><span class="pre">InputSource</span></code> instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5846,7 +5838,7 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.set_volume">
-<span class="sig-name descname"><span class="pre">set_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.set_volume" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.set_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>The argument is an integer from 1 to 100.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5857,13 +5849,13 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.shutdown">
-<span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.shutdown" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.shutdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Notifies the TV about shutdown and shuts down after 3 seconds.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.tv.tv_controls.TV.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.stop" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.tv.tv_controls.TV.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop the playing content on TV.</p>
 </dd></dl>
 

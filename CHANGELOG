@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+6.4.4 (09/14/2022)
+------------------
+- Raise `LookupError` if ngrok URL is not found
+- Add broad exception clause for the main module
+- Secure keywords and conversations endpoints in API
+- Improve type hinting
+
 6.4.3 (09/13/2022)
 ------------------
 - Remove google search parser and its dependencies

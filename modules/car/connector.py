@@ -5,7 +5,7 @@ import os
 import time
 import urllib.error
 import urllib.request
-from typing import Union
+from typing import NoReturn, Union
 from uuid import UUID, uuid4
 
 from executors.logger import logger
@@ -108,7 +108,7 @@ class Connect:
                 headers['Authorization'] = self.head['Authorization']
         return _open(url=f"{url}/{command}", headers=headers, data=data)
 
-    def connect(self) -> None:
+    def connect(self) -> NoReturn:
         """Authenticates device and establishes connection."""
         logger.debug("Connecting...")
         auth = self._authenticate(data=self.oauth)
@@ -120,14 +120,14 @@ class Connect:
         else:
             logger.error("Unauthenticated")
 
-    def _register_device_and_log_in(self) -> None:
+    def _register_device_and_log_in(self) -> NoReturn:
         """Registers device and log in the user."""
         self._register_device(headers=self.head)
         logger.debug(f"Device ID: {self.device_id} registered.")
         self._login_user(headers=self.head)
         logger.debug(f"User ID: {self.user_id} logged in.")
 
-    def _register_auth(self, auth: dict) -> None:
+    def _register_auth(self, auth: dict) -> NoReturn:
         """Assigns authentication header values to class variables.
 
         Args:
@@ -138,7 +138,7 @@ class Connect:
         self.auth_token = auth.get('authorization_token')
         self.refresh_token = auth.get('refresh_token')
 
-    def _set_header(self, access_token: str) -> None:
+    def _set_header(self, access_token: str) -> NoReturn:
         """Sets header.
 
         Args:
@@ -239,7 +239,7 @@ class Connect:
         """
         return self.post_data(command=self.user_id, url=f"{self.IF9_BASE_URL}/users", headers=self.head)
 
-    def update_user_info(self, user_info_data: dict) -> None:
+    def update_user_info(self, user_info_data: dict) -> NoReturn:
         """Update user information to the profile.
 
         Args:
