@@ -568,7 +568,7 @@ name is specified, allow every event.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.alarm.create_alarm">
-<span class="sig-prename descclassname"><span class="pre">executors.alarm.</span></span><span class="sig-name descname"><span class="pre">create_alarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">am_pm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.alarm.create_alarm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.alarm.</span></span><span class="sig-name descname"><span class="pre">create_alarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">am_pm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repeat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.alarm.create_alarm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates the lock file necessary to set an alarm/timer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -578,6 +578,8 @@ name is specified, allow every event.</p>
 <li><p><strong>am_pm</strong> – AM/PM of alarm time.</p></li>
 <li><p><strong>phrase</strong> – Phrase spoken.</p></li>
 <li><p><strong>timer</strong> – Number of minutes/hours to alarm.</p></li>
+<li><p><strong>repeat</strong> – Boolean flag if the alarm should be repeated every day.</p></li>
+<li><p><strong>day</strong> – Day of week when the alarm should be repeated.</p></li>
 </ul>
 </dd>
 </dl>
@@ -2356,7 +2358,11 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="module-modules.audio.speech_synthesis"></span><dl class="py function">
+<span class="target" id="module-modules.audio.speech_synthesis"></span><p>Module for speech-synthesis running on a docker container.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SpeechSynthesis</span>
+</pre></div>
+</div>
+<dl class="py function">
 <dt class="sig sig-object py" id="modules.audio.speech_synthesis.check_existing">
 <span class="sig-prename descclassname"><span class="pre">modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">check_existing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.audio.speech_synthesis.check_existing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for existing connection.</p>
@@ -2432,228 +2438,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="modules.audio.voices.voice_default">
 <span class="sig-prename descclassname"><span class="pre">modules.audio.voices.</span></span><span class="sig-name descname"><span class="pre">voice_default</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Engine</span></span></span><a class="headerlink" href="#modules.audio.voices.voice_default" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets voice module to default.</p>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="module-modules.audio.win_volume"></span><dl class="py class">
-<dt class="sig sig-object py" id="modules.audio.win_volume.HardwareInput">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.audio.win_volume.</span></span><span class="sig-name descname"><span class="pre">HardwareInput</span></span><a class="headerlink" href="#modules.audio.win_volume.HardwareInput" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inherits <code class="docutils literal notranslate"><span class="pre">Structure</span></code> from <code class="docutils literal notranslate"><span class="pre">ctypes</span></code> for operations using external hardware.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">HardwareInput</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.HardwareInput.uMsg">
-<span class="sig-name descname"><span class="pre">uMsg</span></span><a class="headerlink" href="#modules.audio.win_volume.HardwareInput.uMsg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.HardwareInput.wParamH">
-<span class="sig-name descname"><span class="pre">wParamH</span></span><a class="headerlink" href="#modules.audio.win_volume.HardwareInput.wParamH" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.HardwareInput.wParamL">
-<span class="sig-name descname"><span class="pre">wParamL</span></span><a class="headerlink" href="#modules.audio.win_volume.HardwareInput.wParamL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="modules.audio.win_volume.Input">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.audio.win_volume.</span></span><span class="sig-name descname"><span class="pre">Input</span></span><a class="headerlink" href="#modules.audio.win_volume.Input" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inherits <code class="docutils literal notranslate"><span class="pre">Structure</span></code> from <code class="docutils literal notranslate"><span class="pre">ctypes</span></code> to set type fields.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MouseInput</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.Input.ii">
-<span class="sig-name descname"><span class="pre">ii</span></span><a class="headerlink" href="#modules.audio.win_volume.Input.ii" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.Input.type">
-<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#modules.audio.win_volume.Input.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="modules.audio.win_volume.InputI">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.audio.win_volume.</span></span><span class="sig-name descname"><span class="pre">InputI</span></span><a class="headerlink" href="#modules.audio.win_volume.InputI" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inherits <code class="docutils literal notranslate"><span class="pre">Union</span></code> from <code class="docutils literal notranslate"><span class="pre">ctypes</span></code> for input operations.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MouseInput</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.InputI.hi">
-<span class="sig-name descname"><span class="pre">hi</span></span><a class="headerlink" href="#modules.audio.win_volume.InputI.hi" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.InputI.ki">
-<span class="sig-name descname"><span class="pre">ki</span></span><a class="headerlink" href="#modules.audio.win_volume.InputI.ki" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.InputI.mi">
-<span class="sig-name descname"><span class="pre">mi</span></span><a class="headerlink" href="#modules.audio.win_volume.InputI.mi" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="modules.audio.win_volume.KeyBoardInput">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.audio.win_volume.</span></span><span class="sig-name descname"><span class="pre">KeyBoardInput</span></span><a class="headerlink" href="#modules.audio.win_volume.KeyBoardInput" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inherits <code class="docutils literal notranslate"><span class="pre">Structure</span></code> from <code class="docutils literal notranslate"><span class="pre">ctypes</span></code> for operations using keyboard.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">KeyBoardInput</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.KeyBoardInput.dwExtraInfo">
-<span class="sig-name descname"><span class="pre">dwExtraInfo</span></span><a class="headerlink" href="#modules.audio.win_volume.KeyBoardInput.dwExtraInfo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.KeyBoardInput.dwFlags">
-<span class="sig-name descname"><span class="pre">dwFlags</span></span><a class="headerlink" href="#modules.audio.win_volume.KeyBoardInput.dwFlags" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.KeyBoardInput.time">
-<span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#modules.audio.win_volume.KeyBoardInput.time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.KeyBoardInput.wScan">
-<span class="sig-name descname"><span class="pre">wScan</span></span><a class="headerlink" href="#modules.audio.win_volume.KeyBoardInput.wScan" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.KeyBoardInput.wVk">
-<span class="sig-name descname"><span class="pre">wVk</span></span><a class="headerlink" href="#modules.audio.win_volume.KeyBoardInput.wVk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="modules.audio.win_volume.MouseInput">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.audio.win_volume.</span></span><span class="sig-name descname"><span class="pre">MouseInput</span></span><a class="headerlink" href="#modules.audio.win_volume.MouseInput" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inherits <code class="docutils literal notranslate"><span class="pre">Structure</span></code> from <code class="docutils literal notranslate"><span class="pre">ctypes</span></code> for operations using a mouse.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MouseInput</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.MouseInput.dwExtraInfo">
-<span class="sig-name descname"><span class="pre">dwExtraInfo</span></span><a class="headerlink" href="#modules.audio.win_volume.MouseInput.dwExtraInfo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.MouseInput.dwFlags">
-<span class="sig-name descname"><span class="pre">dwFlags</span></span><a class="headerlink" href="#modules.audio.win_volume.MouseInput.dwFlags" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.MouseInput.dx">
-<span class="sig-name descname"><span class="pre">dx</span></span><a class="headerlink" href="#modules.audio.win_volume.MouseInput.dx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.MouseInput.dy">
-<span class="sig-name descname"><span class="pre">dy</span></span><a class="headerlink" href="#modules.audio.win_volume.MouseInput.dy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.MouseInput.mouseData">
-<span class="sig-name descname"><span class="pre">mouseData</span></span><a class="headerlink" href="#modules.audio.win_volume.MouseInput.mouseData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.audio.win_volume.MouseInput.time">
-<span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#modules.audio.win_volume.MouseInput.time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Structure/Union member</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.audio.win_volume.key">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.win_volume.</span></span><span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.audio.win_volume.key" title="Permalink to this definition">¶</a></dt>
-<dd><p>Operator for the key function with time interval.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key_code</strong> – Key code.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.audio.win_volume.key_down">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.win_volume.</span></span><span class="sig-name descname"><span class="pre">key_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.audio.win_volume.key_down" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function for key down.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key_code</strong> – Key code.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.audio.win_volume.key_up">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.win_volume.</span></span><span class="sig-name descname"><span class="pre">key_up</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.audio.win_volume.key_up" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function for key up.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key_code</strong> – Key code.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.audio.win_volume.mute">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.win_volume.</span></span><span class="sig-name descname"><span class="pre">mute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.audio.win_volume.mute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controller for mute.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.audio.win_volume.set_volume">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.win_volume.</span></span><span class="sig-name descname"><span class="pre">set_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.audio.win_volume.set_volume" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set volume to a custom level.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>level</strong> – Level to which the volume has to be set.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.audio.win_volume.volume_down">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.win_volume.</span></span><span class="sig-name descname"><span class="pre">volume_down</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.audio.win_volume.volume_down" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controller for decrease volume.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.audio.win_volume.volume_up">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.win_volume.</span></span><span class="sig-name descname"><span class="pre">volume_up</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.audio.win_volume.volume_up" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controller for increase volume.</p>
 </dd></dl>
 
 </section>
@@ -5916,6 +5700,281 @@ mac address given as a parameter.</p>
 </dd></dl>
 
 </section>
+<section id="module-modules.windows.win_notifications">
+<span id="windows"></span><h1>Windows<a class="headerlink" href="#module-modules.windows.win_notifications" title="Permalink to this heading">¶</a></h1>
+<p>Module to trigger notifications in WindowsOS, using windows binaries for API and GUI.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">WindowsNotifications</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.windows.win_notifications.WindowsBalloonTip">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.windows.win_notifications.</span></span><span class="sig-name descname"><span class="pre">WindowsBalloonTip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destroy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.windows.win_notifications.WindowsBalloonTip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiates WindowsBalloonTip object as a dedicated process to trigger notification in Windows OS.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">WindowsBalloonTip</span>
+</pre></div>
+</div>
+<p>Initialize the object and assign create members for arguments received.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> – Title of the notification.</p></li>
+<li><p><strong>msg</strong> – Message for the notification.</p></li>
+<li><p><strong>destroy</strong> – Destroy notification balloon immediately.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.windows.win_notifications.WindowsBalloonTip.on_destroy">
+<span class="sig-name descname"><span class="pre">on_destroy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.windows.win_notifications.WindowsBalloonTip.on_destroy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Destroys the notification window created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> – Arguments.</p></li>
+<li><p><strong>**kwargs</strong> – Keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>lparam</strong> (<em>hwnd</em><em>, </em><em>msg</em><em>, </em><em>wparam</em><em>,</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.windows.win_notifications.WindowsBalloonTip.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.windows.win_notifications.WindowsBalloonTip.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a window class and sends a notification.</p>
+</dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="module-modules.windows.win_volume"></span><p>Module to change volume in WindowsOS, using windows binaries.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">WindowsVolume</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.windows.win_volume.HardwareInput">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.windows.win_volume.</span></span><span class="sig-name descname"><span class="pre">HardwareInput</span></span><a class="headerlink" href="#modules.windows.win_volume.HardwareInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherits <code class="docutils literal notranslate"><span class="pre">Structure</span></code> from <code class="docutils literal notranslate"><span class="pre">ctypes</span></code> for operations using external hardware.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">HardwareInput</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.HardwareInput.uMsg">
+<span class="sig-name descname"><span class="pre">uMsg</span></span><a class="headerlink" href="#modules.windows.win_volume.HardwareInput.uMsg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.HardwareInput.wParamH">
+<span class="sig-name descname"><span class="pre">wParamH</span></span><a class="headerlink" href="#modules.windows.win_volume.HardwareInput.wParamH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.HardwareInput.wParamL">
+<span class="sig-name descname"><span class="pre">wParamL</span></span><a class="headerlink" href="#modules.windows.win_volume.HardwareInput.wParamL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.windows.win_volume.Input">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.windows.win_volume.</span></span><span class="sig-name descname"><span class="pre">Input</span></span><a class="headerlink" href="#modules.windows.win_volume.Input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherits <code class="docutils literal notranslate"><span class="pre">Structure</span></code> from <code class="docutils literal notranslate"><span class="pre">ctypes</span></code> to set type fields.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MouseInput</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.Input.ii">
+<span class="sig-name descname"><span class="pre">ii</span></span><a class="headerlink" href="#modules.windows.win_volume.Input.ii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.Input.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#modules.windows.win_volume.Input.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.windows.win_volume.InputI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.windows.win_volume.</span></span><span class="sig-name descname"><span class="pre">InputI</span></span><a class="headerlink" href="#modules.windows.win_volume.InputI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherits <code class="docutils literal notranslate"><span class="pre">Union</span></code> from <code class="docutils literal notranslate"><span class="pre">ctypes</span></code> for input operations.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MouseInput</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.InputI.hi">
+<span class="sig-name descname"><span class="pre">hi</span></span><a class="headerlink" href="#modules.windows.win_volume.InputI.hi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.InputI.ki">
+<span class="sig-name descname"><span class="pre">ki</span></span><a class="headerlink" href="#modules.windows.win_volume.InputI.ki" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.InputI.mi">
+<span class="sig-name descname"><span class="pre">mi</span></span><a class="headerlink" href="#modules.windows.win_volume.InputI.mi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.windows.win_volume.KeyBoardInput">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.windows.win_volume.</span></span><span class="sig-name descname"><span class="pre">KeyBoardInput</span></span><a class="headerlink" href="#modules.windows.win_volume.KeyBoardInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherits <code class="docutils literal notranslate"><span class="pre">Structure</span></code> from <code class="docutils literal notranslate"><span class="pre">ctypes</span></code> for operations using keyboard.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">KeyBoardInput</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.KeyBoardInput.dwExtraInfo">
+<span class="sig-name descname"><span class="pre">dwExtraInfo</span></span><a class="headerlink" href="#modules.windows.win_volume.KeyBoardInput.dwExtraInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.KeyBoardInput.dwFlags">
+<span class="sig-name descname"><span class="pre">dwFlags</span></span><a class="headerlink" href="#modules.windows.win_volume.KeyBoardInput.dwFlags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.KeyBoardInput.time">
+<span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#modules.windows.win_volume.KeyBoardInput.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.KeyBoardInput.wScan">
+<span class="sig-name descname"><span class="pre">wScan</span></span><a class="headerlink" href="#modules.windows.win_volume.KeyBoardInput.wScan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.KeyBoardInput.wVk">
+<span class="sig-name descname"><span class="pre">wVk</span></span><a class="headerlink" href="#modules.windows.win_volume.KeyBoardInput.wVk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.windows.win_volume.MouseInput">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.windows.win_volume.</span></span><span class="sig-name descname"><span class="pre">MouseInput</span></span><a class="headerlink" href="#modules.windows.win_volume.MouseInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherits <code class="docutils literal notranslate"><span class="pre">Structure</span></code> from <code class="docutils literal notranslate"><span class="pre">ctypes</span></code> for operations using a mouse.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MouseInput</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.MouseInput.dwExtraInfo">
+<span class="sig-name descname"><span class="pre">dwExtraInfo</span></span><a class="headerlink" href="#modules.windows.win_volume.MouseInput.dwExtraInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.MouseInput.dwFlags">
+<span class="sig-name descname"><span class="pre">dwFlags</span></span><a class="headerlink" href="#modules.windows.win_volume.MouseInput.dwFlags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.MouseInput.dx">
+<span class="sig-name descname"><span class="pre">dx</span></span><a class="headerlink" href="#modules.windows.win_volume.MouseInput.dx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.MouseInput.dy">
+<span class="sig-name descname"><span class="pre">dy</span></span><a class="headerlink" href="#modules.windows.win_volume.MouseInput.dy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.MouseInput.mouseData">
+<span class="sig-name descname"><span class="pre">mouseData</span></span><a class="headerlink" href="#modules.windows.win_volume.MouseInput.mouseData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.windows.win_volume.MouseInput.time">
+<span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#modules.windows.win_volume.MouseInput.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.windows.win_volume.key">
+<span class="sig-prename descclassname"><span class="pre">modules.windows.win_volume.</span></span><span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.windows.win_volume.key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Operator for the key function with time interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key_code</strong> – Key code.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.windows.win_volume.key_down">
+<span class="sig-prename descclassname"><span class="pre">modules.windows.win_volume.</span></span><span class="sig-name descname"><span class="pre">key_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.windows.win_volume.key_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for key down.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key_code</strong> – Key code.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.windows.win_volume.key_up">
+<span class="sig-prename descclassname"><span class="pre">modules.windows.win_volume.</span></span><span class="sig-name descname"><span class="pre">key_up</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.windows.win_volume.key_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for key up.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key_code</strong> – Key code.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.windows.win_volume.mute">
+<span class="sig-prename descclassname"><span class="pre">modules.windows.win_volume.</span></span><span class="sig-name descname"><span class="pre">mute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.windows.win_volume.mute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controller for mute.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.windows.win_volume.set_volume">
+<span class="sig-prename descclassname"><span class="pre">modules.windows.win_volume.</span></span><span class="sig-name descname"><span class="pre">set_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.windows.win_volume.set_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set volume to a custom level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>level</strong> – Level to which the volume has to be set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.windows.win_volume.volume_down">
+<span class="sig-prename descclassname"><span class="pre">modules.windows.win_volume.</span></span><span class="sig-name descname"><span class="pre">volume_down</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.windows.win_volume.volume_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controller for decrease volume.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.windows.win_volume.volume_up">
+<span class="sig-prename descclassname"><span class="pre">modules.windows.win_volume.</span></span><span class="sig-name descname"><span class="pre">volume_up</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.windows.win_volume.volume_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controller for increase volume.</p>
+</dd></dl>
+
+</section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
 <ul class="simple">
@@ -6004,6 +6063,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-modules.timeout.timeout">Timeout</a></li>
 <li><a class="reference internal" href="#module-modules.tv.tv_controls">TV Connector</a></li>
 <li><a class="reference internal" href="#module-modules.wakeonlan.wakeonlan">WakeOnLAN</a></li>
+<li><a class="reference internal" href="#module-modules.windows.win_notifications">Windows</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 

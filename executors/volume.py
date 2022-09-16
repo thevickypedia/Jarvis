@@ -2,10 +2,11 @@ import os
 import random
 
 from executors.logger import logger
-from modules.audio import speaker, win_volume
+from modules.audio import speaker
 from modules.conditions import conversation
 from modules.models import models
 from modules.utils import support
+from modules.windows import win_volume
 
 
 def volume(phrase: str = None, level: int = None) -> None:

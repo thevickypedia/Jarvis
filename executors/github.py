@@ -29,7 +29,13 @@ def github(phrase: str) -> None:
         support.no_env_vars()
         return
     auth = HTTPBasicAuth(models.env.git_user, models.env.git_pass)
-    response = requests.get('https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
+    try:
+        response = requests.get('https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
+    except (requests.RequestException, requests.Timeout, ConnectionError, TimeoutError, requests.JSONDecodeError) \
+            as error:
+        logger.error(error)
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to connect to the GitHub API.")
+        return
     result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
     for i in range(len(response)):
         total += 1

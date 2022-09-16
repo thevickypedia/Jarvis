@@ -345,8 +345,10 @@ def time_travel() -> None:
 
 def sprint_name() -> NoReturn:
     """Generates a random sprint name."""
-    response = requests.get(url="https://sprint-name-gen.herokuapp.com/")
-    if not response.ok:
+    try:
+        response = requests.get(url="https://sprint-name-gen.herokuapp.com/")
+    except (requests.exceptions.RequestException, requests.exceptions.Timeout, ConnectionError, TimeoutError) as error:
+        logger.error(error)
         speaker.speak(text="I wasn't able to get a sprint name sir! Why not name it, Jarvis failed?")
         return
     soup = BeautifulSoup(response.content, 'html.parser')

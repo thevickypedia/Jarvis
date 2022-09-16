@@ -8,13 +8,15 @@ from typing import NoReturn
 
 from executors.logger import logger
 from executors.volume import volume
+from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import conversation
 from modules.models import models
 from modules.utils import shared, support
 
 
-def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = None) -> NoReturn:
+def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = None,
+                 repeat: bool = False, day: str = None) -> NoReturn:
     """Creates the lock file necessary to set an alarm/timer.
 
     Args:
@@ -23,10 +25,17 @@ def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = N
         am_pm: AM/PM of alarm time.
         phrase: Phrase spoken.
         timer: Number of minutes/hours to alarm.
+        repeat: Boolean flag if the alarm should be repeated every day.
+        day: Day of week when the alarm should be repeated.
     """
     if not os.path.isdir('alarm'):
         os.mkdir('alarm')
-    pathlib.Path(f'alarm/{hour}_{minute}_{am_pm}.lock').touch()
+    if repeat:
+        pathlib.Path(f'alarm/{hour}_{minute}_{am_pm}_repeat.lock').touch()
+    elif day:
+        pathlib.Path(f'alarm/{day}_{hour}_{minute}_{am_pm}_repeat.lock').touch()
+    else:
+        pathlib.Path(f'alarm/{hour}_{minute}_{am_pm}.lock').touch()
     if 'wake' in phrase:
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
                            f"I will wake you up at {hour}:{minute} {am_pm}.")
@@ -36,7 +45,11 @@ def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = N
                     f"{timer}! Counting down.."]
         speaker.speak(text=random.choice(response))
     else:
-        if datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= \
+        if repeat:
+            add = " every day."
+        elif day:
+            add = f" every {day}."
+        elif datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= \
                 datetime.strptime(f"{hour}:{minute} {am_pm}", "%I:%M %p"):
             add = " tomorrow."
         else:
@@ -64,8 +77,6 @@ def set_alarm(phrase: str) -> None:
             return
     if extracted_time := support.extract_time(input_=phrase):
         extracted_time = extracted_time[0]
-        am_pm = extracted_time.split()[-1]
-        am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
         alarm_time = extracted_time.split()[0]
         if ":" in extracted_time:
             hour = int(alarm_time.split(":")[0])
@@ -75,9 +86,16 @@ def set_alarm(phrase: str) -> None:
             minute = 0
         # makes sure hour and minutes are two digits
         hour, minute = f"{hour:02}", f"{minute:02}"
-        am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
+        am_pm = "AM" if "A" in extracted_time.split()[-1].upper() else "PM"
         if int(hour) <= 12 and int(minute) <= 59:
-            create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm)
+            if day := word_match(phrase=phrase, match_list=['sunday', 'monday', 'tuesday', 'wednesday',
+                                                            'thursday', 'friday', 'saturday']):
+                day = day[0].upper() + day[1:].lower()
+                create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm, day=day)
+            elif word_match(phrase=phrase, match_list=['everyday', 'every day', 'daily']):
+                create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm, repeat=True)
+            else:
+                create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm)
         else:
             speaker.speak(text=f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
                                f"I don't think a time like that exists on Earth.")
@@ -132,6 +150,9 @@ def kill_alarm(phrase: str) -> None:
 def alarm_executor() -> NoReturn:
     """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
     volume(level=100)
-    subprocess.call(["open", models.indicators.alarm])
+    if models.settings.macos:
+        subprocess.call(["open", models.indicators.alarm])
+    else:
+        os.system(f'start wmplayer {models.indicators.alarm}')
     time.sleep(200)
     volume(level=models.env.volume)

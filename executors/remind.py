@@ -11,6 +11,7 @@ from modules.audio import listener, speaker
 from modules.conditions import conversation
 from modules.models import models
 from modules.utils import shared, support
+from modules.windows import win_notifications
 
 
 def create_reminder(hour, minute, am_pm, message, to_about, timer: str = None) -> NoReturn:
@@ -104,3 +105,5 @@ def reminder_executor(message: str) -> NoReturn:
                         body=message, subject="REMINDER from Jarvis")
     if models.settings.macos:
         os.system(f"""osascript -e 'display notification "{message}" with title "REMINDER from Jarvis"'""")
+    else:
+        win_notifications.WindowsBalloonTip(msg=message, title="REMINDER from Jarvis")

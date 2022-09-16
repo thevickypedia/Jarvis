@@ -131,7 +131,7 @@ elif [[ "$OSName" == MSYS* ]]; then
     os_independent_packages
 
     # Install Windows specifics
-    python -m pip install pywin32==300 playsound==1.2.2 pydub==0.25.1
+    python -m pip install pywin32==304 playsound==1.2.2 pydub==0.25.1
 
     # Install face-recognition/detection dependencies as stand alone so users aren't blocked until then
     python -m pip install opencv-python==4.5.5.64

@@ -63,11 +63,15 @@ class Investment:
             share_id = str(data['instrument'].split('/')[-2])
             try:
                 raw_details = self.rh.get_quote(share_id)
-            except (requests.exceptions.HTTPError, InvalidTickerSymbol) as error:
+            except InvalidTickerSymbol as error:
                 self.logger.error(error)
                 continue
             ticker = (raw_details['symbol'])
-            stock_name = requests.get(raw_details['instrument']).json()['simple_name']
+            try:
+                stock_name = requests.get(url=raw_details['instrument']).json()['simple_name']
+            except (ConnectionError, TimeoutError, requests.RequestException, requests.Timeout) as error:
+                self.logger.error(error)
+                continue
             buy = round(float(data['average_buy_price']), 2)
             total = round(shares_count * float(buy), 2)
             shares_total.append(total)
@@ -154,8 +158,16 @@ class Investment:
                        for close_price in each_item['historicals']]
             if not numbers:
                 return r1, r2
-            raw_details = self.rh.get_quote(stock)
-            stock_name = requests.get(raw_details['instrument']).json()['simple_name']
+            try:
+                raw_details = self.rh.get_quote(stock)
+            except InvalidTickerSymbol as error:
+                self.logger.error(error)
+                continue
+            try:
+                stock_name = requests.get(raw_details['instrument']).json()['simple_name']
+            except (ConnectionError, TimeoutError, requests.RequestException, requests.Timeout) as error:
+                self.logger.error(error)
+                continue
             price = round(float(raw_details['last_trade_price']), 2)
             difference = round(float(price - numbers[-1]), 2)
             if price < numbers[-1]:

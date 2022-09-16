@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module for speech-synthesis running on a docker container.
+
+>>> SpeechSynthesis
+
+"""
+
 import os
 import pathlib
 from typing import NoReturn

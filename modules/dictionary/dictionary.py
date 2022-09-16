@@ -24,7 +24,11 @@ def meaning(term: str) -> Union[Dict, None]:
         dict:
         A dictionary of the part of speech and the meaning of the word.
     """
-    response = requests.get(f"http://wordnetweb.princeton.edu/perl/webwn?s={term}")
+    try:
+        response = requests.get(f"http://wordnetweb.princeton.edu/perl/webwn?s={term}")
+    except (requests.RequestException, requests.exceptions.Timeout, ConnectionError, TimeoutError) as error:
+        logger.error(error)
+        return
     if not response.ok:
         logger.error('Failed to get the meaning')
         return

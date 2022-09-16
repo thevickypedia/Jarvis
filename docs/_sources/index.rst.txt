@@ -348,12 +348,6 @@ Audio
    :members:
    :undoc-members:
 
-====
-
-.. automodule:: modules.audio.win_volume
-   :members:
-   :undoc-members:
-
 Car
 ===
 
@@ -598,6 +592,18 @@ WakeOnLAN
    :members:
    :undoc-members:
 
+Windows
+=======
+
+.. automodule:: modules.windows.win_notifications
+   :members:
+   :undoc-members:
+
+====
+
+.. automodule:: modules.windows.win_volume
+   :members:
+   :undoc-members:
 
 Indices and tables
 ==================

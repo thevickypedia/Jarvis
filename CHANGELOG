@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+6.4.5 (09/15/2022)
+------------------
+- Add a feature to set repeated alarms
+- Create a module to trigger notifications in WindowsOS
+- Support notifications in Windows OS
+- Add exception handlers for all egress calls
+
 6.4.4 (09/14/2022)
 ------------------
 - Raise `LookupError` if ngrok URL is not found

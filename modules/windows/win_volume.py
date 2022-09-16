@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module to change volume in WindowsOS, using windows binaries.
+
+>>> WindowsVolume
+
+"""
+
 import ctypes
 from typing import NoReturn
 

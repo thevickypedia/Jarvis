@@ -117,9 +117,18 @@ def automator() -> NoReturn:
 
         if alarm_state := support.lock_files(alarm_files=True):
             for each_alarm in alarm_state:
-                if each_alarm == datetime.now().strftime("%I_%M_%p.lock"):
+                if each_alarm == datetime.now().strftime("%I_%M_%p.lock") or \
+                        each_alarm == datetime.now().strftime("%I_%M_%p_repeat.lock") or \
+                        each_alarm == datetime.now().strftime("%A_%I_%M_%p_repeat.lock"):
                     Process(target=alarm_executor).start()
-                    os.remove(os.path.join("alarm", each_alarm))
+                    if each_alarm.endswith("_repeat.lock"):
+                        os.rename(os.path.join("alarm", each_alarm), os.path.join("alarm", f"_{each_alarm}"))
+                    else:
+                        os.remove(os.path.join("alarm", each_alarm))
+                elif each_alarm.startswith('_') and not \
+                        (each_alarm == datetime.now().strftime("_%I_%M_%p_repeat.lock") or
+                         each_alarm == datetime.now().strftime("_%A_%I_%M_%p_repeat.lock")):
+                    os.rename(os.path.join("alarm", each_alarm), os.path.join("alarm", each_alarm.lstrip("_")))
         if reminder_state := support.lock_files(reminder_files=True):
             for each_reminder in reminder_state:
                 remind_time, remind_msg = each_reminder.split('|')
@@ -145,7 +154,8 @@ def get_tunnel() -> Union[HttpUrl, NoReturn]:
                 if hosted := each_tunnel.get('config', {}).get('addr'):
                     if int(hosted.split(':')[-1]) == models.env.offline_port:
                         return each_tunnel.get('public_url')
-    except (requests.exceptions.RequestException, requests.exceptions.JSONDecodeError) as error:
+    except (requests.exceptions.RequestException, requests.exceptions.Timeout, ConnectionError, TimeoutError,
+            requests.exceptions.JSONDecodeError) as error:
         logger.error(error)
 
 

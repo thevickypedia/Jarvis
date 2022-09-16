@@ -397,7 +397,7 @@ def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> List[
     """
     if alarm_files:
         return [f for f in os.listdir("alarm") if not f.startswith(".")] if os.path.isdir("alarm") else None
-    elif reminder_files:
+    if reminder_files:
         return [f for f in os.listdir("reminder") if not f.startswith(".")] if os.path.isdir("reminder") else None
 
 

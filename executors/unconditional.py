@@ -68,7 +68,11 @@ def google_maps(query: str) -> bool:
         return False
 
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
-    response = requests.get(maps_url + 'query=' + query + '&key=' + models.env.maps_api)
+    try:
+        response = requests.get(maps_url + 'query=' + query + '&key=' + models.env.maps_api)
+    except (requests.exceptions.RequestException, requests.exceptions.Timeout, ConnectionError, TimeoutError) as error:
+        logger.error(error)
+        return False
     collection = response.json()['results']
     required = []
     for element in range(len(collection)):
