@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+6.4.6 (09/21/2022)
+------------------
+- Add screen lock feature on `WindowsOS`
+- Add speech synthesis feature via offline-communicator
+
 6.4.5 (09/15/2022)
 ------------------
 - Add a feature to set repeated alarms

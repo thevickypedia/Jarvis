@@ -157,7 +157,7 @@ async def _offline_compatible() -> Dict[str, List[str]]:
 
 
 @app.post(path='/speech-synthesis', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
-async def speech_synthesis(input_data: GetText) -> FileResponse:
+async def speech_synthesis(input_data: GetText, raise_for_status: bool = True) -> Union[FileResponse, None]:
     """Process request to convert text to speech if docker container is running.
 
     Args:
@@ -179,18 +179,25 @@ async def speech_synthesis(input_data: GetText) -> FileResponse:
     """
     if not (text := input_data.text.strip()):
         logger.error('Empty requests cannot be processed.')
-        raise APIResponse(status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.__dict__['phrase'])
+        if raise_for_status:
+            raise APIResponse(status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.__dict__['phrase'])
+        else:
+            return
     if not speaker.speech_synthesizer(text=text, timeout=input_data.timeout or len(text), quality=input_data.quality,
                                       voice=input_data.voice):
         logger.error("Speech synthesis could not process the request.")
-        raise APIResponse(status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real,
-                          detail=HTTPStatus.INTERNAL_SERVER_ERROR.__dict__['phrase'])
+        if raise_for_status:
+            raise APIResponse(status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real,
+                              detail=HTTPStatus.INTERNAL_SERVER_ERROR.__dict__['phrase'])
+        else:
+            return
     if os.path.isfile(path=models.fileio.speech_synthesis_wav):
         Thread(target=remove_file, kwargs={'delay': 2, 'filepath': models.fileio.speech_synthesis_wav}).start()
         return FileResponse(path=models.fileio.speech_synthesis_wav, media_type='application/octet-stream',
                             filename="synthesized.wav", status_code=HTTPStatus.OK.real)
     logger.error(f'File Not Found: {models.fileio.speech_synthesis_wav}')
-    raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.__dict__['phrase'])
+    if raise_for_status:
+        raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.__dict__['phrase'])
 
 
 @app.get(path="/health", include_in_schema=False)
@@ -272,6 +279,11 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
         Thread(target=remove_file, kwargs={'delay': 2, 'filepath': native_audio_wav}).start()
         return FileResponse(path=native_audio_wav, media_type='application/octet-stream',
                             filename="synthesized.wav", status_code=HTTPStatus.OK.real)
+    if input_data.speech_timeout:
+        logger.info(f"Storing response as {models.fileio.speech_synthesis_wav}")
+        if binary := await speech_synthesis(input_data=GetText(text=response, timeout=input_data.speech_timeout,
+                                                               quality="low"), raise_for_status=False):
+            return binary
     raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
 
@@ -306,7 +318,6 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
         """
         robinhood_token['token'] = support.token()
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=f"?token={robinhood_token['token']}")
-
 
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,

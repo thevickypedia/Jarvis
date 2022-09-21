@@ -487,11 +487,6 @@ def release_print() -> NoReturn:
     sys.stdout = sys.__stdout__
 
 
-def missing_windows_features() -> NoReturn:
-    """Speaker for unsupported features in Windows."""
-    speaker.speak(text=f"Requested feature is not available in Windows {models.env.title}")
-
-
 def hashed(key: uuid.UUID) -> str:
     """Generates sha from UUID.
 

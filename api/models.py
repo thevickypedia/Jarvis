@@ -15,6 +15,7 @@ class GetData(BaseModel):
 
     command: str
     native_audio: bool = False
+    speech_timeout: Union[int, float] = 0
 
 
 class GetText(BaseModel):

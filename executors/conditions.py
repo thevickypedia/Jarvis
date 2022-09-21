@@ -271,7 +271,10 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
                    "I can seamlessly take care of your daily tasks, and also help with most of your work!")
 
     elif word_match(phrase=phrase, match_list=keywords.sleep_control):
-        return controls.sleep_control(phrase)
+        return controls.sleep_control()
+
+    elif word_match(phrase=phrase, match_list=keywords.sentry):
+        return controls.sentry()
 
     elif word_match(phrase=phrase, match_list=keywords.restart_control):
         controls.restart_control(phrase)

@@ -1,3 +1,4 @@
+import ctypes
 import os
 import random
 import shutil
@@ -88,13 +89,20 @@ def exit_process() -> NoReturn:
                      f"\nTotal runtime: {support.time_converter(time.perf_counter())}")
 
 
-def pc_sleep() -> NoReturn:
-    """Locks the host device using osascript and reduces brightness to bare minimum."""
+def sleep_control() -> bool:
+    """Locks the screen and reduces brightness to bare minimum."""
     Thread(target=decrease_brightness).start()
     # os.system("""osascript -e 'tell app "System Events" to sleep'""")  # requires restarting Jarvis manually
-    os.system("""osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'""")
+    # subprocess.call('rundll32.exe user32.dll, LockWorkStation')
+    if models.settings.macos:
+        os.system(
+            """osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'"""
+        )
+    else:
+        ctypes.windll.user32.LockWorkStation()
     if not (shared.called['report'] or shared.called['time_travel']):
         speaker.speak(text=random.choice(conversation.acknowledgement))
+    return True
 
 
 def check_memory_leak() -> NoReturn:
@@ -119,20 +127,11 @@ def check_memory_leak() -> NoReturn:
             return func
 
 
-def sleep_control(phrase: str) -> bool:
-    """Controls whether to stop listening or to put the host device on sleep.
-
-    Args:
-        phrase: Takes the phrase spoken as an argument.
-    """
-    phrase = phrase.lower()
-    if 'pc' in phrase or 'computer' in phrase or 'imac' in phrase or \
-            'screen' in phrase:
-        pc_sleep() if models.settings.macos else support.missing_windows_features()
-    else:
-        speaker.speak(text=f"Activating sentry mode, enjoy yourself {models.env.title}!")
-        if shared.greeting:
-            shared.greeting = False
+def sentry() -> bool:
+    """Speaks sentry mode message and sets greeting value to false."""
+    speaker.speak(text=f"Activating sentry mode, enjoy yourself {models.env.title}!")
+    if shared.greeting:
+        shared.greeting = False
     return True
 
 

@@ -123,7 +123,9 @@ restart_control = ["restart", "reboot"]
 exit_ = ["exit", "quit", "no", "nope", "thank you", "Xzibit", "bye", "good bye", "see you later", "talk to you later",
          "that's it", "that is it", "never mind", "nevermind", "thats it"]
 
-sleep_control = ["exit", "quit", "lock", "sleep", "Xzibit", "activate sentry mode"]
+sleep_control = ["lock", "screen", "pc", "computer"]
+
+sentry = ["sleep", "activate sentry mode"]
 
 kill = ["kill", "terminate yourself", "stop running"]
 
