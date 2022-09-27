@@ -39,6 +39,7 @@
 ![Bash](https://img.shields.io/github/search/thevickypedia/Jarvis/.sh)
 ![AppleScript](https://img.shields.io/github/search/thevickypedia/Jarvis/.scpt)
 ![Make](https://img.shields.io/github/search/thevickypedia/Jarvis/Makefile)
+[![kandi X-Ray](https://kandi.openweaver.com/badges/xray.svg)](https://kandi.openweaver.com/python/thevickypedia/Jarvis)
 
 **Deployments**
 
