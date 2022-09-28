@@ -1,8 +1,12 @@
-"""Dictionary values of color and preset number for the lights."""
+"""Dictionary values of color and preset number for the lights.
+
+>>> PRESET_VALUES
+
+"""
 
 PRESET_VALUES = {
     "red": 37,  # bright red
-    "dim red": 38,  # lesser bright red
+    "dim red": 38,  # less bright red
     "green": 39,
     "blue": 40,  # dark blue
     "light green": 41,

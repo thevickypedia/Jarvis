@@ -5,14 +5,14 @@ from executors.logger import logger
 
 
 class RepeatedTimer:
-    """Initiated RepeatedTimer object to run a task repeated after given intervals.
+    """Initiate ``RepeatedTimer`` object to run a task repeated after given intervals.
 
     >>> RepeatedTimer
 
     """
 
     def __init__(self, interval: Union[int, float], function: Callable, *args, **kwargs):
-        """Instantiates class.
+        """Instantiates the object and starts the task.
 
         Args:
             interval: Seconds after which the task should be triggered repeatedly.

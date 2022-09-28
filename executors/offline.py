@@ -15,6 +15,7 @@ from executors.crontab import crontab_executor
 from executors.logger import logger
 from executors.remind import reminder_executor
 from executors.word_match import word_match
+from modules.auth_bearer import BearerAuth
 from modules.conditions import keywords
 from modules.crontab import expression
 from modules.database import database
@@ -196,15 +197,9 @@ def on_demand_offline_automation(task: str) -> Union[str, None]:
         str:
         Returns the response if request was successful.
     """
-    headers = {
-        'accept': 'application/json',
-        'Authorization': f'Bearer {models.env.offline_pass}',
-        # Already added when passed json= but needed when passed data=
-        # 'Content-Type': 'application/json',
-    }
     try:
         response = requests.post(url=f'http://{models.env.offline_host}:{models.env.offline_port}/offline-communicator',
-                                 headers=headers, json={'command': task})
+                                 json={'command': task}, auth=BearerAuth(token=models.env.offline_pass))
     except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout):
         return
     if response.ok:

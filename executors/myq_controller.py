@@ -58,7 +58,7 @@ def run_async(func: Callable, *args: Any, **kwargs: Any) -> Any:
         return asyncio.run(func(*args, **kwargs))
 
 
-def garage_door(phrase: str) -> NoReturn:
+def garage(phrase: str) -> NoReturn:
     """Handler for the garage door controller.
 
     Args:
@@ -95,7 +95,7 @@ def garage_door(phrase: str) -> NoReturn:
             return
         elif status['state']['door_state'] == myq.Operation.CLOSING:
             speaker.speak(text=f"Your {status['name']} is currently closing {models.env.title}! "
-                               "You may want to try to after a minute or two!")
+                               "You may want to retry after a minute or two!")
             return
         logger.info(f"Opening {status['name']}.")
         speaker.speak(text=f"Opening your {status['name']} {models.env.title}!")

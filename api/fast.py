@@ -59,17 +59,6 @@ app = FastAPI(
 )
 
 
-def remove_file(delay: int, filepath: str) -> NoReturn:
-    """Deletes the requested file after a certain time.
-
-    Args:
-        delay: Delay in seconds after which the requested file is to be deleted.
-        filepath: Filepath that has to be removed.
-    """
-    time.sleep(delay)
-    os.remove(filepath) if os.path.isfile(filepath) else logger.error(f"{filepath} not found.")
-
-
 def run_robinhood() -> NoReturn:
     """Runs in a dedicated process during startup, if the file was modified earlier than the past hour."""
     if os.path.isfile(models.fileio.robinhood):
@@ -89,14 +78,11 @@ async def enable_cors() -> NoReturn:
         "https://localhost.com",
         f"http://{models.env.website}",
         f"https://{models.env.website}",
-        f"http://{models.env.website}/*",
-        f"https://{models.env.website}/*",
     ]
 
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
-        allow_origin_regex='https://.*\.ngrok\.io/*',  # noqa: W605
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -192,7 +178,7 @@ async def speech_synthesis(input_data: GetText, raise_for_status: bool = True) -
         else:
             return
     if os.path.isfile(path=models.fileio.speech_synthesis_wav):
-        Thread(target=remove_file, kwargs={'delay': 2, 'filepath': models.fileio.speech_synthesis_wav}).start()
+        Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': models.fileio.speech_synthesis_wav}).start()
         return FileResponse(path=models.fileio.speech_synthesis_wav, media_type='application/octet-stream',
                             filename="synthesized.wav", status_code=HTTPStatus.OK.real)
     logger.error(f'File Not Found: {models.fileio.speech_synthesis_wav}')
@@ -276,7 +262,7 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
     if input_data.native_audio:
         native_audio_wav = tts_stt.text_to_audio(text=response)
         logger.info(f"Storing response as {native_audio_wav} in native audio.")
-        Thread(target=remove_file, kwargs={'delay': 2, 'filepath': native_audio_wav}).start()
+        Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': native_audio_wav}).start()
         return FileResponse(path=native_audio_wav, media_type='application/octet-stream',
                             filename="synthesized.wav", status_code=HTTPStatus.OK.real)
     if input_data.speech_timeout:

@@ -157,7 +157,7 @@ Face
 Garage Door
 ===========
 
-.. automodule:: executors.garage
+.. automodule:: executors.myq_controller
    :members:
    :undoc-members:
 
@@ -186,6 +186,13 @@ Lights
 ======
 
 .. automodule:: executors.lights
+   :members:
+   :undoc-members:
+
+Lights Squire
+=============
+
+.. automodule:: executors.lights_squire
    :members:
    :undoc-members:
 
@@ -348,6 +355,13 @@ Audio
    :members:
    :undoc-members:
 
+Auth Bearer
+===========
+
+.. automodule:: modules.auth_bearer
+   :members:
+   :undoc-members:
+
 Car
 ===
 
@@ -495,7 +509,7 @@ Meetings
 Models
 ======
 
-.. autoclass:: modules.models.models
+.. automodule:: modules.models.models
    :members:
    :undoc-members:
 

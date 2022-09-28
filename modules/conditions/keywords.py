@@ -76,8 +76,6 @@ github = ["git", "github", "clone", "GitHub", "update yourself", "update your se
 
 send_sms = ["message", "text", "messages"]
 
-google_search = ["google search"]
-
 television = ["tv", "television"]
 
 volume = ["volume", "mute"]
@@ -88,7 +86,7 @@ speed_test = ["speed", "fast"]
 
 brightness = ["brightness", "bright", "dim"]
 
-lights = ["light"]
+lights = ["light", "party mode"]
 
 guard_enable = ["turn on security mode", "enable security mode"]
 

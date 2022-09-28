@@ -36,14 +36,13 @@ if settings.legacy:
         pvporcupine.KEYWORD_PATHS[x.split('_')[0]] = os.path.join(os.path.dirname(pvporcupine.__file__),
                                                                   f"resources/keyword_files/mac/{x}")
 
-for keyword in env.wake_words:
-    if keyword == 'sphinx-build':
-        break
-    if not pvporcupine.KEYWORD_PATHS.get(keyword) or not os.path.isfile(pvporcupine.KEYWORD_PATHS[keyword]):
-        raise InvalidEnvVars(
-            f"Detecting '{keyword}' is unsupported!\n"
-            f"Available keywords are: {', '.join(list(pvporcupine.KEYWORD_PATHS.keys()))}"
-        )
+if settings.bot != "sphinx-build":
+    for keyword in env.wake_words:
+        if not pvporcupine.KEYWORD_PATHS.get(keyword) or not os.path.isfile(pvporcupine.KEYWORD_PATHS[keyword]):
+            raise InvalidEnvVars(
+                f"Detecting '{keyword}' is unsupported!\n"
+                f"Available keywords are: {', '.join(list(pvporcupine.KEYWORD_PATHS.keys()))}"
+            )
 
 # If sensitivity is an integer or float, converts it to a list
 if isinstance(env.sensitivity, float) or isinstance(env.sensitivity, PositiveInt):
@@ -77,9 +76,14 @@ for expression in env.crontab:
 
 # Create all necessary DB tables during startup
 db = database.Database(database=fileio.base_db)
-db.create_table(table_name=env.event_app, columns=["info", "date"])
-db.create_table(table_name="ics", columns=["info", "date"])
-db.create_table(table_name="stopper", columns=["flag", "caller"])
-db.create_table(table_name="restart", columns=["flag", "caller"])
-db.create_table(table_name="children", columns=["meetings", "events", "crontab"])
-db.create_table(table_name="vpn", columns=["state"])
+TABLES = {
+    env.event_app: ["info", "date"],
+    "ics": ["info", "date"],
+    "stopper": ["flag", "caller"],
+    "restart": ["flag", "caller"],
+    "children": ["meetings", "events", "crontab", "party"],
+    "vpn": ["state"],
+    "party": ["pid"]
+}
+for table, column in TABLES.items():
+    db.create_table(table_name=table, columns=column)

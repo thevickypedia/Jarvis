@@ -170,10 +170,7 @@ def stop_terminals(apps: tuple = ("iterm", "terminal")) -> NoReturn:
     """
     for proc in psutil.process_iter():
         if word_match(phrase=proc.name(), match_list=apps):
-            proc.terminate()
-            time.sleep(0.5)
-            if proc.is_running():
-                proc.kill()
+            support.stop_process(pid=proc.pid)
 
 
 def terminator() -> NoReturn:
@@ -182,18 +179,11 @@ def terminator() -> NoReturn:
     Using this, eliminates the hassle of forcing multiple threads to stop.
     """
     proc = psutil.Process(pid=models.settings.pid)
-    logger.info(f"Terminating process: {models.settings.pid}")
     process_info = proc.as_dict()
     if process_info.get('environ'):
         del process_info['environ']
     logger.info(process_info)
-    if proc.is_running():
-        logger.info(f"{models.settings.pid} is running. Terminating it.")
-        proc.terminate()
-    time.sleep(1)
-    if proc.is_running():
-        logger.warning(f"{models.settings.pid} is still running. Killing it.")
-        proc.kill()
+    support.stop_process(pid=proc.pid)
     os._exit(1)  # noqa
 
 

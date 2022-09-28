@@ -25,7 +25,7 @@ def voice_default() -> Engine:
     for voice in speaker.audio_driver.getProperty("voices"):
         if voice.name == voice_model or voice_model in voice.name:
             if current_process().name == 'MainProcess':
-                logger.info(voice.__dict__)
+                logger.debug(voice.__dict__)
             speaker.audio_driver.setProperty("voice", voice.id)
             break
     return speaker.audio_driver

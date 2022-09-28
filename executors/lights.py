@@ -1,12 +1,14 @@
 import os
 import random
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from multiprocessing.pool import ThreadPool
 from threading import Thread
-from typing import Callable, NoReturn, Union
+from typing import Callable, List, NoReturn, Union
 
 import yaml
 
+from executors import lights_squire
 from executors.internet import vpn_checker
 from executors.logger import logger
 from executors.word_match import word_match
@@ -15,6 +17,91 @@ from modules.conditions import conversation
 from modules.lights import preset_values, smart_lights
 from modules.models import models
 from modules.utils import support
+
+
+def turn_off(host: str) -> NoReturn:
+    """Turns off the device.
+
+    Args:
+        host: Takes target device IP address as an argument.
+    """
+    smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off').turn_off()
+
+
+def warm(host: str) -> NoReturn:
+    """Sets lights to warm/yellow.
+
+    Args:
+        host: Takes target device IP address as an argument.
+    """
+    smart_lights.MagicHomeApi(device_ip=host, device_type=1,
+                              operation='Warm Lights').update_device(r=0, g=0, b=0, warm_white=255)
+
+
+def cool(host: str) -> NoReturn:
+    """Sets lights to cool/white.
+
+    Args:
+        host: Takes target device IP address as an argument.
+    """
+    smart_lights.MagicHomeApi(device_ip=host, device_type=2,
+                              operation='Cool Lights').update_device(r=255, g=255, b=255, warm_white=255,
+                                                                     cool_white=255)
+
+
+def lumen(host: str, rgb: int = 255) -> NoReturn:
+    """Sets lights to custom brightness.
+
+    Args:
+        host: Takes target device IP address as an argument.
+        rgb: Red, Green andBlue values to alter the brightness.
+    """
+    args = {'r': 255, 'g': 255, 'b': 255, 'warm_white': rgb}
+    smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness').update_device(**args)
+
+
+class ThreadExecutor:
+    """Instantiates ``ThreadExecutor`` object to control the lights using pool of threads.
+
+    >>> ThreadExecutor
+
+    """
+
+    def __init__(self, host_ip: List[str]):
+        """Initializes the class and assign object members."""
+        self.host_ip = host_ip
+
+    def thread_worker(self, function_to_call: Callable) -> int:
+        """Initiates ``ThreadPoolExecutor`` with in a dedicated thread.
+
+        Args:
+            function_to_call: Takes the function/method that has to be called as an argument.
+        """
+        futures = {}
+        executor = ThreadPoolExecutor(max_workers=len(self.host_ip))
+        with executor:
+            for iterator in self.host_ip:
+                future = executor.submit(function_to_call, iterator)
+                futures[future] = iterator
+
+        thread_except = 0
+        for future in as_completed(futures):
+            if future.exception():
+                thread_except += 1
+                logger.error(f'Thread processing for {iterator} received an exception: {future.exception()}')
+        return thread_except
+
+    def avail_check(self, function_to_call: Callable) -> NoReturn:
+        """Speaks an error message if any of the lights aren't reachable.
+
+        Args:
+            function_to_call: Takes the function/method that has to be called as an argument.
+        """
+        status = ThreadPool(processes=1).apply_async(func=self.thread_worker, args=[function_to_call])
+        speaker.speak(run=True)
+        if failed := status.get(timeout=5):
+            plural_ = "lights aren't available right now!" if failed > 1 else "light isn't available right now!"
+            speaker.speak(text=f"I'm sorry sir! {support.number_to_words(input_=failed, capitalize=True)} {plural_}")
 
 
 def lights(phrase: str) -> Union[None, NoReturn]:
@@ -47,53 +134,6 @@ def lights(phrase: str) -> Union[None, NoReturn]:
 
     phrase = phrase.lower()
 
-    def turn_off(host: str) -> NoReturn:
-        """Turns off the device.
-
-        Args:
-            host: Takes target device IP address as an argument.
-        """
-        smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off').turn_off()
-
-    def warm(host: str) -> NoReturn:
-        """Sets lights to warm/yellow.
-
-        Args:
-            host: Takes target device IP address as an argument.
-        """
-        smart_lights.MagicHomeApi(device_ip=host, device_type=1,
-                                  operation='Warm Lights').update_device(r=0, g=0, b=0, warm_white=255)
-
-    def cool(host: str) -> NoReturn:
-        """Sets lights to cool/white.
-
-        Args:
-            host: Takes target device IP address as an argument.
-        """
-        smart_lights.MagicHomeApi(device_ip=host, device_type=2,
-                                  operation='Cool Lights').update_device(r=255, g=255, b=255, warm_white=255,
-                                                                         cool_white=255)
-
-    def preset(host: str, value: int) -> NoReturn:
-        """Changes light colors to preset values.
-
-        Args:
-            host: Takes target device IP address as an argument.
-            value: Preset value extracted from list of verified values.
-        """
-        smart_lights.MagicHomeApi(device_ip=host, device_type=2,
-                                  operation='Preset Values').send_preset_function(preset_number=value, speed=101)
-
-    def lumen(host: str, rgb: int = 255) -> NoReturn:
-        """Sets lights to custom brightness.
-
-        Args:
-            host: Takes target device IP address as an argument.
-            rgb: Red, Green andBlue values to alter the brightness.
-        """
-        args = {'r': 255, 'g': 255, 'b': 255, 'warm_white': rgb}
-        smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness').update_device(**args)
-
     if 'all' in phrase.split():
         # Checking for list since lights are inserted as a list and tv as string
         host_names = [value for key, value in smart_devices.items() if isinstance(value, list)]
@@ -101,11 +141,12 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     else:
         # Get the closest matching name provided in smart_devices.yaml compared to what's requested by the user
         light_location = support.get_closest_match(text=phrase, match_list=list(smart_devices.keys()))
+        logger.info(f"Lights location: {light_location}")
         host_names = [smart_devices.get(light_location)]
         light_location = light_location.replace('_', ' ').replace('-', '')
 
     host_names = support.matrix_to_flat_list(input_=host_names)
-    host_names = list(filter(None, host_names))
+    host_names = list(filter(None, host_names))  # remove None values
     if light_location and not host_names:
         logger.warning(f"No hostname values found for {light_location} in {models.fileio.smart_devices}")
         speaker.speak(text=f"I'm sorry {models.env.title}! You haven't mentioned the host names of '{light_location}' "
@@ -116,6 +157,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         speaker.speak(text=f"I'm not sure which lights you meant {models.env.title}!")
         return
 
+    host_names = support.remove_duplicates(input_=host_names)  # duplicates occur when party mode is present
     host_ip = [support.hostname_to_ip(hostname=hostname) for hostname in host_names]
     # host_ip = list(filter(None, host_ip))
     host_ip = support.matrix_to_flat_list(input_=host_ip)
@@ -126,37 +168,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
                            "powered off.")
         return
 
-    def avail_check(function_to_call: Callable) -> NoReturn:
-        """Speaks an error message if any of the lights aren't reachable.
-
-        Args:
-            function_to_call: Takes the function/method that has to be called as an argument.
-        """
-        status = ThreadPool(processes=1).apply_async(func=thread_worker, args=[function_to_call])
-        speaker.speak(run=True)
-        if failed := status.get(timeout=5):
-            plural_ = "lights aren't available right now!" if failed > 1 else "light isn't available right now!"
-            speaker.speak(text=f"I'm sorry sir! {support.number_to_words(input_=failed, capitalize=True)} {plural_}")
-
-    def thread_worker(function_to_call: Callable) -> int:
-        """Initiates ``ThreadPoolExecutor`` with in a dedicated thread.
-
-        Args:
-            function_to_call: Takes the function/method that has to be called as an argument.
-        """
-        futures = {}
-        executor = ThreadPoolExecutor(max_workers=len(host_ip))
-        with executor:
-            for iterator in host_ip:
-                future = executor.submit(function_to_call, iterator)
-                futures[future] = iterator
-
-        thread_except = 0
-        for future in as_completed(futures):
-            if future.exception():
-                thread_except += 1
-                logger.error(f'Thread processing for {iterator} received an exception: {future.exception()}')
-        return thread_except
+    executor = ThreadExecutor(host_ip=host_ip)
 
     plural = 'lights' if len(host_ip) > 1 else 'light'
     if 'turn on' in phrase or 'cool' in phrase or 'white' in phrase:
@@ -167,25 +179,32 @@ def lights(phrase: str) -> Union[None, NoReturn]:
             speaker.speak(
                 text=f'{random.choice(conversation.acknowledgement)}! Setting {len(host_ip)} {plural} to {tone}!'
             )
-        avail_check(function_to_call=cool)
+        executor.avail_check(function_to_call=cool)
     elif 'turn off' in phrase:
         speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning off {len(host_ip)} {plural}')
-        Thread(target=thread_worker, args=[cool]).run()
-        avail_check(function_to_call=turn_off)
+        if state := lights_squire.check_status():
+            support.stop_process(pid=state[0])
+        Thread(target=executor.thread_worker, args=[cool]).run()
+        executor.avail_check(function_to_call=turn_off)
+    elif 'party mode' in phrase:
+        if lights_squire.party_mode(host_ip=host_ip, phrase=phrase):
+            Thread(target=executor.thread_worker, args=[cool]).run()
+            time.sleep(1)
+            Thread(target=executor.thread_worker, args=[turn_off]).start()
     elif 'warm' in phrase or 'yellow' in phrase:
         if 'yellow' in phrase:
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! '
                                f'Setting {len(host_ip)} {plural} to yellow!')
         else:
             speaker.speak(text=f'Sure {models.env.title}! Setting {len(host_ip)} {plural} to warm!')
-        avail_check(function_to_call=warm)
+        executor.avail_check(function_to_call=warm)
     elif color := word_match(phrase=phrase, match_list=list(preset_values.PRESET_VALUES.keys())):
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
                            f"I've changed {len(host_ip)} {plural} to {color}!")
         for light_ip in host_ip:
-            preset(host=light_ip,
-                   value=[preset_values.PRESET_VALUES[_type] for _type in
-                          list(preset_values.PRESET_VALUES.keys()) if _type in phrase][0])
+            lights_squire.preset(device_ip=light_ip, speed=50,
+                                 color=[preset_values.PRESET_VALUES[_type] for _type in
+                                        list(preset_values.PRESET_VALUES.keys()) if _type in phrase][0])
     elif 'set' in phrase or 'percentage' in phrase or '%' in phrase or 'dim' in phrase \
             or 'bright' in phrase:
         if 'bright' in phrase:
@@ -199,6 +218,8 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
                            f"I've set {len(host_ip)} {plural} to {level}%!")
         level = round((255 * level) / 100)
+        Thread(target=executor.thread_worker, args=[turn_off]).run()
+        time.sleep(1)
         for light_ip in host_ip:
             lumen(host=light_ip, rgb=level)
     else:

@@ -13,10 +13,11 @@ import re
 import socket
 import string
 import sys
+import time
 import uuid
 from datetime import datetime
 from difflib import SequenceMatcher
-from typing import List, NoReturn, Union
+from typing import Any, List, NoReturn, Union
 
 import inflect
 import psutil
@@ -57,7 +58,7 @@ def hostname_to_ip(hostname: str) -> List[str]:
     except socket.error as error:
         logger.error(f"{error} on {hostname}")
         return []
-    logger.info({"Hostname": _hostname, "Alias": _alias_list, "Interfaces": _ipaddr_list})
+    logger.debug({"Hostname": _hostname, "Alias": _alias_list, "Interfaces": _ipaddr_list})
     if not _ipaddr_list:
         logger.critical(f"No interfaces found for {hostname}")
     elif len(_ipaddr_list) > 1:
@@ -315,6 +316,20 @@ def matrix_to_flat_list(input_: List[list]) -> list:
     return sum(input_, []) or [item for sublist in input_ for item in sublist]
 
 
+def remove_duplicates(input_: List[Any]) -> List[Any]:
+    """Remove duplicate values from a list.
+
+    Args:
+        input_: Takes a list as an argument.
+
+    Returns:
+        list:
+        Returns a cleaned up list.
+    """
+    # return list(set(input_))
+    return [i.strip() for n, i in enumerate(input_) if i not in input_[n + 1:]]
+
+
 def words_to_number(input_: str) -> int:
     """Converts words into integers.
 
@@ -485,6 +500,34 @@ def block_print() -> NoReturn:
 def release_print() -> NoReturn:
     """Removes print statement's suppression."""
     sys.stdout = sys.__stdout__
+
+
+def remove_file(filepath: str, delay: int = 0) -> NoReturn:
+    """Deletes the requested file after a certain time.
+
+    Args:
+        filepath: Filepath that has to be removed.
+        delay: Delay in seconds after which the requested file is to be deleted.
+    """
+    time.sleep(delay)
+    os.remove(filepath) if os.path.isfile(filepath) else logger.error(f"{filepath} not found.")
+
+
+def stop_process(pid: int) -> NoReturn:
+    """Stop a particular process using ``SIGTERM`` and ``SIGKILL`` signals.
+
+    Args:
+        pid: Process ID that has to be shut down.
+    """
+    try:
+        proc = psutil.Process(pid=pid)
+        if proc.is_running():
+            proc.terminate()
+        time.sleep(0.5)
+        if proc.is_running():
+            proc.kill()
+    except psutil.NoSuchProcess as error:
+        logger.error(error)
 
 
 def hashed(key: uuid.UUID) -> str:

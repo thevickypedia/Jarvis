@@ -12,7 +12,7 @@ from modules.audio.speech_synthesis import synthesizer
 from modules.database import database
 from modules.models import models
 from modules.retry import retry
-from modules.utils import shared
+from modules.utils import shared, support
 
 db = database.Database(database=models.fileio.base_db)
 
@@ -34,17 +34,11 @@ def clear_db() -> NoReturn:
     """Deletes entries from all databases except for VPN."""
     with db.connection:
         cursor = db.connection.cursor()
-        logger.info(f"Deleting data from {models.env.event_app}: "
-                    f"{cursor.execute(f'SELECT * FROM {models.env.event_app}').fetchall()}")
-        cursor.execute(f"DELETE FROM {models.env.event_app}")
-        logger.info(f"Deleting data from ics: {cursor.execute(f'SELECT * FROM ics').fetchall()}")
-        cursor.execute("DELETE FROM ics")
-        logger.info(f"Deleting data from stopper: {cursor.execute(f'SELECT * FROM stopper').fetchall()}")
-        cursor.execute("DELETE FROM stopper")
-        logger.info(f"Deleting data from restart: {cursor.execute(f'SELECT * FROM restart').fetchall()}")
-        cursor.execute("DELETE FROM restart")
-        logger.info(f"Deleting data from children: {cursor.execute(f'SELECT * FROM children').fetchall()}")
-        cursor.execute("DELETE FROM children")
+        for table, column in models.TABLES.items():
+            if table == "vpn" or table == "party":
+                continue
+            logger.info(f"Deleting data from {table}: {cursor.execute(f'SELECT * FROM {table}').fetchall()}")
+            cursor.execute(f"DELETE FROM {table}")
 
 
 def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]:
@@ -78,10 +72,8 @@ def stop_child_processes() -> NoReturn:
     children = {}
     with db.connection:
         cursor = db.connection.cursor()
-        # children = cursor.execute("SELECT meetings, events, crontab FROM children").fetchall()
-        children['meetings']: List[Tuple[Union[None, str]]] = cursor.execute("SELECT meetings FROM children").fetchall()
-        children['crontab']: List[Tuple[Union[None, str]]] = cursor.execute("SELECT events FROM children").fetchall()
-        children['events']: List[Tuple[Union[None, str]]] = cursor.execute("SELECT crontab FROM children").fetchall()
+        for child in models.TABLES["children"]:
+            children[child]: List[Tuple[Union[None, str]]] = cursor.execute(f"SELECT {child} FROM children").fetchall()
     logger.info(children)
     for category, pids in children.items():
         for pid in pids:
@@ -94,12 +86,8 @@ def stop_child_processes() -> NoReturn:
                 # Occurs commonly since child processes run only for a short time
                 logger.debug(f"Process [{category}] PID not found {pid}")
                 continue
-            if proc.is_running():
-                logger.info(f"Sending [SIGTERM] to child process [{category}] with PID: {pid}")
-                proc.terminate()
-            if proc.is_running():
-                logger.info(f"Sending [SIGKILL] to child process [{category}] with PID: {pid}")
-                proc.kill()
+            logger.info(f"Stopping process [{category}] with PID: {pid}")
+            support.stop_process(pid=proc.pid)
 
 
 def stop_processes(func_name: str = None) -> NoReturn:
@@ -108,9 +96,5 @@ def stop_processes(func_name: str = None) -> NoReturn:
     for func, process in shared.processes.items():
         if func_name and func_name != func:
             continue
-        if process.is_alive():
-            logger.info(f"Sending [SIGTERM] to {func} with PID: {process.pid}")
-            process.terminate()
-        if process.is_alive():
-            logger.info(f"Sending [SIGKILL] to {func} with PID: {process.pid}")
-            process.kill()
+        logger.info(f"Stopping process [{func}] with PID: {process.pid}")
+        support.stop_process(pid=process.pid)

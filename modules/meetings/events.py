@@ -13,7 +13,7 @@ from modules.audio import speaker
 from modules.database import database
 from modules.models import models
 from modules.retry import retry
-from modules.utils import shared
+from modules.utils import shared, support
 
 db = database.Database(database=models.fileio.base_db)
 
@@ -89,7 +89,7 @@ def events_gatherer() -> str:
     local_events = local_events.replace(", date ", " rEpLaCInG ")
     event_time = local_events.split("rEpLaCInG")[1:]
     event_name = local_events.split("rEpLaCInG")[0].split(", ")
-    event_name = [i.strip() for n, i in enumerate(event_name) if i not in event_name[n + 1:]]  # remove duplicates
+    event_name = support.remove_duplicates(input_=event_name)
     count = len(event_time)
     [event_name.remove(e) for e in event_name if len(e) <= 5] if count != len(event_name) else None
     event_status = f"You have {count} events in the next 12 hours {models.env.title}! " if count > 1 else ""

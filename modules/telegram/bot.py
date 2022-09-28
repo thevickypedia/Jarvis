@@ -283,7 +283,8 @@ class TelegramBot:
         request_time = time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(payload['date']))
         logger.warning(f"Request timed out when {payload['from']['username']} requested {payload.get('text')}")
         logger.warning(f"Request time: {request_time}")
-        if "bypass" in payload.get('text', '').lower() and "stop" not in payload.get('text', '').lower():
+        if "bypass" in payload.get('text', '').lower() and not \
+                word_match(phrase=payload.get('text', ''), match_list=keywords.kill):
             logger.info(f"{payload['from']['username']} requested a timeout bypass.")
             return True
         else:
@@ -301,7 +302,7 @@ class TelegramBot:
             bool:
             Boolean flag to indicate whether to proceed.
         """
-        if "stop" not in payload.get('text', '').lower():
+        if not word_match(phrase=payload.get('text', ''), match_list=keywords.kill):
             return True
         if "bypass" in payload.get('text', '').lower():
             logger.info(f"{payload['from']['username']} requested a STOP bypass.")
@@ -417,6 +418,7 @@ class TelegramBot:
         if ' and ' in command and not word_match(phrase=command, match_list=keywords.avoid):
             for index, each in enumerate(command.split(' and '), 1 - len(command.split(' and '))):
                 if not word_match(phrase=each, match_list=offline_compatible):
+                    logger.warning(f"'{each}' is not a part of offline communicator compatible request.")
                     self.send_message(chat_id=payload['from']['id'],
                                       response=f"'{each}' is not a part of offline communicator compatible request.")
                 else:
@@ -426,6 +428,7 @@ class TelegramBot:
         elif ' also ' in command and not word_match(phrase=command, match_list=keywords.avoid):
             for index, each in enumerate(command.split(' also '), 1 - len(command.split(' also '))):
                 if not word_match(phrase=each, match_list=offline_compatible):
+                    logger.warning(f"'{each}' is not a part of offline communicator compatible request.")
                     self.send_message(chat_id=payload['from']['id'],
                                       response=f"'{each}' is not a part of offline communicator compatible request.")
                 else:
@@ -434,6 +437,7 @@ class TelegramBot:
             return
 
         if not word_match(phrase=command, match_list=offline_compatible):
+            logger.warning(f"'{command}' is not a part of offline communicator compatible request.")
             self.send_message(chat_id=payload['from']['id'],
                               response=f"'{command}' is not a part of offline communicator compatible request.")
             return

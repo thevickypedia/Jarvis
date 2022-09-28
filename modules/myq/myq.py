@@ -49,9 +49,9 @@ async def garage_controller(operation: str) -> Union[Dict, NoReturn]:
         for device_id, device_obj in myq.covers.items():
             if operation == Operation.OPEN:
                 open_result = await device_obj.open()
-                logger.info(open_result)
+                logger.debug(open_result)
             elif operation == Operation.CLOSE:
                 close_result = await device_obj.close()
-                logger.info(close_result)
+                logger.debug(close_result)
             elif operation == Operation.STATE:
                 return device_obj.device_json

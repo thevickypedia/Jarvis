@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+6.4.7 (09/27/2022)
+------------------
+- Add a feature to toggle flashing disco lights
+- Create a custom auth bearer for future use
+- Simplify lights function in lights.py and add lights_squire.py
+- Simplify creating database tables and columns
+- Remove CORS for ngrok as tunneling doesn't trigger redirects
+- Rename garage.py to myq_controller.py
+- Move repeated tasks to a dedicated function
+- Change log level to debug for entries that are sparingly required
+- Update docstrings, README.md and docs
+
 6.4.6 (09/21/2022)
 ------------------
 - Add screen lock feature on `WindowsOS`

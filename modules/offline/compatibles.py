@@ -1,6 +1,7 @@
 from typing import List
 
 from modules.conditions import conversation, keywords
+from modules.utils import support
 
 
 def offline_compatible() -> List[str]:
@@ -11,7 +12,6 @@ def offline_compatible() -> List[str]:
         Flat list from a matrix (list of lists) after removing the duplicates.
     """
     offline_words = [keywords.sleep_control,
-                     keywords.exit_,
                      keywords.set_alarm,
                      keywords.current_time,
                      keywords.apps,
@@ -62,4 +62,4 @@ def offline_compatible() -> List[str]:
                      conversation.whats_up,
                      conversation.who]
     matrix_to_list = sum(offline_words, []) or [item for sublist in offline_words for item in sublist]
-    return [i.strip() for n, i in enumerate(matrix_to_list) if i not in matrix_to_list[n + 1:]]  # remove dupes
+    return support.remove_duplicates(input_=matrix_to_list)

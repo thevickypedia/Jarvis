@@ -253,20 +253,6 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="api.fast.remove_file">
-<span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">remove_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.remove_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deletes the requested file after a certain time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>delay</strong> – Delay in seconds after which the requested file is to be deleted.</p></li>
-<li><p><strong>filepath</strong> – Filepath that has to be removed.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="api.fast.robinhood">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">HTMLResponse</span></span></span><a class="headerlink" href="#api.fast.robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Serves static file.</p>
@@ -1107,11 +1093,11 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
-<section id="module-executors.garage">
-<span id="garage-door"></span><h1>Garage Door<a class="headerlink" href="#module-executors.garage" title="Permalink to this heading">¶</a></h1>
+<section id="module-executors.myq_controller">
+<span id="garage-door"></span><h1>Garage Door<a class="headerlink" href="#module-executors.myq_controller" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="executors.garage.AsyncThread">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">executors.garage.</span></span><span class="sig-name descname"><span class="pre">AsyncThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#executors.garage.AsyncThread" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="executors.myq_controller.AsyncThread">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">executors.myq_controller.</span></span><span class="sig-name descname"><span class="pre">AsyncThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#executors.myq_controller.AsyncThread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs asynchronosly using threading.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AsyncThread</span>
 </pre></div>
@@ -1127,16 +1113,16 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="executors.garage.AsyncThread.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.garage.AsyncThread.run" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="executors.myq_controller.AsyncThread.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.myq_controller.AsyncThread.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">asyncio.run</span></code> with arguments passed.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.garage.garage_door">
-<span class="sig-prename descclassname"><span class="pre">executors.garage.</span></span><span class="sig-name descname"><span class="pre">garage_door</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.garage.garage_door" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="executors.myq_controller.garage">
+<span class="sig-prename descclassname"><span class="pre">executors.myq_controller.</span></span><span class="sig-name descname"><span class="pre">garage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.myq_controller.garage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handler for the garage door controller.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1146,8 +1132,8 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.garage.run_async">
-<span class="sig-prename descclassname"><span class="pre">executors.garage.</span></span><span class="sig-name descname"><span class="pre">run_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#executors.garage.run_async" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="executors.myq_controller.run_async">
+<span class="sig-prename descclassname"><span class="pre">executors.myq_controller.</span></span><span class="sig-name descname"><span class="pre">run_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#executors.myq_controller.run_async" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if an existing loop is running in asyncio and triggers the loop with or without a thread accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1307,6 +1293,49 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </section>
 <section id="module-executors.lights">
 <span id="lights"></span><h1>Lights<a class="headerlink" href="#module-executors.lights" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="executors.lights.ThreadExecutor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">executors.lights.</span></span><span class="sig-name descname"><span class="pre">ThreadExecutor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#executors.lights.ThreadExecutor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiates <code class="docutils literal notranslate"><span class="pre">ThreadExecutor</span></code> object to control the lights using pool of threads.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ThreadExecutor</span>
+</pre></div>
+</div>
+<p>Initializes the class and assign object members.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="executors.lights.ThreadExecutor.avail_check">
+<span class="sig-name descname"><span class="pre">avail_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_to_call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.lights.ThreadExecutor.avail_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speaks an error message if any of the lights aren’t reachable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>function_to_call</strong> – Takes the function/method that has to be called as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="executors.lights.ThreadExecutor.thread_worker">
+<span class="sig-name descname"><span class="pre">thread_worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_to_call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#executors.lights.ThreadExecutor.thread_worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">ThreadPoolExecutor</span></code> with in a dedicated thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>function_to_call</strong> – Takes the function/method that has to be called as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.lights.cool">
+<span class="sig-prename descclassname"><span class="pre">executors.lights.</span></span><span class="sig-name descname"><span class="pre">cool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.lights.cool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets lights to cool/white.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>host</strong> – Takes target device IP address as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.lights.lights">
 <span class="sig-prename descclassname"><span class="pre">executors.lights.</span></span><span class="sig-name descname"><span class="pre">lights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.lights.lights" title="Permalink to this definition">¶</a></dt>
@@ -1314,6 +1343,122 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.lights.lumen">
+<span class="sig-prename descclassname"><span class="pre">executors.lights.</span></span><span class="sig-name descname"><span class="pre">lumen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">255</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.lights.lumen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets lights to custom brightness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>host</strong> – Takes target device IP address as an argument.</p></li>
+<li><p><strong>rgb</strong> – Red, Green andBlue values to alter the brightness.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.lights.turn_off">
+<span class="sig-prename descclassname"><span class="pre">executors.lights.</span></span><span class="sig-name descname"><span class="pre">turn_off</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.lights.turn_off" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns off the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>host</strong> – Takes target device IP address as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.lights.warm">
+<span class="sig-prename descclassname"><span class="pre">executors.lights.</span></span><span class="sig-name descname"><span class="pre">warm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.lights.warm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets lights to warm/yellow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>host</strong> – Takes target device IP address as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-executors.lights_squire">
+<span id="lights-squire"></span><h1>Lights Squire<a class="headerlink" href="#module-executors.lights_squire" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.lights_squire.check_status">
+<span class="sig-prename descclassname"><span class="pre">executors.lights_squire.</span></span><span class="sig-name descname"><span class="pre">check_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.lights_squire.check_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve process ID from the <code class="docutils literal notranslate"><span class="pre">party</span></code> table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Process ID if party mode is enabled.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Process.pid</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.lights_squire.party_mode">
+<span class="sig-prename descclassname"><span class="pre">executors.lights_squire.</span></span><span class="sig-name descname"><span class="pre">party_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.lights_squire.party_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles party mode by altering colors in given light hostnames with random color codes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>host_ip</strong> – List of light IP addresses.</p></li>
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if party mode has to be disabled.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.lights_squire.preset">
+<span class="sig-prename descclassname"><span class="pre">executors.lights_squire.</span></span><span class="sig-name descname"><span class="pre">preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_ip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.lights_squire.preset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes light colors to preset values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device_ip</strong> – Takes target device IP address as an argument.</p></li>
+<li><p><strong>color</strong> – Preset value extracted from list of color codes. Defaults to a random color code.</p></li>
+<li><p><strong>speed</strong> – Speed of color change. Defaults to 100.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.lights_squire.remove_status">
+<span class="sig-prename descclassname"><span class="pre">executors.lights_squire.</span></span><span class="sig-name descname"><span class="pre">remove_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.lights_squire.remove_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes all entries from the <code class="docutils literal notranslate"><span class="pre">party</span></code> table.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.lights_squire.runner">
+<span class="sig-prename descclassname"><span class="pre">executors.lights_squire.</span></span><span class="sig-name descname"><span class="pre">runner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.lights_squire.runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs a never ending loop setting random light IP addresses to random color preset values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>host_ip</strong> – Takes list of light IP addresses as argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.lights_squire.update_status">
+<span class="sig-prename descclassname"><span class="pre">executors.lights_squire.</span></span><span class="sig-name descname"><span class="pre">update_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Process</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.lights_squire.update_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the <code class="docutils literal notranslate"><span class="pre">children</span></code> and <code class="docutils literal notranslate"><span class="pre">party</span></code> tables with process ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>process</strong> – Process for which the PID has to be stored in database.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2148,17 +2293,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.unconditional.google_search">
-<span class="sig-prename descclassname"><span class="pre">executors.unconditional.</span></span><span class="sig-name descname"><span class="pre">google_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.unconditional.google_search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Opens up a Google search for the phrase received. If nothing was received, gets phrase from user.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 <section id="module-executors.volume">
 <span id="volume"></span><h1>Volume<a class="headerlink" href="#module-executors.volume" title="Permalink to this heading">¶</a></h1>
@@ -2433,6 +2567,26 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="modules.audio.voices.voice_default">
 <span class="sig-prename descclassname"><span class="pre">modules.audio.voices.</span></span><span class="sig-name descname"><span class="pre">voice_default</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Engine</span></span></span><a class="headerlink" href="#modules.audio.voices.voice_default" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets voice module to default.</p>
+</dd></dl>
+
+</section>
+<section id="module-modules.auth_bearer">
+<span id="auth-bearer"></span><h1>Auth Bearer<a class="headerlink" href="#module-modules.auth_bearer" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.auth_bearer.BearerAuth">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.auth_bearer.</span></span><span class="sig-name descname"><span class="pre">BearerAuth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.auth_bearer.BearerAuth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiates <code class="docutils literal notranslate"><span class="pre">BearerAuth</span></code> object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">BearerAuth</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://requests.readthedocs.io/en/latest/user/authentication/#new-forms-of-authentication">New Forms of Authentication</a></p>
+<p>Initializes the class and assign object members.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>token</strong> – Token for bearer auth.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -4156,16 +4310,44 @@ None - NoneType if no face was recognized.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MagicHomeApi</span>
 </pre></div>
 </div>
-<p>Initialize a device.</p>
+<dl class="simple">
+<dt>Supports:</dt><dd><ul class="simple">
+<li><p>Bulbs (Firmware v.4 and greater)</p></li>
+<li><p>Legacy Bulbs (Firmware v.3 and lower)</p></li>
+<li><p>RGB Controllers</p></li>
+<li><p>RGB+WW Controllers</p></li>
+<li><p>RGB+WW+CW Controllers</p></li>
+</ul>
+</dd>
+</dl>
+<p>Initialize device setup via UDP.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>device_ip</strong> – Takes device IP address as argument.</p></li>
-<li><p><strong>device_type</strong> – Specific device type. Commonly 1 or 2.</p></li>
+<li><p><strong>device_type</strong> – Specific device type.</p></li>
 <li><p><strong>operation</strong> – Takes the operation that the calling function is trying to perform and logs it.</p></li>
 </ul>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt>Device types:</dt><dd><ul class="simple">
+<li><p>0: RGB</p></li>
+<li><p>1: RGB+WW</p></li>
+<li><p>2: RGB+WW+CW</p></li>
+<li><p>3: Bulb (v.4+)</p></li>
+<li><p>4: Bulb (v.3-)</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.lights.smart_lights.MagicHomeApi.API_PORT">
+<span class="sig-name descname"><span class="pre">API_PORT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5577</span></em><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi.API_PORT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.lights.smart_lights.MagicHomeApi.get_status">
 <span class="sig-name descname"><span class="pre">get_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="headerlink" href="#modules.lights.smart_lights.MagicHomeApi.get_status" title="Permalink to this definition">¶</a></dt>
@@ -4200,10 +4382,14 @@ None - NoneType if no face was recognized.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>preset_number</strong> – Takes preset value as argument.</p></li>
-<li><p><strong>speed</strong> – Rate at which the colors should change.</p></li>
+<li><p><strong>speed</strong> – Rate at which the colors should change. Integer in rage 0-100.</p></li>
 </ul>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Presets can range from 0x25 (int 37) to 0x38 (int 56)</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -4275,6 +4461,9 @@ Whites can have a value of None.</p>
 
 <hr class="docutils" />
 <span class="target" id="module-modules.lights.preset_values"></span><p>Dictionary values of color and preset number for the lights.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PRESET_VALUES</span>
+</pre></div>
+</div>
 </section>
 <section id="module-modules.dictionary.dictionary">
 <span id="meanings"></span><h1>Meanings<a class="headerlink" href="#module-modules.dictionary.dictionary" title="Permalink to this heading">¶</a></h1>
@@ -4378,14 +4567,12 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
-<section id="models">
-<h1>Models<a class="headerlink" href="#models" title="Permalink to this heading">¶</a></h1>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.models">
-<span class="sig-prename descclassname"><span class="pre">modules.models.</span></span><span class="sig-name descname"><span class="pre">models</span></span><a class="headerlink" href="#modules.models.models" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of &lt;module ‘modules.models.models’ from ‘/Users/vicky/Desktop/git/Jarvis/modules/models/models.py’&gt;</p>
-</dd></dl>
-
+<section id="module-modules.models.models">
+<span id="models"></span><h1>Models<a class="headerlink" href="#module-modules.models.models" title="Permalink to this heading">¶</a></h1>
+<p>This is a space where all the validated environment variables are loaded and evalued as per requirements.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Models</span>
+</pre></div>
+</div>
 </section>
 <section id="myq">
 <h1>MyQ<a class="headerlink" href="#myq" title="Permalink to this heading">¶</a></h1>
@@ -4493,11 +4680,11 @@ Whites can have a value of None.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.timer.executor.RepeatedTimer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.timer.executor.</span></span><span class="sig-name descname"><span class="pre">RepeatedTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.timer.executor.RepeatedTimer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiated RepeatedTimer object to run a task repeated after given intervals.</p>
+<dd><p>Initiate <code class="docutils literal notranslate"><span class="pre">RepeatedTimer</span></code> object to run a task repeated after given intervals.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">RepeatedTimer</span>
 </pre></div>
 </div>
-<p>Instantiates class.</p>
+<p>Instantiates the object and starts the task.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -4888,6 +5075,37 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.remove_duplicates">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">remove_duplicates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.utils.support.remove_duplicates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove duplicate values from a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_</strong> – Takes a list as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a cleaned up list.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.remove_file">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">remove_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.utils.support.remove_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the requested file after a certain time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> – Filepath that has to be removed.</p></li>
+<li><p><strong>delay</strong> – Delay in seconds after which the requested file is to be deleted.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.size_converter">
 <span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">size_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">byte_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.support.size_converter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the current memory consumed and converts it to human friendly format.</p>
@@ -4900,6 +5118,17 @@ Whites can have a value of None.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.stop_process">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">stop_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.utils.support.stop_process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop a particular process using <code class="docutils literal notranslate"><span class="pre">SIGTERM</span></code> and <code class="docutils literal notranslate"><span class="pre">SIGKILL</span></code> signals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pid</strong> – Process ID that has to be shut down.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -6004,11 +6233,12 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-executors.date_time">DateTime</a></li>
 <li><a class="reference internal" href="#module-executors.display_functions">DisplayFunctions</a></li>
 <li><a class="reference internal" href="#module-executors.face">Face</a></li>
-<li><a class="reference internal" href="#module-executors.garage">Garage Door</a></li>
+<li><a class="reference internal" href="#module-executors.myq_controller">Garage Door</a></li>
 <li><a class="reference internal" href="#module-executors.github">GitHub</a></li>
 <li><a class="reference internal" href="#module-executors.guard">Guard</a></li>
 <li><a class="reference internal" href="#module-executors.internet">Internet</a></li>
 <li><a class="reference internal" href="#module-executors.lights">Lights</a></li>
+<li><a class="reference internal" href="#module-executors.lights_squire">Lights Squire</a></li>
 <li><a class="reference internal" href="#module-executors.location">Location</a></li>
 <li><a class="reference internal" href="#module-executors.logger">Logger</a></li>
 <li><a class="reference internal" href="#module-executors.offline">Offline</a></li>
@@ -6029,6 +6259,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-executors.wiki">Wikipedia</a></li>
 <li><a class="reference internal" href="#modules">———-Modules———-</a></li>
 <li><a class="reference internal" href="#module-modules.audio.speaker">Audio</a></li>
+<li><a class="reference internal" href="#module-modules.auth_bearer">Auth Bearer</a></li>
 <li><a class="reference internal" href="#id1">Car</a></li>
 <li><a class="reference internal" href="#id2">Conditions</a></li>
 <li><a class="reference internal" href="#config">Config</a></li>
@@ -6040,7 +6271,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#id4">Lights</a></li>
 <li><a class="reference internal" href="#module-modules.dictionary.dictionary">Meanings</a></li>
 <li><a class="reference internal" href="#module-modules.meetings.events">Meetings</a></li>
-<li><a class="reference internal" href="#models">Models</a></li>
+<li><a class="reference internal" href="#module-modules.models.models">Models</a></li>
 <li><a class="reference internal" href="#myq">MyQ</a></li>
 <li><a class="reference internal" href="#id5">Offline</a></li>
 <li><a class="reference internal" href="#module-modules.retry.retry">Retry Handler</a></li>

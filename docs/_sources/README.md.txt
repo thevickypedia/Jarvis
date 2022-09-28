@@ -197,7 +197,7 @@ docker run \
 </details>
 
 ### Smart Devices
-A source file `smart_devices.yaml` is used to store smart devices' hostnames. `Jarvis` supports `MagicHome` lights and `LGWebOS` TVs.
+A source file `smart_devices.yaml` is used to store smart devices' hostnames. `Jarvis` supports [`MagicHome` lights](https://www.amazon.com/gp/product/B08C7GY43L) and `LGWebOS` TVs.
 
 <details>
 <summary><strong>Setup Instructions</strong></summary>
@@ -212,11 +212,13 @@ bedroom:
   - 'HOSTNAMES'
 hallway:
   - 'HOSTNAMES'
-hallway_basement:
+hallway basement:
   - 'HOSTNAMES'
 kitchen:
   - 'HOSTNAMES'
-living_room:
+living room:
+  - 'HOSTNAMES'
+party mode:  # Light hostnames which needed to be engaged for party mode
   - 'HOSTNAMES'
 tv: 'LGWEBOSTV'
 ```

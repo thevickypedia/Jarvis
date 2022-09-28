@@ -43,20 +43,35 @@ class MagicHomeApi:
 
     >>> MagicHomeApi
 
+    Supports:
+        - Bulbs (Firmware v.4 and greater)
+        - Legacy Bulbs (Firmware v.3 and lower)
+        - RGB Controllers
+        - RGB+WW Controllers
+        - RGB+WW+CW Controllers
     """
 
+    API_PORT = 5577
+
     def __init__(self, device_ip: str, device_type: int, operation: str):
-        """Initialize a device.
+        """Initialize device setup via UDP.
 
         Args:
             device_ip: Takes device IP address as argument.
-            device_type: Specific device type. Commonly 1 or 2.
+            device_type: Specific device type.
             operation: Takes the operation that the calling function is trying to perform and logs it.
+
+        See Also:
+            Device types:
+                - 0: RGB
+                - 1: RGB+WW
+                - 2: RGB+WW+CW
+                - 3: Bulb (v.4+)
+                - 4: Bulb (v.3-)
         """
         self.device_ip = device_ip
         self.device_type = device_type
         self.operation = operation
-        self.API_PORT = 5577
         self.latest_connection = time.time()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(3)
@@ -162,9 +177,11 @@ class MagicHomeApi:
 
         Args:
             preset_number: Takes preset value as argument.
-            speed: Rate at which the colors should change.
+            speed: Rate at which the colors should change. Integer in rage 0-100.
+
+        See Also:
+            Presets can range from 0x25 (int 37) to 0x38 (int 56)
         """
-        # Presets can range from 0x25 (int 37) to 0x38 (int 56)
         if preset_number < 37:
             preset_number = 37
         if preset_number > 56:
@@ -174,7 +191,7 @@ class MagicHomeApi:
         if speed > 100:
             speed = 100
 
-        if type == 4:
+        if self.device_type == 4:
             self.send_bytes(0xBB, preset_number, speed, 0x44)
         else:
             message = [0x61, preset_number, speed, 0x0F]

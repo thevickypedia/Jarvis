@@ -12,7 +12,6 @@ from executors.communicator import read_gmail, send_sms
 from executors.date_time import current_date, current_time
 from executors.display_functions import brightness
 from executors.face import face_detection
-from executors.garage import garage_door
 from executors.github import github
 from executors.guard import guard_enable
 from executors.internet import ip_info, speed_test
@@ -20,6 +19,7 @@ from executors.lights import lights
 from executors.location import (directions, distance, locate, locate_places,
                                 location)
 from executors.logger import logger
+from executors.myq_controller import garage
 from executors.others import (abusive, apps, facts, flip_a_coin, google_home,
                               jokes, meaning, music, news, notes, repeat,
                               report, sprint_name)
@@ -28,7 +28,7 @@ from executors.robinhood import robinhood
 from executors.system import system_info, system_vitals
 from executors.todo_list import add_todo, delete_todo, delete_todo_items, todo
 from executors.tv import television
-from executors.unconditional import alpha, google_maps, google_search
+from executors.unconditional import alpha, google_maps
 from executors.volume import volume
 from executors.vpn_server import vpn_server
 from executors.weather import weather
@@ -75,7 +75,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
         car(phrase.lower())
 
     elif word_match(phrase=phrase, match_list=keywords.garage):
-        garage_door(phrase.lower())
+        garage(phrase.lower())
 
     elif word_match(phrase=phrase, match_list=keywords.weather):
         weather(phrase)
@@ -178,9 +178,6 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
     elif word_match(phrase=phrase, match_list=keywords.send_sms):
         send_sms(phrase)
 
-    elif word_match(phrase=phrase, match_list=keywords.google_search):
-        google_search(phrase)
-
     elif word_match(phrase=phrase, match_list=keywords.apps):
         apps(phrase)
 
@@ -250,7 +247,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
     elif word_match(phrase=phrase, match_list=conversation.age):
         relative_date = relativedelta(dt1=datetime.strptime(datetime.strftime(datetime.now(), "%Y-%m-%d"), "%Y-%m-%d"),
                                       dt2=datetime.strptime("2020-09-06", "%Y-%m-%d"))
-        statement = f"{relative_date.years} years, {relative_date.months} months and {relative_date.days} days."
+        statement = f"{relative_date.years} years, {relative_date.months} months and {relative_date.days} days"
         if not relative_date.years:
             statement = statement.replace(f"{relative_date.years} years, ", "")
         elif relative_date.years == 1:
@@ -263,6 +260,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
             statement = statement.replace(f"{relative_date.days} days", "")
         elif relative_date.days == 1:
             statement = statement.replace("days", "day")
+        statement = " ".join(statement.split())
         speak(text=f"I'm {statement} old.")
 
     elif word_match(phrase=phrase, match_list=conversation.about_me):
