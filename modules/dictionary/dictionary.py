@@ -11,7 +11,7 @@ from typing import Dict, Union
 import requests
 from bs4 import BeautifulSoup
 
-from executors.logger import logger
+from modules.logger.custom_logger import logger
 
 
 def meaning(term: str) -> Union[Dict, None]:

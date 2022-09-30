@@ -126,24 +126,27 @@ class CronExpression:
         if self.string_tab[2] == "*" and self.string_tab[4] != "*":
             self.numerical_tab[2] = set()
 
-    def check_trigger(self, date_tuple: Union[Tuple[int, int, int, int, int], Tuple[int, ...]],
+    def check_trigger(self, date_tuple: Union[Tuple[int, int, int, int, int], Tuple[int, ...]] = None,
                       utc_offset: int = 0) -> bool:
         """Returns boolean indicating if the trigger is active at the given time.
 
         Args:
-            date_tuple: Tuple of year, month, date, hour and minute.
+            date_tuple: Tuple of year, month, date, hour and minute. Defaults to current.
             utc_offset: UTC offset.
 
         See Also:
             - | The date tuple should be in the local time. Unless periodicities are used, utc_offset does not need to
-              | be specified. If periodicities are used, specifically in the hour and minutes fields, it is crucial that
+              | be specified. If periodicity is used, specifically in the hour and minutes fields, it is crucial that
               | the utc_offset is specified.
 
         Returns:
             bool:
             A boolean flag to indicate whether the given datetime matches the crontab entry.
         """
-        year, month, day, hour, mins = date_tuple
+        if date_tuple:
+            year, month, day, hour, mins = date_tuple
+        else:
+            year, month, day, hour, mins = tuple(map(int, datetime.datetime.now().strftime("%Y %m %d %H %M").split()))
         given_date = datetime.date(year, month, day)
         zeroday = datetime.date(*self.epoch[:3])
         last_dom = calendar.monthrange(year, month)[-1]

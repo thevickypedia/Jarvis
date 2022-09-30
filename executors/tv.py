@@ -8,11 +8,11 @@ from threading import Thread
 import yaml
 
 from executors.internet import vpn_checker
-from executors.logger import logger
 from executors.word_match import word_match
 from modules.audio import speaker
 from modules.conditions import conversation
 from modules.exceptions import TVError
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.tv.tv_controls import TV
 from modules.utils import shared, support

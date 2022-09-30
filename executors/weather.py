@@ -8,9 +8,9 @@ import yaml
 from inflect import engine
 
 from executors.location import geo_locator
-from executors.logger import logger
 from executors.word_match import word_match
 from modules.audio import speaker
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.temperature import temperature
 from modules.utils import shared, support

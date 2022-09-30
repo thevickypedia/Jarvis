@@ -1,16 +1,13 @@
 import importlib
 import logging
 import os
-from logging.config import dictConfig
 from typing import Callable, Union
 
 from pydantic import FilePath
 
-from modules.models import config
+from modules.logger.custom_logger import logger
 
 importlib.reload(module=logging)
-dictConfig(config.BotConfig().dict())
-logger = logging.getLogger('telegram')
 
 
 def audio_converter_mac() -> Callable:

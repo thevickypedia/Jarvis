@@ -9,10 +9,10 @@ import cv2
 from gmailconnector.send_email import SendEmail
 
 from executors import communicator
-from executors.logger import logger
 from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import support
 

@@ -4,8 +4,8 @@ from typing import Any, Callable, NoReturn
 
 from pymyq.errors import AuthenticationError, InvalidCredentialsError, MyQError
 
-from executors.logger import logger
 from modules.audio import speaker
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.myq import myq
 from modules.utils import support

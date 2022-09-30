@@ -12,13 +12,14 @@ from executors.alarm import alarm_executor
 from executors.automation import auto_helper
 from executors.conditions import conditions
 from executors.crontab import crontab_executor
-from executors.logger import logger
 from executors.remind import reminder_executor
 from executors.word_match import word_match
 from modules.auth_bearer import BearerAuth
 from modules.conditions import keywords
 from modules.crontab import expression
 from modules.database import database
+from modules.logger import config
+from modules.logger.custom_logger import logger
 from modules.meetings import events, icalendar
 from modules.models import models
 from modules.offline import compatibles
@@ -62,6 +63,7 @@ def automator() -> NoReturn:
 
         - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't repeat execution within a minute.
     """
+    config.multiprocessing_logger(filename=os.path.join('logs', 'automation_%d-%m-%Y.log'))
     offline_list = offline_compatible + keywords.restart_control
     start_events = start_meetings = start_cron = time.time()
     events.event_app_launcher() if models.settings.macos else None
@@ -108,7 +110,7 @@ def automator() -> NoReturn:
             start_cron = time.time()
             for cron in models.env.crontab:
                 job = expression.CronExpression(line=cron)
-                if job.check_trigger(date_tuple=tuple(map(int, datetime.now().strftime("%Y,%m,%d,%H,%M").split(",")))):
+                if job.check_trigger():
                     cron_process = Process(target=crontab_executor, args=(job.comment,))
                     cron_process.start()
                     with db.connection:
@@ -167,6 +169,7 @@ def initiate_tunneling() -> NoReturn:
         - ``forever_ngrok.py`` is a simple script that triggers ngrok connection in the given offline port.
         - The connection is tunneled through a public facing URL used to make ``POST`` requests to Jarvis API.
     """
+    config.multiprocessing_logger(filename=os.path.join('logs', 'tunnel_%d-%m-%Y.log'))
     if not models.settings.macos:
         return
 

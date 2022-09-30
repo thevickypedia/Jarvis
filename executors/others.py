@@ -21,7 +21,6 @@ from randfacts import get_fact
 from executors.communicator import read_gmail
 from executors.date_time import current_date, current_time
 from executors.internet import vpn_checker
-from executors.logger import logger
 from executors.robinhood import robinhood
 from executors.todo_list import todo
 from executors.weather import weather
@@ -31,6 +30,7 @@ from modules.audio.listener import listen
 from modules.conditions import keywords
 from modules.database import database
 from modules.dictionary import dictionary
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import shared, support
 

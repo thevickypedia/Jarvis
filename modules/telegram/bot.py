@@ -5,7 +5,6 @@ import os
 import random
 import string
 import time
-from logging.config import dictConfig
 from typing import NoReturn, Union
 
 import requests
@@ -17,17 +16,15 @@ from modules.audio import tts_stt
 from modules.conditions import keywords
 from modules.database import database
 from modules.exceptions import BotInUse
-from modules.models import config, models
+from modules.logger.custom_logger import logger
+from modules.models import models
 from modules.offline import compatibles
 from modules.telegram import audio_handler
 from modules.utils import support
 
-db = database.Database(database=models.fileio.base_db)
-
 importlib.reload(module=logging)
-dictConfig(config.BotConfig().dict())
-logger = logging.getLogger('telegram')
 
+db = database.Database(database=models.fileio.base_db)
 offline_compatible = compatibles.offline_compatible()
 
 USER_TITLE = {}
@@ -487,7 +484,7 @@ class TelegramBot:
 if __name__ == '__main__':
     from modules.exceptions import StopSignal
 
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger(__name__)  # noqa: F811
     log_handler = logging.StreamHandler()
     log_handler.setFormatter(fmt=logging.Formatter(
         fmt="%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s",

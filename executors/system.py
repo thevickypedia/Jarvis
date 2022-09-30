@@ -11,10 +11,10 @@ import packaging.version
 import psutil
 
 from executors.controls import restart
-from executors.logger import logger
 from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.temperature import temperature
 from modules.utils import shared, support

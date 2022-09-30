@@ -12,7 +12,7 @@ from playsound import playsound
 from speech_recognition import (Microphone, Recognizer, RequestError,
                                 UnknownValueError, WaitTimeoutError)
 
-from executors.logger import logger
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import support
 

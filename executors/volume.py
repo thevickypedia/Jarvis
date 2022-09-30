@@ -1,9 +1,9 @@
 import os
 import random
 
-from executors.logger import logger
 from modules.audio import speaker
 from modules.conditions import conversation
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import support
 from modules.windows import win_volume

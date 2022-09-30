@@ -16,8 +16,8 @@ import requests
 import yaml
 from playsound import playsound
 
-from executors.logger import logger
 from modules.conditions import conversation, keywords
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import shared
 

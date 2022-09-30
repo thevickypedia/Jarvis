@@ -6,8 +6,8 @@ import sys
 from pyrh import Robinhood
 from pyrh.exceptions import InvalidInstrumentId, InvalidTickerSymbol
 
-from executors.logger import logger
 from modules.audio import speaker
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import support
 

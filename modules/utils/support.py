@@ -25,10 +25,10 @@ import yaml
 from holidays import country_holidays
 
 from executors.internet import ip_address
-from executors.logger import logger
 from modules.audio import speaker
 from modules.conditions import keywords
 from modules.database import database
+from modules.logger.custom_logger import logger
 from modules.models import models
 
 db = database.Database(database=models.fileio.base_db)

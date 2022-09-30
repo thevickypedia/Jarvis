@@ -5,10 +5,10 @@ from datetime import datetime
 
 from PIL import Image
 
-from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.exceptions import CameraError
 from modules.face.facial_recognition import Face
+from modules.logger.custom_logger import logger
 from modules.utils import support
 
 

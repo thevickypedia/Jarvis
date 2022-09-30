@@ -3,38 +3,24 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
+from modules.logger.custom_logger import custom_handler, logger
+
 DEFAULT_LOG_LEVEL = "INFO"
 DEFAULT_LOG_FORMAT = '%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
 
 
-class CronConfig(BaseModel):
-    """Custom log configuration for the cron schedule.
+def multiprocessing_logger(filename: str) -> str:
+    """Remove existing handlers and adds a new handler when a subprocess kicks in.
 
-    >>> CronConfig
-
+    Args:
+        filename: Filename where the subprocess should log.
     """
-
-    LOG_FILE = datetime.now().strftime(os.path.join('logs', 'cron_%d-%m-%Y.log'))
-
-    version = 1
-    disable_existing_loggers = True
-    formatters = {
-        "investment": {
-            "format": DEFAULT_LOG_FORMAT,
-            "filename": LOG_FILE,
-            "datefmt": "%b %d, %Y %H:%M:%S"
-        },
-    }
-    handlers = {
-        "investment": {
-            "formatter": "investment",
-            "class": "logging.FileHandler",
-            "filename": LOG_FILE,
-        }
-    }
-    loggers = {
-        "investment": {"handlers": ["investment"], "level": DEFAULT_LOG_LEVEL, "filename": LOG_FILE}
-    }
+    logger.propagate = False
+    for _handler in logger.handlers:
+        logger.removeHandler(hdlr=_handler)
+    log_handler = custom_handler(filename=filename)
+    logger.addHandler(hdlr=log_handler)
+    return log_handler.baseFilename
 
 
 class APIConfig(BaseModel):
@@ -50,7 +36,7 @@ class APIConfig(BaseModel):
     ACCESS_LOG_FORMAT = '%(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'
     ERROR_LOG_FORMAT = '%(levelname)s\t %(message)s'
 
-    LOGGING_CONFIG = {
+    LOG_CONFIG = {
         "version": 1,
         "disable_existing_loggers": True,
         "formatters": {
@@ -98,34 +84,4 @@ class APIConfig(BaseModel):
                 "handlers": ["error"], "level": DEFAULT_LOG_LEVEL, "propagate": True  # Since FastAPI is threaded
             }
         }
-    }
-
-
-class BotConfig(BaseModel):
-    """Custom log configuration for the telegram bot.
-
-    >>> BotConfig
-
-    """
-
-    LOG_FILE = datetime.now().strftime(os.path.join('logs', 'telegram_%d-%m-%Y.log'))
-
-    version = 1
-    disable_existing_loggers = True
-    formatters = {
-        "default": {
-            "format": DEFAULT_LOG_FORMAT,
-            "filename": LOG_FILE,
-            "datefmt": "%b %d, %Y %H:%M:%S"
-        }
-    }
-    handlers = {
-        "default": {
-            "formatter": "default",
-            "class": "logging.FileHandler",
-            "filename": LOG_FILE,
-        }
-    }
-    loggers = {
-        "telegram": {"handlers": ["default"], "level": DEFAULT_LOG_LEVEL, "filename": LOG_FILE}
     }

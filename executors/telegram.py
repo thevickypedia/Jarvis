@@ -1,20 +1,20 @@
 import importlib
 import logging
+import os
 import sys
 import time
-from logging.config import dictConfig
 from typing import NoReturn
 
 import requests
 
 from executors.controls import restart_control
 from modules.exceptions import BotInUse
-from modules.models import config, models
+from modules.logger import config
+from modules.logger.custom_logger import logger
+from modules.models import models
 from modules.telegram.bot import TelegramBot
 
 importlib.reload(module=logging)
-dictConfig(config.BotConfig().dict())
-logger = logging.getLogger('telegram')
 
 FAILED_CONNECTIONS = {'count': 0}
 
@@ -26,6 +26,7 @@ def handler() -> NoReturn:
         - BotInUse: Restarts polling to take control over.
         - ConnectionError: Initiates after 10, 20 or 30 seconds. Depends on retry count. Shuts off after 3 attempts.
     """
+    config.multiprocessing_logger(filename=os.path.join('logs', 'telegram_%d-%m-%Y.log'))
     if not models.env.bot_token:
         logger.info("Bot token is required to start the Telegram Bot")
         return

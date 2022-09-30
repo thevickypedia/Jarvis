@@ -14,8 +14,8 @@ import soundfile
 from pydantic import FilePath
 from speech_recognition import AudioFile, Recognizer, UnknownValueError
 
-from executors.logger import logger
 from modules.audio import voices
+from modules.logger.custom_logger import logger
 from modules.utils import shared
 
 recognizer = Recognizer()

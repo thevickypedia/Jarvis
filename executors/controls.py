@@ -12,13 +12,13 @@ from typing import NoReturn
 import psutil
 
 from executors.display_functions import decrease_brightness
-from executors.logger import logger
 from executors.volume import volume
 from executors.word_match import word_match
 from modules.audio import listener, speaker, voices
 from modules.conditions import conversation, keywords
 from modules.database import database
 from modules.exceptions import StopSignal
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import shared, support
 

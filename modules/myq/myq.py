@@ -5,7 +5,7 @@ from typing import Dict, NoReturn, Union
 import pymyq
 from aiohttp import ClientSession
 
-from executors.logger import logger
+from modules.logger.custom_logger import logger
 from modules.models import models
 
 

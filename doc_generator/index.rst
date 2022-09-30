@@ -203,13 +203,6 @@ Location
    :members:
    :undoc-members:
 
-Logger
-======
-
-.. automodule:: executors.logger
-   :members:
-   :undoc-members:
-
 Offline
 =======
 
@@ -388,25 +381,6 @@ Conditions
    :members:
    :exclude-members: add_todo, apps, automation, avoid, bluetooth, brightness, car, create_db, current_date, current_time, delete_db, delete_todo, directions, distance, exit_, face_detection, facts, flip_a_coin, github, google_home, google_search, guard_disable, guard_enable, ip_info, jokes, kill, kill_alarm, lights, locate, locate_places, location, meaning, meetings, music, news, notes, ok, read_gmail, reminder, repeat, report, restart_control, robinhood, send_sms, set_alarm, shutdown, sleep_control, speed_test, system_info, system_vitals, television, todo, voice_changer, volume, vpn_server, weather, wikipedia_
 
-Config
-======
-
-.. autoclass:: modules.models.config.CronConfig(pydantic.BaseModel)
-   :members:
-   :exclude-members:
-
-====
-
-.. autoclass:: modules.models.config.APIConfig(pydantic.BaseModel)
-   :members:
-   :exclude-members:
-
-====
-
-.. autoclass:: modules.models.config.BotConfig(pydantic.BaseModel)
-   :members:
-   :exclude-members:
-
 Crontab
 =======
 
@@ -485,6 +459,23 @@ Lights
    :members:
    :undoc-members:
    :exclude-members: PRESET_VALUES
+
+Logger
+======
+.. automodule:: modules.logger.custom_logger
+   :members:
+   :exclude-members:
+
+Config
+======
+
+.. autoclass:: modules.logger.config.APIConfig(pydantic.BaseModel)
+   :members:
+   :exclude-members:
+
+.. autoclass:: modules.logger.config.multiprocessing_logger
+   :members:
+   :exclude-members:
 
 Meanings
 ========

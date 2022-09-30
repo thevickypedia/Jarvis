@@ -6,12 +6,12 @@ from typing import Tuple, Union
 
 from executors.conditions import conditions
 from executors.controls import sleep_control
-from executors.logger import logger
 from executors.offline import offline_communicator
 from executors.others import time_travel
 from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import conversation, keywords
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.offline import compatibles
 from modules.utils import shared, support

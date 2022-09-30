@@ -5,7 +5,7 @@ from typing import Any, Callable, NoReturn, Union
 
 from inflect import engine
 
-from executors.logger import logger
+from modules.logger.custom_logger import logger
 
 
 def retry(attempts: int = 3, interval: Union[int, float] = 0, warn: bool = False, exclude_exc=None) -> \

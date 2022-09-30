@@ -1,7 +1,7 @@
 import sys
 from typing import Iterable, NoReturn, Union
 
-from executors.logger import logger
+from modules.logger.custom_logger import logger
 
 
 def word_match(phrase: str, match_list: Iterable[str]) -> Union[str, NoReturn]:

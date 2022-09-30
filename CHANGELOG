@@ -1,7 +1,13 @@
 Change Log
 ==========
 
-6.4.7 (09/27/2022)
+6.4.8 (09/30/2022)
+------------------
+- Multiprocess logs go to dedicated log files
+- Clean up unused log configurations
+- Move logger.py into modules
+
+6.4.7 (09/28/2022)
 ------------------
 - Add a feature to toggle flashing disco lights
 - Create a custom auth bearer for future use
@@ -46,7 +52,7 @@ Change Log
 ------------------
 - Improve wait time after wake word detection
 - Minor improvements to reduce line numbers
-- Remove un-used line of code
+- Remove un-used lines of code
 
 6.4.0 (08/31/2022)
 ------------------

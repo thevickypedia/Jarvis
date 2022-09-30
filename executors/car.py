@@ -8,9 +8,9 @@ import yaml
 from playsound import playsound
 
 from executors.location import get_location_from_coordinates
-from executors.logger import logger
 from modules.audio import speaker
 from modules.car import connector, controller
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.temperature import temperature
 from modules.utils import shared, support

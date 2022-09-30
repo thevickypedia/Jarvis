@@ -25,7 +25,8 @@ from executors.word_match import word_match
 from modules.audio import speaker, tts_stt
 from modules.conditions import conversation, keywords
 from modules.exceptions import APIResponse
-from modules.models import config, models
+from modules.logger import config
+from modules.models import models
 from modules.offline import compatibles
 from modules.utils import support
 
@@ -43,7 +44,8 @@ if not os.path.isfile(config.APIConfig().DEFAULT_LOG_FILENAME):
 offline_compatible = compatibles.offline_compatible()
 
 importlib.reload(module=logging)
-dictConfig(config=config.APIConfig().LOGGING_CONFIG)
+LOGGING = config.APIConfig()
+dictConfig(config=LOGGING.LOG_CONFIG)
 
 logging.getLogger("uvicorn.access").addFilter(InvestmentFilter())  # Adds token filter to the access logger
 logging.getLogger("uvicorn.access").propagate = False  # Disables access logger in default logger to log independently
@@ -92,6 +94,8 @@ async def enable_cors() -> NoReturn:
 @app.on_event(event_type='startup')
 async def start_robinhood() -> Any:
     """Initiates robinhood gatherer in a process and adds a cron schedule if not present already."""
+    from modules.logger.custom_logger import logger
+    config.multiprocessing_logger(filename=LOGGING.DEFAULT_LOG_FILENAME)
     await enable_cors()
     logger.info(f'Hosting at http://{models.env.offline_host}:{models.env.offline_port}')
     if all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_pass]):

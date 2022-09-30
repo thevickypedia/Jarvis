@@ -1,7 +1,7 @@
 from threading import Timer
 from typing import Callable, NoReturn, Union
 
-from executors.logger import logger
+from modules.logger.custom_logger import logger
 
 
 class RepeatedTimer:

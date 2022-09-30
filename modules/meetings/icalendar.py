@@ -9,9 +9,9 @@ from typing import NoReturn
 import requests
 from ics import Calendar
 
-from executors.logger import logger
 from modules.audio import speaker
 from modules.database import database
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.retry import retry
 from modules.utils import shared

@@ -3,8 +3,8 @@ import contextlib
 import requests
 import uvicorn
 
-from executors.logger import logger
 from executors.port_handler import is_port_in_use, kill_port_pid
+from modules.logger.custom_logger import logger
 from modules.models import models
 
 

@@ -1,4 +1,3 @@
-import logging
 import struct
 import sys
 from datetime import datetime
@@ -13,12 +12,12 @@ from executors.communicator import notify
 from executors.controls import exit_process, starter, terminator
 from executors.internet import get_ssid, ip_address, public_ip_info
 from executors.location import write_current_location
-from executors.logger import custom_handler, logger
 from executors.offline import repeated_tasks
 from executors.processor import clear_db, start_processes, stop_processes
 from executors.system import hosted_device_info
 from modules.audio import listener, speaker
 from modules.exceptions import StopSignal
+from modules.logger.custom_logger import custom_handler, logger
 from modules.models import models
 from modules.utils import shared, support
 
@@ -31,8 +30,7 @@ def restart_checker() -> NoReturn:
             stop_processes()
             logger.propagate = False
             for _handler in logger.handlers:
-                if isinstance(_handler, logging.FileHandler):
-                    logger.removeHandler(hdlr=_handler)
+                logger.removeHandler(hdlr=_handler)
             handler = custom_handler()
             logger.info(f"Switching to {handler.baseFilename}")
             logger.addHandler(hdlr=handler)

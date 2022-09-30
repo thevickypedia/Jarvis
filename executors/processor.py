@@ -5,11 +5,11 @@ from typing import Dict, List, NoReturn, Tuple, Union
 import psutil
 
 from api.server import trigger_api
-from executors.logger import logger
 from executors.offline import automator, initiate_tunneling
 from executors.telegram import handler
 from modules.audio.speech_synthesis import synthesizer
 from modules.database import database
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.retry import retry
 from modules.utils import shared, support

@@ -10,11 +10,11 @@ import yaml
 
 from executors import lights_squire
 from executors.internet import vpn_checker
-from executors.logger import logger
 from executors.word_match import word_match
 from modules.audio import speaker
 from modules.conditions import conversation
 from modules.lights import preset_values, smart_lights
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import support
 

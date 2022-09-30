@@ -1005,20 +1005,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.crontab.log_file">
-<span class="sig-prename descclassname"><span class="pre">executors.crontab.</span></span><span class="sig-name descname"><span class="pre">log_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#executors.crontab.log_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a log file and writes the headers into it.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Log filename.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 <section id="module-executors.date_time">
 <span id="datetime"></span><h1>DateTime<a class="headerlink" href="#module-executors.date_time" title="Permalink to this heading">¶</a></h1>
@@ -1647,78 +1633,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="executors.location.write_current_location">
 <span class="sig-prename descclassname"><span class="pre">executors.location.</span></span><span class="sig-name descname"><span class="pre">write_current_location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.location.write_current_location" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts location information from public IP address and writes it to a yaml file.</p>
-</dd></dl>
-
-</section>
-<section id="module-executors.logger">
-<span id="logger"></span><h1>Logger<a class="headerlink" href="#module-executors.logger" title="Permalink to this heading">¶</a></h1>
-<p>Initiates a custom logger to be accessed across modules.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CustomLogger</span>
-</pre></div>
-</div>
-<p>Disables loggers from imported modules, while using the root logger without having to load an external file.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="executors.logger.TestLogger">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">executors.logger.</span></span><span class="sig-name descname"><span class="pre">TestLogger</span></span><a class="headerlink" href="#executors.logger.TestLogger" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is a class to test logger to verify logging using module references and different logging levels.</p>
-<p>Logging works the same way regardless of callable method, static method, function or class.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TestLogger</span>
-</pre></div>
-</div>
-<p>Instantiates logger to self.logger which is used by the function methods.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="executors.logger.TestLogger.custom_time">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">custom_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Formatter</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">time</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">struct_time</span></span></span><a class="headerlink" href="#executors.logger.TestLogger.custom_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates custom timezone for <code class="docutils literal notranslate"><span class="pre">logging</span></code> which gets used only when invoked by <code class="docutils literal notranslate"><span class="pre">Docker</span></code>.</p>
-<p>This is used only when triggered within a <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">container</span></code> as it uses UTC timezone.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>*args</strong> – Takes <code class="docutils literal notranslate"><span class="pre">Formatter</span></code> object and current epoch as arguments passed by <code class="docutils literal notranslate"><span class="pre">formatTime</span></code> from <code class="docutils literal notranslate"><span class="pre">logging</span></code>.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A struct_time object which is a tuple of:
-<strong>current year, month, day, hour, minute, second, weekday, year day and dst</strong> <em>(Daylight Saving Time)</em></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>struct_time</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="executors.logger.TestLogger.test_log">
-<span class="sig-name descname"><span class="pre">test_log</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.logger.TestLogger.test_log" title="Permalink to this definition">¶</a></dt>
-<dd><p>Logs the caller function with a custom time.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.logger.custom_handler">
-<span class="sig-prename descclassname"><span class="pre">executors.logger.</span></span><span class="sig-name descname"><span class="pre">custom_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FileHandler</span></span></span><a class="headerlink" href="#executors.logger.custom_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a FileHandler, sets the log format and returns it.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Returns file handler.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>logging.FileHandler</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.logger.log_file">
-<span class="sig-prename descclassname"><span class="pre">executors.logger.</span></span><span class="sig-name descname"><span class="pre">log_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#executors.logger.log_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a log file and writes the headers into it.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Log filename.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
@@ -3459,44 +3373,6 @@ Pass 155 for LO and 285 for HI.</p>
 </pre></div>
 </div>
 </section>
-<section id="config">
-<h1>Config<a class="headerlink" href="#config" title="Permalink to this heading">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="modules.models.config.CronConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.config.</span></span><span class="sig-name descname"><span class="pre">CronConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.config.CronConfig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom log configuration for the cron schedule.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CronConfig</span>
-</pre></div>
-</div>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
-</dd></dl>
-
-<hr class="docutils" />
-<dl class="py class">
-<dt class="sig sig-object py" id="modules.models.config.APIConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.config.</span></span><span class="sig-name descname"><span class="pre">APIConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.config.APIConfig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom log configuration to redirect uvicorn logs to a log file.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">APIConfig</span>
-</pre></div>
-</div>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
-</dd></dl>
-
-<hr class="docutils" />
-<dl class="py class">
-<dt class="sig sig-object py" id="modules.models.config.BotConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.config.</span></span><span class="sig-name descname"><span class="pre">BotConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.config.BotConfig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom log configuration for the telegram bot.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">BotConfig</span>
-</pre></div>
-</div>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
-</dd></dl>
-
-</section>
 <section id="id3">
 <h1>Crontab<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-modules.crontab.expression"></span><dl class="py class">
@@ -3517,12 +3393,12 @@ Pass 155 for LO and 285 for HI.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.crontab.expression.CronExpression.check_trigger">
-<span class="sig-name descname"><span class="pre">check_trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_tuple</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">utc_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.crontab.expression.CronExpression.check_trigger" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">check_trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_tuple</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">utc_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.crontab.expression.CronExpression.check_trigger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns boolean indicating if the trigger is active at the given time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>date_tuple</strong> – Tuple of year, month, date, hour and minute.</p></li>
+<li><p><strong>date_tuple</strong> – Tuple of year, month, date, hour and minute. Defaults to current.</p></li>
 <li><p><strong>utc_offset</strong> – UTC offset.</p></li>
 </ul>
 </dd>
@@ -3532,7 +3408,7 @@ Pass 155 for LO and 285 for HI.</p>
 <ul>
 <li><div class="line-block">
 <div class="line">The date tuple should be in the local time. Unless periodicities are used, utc_offset does not need to</div>
-<div class="line">be specified. If periodicities are used, specifically in the hour and minutes fields, it is crucial that</div>
+<div class="line">be specified. If periodicity is used, specifically in the hour and minutes fields, it is crucial that</div>
 <div class="line">the utc_offset is specified.</div>
 </div>
 </li>
@@ -4464,6 +4340,103 @@ Whites can have a value of None.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PRESET_VALUES</span>
 </pre></div>
 </div>
+</section>
+<section id="module-modules.logger.custom_logger">
+<span id="logger"></span><h1>Logger<a class="headerlink" href="#module-modules.logger.custom_logger" title="Permalink to this heading">¶</a></h1>
+<p>Initiates a custom logger to be accessed across modules.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CustomLogger</span>
+</pre></div>
+</div>
+<p>Disables loggers from imported modules, while using the root logger without having to load an external file.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.logger.custom_logger.TestLogger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.logger.custom_logger.</span></span><span class="sig-name descname"><span class="pre">TestLogger</span></span><a class="headerlink" href="#modules.logger.custom_logger.TestLogger" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a class to test logger to verify logging using module references and different logging levels.</p>
+<p>Logging works the same way regardless of callable method, static method, function or class.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TestLogger</span>
+</pre></div>
+</div>
+<p>Instantiates logger to self.logger which is used by the function methods.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.logger.custom_logger.TestLogger.custom_time">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">custom_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Formatter</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">time</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">struct_time</span></span></span><a class="headerlink" href="#modules.logger.custom_logger.TestLogger.custom_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates custom timezone for <code class="docutils literal notranslate"><span class="pre">logging</span></code> which gets used only when invoked by <code class="docutils literal notranslate"><span class="pre">Docker</span></code>.</p>
+<p>This is used only when triggered within a <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">container</span></code> as it uses UTC timezone.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*args</strong> – Takes <code class="docutils literal notranslate"><span class="pre">Formatter</span></code> object and current epoch as arguments passed by <code class="docutils literal notranslate"><span class="pre">formatTime</span></code> from <code class="docutils literal notranslate"><span class="pre">logging</span></code>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A struct_time object which is a tuple of:
+<strong>current year, month, day, hour, minute, second, weekday, year day and dst</strong> <em>(Daylight Saving Time)</em></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>struct_time</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.logger.custom_logger.TestLogger.test_log">
+<span class="sig-name descname"><span class="pre">test_log</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.logger.custom_logger.TestLogger.test_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logs the caller function with a custom time.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.logger.custom_logger.custom_handler">
+<span class="sig-prename descclassname"><span class="pre">modules.logger.custom_logger.</span></span><span class="sig-name descname"><span class="pre">custom_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FileHandler</span></span></span><a class="headerlink" href="#modules.logger.custom_logger.custom_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a FileHandler, sets the log format and returns it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns file handler.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>logging.FileHandler</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.logger.custom_logger.log_file">
+<span class="sig-prename descclassname"><span class="pre">modules.logger.custom_logger.</span></span><span class="sig-name descname"><span class="pre">log_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.logger.custom_logger.log_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a log file and writes the headers into it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Log filename.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="config">
+<h1>Config<a class="headerlink" href="#config" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.logger.config.APIConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.logger.config.</span></span><span class="sig-name descname"><span class="pre">APIConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.logger.config.APIConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom log configuration to redirect uvicorn logs to a log file.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">APIConfig</span>
+</pre></div>
+</div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.logger.config.multiprocessing_logger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.logger.config.</span></span><span class="sig-name descname"><span class="pre">multiprocessing_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.logger.config.multiprocessing_logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove existing handlers and adds a new handler when a subprocess kicks in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – Filename where the subprocess should log.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-modules.dictionary.dictionary">
 <span id="meanings"></span><h1>Meanings<a class="headerlink" href="#module-modules.dictionary.dictionary" title="Permalink to this heading">¶</a></h1>
@@ -6240,7 +6213,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-executors.lights">Lights</a></li>
 <li><a class="reference internal" href="#module-executors.lights_squire">Lights Squire</a></li>
 <li><a class="reference internal" href="#module-executors.location">Location</a></li>
-<li><a class="reference internal" href="#module-executors.logger">Logger</a></li>
 <li><a class="reference internal" href="#module-executors.offline">Offline</a></li>
 <li><a class="reference internal" href="#module-executors.others">Others</a></li>
 <li><a class="reference internal" href="#module-executors.port_handler">Port Handler</a></li>
@@ -6262,13 +6234,14 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-modules.auth_bearer">Auth Bearer</a></li>
 <li><a class="reference internal" href="#id1">Car</a></li>
 <li><a class="reference internal" href="#id2">Conditions</a></li>
-<li><a class="reference internal" href="#config">Config</a></li>
 <li><a class="reference internal" href="#id3">Crontab</a></li>
 <li><a class="reference internal" href="#classes">Classes</a></li>
 <li><a class="reference internal" href="#module-modules.database.database">Database</a></li>
 <li><a class="reference internal" href="#module-modules.exceptions">Exceptions</a></li>
 <li><a class="reference internal" href="#module-modules.face.facial_recognition">Face Recognition</a></li>
 <li><a class="reference internal" href="#id4">Lights</a></li>
+<li><a class="reference internal" href="#module-modules.logger.custom_logger">Logger</a></li>
+<li><a class="reference internal" href="#config">Config</a></li>
 <li><a class="reference internal" href="#module-modules.dictionary.dictionary">Meanings</a></li>
 <li><a class="reference internal" href="#module-modules.meetings.events">Meetings</a></li>
 <li><a class="reference internal" href="#module-modules.models.models">Models</a></li>

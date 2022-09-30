@@ -6,9 +6,9 @@ from datetime import datetime, timedelta
 from typing import NoReturn
 
 from executors import communicator
-from executors.logger import logger
 from modules.audio import listener, speaker
 from modules.conditions import conversation
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import shared, support
 from modules.windows import win_notifications

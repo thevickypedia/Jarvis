@@ -7,9 +7,9 @@ from typing import Union
 import yaml
 from deepdiff import DeepDiff
 
-from executors.logger import logger
 from executors.word_match import word_match
 from modules.audio import speaker
+from modules.logger.custom_logger import logger
 from modules.models import models
 
 

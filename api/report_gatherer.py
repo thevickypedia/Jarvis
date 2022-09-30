@@ -16,7 +16,8 @@ from pyrh.exceptions import InvalidTickerSymbol
 sys.path.insert(0, os.getcwd())
 
 from api.rh_helper import CustomTemplate  # noqa
-from modules.models import config, models  # noqa
+from modules.logger import config  # noqa
+from modules.models import models  # noqa
 
 
 class Investment:
@@ -209,13 +210,12 @@ class Investment:
 
 
 if __name__ == '__main__':
-    logging.config.dictConfig(config.CronConfig().dict())
+    from executors.crontab import LOG_FILE
+    from modules.logger.custom_logger import logger as main_logger
 
-    if not os.path.isdir('logs'):
-        os.mkdir('logs')
+    filename = config.multiprocessing_logger(filename=LOG_FILE)
+    Investment(logger=main_logger).report_gatherer()
 
-    Investment(logger=logging.getLogger('investment')).report_gatherer()
-
-    with open(config.CronConfig().LOG_FILE, 'a') as file:
+    with open(filename, 'a') as file:
         file.seek(0)
         file.write('\n')

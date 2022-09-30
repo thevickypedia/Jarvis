@@ -18,7 +18,6 @@ from executors.internet import ip_info, speed_test
 from executors.lights import lights
 from executors.location import (directions, distance, locate, locate_places,
                                 location)
-from executors.logger import logger
 from executors.myq_controller import garage
 from executors.others import (abusive, apps, facts, flip_a_coin, google_home,
                               jokes, meaning, music, news, notes, repeat,
@@ -38,6 +37,7 @@ from modules.audio.speaker import speak
 from modules.audio.voices import voice_changer
 from modules.conditions import conversation, keywords
 from modules.exceptions import StopSignal
+from modules.logger.custom_logger import logger
 from modules.meetings.events import events
 from modules.meetings.icalendar import meetings
 from modules.models.models import settings

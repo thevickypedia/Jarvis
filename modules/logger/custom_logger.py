@@ -28,14 +28,14 @@ log_format = logging.Formatter(fmt='%(asctime)s - %(levelname)s - [%(module)s:%(
                                datefmt='%b-%d-%Y %I:%M:%S %p')
 
 
-def log_file() -> str:
+def log_file(filename: str) -> str:
     """Creates a log file and writes the headers into it.
 
     Returns:
         str:
         Log filename.
     """
-    filename = datetime.now().strftime(os.path.join('logs', 'jarvis_%d-%m-%Y.log'))
+    filename = datetime.now().strftime(filename)
     write = ''.join(['*' for _ in range(120)])
     if current_process().name == 'MainProcess':
         with open(filename, 'a+') as file:
@@ -47,14 +47,15 @@ def log_file() -> str:
     return filename
 
 
-def custom_handler() -> logging.FileHandler:
+def custom_handler(filename: str = None) -> logging.FileHandler:
     """Creates a FileHandler, sets the log format and returns it.
 
     Returns:
         logging.FileHandler:
         Returns file handler.
     """
-    handler = logging.FileHandler(filename=log_file(), mode='a')
+    handler = logging.FileHandler(filename=log_file(filename=filename or os.path.join('logs', 'jarvis_%d-%m-%Y.log')),
+                                  mode='a')
     handler.setFormatter(fmt=log_format)
     return handler
 

@@ -8,7 +8,7 @@ import urllib.request
 from typing import NoReturn, Union
 from uuid import UUID, uuid4
 
-from executors.logger import logger
+from modules.logger.custom_logger import logger
 
 
 def _open(url: str, headers: dict = None, data: dict = None) -> dict:

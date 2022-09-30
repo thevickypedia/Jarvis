@@ -4,7 +4,7 @@ import sys
 import time
 from typing import NoReturn
 
-from executors.logger import logger
+from modules.logger.custom_logger import logger
 
 
 def check_number_range(number: int) -> int:

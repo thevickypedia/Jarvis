@@ -8,9 +8,9 @@ from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from typing import NoReturn
 
-from executors.logger import logger
 from modules.audio import speaker
 from modules.database import database
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.retry import retry
 from modules.utils import shared, support

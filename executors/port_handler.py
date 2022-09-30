@@ -7,7 +7,7 @@ import sys
 import warnings
 from typing import Union
 
-from executors.logger import logger
+from modules.logger.custom_logger import logger
 from modules.models import models
 
 
