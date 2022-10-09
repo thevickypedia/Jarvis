@@ -65,12 +65,6 @@ API Robinhood
 API Robinhood Helper
 ====================
 
-.. autoclass:: api.rh_helper.CustomTemplate
-   :members:
-   :exclude-members: source
-
-====
-
 .. autoclass:: api.rh_helper.MarketHours
    :members:
    :exclude-members: hours
@@ -355,6 +349,13 @@ Auth Bearer
    :members:
    :undoc-members:
 
+Camera
+======
+
+.. automodule:: modules.camera.camera
+   :members:
+   :exclude-members:
+
 Car
 ===
 
@@ -439,10 +440,10 @@ Exceptions
    :members:
    :undoc-members:
 
-Face Recognition
-================
+FaceNet
+=======
 
-.. automodule:: modules.face.facial_recognition
+.. automodule:: modules.facenet.face
    :members:
    :exclude-members: cvtColor, imwrite
 
@@ -569,6 +570,19 @@ Temperature
 .. automodule:: modules.temperature.temperature
    :members:
    :undoc-members:
+
+Templates
+=========
+
+.. autoclass:: modules.templates.templates.RobinhoodTemplate
+   :members:
+   :exclude-members: source, _source
+
+====
+
+.. autoclass:: modules.templates.templates.ThreatNotificationTemplates
+   :members:
+   :exclude-members: source, _source
 
 Timeout
 =======

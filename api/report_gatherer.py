@@ -15,9 +15,9 @@ from pyrh.exceptions import InvalidTickerSymbol
 
 sys.path.insert(0, os.getcwd())
 
-from api.rh_helper import CustomTemplate  # noqa
 from modules.logger import config  # noqa
 from modules.models import models  # noqa
+from modules.templates import templates  # noqa
 
 
 class Investment:
@@ -200,7 +200,7 @@ class Investment:
         s2 = s2.replace('\n', '\n\t\t\t')
         s1 = s1.replace('\n', '\n\t\t\t')
 
-        template = CustomTemplate.source.strip()
+        template = templates.RobinhoodTemplate.source
         rendered = jinja2.Template(template).render(TITLE=title, SUMMARY=web_text, PROFIT=profit_web, LOSS=loss_web,
                                                     WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)
         with open(models.fileio.robinhood, 'w') as static_file:

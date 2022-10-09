@@ -12,6 +12,7 @@ from executors.alarm import alarm_executor
 from executors.automation import auto_helper
 from executors.conditions import conditions
 from executors.crontab import crontab_executor
+from executors.others import photo
 from executors.remind import reminder_executor
 from executors.word_match import word_match
 from modules.auth_bearer import BearerAuth
@@ -226,6 +227,8 @@ def offline_communicator(command: str) -> Union[AnyStr, HttpUrl]:
             return public_url
         else:
             raise LookupError("Failed to retrieve the public URL")
+    if word_match(phrase=command, match_list=keywords.photo):
+        return photo()
     conditions(phrase=command, should_return=True)
     shared.called_by_offline = False
     if response := shared.text_spoken:

@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+6.4.9 (10/09/2022)
+------------------
+- Add feature to capture image from connected camera
+- Onboard a module to list camera names
+- Support USB cameras for video and photo operations
+- Support flushing screen for command-line executions
+- Add photo capture feature to offline-communicator
+- Restructure facial recognition and detection process
+- Enable an option to display the live feed in face detection
+- Restructure guardian mode
+- Remove notification during initialization
+- Remove notification for broad exception in Jarvis main module
+- Add start up checks for camera feed and indices
+- Move all HTML templates to its own module
+
 6.4.8 (09/30/2022)
 ------------------
 - Multiprocess logs go to dedicated log files

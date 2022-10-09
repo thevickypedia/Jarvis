@@ -8,6 +8,7 @@ import time
 from typing import NoReturn, Union
 
 import requests
+from pydantic import FilePath
 
 from executors.commander import timed_delay
 from executors.offline import offline_communicator
@@ -156,7 +157,7 @@ class TelegramBot:
             logger.error(response.json())
         return response
 
-    def send_audio(self, chat_id: int, filename: str, parse_mode: str = 'HTML') -> requests.Response:
+    def send_audio(self, chat_id: int, filename: Union[str, FilePath], parse_mode: str = 'HTML') -> requests.Response:
         """Sends an audio file to the user.
 
         Args:
@@ -172,6 +173,22 @@ class TelegramBot:
             files = {'audio': audio.read()}
         return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendAudio', files=files,
                                   payload={'chat_id': chat_id, 'title': filename, 'parse_mode': parse_mode})
+
+    def send_photo(self, chat_id: int, filename: Union[str, FilePath]) -> requests.Response:
+        """Sends an image file to the user.
+
+        Args:
+            chat_id: Chat ID.
+            filename: Name of the image file that has to be sent.
+
+        Returns:
+            Response:
+            Response class.
+        """
+        with open(filename, 'rb') as image:
+            files = {'photo': image.read()}
+        return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendPhoto', files=files,
+                                  payload={'chat_id': chat_id, 'title': os.path.split(filename)[-1]})
 
     def reply_to(self, payload: dict, response: str, parse_mode: str = 'markdown') -> requests.Response:
         """Generates a payload to reply to a message received.
@@ -462,7 +479,7 @@ class TelegramBot:
                                                                      USER_TITLE.get(payload['from']['username']))
         except Exception as error:
             logger.error(error)
-            response = f"Jarvis failed to process the response.\n\n`{error}`"
+            response = f"Jarvis failed to process the request.\n\n`{error}`"
         logger.info(f'Response: {response}')
         self.process_response(payload=payload, response=response) if respond else None
 
@@ -473,6 +490,10 @@ class TelegramBot:
             response: Response from Jarvis.
             payload: Payload received, to extract information from.
         """
+        if os.path.isfile(response):
+            self.send_photo(chat_id=payload['from']['id'], filename=response)
+            os.remove(response)
+            return
         if payload.get('voice'):
             filename = tts_stt.text_to_audio(text=response)
             self.send_audio(chat_id=payload['from']['id'], filename=filename)

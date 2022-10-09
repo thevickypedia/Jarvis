@@ -80,7 +80,7 @@ television = ["tv", "television"]
 
 volume = ["volume", "mute"]
 
-face_detection = ["face", "recognize", "who am i", "detect", "facial", "recognition", "detection"]
+faces = ["face", "recognize", "who am i", "detect", "facial", "recognition", "detection"]
 
 speed_test = ["speed", "fast"]
 
@@ -113,6 +113,8 @@ garage = ["garage"]
 automation = ["automation"]
 
 sprint = ["sprint"]
+
+photo = ["picture", "snap", "photo"]
 
 ok = ["yeah", "yes", "yep", "go ahead", "proceed", "continue", "carry on", "please", "keep going"]
 

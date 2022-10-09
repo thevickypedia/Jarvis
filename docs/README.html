@@ -154,9 +154,9 @@
 <li><p><strong>WAKE_WORDS</strong> - List of wake words to initiate Jarvis’ listener. Defaults to <code class="docutils literal notranslate"><span class="pre">['jarvis']</span></code> (Defaults to <code class="docutils literal notranslate"><span class="pre">['alexa']</span></code> in legacy macOS)</p></li>
 <li><p><strong>LIMITED</strong> - Runs only the main version of <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> skipping all other background processes. Enforced based on the
 number of CPU cores. It can also be enabled with env-var.</p></li>
+<li><p><strong>CAMERA_INDEX</strong> - Camera index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/modules/camera/camera.py">camera.py</a> to get the index value of each camera.</p></li>
 </ul>
-<p>:warning: Windows10 and macOS (version 10.14 and newer) have limitations on the wake words as they rely on ML libraries
-for wake word detection.</p>
+<p>:warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.</p>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py">Offline communicator</a></strong></p>
 <ul class="simple">
 <li><p><strong>OFFLINE_PORT</strong> - Port number to initiate offline communicator. Defaults to <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>

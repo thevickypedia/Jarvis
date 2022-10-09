@@ -26,10 +26,11 @@ from executors.todo_list import todo
 from executors.weather import weather
 from executors.word_match import word_match
 from modules.audio import listener, speaker
-from modules.audio.listener import listen
 from modules.conditions import keywords
 from modules.database import database
 from modules.dictionary import dictionary
+from modules.exceptions import CameraError
+from modules.facenet import face
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import shared, support
@@ -338,7 +339,7 @@ def time_travel() -> None:
     todo()
     read_gmail()
     speaker.speak(text='Would you like to hear the latest news?', run=True)
-    phrase = listen(timeout=3, phrase_limit=3)
+    phrase = listener.listen(timeout=3, phrase_limit=3)
     if word_match(phrase=phrase.lower(), match_list=keywords.ok):
         news()
 
@@ -364,3 +365,31 @@ def abusive(phrase: str) -> NoReturn:
     """
     logger.warning(phrase)
     speaker.speak(text="I don't respond to abusive words. Ask me nicely, you'll get a response.")
+
+
+def photo() -> str:
+    """Captures a picture of the ambience using the connected camera.
+
+    Returns:
+        str:
+        Filename.
+    """
+    filename = os.path.join(models.fileio.root, f"{datetime.now().strftime('%B_%d_%Y_%I_%M_%p')}.jpg")
+    try:
+        facenet = face.FaceNet()
+    except CameraError as error:
+        logger.error(error)
+        return f"I'm sorry {models.env.title}! I wasn't able to take a picture."
+    if shared.called_by_offline:
+        facenet.capture_image(filename=filename)
+    else:
+        facenet.capture_image(filename=filename, display=True)
+    if os.path.isfile(filename):
+        speaker.speak(text=f"A photo has been captured {models.env.title}!")
+    else:
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to take a picture.")
+    # Ret value will be used only by offline communicator
+    if os.path.isfile(filename):
+        return filename
+    else:
+        return f"I'm sorry {models.env.title}! I wasn't able to take a picture."

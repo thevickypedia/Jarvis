@@ -1,102 +1,143 @@
 import os
+import shutil
 import sys
 import time
 from datetime import datetime
+from multiprocessing import Process
 from threading import Thread
 from typing import NoReturn, Union
 
-import cv2
+import jinja2
 from gmailconnector.send_email import SendEmail
 
 from executors import communicator
 from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
+from modules.database import database
+from modules.exceptions import CameraError
+from modules.facenet import face
 from modules.logger.custom_logger import logger
 from modules.models import models
-from modules.utils import support
+from modules.templates import templates
+from modules.utils import shared, support
+
+db = database.Database(database=models.fileio.base_db)
 
 
-def guard_enable() -> None:
+def get_state() -> int:
+    """Reads the state of guard column in the base db.
+
+    Returns:
+        int:
+        0 or 1 to indicate if the security mode is enabled.
+    """
+    with db.connection:
+        cursor = db.connection.cursor()
+        state = cursor.execute("SELECT state FROM guard").fetchone()
+    if state:
+        logger.info("Security mode is currently enabled")
+        return state
+    else:
+        logger.info("Security mode is currently disabled")
+
+
+def put_state(state: bool) -> NoReturn:
+    """Updates the state of guard column in the base db.
+
+    Args:
+        state: True or False flag to stop the security mode.
+    """
+    with db.connection:
+        cursor = db.connection.cursor()
+        if state is True:
+            logger.info("Enabling security mode.")
+            cursor.execute("INSERT or REPLACE INTO guard (state) VALUES (?);", (1,))
+        else:
+            logger.info("Disabling security mode.")
+            cursor.execute("DELETE FROM guard WHERE state = 1")
+        db.connection.commit()
+    time.sleep(0.5)
+
+
+def guard_disable() -> NoReturn:
+    """Checks the state of security mode, sets flag to False if currently enabled.
+
+    See Also:
+        Informs if a threat was detected during its runtime.
+    """
+    if get_state():
+        put_state(state=False)
+        text = f'Welcome back {models.env.title}! Good {support.part_of_day()}.'
+        if [file for file in os.listdir('threat') if file.endswith('.jpg')]:
+            text += f" We had a potential threat {models.env.title}! Please check your email, or the " \
+                    "threat directory to confirm."
+        speaker.speak(text=text)
+    else:
+        speaker.speak(text=f"Security mode was never enabled {models.env.title}!")
+
+
+def security_runner() -> NoReturn:
+    """Enables microphone and camera to watch and listen for potential threats. Notifies if any."""
+    notified, converted = None, None
+    while True:
+        # Listens for any recognizable speech and saves it to a notes file
+        sys.stdout.write("\rSECURITY MODE")
+        converted = listener.listen(timeout=3, phrase_limit=10, sound=False)
+        face_detected = datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p.jpg')
+        if not get_state() or word_match(phrase=converted, match_list=keywords.guard_disable):
+            guard_disable()
+            break
+        elif converted:
+            logger.info(f'Conversation::{converted}')
+        try:
+            face.FaceNet().face_detection(filename=face_detected, mirror=True)
+            if not os.path.isfile(face_detected):
+                face_detected = None
+        except CameraError as error:
+            logger.error(error)
+        if not any((face_detected, converted)):
+            continue
+        elif face_detected:
+            shutil.move(src=face_detected, dst=os.path.join('threat', face_detected))
+            face_detected = os.path.join('threat', face_detected)
+
+        # if no notification was sent yet or if a phrase or face is detected notification thread will be triggered
+        if not notified or float(time.time() - notified) > 300:
+            notified = time.time()
+            Thread(target=threat_notify, kwargs=({"converted": converted, "face_detected": face_detected})).start()
+
+
+def guard_enable() -> NoReturn:
     """Security Mode will enable camera and microphone in the background.
 
     Notes:
         - If any speech is recognized or a face is detected, there will another thread triggered to send notifications.
         - Notifications will be triggered only after 5 minutes of previous notification.
     """
-    logger.info('Enabled Security Mode')
-    speaker.speak(text=f"Enabled security mode {models.env.title}! I will look out for potential threats and keep you "
-                       f"posted. Have a nice {support.part_of_day()}, and enjoy yourself {models.env.title}!", run=True)
-
-    cam_source, cam = None, None
-    for i in range(0, 3):
-        cam = cv2.VideoCapture(i)  # tries thrice to choose the camera for which Jarvis has access
-        if cam is None or not cam.isOpened() or cam.read() == (False, None):
-            pass
-        else:
-            cam_source = i  # source for security cam is chosen
-            cam.release()
-            break
-    if cam_source is None:
-        cam_error = 'Guarding mode disabled as I was unable to access any of the cameras.'
-        logger.error(cam_error)
-        communicator.notify(user=models.env.gmail_user, password=models.env.gmail_pass, number=models.env.phone_number,
-                            body=cam_error, subject="IMPORTANT::Guardian mode faced an exception.")
+    if get_state():
+        speaker.speak(text=f"Security mode is already active {models.env.title}!")
         return
-
-    scale_factor = 1.1  # Parameter specifying how much the image size is reduced at each image scale.
-    min_neighbors = 5  # Parameter specifying how many neighbors each candidate rectangle should have, to retain it.
-    notified, date_extn, converted = None, None, None
-
-    while True:
-        # Listens for any recognizable speech and saves it to a notes file
-        sys.stdout.write("\rSECURITY MODE")
-        if not (converted := listener.listen(timeout=3, phrase_limit=10, sound=False)):
-            continue
-
-        if converted and word_match(phrase=converted, match_list=keywords.guard_disable):
-            speaker.speak(text=f'Welcome back {models.env.title}! Good {support.part_of_day()}.')
-            if os.path.exists(f'threat/{date_extn}.jpg'):
-                speaker.speak(text=f"We had a potential threat {models.env.title}! Please check your email to confirm.")
-            speaker.speak(run=True)
-            logger.info('Disabled security mode')
-            sys.stdout.write('\rDisabled Security Mode')
-            break
-        elif converted:
-            logger.info(f'Conversation::{converted}')
-
-        if cam_source is not None:
-            # Capture images and keeps storing it to a folder
-            validation_video = cv2.VideoCapture(cam_source)
-            cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-            ignore, image = validation_video.read()
-            scale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            faces = cascade.detectMultiScale(scale, scale_factor, min_neighbors)
-            date_extn = f"{datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p')}"
-            try:
-                if faces:
-                    pass
-            except ValueError:
-                # log level set to critical because this is a known exception when try check 'if faces'
-                cv2.imwrite(f'threat/{date_extn}.jpg', image)
-                logger.info(f'Image of detected face stored as {date_extn}.jpg')
-
-        if not os.path.exists(f'threat/{date_extn}.jpg'):
-            date_extn = None
-
-        # if no notification was sent yet or if a phrase or face is detected notification thread will be triggered
-        if (not notified or float(time.time() - notified) > 300) and (converted or date_extn):
-            notified = time.time()
-            Thread(target=threat_notify, kwargs=({"converted": converted, "phone_number": models.env.phone_number,
-                                                  "gmail_user": models.env.gmail_user,
-                                                  "gmail_pass": models.env.gmail_pass,
-                                                  "recipient": models.env.recipient or models.env.alt_gmail_user or
-                                                  models.env.gmail_user,
-                                                  "date_extn": date_extn})).start()
+    if not os.path.isdir('threat'):
+        os.mkdir('threat')
+    logger.info('Enabled Security Mode')
+    put_state(state=True)
+    speaker.speak(text=f"Enabled security mode {models.env.title}! I will look out for potential threats and keep you "
+                       f"posted. Have a nice {support.part_of_day()}, and enjoy yourself {models.env.title}!")
+    if shared.called_by_offline:
+        process = Process(target=security_runner)
+        process.start()
+        with db.connection:
+            cursor = db.connection.cursor()
+            cursor.execute("UPDATE children SET guard=null")
+            cursor.execute("INSERT or REPLACE INTO children (guard) VALUES (?);", (process.pid,))
+            db.connection.commit()
+        return
+    speaker.speak(run=True)
+    security_runner()
 
 
-def threat_notify(converted: str, date_extn: Union[str, None], gmail_user: str, gmail_pass: str,
-                  phone_number: str, recipient: str) -> NoReturn:
+def threat_notify(converted: str, face_detected: Union[str, None]) -> NoReturn:
     """Sends an SMS and email notification in case of a threat.
 
     References:
@@ -104,29 +145,38 @@ def threat_notify(converted: str, date_extn: Union[str, None], gmail_user: str, 
 
     Args:
         converted: Takes the voice recognized statement as argument.
-        date_extn: Name of the attachment file which is the picture of the intruder.
-        gmail_user: Email address for the gmail account.
-        gmail_pass: Password of the gmail account.
-        phone_number: Phone number to send SMS.
-        recipient: Email address of the recipient.
+        face_detected: Name of the attachment file which is the picture of the intruder.
     """
-    if converted:
-        communicator.notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
-                            body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\n{converted}")
-        body_ = f"""<html><head></head><body><h2>Conversation of Intruder:</h2><br>{converted}<br><br>
-                                    <h2>Attached is a photo of the intruder.</h2>"""
-    else:
-        communicator.notify(user=gmail_user, password=gmail_pass, number=phone_number, subject="!!INTRUDER ALERT!!",
+    recipient = models.env.recipient or models.env.alt_gmail_user or models.env.gmail_user
+    if converted and face_detected:
+        communicator.notify(user=models.env.gmail_user, password=models.env.gmail_pass, number=models.env.phone_number,
+                            subject="!!INTRUDER ALERT!!",
+                            body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\nINTRUDER SPOKE: {converted}\n\n"
+                                 f"Intruder picture has been sent to {recipient}")
+        template = templates.ThreatNotificationTemplates.threat_audio
+        rendered = jinja2.Template(template).render(CONVERTED=converted)
+    elif face_detected:
+        communicator.notify(user=models.env.gmail_user, password=models.env.gmail_pass, number=models.env.phone_number,
+                            subject="!!INTRUDER ALERT!!",
                             body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\n"
                                  "Check your email for more information.")
-        body_ = """<html><head></head><body><h2>No conversation was recorded,
-                                but attached is a photo of the intruder.</h2>"""
-    if date_extn:
-        attachment_ = f'threat/{date_extn}.jpg'
-        response_ = SendEmail(gmail_user=gmail_user, gmail_pass=gmail_pass,
-                              recipient=recipient, body=body_, attachment=attachment_,
-                              subject=f"Intruder Alert on {datetime.now().strftime('%B %d, %Y %I:%M %p')}").send_email()
-        if response_.ok:
-            logger.info('Email has been sent!')
-        else:
-            logger.error(f"Email dispatch failed with response: {response_.body}\n")
+        template = templates.ThreatNotificationTemplates.threat_no_audio
+        rendered = jinja2.Template(template).render()
+    else:
+        logger.warning("Un-processable arguments received.")
+        return
+
+    kwargs = {"gmail_user": models.env.gmail_user,
+              "gmail_pass": models.env.gmail_pass,
+              "recipient": recipient,
+              "html_body": rendered,
+              "subject": f"Intruder Alert on {datetime.now().strftime('%B %d, %Y %I:%M %p')}"}
+
+    if face_detected:
+        kwargs["attachment"] = face_detected
+
+    response_ = SendEmail(**kwargs).send_email()
+    if response_.ok:
+        logger.info('Email has been sent!')
+    else:
+        logger.error(f"Email dispatch failed with response: {response_.body}\n")

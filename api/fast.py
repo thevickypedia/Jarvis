@@ -1,3 +1,4 @@
+import imghdr
 import importlib
 import logging
 import mimetypes
@@ -263,6 +264,11 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
                                      f'{models.env.title}!')
     response = offline_communicator(command=command)
     logger.info(f"Response: {response}")
+    if os.path.isfile(response):
+        logger.info("Response received as a file.")
+        Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': response}).start()
+        return FileResponse(path=response, media_type=f'image/{imghdr.what(file=response)}',
+                            filename=os.path.split(response)[-1], status_code=HTTPStatus.OK.real)
     if input_data.native_audio:
         native_audio_wav = tts_stt.text_to_audio(text=response)
         logger.info(f"Storing response as {native_audio_wav} in native audio.")

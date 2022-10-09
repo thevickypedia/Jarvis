@@ -32,12 +32,17 @@ class Settings(BaseSettings):
     """
 
     pid: PositiveInt = os.getpid()
+    runenv: str = psutil.Process(os.getpid()).parent().name()
     ram: Union[PositiveInt, PositiveFloat] = psutil.virtual_memory().total
     physical_cores: PositiveInt = psutil.cpu_count(logical=False)
     logical_cores: PositiveInt = psutil.cpu_count(logical=True)
     limited: bool = True if physical_cores < 4 else False
     bot: str = pathlib.PurePath(sys.argv[0]).stem
 
+    if runenv.endswith('sh'):
+        ide = False
+    else:
+        ide = True
     if platform.system() == "Windows":
         macos: bool = False
     elif platform.system() == "Darwin":
@@ -64,6 +69,16 @@ class Sensitivity(float or PositiveInt, Enum):
     """
 
     sensitivity: Union[float, PositiveInt]
+
+
+class CameraIndex(int or PositiveInt, Enum):
+    """Allowed values for camera_index.
+
+    >>> Sensitivity
+
+    """
+
+    sensitivity: Union[int, PositiveInt]
 
 
 class EventApp(str, Enum):
@@ -123,6 +138,7 @@ class EnvConfig(BaseSettings):
     ics_url: HttpUrl = Field(default=None, env='ICS_URL')
     website: HttpUrl = Field(default='https://vigneshrao.com', env='WEBSITE')
     wolfram_api_key: str = Field(default=None, env='WOLFRAM_API_KEY')
+    camera_index: CameraIndex = Field(default=None, le=1, ge=0, env='CAMERA_INDEX')
     maps_api: str = Field(default=None, env='MAPS_API')
     news_api: str = Field(default=None, env='NEWS_API')
     git_user: str = Field(default=None, env='GIT_USER')
@@ -187,6 +203,7 @@ class FileIO(BaseModel):
 
     """
 
+    root: DirectoryPath = os.path.realpath('fileio')
     automation: FilePath = os.path.join('fileio', 'automation.yaml')
     tmp_automation: FilePath = os.path.join('fileio', 'tmp_automation.yaml')
     base_db: FilePath = os.path.join('fileio', 'database.db')
@@ -196,10 +213,11 @@ class FileIO(BaseModel):
     notes: FilePath = os.path.join('fileio', 'notes.txt')
     robinhood: FilePath = os.path.join('fileio', 'robinhood.html')
     smart_devices: FilePath = os.path.join('fileio', 'smart_devices.yaml')
-    training: FilePath = os.path.join('fileio', 'training_data.yaml')
+    training_data: FilePath = os.path.join('fileio', 'training_data.yaml')
     event_script: FilePath = os.path.join('fileio', f'{env.event_app}.scpt')
     speech_synthesis_wav: FilePath = os.path.join('fileio', 'speech_synthesis.wav')
     speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))
+    templates: DirectoryPath = os.path.realpath(os.path.join('modules', 'templates'))
 
 
 fileio = FileIO()
@@ -217,7 +235,6 @@ class Indicators(BaseModel):
     coin: FilePath = os.path.join('indicators', 'coin.mp3')
     end: FilePath = os.path.join('indicators', 'end.mp3')
     exhaust: FilePath = os.path.join('indicators', 'exhaust.mp3')
-    initialize: FilePath = os.path.join('indicators', 'initialize.mp3')
     start: FilePath = os.path.join('indicators', 'start.mp3')
     tv_connect: FilePath = os.path.join('indicators', 'tv_connect.mp3')
     tv_scan: FilePath = os.path.join('indicators', 'tv_scan.mp3')

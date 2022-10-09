@@ -188,14 +188,16 @@ def unrecognized_dumper(train_data: dict) -> NoReturn:
     """
     dt_string = datetime.now().strftime("%B %d, %Y %H:%M:%S.%f")[:-3]
     data = {}
-    if os.path.isfile(models.fileio.training):
+    if os.path.isfile(models.fileio.training_data):
         try:
-            with open(models.fileio.training) as reader:
+            with open(models.fileio.training_data) as reader:
                 data = yaml.load(stream=reader, Loader=yaml.FullLoader) or {}
         except yaml.YAMLError as error:
             logger.error(error)
-            os.rename(src=models.fileio.training,
-                      dst=str(models.fileio.training).replace(".", f"_{datetime.now().strftime('%m_%d_%Y_%H_%M')}."))
+            os.rename(
+                src=models.fileio.training_data,
+                dst=str(models.fileio.training_data).replace(".", f"_{datetime.now().strftime('%m_%d_%Y_%H_%M')}.")
+            )
         for key, value in train_data.items():
             if data.get(key):
                 data[key].update({dt_string: value})
@@ -212,7 +214,7 @@ def unrecognized_dumper(train_data: dict) -> NoReturn:
         } for func, unrec_dict in data.items()
     }
 
-    with open(models.fileio.training, 'w') as writer:
+    with open(models.fileio.training_data, 'w') as writer:
         yaml.dump(data=data, stream=writer, sort_keys=False)
 
 
@@ -488,8 +490,12 @@ def no_env_vars() -> NoReturn:
 
 def flush_screen() -> NoReturn:
     """Flushes the screen output."""
-    sys.stdout.flush()
-    sys.stdout.write("\r")
+    if models.settings.ide:
+        sys.stdout.flush()
+        sys.stdout.write("\r")
+    else:
+        sys.stdout.flush()
+        sys.stdout.write(f"\r{' '.join(['' for _ in range(os.get_terminal_size().columns)])}")
 
 
 def block_print() -> NoReturn:

@@ -20,7 +20,7 @@ def audio_converter_mac() -> Callable:
     try:
         from ftransc.core.transcoders import transcode  # noqa
         return transcode
-    except SystemExit as error:
+    except (SystemExit, ModuleNotFoundError) as error:
         logger.error(error)
 
 

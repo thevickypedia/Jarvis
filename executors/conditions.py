@@ -11,17 +11,17 @@ from executors.car import car
 from executors.communicator import read_gmail, send_sms
 from executors.date_time import current_date, current_time
 from executors.display_functions import brightness
-from executors.face import face_detection
+from executors.face import faces
 from executors.github import github
-from executors.guard import guard_enable
+from executors.guard import guard_disable, guard_enable
 from executors.internet import ip_info, speed_test
 from executors.lights import lights
 from executors.location import (directions, distance, locate, locate_places,
                                 location)
 from executors.myq_controller import garage
 from executors.others import (abusive, apps, facts, flip_a_coin, google_home,
-                              jokes, meaning, music, news, notes, repeat,
-                              report, sprint_name)
+                              jokes, meaning, music, news, notes, photo,
+                              repeat, report, sprint_name)
 from executors.remind import reminder
 from executors.robinhood import robinhood
 from executors.system import system_info, system_vitals
@@ -184,8 +184,8 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
     elif word_match(phrase=phrase, match_list=keywords.music):
         music(phrase)
 
-    elif word_match(phrase=phrase, match_list=keywords.face_detection):
-        face_detection()
+    elif word_match(phrase=phrase, match_list=keywords.faces):
+        faces(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.speed_test) and \
             ('internet' in phrase.lower() or 'connection' in phrase.lower() or 'run' in phrase.lower()):
@@ -196,6 +196,9 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
 
     elif word_match(phrase=phrase, match_list=keywords.guard_enable):
         guard_enable()
+
+    elif word_match(phrase=phrase, match_list=keywords.guard_disable):
+        guard_disable()
 
     elif word_match(phrase=phrase, match_list=keywords.flip_a_coin):
         flip_a_coin()
@@ -220,6 +223,9 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
 
     elif word_match(phrase=phrase, match_list=keywords.sprint):
         sprint_name()
+
+    elif word_match(phrase=phrase, match_list=keywords.photo):
+        photo()
 
     elif word_match(phrase=phrase, match_list=conversation.greeting):
         speak(text=random.choice(['I am spectacular. I hope you are doing fine too.', 'I am doing well. Thank you.',
@@ -247,7 +253,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
     elif word_match(phrase=phrase, match_list=conversation.age):
         relative_date = relativedelta(dt1=datetime.strptime(datetime.strftime(datetime.now(), "%Y-%m-%d"), "%Y-%m-%d"),
                                       dt2=datetime.strptime("2020-09-06", "%Y-%m-%d"))
-        statement = f"{relative_date.years} years, {relative_date.months} months and {relative_date.days} days"
+        statement = f"{relative_date.years} years, {relative_date.months} months and {relative_date.days} days."
         if not relative_date.years:
             statement = statement.replace(f"{relative_date.years} years, ", "")
         elif relative_date.years == 1:
@@ -260,7 +266,6 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
             statement = statement.replace(f"{relative_date.days} days", "")
         elif relative_date.days == 1:
             statement = statement.replace("days", "day")
-        statement = " ".join(statement.split())
         speak(text=f"I'm {statement} old.")
 
     elif word_match(phrase=phrase, match_list=conversation.about_me):

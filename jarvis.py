@@ -8,7 +8,6 @@ import pyaudio
 from playsound import playsound
 
 from executors.commander import initiator
-from executors.communicator import notify
 from executors.controls import exit_process, starter, terminator
 from executors.internet import get_ssid, ip_address, public_ip_info
 from executors.location import write_current_location
@@ -115,8 +114,6 @@ class Activator:
                 initiator(phrase=phrase, should_return=True)
             except Exception as error:
                 logger.fatal(error)
-                notify(user=models.env.gmail_user, password=models.env.gmail_pass,
-                       subject="UNKNOWN ERROR in main module", body=error.__str__(), number=models.env.phone_number)
                 speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an unknown error. "
                                    "Please check the logs for more information.")
             speaker.speak(run=True)
@@ -195,7 +192,6 @@ def begin() -> NoReturn:
     if not models.settings.limited:
         shared.processes = start_processes()
     write_current_location()
-    playsound(sound=models.indicators.initialize, block=False)
     Activator().start()
 
 

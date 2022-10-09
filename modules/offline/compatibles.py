@@ -14,9 +14,10 @@ def offline_compatible() -> List[str]:
     offline_words = [keywords.sleep_control,
                      keywords.set_alarm,
                      keywords.current_time,
+                     keywords.photo,
                      keywords.apps,
                      keywords.distance,
-                     keywords.face_detection,
+                     keywords.faces,
                      keywords.facts,
                      keywords.weather,
                      keywords.flip_a_coin,
@@ -61,5 +62,4 @@ def offline_compatible() -> List[str]:
                      conversation.what,
                      conversation.whats_up,
                      conversation.who]
-    matrix_to_list = sum(offline_words, []) or [item for sublist in offline_words for item in sublist]
-    return support.remove_duplicates(input_=matrix_to_list)
+    return support.remove_duplicates(input_=support.matrix_to_flat_list(input_=offline_words))

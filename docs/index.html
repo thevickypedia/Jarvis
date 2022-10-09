@@ -518,16 +518,6 @@ name is specified, allow every event.</p>
 <section id="api-robinhood-helper">
 <h1>API Robinhood Helper<a class="headerlink" href="#api-robinhood-helper" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="api.rh_helper.CustomTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.rh_helper.</span></span><span class="sig-name descname"><span class="pre">CustomTemplate</span></span><a class="headerlink" href="#api.rh_helper.CustomTemplate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Template object which has the template for static html file stored.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CustomTemplate</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<hr class="docutils" />
-<dl class="py class">
 <dt class="sig sig-object py" id="api.rh_helper.MarketHours">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.rh_helper.</span></span><span class="sig-name descname"><span class="pre">MarketHours</span></span><a class="headerlink" href="#api.rh_helper.MarketHours" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates MarketHours object to store the market hours for each timezone in USA.</p>
@@ -1073,8 +1063,14 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <section id="module-executors.face">
 <span id="face"></span><h1>Face<a class="headerlink" href="#module-executors.face" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.face.face_detection">
-<span class="sig-prename descclassname"><span class="pre">executors.face.</span></span><span class="sig-name descname"><span class="pre">face_detection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.face.face_detection" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="executors.face.detected_face">
+<span class="sig-prename descclassname"><span class="pre">executors.face.</span></span><span class="sig-name descname"><span class="pre">detected_face</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.face.detected_face" title="Permalink to this definition">¶</a></dt>
+<dd><p>Captures a picture, shows a preview and stores it for future recognition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.face.faces">
+<span class="sig-prename descclassname"><span class="pre">executors.face.</span></span><span class="sig-name descname"><span class="pre">faces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.face.faces" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates face recognition script and looks for images stored in named directories within <code class="docutils literal notranslate"><span class="pre">train</span></code> directory.</p>
 </dd></dl>
 
@@ -1168,8 +1164,32 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <section id="module-executors.guard">
 <span id="guard"></span><h1>Guard<a class="headerlink" href="#module-executors.guard" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="executors.guard.get_state">
+<span class="sig-prename descclassname"><span class="pre">executors.guard.</span></span><span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#executors.guard.get_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the state of guard column in the base db.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>0 or 1 to indicate if the security mode is enabled.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.guard.guard_disable">
+<span class="sig-prename descclassname"><span class="pre">executors.guard.</span></span><span class="sig-name descname"><span class="pre">guard_disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.guard.guard_disable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the state of security mode, sets flag to False if currently enabled.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Informs if a threat was detected during its runtime.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="executors.guard.guard_enable">
-<span class="sig-prename descclassname"><span class="pre">executors.guard.</span></span><span class="sig-name descname"><span class="pre">guard_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.guard.guard_enable" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.guard.</span></span><span class="sig-name descname"><span class="pre">guard_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.guard.guard_enable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Security Mode will enable camera and microphone in the background.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
@@ -1179,8 +1199,25 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="executors.guard.put_state">
+<span class="sig-prename descclassname"><span class="pre">executors.guard.</span></span><span class="sig-name descname"><span class="pre">put_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.guard.put_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the state of guard column in the base db.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> – True or False flag to stop the security mode.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.guard.security_runner">
+<span class="sig-prename descclassname"><span class="pre">executors.guard.</span></span><span class="sig-name descname"><span class="pre">security_runner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.guard.security_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enables microphone and camera to watch and listen for potential threats. Notifies if any.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="executors.guard.threat_notify">
-<span class="sig-prename descclassname"><span class="pre">executors.guard.</span></span><span class="sig-name descname"><span class="pre">threat_notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_extn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmail_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmail_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phone_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recipient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.guard.threat_notify" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.guard.</span></span><span class="sig-name descname"><span class="pre">threat_notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_detected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.guard.threat_notify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends an SMS and email notification in case of a threat.</p>
 <p class="rubric">References</p>
 <p>Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> to send the SMS and email.</p>
@@ -1188,11 +1225,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>converted</strong> – Takes the voice recognized statement as argument.</p></li>
-<li><p><strong>date_extn</strong> – Name of the attachment file which is the picture of the intruder.</p></li>
-<li><p><strong>gmail_user</strong> – Email address for the gmail account.</p></li>
-<li><p><strong>gmail_pass</strong> – Password of the gmail account.</p></li>
-<li><p><strong>phone_number</strong> – Phone number to send SMS.</p></li>
-<li><p><strong>recipient</strong> – Email address of the recipient.</p></li>
+<li><p><strong>face_detected</strong> – Name of the attachment file which is the picture of the intruder.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1854,6 +1887,20 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="executors.others.photo">
+<span class="sig-prename descclassname"><span class="pre">executors.others.</span></span><span class="sig-name descname"><span class="pre">photo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#executors.others.photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Captures a picture of the ambience using the connected camera.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Filename.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="executors.others.repeat">
 <span class="sig-prename descclassname"><span class="pre">executors.others.</span></span><span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.others.repeat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Repeats whatever is heard.</p>
@@ -2499,6 +2546,93 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>token</strong> – Token for bearer auth.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-modules.camera.camera">
+<span id="camera"></span><h1>Camera<a class="headerlink" href="#module-modules.camera.camera" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.camera.camera.Camera">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.camera.camera.</span></span><span class="sig-name descname"><span class="pre">Camera</span></span><a class="headerlink" href="#modules.camera.camera.Camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates camera object to get information about the connected cameras.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Camera</span>
+</pre></div>
+</div>
+<p>Instantiates the camera object to run the OS specific builtin commands to get the camera information.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.camera.camera.Camera.get_camera_info">
+<span class="sig-name descname"><span class="pre">get_camera_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.camera.camera.Camera.get_camera_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the yielded camera information as a generator object and returns as a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of dictionaries.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[Dict[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.camera.camera.Camera.get_index">
+<span class="sig-name descname"><span class="pre">get_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.camera.camera.Camera.get_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the index and name of each connected camera.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Index and name of cameras as a string.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.camera.camera.Camera.list_cameras">
+<span class="sig-name descname"><span class="pre">list_cameras</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.camera.camera.Camera.list_cameras" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of names of all cameras connected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of camera names.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.camera.camera.list_splitter">
+<span class="sig-prename descclassname"><span class="pre">modules.camera.camera.</span></span><span class="sig-name descname"><span class="pre">list_splitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.camera.camera.list_splitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits a list into multiple lists at a specific value given.</p>
+<p class="rubric">Notes</p>
+<p>delimiter: This value should be final value where the initial list must be split.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">main_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;First Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Vignesh&#39;</span><span class="p">,</span> <span class="s1">&#39;Last Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Rao&#39;</span><span class="p">,</span> <span class="s1">&#39;Drives&#39;</span><span class="p">,</span> <span class="s1">&#39;Jaguar&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;First Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Tony&#39;</span><span class="p">,</span> <span class="s1">&#39;Last Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Stark&#39;</span><span class="p">,</span> <span class="s1">&#39;Drives&#39;</span><span class="p">,</span> <span class="s1">&#39;Mark III&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>delimiter should be <code class="docutils literal notranslate"><span class="pre">Drives</span></code> since that’s where the main list has to be split.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>original_list</strong> – List that has to be split.</p></li>
+<li><p><strong>delimiter</strong> – Value where the list has to be split.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns list of list(s).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[List[str]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3569,6 +3703,11 @@ Pass 155 for LO and 285 for HI.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.camera_index">
+<span class="sig-name descname"><span class="pre">camera_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CameraIndex</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.camera_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.car_email">
 <span class="sig-name descname"><span class="pre">car_email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.car_email" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3872,6 +4011,11 @@ Pass 155 for LO and 285 for HI.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.FileIO.root">
+<span class="sig-name descname"><span class="pre">root</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DirectoryPath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.FileIO.smart_devices">
 <span class="sig-name descname"><span class="pre">smart_devices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.smart_devices" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3892,13 +4036,18 @@ Pass 155 for LO and 285 for HI.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.FileIO.templates">
+<span class="sig-name descname"><span class="pre">templates</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DirectoryPath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.templates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.FileIO.tmp_automation">
 <span class="sig-name descname"><span class="pre">tmp_automation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.tmp_automation" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.FileIO.training">
-<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.training" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.models.classes.FileIO.training_data">
+<span class="sig-name descname"><span class="pre">training_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.training_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -3936,11 +4085,6 @@ Pass 155 for LO and 285 for HI.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.Indicators.exhaust">
 <span class="sig-name descname"><span class="pre">exhaust</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.Indicators.exhaust" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.Indicators.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.Indicators.initialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4008,6 +4152,11 @@ Pass 155 for LO and 285 for HI.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.Settings.ram">
 <span class="sig-name descname"><span class="pre">ram</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.Settings.ram" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.Settings.runenv">
+<span class="sig-name descname"><span class="pre">runenv</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.Settings.runenv" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -4136,19 +4285,46 @@ Pass 155 for LO and 285 for HI.</p>
 </dd></dl>
 
 </section>
-<section id="module-modules.face.facial_recognition">
-<span id="face-recognition"></span><h1>Face Recognition<a class="headerlink" href="#module-modules.face.facial_recognition" title="Permalink to this heading">¶</a></h1>
+<section id="module-modules.facenet.face">
+<span id="facenet"></span><h1>FaceNet<a class="headerlink" href="#module-modules.facenet.face" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="modules.face.facial_recognition.Face">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.face.facial_recognition.</span></span><span class="sig-name descname"><span class="pre">Face</span></span><a class="headerlink" href="#modules.face.facial_recognition.Face" title="Permalink to this definition">¶</a></dt>
-<dd><p>Module for <code class="docutils literal notranslate"><span class="pre">face</span> <span class="pre">recognition</span></code> script using defined tolerance level and specific model.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Face</span>
+<dt class="sig sig-object py" id="modules.facenet.face.FaceNet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.facenet.face.</span></span><span class="sig-name descname"><span class="pre">FaceNet</span></span><a class="headerlink" href="#modules.facenet.face.FaceNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Module for image capture, face recognition and detection using defined tolerance level and specific model.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">FaceNet</span>
 </pre></div>
 </div>
+<p>Instantiates the <code class="docutils literal notranslate"><span class="pre">Processor</span></code> object and sources the camera hardware.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="modules.face.facial_recognition.Face.face_detection">
-<span class="sig-name descname"><span class="pre">face_detection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.face.facial_recognition.Face.face_detection" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.facenet.face.FaceNet.capture_image">
+<span class="sig-name descname"><span class="pre">capture_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cv2_open.jpg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.facenet.face.FaceNet.capture_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Captures an image and saves it locally.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – Name of the file to be saved.</p></li>
+<li><p><strong>display</strong> – Boolean value whether to display the captured image on screen.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.facenet.face.FaceNet.face_detection">
+<span class="sig-name descname"><span class="pre">face_detection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retry_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mirror</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cv2_open.jpg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.facenet.face.FaceNet.face_detection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detects faces by converting it to grayscale and neighbor match method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retry_count</strong> – Number of trials to detect a face before the function can quit.</p></li>
+<li><p><strong>mirror</strong> – Mirrors the live feed vertically.</p></li>
+<li><p><strong>filename</strong> – Filename under which the detected face has to be stored.</p></li>
+<li><p><strong>display</strong> – Only displays the live feed instead of saving it to a file.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Filename should not include the file path but just the name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A boolean value if not a face was detected.</p>
@@ -4160,20 +4336,65 @@ Pass 155 for LO and 285 for HI.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="modules.face.facial_recognition.Face.face_recognition">
-<span class="sig-name descname"><span class="pre">face_recognition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.face.facial_recognition.Face.face_recognition" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.facenet.face.FaceNet.face_recognition">
+<span class="sig-name descname"><span class="pre">face_recognition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FilePath</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.facenet.face.FaceNet.face_recognition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recognizes faces from the training dataset - images in the <code class="docutils literal notranslate"><span class="pre">train</span></code> directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>str - Name of the person in case of a recognized face.
-None - NoneType if no face was recognized.</p>
+<dd class="field-odd"><p>Number of trials to recognize a face before the function can quit.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>None or str</p>
+<dd class="field-even"><p>retry_count</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Name of the enclosing directory in case of a recognized face.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.facenet.face.FaceNet.load_dataset">
+<span class="sig-name descname"><span class="pre">load_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.facenet.face.FaceNet.load_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the dataset.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.facenet.face.condition_check">
+<span class="sig-prename descclassname"><span class="pre">modules.facenet.face.</span></span><span class="sig-name descname"><span class="pre">condition_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FilePath</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.facenet.face.condition_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Condition check to load the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – Name of the file to check.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean flag whether the file can be considered for training.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.facenet.face.verify_image">
+<span class="sig-prename descclassname"><span class="pre">modules.facenet.face.</span></span><span class="sig-name descname"><span class="pre">verify_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FilePath</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.facenet.face.verify_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verifies if a particular image can be used for training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – Name/path of the file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a boolean flag to indicate whether the image is compatible.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -5296,7 +5517,7 @@ Whites can have a value of None.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.send_audio">
-<span class="sig-name descname"><span class="pre">send_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HTML'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.send_audio" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">send_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FilePath</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HTML'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.send_audio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends an audio file to the user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5325,6 +5546,26 @@ Whites can have a value of None.</p>
 <li><p><strong>chat_id</strong> – Chat ID.</p></li>
 <li><p><strong>response</strong> – Message to be sent to the user.</p></li>
 <li><p><strong>parse_mode</strong> – Parse mode. Defaults to <code class="docutils literal notranslate"><span class="pre">markdown</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Response class.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response">Response</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.send_photo">
+<span class="sig-name descname"><span class="pre">send_photo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FilePath</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.send_photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends an image file to the user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chat_id</strong> – Chat ID.</p></li>
+<li><p><strong>filename</strong> – Name of the image file that has to be sent.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -5556,6 +5797,28 @@ Whites can have a value of None.</p>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
+</dd></dl>
+
+</section>
+<section id="templates">
+<h1>Templates<a class="headerlink" href="#templates" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.templates.templates.RobinhoodTemplate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">RobinhoodTemplate</span></span><a class="headerlink" href="#modules.templates.templates.RobinhoodTemplate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates Template object to load the robinhood report template.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">RobinhoodTemplate</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.templates.templates.ThreatNotificationTemplates">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">ThreatNotificationTemplates</span></span><a class="headerlink" href="#modules.templates.templates.ThreatNotificationTemplates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates Template object to load the threat email templates.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ThreatNotificationTemplates</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -6232,13 +6495,14 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#modules">———-Modules———-</a></li>
 <li><a class="reference internal" href="#module-modules.audio.speaker">Audio</a></li>
 <li><a class="reference internal" href="#module-modules.auth_bearer">Auth Bearer</a></li>
+<li><a class="reference internal" href="#module-modules.camera.camera">Camera</a></li>
 <li><a class="reference internal" href="#id1">Car</a></li>
 <li><a class="reference internal" href="#id2">Conditions</a></li>
 <li><a class="reference internal" href="#id3">Crontab</a></li>
 <li><a class="reference internal" href="#classes">Classes</a></li>
 <li><a class="reference internal" href="#module-modules.database.database">Database</a></li>
 <li><a class="reference internal" href="#module-modules.exceptions">Exceptions</a></li>
-<li><a class="reference internal" href="#module-modules.face.facial_recognition">Face Recognition</a></li>
+<li><a class="reference internal" href="#module-modules.facenet.face">FaceNet</a></li>
 <li><a class="reference internal" href="#id4">Lights</a></li>
 <li><a class="reference internal" href="#module-modules.logger.custom_logger">Logger</a></li>
 <li><a class="reference internal" href="#config">Config</a></li>
@@ -6253,6 +6517,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-modules.utils.support">Support</a></li>
 <li><a class="reference internal" href="#id6">Telegram</a></li>
 <li><a class="reference internal" href="#module-modules.temperature.temperature">Temperature</a></li>
+<li><a class="reference internal" href="#templates">Templates</a></li>
 <li><a class="reference internal" href="#module-modules.timeout.timeout">Timeout</a></li>
 <li><a class="reference internal" href="#module-modules.tv.tv_controls">TV Connector</a></li>
 <li><a class="reference internal" href="#module-modules.wakeonlan.wakeonlan">WakeOnLAN</a></li>
