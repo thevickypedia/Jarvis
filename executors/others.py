@@ -380,11 +380,9 @@ def photo() -> str:
     except CameraError as error:
         logger.error(error)
         return f"I'm sorry {models.env.title}! I wasn't able to take a picture."
-    if shared.called_by_offline:
-        facenet.capture_image(filename=filename)
-    else:
-        facenet.capture_image(filename=filename, display=True)
+    facenet.capture_image(filename=filename)
     if os.path.isfile(filename):
+        # TODO: Open image using OS specific commands if not called by offline
         speaker.speak(text=f"A photo has been captured {models.env.title}!")
     else:
         speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to take a picture.")

@@ -31,3 +31,15 @@ class ThreatNotificationTemplates:
         _threat_no_audio = os.path.join(models.fileio.templates, 'threat_no_audio.html')
         with open(_threat_no_audio) as file:
             threat_no_audio = file.read()
+
+
+class Surveillance:
+    """Initiates Template object to load the video surveilance template.
+
+    >>> Surveillance
+
+    """
+
+    if models.settings.bot != 'sphinx-build':
+        with open(os.path.join(models.fileio.templates, 'monitor.html')) as file:
+            source = file.read()

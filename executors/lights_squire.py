@@ -96,7 +96,7 @@ def party_mode(host_ip: List[str], phrase: str) -> bool:
     elif 'disable' in phrase:
         if state:
             speaker.speak(text=f'Party mode has been disabled {models.env.title}! Hope you enjoyed it.')
-            support.stop_process(pid=state[0])
+            support.stop_process(pid=int(state[0]))
             remove_status()
             return True
         else:

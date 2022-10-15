@@ -16,6 +16,7 @@ fileio/*.yaml
 fileio/*.html
 fileio/*.db
 fileio/*.txt
+fileio/*.jpg
 
 # Log files
 logs

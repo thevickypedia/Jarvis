@@ -58,10 +58,10 @@ def trigger_api() -> None:
         "app": "api.fast:app",
         "host": models.env.offline_host,
         "port": models.env.offline_port,
+        "ws_ping_interval": 20.0,
+        "ws_ping_timeout": 20.0,
         "reload": True
     }
-    if not models.settings.macos:
-        del argument_dict['reload']
 
     config = uvicorn.Config(**argument_dict)
     APIServer(config=config).run_in_parallel()

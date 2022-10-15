@@ -154,10 +154,14 @@ def get_tunnel() -> Union[HttpUrl, NoReturn]:
     try:
         response = requests.get(url="http://localhost:4040/api/tunnels")
         if response.ok:
-            for each_tunnel in response.json().get('tunnels', {}):
-                if hosted := each_tunnel.get('config', {}).get('addr'):
+            tunnels = response.json().get('tunnels', [])
+            protocols = list(filter(None, [tunnel.get('proto') for tunnel in tunnels]))
+            for tunnel in tunnels:
+                if 'https' in protocols and tunnel.get('proto') != 'https':
+                    continue
+                if hosted := tunnel.get('config', {}).get('addr'):
                     if int(hosted.split(':')[-1]) == models.env.offline_port:
-                        return each_tunnel.get('public_url')
+                        return tunnel.get('public_url')
     except (requests.exceptions.RequestException, requests.exceptions.Timeout, ConnectionError, TimeoutError,
             requests.exceptions.JSONDecodeError) as error:
         logger.error(error)

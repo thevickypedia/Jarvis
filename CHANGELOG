@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+6.5.0 (10/15/2022)
+------------------
+- Add surveillance endpoint using live feed from cameras
+- Implement websockets to identify client disconnect
+- Use process sharing queue to put and get frames
+- Stream live webcam by getting camera index ID
+- Add a 5-minute timeout for robinhood endpoint
+- Update .gitignore
+- Use secrets.compare_digest to validate auth
+- Remove display feature after capturing an image
+
 6.4.9 (10/09/2022)
 ------------------
 - Add feature to capture image from connected camera

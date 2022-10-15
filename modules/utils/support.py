@@ -17,7 +17,7 @@ import time
 import uuid
 from datetime import datetime
 from difflib import SequenceMatcher
-from typing import Any, List, NoReturn, Union
+from typing import Any, Hashable, List, NoReturn, Union
 
 import inflect
 import psutil
@@ -536,7 +536,7 @@ def stop_process(pid: int) -> NoReturn:
         logger.error(error)
 
 
-def hashed(key: uuid.UUID) -> str:
+def hashed(key: uuid.UUID) -> Hashable:
     """Generates sha from UUID.
 
     Args:
@@ -549,7 +549,7 @@ def hashed(key: uuid.UUID) -> str:
     return hashlib.sha1(key.bytes + bytes(key.hex, "utf-8")).digest().hex()
 
 
-def token() -> str:
+def token() -> Hashable:
     """Generates a token using hashed uuid4.
 
     Returns:

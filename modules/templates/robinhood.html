@@ -7,6 +7,10 @@
         <meta http-equiv="Expires" content="0">
         <!-- Disables 404 for favicon.ico which is a logo on top of the webpage tab -->
         <link rel="shortcut icon" href="#">
+        <!-- jQuery CDN - Google -->
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <!-- jQuery CDN - Microsoft -->
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
     </head>
     <style type="text/css">
         @import url('//netdna.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css');
@@ -137,6 +141,22 @@
         }
         });
         //# sourceURL=pen.js
+    </script>
+    <script type="text/javascript">
+        var idleSeconds = 300;  // 5 minutes
+        $(function(){
+          var idleTimer;
+          function resetTimer(){
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(whenUserIdle,idleSeconds*1000);
+          }
+          $(document.body).bind('mousemove keydown click',resetTimer); //space separated events list that we want to monitor
+          resetTimer(); // Start the timer when the page loads
+        });
+        function whenUserIdle(){
+          alert("SESSION EXPIRED!!");
+          location.reload();
+        }
     </script>
     </body>
 </html>

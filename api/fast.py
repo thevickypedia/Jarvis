@@ -9,32 +9,36 @@ import time
 from datetime import datetime
 from http import HTTPStatus
 from logging.config import dictConfig
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 from threading import Thread
 from typing import Any, Dict, List, NoReturn, Union
+from urllib.parse import urlparse
 
-from fastapi import Depends, FastAPI, Request
+import jinja2
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
+from fastapi.responses import (FileResponse, HTMLResponse, RedirectResponse,
+                               StreamingResponse)
 
-from api import authenticator
-from api.models import GetData, GetText, InvestmentFilter
+from api.api_squire import gen_frames, streamer, test_camera
+from api.authenticator import (OFFLINE_PROTECTOR, ROBINHOOD_PROTECTOR,
+                               SURVEILLANCE_PROTECTOR)
+from api.models import GetData, GetIndex, GetText
 from api.report_gatherer import Investment
+from api.settings import ConnectionManager, robinhood, surveillance
 from executors.commander import timed_delay
-from executors.offline import offline_communicator
+from executors.offline import get_tunnel, offline_communicator
 from executors.word_match import word_match
 from modules.audio import speaker, tts_stt
 from modules.conditions import conversation, keywords
-from modules.exceptions import APIResponse
+from modules.exceptions import APIResponse, CameraError
 from modules.logger import config
 from modules.models import models
 from modules.offline import compatibles
+from modules.templates import templates
 from modules.utils import support
 
-OFFLINE_PROTECTOR = [Depends(dependency=authenticator.offline_has_access)]
-ROBINHOOD_PROTECTOR = [Depends(dependency=authenticator.robinhood_has_access)]
-
-robinhood_token = {'token': ''}
+ws_manager = ConnectionManager()
 
 if not os.path.isfile(config.APIConfig().ACCESS_LOG_FILENAME):
     pathlib.Path(config.APIConfig().ACCESS_LOG_FILENAME).touch()
@@ -48,29 +52,17 @@ importlib.reload(module=logging)
 LOGGING = config.APIConfig()
 dictConfig(config=LOGGING.LOG_CONFIG)
 
-logging.getLogger("uvicorn.access").addFilter(InvestmentFilter())  # Adds token filter to the access logger
 logging.getLogger("uvicorn.access").propagate = False  # Disables access logger in default logger to log independently
 
 logger = logging.getLogger('uvicorn.default')
 
 app = FastAPI(
     title="Jarvis API",
-    description="Handles offline communication with **Jarvis** and generates a one time auth token for **Robinhood**."
-                "\n\n"
+    description="Handles offline communication with **Jarvis** and generates a one time auth token for "
+                "**Robinhood** and **Surveillance endpoints.\n\n"
                 "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)",
     version="v1.0"
 )
-
-
-def run_robinhood() -> NoReturn:
-    """Runs in a dedicated process during startup, if the file was modified earlier than the past hour."""
-    if os.path.isfile(models.fileio.robinhood):
-        modified = int(os.stat(models.fileio.robinhood).st_mtime)
-        logger.info(f"{models.fileio.robinhood} was generated on {datetime.fromtimestamp(modified).strftime('%c')}.")
-        if int(time.time()) - modified < 3_600:  # generates new file only if the file is older than an hour
-            return
-    logger.info('Initiated robinhood gatherer.')
-    Investment(logger=logger).report_gatherer()
 
 
 async def enable_cors() -> NoReturn:
@@ -90,6 +82,17 @@ async def enable_cors() -> NoReturn:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+
+def run_robinhood() -> NoReturn:
+    """Runs in a dedicated process during startup, if the file was modified earlier than the past hour."""
+    if os.path.isfile(models.fileio.robinhood):
+        modified = int(os.stat(models.fileio.robinhood).st_mtime)
+        logger.info(f"{models.fileio.robinhood} was generated on {datetime.fromtimestamp(modified).strftime('%c')}.")
+        if int(time.time()) - modified < 3_600:  # generates new file only if the file is older than an hour
+            return
+    logger.info('Initiated robinhood gatherer.')
+    Investment(logger=logger).report_gatherer()
 
 
 @app.on_event(event_type='startup')
@@ -112,6 +115,18 @@ async def redirect_index() -> str:
         Redirects the root endpoint ``/`` url to read-only doc location.
     """
     return app.redoc_url
+
+
+@app.get(path="/favicon.ico", include_in_schema=False)
+async def get_favicon() -> FileResponse:
+    """Gets the favicon.ico and adds to the API endpoint.
+
+    Returns:
+        FileResponse:
+        Uses FileResponse to send the favicon.ico to support the robinhood script's robinhood.html.
+    """
+    if os.path.isfile('favicon.ico'):
+        return FileResponse(filename='favicon.ico', path=os.getcwd(), status_code=HTTPStatus.OK.real)
 
 
 @app.post(path='/keywords', dependencies=OFFLINE_PROTECTOR)
@@ -264,7 +279,7 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
                                      f'{models.env.title}!')
     response = offline_communicator(command=command)
     logger.info(f"Response: {response}")
-    if os.path.isfile(response):
+    if os.path.isfile(response) and response.endswith('.jpg'):
         logger.info("Response received as a file.")
         Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': response}).start()
         return FileResponse(path=response, media_type=f'image/{imghdr.what(file=response)}',
@@ -283,18 +298,6 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
     raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
 
-@app.get(path="/favicon.ico", include_in_schema=False)
-async def get_favicon() -> FileResponse:
-    """Gets the favicon.ico and adds to the API endpoint.
-
-    Returns:
-        FileResponse:
-        Uses FileResponse to send the favicon.ico to support the robinhood script's robinhood.html.
-    """
-    if os.path.isfile('favicon.ico'):
-        return FileResponse(filename='favicon.ico', path=os.getcwd(), status_code=HTTPStatus.OK.real)
-
-
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
                                               models.env.robinhood_pass]):
@@ -308,22 +311,23 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
         See Also:
             If basic auth (stored as an env var ``robinhood_endpoint_auth``) succeeds:
 
-            - Returns ``?token=HASHED_UUID`` to access ``/investment`` accessed via ``/?investment?token=HASHED_UUID``
-            - Also stores the token in the dictionary ``robinhood_token`` which is verified in the path ``/investment``
-            - The token is deleted from env var as soon as it is verified, making page-refresh useless.
+            - Returns ``?token=HASHED_UUID`` to access ``/investment`` accessed via ``/investment?token=HASHED_UUID``
+            - Also stores the token in the ``Robinhood`` object which is verified in the ``/investment`` endpoint.
+            - The token is nullified in the object as soon as it is verified, making it single use.
         """
-        robinhood_token['token'] = support.token()
-        raise APIResponse(status_code=HTTPStatus.OK.real, detail=f"?token={robinhood_token['token']}")
+        robinhood.token = support.token()
+        raise APIResponse(status_code=HTTPStatus.OK.real, detail=f"?token={robinhood.token}")
 
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
                                               models.env.robinhood_pass]):
     @app.get(path="/investment", response_class=HTMLResponse, include_in_schema=False)
-    async def robinhood(token: str = None) -> HTMLResponse:
+    async def robinhood_path(request: Request, token: str = None) -> HTMLResponse:
         """Serves static file.
 
         Args:
-            token: Takes custom auth token as an argument.
+            - request: Takes the ``Request`` class as an argument.
+            - token: Takes custom auth token as an argument.
 
         Returns:
             HTMLResponse:
@@ -337,16 +341,18 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
         See Also:
             - This endpoint is secured behind two-factor authentication.
             - Initial check is done by the function authenticate_robinhood behind the path "/robinhood-authenticate"
-            - Once the auth succeeds, a one-time usable hashed-uuid is generated and stored as an environment variable.
-            - This UUID is sent as response to the API endpoint behind ngrok tunnel.
-            - The UUID is deleted from env var as soon as the argument is checked for the first time.
-            - Page refresh doesn't work because the env var is deleted as soon as it is authed once.
+            - Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in the ``Robinhood`` object.
+            - This UUID is sent as response to the API endpoint behind ngrok connection (if tunnelled).
+            - The UUID is deleted from the object as soon as the argument is checked for the first time.
+            - Page refresh is useless because the value in memory is cleared as soon as it is authed once.
         """
+        logger.info(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
+                    f"{request.headers.get('user-agent')}")
         if not token:
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
                               detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
-        if token == robinhood_token['token']:
-            robinhood_token['token'] = ''
+        if token == robinhood.token:
+            robinhood.token = None
             if not os.path.isfile(models.fileio.robinhood):
                 raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail='Static file was not found on server.')
             with open(models.fileio.robinhood) as static_file:
@@ -355,6 +361,155 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
             return HTMLResponse(status_code=HTTPStatus.TEMPORARY_REDIRECT.real,
                                 content=html_content, media_type=content_type)  # serves as a static webpage
         else:
-            logger.warning('/investment was accessed with an expired token.')
             raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
                               detail='Requires authentication since endpoint uses single-use token.')
+
+
+@app.post(path="/surveillance-authenticate", dependencies=SURVEILLANCE_PROTECTOR)
+async def authenticate_surveillance(cam: GetIndex) -> NoReturn:
+    """Tests the given camera index, generates a token for the endpoint to authenticate.
+
+    Args:
+        cam: Index number of the chosen camera.
+
+    Raises:
+        200: If initial auth is successful and returns the single-use token.
+
+    See Also:
+        If basic auth (stored as an env var ``SURVEILLANCE_ENDPOINT_AUTH``) succeeds:
+
+        - Returns ``?token=HASHED_UUID`` to access ``/surveillance`` accessed via ``/surveillance?token=HASHED_UUID``
+        - Also stores the token in the ``Surveillance`` object which is verified in the ``/surveillance`` endpoint.
+        - The token is nullified in the object as soon as it is verified, making it single use.
+    """
+    surveillance.camera_index = cam.index
+    try:
+        test_camera()
+    except CameraError as error:
+        raise APIResponse(status_code=HTTPStatus.NOT_ACCEPTABLE.real, detail=str(error))
+    surveillance.token = support.token()
+    raise APIResponse(status_code=HTTPStatus.OK.real, detail=f"?token={surveillance.token}")
+
+
+@app.get('/surveillance')
+async def monitor(token: str = None) -> HTMLResponse:
+    """Serves the monitor page's frontend after updating it with video origin and websocket origins.
+
+    Args:
+        - request: Takes the ``Request`` class as an argument.
+        - token: Takes custom auth token as an argument.
+
+    Returns:
+        HTMLResponse:
+        Renders the html page.
+
+    Raises:
+        - 403: If token is ``null``.
+        - 417: If token doesn't match the auto-generated value.
+
+    See Also:
+        - This endpoint is secured behind two-factor authentication.
+        - Initial check is done by the function authenticate_surveillance behind the path "/surveillance-authenticate"
+        - Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in the ``Surveillance`` object.
+        - This UUID is sent as response to the API endpoint behind ngrok connection (if tunnelled).
+        - The UUID is deleted from the object as soon as the argument is checked for the last time.
+        - Page refresh is useless because the value in memory is cleared as soon as the video is rendered.
+    """
+    if not token:
+        raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
+                          detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
+
+    if token == surveillance.token:
+        # TODO: Add a JavaScript to directly read the website URL and scheme to set these values in html
+        if public_url := surveillance.public_url:  # Tries to get the public url from a dictionary in memory
+            parsed = urlparse(url=public_url)
+            fqdn = parsed.netloc
+            if parsed.scheme == "https":
+                wss_origin = "wss://" + fqdn + "/ws/" + "${client_id}"
+            else:
+                wss_origin = "ws://" + fqdn + "/ws/" + "${client_id}"
+            video_origin = public_url + "/video-feed"
+        elif public_url := get_tunnel():  # Tries to get public url via existing tunnels
+            parsed = urlparse(url=public_url)
+            fqdn = parsed.netloc
+            if parsed.scheme == "https":
+                wss_origin = "wss://" + fqdn + "/ws/" + "${client_id}"
+            else:
+                wss_origin = "ws://" + fqdn + "/ws/" + "${client_id}"
+            video_origin = public_url + "/video-feed"
+            surveillance.public_url = public_url  # Stores public url in the dictionary in memory
+        else:
+            wss_origin = "ws://" + models.env.offline_host + ":" + models.env.offline_port + "/ws/" + "${client_id}"
+            video_origin = rf"http:\\{models.env.offline_host}:{models.env.offline_port}/video-feed"  # Uses localhost
+
+        video_origin = video_origin + f"?token={token}"
+
+        surveillance.client_id = int(''.join(str(time.time()).split('.')))  # include milliseconds to avoid duplicates
+        rendered = jinja2.Template(templates.Surveillance.source).render(URL=video_origin, WEBSOCKET=wss_origin,
+                                                                         CLIENT_ID=surveillance.client_id)
+
+        content_type, _ = mimetypes.guess_type(rendered)
+        return HTMLResponse(status_code=HTTPStatus.TEMPORARY_REDIRECT.real, content=rendered, media_type=content_type)
+    else:
+        raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
+                          detail='Requires authentication since endpoint uses single-use token.')
+
+
+@app.get('/video-feed')
+async def video_feed(request: Request, token: str = None) -> StreamingResponse:
+    """Authenticates the request, and returns the frames generated as a ``StreamingResponse``.
+
+    Args:
+        - request: Takes the ``Request`` class as an argument.
+        - token: Token generated in ``/surveillance-authenticate`` endpoint to restrict direct access.
+
+    Returns:
+        StreamingResponse:
+        StreamingResponse with a collective of each frame.
+    """
+    logger.info(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
+                f"{request.headers.get('user-agent')}")
+    if not token:
+        logger.warning('/video-feed was accessed directly.')
+        raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
+                          detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
+    if token != surveillance.token:
+        raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
+                          detail='Requires authentication since endpoint uses single-use token.')
+    surveillance.token = None
+    surveillance.queue_manager = Queue()
+    process = Process(target=gen_frames,
+                      kwargs={"manager": surveillance.queue_manager, "index": surveillance.camera_index,
+                              "available_cameras": surveillance.available_cameras})
+    process.start()
+    surveillance.processes[surveillance.client_id] = process
+    return StreamingResponse(content=streamer(), media_type='multipart/x-mixed-replace; boundary=frame',
+                             status_code=HTTPStatus.PARTIAL_CONTENT.real)
+
+
+@app.websocket("/ws/{client_id}")
+async def websocket_endpoint(websocket: WebSocket, client_id: int) -> None:
+    """Initiates a websocket connection that checks the connection status to release the camera.
+
+    Args:
+        websocket: WebSocket.
+        client_id: Epoch time generated when each user renders the video file.
+    """
+    # TODO: Close the window upon timeout using JavaScript, closing the socket connection
+    await ws_manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            logger.info(f'Client [{client_id}] sent {data}')
+    except WebSocketDisconnect:
+        ws_manager.disconnect(websocket)
+        logger.info(f'Client [{client_id}] disconnected.')
+        if ws_manager.active_connections:
+            if process := surveillance.processes.get(int(client_id)):
+                support.stop_process(pid=process.pid)
+                surveillance.queue_manager.close()
+        else:
+            logger.info("No active connections found.")
+            for client_id, process in surveillance.processes.items():
+                support.stop_process(pid=process.pid)
+                surveillance.queue_manager.close()

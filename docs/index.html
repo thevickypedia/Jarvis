@@ -174,9 +174,32 @@
 <p class="admonition-title">See also</p>
 <p>If basic auth (stored as an env var <code class="docutils literal notranslate"><span class="pre">robinhood_endpoint_auth</span></code>) succeeds:</p>
 <ul class="simple">
-<li><p>Returns <code class="docutils literal notranslate"><span class="pre">?token=HASHED_UUID</span></code> to access <code class="docutils literal notranslate"><span class="pre">/investment</span></code> accessed via <code class="docutils literal notranslate"><span class="pre">/?investment?token=HASHED_UUID</span></code></p></li>
-<li><p>Also stores the token in the dictionary <code class="docutils literal notranslate"><span class="pre">robinhood_token</span></code> which is verified in the path <code class="docutils literal notranslate"><span class="pre">/investment</span></code></p></li>
-<li><p>The token is deleted from env var as soon as it is verified, making page-refresh useless.</p></li>
+<li><p>Returns <code class="docutils literal notranslate"><span class="pre">?token=HASHED_UUID</span></code> to access <code class="docutils literal notranslate"><span class="pre">/investment</span></code> accessed via <code class="docutils literal notranslate"><span class="pre">/investment?token=HASHED_UUID</span></code></p></li>
+<li><p>Also stores the token in the <code class="docutils literal notranslate"><span class="pre">Robinhood</span></code> object which is verified in the <code class="docutils literal notranslate"><span class="pre">/investment</span></code> endpoint.</p></li>
+<li><p>The token is nullified in the object as soon as it is verified, making it single use.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.authenticate_surveillance">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">authenticate_surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cam</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.GetIndex" title="api.models.GetIndex"><span class="pre">GetIndex</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.authenticate_surveillance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the given camera index, generates a token for the endpoint to authenticate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cam</strong> – Index number of the chosen camera.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>200</strong> – If initial auth is successful and returns the single-use token.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>If basic auth (stored as an env var <code class="docutils literal notranslate"><span class="pre">SURVEILLANCE_ENDPOINT_AUTH</span></code>) succeeds:</p>
+<ul class="simple">
+<li><p>Returns <code class="docutils literal notranslate"><span class="pre">?token=HASHED_UUID</span></code> to access <code class="docutils literal notranslate"><span class="pre">/surveillance</span></code> accessed via <code class="docutils literal notranslate"><span class="pre">/surveillance?token=HASHED_UUID</span></code></p></li>
+<li><p>Also stores the token in the <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object which is verified in the <code class="docutils literal notranslate"><span class="pre">/surveillance</span></code> endpoint.</p></li>
+<li><p>The token is nullified in the object as soon as it is verified, making it single use.</p></li>
 </ul>
 </div>
 </dd></dl>
@@ -205,6 +228,43 @@
 <dt class="sig sig-object py" id="api.fast.health">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">health</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.health" title="Permalink to this definition">¶</a></dt>
 <dd><p>Health Check for OfflineCommunicator.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.monitor">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">HTMLResponse</span></span></span><a class="headerlink" href="#api.fast.monitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serves the monitor page’s frontend after updating it with video origin and websocket origins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>- request</strong> – Takes the <code class="docutils literal notranslate"><span class="pre">Request</span></code> class as an argument.</p></li>
+<li><p><strong>- token</strong> – Takes custom auth token as an argument.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Renders the html page.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HTMLResponse</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>- 403</strong> – If token is <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></li>
+<li><p><strong>- 417</strong> – If token doesn’t match the auto-generated value.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>This endpoint is secured behind two-factor authentication.</p></li>
+<li><p>Initial check is done by the function authenticate_surveillance behind the path “/surveillance-authenticate”</p></li>
+<li><p>Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in the <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object.</p></li>
+<li><p>This UUID is sent as response to the API endpoint behind ngrok connection (if tunnelled).</p></li>
+<li><p>The UUID is deleted from the object as soon as the argument is checked for the last time.</p></li>
+<li><p>Page refresh is useless because the value in memory is cleared as soon as the video is rendered.</p></li>
+</ul>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -253,12 +313,15 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="api.fast.robinhood">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">HTMLResponse</span></span></span><a class="headerlink" href="#api.fast.robinhood" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="api.fast.robinhood_path">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">robinhood_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">HTMLResponse</span></span></span><a class="headerlink" href="#api.fast.robinhood_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Serves static file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>token</strong> – Takes custom auth token as an argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>- request</strong> – Takes the <code class="docutils literal notranslate"><span class="pre">Request</span></code> class as an argument.</p></li>
+<li><p><strong>- token</strong> – Takes custom auth token as an argument.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Renders the html page.</p>
@@ -279,10 +342,10 @@
 <ul class="simple">
 <li><p>This endpoint is secured behind two-factor authentication.</p></li>
 <li><p>Initial check is done by the function authenticate_robinhood behind the path “/robinhood-authenticate”</p></li>
-<li><p>Once the auth succeeds, a one-time usable hashed-uuid is generated and stored as an environment variable.</p></li>
-<li><p>This UUID is sent as response to the API endpoint behind ngrok tunnel.</p></li>
-<li><p>The UUID is deleted from env var as soon as the argument is checked for the first time.</p></li>
-<li><p>Page refresh doesn’t work because the env var is deleted as soon as it is authed once.</p></li>
+<li><p>Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in the <code class="docutils literal notranslate"><span class="pre">Robinhood</span></code> object.</p></li>
+<li><p>This UUID is sent as response to the API endpoint behind ngrok connection (if tunnelled).</p></li>
+<li><p>The UUID is deleted from the object as soon as the argument is checked for the first time.</p></li>
+<li><p>Page refresh is useless because the value in memory is cleared as soon as it is authed once.</p></li>
 </ul>
 </div>
 </dd></dl>
@@ -295,7 +358,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.speech_synthesis">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GetText</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_for_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">FileResponse</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.fast.speech_synthesis" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.GetText" title="api.models.GetText"><span class="pre">GetText</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_for_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">FileResponse</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.fast.speech_synthesis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process request to convert text to speech if docker container is running.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -329,6 +392,85 @@
 <dd><p>Initiates robinhood gatherer in a process and adds a cron schedule if not present already.</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.video_feed">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">video_feed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">StreamingResponse</span></span></span><a class="headerlink" href="#api.fast.video_feed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authenticates the request, and returns the frames generated as a <code class="docutils literal notranslate"><span class="pre">StreamingResponse</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>- request</strong> – Takes the <code class="docutils literal notranslate"><span class="pre">Request</span></code> class as an argument.</p></li>
+<li><p><strong>- token</strong> – Token generated in <code class="docutils literal notranslate"><span class="pre">/surveillance-authenticate</span></code> endpoint to restrict direct access.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>StreamingResponse with a collective of each frame.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>StreamingResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.websocket_endpoint">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">websocket_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">websocket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebSocket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.fast.websocket_endpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates a websocket connection that checks the connection status to release the camera.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>websocket</strong> – WebSocket.</p></li>
+<li><p><strong>client_id</strong> – Epoch time generated when each user renders the video file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-api.api_squire">
+<span id="api-squire"></span><h1>API Squire<a class="headerlink" href="#module-api.api_squire" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.api_squire.gen_frames">
+<span class="sig-prename descclassname"><span class="pre">api.api_squire.</span></span><span class="sig-name descname"><span class="pre">gen_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available_cameras</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.api_squire.gen_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates frames from the camera, flips the image and stores the frame in a multiprocessing queue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>manager</strong> – Multiprocessing queues.</p></li>
+<li><p><strong>index</strong> – Index of the camera.</p></li>
+<li><p><strong>available_cameras</strong> – List of available cameras.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.api_squire.streamer">
+<span class="sig-prename descclassname"><span class="pre">api.api_squire.</span></span><span class="sig-name descname"><span class="pre">streamer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ByteString</span></span></span><a class="headerlink" href="#api.api_squire.streamer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields bytes string extracted from the multiprocessing queue, until the queue_manager is alive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields</dt>
+<dd class="field-odd"><p><em>ByteString</em> – Concat frame one by one and yield the result.</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li><div class="line-block">
+<div class="line">When pushing large items onto the queue, the items are essentially buffered, despite the immediate return</div>
+<div class="line">of the queue’s put function. This causes a delay of whopping ~20 seconds during live feed.</div>
+</div>
+</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.api_squire.test_camera">
+<span class="sig-prename descclassname"><span class="pre">api.api_squire.</span></span><span class="sig-name descname"><span class="pre">test_camera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.api_squire.test_camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests a camera connected on the index number provided by the user.</p>
+</dd></dl>
+
 </section>
 <section id="module-api.authenticator">
 <span id="api-authenticator"></span><h1>API Authenticator<a class="headerlink" href="#module-api.authenticator" title="Permalink to this heading">¶</a></h1>
@@ -346,6 +488,17 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="api.authenticator.robinhood_has_access">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.authenticator.</span></span><span class="sig-name descname"><span class="pre">robinhood_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.authenticator.robinhood_has_access" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates the token if mentioned as a dependency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>token</strong> – Takes the authorization header token as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.authenticator.surveillance_has_access">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.authenticator.</span></span><span class="sig-name descname"><span class="pre">surveillance_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.authenticator.surveillance_has_access" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates the token if mentioned as a dependency.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -419,42 +572,62 @@
 
 <hr class="docutils" />
 <dl class="py class">
-<dt class="sig sig-object py" id="api.models.InvestmentFilter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">InvestmentFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logging.Filter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.InvestmentFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to initiate <code class="docutils literal notranslate"><span class="pre">/investment</span></code> filter in logs while preserving other access logs.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">InvestmentFilter</span>
+<dt class="sig sig-object py" id="api.models.GetIndex">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">GetIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.GetIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>BaseModel that handles input data for the API which is treated as members for the class <code class="docutils literal notranslate"><span class="pre">GetData</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">GetData</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>Overrides logging by implementing a subclass of <code class="docutils literal notranslate"><span class="pre">logging.Filter</span></code></p></li>
-<li><p>The method <code class="docutils literal notranslate"><span class="pre">filter(record)</span></code>, that examines the log record and returns True to log it or False to discard it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">command</span></code>: Offline command sent via API which <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> has to perform.</p></li>
 </ul>
 </div>
-<p>Initialize a filter.</p>
-<p>Initialize with the name of the logger which, together with its
-children, will have its events allowed through the filter. If no
-name is specified, allow every event.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="api.models.InvestmentFilter.filter">
-<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.models.InvestmentFilter.filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Filter out logging at <code class="docutils literal notranslate"><span class="pre">/investment?token=</span></code> from log streams.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>record</strong> – <code class="docutils literal notranslate"><span class="pre">LogRecord</span></code> represents an event which is created every time something is logged.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>False flag for the endpoint that needs to be filtered.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 </dd></dl>
 
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="api.models.GetText">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">GetText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.GetText" title="Permalink to this definition">¶</a></dt>
+<dd><p>BaseModel that handles input data for the API which is treated as members for the class <code class="docutils literal notranslate"><span class="pre">GetText</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">GetText</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">text</span></code>: Text to be processed with speech synthesis.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeout</span></code>: Timeout for speech-synthesis API call.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">quality</span></code>: Quality of speech synthesis.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">voice</span></code>: Voice module to be used.</p></li>
+</ul>
+</div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 </dd></dl>
 
+</section>
+<section id="module-api.settings.Robinhood-pydantic.BaseModel">
+<span id="api-settings"></span><h1>API Settings<a class="headerlink" href="#module-api.settings.Robinhood-pydantic.BaseModel" title="Permalink to this heading">¶</a></h1>
+<p>Initiates <code class="docutils literal notranslate"><span class="pre">Robinhood</span></code> object to handle members across modules.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Robinhood</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<span class="target" id="module-api.settings.Surveillance-pydantic.BaseConfig"></span><p>Initiates <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object to handle members across modules.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Surveillance</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<span class="target" id="module-api.settings.ConnectionManager"></span><p>Initiates <code class="docutils literal notranslate"><span class="pre">ConnectionManager</span></code> object to handle multiple connections using <code class="docutils literal notranslate"><span class="pre">WebSockets</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ConnectionManager</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://fastapi.tiangolo.com/advanced/websockets/#handling-disconnections-and-multiple-clients">https://fastapi.tiangolo.com/advanced/websockets/#handling-disconnections-and-multiple-clients</a></p>
 </section>
 <section id="module-api.report_gatherer">
 <span id="api-robinhood"></span><h1>API Robinhood<a class="headerlink" href="#module-api.report_gatherer" title="Permalink to this heading">¶</a></h1>
@@ -3894,6 +4067,11 @@ Pass 155 for LO and 285 for HI.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.surveillance_endpoint_auth">
+<span class="sig-name descname"><span class="pre">surveillance_endpoint_auth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.surveillance_endpoint_auth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.sync_events">
 <span class="sig-name descname"><span class="pre">sync_events</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.sync_events" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4297,14 +4475,11 @@ Pass 155 for LO and 285 for HI.</p>
 <p>Instantiates the <code class="docutils literal notranslate"><span class="pre">Processor</span></code> object and sources the camera hardware.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.facenet.face.FaceNet.capture_image">
-<span class="sig-name descname"><span class="pre">capture_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cv2_open.jpg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.facenet.face.FaceNet.capture_image" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">capture_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cv2_open.jpg'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.facenet.face.FaceNet.capture_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Captures an image and saves it locally.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> – Name of the file to be saved.</p></li>
-<li><p><strong>display</strong> – Boolean value whether to display the captured image on screen.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>filename</strong> – Name of the file to be saved.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5115,7 +5290,7 @@ Whites can have a value of None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.hashed">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">hashed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UUID</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.support.hashed" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">hashed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UUID</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Hashable</span></span></span><a class="headerlink" href="#modules.utils.support.hashed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates sha from UUID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5346,7 +5521,7 @@ Whites can have a value of None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.token">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.support.token" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Hashable</span></span></span><a class="headerlink" href="#modules.utils.support.token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a token using hashed uuid4.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -6452,9 +6627,11 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis">Jarvis - Main Module</a></li>
 <li><a class="reference internal" href="#jarvis-api">———-Jarvis API———-</a></li>
 <li><a class="reference internal" href="#module-api.fast">API Handler</a></li>
+<li><a class="reference internal" href="#module-api.api_squire">API Squire</a></li>
 <li><a class="reference internal" href="#module-api.authenticator">API Authenticator</a></li>
 <li><a class="reference internal" href="#module-api.server">API Server</a></li>
 <li><a class="reference internal" href="#api-models">API Models</a></li>
+<li><a class="reference internal" href="#module-api.settings.Robinhood-pydantic.BaseModel">API Settings</a></li>
 <li><a class="reference internal" href="#module-api.report_gatherer">API Robinhood</a></li>
 <li><a class="reference internal" href="#api-robinhood-helper">API Robinhood Helper</a></li>
 <li><a class="reference internal" href="#executors">———-Executors———-</a></li>

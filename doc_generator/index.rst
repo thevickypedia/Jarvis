@@ -28,6 +28,13 @@ API Handler
    :members:
    :undoc-members:
 
+API Squire
+==========
+
+.. automodule:: api.api_squire
+   :members:
+   :undoc-members:
+
 API Authenticator
 =================
 
@@ -51,9 +58,34 @@ API Models
 
 ====
 
-.. autoclass:: api.models.InvestmentFilter(logging.Filter)
+.. autoclass:: api.models.GetIndex(pydantic.BaseModel)
    :members:
    :exclude-members:
+
+====
+
+.. autoclass:: api.models.GetText(pydantic.BaseModel)
+   :members:
+   :exclude-members:
+
+API Settings
+============
+
+.. automodule:: api.settings.Robinhood(pydantic.BaseModel)
+   :members:
+   :undoc-members:
+
+====
+
+.. automodule:: api.settings.Surveillance(pydantic.BaseConfig)
+   :members:
+   :undoc-members:
+
+====
+
+.. automodule:: api.settings.ConnectionManager
+   :members:
+   :undoc-members:
 
 API Robinhood
 =============

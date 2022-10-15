@@ -134,6 +134,7 @@ class EnvConfig(BaseSettings):
     robinhood_pass: str = Field(default=None, env='ROBINHOOD_PASS')
     robinhood_qr: str = Field(default=None, env='ROBINHOOD_QR')
     robinhood_endpoint_auth: str = Field(default=None, env='ROBINHOOD_ENDPOINT_AUTH')
+    surveillance_endpoint_auth: str = Field(default=None, env='SURVEILLANCE_ENDPOINT_AUTH')
     event_app: EventApp = Field(default=EventApp.CALENDAR, env='EVENT_APP')
     ics_url: HttpUrl = Field(default=None, env='ICS_URL')
     website: HttpUrl = Field(default='https://vigneshrao.com', env='WEBSITE')

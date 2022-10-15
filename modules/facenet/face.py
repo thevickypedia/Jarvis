@@ -10,7 +10,6 @@ from pydantic import FilePath
 from modules.exceptions import CameraError
 from modules.logger.custom_logger import logger
 from modules.models import models
-from modules.utils import shared
 
 
 def verify_image(filename: Union[str, FilePath]) -> bool:
@@ -156,15 +155,12 @@ class FaceNet:
                 if os.path.isfile(filename):
                     return True
 
-    def capture_image(self, filename: str = 'cv2_open.jpg', display: bool = False) -> NoReturn:
+    def capture_image(self, filename: str = 'cv2_open.jpg') -> NoReturn:
         """Captures an image and saves it locally.
 
         Args:
             filename: Name of the file to be saved.
-            display: Boolean value whether to display the captured image on screen.
         """
         ignore, image = self.validation_video.read()
         cv2.imwrite(filename=filename, img=image)
         self.validation_video.release()
-        if display and not shared.called_by_offline:
-            cv2.imshow('Snap', image)

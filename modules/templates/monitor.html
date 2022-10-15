@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebCam - LiveView</title>
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
+        <!-- Disables 404 for favicon.ico which is a logo on top of the webpage tab -->
+        <link rel="shortcut icon" href="#">
+        <!-- jQuery CDN - Google -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <!-- jQuery CDN - Microsoft -->
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+</head>
+<body onload="sendMessage()">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8  offset-lg-2">
+            <h3 class="mt-5">Live Streaming</h3>
+            <img src="{{ URL }}" width="75%">
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+        var idleSeconds = 300;  // 5 minutes
+        $(function(){
+          var idleTimer;
+          function resetTimer(){
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(whenUserIdle,idleSeconds*1000);
+          }
+          $(document.body).bind('mousemove keydown click',resetTimer); //space separated events list that we want to monitor
+          resetTimer(); // Start the timer when the page loads
+        });
+        function whenUserIdle(){
+          alert("SESSION EXPIRED!!");
+          location.reload();
+        }
+
+</script>
+<script type="text/javascript">
+    var client_id = {{ CLIENT_ID }}
+    var ws = new WebSocket(`{{ WEBSOCKET }}`);
+    function sendMessage() {
+        ws.send("Healthy")
+    }
+</script>
+</body>
+</html>

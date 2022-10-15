@@ -490,7 +490,7 @@ class TelegramBot:
             response: Response from Jarvis.
             payload: Payload received, to extract information from.
         """
-        if os.path.isfile(response):
+        if os.path.isfile(response) and response.endswith('jpg'):
             self.send_photo(chat_id=payload['from']['id'], filename=response)
             os.remove(response)
             return

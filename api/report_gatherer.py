@@ -65,7 +65,8 @@ class Investment:
             try:
                 raw_details = self.rh.get_quote(share_id)
             except InvalidTickerSymbol as error:
-                self.logger.error(error)
+                if error:
+                    self.logger.error(error)
                 continue
             ticker = (raw_details['symbol'])
             try:
