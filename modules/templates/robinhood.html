@@ -142,21 +142,5 @@
         });
         //# sourceURL=pen.js
     </script>
-    <script type="text/javascript">
-        var idleSeconds = 300;  // 5 minutes
-        $(function(){
-          var idleTimer;
-          function resetTimer(){
-            clearTimeout(idleTimer);
-            idleTimer = setTimeout(whenUserIdle,idleSeconds*1000);
-          }
-          $(document.body).bind('mousemove keydown click',resetTimer); //space separated events list that we want to monitor
-          resetTimer(); // Start the timer when the page loads
-        });
-        function whenUserIdle(){
-          alert("SESSION EXPIRED!!");
-          location.reload();
-        }
-    </script>
     </body>
 </html>

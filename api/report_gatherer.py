@@ -65,7 +65,7 @@ class Investment:
             try:
                 raw_details = self.rh.get_quote(share_id)
             except InvalidTickerSymbol as error:
-                if error:
+                if str(error).strip():
                     self.logger.error(error)
                 continue
             ticker = (raw_details['symbol'])
@@ -163,7 +163,8 @@ class Investment:
             try:
                 raw_details = self.rh.get_quote(stock)
             except InvalidTickerSymbol as error:
-                self.logger.error(error)
+                if str(error).strip():
+                    self.logger.error(error)
                 continue
             try:
                 stock_name = requests.get(raw_details['instrument']).json()['simple_name']

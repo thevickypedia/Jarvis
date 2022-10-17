@@ -382,7 +382,10 @@ def photo() -> str:
         return f"I'm sorry {models.env.title}! I wasn't able to take a picture."
     facenet.capture_image(filename=filename)
     if os.path.isfile(filename):
-        # TODO: Open image using OS specific commands if not called by offline
+        if models.settings.macos:
+            subprocess.call(["open", filename])
+        else:
+            os.system(f'start {filename}')
         speaker.speak(text=f"A photo has been captured {models.env.title}!")
     else:
         speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to take a picture.")

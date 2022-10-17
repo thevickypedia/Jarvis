@@ -12,7 +12,6 @@ from logging.config import dictConfig
 from multiprocessing import Process, Queue
 from threading import Thread
 from typing import Any, Dict, List, NoReturn, Union
-from urllib.parse import urlparse
 
 import jinja2
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
@@ -27,10 +26,11 @@ from api.models import GetData, GetIndex, GetText
 from api.report_gatherer import Investment
 from api.settings import ConnectionManager, robinhood, surveillance
 from executors.commander import timed_delay
-from executors.offline import get_tunnel, offline_communicator
+from executors.offline import offline_communicator
 from executors.word_match import word_match
 from modules.audio import speaker, tts_stt
 from modules.conditions import conversation, keywords
+from modules.database import database
 from modules.exceptions import APIResponse, CameraError
 from modules.logger import config
 from modules.models import models
@@ -63,6 +63,7 @@ app = FastAPI(
                 "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)",
     version="v1.0"
 )
+db = database.Database(database=models.fileio.base_db)
 
 
 async def enable_cors() -> NoReturn:
@@ -99,7 +100,8 @@ def run_robinhood() -> NoReturn:
 async def start_robinhood() -> Any:
     """Initiates robinhood gatherer in a process and adds a cron schedule if not present already."""
     from modules.logger.custom_logger import logger
-    config.multiprocessing_logger(filename=LOGGING.DEFAULT_LOG_FILENAME)
+    config.multiprocessing_logger(filename=LOGGING.DEFAULT_LOG_FILENAME,
+                                  log_format=logging.Formatter(fmt=LOGGING.DEFAULT_LOG_FORMAT))
     await enable_cors()
     logger.info(f'Hosting at http://{models.env.offline_host}:{models.env.offline_port}')
     if all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_pass]):
@@ -303,7 +305,7 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
                                               models.env.robinhood_pass]):
     @app.post(path="/robinhood-authenticate", dependencies=ROBINHOOD_PROTECTOR)
     async def authenticate_robinhood() -> NoReturn:
-        """Authenticates the request. Uses a two-factor authentication by generating single use tokens.
+        """Authenticates the request and generates single use token.
 
         Raises:
             200: If initial auth is successful and returns the single-use token.
@@ -339,7 +341,7 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
             - 417: If token doesn't match the auto-generated value.
 
         See Also:
-            - This endpoint is secured behind two-factor authentication.
+            - This endpoint is secured behind single use token.
             - Initial check is done by the function authenticate_robinhood behind the path "/robinhood-authenticate"
             - Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in the ``Robinhood`` object.
             - This UUID is sent as response to the API endpoint behind ngrok connection (if tunnelled).
@@ -408,7 +410,8 @@ async def monitor(token: str = None) -> HTMLResponse:
         - 417: If token doesn't match the auto-generated value.
 
     See Also:
-        - This endpoint is secured behind two-factor authentication.
+        This endpoint is secured behind single use token.
+
         - Initial check is done by the function authenticate_surveillance behind the path "/surveillance-authenticate"
         - Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in the ``Surveillance`` object.
         - This UUID is sent as response to the API endpoint behind ngrok connection (if tunnelled).
@@ -418,36 +421,10 @@ async def monitor(token: str = None) -> HTMLResponse:
     if not token:
         raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
                           detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
-
     if token == surveillance.token:
-        # TODO: Add a JavaScript to directly read the website URL and scheme to set these values in html
-        if public_url := surveillance.public_url:  # Tries to get the public url from a dictionary in memory
-            parsed = urlparse(url=public_url)
-            fqdn = parsed.netloc
-            if parsed.scheme == "https":
-                wss_origin = "wss://" + fqdn + "/ws/" + "${client_id}"
-            else:
-                wss_origin = "ws://" + fqdn + "/ws/" + "${client_id}"
-            video_origin = public_url + "/video-feed"
-        elif public_url := get_tunnel():  # Tries to get public url via existing tunnels
-            parsed = urlparse(url=public_url)
-            fqdn = parsed.netloc
-            if parsed.scheme == "https":
-                wss_origin = "wss://" + fqdn + "/ws/" + "${client_id}"
-            else:
-                wss_origin = "ws://" + fqdn + "/ws/" + "${client_id}"
-            video_origin = public_url + "/video-feed"
-            surveillance.public_url = public_url  # Stores public url in the dictionary in memory
-        else:
-            wss_origin = "ws://" + models.env.offline_host + ":" + models.env.offline_port + "/ws/" + "${client_id}"
-            video_origin = rf"http:\\{models.env.offline_host}:{models.env.offline_port}/video-feed"  # Uses localhost
-
-        video_origin = video_origin + f"?token={token}"
-
         surveillance.client_id = int(''.join(str(time.time()).split('.')))  # include milliseconds to avoid duplicates
-        rendered = jinja2.Template(templates.Surveillance.source).render(URL=video_origin, WEBSOCKET=wss_origin,
-                                                                         CLIENT_ID=surveillance.client_id)
-
+        rendered = jinja2.Template(templates.Surveillance.source).render(CLIENT_ID=surveillance.client_id,
+                                                                         SESSION_TIMEOUT=surveillance.session_timeout)
         content_type, _ = mimetypes.guess_type(rendered)
         return HTMLResponse(status_code=HTTPStatus.TEMPORARY_REDIRECT.real, content=rendered, media_type=content_type)
     else:
@@ -477,11 +454,17 @@ async def video_feed(request: Request, token: str = None) -> StreamingResponse:
         raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
                           detail='Requires authentication since endpoint uses single-use token.')
     surveillance.token = None
-    surveillance.queue_manager = Queue()
+    surveillance.queue_manager[surveillance.client_id] = Queue()
     process = Process(target=gen_frames,
-                      kwargs={"manager": surveillance.queue_manager, "index": surveillance.camera_index,
+                      kwargs={"manager": surveillance.queue_manager[surveillance.client_id],
+                              "index": surveillance.camera_index,
                               "available_cameras": surveillance.available_cameras})
     process.start()
+    # Insert process IDs into the children table to kill it in case, Jarvis is stopped during an active session
+    with db.connection:
+        cursor = db.connection.cursor()
+        cursor.execute("INSERT INTO children (surveillance) VALUES (?);", (process.pid,))
+        db.connection.commit()
     surveillance.processes[surveillance.client_id] = process
     return StreamingResponse(content=streamer(), media_type='multipart/x-mixed-replace; boundary=frame',
                              status_code=HTTPStatus.PARTIAL_CONTENT.real)
@@ -489,13 +472,20 @@ async def video_feed(request: Request, token: str = None) -> StreamingResponse:
 
 @app.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int) -> None:
-    """Initiates a websocket connection that checks the connection status to release the camera.
+    """Initiates a websocket connection.
 
     Args:
         websocket: WebSocket.
         client_id: Epoch time generated when each user renders the video file.
+
+    See Also:
+        - The websocket checks the frontend and kills the backend process to release the camera if connection is closed.
+        - Closing queue is not required as the backend process will be terminated anyway.
+
+    Notes:
+        - Closing queue before process termination will raise a ValueError as the process is still updating the queue.
+        - Closing queue after process termination will raise an EOFError as the queue will not be available to close.
     """
-    # TODO: Close the window upon timeout using JavaScript, closing the socket connection
     await ws_manager.connect(websocket)
     try:
         while True:
@@ -504,12 +494,11 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int) -> None:
     except WebSocketDisconnect:
         ws_manager.disconnect(websocket)
         logger.info(f'Client [{client_id}] disconnected.')
+        logger.info('Closing dedicated queue created for client.')
         if ws_manager.active_connections:
             if process := surveillance.processes.get(int(client_id)):
                 support.stop_process(pid=process.pid)
-                surveillance.queue_manager.close()
         else:
             logger.info("No active connections found.")
             for client_id, process in surveillance.processes.items():
                 support.stop_process(pid=process.pid)
-                surveillance.queue_manager.close()

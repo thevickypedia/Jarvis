@@ -25,7 +25,7 @@ from modules.utils import shared, support
 db = database.Database(database=models.fileio.base_db)
 
 
-def get_state() -> int:
+def get_state(log: bool = True) -> int:
     """Reads the state of guard column in the base db.
 
     Returns:
@@ -36,10 +36,10 @@ def get_state() -> int:
         cursor = db.connection.cursor()
         state = cursor.execute("SELECT state FROM guard").fetchone()
     if state:
-        logger.info("Security mode is currently enabled")
+        logger.info("Security mode is currently enabled") if log else None
         return state
     else:
-        logger.info("Security mode is currently disabled")
+        logger.info("Security mode is currently disabled") if log else None
 
 
 def put_state(state: bool) -> NoReturn:
@@ -85,14 +85,13 @@ def security_runner() -> NoReturn:
         sys.stdout.write("\rSECURITY MODE")
         converted = listener.listen(timeout=3, phrase_limit=10, sound=False)
         face_detected = datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p.jpg')
-        if not get_state() or word_match(phrase=converted, match_list=keywords.guard_disable):
+        if not get_state(log=False) or word_match(phrase=converted, match_list=keywords.guard_disable):
             guard_disable()
             break
         elif converted:
             logger.info(f'Conversation::{converted}')
         try:
-            face.FaceNet().face_detection(filename=face_detected, mirror=True)
-            if not os.path.isfile(face_detected):
+            if not face.FaceNet().face_detection(filename=face_detected, mirror=True):
                 face_detected = None
         except CameraError as error:
             logger.error(error)

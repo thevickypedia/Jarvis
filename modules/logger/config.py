@@ -1,24 +1,23 @@
 import os
 from datetime import datetime
+from logging import Formatter
 
 from pydantic import BaseModel
 
 from modules.logger.custom_logger import custom_handler, logger
 
-DEFAULT_LOG_LEVEL = "INFO"
-DEFAULT_LOG_FORMAT = '%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
 
-
-def multiprocessing_logger(filename: str) -> str:
+def multiprocessing_logger(filename: str, log_format: Formatter = None) -> str:
     """Remove existing handlers and adds a new handler when a subprocess kicks in.
 
     Args:
         filename: Filename where the subprocess should log.
+        log_format: Custom log format dedicated for each process.
     """
     logger.propagate = False
     for _handler in logger.handlers:
         logger.removeHandler(hdlr=_handler)
-    log_handler = custom_handler(filename=filename)
+    log_handler = custom_handler(filename=filename, log_format=log_format)
     logger.addHandler(hdlr=log_handler)
     return log_handler.baseFilename
 
@@ -30,9 +29,12 @@ class APIConfig(BaseModel):
 
     """
 
+    DEFAULT_LOG_LEVEL = "INFO"
+
     ACCESS_LOG_FILENAME = datetime.now().strftime(os.path.join('logs', 'api', 'access_%d-%m-%Y.log'))
     DEFAULT_LOG_FILENAME = datetime.now().strftime(os.path.join('logs', 'api', 'default_%d-%m-%Y.log'))
 
+    DEFAULT_LOG_FORMAT = "%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s"
     ACCESS_LOG_FORMAT = '%(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'
     ERROR_LOG_FORMAT = '%(levelname)s\t %(message)s'
 

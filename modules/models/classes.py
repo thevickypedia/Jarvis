@@ -71,16 +71,6 @@ class Sensitivity(float or PositiveInt, Enum):
     sensitivity: Union[float, PositiveInt]
 
 
-class CameraIndex(int or PositiveInt, Enum):
-    """Allowed values for camera_index.
-
-    >>> Sensitivity
-
-    """
-
-    sensitivity: Union[int, PositiveInt]
-
-
 class EventApp(str, Enum):
     """Types of event applications supported by Jarvis.
 
@@ -113,67 +103,106 @@ class EnvConfig(BaseSettings):
 
     """
 
+    # System config
     home: DirectoryPath = Field(default=os.path.expanduser('~'), env='HOME')
     volume: PositiveInt = Field(default=50, env='VOLUME')
+    limited: bool = Field(default=False, env='LIMITED')
+    root_user: str = Field(default=getpass.getuser(), env='USER')
+    root_password: str = Field(default=None, env='ROOT_PASSWORD')
+
+    # User add-ons
+    birthday: str = Field(default=None, env='BIRTHDAY')
+    title: str = Field(default='sir', env='TITLE')
+    name: str = Field(default='Vignesh', env='NAME')
+    website: HttpUrl = Field(default='https://vigneshrao.com', env='WEBSITE')
+
+    # Third party api config
     weather_api: str = Field(default=None, env='WEATHER_API')
+    wolfram_api_key: str = Field(default=None, env='WOLFRAM_API_KEY')
+    maps_api: str = Field(default=None, env='MAPS_API')
+    news_api: str = Field(default=None, env='NEWS_API')
+
+    # Communication config
     gmail_user: EmailStr = Field(default=None, env='GMAIL_USER')
     gmail_pass: str = Field(default=None, env='GMAIL_PASS')
     alt_gmail_user: EmailStr = Field(default=None, env='ALT_GMAIL_USER')
     alt_gmail_pass: str = Field(default=None, env='ALT_GMAIL_PASS')
     recipient: EmailStr = Field(default=None, env='RECIPIENT')
     phone_number: str = Field(default=None, regex="\\d{10}$", env='PHONE_NUMBER')
+
+    # Offline communicator config
     offline_host: str = Field(default=socket.gethostbyname('localhost'), env='OFFLINE_HOST')
     offline_port: PositiveInt = Field(default=4483, env='OFFLINE_PORT')
     offline_pass: str = Field(default='OfflineComm', env='OFFLINE_PASS')
+    workers: PositiveInt = Field(default=1, env='WORKERS')
+
+    # Calendar events and meetings config
+    event_app: EventApp = Field(default=EventApp.CALENDAR, env='EVENT_APP')
+    ics_url: HttpUrl = Field(default=None, env='ICS_URL')
     sync_meetings: PositiveInt = Field(default=3_600, env='SYNC_MEETINGS')
     sync_events: PositiveInt = Field(default=3_600, env='SYNC_EVENTS')
+
+    # Camera config
+    camera_index: Union[int, PositiveInt] = Field(default=None, le=1, ge=0, env='CAMERA_INDEX')
+    surveillance_endpoint_auth: str = Field(default=None, env='SURVEILLANCE_ENDPOINT_AUTH')
+    surveillance_session_timeout: PositiveInt = Field(default=300, env='SURVEILLANCE_SESSION_TIMEOUT')
+
+    # Apple devices' config
     icloud_user: EmailStr = Field(default=None, env='ICLOUD_USER')
     icloud_pass: str = Field(default=None, env='ICLOUD_PASS')
     icloud_recovery: str = Field(default=None, regex="\\d{10}$", env='ICLOUD_RECOVERY')
+
+    # Robinhood config
     robinhood_user: EmailStr = Field(default=None, env='ROBINHOOD_USER')
     robinhood_pass: str = Field(default=None, env='ROBINHOOD_PASS')
     robinhood_qr: str = Field(default=None, env='ROBINHOOD_QR')
     robinhood_endpoint_auth: str = Field(default=None, env='ROBINHOOD_ENDPOINT_AUTH')
-    surveillance_endpoint_auth: str = Field(default=None, env='SURVEILLANCE_ENDPOINT_AUTH')
-    event_app: EventApp = Field(default=EventApp.CALENDAR, env='EVENT_APP')
-    ics_url: HttpUrl = Field(default=None, env='ICS_URL')
-    website: HttpUrl = Field(default='https://vigneshrao.com', env='WEBSITE')
-    wolfram_api_key: str = Field(default=None, env='WOLFRAM_API_KEY')
-    camera_index: CameraIndex = Field(default=None, le=1, ge=0, env='CAMERA_INDEX')
-    maps_api: str = Field(default=None, env='MAPS_API')
-    news_api: str = Field(default=None, env='NEWS_API')
+
+    # GitHub config
     git_user: str = Field(default=None, env='GIT_USER')
     git_pass: str = Field(default=None, env='GIT_PASS')
+
+    # TV config
     tv_client_key: str = Field(default=None, env='TV_CLIENT_KEY')
     tv_mac: Union[str, list] = Field(default=None, env='TV_MAC')
-    root_user: str = Field(default=getpass.getuser(), env='USER')
-    root_password: str = Field(default=None, env='ROOT_PASSWORD')
+
+    # VPN Server config
     vpn_username: str = Field(default=None, env='VPN_USERNAME')
     vpn_password: str = Field(default=None, env='VPN_PASSWORD')
-    birthday: str = Field(default=None, env='BIRTHDAY')
+
+    # Vehicle config
     car_email: EmailStr = Field(default=None, env='CAR_EMAIL')
     car_pass: str = Field(default=None, env='CAR_PASS')
     car_pin: str = Field(default=None, regex="\\d{4}$", env='CAR_PIN')
+
+    # Garage door config
     myq_username: EmailStr = Field(default=None, env='MYQ_USERNAME')
     myq_password: str = Field(default=None, env='MYQ_PASSWORD')
+
+    # Listener config
     sensitivity: Union[Sensitivity, List[Sensitivity]] = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
     timeout: Union[PositiveFloat, PositiveInt] = Field(default=3, env='TIMEOUT')
     phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=3, env='PHRASE_LIMIT')
+
+    # Telegram config
     bot_token: str = Field(default=None, env='BOT_TOKEN')
     bot_chat_ids: List[int] = Field(default=[], env='BOT_CHAT_IDS')
     bot_users: List[str] = Field(default=[], env='BOT_USERS')
+
+    # Speech synthesis config
+    speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
+    speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'), env='SPEECH_SYNTHESIS_HOST')
+    speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
+
+    # Background tasks
+    tasks: List[CustomDict] = Field(default=[], env="TASKS")
+    crontab: List[str] = Field(default=[], env='CRONTAB')
+
+    # Legacy macOS config
     if settings.legacy:
         wake_words: List[str] = Field(default=['alexa'], env='WAKE_WORDS')
     else:
         wake_words: List[str] = Field(default=[settings.bot], env='WAKE_WORDS')
-    speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
-    speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'), env='SPEECH_SYNTHESIS_HOST')
-    speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
-    title: str = Field(default='sir', env='TITLE')
-    name: str = Field(default='Vignesh', env='NAME')
-    tasks: List[CustomDict] = Field(default=[], env="TASKS")
-    crontab: List[str] = Field(default=[], env='CRONTAB')
-    limited: bool = Field(default=False, env='LIMITED')
 
     class Config:
         """Environment variables configuration."""

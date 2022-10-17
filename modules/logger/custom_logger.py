@@ -24,8 +24,10 @@ api_logs = os.path.join('logs', 'api')
 if not os.path.isdir(api_logs):
     os.makedirs(api_logs)  # Recursively creates both logs and api directories if unavailable
 
-log_format = logging.Formatter(fmt='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s',
-                               datefmt='%b-%d-%Y %I:%M:%S %p')
+DEFAULT_LOG_FORMAT = logging.Formatter(
+    datefmt='%b-%d-%Y %I:%M:%S %p',
+    fmt='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
+)
 
 
 def log_file(filename: str) -> str:
@@ -47,7 +49,7 @@ def log_file(filename: str) -> str:
     return filename
 
 
-def custom_handler(filename: str = None) -> logging.FileHandler:
+def custom_handler(filename: str = None, log_format: logging.Formatter = None) -> logging.FileHandler:
     """Creates a FileHandler, sets the log format and returns it.
 
     Returns:
@@ -56,7 +58,7 @@ def custom_handler(filename: str = None) -> logging.FileHandler:
     """
     handler = logging.FileHandler(filename=log_file(filename=filename or os.path.join('logs', 'jarvis_%d-%m-%Y.log')),
                                   mode='a')
-    handler.setFormatter(fmt=log_format)
+    handler.setFormatter(fmt=log_format or DEFAULT_LOG_FORMAT)
     return handler
 
 

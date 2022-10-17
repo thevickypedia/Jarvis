@@ -97,17 +97,6 @@ class Camera:
             return
         output = [v.strip() for v in output][1:]
 
-        # # Return output as dictionary of dictionaries
-        # dict_ = {output[0]: {}}
-        # new_list = output[1:]
-        # new_dict = {}
-        # for o in new_list:
-        #     if o.endswith(':'):
-        #         dict_[output[0]][o.rstrip(':')] = new_dict
-        #     else:
-        #         new_dict[o.split(':')[0].strip()] = o.split(':')[1].strip()
-        # return dict_
-
         for list_ in list_splitter(original_list=output, delimiter='Unique ID'):
             values = {}
             for sub_list in list_:

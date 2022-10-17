@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+6.5.1 (10/16/2022)
+------------------
+- Fix rendering same webcam feed for different sessions
+- Get streaming URL from window.href in HTML automatically
+- Take surveillance mode session timeout as env vars
+- Set number of API server workers as env vars
+- Insert gen_frames process ID into children table upon start
+- Remove timeout for report gatherer html page
+- Configure dedicated log formatters for multiprocess loggers
+- Open images when a picture is taken by Jarvis
+
 6.5.0 (10/15/2022)
 ------------------
 - Add surveillance endpoint using live feed from cameras

@@ -1,3 +1,4 @@
+import logging
 from multiprocessing import Queue
 from typing import ByteString, List, NoReturn
 
@@ -9,7 +10,9 @@ from modules.exceptions import CameraError
 from modules.logger import config
 from modules.logger.custom_logger import logger
 
-config.multiprocessing_logger(filename=config.APIConfig().DEFAULT_LOG_FILENAME)
+api_config = config.APIConfig()
+config.multiprocessing_logger(filename=api_config.DEFAULT_LOG_FILENAME,
+                              log_format=logging.Formatter(api_config.DEFAULT_LOG_FORMAT))
 
 
 def test_camera() -> NoReturn:
@@ -56,14 +59,12 @@ def gen_frames(manager: Queue, index: int, available_cameras: List[str]) -> NoRe
     logger.info(f"Capturing frames from {available_cameras[index]}")
     while True:
         success, frame = camera.read()
-        frame = cv2.flip(src=frame, flipCode=1)  # mirrors the frame
-        if not success:  # TODO: Test with if success to check behavior
-            logger.error(f"Failed to capture frames from [{index}]: "
-                         f"{available_cameras[index]}")
+        if not success:  # TODO: Check if there is a way to communicate error to UI
+            logger.error(f"Failed to capture frames from [{index}]: {available_cameras[index]}")
             logger.info(f"Releasing camera: {available_cameras[index]}")
             camera.release()
-            raise CameraError(f"Failed to capture frames from [{index}]: "
-                              f"{available_cameras[index]}")
+            break
+        frame = cv2.flip(src=frame, flipCode=1)  # mirrors the frame
         ret, buffer = cv2.imencode(ext='.jpg', img=frame)
         frame = buffer.tobytes()
         manager.put(frame)
@@ -80,9 +81,9 @@ def streamer() -> ByteString:
         - | When pushing large items onto the queue, the items are essentially buffered, despite the immediate return
           | of the queue’s put function. This causes a delay of whopping ~20 seconds during live feed.
     """
-    # TODO: Optimize queue utilization.
+    queue = surveillance.queue_manager[surveillance.client_id]
     try:
-        while surveillance.queue_manager:
-            yield b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + bytearray(surveillance.queue_manager.get()) + b'\r\n'
-    except GeneratorExit as error:
+        while queue:
+            yield b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + bytearray(queue.get()) + b'\r\n'
+    except (GeneratorExit, EOFError) as error:
         logger.error(error)

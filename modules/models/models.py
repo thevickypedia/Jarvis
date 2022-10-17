@@ -86,7 +86,7 @@ TABLES = {
     "ics": ["info", "date"],
     "stopper": ["flag", "caller"],
     "restart": ["flag", "caller"],
-    "children": ["meetings", "events", "crontab", "party", "guard"],
+    "children": ["meetings", "events", "crontab", "party", "guard", "surveillance"],
     "vpn": ["state"],
     "party": ["pid"],
     "guard": ["state"]

@@ -4,6 +4,8 @@ from typing import Dict, Hashable, List, NoReturn
 from fastapi import WebSocket
 from pydantic import BaseConfig, BaseModel, HttpUrl
 
+from modules.models import models
+
 
 class Robinhood(BaseModel):
     """Initiates ``Robinhood`` object to handle members across modules.
@@ -28,10 +30,11 @@ class Surveillance(BaseConfig):
     token: Hashable = None
     public_url: HttpUrl = None
     camera_index: str = None
-    available_cameras: List[str] = []
-    queue_manager: Queue = None
     client_id: int = None
+    session_timeout: int = models.env.surveillance_session_timeout
+    available_cameras: List[str] = []
     processes: Dict[int, Process] = {}
+    queue_manager: Dict[int, Queue] = {}
 
 
 surveillance = Surveillance()

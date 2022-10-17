@@ -126,11 +126,7 @@ class FaceNet:
         if not os.path.isfile(cv2_data):
             return False
         cascade = cv2.CascadeClassifier(cv2_data)
-        n = 0
-        while True:
-            n += 1
-            if retry_count and n > retry_count:
-                break
+        for _ in range(retry_count + 1):
             ignore, image = self.validation_video.read()  # reads video from web cam
             try:
                 img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # convert the captured image to grayscale

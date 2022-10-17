@@ -17,12 +17,26 @@
     <div class="row">
         <div class="col-lg-8  offset-lg-2">
             <h3 class="mt-5">Live Streaming</h3>
-            <img src="{{ URL }}" width="75%">
+            <img id="imageID" width="75%" onerror="imgError()">
         </div>
     </div>
 </div>
+<script>
+    var url = window.location.href
+    var arr = url.split('/');
+    var scheme = arr[0].replace(':', '')
+    var fqdn = arr[2]
+    if ( scheme == 'https' ) {
+        var wss_origin = "wss://" + fqdn + "/ws/"
+    } else {
+        var wss_origin = "ws://" + fqdn + "/ws/"
+    }
+    var video_origin = url.split('/surveillance').slice(0, 3).join('/video-feed');
+    document.getElementById("imageID").src=video_origin;
+</script>
+
 <script type="text/javascript">
-        var idleSeconds = 300;  // 5 minutes
+        var idleSeconds = {{ SESSION_TIMEOUT }};
         $(function(){
           var idleTimer;
           function resetTimer(){
@@ -33,16 +47,26 @@
           resetTimer(); // Start the timer when the page loads
         });
         function whenUserIdle(){
+          closeSocket();
           alert("SESSION EXPIRED!!");
           location.reload();
         }
 
 </script>
 <script type="text/javascript">
-    var client_id = {{ CLIENT_ID }}
-    var ws = new WebSocket(`{{ WEBSOCKET }}`);
+    var origin = wss_origin + {{ CLIENT_ID }}
+    var ws = new WebSocket(origin);
     function sendMessage() {
         ws.send("Healthy")
+    }
+    function closeSocket() {
+        ws.close();
+    }
+</script>
+<script>
+    function imgError() {
+        console.log("Failed to fetch live stream from the camera");
+        location.reload();
     }
 </script>
 </body>
