@@ -1,5 +1,5 @@
 from multiprocessing import Process, Queue
-from typing import Dict, Hashable, List, NoReturn
+from typing import Dict, Hashable, List, NoReturn, Tuple
 
 from fastapi import WebSocket
 from pydantic import BaseConfig, BaseModel, HttpUrl
@@ -35,6 +35,8 @@ class Surveillance(BaseConfig):
     available_cameras: List[str] = []
     processes: Dict[int, Process] = {}
     queue_manager: Dict[int, Queue] = {}
+    session_manager: Dict[int, float] = {}
+    frame: Tuple[int, int, int] = ()
 
 
 surveillance = Surveillance()

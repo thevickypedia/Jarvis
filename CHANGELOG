@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+6.5.2 (10/20/2022)
+------------------
+- Improvements to surveillance
+- Generate an on demand image frame using text
+- Communicate to the UI if webcam has failed
+- Let server handle the session timeout
+- Remove session timeout from the UI
+- Wrap offline tasks into bare exception to communicate the error
+- Change surveillance endpoint to be condition based
+- Update requirements.txt and README.md
+
 6.5.1 (10/16/2022)
 ------------------
 - Fix rendering same webcam feed for different sessions

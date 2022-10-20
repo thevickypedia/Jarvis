@@ -174,7 +174,7 @@
 <p class="admonition-title">See also</p>
 <p>If basic auth (stored as an env var <code class="docutils literal notranslate"><span class="pre">robinhood_endpoint_auth</span></code>) succeeds:</p>
 <ul class="simple">
-<li><p>Returns <code class="docutils literal notranslate"><span class="pre">?token=HASHED_UUID</span></code> to access <code class="docutils literal notranslate"><span class="pre">/investment</span></code> accessed via <code class="docutils literal notranslate"><span class="pre">/investment?token=HASHED_UUID</span></code></p></li>
+<li><p>Returns <code class="docutils literal notranslate"><span class="pre">?token=HASHED_UUID</span></code> to access <code class="docutils literal notranslate"><span class="pre">/investment</span></code> via <code class="docutils literal notranslate"><span class="pre">/investment?token=HASHED_UUID</span></code></p></li>
 <li><p>Also stores the token in the <code class="docutils literal notranslate"><span class="pre">Robinhood</span></code> object which is verified in the <code class="docutils literal notranslate"><span class="pre">/investment</span></code> endpoint.</p></li>
 <li><p>The token is nullified in the object as soon as it is verified, making it single use.</p></li>
 </ul>
@@ -197,7 +197,7 @@
 <p class="admonition-title">See also</p>
 <p>If basic auth (stored as an env var <code class="docutils literal notranslate"><span class="pre">SURVEILLANCE_ENDPOINT_AUTH</span></code>) succeeds:</p>
 <ul class="simple">
-<li><p>Returns <code class="docutils literal notranslate"><span class="pre">?token=HASHED_UUID</span></code> to access <code class="docutils literal notranslate"><span class="pre">/surveillance</span></code> accessed via <code class="docutils literal notranslate"><span class="pre">/surveillance?token=HASHED_UUID</span></code></p></li>
+<li><p>Returns <code class="docutils literal notranslate"><span class="pre">?token=HASHED_UUID</span></code> to access <code class="docutils literal notranslate"><span class="pre">/surveillance</span></code> via <code class="docutils literal notranslate"><span class="pre">/surveillance?token=HASHED_UUID</span></code></p></li>
 <li><p>Also stores the token in the <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object which is verified in the <code class="docutils literal notranslate"><span class="pre">/surveillance</span></code> endpoint.</p></li>
 <li><p>The token is nullified in the object as soon as it is verified, making it single use.</p></li>
 </ul>
@@ -258,8 +258,8 @@
 <p class="admonition-title">See also</p>
 <p>This endpoint is secured behind single use token.</p>
 <ul class="simple">
-<li><p>Initial check is done by the function authenticate_surveillance behind the path “/surveillance-authenticate”</p></li>
-<li><p>Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in the <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object.</p></li>
+<li><p>Initial check is done by <code class="docutils literal notranslate"><span class="pre">authenticate_surveillance</span></code> behind the path “/surveillance-authenticate”</p></li>
+<li><p>Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object.</p></li>
 <li><p>This UUID is sent as response to the API endpoint behind ngrok connection (if tunnelled).</p></li>
 <li><p>The UUID is deleted from the object as soon as the argument is checked for the last time.</p></li>
 <li><p>Page refresh is useless because the value in memory is cleared as soon as the video is rendered.</p></li>
@@ -427,14 +427,14 @@
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>The websocket checks the frontend and kills the backend process to release the camera if connection is closed.</p></li>
-<li><p>Closing queue is not required as the backend process will be terminated anyway.</p></li>
+<li><p>Websocket checks the frontend and kills the backend process to release the camera if connection is closed.</p></li>
+<li><p>Closing the multiprocessing queue is not required as the backend process will be terminated anyway.</p></li>
 </ul>
 </div>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>Closing queue before process termination will raise a ValueError as the process is still updating the queue.</p></li>
-<li><p>Closing queue after process termination will raise an EOFError as the queue will not be available to close.</p></li>
+<li><p>Closing queue before process termination will raise ValueError as the process is still updating the queue.</p></li>
+<li><p>Closing queue after process termination will raise EOFError as the queue will not be available to close.</p></li>
 </ul>
 </dd></dl>
 
@@ -454,6 +454,30 @@
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.api_squire.generate_error_frame">
+<span class="sig-prename descclassname"><span class="pre">api.api_squire.</span></span><span class="sig-name descname"><span class="pre">generate_error_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="headerlink" href="#api.api_squire.generate_error_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a single frame for error image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – Text that should be in the image.</p></li>
+<li><p><strong>dimension</strong> – Dimension (Height x Width x Channel) of the frame.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Creates a black image.</p></li>
+<li><p>Gets coordinates based on boundaries of the text to center the text in image.</p></li>
+</ul>
+</div>
 </dd></dl>
 
 <dl class="py function">

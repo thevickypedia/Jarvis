@@ -161,6 +161,11 @@ docker run \
 - **SYNC_MEETINGS** - Interval in seconds to generate ``meetings`` information using `ics` URL.
 - **SYNC_EVENTS** - Interval in seconds to generate ``events`` information using `calendar` or `outlook` application.
 
+**API Features**
+- **ROBINHOOD_ENDPOINT_AUTH** - Authentication token to access the robinhood portfolio which is generated every hour.
+- **SURVEILLANCE_ENDPOINT_AUTH** - Token to access webcam live feed via Jarvis API.
+- **SURVEILLANCE_SESSION_TIMEOUT** - Session time out for `/surveillance`. Defaults to 300 seconds.
+
 - **TASKS** - Runs certain tasks at certain intervals.
 ```yaml
 [

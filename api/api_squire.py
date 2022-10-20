@@ -1,8 +1,10 @@
+import base64
 import logging
 from multiprocessing import Queue
-from typing import ByteString, List, NoReturn
+from typing import ByteString, List, NoReturn, Tuple
 
 import cv2
+import numpy
 
 from api.settings import surveillance
 from modules.camera.camera import Camera
@@ -13,6 +15,47 @@ from modules.logger.custom_logger import logger
 api_config = config.APIConfig()
 config.multiprocessing_logger(filename=api_config.DEFAULT_LOG_FILENAME,
                               log_format=logging.Formatter(api_config.DEFAULT_LOG_FORMAT))
+
+
+def generate_error_frame(text: str, dimension: Tuple[int, int, int]) -> bytes:
+    """Generates a single frame for error image.
+
+    Args:
+        text: Text that should be in the image.
+        dimension: Dimension (Height x Width x Channel) of the frame.
+
+    Returns:
+        numpy.ndarray:
+
+    See Also:
+        - Creates a black image.
+        - Gets coordinates based on boundaries of the text to center the text in image.
+    """
+    image = numpy.zeros(dimension, numpy.uint8)
+
+    font = cv2.FONT_HERSHEY_DUPLEX
+    font_scale = 1  # this value can be from 0 to 1 (0,1] to change the size of the text relative to the image
+    font_color = (255, 255, 255)
+    thickness = 1
+
+    line_type = 2
+    text_size = cv2.getTextSize(text, font, 1, 2)[0]
+
+    text_x = int((image.shape[1] - text_size[0]) / 2)
+    text_y = int((image.shape[0] + text_size[1]) / 2)
+
+    cv2.putText(img=image,
+                text=text,
+                org=(text_x, text_y),
+                fontFace=font,
+                fontScale=font_scale,
+                color=font_color,
+                thickness=thickness,
+                lineType=line_type)
+    cv2.imwrite(filename='temp.jpg', img=image)
+    with open('temp.jpg', 'rb') as image_file:
+        encoded_string = base64.b64encode(image_file.read())
+    return encoded_string
 
 
 def test_camera() -> NoReturn:
@@ -37,10 +80,14 @@ def test_camera() -> NoReturn:
         raise CameraError(f"Camera index [{surveillance.camera_index}] is out of range.\n\n"
                           f"Available cameras:\n{camera_object.get_index()}")
     camera = cv2.VideoCapture(surveillance.camera_index)
-    if camera is None or not camera.isOpened() or camera.read() == (False, None):
-        raise CameraError(f"Unable to read the camera index [{surveillance.camera_index}] - "
-                          f"{available_cameras[surveillance.camera_index]}")
-
+    error = CameraError(f"Unable to read the camera index [{surveillance.camera_index}] - "
+                        f"{available_cameras[surveillance.camera_index]}")
+    if camera is None or not camera.isOpened():
+        raise error
+    success, frame = camera.read()
+    if not success:
+        raise error
+    surveillance.frame = frame.shape
     if camera.isOpened():
         camera.release()
     logger.info(f"{available_cameras[surveillance.camera_index]} is ready to use.")
@@ -59,7 +106,7 @@ def gen_frames(manager: Queue, index: int, available_cameras: List[str]) -> NoRe
     logger.info(f"Capturing frames from {available_cameras[index]}")
     while True:
         success, frame = camera.read()
-        if not success:  # TODO: Check if there is a way to communicate error to UI
+        if not success:
             logger.error(f"Failed to capture frames from [{index}]: {available_cameras[index]}")
             logger.info(f"Releasing camera: {available_cameras[index]}")
             camera.release()

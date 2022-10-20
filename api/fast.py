@@ -1,3 +1,4 @@
+import asyncio
 import imghdr
 import importlib
 import logging
@@ -19,7 +20,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import (FileResponse, HTMLResponse, RedirectResponse,
                                StreamingResponse)
 
-from api.api_squire import gen_frames, streamer, test_camera
+from api.api_squire import (gen_frames, generate_error_frame, streamer,
+                            test_camera)
 from api.authenticator import (OFFLINE_PROTECTOR, ROBINHOOD_PROTECTOR,
                                SURVEILLANCE_PROTECTOR)
 from api.models import GetData, GetIndex, GetText
@@ -254,7 +256,11 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
                 and_response += f'"{each}" is not a part of off-line communicator compatible request.\n\n' \
                                 'Please try an instruction that does not require an user interaction.'
             else:
-                and_response += f"{offline_communicator(command=each)}\n"
+                try:
+                    and_response += f"{offline_communicator(command=each)}\n"
+                except Exception as error:
+                    logger.error(error)
+                    and_response += error.__str__()
         logger.info(f"Response: {and_response}")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=and_response)
     elif ' also ' in command and not word_match(phrase=command, match_list=keywords.avoid):
@@ -265,7 +271,11 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
                 also_response += f'"{each}" is not a part of off-line communicator compatible request.\n\n' \
                                  'Please try an instruction that does not require an user interaction.'
             else:
-                also_response = f"{offline_communicator(command=each)}\n"
+                try:
+                    also_response = f"{offline_communicator(command=each)}\n"
+                except Exception as error:
+                    logger.error(error)
+                    also_response += error.__str__()
         logger.info(f"Response: {also_response}")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=also_response)
     if not word_match(phrase=command, match_list=offline_compatible):
@@ -279,7 +289,11 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
             raise APIResponse(status_code=HTTPStatus.OK.real,
                               detail=f'I will execute it after {support.time_converter(seconds=delay_info[1])} '
                                      f'{models.env.title}!')
-    response = offline_communicator(command=command)
+    try:
+        response = offline_communicator(command=command)
+    except Exception as error:
+        logger.error(error)
+        response = error.__str__()
     logger.info(f"Response: {response}")
     if os.path.isfile(response) and response.endswith('.jpg'):
         logger.info("Response received as a file.")
@@ -302,7 +316,7 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
 
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
-                                              models.env.robinhood_pass]):
+                                              models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
     @app.post(path="/robinhood-authenticate", dependencies=ROBINHOOD_PROTECTOR)
     async def authenticate_robinhood() -> NoReturn:
         """Authenticates the request and generates single use token.
@@ -313,7 +327,7 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
         See Also:
             If basic auth (stored as an env var ``robinhood_endpoint_auth``) succeeds:
 
-            - Returns ``?token=HASHED_UUID`` to access ``/investment`` accessed via ``/investment?token=HASHED_UUID``
+            - Returns ``?token=HASHED_UUID`` to access ``/investment`` via ``/investment?token=HASHED_UUID``
             - Also stores the token in the ``Robinhood`` object which is verified in the ``/investment`` endpoint.
             - The token is nullified in the object as soon as it is verified, making it single use.
         """
@@ -322,7 +336,7 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
 
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
-                                              models.env.robinhood_pass]):
+                                              models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
     @app.get(path="/investment", response_class=HTMLResponse, include_in_schema=False)
     async def robinhood_path(request: Request, token: str = None) -> HTMLResponse:
         """Serves static file.
@@ -367,138 +381,166 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
                               detail='Requires authentication since endpoint uses single-use token.')
 
 
-@app.post(path="/surveillance-authenticate", dependencies=SURVEILLANCE_PROTECTOR)
-async def authenticate_surveillance(cam: GetIndex) -> NoReturn:
-    """Tests the given camera index, generates a token for the endpoint to authenticate.
+# Conditional endpoint: Condition matches without env vars during docs generation
+if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
+    @app.post(path="/surveillance-authenticate", dependencies=SURVEILLANCE_PROTECTOR)
+    async def authenticate_surveillance(cam: GetIndex) -> NoReturn:
+        """Tests the given camera index, generates a token for the endpoint to authenticate.
 
-    Args:
-        cam: Index number of the chosen camera.
+        Args:
+            cam: Index number of the chosen camera.
 
-    Raises:
-        200: If initial auth is successful and returns the single-use token.
+        Raises:
+            200: If initial auth is successful and returns the single-use token.
 
-    See Also:
-        If basic auth (stored as an env var ``SURVEILLANCE_ENDPOINT_AUTH``) succeeds:
+        See Also:
+            If basic auth (stored as an env var ``SURVEILLANCE_ENDPOINT_AUTH``) succeeds:
 
-        - Returns ``?token=HASHED_UUID`` to access ``/surveillance`` accessed via ``/surveillance?token=HASHED_UUID``
-        - Also stores the token in the ``Surveillance`` object which is verified in the ``/surveillance`` endpoint.
-        - The token is nullified in the object as soon as it is verified, making it single use.
-    """
-    surveillance.camera_index = cam.index
-    try:
-        test_camera()
-    except CameraError as error:
-        raise APIResponse(status_code=HTTPStatus.NOT_ACCEPTABLE.real, detail=str(error))
-    surveillance.token = support.token()
-    raise APIResponse(status_code=HTTPStatus.OK.real, detail=f"?token={surveillance.token}")
-
-
-@app.get('/surveillance')
-async def monitor(token: str = None) -> HTMLResponse:
-    """Serves the monitor page's frontend after updating it with video origin and websocket origins.
-
-    Args:
-        - request: Takes the ``Request`` class as an argument.
-        - token: Takes custom auth token as an argument.
-
-    Returns:
-        HTMLResponse:
-        Renders the html page.
-
-    Raises:
-        - 403: If token is ``null``.
-        - 417: If token doesn't match the auto-generated value.
-
-    See Also:
-        This endpoint is secured behind single use token.
-
-        - Initial check is done by the function authenticate_surveillance behind the path "/surveillance-authenticate"
-        - Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in the ``Surveillance`` object.
-        - This UUID is sent as response to the API endpoint behind ngrok connection (if tunnelled).
-        - The UUID is deleted from the object as soon as the argument is checked for the last time.
-        - Page refresh is useless because the value in memory is cleared as soon as the video is rendered.
-    """
-    if not token:
-        raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
-                          detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
-    if token == surveillance.token:
-        surveillance.client_id = int(''.join(str(time.time()).split('.')))  # include milliseconds to avoid duplicates
-        rendered = jinja2.Template(templates.Surveillance.source).render(CLIENT_ID=surveillance.client_id,
-                                                                         SESSION_TIMEOUT=surveillance.session_timeout)
-        content_type, _ = mimetypes.guess_type(rendered)
-        return HTMLResponse(status_code=HTTPStatus.TEMPORARY_REDIRECT.real, content=rendered, media_type=content_type)
-    else:
-        raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
-                          detail='Requires authentication since endpoint uses single-use token.')
+            - Returns ``?token=HASHED_UUID`` to access ``/surveillance`` via ``/surveillance?token=HASHED_UUID``
+            - Also stores the token in the ``Surveillance`` object which is verified in the ``/surveillance`` endpoint.
+            - The token is nullified in the object as soon as it is verified, making it single use.
+        """
+        surveillance.camera_index = cam.index
+        try:
+            test_camera()
+        except CameraError as error:
+            raise APIResponse(status_code=HTTPStatus.NOT_ACCEPTABLE.real, detail=str(error))
+        surveillance.token = support.token()
+        raise APIResponse(status_code=HTTPStatus.OK.real, detail=f"?token={surveillance.token}")
 
 
-@app.get('/video-feed')
-async def video_feed(request: Request, token: str = None) -> StreamingResponse:
-    """Authenticates the request, and returns the frames generated as a ``StreamingResponse``.
+# Conditional endpoint: Condition matches without env vars during docs generation
+if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
+    @app.get('/surveillance')
+    async def monitor(token: str = None) -> HTMLResponse:
+        """Serves the monitor page's frontend after updating it with video origin and websocket origins.
 
-    Args:
-        - request: Takes the ``Request`` class as an argument.
-        - token: Token generated in ``/surveillance-authenticate`` endpoint to restrict direct access.
+        Args:
+            - request: Takes the ``Request`` class as an argument.
+            - token: Takes custom auth token as an argument.
 
-    Returns:
-        StreamingResponse:
-        StreamingResponse with a collective of each frame.
-    """
-    logger.info(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
-                f"{request.headers.get('user-agent')}")
-    if not token:
-        logger.warning('/video-feed was accessed directly.')
-        raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
-                          detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
-    if token != surveillance.token:
-        raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
-                          detail='Requires authentication since endpoint uses single-use token.')
-    surveillance.token = None
-    surveillance.queue_manager[surveillance.client_id] = Queue()
-    process = Process(target=gen_frames,
-                      kwargs={"manager": surveillance.queue_manager[surveillance.client_id],
-                              "index": surveillance.camera_index,
-                              "available_cameras": surveillance.available_cameras})
-    process.start()
-    # Insert process IDs into the children table to kill it in case, Jarvis is stopped during an active session
-    with db.connection:
-        cursor = db.connection.cursor()
-        cursor.execute("INSERT INTO children (surveillance) VALUES (?);", (process.pid,))
-        db.connection.commit()
-    surveillance.processes[surveillance.client_id] = process
-    return StreamingResponse(content=streamer(), media_type='multipart/x-mixed-replace; boundary=frame',
-                             status_code=HTTPStatus.PARTIAL_CONTENT.real)
+        Returns:
+            HTMLResponse:
+            Renders the html page.
 
+        Raises:
+            - 403: If token is ``null``.
+            - 417: If token doesn't match the auto-generated value.
 
-@app.websocket("/ws/{client_id}")
-async def websocket_endpoint(websocket: WebSocket, client_id: int) -> None:
-    """Initiates a websocket connection.
+        See Also:
+            This endpoint is secured behind single use token.
 
-    Args:
-        websocket: WebSocket.
-        client_id: Epoch time generated when each user renders the video file.
-
-    See Also:
-        - The websocket checks the frontend and kills the backend process to release the camera if connection is closed.
-        - Closing queue is not required as the backend process will be terminated anyway.
-
-    Notes:
-        - Closing queue before process termination will raise a ValueError as the process is still updating the queue.
-        - Closing queue after process termination will raise an EOFError as the queue will not be available to close.
-    """
-    await ws_manager.connect(websocket)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            logger.info(f'Client [{client_id}] sent {data}')
-    except WebSocketDisconnect:
-        ws_manager.disconnect(websocket)
-        logger.info(f'Client [{client_id}] disconnected.')
-        logger.info('Closing dedicated queue created for client.')
-        if ws_manager.active_connections:
-            if process := surveillance.processes.get(int(client_id)):
-                support.stop_process(pid=process.pid)
+            - Initial check is done by ``authenticate_surveillance`` behind the path "/surveillance-authenticate"
+            - Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in ``Surveillance`` object.
+            - This UUID is sent as response to the API endpoint behind ngrok connection (if tunnelled).
+            - The UUID is deleted from the object as soon as the argument is checked for the last time.
+            - Page refresh is useless because the value in memory is cleared as soon as the video is rendered.
+        """
+        if not token:
+            raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
+                              detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
+        if token == surveillance.token:
+            surveillance.client_id = int(''.join(str(time.time()).split('.')))  # include milliseconds to avoid dupes
+            rendered = jinja2.Template(templates.Surveillance.source).render(CLIENT_ID=surveillance.client_id)
+            content_type, _ = mimetypes.guess_type(rendered)
+            return HTMLResponse(status_code=HTTPStatus.TEMPORARY_REDIRECT.real,
+                                content=rendered, media_type=content_type)
         else:
-            logger.info("No active connections found.")
-            for client_id, process in surveillance.processes.items():
-                support.stop_process(pid=process.pid)
+            raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
+                              detail='Requires authentication since endpoint uses single-use token.')
+
+
+# Conditional endpoint: Condition matches without env vars during docs generation
+if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
+    @app.get('/video-feed')
+    async def video_feed(request: Request, token: str = None) -> StreamingResponse:
+        """Authenticates the request, and returns the frames generated as a ``StreamingResponse``.
+
+        Args:
+            - request: Takes the ``Request`` class as an argument.
+            - token: Token generated in ``/surveillance-authenticate`` endpoint to restrict direct access.
+
+        Returns:
+            StreamingResponse:
+            StreamingResponse with a collective of each frame.
+        """
+        logger.info(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
+                    f"{request.headers.get('user-agent')}")
+        if not token:
+            logger.warning('/video-feed was accessed directly.')
+            raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
+                              detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
+        if token != surveillance.token:
+            raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
+                              detail='Requires authentication since endpoint uses single-use token.')
+        surveillance.token = None
+        surveillance.queue_manager[surveillance.client_id] = Queue()
+        process = Process(target=gen_frames,
+                          kwargs={"manager": surveillance.queue_manager[surveillance.client_id],
+                                  "index": surveillance.camera_index,
+                                  "available_cameras": surveillance.available_cameras})
+        process.start()
+        # Insert process IDs into the children table to kill it in case, Jarvis is stopped during an active session
+        with db.connection:
+            cursor = db.connection.cursor()
+            cursor.execute("INSERT INTO children (surveillance) VALUES (?);", (process.pid,))
+            db.connection.commit()
+        surveillance.processes[surveillance.client_id] = process
+        return StreamingResponse(content=streamer(), media_type='multipart/x-mixed-replace; boundary=frame',
+                                 status_code=HTTPStatus.PARTIAL_CONTENT.real)
+
+
+# Conditional endpoint: Condition matches without env vars during docs generation
+if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
+    @app.websocket("/ws/{client_id}")
+    async def websocket_endpoint(websocket: WebSocket, client_id: int) -> None:
+        """Initiates a websocket connection.
+
+        Args:
+            websocket: WebSocket.
+            client_id: Epoch time generated when each user renders the video file.
+
+        See Also:
+            - Websocket checks the frontend and kills the backend process to release the camera if connection is closed.
+            - Closing the multiprocessing queue is not required as the backend process will be terminated anyway.
+
+        Notes:
+            - Closing queue before process termination will raise ValueError as the process is still updating the queue.
+            - Closing queue after process termination will raise EOFError as the queue will not be available to close.
+        """
+        await ws_manager.connect(websocket)
+        try:
+            while True:
+                try:
+                    data = await asyncio.wait_for(fut=websocket.receive_text(), timeout=5)
+                except asyncio.TimeoutError:
+                    data = None
+                if data:
+                    logger.info(f'Client [{client_id}] sent {data}')
+                    if data == "Healthy":
+                        surveillance.session_manager[client_id] = time.time()
+                        timestamp = surveillance.session_manager[client_id] + surveillance.session_timeout
+                        logger.info(f"Surveillance session will expire at "
+                                    f"{datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')}")
+                    if data == "IMG_ERROR":
+                        logger.info("Sending error image frame to client.")
+                        await websocket.send_bytes(data=generate_error_frame(
+                            dimension=surveillance.frame,
+                            text="Unable to get image frame from "
+                                 f"{surveillance.available_cameras[surveillance.camera_index]}"))
+                        raise WebSocketDisconnect  # Raise error to release camera after a failed read
+                if surveillance.session_manager[client_id] + surveillance.session_timeout <= time.time():
+                    logger.info(f"Sending session timeout to client: {client_id}")
+                    await websocket.send_bytes(data=generate_error_frame(
+                        dimension=surveillance.frame, text="SESSION EXPIRED! Re-authenticate to continue live stream."))
+                    raise WebSocketDisconnect  # Raise error to release camera after a failed read
+        except WebSocketDisconnect:
+            ws_manager.disconnect(websocket)
+            logger.info(f'Client [{client_id}] disconnected.')
+            if ws_manager.active_connections:
+                if process := surveillance.processes.get(int(client_id)):
+                    support.stop_process(pid=process.pid)
+            else:
+                logger.info("No active connections found.")
+                for client_id, process in surveillance.processes.items():
+                    support.stop_process(pid=process.pid)

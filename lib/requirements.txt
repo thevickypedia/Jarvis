@@ -39,3 +39,4 @@ SoundFile==0.10.3.post1
 deepdiff==5.8.1
 pymyq==3.1.5
 docker==6.0.0
+websockets==10.3

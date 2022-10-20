@@ -34,25 +34,6 @@
     var video_origin = url.split('/surveillance').slice(0, 3).join('/video-feed');
     document.getElementById("imageID").src=video_origin;
 </script>
-
-<script type="text/javascript">
-        var idleSeconds = {{ SESSION_TIMEOUT }};
-        $(function(){
-          var idleTimer;
-          function resetTimer(){
-            clearTimeout(idleTimer);
-            idleTimer = setTimeout(whenUserIdle,idleSeconds*1000);
-          }
-          $(document.body).bind('mousemove keydown click',resetTimer); //space separated events list that we want to monitor
-          resetTimer(); // Start the timer when the page loads
-        });
-        function whenUserIdle(){
-          closeSocket();
-          alert("SESSION EXPIRED!!");
-          location.reload();
-        }
-
-</script>
 <script type="text/javascript">
     var origin = wss_origin + {{ CLIENT_ID }}
     var ws = new WebSocket(origin);
@@ -62,11 +43,27 @@
     function closeSocket() {
         ws.close();
     }
+    function sendError() {
+        ws.send("IMG_ERROR")
+    }
+    ws.addEventListener('message', (event) => {
+        ws.binaryType = "blob";
+        if (event.data instanceof Blob) {
+            reader = new FileReader();
+            reader.onload = () => {
+            document.getElementById("imageID").removeAttribute("onerror");  // Remove attribute to avoid going into an infinite loop
+            document.getElementById("imageID").src = "data:image/jpg;base64," + reader.result;
+        };
+        reader.readAsText(event.data);
+        } else {
+            console.log(event.data);
+        }
+    });
 </script>
 <script>
     function imgError() {
         console.log("Failed to fetch live stream from the camera");
-        location.reload();
+        sendError();
     }
 </script>
 </body>
