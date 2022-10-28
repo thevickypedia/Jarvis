@@ -165,6 +165,7 @@ docker run \
 - **ROBINHOOD_ENDPOINT_AUTH** - Authentication token to access the robinhood portfolio which is generated every hour.
 - **SURVEILLANCE_ENDPOINT_AUTH** - Token to access webcam live feed via Jarvis API.
 - **SURVEILLANCE_SESSION_TIMEOUT** - Session time out for `/surveillance`. Defaults to 300 seconds.
+- **STOCK_MONITOR_ENDPOINT_AUTH** - Token to add a stock price monitor. (Will soon be made `open-source`)
 
 - **TASKS** - Runs certain tasks at certain intervals.
 ```yaml

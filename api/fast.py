@@ -16,6 +16,7 @@ from typing import Any, Dict, List, NoReturn, Union
 
 import jinja2
 import jwt
+import pandas
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import (FileResponse, HTMLResponse, RedirectResponse,
@@ -42,6 +43,7 @@ from modules.models import models
 from modules.offline import compatibles
 from modules.templates import templates
 from modules.utils import support
+from modules.validators import email_validator
 
 # Creates log files
 if not os.path.isfile(config.APIConfig().ACCESS_LOG_FILENAME):
@@ -65,7 +67,7 @@ logger = logging.getLogger('uvicorn.default')
 app = FastAPI(
     title="Jarvis API",
     description="Handles offline communication with **Jarvis** and generates a one time auth token for "
-                "**Robinhood** and **Surveillance endpoints.\n\n"
+                "**Robinhood** and **Surveillance endpoints**.\n\n"
                 "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)",
     version="v1.0"
 )
@@ -345,20 +347,40 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
     """
     logger.info(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
                 f"{request.headers.get('user-agent')}")
-    decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
 
-    from modules.validators import email_validator
+    input_data.request = input_data.request.upper()
+    if input_data.request not in ("GET", "PUT", "DELETE"):
+        logger.info(f'{input_data.request!r} is not in the allowed request list.')
+        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
+                          detail=HTTPStatus.UNPROCESSABLE_ENTITY.__dict__['phrase'])
+
     result = email_validator.validate(email=input_data.email, check_smtp=False)  # SMTP check is not in a reliable state
     if result is None:
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f"{input_data.email.split('@')[-1]!r} doesn't resolve to a valid mail server!")
 
+    if input_data.request == "GET":
+        logger.info(f"{input_data.email!r} requested their data.")
+        if input_data.token:
+            decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
+            logger.warning(f"Unwanted information received: {decoded!r}")
+        if data := squire.get_stock_userdata(email=input_data.email):  # Filter data from DB by the email input received
+            data_dict = [dict(zip(stock_monitor.user_info, each_entry)) for each_entry in data]
+            logger.info(data_dict)
+            # Customized UI with HTML and CSS can consume this dataframe into a table, comment it otherwise
+            pandas.set_option('display.max_columns', None)
+            data_frame = pandas.DataFrame(data=data_dict)
+            raise APIResponse(status_code=HTTPStatus.OK.real, detail=data_frame.to_html())
+        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
+                          detail=f"No entry found in database for {input_data.email!r}")
+
+    decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
     decoded['Ticker'] = decoded['Ticker'].upper()
     decoded['Max'] = support.extract_nos(input_=decoded['Max'], method=float)
     decoded['Min'] = support.extract_nos(input_=decoded['Min'], method=float)
     decoded['Correction'] = support.extract_nos(input_=decoded['Correction'], method=int)
 
-    if decoded['Correction'] is None:
+    if decoded['Correction'] is None:  # Consider 0 as valid in case user doesn't want any correction value
         decoded['Correction'] = 5
     if decoded['Max'] is None and decoded['Min'] is None:
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
@@ -373,18 +395,28 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
                           detail="Allowed correction values are only up to 20%\n\nFor anything greater, "
                                  "it is better to increase/decrease the Max/Min values.")
 
-    logger.info(f"User requested: {input_data.email} ticker alert for {decoded}")
     if decoded['Ticker'] not in stock_monitor.stock_list:
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f"{decoded['Ticker']} not a part of NASDAQ stock list [OR] Jarvis currently doesn't "
                                  f"support tracking prices for {decoded['Ticker']}.")
 
-    # Check dupes and let know the user
+    # Forms a tuple of the new entry provided by the user
     new_entry = (str(decoded['Ticker']), input_data.email, float(decoded['Max']), float(decoded['Min']),
                  int(decoded['Correction']),)
+
+    # Deletes an entry that's present already when requested
+    if input_data.request == "DELETE":
+        logger.info(f"{input_data.email!r} requested to delete {new_entry!r}")
+        if new_entry not in squire.get_stock_userdata(email=input_data.email):  # Checks if entry is present in DB
+            raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail="Entry is not present in the database.")
+        squire.delete_stock_userdata(data=new_entry)
+        raise APIResponse(status_code=HTTPStatus.OK.real, detail="Entry has been removed from the database.")
+
+    # Check dupes and let know the user
     if new_entry in squire.get_stock_userdata():
         raise APIResponse(status_code=HTTPStatus.CONFLICT.real, detail="Duplicate request!\nEntry exists in database.")
 
+    logger.info(f"{input_data.email!r} requested to add {new_entry!r}")
     try:
         price_check = webull().get_quote(decoded['Ticker'])
         current_price = price_check.get('close') or price_check.get('open')

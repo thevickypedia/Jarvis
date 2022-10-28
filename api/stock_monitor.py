@@ -47,8 +47,8 @@ class StockMonitor:
         """Groups columns in the database by ticker to check the current prices and by email to send a notification.
 
         See Also:
-            For ticker grouping, first value in the list is the ticker, so key will be ticker and the rest are values.
-            For email grouping, first value among the rest is the email, so key is email and the rest are values.
+            - For ticker grouping, first value in the list is the ticker, so key will be ticker and the rest are values.
+            - For email grouping, first value among the rest is the email, so key is email and the rest are values.
         """
         for k, *v in self.data:
             self.ticker_grouped[k].append(tuple(v))

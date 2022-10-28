@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 from pydantic import BaseModel, EmailStr
 
@@ -11,8 +11,8 @@ class OfflineCommunicatorModal(BaseModel):
     """
 
     command: str
-    native_audio: bool = False
-    speech_timeout: Union[int, float] = 0
+    native_audio: Optional[bool] = False
+    speech_timeout: Optional[Union[int, float]] = 0
 
 
 class StockMonitorModal(BaseModel):
@@ -24,6 +24,7 @@ class StockMonitorModal(BaseModel):
 
     email: EmailStr
     token: Any
+    request: Any
 
 
 class CameraIndexModal(BaseModel):
@@ -33,7 +34,7 @@ class CameraIndexModal(BaseModel):
 
     """
 
-    index: Any = None
+    index: Optional[Any] = None
 
 
 class SpeechSynthesisModal(BaseModel):
@@ -44,6 +45,6 @@ class SpeechSynthesisModal(BaseModel):
     """
 
     text: str
-    timeout: Union[int, float] = None
-    quality: str = "high"
-    voice: str = "en-us_northern_english_male-glow_tts"
+    timeout: Optional[Union[int, float]] = None
+    quality: Optional[str] = "high"
+    voice: Optional[str] = "en-us_northern_english_male-glow_tts"

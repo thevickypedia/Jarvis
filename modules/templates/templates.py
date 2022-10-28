@@ -41,7 +41,7 @@ class Surveillance:
     """
 
     if models.settings.bot != 'sphinx-build':
-        with open(os.path.join(models.fileio.templates, 'monitor.html')) as file:
+        with open(os.path.join(models.fileio.templates, 'surveillance.html')) as file:
             source = file.read()
 
 

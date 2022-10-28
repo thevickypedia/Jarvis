@@ -6,7 +6,8 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from multiprocessing import Queue
-from typing import ByteString, Callable, Iterable, List, NoReturn, Tuple, Union
+from typing import (ByteString, Callable, Iterable, List, NoReturn, Optional,
+                    Tuple, Union)
 
 import cv2
 import numpy
@@ -139,7 +140,7 @@ def streamer() -> ByteString:
 
     Warnings:
         - | When pushing large items onto the queue, the items are essentially buffered, despite the immediate return
-          | of the queue’s put function. This causes a delay of whopping ~20 seconds during live feed.
+          | of the queue’s put function. This can sometimes raise latency to a whopping ~20 seconds during live feed.
     """
     queue = surveillance.queue_manager[surveillance.client_id]
     try:
@@ -253,7 +254,8 @@ def insert_stock_userdata(entry: Tuple[str, EmailStr, Union[int, float], Union[i
         stock_db.connection.commit()
 
 
-def get_stock_userdata() -> List[Tuple[str, EmailStr, Union[int, float], Union[int, float], int]]:
+def get_stock_userdata(email: Optional[Union[EmailStr, str]] = None) -> \
+        List[Tuple[str, EmailStr, Union[int, float], Union[int, float], int]]:
     """Reads the stock database to get all the user data.
 
     Returns:
@@ -262,7 +264,10 @@ def get_stock_userdata() -> List[Tuple[str, EmailStr, Union[int, float], Union[i
     """
     with stock_db.connection:
         cursor = stock_db.connection.cursor()
-        data = cursor.execute("SELECT * FROM stock").fetchall()
+        if email:
+            data = cursor.execute("SELECT * FROM stock WHERE email=(?)", (email,)).fetchall()
+        else:
+            data = cursor.execute("SELECT * FROM stock").fetchall()
     return data
 
 

@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+6.5.4 (10/28/2022)
+------------------
+- Improvements to `stock-monitor` endpoint
+- Give an option for users to include data GET/DELETE existing alerts
+- Filter outbound data from database by the email input received
+- Rename monitor.html to surveillance.html in templates module
+
 6.5.3 (10/27/2022)
 ------------------
 - Create an open-source stock price monitor within Jarvis
