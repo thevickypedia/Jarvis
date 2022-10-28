@@ -1,6 +1,20 @@
 Change Log
 ==========
 
+6.5.3 (10/27/2022)
+------------------
+- Create an open-source stock price monitor within Jarvis
+- Create a database for stock monitor to store the user information
+- Extract all NASDAQ tickers to validate user input
+- Prevent users from adding duplicate entries
+- Onboard stock_monitor.py to monitor stock price and trigger notifications to users
+- Onboard email_validator.py
+- Onboard applauncher.scpt to check if app is closed before opening
+- Use special character in f-string to add quotes within a string
+- Remove screen print for camera validation
+- Upgrade gmail-connector
+- Setup manual workflow dispatch for pypi build
+
 6.5.2 (10/20/2022)
 ------------------
 - Improvements to surveillance

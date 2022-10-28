@@ -4,7 +4,7 @@ from modules.models import models
 
 
 class RobinhoodTemplate:
-    """Initiates Template object to load the robinhood report template.
+    """Initiates ``RobinhoodTemplate`` object to load the robinhood report template.
 
     >>> RobinhoodTemplate
 
@@ -17,7 +17,7 @@ class RobinhoodTemplate:
 
 
 class ThreatNotificationTemplates:
-    """Initiates Template object to load the threat email templates.
+    """Initiates ``ThreatNotificationTemplates`` object to load the threat email templates.
 
     >>> ThreatNotificationTemplates
 
@@ -34,7 +34,7 @@ class ThreatNotificationTemplates:
 
 
 class Surveillance:
-    """Initiates Template object to load the video surveilance template.
+    """Initiates ``Surveillance`` object to load the video surveilance template.
 
     >>> Surveillance
 
@@ -42,4 +42,16 @@ class Surveillance:
 
     if models.settings.bot != 'sphinx-build':
         with open(os.path.join(models.fileio.templates, 'monitor.html')) as file:
+            source = file.read()
+
+
+class StockMonitor:
+    """Initiates ``StockMonitor`` object to load the stock-monitor email template.
+
+    >>> Surveillance
+
+    """
+
+    if models.settings.bot != 'sphinx-build':
+        with open(os.path.join(models.fileio.templates, 'stock_monitor.html')) as file:
             source = file.read()

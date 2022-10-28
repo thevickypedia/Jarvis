@@ -7,15 +7,13 @@
 
 import os
 import platform
-import sys
-import time
 from multiprocessing import current_process
 
 import cv2
 import pvporcupine
 from pydantic import PositiveInt
 
-from api.rh_helper import cron_schedule
+from api.scheduler import rh_cron_schedule, sm_cron_schedule
 from modules.camera.camera import Camera
 from modules.crontab.expression import CronExpression
 from modules.database import database
@@ -69,7 +67,8 @@ if env.speech_synthesis_port == env.offline_port:
     )
 
 if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
-    env.crontab.append(cron_schedule(extended=True))
+    env.crontab.append(rh_cron_schedule(extended=True))
+env.crontab.append(sm_cron_schedule())
 
 # Forces limited version if env var is set, otherwise it is enforced based on the number of physical cores
 if env.limited:
@@ -94,7 +93,7 @@ TABLES = {
 for table, column in TABLES.items():
     db.create_table(table_name=table, columns=column)
 
-if current_process().name == "MainProcess":
+if settings.bot == "jarvis" and current_process().name == "MainProcess":
     try:
         cameras = Camera().list_cameras()
     except CameraError:
@@ -116,15 +115,10 @@ if current_process().name == "MainProcess":
         env.camera_index = None
 
     if env.camera_index is not None:
-        statement = f"Using '{cameras[env.camera_index]}' for camera operations."
-
         cam = cv2.VideoCapture(env.camera_index)
         if cam is None or not cam.isOpened() or cam.read() == (False, None):
             raise CameraError(f"Unable to read the camera - {cameras[env.camera_index]}")
         cam.release()
-        if env.camera_index == 0 and len(cameras) > 1:
-            statement += f" To use `{'or '.join([n for i, n in enumerate(cameras) if i != env.camera_index])}` " \
-                         f"add index # {'or '.join([str(i) for i, n in enumerate(cameras) if i != env.camera_index])}" \
-                         " as env var and restart."
-        sys.stdout.write(f"\r{statement}")
-        time.sleep(1)
+else:
+    if env.camera_index is None:  # Set default index to 0 when called by processes other than jarvis
+        env.camera_index = 0

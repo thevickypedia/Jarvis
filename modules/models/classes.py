@@ -158,6 +158,9 @@ class EnvConfig(BaseSettings):
     robinhood_qr: str = Field(default=None, env='ROBINHOOD_QR')
     robinhood_endpoint_auth: str = Field(default=None, env='ROBINHOOD_ENDPOINT_AUTH')
 
+    # StockMonitor endpoint auth
+    stock_monitor_endpoint_auth: str = Field(default=None, env='STOCK_MONITOR_ENDPOINT_AUTH')
+
     # GitHub config
     git_user: str = Field(default=None, env='GIT_USER')
     git_pass: str = Field(default=None, env='GIT_PASS')
@@ -202,7 +205,7 @@ class EnvConfig(BaseSettings):
     if settings.legacy:
         wake_words: List[str] = Field(default=['alexa'], env='WAKE_WORDS')
     else:
-        wake_words: List[str] = Field(default=[settings.bot], env='WAKE_WORDS')
+        wake_words: List[str] = Field(default=['jarvis'], env='WAKE_WORDS')
 
     class Config:
         """Environment variables configuration."""
@@ -238,12 +241,17 @@ class FileIO(BaseModel):
     tmp_automation: FilePath = os.path.join('fileio', 'tmp_automation.yaml')
     base_db: FilePath = os.path.join('fileio', 'database.db')
     task_db: FilePath = os.path.join('fileio', 'tasks.db')
+    stock_db: FilePath = os.path.join('fileio', 'stock.db')
+
+    stock_list_backup: FilePath = os.path.join('fileio', 'stock_list_backup.yaml')
     frequent: FilePath = os.path.join('fileio', 'frequent.yaml')
     location: FilePath = os.path.join('fileio', 'location.yaml')
-    notes: FilePath = os.path.join('fileio', 'notes.txt')
-    robinhood: FilePath = os.path.join('fileio', 'robinhood.html')
     smart_devices: FilePath = os.path.join('fileio', 'smart_devices.yaml')
     training_data: FilePath = os.path.join('fileio', 'training_data.yaml')
+
+    notes: FilePath = os.path.join('fileio', 'notes.txt')
+    robinhood: FilePath = os.path.join('fileio', 'robinhood.html')
+    app_launcher: FilePath = os.path.join('fileio', 'applauncher.scpt')
     event_script: FilePath = os.path.join('fileio', f'{env.event_app}.scpt')
     speech_synthesis_wav: FilePath = os.path.join('fileio', 'speech_synthesis.wav')
     speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))

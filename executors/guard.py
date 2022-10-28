@@ -165,16 +165,14 @@ def threat_notify(converted: str, face_detected: Union[str, None]) -> NoReturn:
         logger.warning("Un-processable arguments received.")
         return
 
-    kwargs = {"gmail_user": models.env.gmail_user,
-              "gmail_pass": models.env.gmail_pass,
-              "recipient": recipient,
+    kwargs = {"recipient": recipient,
               "html_body": rendered,
               "subject": f"Intruder Alert on {datetime.now().strftime('%B %d, %Y %I:%M %p')}"}
 
     if face_detected:
         kwargs["attachment"] = face_detected
 
-    response_ = SendEmail(**kwargs).send_email()
+    response_ = SendEmail(gmail_user=models.env.gmail_user, gmail_pass=models.env.gmail_pass).send_email(**kwargs)
     if response_.ok:
         logger.info('Email has been sent!')
     else:

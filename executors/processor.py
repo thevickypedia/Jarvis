@@ -35,7 +35,7 @@ def clear_db() -> NoReturn:
     with db.connection:
         cursor = db.connection.cursor()
         for table, column in models.TABLES.items():
-            if table == "vpn" or table == "party":
+            if table == "vpn" or table == "party" or table == "stock":
                 continue
             logger.info(f"Deleting data from {table}: {cursor.execute(f'SELECT * FROM {table}').fetchall()}")
             cursor.execute(f"DELETE FROM {table}")

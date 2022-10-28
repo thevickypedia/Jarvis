@@ -39,9 +39,10 @@ def events_writer() -> NoReturn:
 def event_app_launcher() -> NoReturn:
     """Launches either Calendar or Outlook application which is required to read events."""
     if models.env.event_app == "calendar":
-        os.system("open /System/Applications/Calendar.app > /dev/null 2>&1")
+        os.system(f"osascript {models.fileio.app_launcher} Calendar")
     else:
-        os.system("open /Applications/'Microsoft Outlook.app' > /dev/null 2>&1")
+        # Just `Outlook` works too but requires manual click to map the shortcut for the first time
+        os.system(f"osascript {models.fileio.app_launcher} 'Microsoft Outlook.app'")
 
 
 def events_gatherer() -> str:

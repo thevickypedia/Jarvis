@@ -24,6 +24,20 @@ async def offline_has_access(token: HTTPBasicCredentials = Depends(security)) ->
     raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
 
 
+async def stock_monitor_has_access(token: HTTPBasicCredentials = Depends(security)) -> None:
+    """Validates the token if mentioned as a dependency.
+
+    Args:
+        token: Takes the authorization header token as an argument.
+    """
+    auth = token.dict().get('credentials', '')
+    if auth.startswith('\\'):
+        auth = bytes(auth, "utf-8").decode(encoding="unicode_escape")
+    if secrets.compare_digest(auth, models.env.stock_monitor_endpoint_auth):
+        return
+    raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
+
+
 async def robinhood_has_access(token: HTTPBasicCredentials = Depends(security)) -> None:
     """Validates the token if mentioned as a dependency.
 
@@ -53,5 +67,6 @@ async def surveillance_has_access(token: HTTPBasicCredentials = Depends(security
 
 
 OFFLINE_PROTECTOR = [Depends(dependency=offline_has_access)]
+STOCK_PROTECTOR = [Depends(dependency=stock_monitor_has_access)]
 ROBINHOOD_PROTECTOR = [Depends(dependency=robinhood_has_access)]
 SURVEILLANCE_PROTECTOR = [Depends(dependency=surveillance_has_access)]

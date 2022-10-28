@@ -2,8 +2,6 @@ import os
 import shutil
 from datetime import datetime
 
-COMMAND = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join('api', 'report_gatherer.py')}"
-
 
 class MarketHours:
     """Initiates MarketHours object to store the market hours for each timezone in USA.
@@ -32,8 +30,8 @@ class MarketHours:
     }
 
 
-def cron_schedule(extended: bool = False) -> str:
-    """Determines the start and end time based on the current timezone.
+def rh_cron_schedule(extended: bool = False) -> str:
+    """Creates a cron expression for ``report_gatherer.py``. Determines cron schedule based on current timezone.
 
     Args:
         extended: Uses extended hours.
@@ -46,9 +44,21 @@ def cron_schedule(extended: bool = False) -> str:
         str:
         A crontab expression running every 30 minutes during market hours based on the current timezone.
     """
+    command = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join('api', 'report_gatherer.py')}"
     tz = datetime.utcnow().astimezone().tzname()
     if tz not in MarketHours.hours['REGULAR'] or tz not in MarketHours.hours['EXTENDED']:
         tz = 'OTHER'
     start = MarketHours.hours['EXTENDED'][tz]['OPEN'] if extended else MarketHours.hours['REGULAR'][tz]['OPEN']
     end = MarketHours.hours['EXTENDED'][tz]['CLOSE'] if extended else MarketHours.hours['REGULAR'][tz]['CLOSE']
-    return f"*/30 {start}-{end} * * 1-5 {COMMAND}"
+    return f"*/30 {start}-{end} * * 1-5 {command}"
+
+
+def sm_cron_schedule() -> str:
+    """Creates a cron expression for ``stock_monitor``.
+
+    Returns:
+        str:
+        A crontab expression running every 15 minutes.
+    """
+    command = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join('api', 'stock_monitor.py')}"
+    return f"*/15 * * * 1-5 {command}"

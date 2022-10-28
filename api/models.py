@@ -1,15 +1,13 @@
 from typing import Any, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
-class GetData(BaseModel):
-    """BaseModel that handles input data for the API which is treated as members for the class ``GetData``.
+class OfflineCommunicatorModal(BaseModel):
+    """BaseModel that handles input data for the API which is treated as members for the class ``OfflineCommunicatorModal``.
 
-    >>> GetData
+    >>> OfflineCommunicatorModal
 
-    See Also:
-        - ``command``: Offline command sent via API which ``Jarvis`` has to perform.
     """
 
     command: str
@@ -17,28 +15,32 @@ class GetData(BaseModel):
     speech_timeout: Union[int, float] = 0
 
 
-class GetIndex(BaseModel):
-    """BaseModel that handles input data for the API which is treated as members for the class ``GetData``.
+class StockMonitorModal(BaseModel):
+    """BaseModel that handles input data for the API which is treated as members for the class ``StockMonitorModal``.
 
-    >>> GetData
+    >>> StockMonitorModal
 
-    See Also:
-        - ``command``: Offline command sent via API which ``Jarvis`` has to perform.
+    """
+
+    email: EmailStr
+    token: Any
+
+
+class CameraIndexModal(BaseModel):
+    """BaseModel that handles input data for the API which is treated as members for the class ``CameraIndexModal``.
+
+    >>> CameraIndexModal
+
     """
 
     index: Any = None
 
 
-class GetText(BaseModel):
-    """BaseModel that handles input data for the API which is treated as members for the class ``GetText``.
+class SpeechSynthesisModal(BaseModel):
+    """BaseModel that handles input data for the API which is treated as members for the class ``SpeechSynthesisModal``.
 
-    >>> GetText
+    >>> SpeechSynthesisModal
 
-    See Also:
-        - ``text``: Text to be processed with speech synthesis.
-        - ``timeout``: Timeout for speech-synthesis API call.
-        - ``quality``: Quality of speech synthesis.
-        - ``voice``: Voice module to be used.
     """
 
     text: str

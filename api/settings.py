@@ -4,8 +4,6 @@ from typing import Dict, Hashable, List, NoReturn, Tuple
 from fastapi import WebSocket
 from pydantic import BaseConfig, BaseModel, HttpUrl
 
-from modules.models import models
-
 
 class Robinhood(BaseModel):
     """Initiates ``Robinhood`` object to handle members across modules.
@@ -31,7 +29,6 @@ class Surveillance(BaseConfig):
     public_url: HttpUrl = None
     camera_index: str = None
     client_id: int = None
-    session_timeout: int = models.env.surveillance_session_timeout
     available_cameras: List[str] = []
     processes: Dict[int, Process] = {}
     queue_manager: Dict[int, Queue] = {}
@@ -40,6 +37,21 @@ class Surveillance(BaseConfig):
 
 
 surveillance = Surveillance()
+
+
+class StockMonitor(BaseModel):
+    """Initiates ``StockMonitor`` object to handle members across modules.
+
+    >>> StockMonitor
+
+    """
+
+    user_info: Tuple[str] = ("ticker", "email", "max", "min", "correction")
+    values: str = '(' + ','.join(['?' for _ in user_info]) + ')'
+    stock_list: List[str] = []
+
+
+stock_monitor = StockMonitor()
 
 
 class ConnectionManager:
@@ -64,7 +76,7 @@ class ConnectionManager:
         await websocket.accept()
         self.active_connections.append(websocket)
 
-    def disconnect(self, websocket: WebSocket):
+    def disconnect(self, websocket: WebSocket) -> NoReturn:
         """Remove socket from active connections.
 
         Args:

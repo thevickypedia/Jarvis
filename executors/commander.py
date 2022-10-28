@@ -79,9 +79,9 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
         phrase: Takes the phrase spoken as an argument.
         delay: Sleeps for the number of seconds.
     """
-    logger.info(f"'{phrase}' will be executed after {support.time_converter(seconds=delay)}")
+    logger.info(f"{phrase!r} will be executed after {support.time_converter(seconds=delay)}")
     time.sleep(delay)
-    logger.info(f"Executing '{phrase}'")
+    logger.info(f"Executing {phrase!r}")
     try:
         offline_communicator(command=phrase)
     except Exception as error:
@@ -158,15 +158,15 @@ def initiator(phrase: str = None, should_return: bool = False) -> None:
         time_travel()
         shared.called['time_travel'] = False
     elif 'you there' in phrase.lower() or word_match(phrase=phrase, match_list=models.env.wake_words):
-        speaker.speak(text=f'{random.choice(conversation.wake_up1)}')
+        speaker.speak(text=random.choice(conversation.wake_up1))
         initialize()
     elif word_match(phrase=phrase, match_list=['look alive', 'wake up', 'wakeup', 'show time',
                                                'showtime']):
-        speaker.speak(text=f'{random.choice(conversation.wake_up2)}')
+        speaker.speak(text=random.choice(conversation.wake_up2))
         initialize()
     else:
         if phrase:
             split_phrase(phrase=phrase, should_return=should_return)
         else:
-            speaker.speak(text=f'{random.choice(conversation.wake_up3)}')
+            speaker.speak(text=random.choice(conversation.wake_up3))
             initialize()

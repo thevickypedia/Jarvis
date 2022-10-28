@@ -216,8 +216,8 @@ def clear_logs() -> NoReturn:
     """Deletes log files that were updated before 48 hours."""
     for __path, __directory, __file in os.walk('logs'):
         for file_ in __file:
-            if int(time.time() - os.stat(f'{__path}/{file_}').st_mtime) > 172_800:
-                os.remove(f'{__path}/{file_}')  # removes the file if it is older than 48 hours
+            if int(time.time() - os.stat(os.path.join(__path, file_)).st_mtime) > 172_800:
+                os.remove(os.path.join(__path, file_))  # removes the file if it is older than 48 hours
 
 
 def delete_pycache() -> NoReturn:

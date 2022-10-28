@@ -34,7 +34,7 @@ from modules.models import models
 db = database.Database(database=models.fileio.base_db)
 
 
-def hostname_to_ip(hostname: str) -> List[str]:
+def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
     """Uses ``socket.gethostbyname_ex`` to translate a host name to IPv4 address format, extended interface.
 
     See Also:
@@ -52,6 +52,7 @@ def hostname_to_ip(hostname: str) -> List[str]:
 
     Args:
         hostname: Takes the hostname of a device as an argument.
+        localhost: Takes a boolean value to behave differently in case of localhost.
     """
     try:
         _hostname, _alias_list, _ipaddr_list = socket.gethostbyname_ex(hostname)
@@ -62,14 +63,19 @@ def hostname_to_ip(hostname: str) -> List[str]:
     if not _ipaddr_list:
         logger.critical(f"No interfaces found for {hostname}")
     elif len(_ipaddr_list) > 1:
-        logger.warning(f"Host {hostname} has multiple interfaces. {_ipaddr_list}")
+        logger.warning(f"Host {hostname} has multiple interfaces. {_ipaddr_list}") if localhost else None
         return _ipaddr_list
     else:
-        ip_addr = ip_address()
-        if _ipaddr_list[0].split('.')[0] == ip_addr.split('.')[0]:
+        if localhost:
+            ip_addr = ip_address()
+            if _ipaddr_list[0].split('.')[0] == ip_addr.split('.')[0]:
+                return _ipaddr_list
+            else:
+                logger.error(f"NetworkID of the InterfaceIP of host {hostname!r} does not match the network id of the "
+                             f"DeviceIP.")
+                return []
+        else:
             return _ipaddr_list
-        logger.error(f"NetworkID of the InterfaceIP of host {hostname} does not match the network id of DeviceIP.")
-    return []
 
 
 def celebrate() -> str:

@@ -15,18 +15,21 @@ from threading import Thread
 from typing import Any, Dict, List, NoReturn, Union
 
 import jinja2
+import jwt
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import (FileResponse, HTMLResponse, RedirectResponse,
                                StreamingResponse)
+from webull import webull
 
-from api.api_squire import (gen_frames, generate_error_frame, streamer,
-                            test_camera)
+from api import squire
 from api.authenticator import (OFFLINE_PROTECTOR, ROBINHOOD_PROTECTOR,
-                               SURVEILLANCE_PROTECTOR)
-from api.models import GetData, GetIndex, GetText
+                               STOCK_PROTECTOR, SURVEILLANCE_PROTECTOR)
+from api.models import (CameraIndexModal, OfflineCommunicatorModal,
+                        SpeechSynthesisModal, StockMonitorModal)
 from api.report_gatherer import Investment
-from api.settings import ConnectionManager, robinhood, surveillance
+from api.settings import (ConnectionManager, robinhood, stock_monitor,
+                          surveillance)
 from executors.commander import timed_delay
 from executors.offline import offline_communicator
 from executors.word_match import word_match
@@ -40,24 +43,25 @@ from modules.offline import compatibles
 from modules.templates import templates
 from modules.utils import support
 
-ws_manager = ConnectionManager()
-
+# Creates log files
 if not os.path.isfile(config.APIConfig().ACCESS_LOG_FILENAME):
     pathlib.Path(config.APIConfig().ACCESS_LOG_FILENAME).touch()
 
 if not os.path.isfile(config.APIConfig().DEFAULT_LOG_FILENAME):
     pathlib.Path(config.APIConfig().DEFAULT_LOG_FILENAME).touch()
 
+# Get offline compatible and websocket loaded
 offline_compatible = compatibles.offline_compatible()
+ws_manager = ConnectionManager()
 
+# Configure logging
 importlib.reload(module=logging)
 LOGGING = config.APIConfig()
 dictConfig(config=LOGGING.LOG_CONFIG)
-
 logging.getLogger("uvicorn.access").propagate = False  # Disables access logger in default logger to log independently
-
 logger = logging.getLogger('uvicorn.default')
 
+# Initiate api
 app = FastAPI(
     title="Jarvis API",
     description="Handles offline communication with **Jarvis** and generates a one time auth token for "
@@ -65,7 +69,11 @@ app = FastAPI(
                 "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)",
     version="v1.0"
 )
+
+# Setup databases
 db = database.Database(database=models.fileio.base_db)
+stock_db = database.Database(database=models.fileio.stock_db)
+stock_db.create_table(table_name="stock", columns=stock_monitor.user_info)
 
 
 async def enable_cors() -> NoReturn:
@@ -105,6 +113,7 @@ async def start_robinhood() -> Any:
     config.multiprocessing_logger(filename=LOGGING.DEFAULT_LOG_FILENAME,
                                   log_format=logging.Formatter(fmt=LOGGING.DEFAULT_LOG_FORMAT))
     await enable_cors()
+    squire.nasdaq()
     logger.info(f'Hosting at http://{models.env.offline_host}:{models.env.offline_port}')
     if all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_pass]):
         Process(target=run_robinhood).start()
@@ -167,7 +176,8 @@ async def _offline_compatible() -> Dict[str, List[str]]:
 
 
 @app.post(path='/speech-synthesis', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
-async def speech_synthesis(input_data: GetText, raise_for_status: bool = True) -> Union[FileResponse, None]:
+async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: bool = True) -> \
+        Union[FileResponse, None]:
     """Process request to convert text to speech if docker container is running.
 
     Args:
@@ -217,14 +227,17 @@ async def health() -> NoReturn:
 
 
 @app.post(path="/offline-communicator", dependencies=OFFLINE_PROTECTOR)
-async def offline_communicator_api(request: Request, input_data: GetData) -> Union[FileResponse, NoReturn]:
+async def offline_communicator_api(request: Request, input_data: OfflineCommunicatorModal) -> \
+        Union[FileResponse, NoReturn]:
     """Offline Communicator API endpoint for Jarvis.
 
     Args:
         - request: Takes the ``Request`` class as an argument.
-        - input_data: Takes the following arguments as ``GetData`` class instead of a QueryString.
+        - input_data: Takes the following arguments as ``OfflineCommunicatorModal`` class instead of a QueryString.
 
             - command: The task which Jarvis has to do.
+            - native_audio: Whether the response should be as an audio file with the server's voice.
+            - speech_timeout: Timeout to process speech-synthesis.
 
     Raises:
         - 200: A dictionary with the command requested and the response for it from Jarvis.
@@ -252,8 +265,8 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
         and_response = ""
         for each in command.split(' and '):
             if not word_match(phrase=each, match_list=offline_compatible):
-                logger.warning(f"'{each}' is not a part of offline compatible request.")
-                and_response += f'"{each}" is not a part of off-line communicator compatible request.\n\n' \
+                logger.warning(f"{each!r} is not a part of offline compatible request.")
+                and_response += f'{each!r} is not a part of off-line communicator compatible request.\n\n' \
                                 'Please try an instruction that does not require an user interaction.'
             else:
                 try:
@@ -267,8 +280,8 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
         also_response = ""
         for each in command.split(' also '):
             if not word_match(phrase=each, match_list=offline_compatible):
-                logger.warning(f"'{each}' is not a part of offline compatible request.")
-                also_response += f'"{each}" is not a part of off-line communicator compatible request.\n\n' \
+                logger.warning(f"{each!r} is not a part of offline compatible request.")
+                also_response += f'{each!r} is not a part of off-line communicator compatible request.\n\n' \
                                  'Please try an instruction that does not require an user interaction.'
             else:
                 try:
@@ -279,13 +292,13 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
         logger.info(f"Response: {also_response}")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=also_response)
     if not word_match(phrase=command, match_list=offline_compatible):
-        logger.warning(f"'{command}' is not a part of offline compatible request.")
+        logger.warning(f"{command!r} is not a part of offline compatible request.")
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f'"{command}" is not a part of off-line communicator compatible request.\n\n'
                                  'Please try an instruction that does not require an user interaction.')
     if ' after ' in command.lower():
         if delay_info := timed_delay(phrase=command):
-            logger.info(f"'{delay_info[0]}' will be executed after {support.time_converter(seconds=delay_info[1])}")
+            logger.info(f"{delay_info[0]!r} will be executed after {support.time_converter(seconds=delay_info[1])}")
             raise APIResponse(status_code=HTTPStatus.OK.real,
                               detail=f'I will execute it after {support.time_converter(seconds=delay_info[1])} '
                                      f'{models.env.title}!')
@@ -308,10 +321,95 @@ async def offline_communicator_api(request: Request, input_data: GetData) -> Uni
                             filename="synthesized.wav", status_code=HTTPStatus.OK.real)
     if input_data.speech_timeout:
         logger.info(f"Storing response as {models.fileio.speech_synthesis_wav}")
-        if binary := await speech_synthesis(input_data=GetText(text=response, timeout=input_data.speech_timeout,
-                                                               quality="low"), raise_for_status=False):
+        if binary := await speech_synthesis(input_data=SpeechSynthesisModal(
+                text=response, timeout=input_data.speech_timeout, quality="low"
+        ), raise_for_status=False):
             return binary
     raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
+
+
+@app.post(path="/stock-monitor/", dependencies=STOCK_PROTECTOR)
+async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> NoReturn:
+    """Stock monitor api endpoint.
+
+    Args:
+        - request: Takes the ``Request`` class as an argument.
+        - input_data: Takes the following arguments as ``OfflineCommunicatorModal`` class instead of a QueryString.
+
+            - token: Authentication token.
+            - email: Email to which the notifications have to be triggered.
+
+    See Also:
+        - This API endpoint is simply the backend for stock price monitoring.
+        - This function validates the user information and stores it to a database.
+    """
+    logger.info(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
+                f"{request.headers.get('user-agent')}")
+    decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
+
+    from modules.validators import email_validator
+    result = email_validator.validate(email=input_data.email, check_smtp=False)  # SMTP check is not in a reliable state
+    if result is None:
+        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
+                          detail=f"{input_data.email.split('@')[-1]!r} doesn't resolve to a valid mail server!")
+
+    decoded['Ticker'] = decoded['Ticker'].upper()
+    decoded['Max'] = support.extract_nos(input_=decoded['Max'], method=float)
+    decoded['Min'] = support.extract_nos(input_=decoded['Min'], method=float)
+    decoded['Correction'] = support.extract_nos(input_=decoded['Correction'], method=int)
+
+    if decoded['Correction'] is None:
+        decoded['Correction'] = 5
+    if decoded['Max'] is None and decoded['Min'] is None:
+        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
+                          detail="Minimum and maximum values should be integers. "
+                                 "If you don't want a notification for any one of of it, please mark it as 0.")
+    if decoded['Max'] and decoded['Max'] <= decoded['Min']:
+        raise APIResponse(status_code=HTTPStatus.CONFLICT.real,
+                          detail="'Max' should be greater than the 'Min' value.\n\nSet 'Max' or 'Min' as 0, "
+                                 "if you don't wish to receive a notification for it.")
+    if decoded['Correction'] > 20:
+        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
+                          detail="Allowed correction values are only up to 20%\n\nFor anything greater, "
+                                 "it is better to increase/decrease the Max/Min values.")
+
+    logger.info(f"User requested: {input_data.email} ticker alert for {decoded}")
+    if decoded['Ticker'] not in stock_monitor.stock_list:
+        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
+                          detail=f"{decoded['Ticker']} not a part of NASDAQ stock list [OR] Jarvis currently doesn't "
+                                 f"support tracking prices for {decoded['Ticker']}.")
+
+    # Check dupes and let know the user
+    new_entry = (str(decoded['Ticker']), input_data.email, float(decoded['Max']), float(decoded['Min']),
+                 int(decoded['Correction']),)
+    if new_entry in squire.get_stock_userdata():
+        raise APIResponse(status_code=HTTPStatus.CONFLICT.real, detail="Duplicate request!\nEntry exists in database.")
+
+    try:
+        price_check = webull().get_quote(decoded['Ticker'])
+        current_price = price_check.get('close') or price_check.get('open')
+        if current_price:
+            current_price = float(current_price)
+        else:
+            raise ValueError(price_check)
+    except ValueError as error:
+        logger.error(error)
+        raise APIResponse(status_code=HTTPStatus.BAD_GATEWAY.real,
+                          detail=f"Failed to perform a price check on {decoded['Ticker']}\n\n{error}")
+    if decoded['Max'] and current_price >= decoded['Max']:  # Ignore 0 which doesn't trigger a notification
+        raise APIResponse(status_code=HTTPStatus.CONFLICT.real,
+                          detail=f"Current price of {decoded['Ticker']} is {current_price}.\n"
+                                 "Please choose a higher 'Max' value or try at a later time.")
+    if decoded['Min'] and current_price <= decoded['Min']:  # Ignore 0 which doesn't trigger a notification
+        raise APIResponse(status_code=HTTPStatus.CONFLICT.real,
+                          detail=f"Current price of {decoded['Ticker']} is {current_price}.\n"
+                                 "Please choose a lower 'Min' value or try at a later time.")
+
+    squire.insert_stock_userdata(entry=new_entry)  # Store it in database
+
+    raise APIResponse(status_code=HTTPStatus.OK.real,
+                      detail=f"Entry added to the database. Jarvis will notify you at {input_data.email!r} when a "
+                             f"price change occurs in {decoded['Ticker']!r}.")
 
 
 # Conditional endpoint: Condition matches without env vars during docs generation
@@ -384,7 +482,7 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
     @app.post(path="/surveillance-authenticate", dependencies=SURVEILLANCE_PROTECTOR)
-    async def authenticate_surveillance(cam: GetIndex) -> NoReturn:
+    async def authenticate_surveillance(cam: CameraIndexModal) -> NoReturn:
         """Tests the given camera index, generates a token for the endpoint to authenticate.
 
         Args:
@@ -402,7 +500,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         """
         surveillance.camera_index = cam.index
         try:
-            test_camera()
+            squire.test_camera()
         except CameraError as error:
             raise APIResponse(status_code=HTTPStatus.NOT_ACCEPTABLE.real, detail=str(error))
         surveillance.token = support.token()
@@ -475,7 +573,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
                               detail='Requires authentication since endpoint uses single-use token.')
         surveillance.token = None
         surveillance.queue_manager[surveillance.client_id] = Queue()
-        process = Process(target=gen_frames,
+        process = Process(target=squire.gen_frames,
                           kwargs={"manager": surveillance.queue_manager[surveillance.client_id],
                                   "index": surveillance.camera_index,
                                   "available_cameras": surveillance.available_cameras})
@@ -486,7 +584,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
             cursor.execute("INSERT INTO children (surveillance) VALUES (?);", (process.pid,))
             db.connection.commit()
         surveillance.processes[surveillance.client_id] = process
-        return StreamingResponse(content=streamer(), media_type='multipart/x-mixed-replace; boundary=frame',
+        return StreamingResponse(content=squire.streamer(), media_type='multipart/x-mixed-replace; boundary=frame',
                                  status_code=HTTPStatus.PARTIAL_CONTENT.real)
 
 
@@ -519,19 +617,19 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
                     logger.info(f'Client [{client_id}] sent {data}')
                     if data == "Healthy":
                         surveillance.session_manager[client_id] = time.time()
-                        timestamp = surveillance.session_manager[client_id] + surveillance.session_timeout
+                        timestamp = surveillance.session_manager[client_id] + models.env.surveillance_session_timeout
                         logger.info(f"Surveillance session will expire at "
                                     f"{datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')}")
                     if data == "IMG_ERROR":
                         logger.info("Sending error image frame to client.")
-                        await websocket.send_bytes(data=generate_error_frame(
+                        await websocket.send_bytes(data=squire.generate_error_frame(
                             dimension=surveillance.frame,
                             text="Unable to get image frame from "
                                  f"{surveillance.available_cameras[surveillance.camera_index]}"))
                         raise WebSocketDisconnect  # Raise error to release camera after a failed read
-                if surveillance.session_manager[client_id] + surveillance.session_timeout <= time.time():
+                if surveillance.session_manager[client_id] + models.env.surveillance_session_timeout <= time.time():
                     logger.info(f"Sending session timeout to client: {client_id}")
-                    await websocket.send_bytes(data=generate_error_frame(
+                    await websocket.send_bytes(data=squire.generate_error_frame(
                         dimension=surveillance.frame, text="SESSION EXPIRED! Re-authenticate to continue live stream."))
                     raise WebSocketDisconnect  # Raise error to release camera after a failed read
         except WebSocketDisconnect:

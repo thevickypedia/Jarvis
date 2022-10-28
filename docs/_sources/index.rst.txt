@@ -31,7 +31,7 @@ API Handler
 API Squire
 ==========
 
-.. automodule:: api.api_squire
+.. automodule:: api.squire
    :members:
    :undoc-members:
 
@@ -52,19 +52,25 @@ API Server
 API Models
 ==========
 
-.. autoclass:: api.models.GetData(pydantic.BaseModel)
+.. autoclass:: api.models.OfflineCommunicatorModal(pydantic.BaseModel)
    :members:
    :exclude-members:
 
 ====
 
-.. autoclass:: api.models.GetIndex(pydantic.BaseModel)
+.. autoclass:: api.models.StockMonitorModal(pydantic.BaseModel)
    :members:
    :exclude-members:
 
 ====
 
-.. autoclass:: api.models.GetText(pydantic.BaseModel)
+.. autoclass:: api.models.CameraIndexModal(pydantic.BaseModel)
+   :members:
+   :exclude-members:
+
+====
+
+.. autoclass:: api.models.SpeechSynthesisModal(pydantic.BaseModel)
    :members:
    :exclude-members:
 
@@ -83,6 +89,12 @@ API Settings
 
 ====
 
+.. automodule:: api.settings.StockMonitor(pydantic.BaseModel)
+   :members:
+   :undoc-members:
+
+====
+
 .. automodule:: api.settings.ConnectionManager
    :members:
    :undoc-members:
@@ -94,12 +106,27 @@ API Robinhood
    :members:
    :undoc-members:
 
-API Robinhood Helper
-====================
+API StockMonitor
+================
 
-.. autoclass:: api.rh_helper.MarketHours
+.. automodule:: api.stock_monitor
+   :members:
+   :undoc-members:
+
+API Scheduler
+=============
+
+.. autoclass:: api.scheduler.MarketHours
    :members:
    :exclude-members: hours
+
+.. autoclass:: api.scheduler.rh_cron_schedule
+   :members:
+   :exclude-members:
+
+.. autoclass:: api.scheduler.sm_cron_schedule
+   :members:
+   :exclude-members:
 
 ----------Executors----------
 =============================
@@ -633,6 +660,13 @@ TV Connector
 ============
 
 .. automodule:: modules.tv.tv_controls
+   :members:
+   :undoc-members:
+
+Validators
+==========
+
+.. automodule:: modules.validators.email_validator
    :members:
    :undoc-members:
 

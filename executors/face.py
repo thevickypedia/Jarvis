@@ -32,11 +32,11 @@ def detected_face() -> NoReturn:
     else:
         phrase = phrase.replace(' ', '_')
         # creates a named directory if it is not found already
-        if not os.path.exists(f'{TRAINING_DIR}/{phrase}'):
-            os.makedirs(f'{TRAINING_DIR}/{phrase}')
+        if not os.path.exists(os.path.join(TRAINING_DIR, phrase)):
+            os.makedirs(os.path.join(TRAINING_DIR, phrase))
         img_name = f"{phrase}_{datetime.now().strftime('%I_%M_%p')}.jpg"  # adds time to image name to avoid overwrite
         os.rename('cv2_open.jpg', img_name)  # renames the files
-        shutil.move(src=img_name, dst=f'{TRAINING_DIR}/{phrase}')  # move files into named directory within TRAINING_DIR
+        shutil.move(src=img_name, dst=os.path.join(TRAINING_DIR, phrase))  # move under TRAINING_DIR -> named directory
         speaker.speak(text=f"Image has been saved as {img_name}. I will be able to recognize {phrase} in future.")
 
 

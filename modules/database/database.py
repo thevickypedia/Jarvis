@@ -3,7 +3,7 @@ import logging
 import os
 import random
 import sqlite3
-from typing import NoReturn, Union
+from typing import List, NoReturn, Tuple, Union
 
 from pydantic import FilePath
 
@@ -26,7 +26,7 @@ class Database:
             database = database + '.db'
         self.connection = sqlite3.connect(database=database, check_same_thread=False, timeout=timeout)
 
-    def create_table(self, table_name: str, columns: list[str]) -> NoReturn:
+    def create_table(self, table_name: str, columns: Union[List[str], Tuple[str]]) -> NoReturn:
         """Creates the table with the required columns.
 
         Args:

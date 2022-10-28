@@ -104,9 +104,13 @@ def notify(user: str, password: str, number: str, body: str, subject: str = None
         return
     if not subject:
         subject = "Message from Jarvis" if number == models.env.phone_number else f"Message from {models.env.name}"
-    response = Messenger(gmail_user=user, gmail_pass=password, phone=number or models.env.phone_number, subject=subject,
-                         message=body).send_sms()
-    if response.ok:
-        logger.info('SMS notification has been sent.')
+    sms_object = Messenger(gmail_user=user, gmail_pass=password)
+    auth = sms_object.authenticate
+    if auth.ok:
+        response = sms_object.send_sms(phone=number or models.env.phone_number, subject=subject, message=body)
+        if response.ok:
+            logger.info('SMS notification has been sent.')
+        else:
+            logger.error(f'Unable to send SMS notification.\n{response.body}')
     else:
-        logger.error(f'Unable to send SMS notification.\n{response.body}')
+        logger.error(f'Unable to send SMS notification.\n{auth.body}')

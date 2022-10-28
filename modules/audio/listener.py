@@ -7,8 +7,8 @@
 import sys
 from typing import Union
 
-import requests.exceptions
 from playsound import playsound
+from requests.exceptions import RequestException, Timeout
 from speech_recognition import (Microphone, Recognizer, RequestError,
                                 UnknownValueError, WaitTimeoutError)
 
@@ -46,6 +46,5 @@ def listen(timeout: Union[int, float], phrase_limit: Union[int, float], sound: b
             return recognized
         except (UnknownValueError, RequestError, WaitTimeoutError):
             return
-        except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout) as \
-                error:
+        except (ConnectionError, TimeoutError, RequestException, Timeout) as error:
             logger.error(error)

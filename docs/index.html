@@ -183,7 +183,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.authenticate_surveillance">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">authenticate_surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cam</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.GetIndex" title="api.models.GetIndex"><span class="pre">GetIndex</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.authenticate_surveillance" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">authenticate_surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cam</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.CameraIndexModal" title="api.models.CameraIndexModal"><span class="pre">CameraIndexModal</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.authenticate_surveillance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests the given camera index, generates a token for the endpoint to authenticate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -269,15 +269,17 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.offline_communicator_api">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">offline_communicator_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.GetData" title="api.models.GetData"><span class="pre">GetData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FileResponse</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.fast.offline_communicator_api" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">offline_communicator_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.OfflineCommunicatorModal" title="api.models.OfflineCommunicatorModal"><span class="pre">OfflineCommunicatorModal</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FileResponse</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.fast.offline_communicator_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Offline Communicator API endpoint for Jarvis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>- request</strong> – Takes the <code class="docutils literal notranslate"><span class="pre">Request</span></code> class as an argument.</p></li>
-<li><p><strong>- input_data</strong> – Takes the following arguments as <code class="docutils literal notranslate"><span class="pre">GetData</span></code> class instead of a QueryString.</p>
+<li><p><strong>- input_data</strong> – Takes the following arguments as <code class="docutils literal notranslate"><span class="pre">OfflineCommunicatorModal</span></code> class instead of a QueryString.</p>
 <ul>
 <li><p>command: The task which Jarvis has to do.</p></li>
+<li><p>native_audio: Whether the response should be as an audio file with the server’s voice.</p></li>
+<li><p>speech_timeout: Timeout to process speech-synthesis.</p></li>
 </ul>
 </li>
 </ul>
@@ -358,7 +360,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.speech_synthesis">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.GetText" title="api.models.GetText"><span class="pre">GetText</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_for_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">FileResponse</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.fast.speech_synthesis" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.SpeechSynthesisModal" title="api.models.SpeechSynthesisModal"><span class="pre">SpeechSynthesisModal</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_for_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">FileResponse</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.fast.speech_synthesis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process request to convert text to speech if docker container is running.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -390,6 +392,32 @@
 <dt class="sig sig-object py" id="api.fast.start_robinhood">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">start_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#api.fast.start_robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates robinhood gatherer in a process and adds a cron schedule if not present already.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.stock_monitor_api">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">stock_monitor_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.StockMonitorModal" title="api.models.StockMonitorModal"><span class="pre">StockMonitorModal</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.stock_monitor_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stock monitor api endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>- request</strong> – Takes the <code class="docutils literal notranslate"><span class="pre">Request</span></code> class as an argument.</p></li>
+<li><p><strong>- input_data</strong> – Takes the following arguments as <code class="docutils literal notranslate"><span class="pre">OfflineCommunicatorModal</span></code> class instead of a QueryString.</p>
+<ul>
+<li><p>token: Authentication token.</p></li>
+<li><p>email: Email to which the notifications have to be triggered.</p></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>This API endpoint is simply the backend for stock price monitoring.</p></li>
+<li><p>This function validates the user information and stores it to a database.</p></li>
+</ul>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -439,11 +467,28 @@
 </dd></dl>
 
 </section>
-<section id="module-api.api_squire">
-<span id="api-squire"></span><h1>API Squire<a class="headerlink" href="#module-api.api_squire" title="Permalink to this heading">¶</a></h1>
+<section id="module-api.squire">
+<span id="api-squire"></span><h1>API Squire<a class="headerlink" href="#module-api.squire" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="api.api_squire.gen_frames">
-<span class="sig-prename descclassname"><span class="pre">api.api_squire.</span></span><span class="sig-name descname"><span class="pre">gen_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available_cameras</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.api_squire.gen_frames" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="api.squire.cleanup_stock_userdata">
+<span class="sig-prename descclassname"><span class="pre">api.squire.</span></span><span class="sig-name descname"><span class="pre">cleanup_stock_userdata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.squire.cleanup_stock_userdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete duplicates tuples within the database.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.squire.delete_stock_userdata">
+<span class="sig-prename descclassname"><span class="pre">api.squire.</span></span><span class="sig-name descname"><span class="pre">delete_stock_userdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">EmailStr</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.squire.delete_stock_userdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete particular user data from stock database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – Tuple of user information to be deleted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.squire.gen_frames">
+<span class="sig-prename descclassname"><span class="pre">api.squire.</span></span><span class="sig-name descname"><span class="pre">gen_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available_cameras</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.squire.gen_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates frames from the camera, flips the image and stores the frame in a multiprocessing queue.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -457,8 +502,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="api.api_squire.generate_error_frame">
-<span class="sig-prename descclassname"><span class="pre">api.api_squire.</span></span><span class="sig-name descname"><span class="pre">generate_error_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="headerlink" href="#api.api_squire.generate_error_frame" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="api.squire.generate_error_frame">
+<span class="sig-prename descclassname"><span class="pre">api.squire.</span></span><span class="sig-name descname"><span class="pre">generate_error_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="headerlink" href="#api.squire.generate_error_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a single frame for error image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -481,8 +526,39 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="api.api_squire.streamer">
-<span class="sig-prename descclassname"><span class="pre">api.api_squire.</span></span><span class="sig-name descname"><span class="pre">streamer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ByteString</span></span></span><a class="headerlink" href="#api.api_squire.streamer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="api.squire.get_stock_userdata">
+<span class="sig-prename descclassname"><span class="pre">api.squire.</span></span><span class="sig-name descname"><span class="pre">get_stock_userdata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">EmailStr</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.squire.get_stock_userdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the stock database to get all the user data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of tuple of user information.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.squire.insert_stock_userdata">
+<span class="sig-prename descclassname"><span class="pre">api.squire.</span></span><span class="sig-name descname"><span class="pre">insert_stock_userdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">EmailStr</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.squire.insert_stock_userdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts new entry into the stock database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>entry</strong> – Tuple of information that has to be inserted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.squire.nasdaq">
+<span class="sig-prename descclassname"><span class="pre">api.squire.</span></span><span class="sig-name descname"><span class="pre">nasdaq</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.squire.nasdaq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all stock tickers available. Creates/Updates backup file to be used.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.squire.streamer">
+<span class="sig-prename descclassname"><span class="pre">api.squire.</span></span><span class="sig-name descname"><span class="pre">streamer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ByteString</span></span></span><a class="headerlink" href="#api.squire.streamer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields bytes string extracted from the multiprocessing queue, until the queue_manager is alive.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Yields</dt>
@@ -502,9 +578,35 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="api.api_squire.test_camera">
-<span class="sig-prename descclassname"><span class="pre">api.api_squire.</span></span><span class="sig-name descname"><span class="pre">test_camera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.api_squire.test_camera" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="api.squire.test_camera">
+<span class="sig-prename descclassname"><span class="pre">api.squire.</span></span><span class="sig-name descname"><span class="pre">test_camera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.squire.test_camera" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests a camera connected on the index number provided by the user.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.squire.thread_worker">
+<span class="sig-prename descclassname"><span class="pre">api.squire.</span></span><span class="sig-name descname"><span class="pre">thread_worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_to_call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.squire.thread_worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">ThreadPoolExecutor</span></code> with in a dedicated thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function_to_call</strong> – Takes the function/method that has to be called as an argument.</p></li>
+<li><p><strong>iterable</strong> – List or iterable to be used as args.</p></li>
+<li><p><strong>workers</strong> – Maximum number of workers to be spun up.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.squire.ticker_gatherer">
+<span class="sig-prename descclassname"><span class="pre">api.squire.</span></span><span class="sig-name descname"><span class="pre">ticker_gatherer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">character</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.squire.ticker_gatherer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gathers the stock ticker in NASDAQ. Runs on <code class="docutils literal notranslate"><span class="pre">multi-threading</span></code> which drops run time by ~7 times.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>character</strong> – ASCII character (alphabet) with which the stock ticker name starts.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -524,6 +626,17 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="api.authenticator.robinhood_has_access">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.authenticator.</span></span><span class="sig-name descname"><span class="pre">robinhood_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.authenticator.robinhood_has_access" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates the token if mentioned as a dependency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>token</strong> – Takes the authorization header token as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.authenticator.stock_monitor_has_access">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.authenticator.</span></span><span class="sig-name descname"><span class="pre">stock_monitor_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.authenticator.stock_monitor_has_access" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates the token if mentioned as a dependency.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -590,17 +703,11 @@
 <section id="api-models">
 <h1>API Models<a class="headerlink" href="#api-models" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="api.models.GetData">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">GetData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.GetData" title="Permalink to this definition">¶</a></dt>
-<dd><p>BaseModel that handles input data for the API which is treated as members for the class <code class="docutils literal notranslate"><span class="pre">GetData</span></code>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">GetData</span>
+<dt class="sig sig-object py" id="api.models.OfflineCommunicatorModal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">OfflineCommunicatorModal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.OfflineCommunicatorModal" title="Permalink to this definition">¶</a></dt>
+<dd><p>BaseModel that handles input data for the API which is treated as members for the class <code class="docutils literal notranslate"><span class="pre">OfflineCommunicatorModal</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">OfflineCommunicatorModal</span>
 </pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">command</span></code>: Offline command sent via API which <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> has to perform.</p></li>
-</ul>
 </div>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
@@ -608,17 +715,11 @@
 
 <hr class="docutils" />
 <dl class="py class">
-<dt class="sig sig-object py" id="api.models.GetIndex">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">GetIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.GetIndex" title="Permalink to this definition">¶</a></dt>
-<dd><p>BaseModel that handles input data for the API which is treated as members for the class <code class="docutils literal notranslate"><span class="pre">GetData</span></code>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">GetData</span>
+<dt class="sig sig-object py" id="api.models.StockMonitorModal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">StockMonitorModal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.StockMonitorModal" title="Permalink to this definition">¶</a></dt>
+<dd><p>BaseModel that handles input data for the API which is treated as members for the class <code class="docutils literal notranslate"><span class="pre">StockMonitorModal</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">StockMonitorModal</span>
 </pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">command</span></code>: Offline command sent via API which <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> has to perform.</p></li>
-</ul>
 </div>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
@@ -626,20 +727,23 @@
 
 <hr class="docutils" />
 <dl class="py class">
-<dt class="sig sig-object py" id="api.models.GetText">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">GetText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.GetText" title="Permalink to this definition">¶</a></dt>
-<dd><p>BaseModel that handles input data for the API which is treated as members for the class <code class="docutils literal notranslate"><span class="pre">GetText</span></code>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">GetText</span>
+<dt class="sig sig-object py" id="api.models.CameraIndexModal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">CameraIndexModal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.CameraIndexModal" title="Permalink to this definition">¶</a></dt>
+<dd><p>BaseModel that handles input data for the API which is treated as members for the class <code class="docutils literal notranslate"><span class="pre">CameraIndexModal</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CameraIndexModal</span>
 </pre></div>
 </div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">text</span></code>: Text to be processed with speech synthesis.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">timeout</span></code>: Timeout for speech-synthesis API call.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">quality</span></code>: Quality of speech synthesis.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">voice</span></code>: Voice module to be used.</p></li>
-</ul>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="api.models.SpeechSynthesisModal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.models.</span></span><span class="sig-name descname"><span class="pre">SpeechSynthesisModal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.SpeechSynthesisModal" title="Permalink to this definition">¶</a></dt>
+<dd><p>BaseModel that handles input data for the API which is treated as members for the class <code class="docutils literal notranslate"><span class="pre">SpeechSynthesisModal</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SpeechSynthesisModal</span>
+</pre></div>
 </div>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
@@ -655,6 +759,11 @@
 <hr class="docutils" />
 <span class="target" id="module-api.settings.Surveillance-pydantic.BaseConfig"></span><p>Initiates <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object to handle members across modules.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Surveillance</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<span class="target" id="module-api.settings.StockMonitor-pydantic.BaseModel"></span><p>Initiates <code class="docutils literal notranslate"><span class="pre">StockMonitor</span></code> object to handle members across modules.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">StockMonitor</span>
 </pre></div>
 </div>
 <hr class="docutils" />
@@ -724,11 +833,118 @@
 </dd></dl>
 
 </section>
-<section id="api-robinhood-helper">
-<h1>API Robinhood Helper<a class="headerlink" href="#api-robinhood-helper" title="Permalink to this heading">¶</a></h1>
+<section id="module-api.stock_monitor">
+<span id="api-stockmonitor"></span><h1>API StockMonitor<a class="headerlink" href="#module-api.stock_monitor" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="api.rh_helper.MarketHours">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.rh_helper.</span></span><span class="sig-name descname"><span class="pre">MarketHours</span></span><a class="headerlink" href="#api.rh_helper.MarketHours" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="api.stock_monitor.StockMonitor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.stock_monitor.</span></span><span class="sig-name descname"><span class="pre">StockMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.stock_monitor.StockMonitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">StockMonitor</span></code> to check user entries in database and trigger notification if condition matches.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">StockMonitor</span>
+</pre></div>
+</div>
+<p>Gathers user data in stock database, and groups user data by <code class="docutils literal notranslate"><span class="pre">ticker</span></code> and <code class="docutils literal notranslate"><span class="pre">email</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>logger</strong> – Takes the class <code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code> as an argument.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="api.stock_monitor.StockMonitor.closest_maximum">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">closest_maximum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stock_price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.stock_monitor.StockMonitor.closest_maximum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines if a stock price is close to the maximum value.</p>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li><p>Current stock price: 96</p></li>
+<li><p>Maximum price after which notification has to trigger: 100</p></li>
+<li><p>Correction: 15%</p></li>
+<li><p>Corrected: 100 (max) - 15 (15%) = 85 (this becomes the new maximum price)</p></li>
+<li><p>Notifies since stock price is more than corrected amount, even though it is less than actual stock price.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stock_price</strong> – Current stock price.</p></li>
+<li><p><strong>maximum</strong> – Maximum price set by user.</p></li>
+<li><p><strong>correction</strong> – Correction percentage.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean flag to indicate whether the current stock price is less than set maximum by correction percentage.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api.stock_monitor.StockMonitor.closest_minimum">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">closest_minimum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stock_price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#api.stock_monitor.StockMonitor.closest_minimum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines if a stock price is close to the minimum value.</p>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li><p>Current stock price: 225</p></li>
+<li><p>Minimum price below which notification has to trigger: 220</p></li>
+<li><p>Correction: 10%</p></li>
+<li><p>Corrected: 220 (min) + 22 (10%) = 242 (this becomes the new minimum price)</p></li>
+<li><p>Notifies since stock price is less than corrected amount, even though it is more than actual stock price.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stock_price</strong> – Current stock price.</p></li>
+<li><p><strong>minimum</strong> – Minimum price set by user.</p></li>
+<li><p><strong>correction</strong> – Correction percentage.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean flag to indicate whether the current stock price is more than set maximum by correction percentage.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api.stock_monitor.StockMonitor.get_prices">
+<span class="sig-name descname"><span class="pre">get_prices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#api.stock_monitor.StockMonitor.get_prices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the price of each stock ticker along with the exchange code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns a dictionary of prices for each ticker and their exchange code and key-value pairs.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api.stock_monitor.StockMonitor.group_data">
+<span class="sig-name descname"><span class="pre">group_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.stock_monitor.StockMonitor.group_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Groups columns in the database by ticker to check the current prices and by email to send a notification.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For ticker grouping, first value in the list is the ticker, so key will be ticker and the rest are values.
+For email grouping, first value among the rest is the email, so key is email and the rest are values.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api.stock_monitor.StockMonitor.send_notification">
+<span class="sig-name descname"><span class="pre">send_notification</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.stock_monitor.StockMonitor.send_notification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends notification to the user when the stock price matches the requested condition.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="api-scheduler">
+<h1>API Scheduler<a class="headerlink" href="#api-scheduler" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="api.scheduler.MarketHours">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.scheduler.</span></span><span class="sig-name descname"><span class="pre">MarketHours</span></span><a class="headerlink" href="#api.scheduler.MarketHours" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates MarketHours object to store the market hours for each timezone in USA.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MarketHours</span>
 </pre></div>
@@ -737,6 +953,46 @@
 <p class="admonition-title">See also</p>
 <p>Class variable <code class="docutils literal notranslate"><span class="pre">hours</span></code> contains key-value pairs for both <code class="docutils literal notranslate"><span class="pre">EXTENDED</span></code> and <code class="docutils literal notranslate"><span class="pre">REGULAR</span></code> market hours.</p>
 </div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="api.scheduler.rh_cron_schedule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.scheduler.</span></span><span class="sig-name descname"><span class="pre">rh_cron_schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extended</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.scheduler.rh_cron_schedule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a cron expression for <code class="docutils literal notranslate"><span class="pre">report_gatherer.py</span></code>. Determines cron schedule based on current timezone.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>extended</strong> – Uses extended hours.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>extended: 1 before and after market hours.</p></li>
+<li><p>default(regular): Regular market hours.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A crontab expression running every 30 minutes during market hours based on the current timezone.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="api.scheduler.sm_cron_schedule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.scheduler.</span></span><span class="sig-name descname"><span class="pre">sm_cron_schedule</span></span><a class="headerlink" href="#api.scheduler.sm_cron_schedule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a cron expression for <code class="docutils literal notranslate"><span class="pre">stock_monitor</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A crontab expression running every 15 minutes.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -4103,6 +4359,11 @@ Pass 155 for LO and 285 for HI.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.stock_monitor_endpoint_auth">
+<span class="sig-name descname"><span class="pre">stock_monitor_endpoint_auth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.stock_monitor_endpoint_auth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.surveillance_endpoint_auth">
 <span class="sig-name descname"><span class="pre">surveillance_endpoint_auth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.surveillance_endpoint_auth" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4200,6 +4461,11 @@ Pass 155 for LO and 285 for HI.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.FileIO.app_launcher">
+<span class="sig-name descname"><span class="pre">app_launcher</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.app_launcher" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.FileIO.automation">
 <span class="sig-name descname"><span class="pre">automation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.automation" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4252,6 +4518,16 @@ Pass 155 for LO and 285 for HI.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.FileIO.speech_synthesis_wav">
 <span class="sig-name descname"><span class="pre">speech_synthesis_wav</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.speech_synthesis_wav" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.FileIO.stock_db">
+<span class="sig-name descname"><span class="pre">stock_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.stock_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.FileIO.stock_list_backup">
+<span class="sig-name descname"><span class="pre">stock_list_backup</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.stock_list_backup" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4406,7 +4682,7 @@ Pass 155 for LO and 285 for HI.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.database.database.Database.create_table">
-<span class="sig-name descname"><span class="pre">create_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.database.database.Database.create_table" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.database.database.Database.create_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates the table with the required columns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5356,7 +5632,7 @@ Whites can have a value of None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.support.hostname_to_ip">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">hostname_to_ip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.utils.support.hostname_to_ip" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">hostname_to_ip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localhost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.utils.support.hostname_to_ip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses <code class="docutils literal notranslate"><span class="pre">socket.gethostbyname_ex</span></code> to translate a host name to IPv4 address format, extended interface.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -5384,7 +5660,10 @@ Whites can have a value of None.</p>
 <p><a class="reference external" href="https://docs.python.org/3/library/socket.html#socket.gethostbyname_ex">https://docs.python.org/3/library/socket.html#socket.gethostbyname_ex</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>hostname</strong> – Takes the hostname of a device as an argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hostname</strong> – Takes the hostname of a device as an argument.</p></li>
+<li><p><strong>localhost</strong> – Takes a boolean value to behave differently in case of localhost.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -6029,7 +6308,7 @@ Whites can have a value of None.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.templates.templates.RobinhoodTemplate">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">RobinhoodTemplate</span></span><a class="headerlink" href="#modules.templates.templates.RobinhoodTemplate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Template object to load the robinhood report template.</p>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">RobinhoodTemplate</span></code> object to load the robinhood report template.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">RobinhoodTemplate</span>
 </pre></div>
 </div>
@@ -6039,7 +6318,7 @@ Whites can have a value of None.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.templates.templates.ThreatNotificationTemplates">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">ThreatNotificationTemplates</span></span><a class="headerlink" href="#modules.templates.templates.ThreatNotificationTemplates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates Template object to load the threat email templates.</p>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">ThreatNotificationTemplates</span></code> object to load the threat email templates.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ThreatNotificationTemplates</span>
 </pre></div>
 </div>
@@ -6321,6 +6600,64 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 <dd><p>Stop the playing content on TV.</p>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-modules.validators.email_validator">
+<span id="validators"></span><h1>Validators<a class="headerlink" href="#module-modules.validators.email_validator" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.validators.email_validator.get_mx_records">
+<span class="sig-prename descclassname"><span class="pre">modules.validators.email_validator.</span></span><span class="sig-name descname"><span class="pre">get_mx_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#modules.validators.email_validator.get_mx_records" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get MX (Mail Exchange server) records for the given domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>domain</strong> – FQDN (Fully Qualified Domain Name) extracted from the email address.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of IP addresses of all the mail exchange servers from authoritative/non-authoritative answer section.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.validators.email_validator.validate">
+<span class="sig-prename descclassname"><span class="pre">modules.validators.email_validator.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">EmailStr</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_smtp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.validators.email_validator.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates email address deliver-ability using SMTP.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>email</strong> – Email address.</p></li>
+<li><p><strong>timeout</strong> – Time in seconds to wait for a result.</p></li>
+<li><p><strong>check_smtp</strong> – Boolean flag whether to use smtp connection.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>Timeout specified is to create a socket connection with each mail exchange server.</p></li>
+<li><p>If a mail server has 10 mx records and timeout is set to 3, the total wait time will be 30 seconds.</p></li>
+</ul>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>This is not a perfect solution for validating email address.</p></li>
+<li><p>Works perfect for gmail, but yahoo and related mail servers always returns OK even with garbage email address.</p></li>
+<li><p>Works only if port 25 is not blocked by ISP.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Boolean flag to indicate if the email address is valid.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -6676,13 +7013,14 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis">Jarvis - Main Module</a></li>
 <li><a class="reference internal" href="#jarvis-api">———-Jarvis API———-</a></li>
 <li><a class="reference internal" href="#module-api.fast">API Handler</a></li>
-<li><a class="reference internal" href="#module-api.api_squire">API Squire</a></li>
+<li><a class="reference internal" href="#module-api.squire">API Squire</a></li>
 <li><a class="reference internal" href="#module-api.authenticator">API Authenticator</a></li>
 <li><a class="reference internal" href="#module-api.server">API Server</a></li>
 <li><a class="reference internal" href="#api-models">API Models</a></li>
 <li><a class="reference internal" href="#module-api.settings.Robinhood-pydantic.BaseModel">API Settings</a></li>
 <li><a class="reference internal" href="#module-api.report_gatherer">API Robinhood</a></li>
-<li><a class="reference internal" href="#api-robinhood-helper">API Robinhood Helper</a></li>
+<li><a class="reference internal" href="#module-api.stock_monitor">API StockMonitor</a></li>
+<li><a class="reference internal" href="#api-scheduler">API Scheduler</a></li>
 <li><a class="reference internal" href="#executors">———-Executors———-</a></li>
 <li><a class="reference internal" href="#module-executors.alarm">Alarm</a></li>
 <li><a class="reference internal" href="#module-executors.automation">Automation</a></li>
@@ -6746,6 +7084,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#templates">Templates</a></li>
 <li><a class="reference internal" href="#module-modules.timeout.timeout">Timeout</a></li>
 <li><a class="reference internal" href="#module-modules.tv.tv_controls">TV Connector</a></li>
+<li><a class="reference internal" href="#module-modules.validators.email_validator">Validators</a></li>
 <li><a class="reference internal" href="#module-modules.wakeonlan.wakeonlan">WakeOnLAN</a></li>
 <li><a class="reference internal" href="#module-modules.windows.win_notifications">Windows</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
