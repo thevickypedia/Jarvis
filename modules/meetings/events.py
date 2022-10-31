@@ -29,7 +29,7 @@ def events_writer() -> NoReturn:
             f"{(info, datetime.now().strftime('%Y_%m_%d'))}"
     with db.connection:
         cursor = db.connection.cursor()
-        cursor.execute(f"DELETE FROM {models.env.event_app}")
+        cursor.execute(f"DELETE FROM {models.env.event_app}")  # Use f-string or %s as table names can't be parametrized
         cursor.connection.commit()
         cursor.execute(query)
         cursor.connection.commit()
@@ -115,6 +115,7 @@ def events() -> None:
     """Controller for events."""
     with db.connection:
         cursor = db.connection.cursor()
+        # Use f-string or %s as table names cannot be parametrized
         event_status = cursor.execute(f"SELECT info, date FROM {models.env.event_app}").fetchone()
     if event_status and event_status[1] == datetime.now().strftime('%Y_%m_%d'):
         speaker.speak(text=event_status[0])

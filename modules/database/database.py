@@ -35,6 +35,7 @@ class Database:
         """
         with self.connection:
             cursor = self.connection.cursor()
+            # Use f-string or %s as table names cannot be parametrized
             cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns)})")
 
 

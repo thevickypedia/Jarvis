@@ -66,7 +66,7 @@ def add_todo() -> None:
                 return
     with tdb.connection:
         cursor = tdb.connection.cursor()
-        cursor.execute(f"INSERT OR REPLACE INTO tasks (category, item) VALUES {(category, item)}")
+        cursor.execute("INSERT OR REPLACE INTO tasks (category, item) VALUES (?,?)", (category, item))
     speaker.speak(text=f"I've added the item: {item} to the category: {category}. "
                        "Do you want to add anything else to your to-do list?", run=True)
     category_continue = listener.listen(timeout=3, phrase_limit=3)
@@ -79,12 +79,12 @@ def add_todo() -> None:
 def delete_todo_items() -> None:
     """Deletes items from an existing to-do list."""
     speaker.speak(text=f"Which one should I remove {models.env.title}?", run=True)
-    if not (item := listener.listen(timeout=3, phrase_limit=5)) or 'exit' in item or 'quit' in item or 'Xzibit' in item:
+    if not (word := listener.listen(timeout=3, phrase_limit=5)) or 'exit' in word or 'quit' in word or 'Xzibit' in word:
         speaker.speak(text=f'Your to-do list has been left intact {models.env.title}.')
         return
     with tdb.connection:
         cursor = tdb.connection.cursor()
-        cursor.execute(f"DELETE FROM tasks WHERE item='{item}' OR category='{item}'")
+        cursor.execute("DELETE FROM tasks WHERE item=:item OR category=:category", {'item': word, 'category': word})
         cursor.connection.commit()
     speaker.speak(text=f'Done {models.env.title}!', run=True)
 

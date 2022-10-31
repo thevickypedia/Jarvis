@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+6.5.5 (10/30/2022)
+------------------
+- Add feature in stock monitor to generate price graph
+- Remove alert data after sending out one price alert
+- Include multiple attachments in a single alert
+- Remove f-strings in database queries
+- Move email_validator.py to gmail-connector module
+
 6.5.4 (10/28/2022)
 ------------------
 - Improvements to `stock-monitor` endpoint

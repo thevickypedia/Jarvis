@@ -37,6 +37,7 @@ def clear_db() -> NoReturn:
         for table, column in models.TABLES.items():
             if table == "vpn" or table == "party" or table == "stock":
                 continue
+            # Use f-string or %s as table names cannot be parametrized
             logger.info(f"Deleting data from {table}: {cursor.execute(f'SELECT * FROM {table}').fetchall()}")
             cursor.execute(f"DELETE FROM {table}")
 
@@ -73,6 +74,7 @@ def stop_child_processes() -> NoReturn:
     with db.connection:
         cursor = db.connection.cursor()
         for child in models.TABLES["children"]:
+            # Use f-string or %s as condition cannot be parametrized
             children[child]: List[Tuple[Union[None, str]]] = cursor.execute(f"SELECT {child} FROM children").fetchall()
     logger.info(children)
     for category, pids in children.items():

@@ -30,7 +30,8 @@ def meetings_writer() -> NoReturn:
         cursor = db.connection.cursor()
         cursor.execute("DELETE FROM ics")
         cursor.connection.commit()
-        cursor.execute(f"INSERT OR REPLACE INTO ics (info, date) VALUES {(info, datetime.now().strftime('%Y_%m_%d'))}")
+        cursor.execute("INSERT OR REPLACE INTO ics (info, date) VALUES (?,?)", (info,
+                                                                                datetime.now().strftime('%Y_%m_%d'),))
         cursor.connection.commit()
     return
 

@@ -21,6 +21,7 @@ from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import (FileResponse, HTMLResponse, RedirectResponse,
                                StreamingResponse)
+from gmailconnector.validator import validate_email
 from webull import webull
 
 from api import squire
@@ -43,7 +44,6 @@ from modules.models import models
 from modules.offline import compatibles
 from modules.templates import templates
 from modules.utils import support
-from modules.validators import email_validator
 
 # Creates log files
 if not os.path.isfile(config.APIConfig().ACCESS_LOG_FILENAME):
@@ -354,8 +354,8 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=HTTPStatus.UNPROCESSABLE_ENTITY.__dict__['phrase'])
 
-    result = email_validator.validate(email=input_data.email, check_smtp=False)  # SMTP check is not in a reliable state
-    if result is None:
+    result = validate_email(email_address=input_data.email)
+    if result is False:
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f"{input_data.email.split('@')[-1]!r} doesn't resolve to a valid mail server!")
 
@@ -510,7 +510,6 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
             raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
                               detail='Requires authentication since endpoint uses single-use token.')
 
-
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
     @app.post(path="/surveillance-authenticate", dependencies=SURVEILLANCE_PROTECTOR)
@@ -537,7 +536,6 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
             raise APIResponse(status_code=HTTPStatus.NOT_ACCEPTABLE.real, detail=str(error))
         surveillance.token = support.token()
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=f"?token={surveillance.token}")
-
 
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
@@ -579,7 +577,6 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
             raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
                               detail='Requires authentication since endpoint uses single-use token.')
 
-
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
     @app.get('/video-feed')
@@ -618,7 +615,6 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         surveillance.processes[surveillance.client_id] = process
         return StreamingResponse(content=squire.streamer(), media_type='multipart/x-mixed-replace; boundary=frame',
                                  status_code=HTTPStatus.PARTIAL_CONTENT.real)
-
 
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:

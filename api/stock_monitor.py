@@ -7,6 +7,8 @@ from datetime import datetime
 from typing import Dict, NoReturn, Union
 
 import jinja2
+import matplotlib.dates
+import matplotlib.pyplot as plt
 from gmailconnector.send_email import SendEmail
 from webull import webull
 
@@ -17,6 +19,51 @@ from modules.logger import config  # noqa
 from modules.models import models  # noqa
 from modules.templates import templates  # noqa
 from modules.utils import support  # noqa
+
+
+def generate_graph(logger: logging.Logger, ticker: str, bars: int = 300) -> Union[str, NoReturn]:
+    """Generate historical graph for stock price.
+
+    Args:
+        logger: Takes the class ``logging.Logger`` as an argument.
+        ticker: Stock ticker.
+        bars: Number of bars to be fetched
+
+    References:
+        https://stackoverflow.com/a/49729752
+    """
+    logger.info(f"Generating price chart for {ticker!r}")
+    dataframe = webull().get_bars(stock=ticker, interval='m60', count=bars, extendTrading=1)  # ~ 1 month
+    refined = dataframe[['close']]
+    if len(refined) == 0:
+        refined = dataframe[['open']]
+    x = support.matrix_to_flat_list(input_=refined.values.tolist())
+    y = [i.to_pydatetime() for i in refined.iloc[:, 0].keys()]
+
+    fig, ax = plt.subplots()
+    ax.plot(y, x)
+
+    plt.title(ticker)
+    plt.xlabel("Timeseries")
+    plt.ylabel("300 bars with 1 hour interval")
+
+    if bars > 600:
+        ax.xaxis.set_major_locator(matplotlib.dates.YearLocator())
+        ax.xaxis.set_minor_locator(matplotlib.dates.MonthLocator((1, 4, 7, 10)))
+        ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter("\n%Y"))
+        ax.xaxis.set_minor_formatter(matplotlib.dates.DateFormatter("%b"))
+    else:
+        ax.xaxis.set_major_locator(matplotlib.dates.MonthLocator())
+        ax.xaxis.set_minor_locator(matplotlib.dates.DayLocator(tuple(range(2, 30, 3))))
+        ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter("\n%B"))
+        ax.xaxis.set_minor_formatter(matplotlib.dates.DateFormatter("%d"))
+
+    plt.setp(ax.get_xticklabels(), rotation=0, ha="center")
+    plt.grid()
+    graph_file = ticker + ".png"
+    fig.savefig(graph_file, format="png")
+    if os.path.isfile(graph_file):
+        return graph_file
 
 
 class StockMonitor:
@@ -37,7 +84,6 @@ class StockMonitor:
         self.logger = logger
         self.ticker_grouped = defaultdict(list)
         self.email_grouped = defaultdict(list)
-        self.group_data()
 
     def __del__(self):
         """Removes bin file created by webull client."""
@@ -50,6 +96,7 @@ class StockMonitor:
             - For ticker grouping, first value in the list is the ticker, so key will be ticker and the rest are values.
             - For email grouping, first value among the rest is the email, so key is email and the rest are values.
         """
+        self.logger.info("Grouping data extracted from database.")
         for k, *v in self.data:
             self.ticker_grouped[k].append(tuple(v))
             self.email_grouped[v[0]].append((k,) + tuple(v[1:]))
@@ -129,18 +176,25 @@ class StockMonitor:
 
     def send_notification(self) -> NoReturn:
         """Sends notification to the user when the stock price matches the requested condition."""
+        if self.data:
+            self.group_data()
+        else:
+            self.logger.info("Database is empty!")
+            return
         subject = f"Stock Price Alert - {datetime.now().strftime('%c')}"
         email_template = templates.StockMonitor.source
         prices = self.get_prices()
         for k, v in self.email_grouped.items():
             mail_obj = SendEmail(gmail_user=models.env.alt_gmail_user or models.env.gmail_user,
                                  gmail_pass=models.env.alt_gmail_pass or models.env.gmail_pass)
-            text_gathered = []
+            datastore = {'text_gathered': [], 'removals': [], 'attachments': []}  # unique datastore for each user
             for trigger in v:
                 ticker = trigger[0]
                 maximum = trigger[1]
                 minimum = trigger[2]
                 correction = trigger[3]
+                if not prices[ticker]:
+                    continue
                 ticker_hyperlinked = '<a href="https://www.webull.com/quote/' \
                                      f'{prices[ticker]["exchange_code"].lower()}-{ticker.lower()}">{ticker}</a>'
                 if not maximum and not minimum:
@@ -160,16 +214,23 @@ class StockMonitor:
                                   f"minimum value: ${minimum:,}"
                 if email_text:
                     email_text += f"<br>Current price of {ticker_hyperlinked} is ${prices[ticker]['price']:,}"
-                    text_gathered.append(email_text)
-            if not text_gathered:
+                    datastore['text_gathered'].append(email_text)
+                    datastore['removals'].append((ticker, k, maximum, minimum, correction))
+                    datastore['attachments'].append(generate_graph(ticker=ticker, logger=self.logger))
+            if not datastore['text_gathered']:
                 self.logger.info("Nothing to report")
                 return
-            template = jinja2.Template(email_template).render(CONVERTED="<br><br>".join(text_gathered))
-            response = mail_obj.send_email(subject=subject, recipient=k, html_body=template, sender="Jarvis")
-            if response.ok:
+            template = jinja2.Template(email_template).render(CONVERTED="<br><br>".join(datastore['text_gathered']))
+            response = mail_obj.send_email(subject=subject, recipient=k, html_body=template, sender="Jarvis",
+                                           attachment=datastore['attachments'])
+            if response.ok:  # Remove entry if notification was successful
                 self.logger.info(f'Email has been sent to {k!r}')
+                for entry in datastore['removals']:
+                    self.logger.info(f"Removing {entry!r} from database.")
+                    squire.delete_stock_userdata(data=entry)
             else:
                 self.logger.error(response.json())
+            [os.remove(stock_graph) for stock_graph in datastore['attachments'] if os.path.isfile(stock_graph)]
 
 
 if __name__ == '__main__':

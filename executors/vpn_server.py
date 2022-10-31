@@ -69,5 +69,5 @@ def vpn_server_switch(operation: str) -> None:
         vpn_object.delete_vpn_server()
     with db.connection:
         cursor = db.connection.cursor()
-        cursor.execute(f"DELETE FROM vpn WHERE state='{operation}'")
+        cursor.execute("DELETE FROM vpn WHERE state=?", (operation,))
         db.connection.commit()

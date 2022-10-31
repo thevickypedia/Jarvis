@@ -750,22 +750,106 @@
 </dd></dl>
 
 </section>
-<section id="module-api.settings.Robinhood-pydantic.BaseModel">
-<span id="api-settings"></span><h1>API Settings<a class="headerlink" href="#module-api.settings.Robinhood-pydantic.BaseModel" title="Permalink to this heading">¶</a></h1>
-<p>Initiates <code class="docutils literal notranslate"><span class="pre">Robinhood</span></code> object to handle members across modules.</p>
+<section id="api-settings">
+<h1>API Settings<a class="headerlink" href="#api-settings" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="api.settings.Robinhood">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.settings.</span></span><span class="sig-name descname"><span class="pre">Robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.settings.Robinhood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">Robinhood</span></code> object to handle members across modules.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Robinhood</span>
 </pre></div>
 </div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.settings.Robinhood.token">
+<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Hashable</span></em><a class="headerlink" href="#api.settings.Robinhood.token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <hr class="docutils" />
-<span class="target" id="module-api.settings.Surveillance-pydantic.BaseConfig"></span><p>Initiates <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object to handle members across modules.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="api.settings.Surveillance">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.settings.</span></span><span class="sig-name descname"><span class="pre">Surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseConfig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.settings.Surveillance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object to handle members across modules.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Surveillance</span>
 </pre></div>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.settings.Surveillance.available_cameras">
+<span class="sig-name descname"><span class="pre">available_cameras</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#api.settings.Surveillance.available_cameras" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.settings.Surveillance.camera_index">
+<span class="sig-name descname"><span class="pre">camera_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#api.settings.Surveillance.camera_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.settings.Surveillance.client_id">
+<span class="sig-name descname"><span class="pre">client_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#api.settings.Surveillance.client_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.settings.Surveillance.frame">
+<span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#api.settings.Surveillance.frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.settings.Surveillance.processes">
+<span class="sig-name descname"><span class="pre">processes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Process</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#api.settings.Surveillance.processes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.settings.Surveillance.public_url">
+<span class="sig-name descname"><span class="pre">public_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HttpUrl</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#api.settings.Surveillance.public_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.settings.Surveillance.queue_manager">
+<span class="sig-name descname"><span class="pre">queue_manager</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Queue</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#api.settings.Surveillance.queue_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.settings.Surveillance.session_manager">
+<span class="sig-name descname"><span class="pre">session_manager</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#api.settings.Surveillance.session_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.settings.Surveillance.token">
+<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Hashable</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#api.settings.Surveillance.token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <hr class="docutils" />
-<span class="target" id="module-api.settings.StockMonitor-pydantic.BaseModel"></span><p>Initiates <code class="docutils literal notranslate"><span class="pre">StockMonitor</span></code> object to handle members across modules.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="api.settings.StockMonitor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.settings.</span></span><span class="sig-name descname"><span class="pre">StockMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.settings.StockMonitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">StockMonitor</span></code> object to handle members across modules.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">StockMonitor</span>
 </pre></div>
 </div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.settings.StockMonitor.stock_list">
+<span class="sig-name descname"><span class="pre">stock_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#api.settings.StockMonitor.stock_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.settings.StockMonitor.user_info">
+<span class="sig-name descname"><span class="pre">user_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#api.settings.StockMonitor.user_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.settings.StockMonitor.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#api.settings.StockMonitor.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <hr class="docutils" />
 <span class="target" id="module-api.settings.ConnectionManager"></span><p>Initiates <code class="docutils literal notranslate"><span class="pre">ConnectionManager</span></code> object to handle multiple connections using <code class="docutils literal notranslate"><span class="pre">WebSockets</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ConnectionManager</span>
@@ -939,6 +1023,23 @@
 <dd><p>Sends notification to the user when the stock price matches the requested condition.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.stock_monitor.generate_graph">
+<span class="sig-prename descclassname"><span class="pre">api.stock_monitor.</span></span><span class="sig-name descname"><span class="pre">generate_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ticker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bars</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.stock_monitor.generate_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate historical graph for stock price.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> – Takes the class <code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code> as an argument.</p></li>
+<li><p><strong>ticker</strong> – Stock ticker.</p></li>
+<li><p><strong>bars</strong> – Number of bars to be fetched</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://stackoverflow.com/a/49729752">https://stackoverflow.com/a/49729752</a></p>
 </dd></dl>
 
 </section>
@@ -6605,64 +6706,6 @@ response much quicker, but it also scans the network for the TV’s ip if ip arg
 </dd></dl>
 
 </section>
-<section id="module-modules.validators.email_validator">
-<span id="validators"></span><h1>Validators<a class="headerlink" href="#module-modules.validators.email_validator" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.validators.email_validator.get_mx_records">
-<span class="sig-prename descclassname"><span class="pre">modules.validators.email_validator.</span></span><span class="sig-name descname"><span class="pre">get_mx_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#modules.validators.email_validator.get_mx_records" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get MX (Mail Exchange server) records for the given domain.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>domain</strong> – FQDN (Fully Qualified Domain Name) extracted from the email address.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of IP addresses of all the mail exchange servers from authoritative/non-authoritative answer section.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.validators.email_validator.validate">
-<span class="sig-prename descclassname"><span class="pre">modules.validators.email_validator.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">EmailStr</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_smtp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.validators.email_validator.validate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validates email address deliver-ability using SMTP.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>email</strong> – Email address.</p></li>
-<li><p><strong>timeout</strong> – Time in seconds to wait for a result.</p></li>
-<li><p><strong>check_smtp</strong> – Boolean flag whether to use smtp connection.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<ul class="simple">
-<li><p>Timeout specified is to create a socket connection with each mail exchange server.</p></li>
-<li><p>If a mail server has 10 mx records and timeout is set to 3, the total wait time will be 30 seconds.</p></li>
-</ul>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>This is not a perfect solution for validating email address.</p></li>
-<li><p>Works perfect for gmail, but yahoo and related mail servers always returns OK even with garbage email address.</p></li>
-<li><p>Works only if port 25 is not blocked by ISP.</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Boolean flag to indicate if the email address is valid.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="module-modules.wakeonlan.wakeonlan">
 <span id="wakeonlan"></span><h1>WakeOnLAN<a class="headerlink" href="#module-modules.wakeonlan.wakeonlan" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
@@ -7019,7 +7062,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-api.authenticator">API Authenticator</a></li>
 <li><a class="reference internal" href="#module-api.server">API Server</a></li>
 <li><a class="reference internal" href="#api-models">API Models</a></li>
-<li><a class="reference internal" href="#module-api.settings.Robinhood-pydantic.BaseModel">API Settings</a></li>
+<li><a class="reference internal" href="#api-settings">API Settings</a></li>
 <li><a class="reference internal" href="#module-api.report_gatherer">API Robinhood</a></li>
 <li><a class="reference internal" href="#module-api.stock_monitor">API StockMonitor</a></li>
 <li><a class="reference internal" href="#api-scheduler">API Scheduler</a></li>
@@ -7086,7 +7129,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#templates">Templates</a></li>
 <li><a class="reference internal" href="#module-modules.timeout.timeout">Timeout</a></li>
 <li><a class="reference internal" href="#module-modules.tv.tv_controls">TV Connector</a></li>
-<li><a class="reference internal" href="#module-modules.validators.email_validator">Validators</a></li>
 <li><a class="reference internal" href="#module-modules.wakeonlan.wakeonlan">WakeOnLAN</a></li>
 <li><a class="reference internal" href="#module-modules.windows.win_notifications">Windows</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>

@@ -46,8 +46,8 @@ class StockMonitor(BaseModel):
 
     """
 
-    user_info: Tuple[str] = ("ticker", "email", "max", "min", "correction")
-    values: str = '(' + ','.join(['?' for _ in user_info]) + ')'
+    user_info: Tuple[str, str, str, str, str] = ("ticker", "email", "max", "min", "correction")
+    values: str = '(' + ','.join('?' for _ in user_info) + ')'
     stock_list: List[str] = []
 
 

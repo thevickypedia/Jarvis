@@ -77,19 +77,19 @@ API Models
 API Settings
 ============
 
-.. automodule:: api.settings.Robinhood(pydantic.BaseModel)
+.. autoclass:: api.settings.Robinhood(pydantic.BaseModel)
    :members:
    :undoc-members:
 
 ====
 
-.. automodule:: api.settings.Surveillance(pydantic.BaseConfig)
+.. autoclass:: api.settings.Surveillance(pydantic.BaseConfig)
    :members:
    :undoc-members:
 
 ====
 
-.. automodule:: api.settings.StockMonitor(pydantic.BaseModel)
+.. autoclass:: api.settings.StockMonitor(pydantic.BaseModel)
    :members:
    :undoc-members:
 
@@ -660,13 +660,6 @@ TV Connector
 ============
 
 .. automodule:: modules.tv.tv_controls
-   :members:
-   :undoc-members:
-
-Validators
-==========
-
-.. automodule:: modules.validators.email_validator
    :members:
    :undoc-members:
 
