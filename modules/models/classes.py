@@ -71,6 +71,20 @@ class Sensitivity(float or PositiveInt, Enum):
     sensitivity: Union[float, PositiveInt]
 
 
+class RecognizerSettings(BaseSettings):
+    """Settings for speech recognition.
+
+    >>> RecognizerSettings
+
+    """
+
+    energy_threshold: PositiveInt = 700
+    pause_threshold: Union[PositiveInt, float] = 2
+    phrase_threshold: Union[PositiveInt, float] = 0.1
+    dynamic_energy_threshold: bool = False
+    non_speaking_duration: Union[PositiveInt, float] = 2
+
+
 class EventApp(str, Enum):
     """Types of event applications supported by Jarvis.
 
@@ -188,7 +202,8 @@ class EnvConfig(BaseSettings):
     # Listener config
     sensitivity: Union[Sensitivity, List[Sensitivity]] = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
     timeout: Union[PositiveFloat, PositiveInt] = Field(default=3, env='TIMEOUT')
-    phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=3, env='PHRASE_LIMIT')
+    phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=None, env='PHRASE_LIMIT')
+    recognizer_settings: RecognizerSettings = Field(default=None, env="RECOGNIZER_SETTINGS")
 
     # Telegram config
     bot_token: str = Field(default=None, env='BOT_TOKEN')

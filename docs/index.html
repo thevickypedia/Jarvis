@@ -256,11 +256,11 @@
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>This endpoint is secured behind single use token.</p>
 <ul class="simple">
+<li><p>This endpoint is secured behind single use token sent via email as MFA (Multi-Factor Authentication)</p></li>
 <li><p>Initial check is done by <code class="docutils literal notranslate"><span class="pre">authenticate_surveillance</span></code> behind the path “/surveillance-authenticate”</p></li>
-<li><p>Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object.</p></li>
-<li><p>This UUID is sent as response to the API endpoint behind ngrok connection (if tunnelled).</p></li>
+<li><p>Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object.</p></li>
+<li><p>This UUID is sent via email to the env var <code class="docutils literal notranslate"><span class="pre">RECIPIENT</span></code>, which should be entered as query string.</p></li>
 <li><p>The UUID is deleted from the object as soon as the argument is checked for the last time.</p></li>
 <li><p>Page refresh is useless because the value in memory is cleared as soon as the video is rendered.</p></li>
 </ul>
@@ -342,10 +342,10 @@
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>This endpoint is secured behind single use token.</p></li>
+<li><p>This endpoint is secured behind single use token sent via email as MFA (Multi-Factor Authentication)</p></li>
 <li><p>Initial check is done by the function authenticate_robinhood behind the path “/robinhood-authenticate”</p></li>
-<li><p>Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in the <code class="docutils literal notranslate"><span class="pre">Robinhood</span></code> object.</p></li>
-<li><p>This UUID is sent as response to the API endpoint behind ngrok connection (if tunnelled).</p></li>
+<li><p>Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the <code class="docutils literal notranslate"><span class="pre">Robinhood</span></code> object.</p></li>
+<li><p>This UUID is sent via email to the env var <code class="docutils literal notranslate"><span class="pre">RECIPIENT</span></code>, which should be entered as query string.</p></li>
 <li><p>The UUID is deleted from the object as soon as the argument is checked for the first time.</p></li>
 <li><p>Page refresh is useless because the value in memory is cleared as soon as it is authed once.</p></li>
 </ul>
@@ -3017,7 +3017,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.audio.listener.listen">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.listener.</span></span><span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stdout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.audio.listener.listen" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.audio.listener.</span></span><span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stdout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.audio.listener.listen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to activate listener, this function will be called by most upcoming functions to listen to user input.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -4439,6 +4439,11 @@ Pass 155 for LO and 285 for HI.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.recipient">
 <span class="sig-name descname"><span class="pre">recipient</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.recipient" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.recognizer_settings">
+<span class="sig-name descname"><span class="pre">recognizer_settings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">RecognizerSettings</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.recognizer_settings" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

@@ -1,5 +1,6 @@
 import os
 import time
+import traceback
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
@@ -76,6 +77,7 @@ def automator() -> NoReturn:
                     offline_communicator(command=exec_task)
                 except Exception as error:
                     logger.error(error)
+                    logger.error(traceback.format_exc())
 
         if start_events + models.env.sync_events <= time.time() or dry_run:
             start_events = time.time()

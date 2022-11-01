@@ -25,7 +25,7 @@ def detected_face() -> NoReturn:
     speaker.speak(text=f"I've taken a photo of you. Preview on your screen {models.env.title}!"
                        "Would you like to give it a name, so that I can add it to my database of known list?"
                        "If you're ready, please tell me a name, or simply say exit.", run=True)
-    phrase = listener.listen(timeout=3, phrase_limit=5)
+    phrase = listener.listen()
     if not phrase or 'exit' in phrase or 'quit' in phrase or 'Xzibit' in phrase:
         os.remove('cv2_open.jpg')
         speaker.speak(text="I've deleted the image.", run=True)

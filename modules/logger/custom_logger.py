@@ -10,6 +10,7 @@ Disables loggers from imported modules, while using the root logger without havi
 import importlib
 import logging
 import os
+import sys
 import time
 from datetime import datetime
 from logging.config import dictConfig
@@ -39,7 +40,8 @@ def log_file(filename: str) -> str:
     """
     filename = datetime.now().strftime(filename)
     write = ''.join(['*' for _ in range(120)])
-    if current_process().name == 'MainProcess':
+    # Since stock_monitor.py imports support and squire modules, * gets logged which is unwanted
+    if current_process().name == 'MainProcess' and sys.argv[0].split(os.path.sep)[-1] != "stock_monitor.py":
         with open(filename, 'a+') as file:
             file.seek(0)
             if not file.read():
@@ -125,8 +127,6 @@ class TestLogger:
 
 
 if __name__ == '__main__':
-    import sys
-
     test_logger = TestLogger()
     test_logger.test_log()
     for method_name, return_value in TestLogger.__dict__.items():

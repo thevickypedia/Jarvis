@@ -107,8 +107,33 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **SENSITIVITY** - Hot word detection sensitivity. Range: 0-1
 - **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']` (Defaults to `['alexa']` in legacy macOS)
+- **RECOGNIZER_SETTINGS** - A JSON object that has with customized speech recognition settings.
 
 :warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.
+
+<details>
+<summary><strong>Custom settings for speech recognition</strong></summary>
+
+These are customized according to the author's voice pitch.
+Please use [custom_recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/custom_recognizer.py) to figure out the suitable values in a trial and error method.
+
+> These settings are added (optionally), to avoid the hard coded `VOICE_PHRASE_LIMIT`
+> <br>
+> Cons in using hard coded `VOICE_PHRASE_LIMIT`:
+>   - Disables the listener after the set limit even the speaker is actively talking.
+>   - Listener will be active until the set limit even after the speaker has stopped talking.
+
+Sample settings (formatted as JSON object)
+- `RECOGNIZER_SETTINGS`: `'{"energy_threshold": 1100, "dynamic_energy_threshold": false, "pause_threshold": 2, "phrase_threshold": 0.1}'`
+
+**Description**
+- `energy_threshold`: Minimum audio energy to consider for recording. Greater the value, louder the speech should be.
+- `dynamic_energy_threshold`: Change considerable audio energy threshold dynamically.
+- `pause_threshold`: Seconds of non-speaking audio before a phrase is considered complete.
+- `phrase_threshold`: Minimum seconds of speaking audio before it can be considered a phrase - values below this are ignored. This helps to filter out clicks and pops.
+- `non_speaking_duration`: Seconds of non-speaking audio to keep on both sides of the recording.
+
+</details>
 
 - **LIMITED** - Runs only the main version of `Jarvis` skipping all other background processes. Enforced based on the
 number of CPU cores. It can also be enabled with env-var.

@@ -7,6 +7,7 @@
 
 import os
 import pathlib
+import traceback
 from typing import NoReturn
 
 import docker
@@ -63,5 +64,6 @@ def synthesizer() -> NoReturn:
                 log_file.write(str(line).strip())
         except Exception as error:
             log_file.write(str(error))
+            log_file.write(str(traceback.format_exc()))
             models.env.speech_synthesis_timeout = 0
             return

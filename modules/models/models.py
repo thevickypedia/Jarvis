@@ -18,7 +18,8 @@ from modules.camera.camera import Camera
 from modules.crontab.expression import CronExpression
 from modules.database import database
 from modules.exceptions import CameraError, InvalidEnvVars
-from modules.models.classes import Indicators, env, fileio, settings
+from modules.models.classes import (Indicators, RecognizerSettings, env,
+                                    fileio, settings)
 
 indicators = Indicators()
 
@@ -27,9 +28,13 @@ if not os.path.isdir('fileio'):
     os.makedirs(name='fileio')
 
 env.website = env.website.lstrip(f"{env.website.scheme}://")
+
 if not all((env.alt_gmail_user, env.alt_gmail_pass)):
     env.alt_gmail_user = env.gmail_user
     env.alt_gmail_pass = env.gmail_pass
+
+if not env.recognizer_settings and not env.phrase_limit:
+    env.recognizer_settings = RecognizerSettings()  # Default override when phrase limit is not available
 
 if settings.legacy:
     pvporcupine.KEYWORD_PATHS = {}

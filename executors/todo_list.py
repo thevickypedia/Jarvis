@@ -47,11 +47,11 @@ def todo() -> None:
 def add_todo() -> None:
     """Adds new items to the to-do list."""
     speaker.speak(text=f"What's your plan {models.env.title}?", run=True)
-    if not (item := listener.listen(timeout=3, phrase_limit=5)) or 'exit' in item or 'quit' in item or 'Xzibit' in item:
+    if not (item := listener.listen()) or 'exit' in item or 'quit' in item or 'Xzibit' in item:
         speaker.speak(text=f'Your to-do list has been left intact {models.env.title}.')
         return
     speaker.speak(text=f"I heard {item}. Which category you want me to add it to?", run=True)
-    if not (category := listener.listen(timeout=3, phrase_limit=3)):
+    if not (category := listener.listen()):
         category = 'Unknown'
     if 'exit' in category or 'quit' in category or 'Xzibit' in category:
         speaker.speak(text=f'Your to-do list has been left intact {models.env.title}.')
@@ -69,7 +69,7 @@ def add_todo() -> None:
         cursor.execute("INSERT OR REPLACE INTO tasks (category, item) VALUES (?,?)", (category, item))
     speaker.speak(text=f"I've added the item: {item} to the category: {category}. "
                        "Do you want to add anything else to your to-do list?", run=True)
-    category_continue = listener.listen(timeout=3, phrase_limit=3)
+    category_continue = listener.listen()
     if word_match(phrase=category_continue.lower(), match_list=keywords.ok):
         add_todo()
     else:
@@ -79,7 +79,7 @@ def add_todo() -> None:
 def delete_todo_items() -> None:
     """Deletes items from an existing to-do list."""
     speaker.speak(text=f"Which one should I remove {models.env.title}?", run=True)
-    if not (word := listener.listen(timeout=3, phrase_limit=5)) or 'exit' in word or 'quit' in word or 'Xzibit' in word:
+    if not (word := listener.listen()) or 'exit' in word or 'quit' in word or 'Xzibit' in word:
         speaker.speak(text=f'Your to-do list has been left intact {models.env.title}.')
         return
     with tdb.connection:

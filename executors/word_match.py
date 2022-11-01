@@ -23,5 +23,5 @@ def word_match(phrase: str, match_list: Iterable[str]) -> Union[str, NoReturn]:
             if caller == 'auto_helper':
                 return word
             logger.debug(f'Matching word: {word}')
-            logger.debug(f'Called by {caller}')
+            logger.debug(f'Called by {caller!r}')
             return word

@@ -87,7 +87,7 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
         if shared.called_by_offline:
             shared.offline_caller = caller
             return
-        logger.info(f'Speaker called by: {caller}')
+        logger.info(f'Speaker called by: {caller!r}')
         logger.info(f'Response: {text}')
         sys.stdout.write(f"\r{text}")
         if models.env.speech_synthesis_timeout and \

@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+6.5.7 (11/01/2022)
+------------------
+- Introduce custom recognizer settings
+- Add test_listener.py for on-demand tests
+- Remove all hard coded references
+- Fix extract numbers function for integers
+- Include investment endpoint in schema
+- Fix log file appending * for subprocesses
+- Include traceback for broad exceptions
+- Update docstrings and README.md
+
 6.5.6 (10/31/2022)
 ------------------
 - Switch single use tokens to multifactor authentication via email

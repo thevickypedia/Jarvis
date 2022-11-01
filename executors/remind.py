@@ -71,7 +71,7 @@ def reminder(phrase: str) -> None:
             speaker.speak(text='Reminder format should be::Remind me to do something, at some time.')
             return
         speaker.speak(text=f"When do you want to be reminded {models.env.title}?", run=True)
-        if not (phrase := listener.listen(timeout=3, phrase_limit=4)):
+        if not (phrase := listener.listen()):
             return
         if not (extracted_time := support.extract_time(input_=phrase)):
             return

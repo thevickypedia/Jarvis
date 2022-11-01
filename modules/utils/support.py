@@ -282,7 +282,16 @@ def extract_nos(input_: str, method: type = float) -> Union[int, float]:
         Float values.
     """
     if value := re.findall(r"\d+", input_):
-        return method(".".join(value))
+        if method == float:
+            try:
+                return method(".".join(value))
+            except ValueError as error:
+                caller = sys._getframe(1).f_code.co_name  # noqa
+                logger.error(error)
+                logger.error(f"Called by: {caller!r}")
+                method = int
+        if method == int:
+            return method("".join(value))
 
 
 def format_nos(input_: float) -> int:

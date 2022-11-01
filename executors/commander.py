@@ -1,5 +1,6 @@
 import random
 import time
+import traceback
 from multiprocessing import Process
 from threading import Thread
 from typing import Tuple, Union
@@ -86,6 +87,7 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
         offline_communicator(command=phrase)
     except Exception as error:
         logger.error(error)
+        logger.error(traceback.format_exc())
 
 
 def timed_delay(phrase: str) -> Tuple[str, Union[int, float]]:
@@ -128,9 +130,9 @@ def renew() -> None:
     """
     for i in range(3):
         if i:
-            converted = listener.listen(timeout=3, phrase_limit=5, sound=False) or ""
+            converted = listener.listen(sound=False) or ""
         else:
-            converted = listener.listen(timeout=3, phrase_limit=5) or ""
+            converted = listener.listen() or ""
         if word_match(phrase=converted, match_list=models.env.wake_words):
             continue
         if split_phrase(phrase=converted):  # should_return flag is not passed which will default to False

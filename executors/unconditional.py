@@ -128,7 +128,7 @@ def google_maps(query: str) -> bool:
                            f"{miles} away. {next_val}", run=True)
         sys.stdout.write(f"\r{item['Name']} -- {item['Rating']} -- "
                          f"{''.join([j for j in item['Address'] if not j.isdigit()])}")
-        if converted := listener.listen(timeout=3, phrase_limit=3):
+        if converted := listener.listen():
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 break
             elif word_match(phrase=converted.lower(), match_list=keywords.ok):

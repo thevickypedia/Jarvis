@@ -83,7 +83,7 @@ def security_runner() -> NoReturn:
     while True:
         # Listens for any recognizable speech and saves it to a notes file
         sys.stdout.write("\rSECURITY MODE")
-        converted = listener.listen(timeout=3, phrase_limit=10, sound=False)
+        converted = listener.listen(sound=False)
         face_detected = datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p.jpg')
         if not get_state(log=False) or word_match(phrase=converted, match_list=keywords.guard_disable):
             guard_disable()

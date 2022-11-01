@@ -108,7 +108,7 @@ def system_vitals() -> None:
                                f"more than {warn} days. You must consider a reboot for better performance. Would you "
                                f"like me to restart it for you {models.env.title}?",
                           run=True)
-            response = listener.listen(timeout=3, phrase_limit=3)
+            response = listener.listen()
             if word_match(phrase=response.lower(), match_list=keywords.ok):
                 logger.info(f'JARVIS::Restarting {shared.hosted_device.get("device")}')
                 restart(ask=False)

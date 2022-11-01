@@ -29,7 +29,7 @@ def read_gmail() -> None:
             return
         speaker.speak(text=f'You have {response.count} unread emails {models.env.title}. Do you want me to check it?',
                       run=True)
-        if not (confirmation := listener.listen(timeout=3, phrase_limit=3)):
+        if not (confirmation := listener.listen()):
             return
         if not word_match(phrase=confirmation, match_list=keywords.ok):
             return
@@ -65,19 +65,20 @@ def send_sms(phrase: str) -> None:
     elif shared.called_by_offline:
         speaker.speak(text="Messenger format should be::send some message to some number.")
         return
-    speaker.speak(text=f"Please tell me a number {models.env.title}!", run=True)
-    if not (number := listener.listen(timeout=3, phrase_limit=7)):
-        return
-    if 'exit' in number or 'quit' in number or 'Xzibit' in number:
-        return
+    if not number:
+        speaker.speak(text=f"Please tell me a number {models.env.title}!", run=True)
+        if not (number := listener.listen()):
+            return
+        if 'exit' in number or 'quit' in number or 'Xzibit' in number:
+            return
     if len(number) != 10:
         speaker.speak(text=f"I don't think that's a right number {models.env.title}! Phone numbers are 10 digits. "
                            "Try again!")
         return
     speaker.speak(text=f"What would you like to send {models.env.title}?", run=True)
-    if body := listener.listen(timeout=3, phrase_limit=5):
+    if body := listener.listen():
         speaker.speak(text=f'{body} to {number}. Do you want me to proceed?', run=True)
-        if converted := listener.listen(timeout=3, phrase_limit=3):
+        if converted := listener.listen():
             if word_match(phrase=converted, match_list=keywords.ok):
                 logger.info(f'{body} -> {number}')
                 notify(user=models.env.gmail_user, password=models.env.gmail_pass, number=number, body=body)

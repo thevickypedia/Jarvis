@@ -152,9 +152,34 @@
 <li><p><strong>NAME</strong> - Name which Jarvis should address the user by. Defaults to <code class="docutils literal notranslate"><span class="pre">Vignesh</span></code></p></li>
 <li><p><strong>SENSITIVITY</strong> - Hot word detection sensitivity. Range: 0-1</p></li>
 <li><p><strong>WAKE_WORDS</strong> - List of wake words to initiate Jarvis’ listener. Defaults to <code class="docutils literal notranslate"><span class="pre">['jarvis']</span></code> (Defaults to <code class="docutils literal notranslate"><span class="pre">['alexa']</span></code> in legacy macOS)</p></li>
+<li><p><strong>RECOGNIZER_SETTINGS</strong> - A JSON object that has with customized speech recognition settings.</p></li>
 </ul>
 <p>:warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.</p>
+<details>
+<summary><strong>Custom settings for speech recognition</strong></summary><p>These are customized according to the author’s voice pitch.
+Please use <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/custom_recognizer.py">custom_recognizer.py</a> to figure out the suitable values in a trial and error method.</p>
+<blockquote>
+<div><p>These settings are added (optionally), to avoid the hard coded <code class="docutils literal notranslate"><span class="pre">VOICE_PHRASE_LIMIT</span></code>
+<br>
+Cons in using hard coded <code class="docutils literal notranslate"><span class="pre">VOICE_PHRASE_LIMIT</span></code>:</p>
 <ul class="simple">
+<li><p>Disables the listener after the set limit even the speaker is actively talking.</p></li>
+<li><p>Listener will be active until the set limit even after the speaker has stopped talking.</p></li>
+</ul>
+</div></blockquote>
+<p>Sample settings (formatted as JSON object)</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">RECOGNIZER_SETTINGS</span></code>: <code class="docutils literal notranslate"><span class="pre">'{&quot;energy_threshold&quot;:</span> <span class="pre">1100,</span> <span class="pre">&quot;dynamic_energy_threshold&quot;:</span> <span class="pre">false,</span> <span class="pre">&quot;pause_threshold&quot;:</span> <span class="pre">2,</span> <span class="pre">&quot;phrase_threshold&quot;:</span> <span class="pre">0.1}'</span></code></p></li>
+</ul>
+<p><strong>Description</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">energy_threshold</span></code>: Minimum audio energy to consider for recording. Greater the value, louder the speech should be.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dynamic_energy_threshold</span></code>: Change considerable audio energy threshold dynamically.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pause_threshold</span></code>: Seconds of non-speaking audio before a phrase is considered complete.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">phrase_threshold</span></code>: Minimum seconds of speaking audio before it can be considered a phrase - values below this are ignored. This helps to filter out clicks and pops.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">non_speaking_duration</span></code>: Seconds of non-speaking audio to keep on both sides of the recording.</p></li>
+</ul>
+</details><ul class="simple">
 <li><p><strong>LIMITED</strong> - Runs only the main version of <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> skipping all other background processes. Enforced based on the
 number of CPU cores. It can also be enabled with env-var.</p></li>
 <li><p><strong>CAMERA_INDEX</strong> - Camera index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/modules/camera/camera.py">camera.py</a> to get the index value of each camera.</p></li>

@@ -19,9 +19,17 @@ from modules.utils import support
 recognizer = Recognizer()  # initiates recognizer that uses google's translation
 microphone = Microphone()  # initiates microphone object
 
+if models.env.recognizer_settings:
+    recognizer.energy_threshold = models.env.recognizer_settings.energy_threshold
+    recognizer.pause_threshold = models.env.recognizer_settings.pause_threshold
+    recognizer.phrase_threshold = models.env.recognizer_settings.phrase_threshold
+    recognizer.dynamic_energy_threshold = models.env.recognizer_settings.dynamic_energy_threshold
+    recognizer.non_speaking_duration = models.env.recognizer_settings.non_speaking_duration
+    models.env.phrase_limit = 7  # Override voice phrase limit when recognizer settings are available
 
-def listen(timeout: Union[int, float], phrase_limit: Union[int, float], sound: bool = True,
-           stdout: bool = True) -> Union[str, None]:
+
+def listen(timeout: Union[int, float] = models.env.timeout, phrase_limit: Union[int, float] = models.env.phrase_limit,
+           sound: bool = True, stdout: bool = True) -> Union[str, None]:
     """Function to activate listener, this function will be called by most upcoming functions to listen to user input.
 
     Args:

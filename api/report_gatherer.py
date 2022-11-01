@@ -1,6 +1,6 @@
 """Runs once during API startup and continues to run in a cron scheduler as per market hours."""
 
-import logging.config
+import logging
 import math
 import os
 import sys

@@ -44,7 +44,7 @@ def restart(ask: bool = True) -> NoReturn:
         speaker.speak(text=f"{random.choice(conversation.confirmation)} restart your "
                            f"{shared.hosted_device.get('device', 'machine')}?",
                       run=True)
-        converted = listener.listen(timeout=3, phrase_limit=3)
+        converted = listener.listen()
     else:
         converted = 'yes'
     if word_match(phrase=converted, match_list=keywords.ok):
@@ -147,9 +147,9 @@ def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
         restart()
     else:
         caller = sys._getframe(1).f_code.co_name  # noqa
-        logger.info(f'Called by {caller}')
+        logger.info(f'Called by {caller!r}')
         if quiet:  # restarted due internal errors
-            logger.info(f"Restarting {caller}")
+            logger.info(f"Restarting {caller!r}")
         elif shared.called_by_offline:  # restarted via automator
             logger.info("Restarting all background processes!")
             caller = "OFFLINE"
@@ -198,7 +198,7 @@ def shutdown(proceed: bool = False) -> NoReturn:
     """
     if not proceed:
         speaker.speak(text=f"{random.choice(conversation.confirmation)} turn off the machine?", run=True)
-        converted = listener.listen(timeout=3, phrase_limit=3)
+        converted = listener.listen()
     else:
         converted = 'yes'
     if converted and word_match(phrase=converted, match_list=keywords.ok):

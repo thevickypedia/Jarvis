@@ -5,6 +5,7 @@ import os
 import random
 import string
 import time
+import traceback
 from typing import NoReturn, Union
 
 import requests
@@ -479,6 +480,7 @@ class TelegramBot:
                                                                      USER_TITLE.get(payload['from']['username']))
         except Exception as error:
             logger.error(error)
+            logger.error(traceback.format_exc())
             response = f"Jarvis failed to process the request.\n\n`{error}`"
         logger.info(f'Response: {response}')
         self.process_response(payload=payload, response=response) if respond else None

@@ -41,7 +41,7 @@ db = database.Database(database=models.fileio.base_db)
 def repeat() -> NoReturn:
     """Repeats whatever is heard."""
     speaker.speak(text="Please tell me what to repeat.", run=True)
-    if keyword := listener.listen(timeout=3, phrase_limit=10):
+    if keyword := listener.listen():
         if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
             pass
         else:
@@ -61,7 +61,7 @@ def apps(phrase: str) -> None:
             speaker.speak(text=f'I need an app name to open {models.env.title}!')
             return
         speaker.speak(text=f"Which app shall I open {models.env.title}?", run=True)
-        if keyword := listener.listen(timeout=3, phrase_limit=4):
+        if keyword := listener.listen():
             if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
                 return
         else:
@@ -234,7 +234,7 @@ def meaning(phrase: str) -> None:
     keyword = phrase.split()[-1] if phrase else None
     if not keyword or keyword == 'word':
         speaker.speak(text="Please tell a keyword.", run=True)
-        response = listener.listen(timeout=3, phrase_limit=3)
+        response = listener.listen()
         if not response or word_match(phrase=response, match_list=keywords.exit_):
             return
         meaning(phrase=response)
@@ -251,7 +251,7 @@ def meaning(phrase: str) -> None:
             if shared.called_by_offline:
                 return
             speaker.speak(text=f'Do you wanna know how {keyword} is spelled?', run=True)
-            response = listener.listen(timeout=3, phrase_limit=3)
+            response = listener.listen()
             if word_match(phrase=response, match_list=keywords.ok):
                 for letter in list(keyword.lower()):
                     speaker.speak(text=letter)
@@ -262,7 +262,7 @@ def meaning(phrase: str) -> None:
 
 def notes() -> None:
     """Listens to the user and saves it as a text file."""
-    if (converted := listener.listen(timeout=5, phrase_limit=10)) or 'exit' in converted or 'quit' in converted or \
+    if (converted := listener.listen()) or 'exit' in converted or 'quit' in converted or \
             'Xzibit' in converted:
         return
     with open(models.fileio.notes, 'a') as writer:
@@ -340,7 +340,7 @@ def time_travel() -> None:
     todo()
     read_gmail()
     speaker.speak(text='Would you like to hear the latest news?', run=True)
-    phrase = listener.listen(timeout=3, phrase_limit=3)
+    phrase = listener.listen()
     if word_match(phrase=phrase.lower(), match_list=keywords.ok):
         news()
 

@@ -104,7 +104,7 @@ def set_alarm(phrase: str) -> None:
         if shared.called_by_offline:
             return
         speaker.speak(run=True)
-        if converted := listener.listen(timeout=3, phrase_limit=4):
+        if converted := listener.listen():
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 return
             else:
@@ -128,7 +128,7 @@ def kill_alarm(phrase: str) -> None:
     else:
         speaker.speak(text=f"Your {word}s are at {', and '.join(alarm_state).replace('.lock', '')}. "
                            f"Please let me know which {word} you want to remove.", run=True)
-        if not (converted := listener.listen(timeout=3, phrase_limit=4)):
+        if not (converted := listener.listen()):
             return
         alarm_time = converted.split()[0]
         am_pm = converted.split()[-1]

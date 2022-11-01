@@ -7,6 +7,7 @@ import os
 import pathlib
 import string
 import time
+import traceback
 from datetime import datetime
 from http import HTTPStatus
 from logging.config import dictConfig
@@ -278,6 +279,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
                     and_response += f"{offline_communicator(command=each)}\n"
                 except Exception as error:
                     logger.error(error)
+                    logger.error(traceback.format_exc())
                     and_response += error.__str__()
         logger.info(f"Response: {and_response}")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=and_response)
@@ -293,6 +295,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
                     also_response = f"{offline_communicator(command=each)}\n"
                 except Exception as error:
                     logger.error(error)
+                    logger.error(traceback.format_exc())
                     also_response += error.__str__()
         logger.info(f"Response: {also_response}")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=also_response)
@@ -311,6 +314,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         response = offline_communicator(command=command)
     except Exception as error:
         logger.error(error)
+        logger.error(traceback.format_exc())
         response = error.__str__()
     logger.info(f"Response: {response}")
     if os.path.isfile(response) and response.endswith('.jpg'):
@@ -487,7 +491,7 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
                                               models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
-    @app.get(path="/investment", response_class=HTMLResponse, include_in_schema=False)
+    @app.get(path="/investment", response_class=HTMLResponse, include_in_schema=True)
     async def robinhood_path(request: Request, token: str = None) -> HTMLResponse:
         """Serves static file.
 
@@ -505,10 +509,10 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
             - 417: If token doesn't match the auto-generated value.
 
         See Also:
-            - This endpoint is secured behind single use token.
+            - This endpoint is secured behind single use token sent via email as MFA (Multi-Factor Authentication)
             - Initial check is done by the function authenticate_robinhood behind the path "/robinhood-authenticate"
-            - Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in the ``Robinhood`` object.
-            - This UUID is sent as response to the API endpoint behind ngrok connection (if tunnelled).
+            - Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the ``Robinhood`` object.
+            - This UUID is sent via email to the env var ``RECIPIENT``, which should be entered as query string.
             - The UUID is deleted from the object as soon as the argument is checked for the first time.
             - Page refresh is useless because the value in memory is cleared as soon as it is authed once.
         """
@@ -596,11 +600,10 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
             - 417: If token doesn't match the auto-generated value.
 
         See Also:
-            This endpoint is secured behind single use token.
-
+            - This endpoint is secured behind single use token sent via email as MFA (Multi-Factor Authentication)
             - Initial check is done by ``authenticate_surveillance`` behind the path "/surveillance-authenticate"
-            - Once the auth succeeds, a one-time usable hashed-uuid is generated and stored in ``Surveillance`` object.
-            - This UUID is sent as response to the API endpoint behind ngrok connection (if tunnelled).
+            - Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the ``Surveillance`` object.
+            - This UUID is sent via email to the env var ``RECIPIENT``, which should be entered as query string.
             - The UUID is deleted from the object as soon as the argument is checked for the last time.
             - Page refresh is useless because the value in memory is cleared as soon as the video is rendered.
         """

@@ -12,7 +12,7 @@ from modules.utils import shared
 def wikipedia_() -> None:
     """Gets any information from wikipedia using its API."""
     speaker.speak(text="Please tell the keyword.", run=True)
-    if keyword := listener.listen(timeout=3, phrase_limit=5):
+    if keyword := listener.listen():
         if word_match(phrase=keyword, match_list=keywords.exit_):
             return
         else:
@@ -26,7 +26,7 @@ def wikipedia_() -> None:
                 if shared.called_by_offline:
                     return
                 speaker.speak(run=True)
-                if not (keyword1 := listener.listen(timeout=3, phrase_limit=5)):
+                if not (keyword1 := listener.listen()):
                     return
                 result = wikipedia.summary(keyword1)
             except wikipedia.PageError:
@@ -35,6 +35,6 @@ def wikipedia_() -> None:
             # stops with two sentences before reading whole passage
             formatted = ". ".join(result.split(". ")[0:2]) + "."
             speaker.speak(text=f"{formatted}. Do you want me to continue {models.env.title}?", run=True)
-            if response := listener.listen(timeout=3, phrase_limit=3):
+            if response := listener.listen():
                 if word_match(phrase=response, match_list=keywords.ok):
                     speaker.speak(text=". ".join(result.split(". ")[3:]))

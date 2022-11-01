@@ -1,5 +1,6 @@
 import struct
 import sys
+import traceback
 from datetime import datetime
 from typing import NoReturn
 
@@ -114,6 +115,7 @@ class Activator:
                 initiator(phrase=phrase, should_return=True)
             except Exception as error:
                 logger.fatal(error)
+                logger.error(traceback.format_exc())
                 speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an unknown error. "
                                    "Please check the logs for more information.")
             speaker.speak(run=True)

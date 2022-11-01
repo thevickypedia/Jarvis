@@ -150,7 +150,7 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
     except (PyiCloudAPIResponseException, PyiCloudFailedLoginException) as error:
         if device:
             caller = sys._getframe(1).f_code.co_name  # noqa
-            logger.error(f"Unable to retrieve location when called by {caller}::{error}")
+            logger.error(f"Unable to retrieve location when called by {caller!r}::{error}")
         coordinates = get_coordinates_from_ip()
     except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout) as error:
         logger.error(error)
@@ -255,7 +255,7 @@ def locate(phrase: str) -> None:
     else:
         speaker.speak(text=f"Your {before_keyword} should be ringing now {models.env.title}!")
     speaker.speak(text="Would you like to get the location details?", run=True)
-    if not (phrase_location := listener.listen(timeout=3, phrase_limit=3)):
+    if not (phrase_location := listener.listen()):
         return
     elif word_match(phrase=phrase_location, match_list=keywords.ok):
         return
@@ -263,7 +263,7 @@ def locate(phrase: str) -> None:
     locate_device(target_device=target_device)
     if models.env.icloud_recovery:
         speaker.speak(text="I can also enable lost mode. Would you like to do it?", run=True)
-        phrase_lost = listener.listen(timeout=3, phrase_limit=3)
+        phrase_lost = listener.listen()
         if word_match(phrase=phrase_lost, match_list=keywords.ok):
             target_device.lost_device(number=models.env.icloud_recovery, text="Return my phone immediately.")
             speaker.speak(text="I've enabled lost mode on your phone.")
@@ -319,7 +319,7 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         if shared.called_by_offline:
             return
         speaker.speak(run=True)
-        if destination := listener.listen(timeout=3, phrase_limit=4):
+        if destination := listener.listen():
             if len(destination.split()) > 2:
                 speaker.speak(text=f"I asked for a destination {models.env.title}, not a sentence. Try again.")
                 distance_controller()
@@ -395,7 +395,7 @@ def locate_places(phrase: str = None) -> None:
             speaker.speak(text=f"I need a location to get you the details {models.env.title}!")
             return
         speaker.speak(text="Tell me the name of a place!", run=True)
-        if not (converted := listener.listen(timeout=3, phrase_limit=4)) or "exit" in converted or "quit" in converted \
+        if not (converted := listener.listen()) or "exit" in converted or "quit" in converted \
                 or "Xzibit" in converted:
             return
         place = support.get_capitalized(phrase=converted)
@@ -457,7 +457,7 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     place = place.replace("I ", "").strip() if place else None
     if not place:
         speaker.speak(text="You might want to give a location.", run=True)
-        if converted := listener.listen(timeout=3, phrase_limit=4):
+        if converted := listener.listen():
             place = support.get_capitalized(phrase=converted)
             place = place.replace("I ", "").strip()
             if not place:
