@@ -99,6 +99,13 @@ API Settings
    :members:
    :undoc-members:
 
+API Timeout OTPs
+================
+
+.. automodule:: api.timeout_otp
+   :members:
+   :undoc-members:
+
 API Robinhood
 =============
 
@@ -633,13 +640,13 @@ Temperature
 Templates
 =========
 
-.. autoclass:: modules.templates.templates.RobinhoodTemplate
+.. autoclass:: modules.templates.templates.EmailTemplates
    :members:
    :exclude-members: source, _source
 
 ====
 
-.. autoclass:: modules.templates.templates.ThreatNotificationTemplates
+.. autoclass:: modules.templates.templates.OriginTemplates
    :members:
    :exclude-members: source, _source
 

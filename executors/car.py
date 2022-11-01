@@ -84,6 +84,7 @@ def car(phrase: str) -> None:
                     logger.error(error)
                     target_temp = 69
         extras += f"I've configured the climate setting to {target_temp}\N{DEGREE SIGN}F"
+        # if car_name := vehicle(operation="START-LOCK", temp=target_temp - 26):  # Takes time but locks before starting
         if car_name := vehicle(operation="START", temp=target_temp - 26):
             speaker.speak(text=f"Your {car_name} has been started {models.env.title}. {extras}")
         else:
@@ -160,15 +161,16 @@ def vehicle(operation: str, temp: int = None) -> Union[str, dict, None]:
             response = control.lock(pin=models.env.car_pin)
         elif operation == "UNLOCK":
             response = control.unlock(pin=models.env.car_pin)
-        elif operation == "START":
-            lock_status = {each_dict['key']: each_dict['value'] for each_dict in
-                           [key for key in control.get_status().get('vehicleStatus').get('coreStatus')
-                            if key.get('key') in ["DOOR_IS_ALL_DOORS_LOCKED", "DOOR_BOOT_LOCK_STATUS"]]}
-            if lock_status.get('DOOR_IS_ALL_DOORS_LOCKED', 'FALSE') != 'TRUE' or \
-                    lock_status.get('DOOR_BOOT_LOCK_STATUS', 'UNLOCKED') != 'LOCKED':
-                logger.warning("Car is unlocked when tried to remote start!")
-                if lock_response := control.lock(pin=models.env.car_pin).get("failureDescription"):
-                    logger.error(lock_response)
+        elif operation == "START" or operation == "START-LOCK":
+            if operation == "START-LOCK":
+                lock_status = {each_dict['key']: each_dict['value'] for each_dict in
+                               [key for key in control.get_status().get('vehicleStatus').get('coreStatus')
+                                if key.get('key') in ["DOOR_IS_ALL_DOORS_LOCKED", "DOOR_BOOT_LOCK_STATUS"]]}
+                if lock_status.get('DOOR_IS_ALL_DOORS_LOCKED', 'FALSE') != 'TRUE' or \
+                        lock_status.get('DOOR_BOOT_LOCK_STATUS', 'UNLOCKED') != 'LOCKED':
+                    logger.warning("Car is unlocked when tried to remote start!")
+                    if lock_response := control.lock(pin=models.env.car_pin).get("failureDescription"):
+                        logger.error(lock_response)
             response = control.remote_engine_start(pin=models.env.car_pin, target_temperature=temp)
         elif operation == "STOP":
             response = control.remote_engine_stop(pin=models.env.car_pin)

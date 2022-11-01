@@ -107,11 +107,13 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **SENSITIVITY** - Hot word detection sensitivity. Range: 0-1
 - **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']` (Defaults to `['alexa']` in legacy macOS)
+
+:warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.
+
 - **LIMITED** - Runs only the main version of `Jarvis` skipping all other background processes. Enforced based on the
 number of CPU cores. It can also be enabled with env-var.
 - **CAMERA_INDEX** - Camera index that has to be used. Run [camera.py](https://github.com/thevickypedia/Jarvis/tree/master/modules/camera/camera.py) to get the index value of each camera.
-
-:warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.
+- **DEBUG** - Boolean flag to enable debug level for logging.
 
 **[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py)**
 - **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`

@@ -182,11 +182,10 @@ class StockMonitor:
             self.logger.info("Database is empty!")
             return
         subject = f"Stock Price Alert - {datetime.now().strftime('%c')}"
-        email_template = templates.StockMonitor.source
+        email_template = templates.EmailTemplates.stock_alert
         prices = self.get_prices()
         for k, v in self.email_grouped.items():
-            mail_obj = SendEmail(gmail_user=models.env.alt_gmail_user or models.env.gmail_user,
-                                 gmail_pass=models.env.alt_gmail_pass or models.env.gmail_pass)
+            mail_obj = SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
             datastore = {'text_gathered': [], 'removals': [], 'attachments': []}  # unique datastore for each user
             for trigger in v:
                 ticker = trigger[0]

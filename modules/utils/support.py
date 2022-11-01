@@ -565,7 +565,7 @@ def token() -> Hashable:
     return hashed(key=uuid.uuid4())
 
 
-def keygen(length: int, punctuation: bool = False) -> str:
+def keygen_str(length: int, punctuation: bool = False) -> str:
     """Generates random key.
 
     Args:
@@ -574,10 +574,23 @@ def keygen(length: int, punctuation: bool = False) -> str:
 
     Returns:
         str:
-        10 digit random key as a string.
+        Random key of specified length.
     """
     if punctuation:
         required_str = string.ascii_letters + string.digits + string.punctuation
     else:
         required_str = string.ascii_letters + string.digits
     return "".join(random.choices(required_str, k=length))
+
+
+def keygen_uuid(length: int = 32) -> str:
+    """Generates random key from hex-d UUID.
+
+    Args:
+        length: Length of the required key.
+
+    Returns:
+        str:
+        Random key of specified length.
+    """
+    return uuid.uuid4().hex.upper()[0:length]

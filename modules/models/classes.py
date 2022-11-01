@@ -110,6 +110,9 @@ class EnvConfig(BaseSettings):
     root_user: str = Field(default=getpass.getuser(), env='USER')
     root_password: str = Field(default=None, env='ROOT_PASSWORD')
 
+    # Log config
+    debug: bool = Field(default=False, env='DEBUG')
+
     # User add-ons
     birthday: str = Field(default=None, env='BIRTHDAY')
     title: str = Field(default='sir', env='TITLE')

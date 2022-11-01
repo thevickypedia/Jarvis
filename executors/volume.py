@@ -20,7 +20,9 @@ def volume(phrase: str = None, level: int = None) -> None:
         level: Level of volume to which the system has to set.
     """
     if not level and phrase:
-        if 'mute' in phrase.lower():
+        if 'unmute' in phrase.lower():
+            level = models.env.volume
+        elif 'mute' in phrase.lower():
             level = 0
         elif 'max' in phrase.lower() or 'full' in phrase.lower():
             level = 100

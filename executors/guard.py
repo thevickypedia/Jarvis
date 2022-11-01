@@ -146,20 +146,20 @@ def threat_notify(converted: str, face_detected: Union[str, None]) -> NoReturn:
         converted: Takes the voice recognized statement as argument.
         face_detected: Name of the attachment file which is the picture of the intruder.
     """
-    recipient = models.env.recipient or models.env.alt_gmail_user or models.env.gmail_user
+    recipient = models.env.recipient or models.env.alt_gmail_user
     if converted and face_detected:
         communicator.notify(user=models.env.gmail_user, password=models.env.gmail_pass, number=models.env.phone_number,
                             subject="!!INTRUDER ALERT!!",
                             body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\nINTRUDER SPOKE: {converted}\n\n"
                                  f"Intruder picture has been sent to {recipient}")
-        template = templates.ThreatNotificationTemplates.threat_audio
+        template = templates.EmailTemplates.threat_audio
         rendered = jinja2.Template(template).render(CONVERTED=converted)
     elif face_detected:
         communicator.notify(user=models.env.gmail_user, password=models.env.gmail_pass, number=models.env.phone_number,
                             subject="!!INTRUDER ALERT!!",
                             body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\n"
                                  "Check your email for more information.")
-        template = templates.ThreatNotificationTemplates.threat_no_audio
+        template = templates.EmailTemplates.threat_no_audio
         rendered = jinja2.Template(template).render()
     else:
         logger.warning("Un-processable arguments received.")

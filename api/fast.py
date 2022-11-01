@@ -21,6 +21,7 @@ from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import (FileResponse, HTMLResponse, RedirectResponse,
                                StreamingResponse)
+from gmailconnector.send_email import SendEmail
 from gmailconnector.validator import validate_email
 from webull import webull
 
@@ -32,6 +33,7 @@ from api.models import (CameraIndexModal, OfflineCommunicatorModal,
 from api.report_gatherer import Investment
 from api.settings import (ConnectionManager, robinhood, stock_monitor,
                           surveillance)
+from api.timeout_otp import reset_robinhood, reset_surveillance
 from executors.commander import timed_delay
 from executors.offline import offline_communicator
 from executors.word_match import word_match
@@ -214,6 +216,7 @@ async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: b
         else:
             return
     if os.path.isfile(path=models.fileio.speech_synthesis_wav):
+        logger.debug(f'Speech synthesis file generated for {text!r}')
         Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': models.fileio.speech_synthesis_wav}).start()
         return FileResponse(path=models.fileio.speech_synthesis_wav, media_type='application/octet-stream',
                             filename="synthesized.wav", status_code=HTTPStatus.OK.real)
@@ -350,7 +353,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
 
     input_data.request = input_data.request.upper()
     if input_data.request not in ("GET", "PUT", "DELETE"):
-        logger.info(f'{input_data.request!r} is not in the allowed request list.')
+        logger.warning(f'{input_data.request!r} is not in the allowed request list.')
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=HTTPStatus.UNPROCESSABLE_ENTITY.__dict__['phrase'])
 
@@ -457,12 +460,29 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
         See Also:
             If basic auth (stored as an env var ``robinhood_endpoint_auth``) succeeds:
 
-            - Returns ``?token=HASHED_UUID`` to access ``/investment`` via ``/investment?token=HASHED_UUID``
+            - Sends a token for MFA via email.
             - Also stores the token in the ``Robinhood`` object which is verified in the ``/investment`` endpoint.
             - The token is nullified in the object as soon as it is verified, making it single use.
         """
-        robinhood.token = support.token()
-        raise APIResponse(status_code=HTTPStatus.OK.real, detail=f"?token={robinhood.token}")
+        mail_obj = SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+        auth_stat = mail_obj.authenticate
+        if not auth_stat.ok:
+            raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
+        robinhood.token = support.keygen_uuid(length=16)
+        rendered = jinja2.Template(templates.EmailTemplates.one_time_passcode).render(ENDPOINT='robinhood',
+                                                                                      TOKEN=robinhood.token,
+                                                                                      EMAIL=models.env.recipient)
+        mail_stat = mail_obj.send_email(recipient=models.env.recipient, sender='Jarvis API',
+                                        subject=f"Robinhood Token - {datetime.now().strftime('%c')}",
+                                        html_body=rendered)
+        if mail_stat.ok:
+            Thread(target=reset_robinhood, args=(300,)).start()
+            raise APIResponse(status_code=HTTPStatus.OK.real,
+                              detail="Authentication success. Please enter the OTP sent via email:")
+        else:
+            logger.error(mail_stat.json())
+            raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=mail_stat.body)
+
 
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
@@ -525,7 +545,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         See Also:
             If basic auth (stored as an env var ``SURVEILLANCE_ENDPOINT_AUTH``) succeeds:
 
-            - Returns ``?token=HASHED_UUID`` to access ``/surveillance`` via ``/surveillance?token=HASHED_UUID``
+            - Sends a token for MFA via email.
             - Also stores the token in the ``Surveillance`` object which is verified in the ``/surveillance`` endpoint.
             - The token is nullified in the object as soon as it is verified, making it single use.
         """
@@ -533,9 +553,29 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         try:
             squire.test_camera()
         except CameraError as error:
+            logger.error(error)
             raise APIResponse(status_code=HTTPStatus.NOT_ACCEPTABLE.real, detail=str(error))
-        surveillance.token = support.token()
-        raise APIResponse(status_code=HTTPStatus.OK.real, detail=f"?token={surveillance.token}")
+
+        mail_obj = SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+        auth_stat = mail_obj.authenticate
+        if not auth_stat.ok:
+            logger.error(auth_stat.json())
+            raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
+        surveillance.token = support.keygen_uuid(length=16)
+        rendered = jinja2.Template(templates.EmailTemplates.one_time_passcode).render(ENDPOINT='surveillance',
+                                                                                      TOKEN=surveillance.token,
+                                                                                      EMAIL=models.env.recipient)
+        mail_stat = mail_obj.send_email(recipient=models.env.recipient, sender='Jarvis API',
+                                        subject=f"Surveillance Token - {datetime.now().strftime('%c')}",
+                                        html_body=rendered)
+        if mail_stat.ok:
+            logger.debug(mail_stat.body)
+            Thread(target=reset_surveillance, args=(300,)).start()
+            raise APIResponse(status_code=HTTPStatus.OK.real,
+                              detail="Authentication success. Please enter the OTP sent via email:")
+        else:
+            logger.error(mail_stat.json())
+            raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=mail_stat.body)
 
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
@@ -569,7 +609,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
                               detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
         if token == surveillance.token:
             surveillance.client_id = int(''.join(str(time.time()).split('.')))  # include milliseconds to avoid dupes
-            rendered = jinja2.Template(templates.Surveillance.source).render(CLIENT_ID=surveillance.client_id)
+            rendered = jinja2.Template(templates.OriginTemplates.surveillance).render(CLIENT_ID=surveillance.client_id)
             content_type, _ = mimetypes.guess_type(rendered)
             return HTMLResponse(status_code=HTTPStatus.TEMPORARY_REDIRECT.real,
                                 content=rendered, media_type=content_type)

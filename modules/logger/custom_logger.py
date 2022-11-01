@@ -72,7 +72,11 @@ if not models.settings.macos:
 
 logger = logging.getLogger('jarvis')
 logger.addHandler(hdlr=custom_handler())
-logger.setLevel(level=logging.INFO)
+
+if models.env.debug:
+    logger.setLevel(level=logging.DEBUG)
+else:
+    logger.setLevel(level=logging.INFO)
 
 
 class TestLogger:

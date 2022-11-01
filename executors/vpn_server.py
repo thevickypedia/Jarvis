@@ -55,9 +55,8 @@ def vpn_server_switch(operation: str) -> None:
     """
     vpn_object = VPNServer(vpn_username=models.env.vpn_username or models.env.root_user or 'openvpn',
                            vpn_password=models.env.vpn_password or models.env.root_pass or 'aws_vpn_2021',
-                           gmail_user=models.env.alt_gmail_user or models.env.gmail_user,
-                           gmail_pass=models.env.alt_gmail_pass or models.env.gmail_pass,
-                           recipient=models.env.recipient or models.env.alt_gmail_user,
+                           gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass,
+                           recipient=models.env.recipient or models.env.gmail_user,
                            phone=models.env.phone_number, log='FILE')
     with db.connection:
         cursor = db.connection.cursor()

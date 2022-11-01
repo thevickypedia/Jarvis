@@ -27,6 +27,9 @@ if not os.path.isdir('fileio'):
     os.makedirs(name='fileio')
 
 env.website = env.website.lstrip(f"{env.website.scheme}://")
+if not all((env.alt_gmail_user, env.alt_gmail_pass)):
+    env.alt_gmail_user = env.gmail_user
+    env.alt_gmail_pass = env.gmail_pass
 
 if settings.legacy:
     pvporcupine.KEYWORD_PATHS = {}

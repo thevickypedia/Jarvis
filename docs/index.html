@@ -174,7 +174,7 @@
 <p class="admonition-title">See also</p>
 <p>If basic auth (stored as an env var <code class="docutils literal notranslate"><span class="pre">robinhood_endpoint_auth</span></code>) succeeds:</p>
 <ul class="simple">
-<li><p>Returns <code class="docutils literal notranslate"><span class="pre">?token=HASHED_UUID</span></code> to access <code class="docutils literal notranslate"><span class="pre">/investment</span></code> via <code class="docutils literal notranslate"><span class="pre">/investment?token=HASHED_UUID</span></code></p></li>
+<li><p>Sends a token for MFA via email.</p></li>
 <li><p>Also stores the token in the <code class="docutils literal notranslate"><span class="pre">Robinhood</span></code> object which is verified in the <code class="docutils literal notranslate"><span class="pre">/investment</span></code> endpoint.</p></li>
 <li><p>The token is nullified in the object as soon as it is verified, making it single use.</p></li>
 </ul>
@@ -197,7 +197,7 @@
 <p class="admonition-title">See also</p>
 <p>If basic auth (stored as an env var <code class="docutils literal notranslate"><span class="pre">SURVEILLANCE_ENDPOINT_AUTH</span></code>) succeeds:</p>
 <ul class="simple">
-<li><p>Returns <code class="docutils literal notranslate"><span class="pre">?token=HASHED_UUID</span></code> to access <code class="docutils literal notranslate"><span class="pre">/surveillance</span></code> via <code class="docutils literal notranslate"><span class="pre">/surveillance?token=HASHED_UUID</span></code></p></li>
+<li><p>Sends a token for MFA via email.</p></li>
 <li><p>Also stores the token in the <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object which is verified in the <code class="docutils literal notranslate"><span class="pre">/surveillance</span></code> endpoint.</p></li>
 <li><p>The token is nullified in the object as soon as it is verified, making it single use.</p></li>
 </ul>
@@ -857,6 +857,31 @@
 </div>
 <p class="rubric">References</p>
 <p><a class="reference external" href="https://fastapi.tiangolo.com/advanced/websockets/#handling-disconnections-and-multiple-clients">https://fastapi.tiangolo.com/advanced/websockets/#handling-disconnections-and-multiple-clients</a></p>
+</section>
+<section id="module-api.timeout_otp">
+<span id="api-timeout-otps"></span><h1>API Timeout OTPs<a class="headerlink" href="#module-api.timeout_otp" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.timeout_otp.reset_robinhood">
+<span class="sig-prename descclassname"><span class="pre">api.timeout_otp.</span></span><span class="sig-name descname"><span class="pre">reset_robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.timeout_otp.reset_robinhood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets robinhood token after the set time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>after</strong> – Number of seconds after which the token has to be invalidated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.timeout_otp.reset_surveillance">
+<span class="sig-prename descclassname"><span class="pre">api.timeout_otp.</span></span><span class="sig-name descname"><span class="pre">reset_surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.timeout_otp.reset_surveillance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets surveillance token after the set time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>after</strong> – Number of seconds after which the token has to be invalidated.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-api.report_gatherer">
 <span id="api-robinhood"></span><h1>API Robinhood<a class="headerlink" href="#module-api.report_gatherer" title="Permalink to this heading">¶</a></h1>
@@ -4296,6 +4321,11 @@ Pass 155 for LO and 285 for HI.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.debug">
+<span class="sig-name descname"><span class="pre">debug</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.debug" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.event_app">
 <span class="sig-name descname"><span class="pre">event_app</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#modules.models.classes.EventApp" title="modules.models.classes.EventApp"><span class="pre">EventApp</span></a></em><a class="headerlink" href="#modules.models.classes.EnvConfig.event_app" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -5772,8 +5802,8 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="modules.utils.support.keygen">
-<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">keygen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">punctuation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.support.keygen" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.utils.support.keygen_str">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">keygen_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">punctuation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.support.keygen_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates random key.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5783,7 +5813,24 @@ Whites can have a value of None.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>10 digit random key as a string.</p>
+<dd class="field-even"><p>Random key of specified length.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.keygen_uuid">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">keygen_uuid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.support.keygen_uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates random key from hex-d UUID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>length</strong> – Length of the required key.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Random key of specified length.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
@@ -6409,20 +6456,20 @@ Whites can have a value of None.</p>
 <section id="templates">
 <h1>Templates<a class="headerlink" href="#templates" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="modules.templates.templates.RobinhoodTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">RobinhoodTemplate</span></span><a class="headerlink" href="#modules.templates.templates.RobinhoodTemplate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">RobinhoodTemplate</span></code> object to load the robinhood report template.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">RobinhoodTemplate</span>
+<dt class="sig sig-object py" id="modules.templates.templates.EmailTemplates">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">EmailTemplates</span></span><a class="headerlink" href="#modules.templates.templates.EmailTemplates" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTML templates used to send outbound email.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">EmailTemplates</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <hr class="docutils" />
 <dl class="py class">
-<dt class="sig sig-object py" id="modules.templates.templates.ThreatNotificationTemplates">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">ThreatNotificationTemplates</span></span><a class="headerlink" href="#modules.templates.templates.ThreatNotificationTemplates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">ThreatNotificationTemplates</span></code> object to load the threat email templates.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ThreatNotificationTemplates</span>
+<dt class="sig sig-object py" id="modules.templates.templates.OriginTemplates">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">OriginTemplates</span></span><a class="headerlink" href="#modules.templates.templates.OriginTemplates" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTML templates used for hosting endpoints.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">OriginTemplates</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -7063,6 +7110,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-api.server">API Server</a></li>
 <li><a class="reference internal" href="#api-models">API Models</a></li>
 <li><a class="reference internal" href="#api-settings">API Settings</a></li>
+<li><a class="reference internal" href="#module-api.timeout_otp">API Timeout OTPs</a></li>
 <li><a class="reference internal" href="#module-api.report_gatherer">API Robinhood</a></li>
 <li><a class="reference internal" href="#module-api.stock_monitor">API StockMonitor</a></li>
 <li><a class="reference internal" href="#api-scheduler">API Scheduler</a></li>
