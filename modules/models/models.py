@@ -8,6 +8,7 @@
 import os
 import platform
 from multiprocessing import current_process
+from typing import Union
 
 import cv2
 import pvporcupine
@@ -18,8 +19,20 @@ from modules.camera.camera import Camera
 from modules.crontab.expression import CronExpression
 from modules.database import database
 from modules.exceptions import CameraError, InvalidEnvVars
-from modules.models.classes import (Indicators, RecognizerSettings, env,
-                                    fileio, settings)
+from modules.models.classes import (Indicators, RecognizerSettings,
+                                    audio_driver, env, fileio, settings)
+
+voices: Union[list, object] = audio_driver.getProperty("voices")
+_voice_names = [__voice.name for __voice in voices]
+if not env.voice_name:
+    if settings.macos:
+        env.voice_name = "Daniel"
+    else:
+        env.voice_name = "David"
+elif env.voice_name not in _voice_names:
+    raise InvalidEnvVars(
+        f"{env.voice_name!r} is not available.\nAvailable voices are: {', '.join(_voice_names)}"
+    )
 
 indicators = Indicators()
 

@@ -16,12 +16,15 @@ from enum import Enum
 from typing import List, Union
 
 import psutil
+import pyttsx3
 from packaging.version import parse as parser
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       FilePath, HttpUrl, PositiveFloat, PositiveInt, constr,
                       validator)
 
 from modules.exceptions import InvalidEnvVars, UnsupportedOS
+
+audio_driver = pyttsx3.init()
 
 
 class Settings(BaseSettings):
@@ -123,6 +126,10 @@ class EnvConfig(BaseSettings):
     limited: bool = Field(default=False, env='LIMITED')
     root_user: str = Field(default=getpass.getuser(), env='USER')
     root_password: str = Field(default=None, env='ROOT_PASSWORD')
+
+    # Built-in speaker config
+    voice_name: str = Field(default=None, env="VOICE_NAME")
+    voice_rate: Union[PositiveInt, PositiveFloat] = Field(default=audio_driver.getProperty("rate"), env="VOICE_RATE")
 
     # Log config
     debug: bool = Field(default=False, env='DEBUG')

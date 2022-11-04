@@ -1,15 +1,40 @@
 import os
 import random
+from threading import Thread
+from typing import NoReturn
 
 from modules.audio import speaker
 from modules.conditions import conversation
 from modules.logger.custom_logger import logger
 from modules.models import models
-from modules.utils import support
+from modules.utils import shared, support
 from modules.windows import win_volume
 
 
-def volume(phrase: str = None, level: int = None) -> None:
+def main_volume(level: int) -> NoReturn:
+    """Changes system volume.
+
+    Args:
+        level: Takes the volume level as an argument.
+    """
+    logger.info(f"Set system volume to {level!r}")
+    if models.settings.macos:
+        os.system(f'osascript -e "set Volume {round((8 * level) / 100)}"')
+    else:
+        win_volume.set_volume(level=level)
+
+
+def speaker_volume(level: int) -> NoReturn:
+    """Changes volume just for Jarvis' speech without disturbing the system volume.
+
+    Args:
+        level: Takes the volume level as an argument.
+    """
+    logger.info(f"Set jarvis' volume to {level!r}")
+    models.audio_driver.setProperty('volume', level / 100)
+
+
+def volume(phrase: str = None, level: int = None) -> NoReturn:
     """Controls volume from the numbers received. Defaults to 50%.
 
     See Also:
@@ -30,10 +55,15 @@ def volume(phrase: str = None, level: int = None) -> None:
             level = support.extract_nos(input_=phrase, method=int)
             if level is None:
                 level = models.env.volume
-    logger.info(f"Set volume to {level}")
-    if models.settings.macos:
-        os.system(f'osascript -e "set Volume {round((8 * level) / 100)}"')
+    if not phrase:
+        phrase = ''
+    if 'master' in phrase or 'main' in phrase:
+        Thread(target=main_volume, args=(level,)).start()
+        speaker_volume(level=level)
     else:
-        win_volume.set_volume(level=level)
+        if shared.called_by_offline or 'system' in phrase:
+            main_volume(level=level)
+        else:
+            speaker_volume(level=level)
     if phrase:
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}!")

@@ -11,7 +11,6 @@ from datetime import datetime
 from threading import Thread
 from typing import NoReturn, Union
 
-import pyttsx3
 import requests
 import yaml
 from playsound import playsound
@@ -20,8 +19,6 @@ from modules.conditions import conversation, keywords
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import shared
-
-audio_driver = pyttsx3.init()
 
 KEYWORDS = [__keyword for __keyword in dir(keywords) if not __keyword.startswith('__')]
 CONVERSATION = [__conversation for __conversation in dir(conversation) if not __conversation.startswith('__')]
@@ -96,9 +93,9 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
             playsound(sound=models.fileio.speech_synthesis_wav, block=block)
             os.remove(models.fileio.speech_synthesis_wav)
         else:
-            audio_driver.say(text=text)
+            models.audio_driver.say(text=text)
     if run:
-        audio_driver.runAndWait()
+        models.audio_driver.runAndWait()
     Thread(target=frequently_used, kwargs={"function_name": caller}).start() if caller in FUNCTIONS_TO_TRACK else None
 
 

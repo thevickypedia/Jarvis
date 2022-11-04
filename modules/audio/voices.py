@@ -8,7 +8,6 @@
 import random
 import sys
 from multiprocessing import current_process
-from typing import Union
 
 from pyttsx3.engine import Engine
 
@@ -21,14 +20,14 @@ from modules.models import models
 
 def voice_default() -> Engine:
     """Sets voice module to default."""
-    voice_model = "Daniel" if models.settings.macos else "David"
-    for voice in speaker.audio_driver.getProperty("voices"):
-        if voice.name == voice_model or voice_model in voice.name:
+    for voice in models.voices:
+        if voice.name == models.env.voice_name or models.env.voice_name in voice.name:
             if current_process().name == 'MainProcess':
                 logger.debug(voice.__dict__)
-            speaker.audio_driver.setProperty("voice", voice.id)
+            models.audio_driver.setProperty("voice", voice.id)
+            models.audio_driver.setProperty("rate", models.env.voice_rate)
             break
-    return speaker.audio_driver
+    return models.audio_driver
 
 
 def voice_changer(phrase: str = None) -> None:
@@ -41,14 +40,12 @@ def voice_changer(phrase: str = None) -> None:
         voice_default()
         return
 
-    voices: Union[list, object] = speaker.audio_driver.getProperty("voices")  # gets the list of voices available
-
     choices_to_say = ["My voice module has been reconfigured. Would you like me to retain this?",
                       "Here's an example of one of my other voices. Would you like me to use this one?",
                       "How about this one?"]
 
-    for ind, voice in enumerate(voices):
-        speaker.audio_driver.setProperty("voice", voices[ind].id)
+    for ind, voice in enumerate(models.voices):
+        models.audio_driver.setProperty("voice", models.voices[ind].id)
         speaker.speak(text=f"I am {voice.name} {models.env.title}!")
         sys.stdout.write(f"\rVoice module has been re-configured to {ind}::{voice.name}")
         if ind < len(choices_to_say):

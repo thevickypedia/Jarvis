@@ -71,7 +71,7 @@
 IronMan's Jarvis with python
 
 ### Prep
-   - **MacOS** <br> _Tested on **macOS High Sierra, Mojave, Catalina, Big Sur, and Monterey**_
+   - **MacOS** <br> _Tested on **macOS High Sierra, Mojave, Catalina, Big Sur, Monterey and Ventura***_
      - `System Preferences` → `Security & Privacy` → `Privacy`
      - Click `+` sign and add the preferred `IDE` and `Terminal` in the following sections in left pane.
        - `Microphone` - **Required** to listen and respond.
@@ -79,6 +79,9 @@ IronMan's Jarvis with python
        - `Camera` - **[Optional]** Required only during face recognition/detection.
        - `Automation` - **Required** to control `System Events` and other apps like Outlook and Calendar.
        - `Files and Folders` **[OR]** `Full Disk Access` - **Required** for all `FileIO` operations.
+   <br>
+   :warning: Known Issue with <a href=https://pypi.org/project/pyttsx3/>pyttsx3 module</a> on <a href=https://www.apple.com/macos/ventura/> macOS Ventura 13.0</a>: This version of macOS does not hold the attribute VoiceAge. <a href=https://github.com/nateshmbhat/pyttsx3/pull/247>Workaround has been raised as a PR</a><br><br>
+
    - **Windows** <br> _Tested on **Windows 10**_
      - `Settings` → `Privacy`
        - `Microphone` - **Required** to listen and respond.
@@ -107,9 +110,20 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **SENSITIVITY** - Hot word detection sensitivity. Range: 0-1
 - **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']` (Defaults to `['alexa']` in legacy macOS)
-- **RECOGNIZER_SETTINGS** - A JSON object that has with customized speech recognition settings.
 
 :warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.
+
+- **RECOGNIZER_SETTINGS** - A JSON object that has with customized speech recognition settings.
+- **VOICE_NAME** - Name of the voice supported by the OperatingSystem. Defaults to the author's favorite.
+- **VOICE_RATE** - Speed/rate at which the text should be spoken. Defaults to the value from `pyttsx3` module. Typically `200`
+
+> To add more voices:
+>
+> macOS:
+>   - System Preferences → Accessibility → Spoken Content → System voice → Manage Voices...
+>
+> Windows:
+>   - Settings → Time & Language → Speech → Manage voices → Add voices
 
 <details>
 <summary><strong>Custom settings for speech recognition</strong></summary>
@@ -117,14 +131,14 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 These are customized according to the author's voice pitch.
 Please use [custom_recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/custom_recognizer.py) to figure out the suitable values in a trial and error method.
 
-> These settings are added (optionally), to avoid the hard coded `VOICE_PHRASE_LIMIT`
+> These settings are added (optionally), to avoid the hard coded `PHRASE_LIMIT`
 > <br>
-> Cons in using hard coded `VOICE_PHRASE_LIMIT`:
+> Cons in using hard coded `PHRASE_LIMIT`:
 >   - Disables the listener after the set limit even the speaker is actively talking.
 >   - Listener will be active until the set limit even after the speaker has stopped talking.
 
 Sample settings (formatted as JSON object)
-- `RECOGNIZER_SETTINGS`: `'{"energy_threshold": 1100, "dynamic_energy_threshold": false, "pause_threshold": 2, "phrase_threshold": 0.1}'`
+- `RECOGNIZER_SETTINGS`: `'{"energy_threshold": 1100, "dynamic_energy_threshold": false, "pause_threshold": 2, "phrase_threshold": 0.1, "non_speaking_duration": 2}'`
 
 **Description**
 - `energy_threshold`: Minimum audio energy to consider for recording. Greater the value, louder the speech should be.

@@ -95,7 +95,7 @@
 <section id="prep">
 <h2>Prep<a class="headerlink" href="#prep" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><strong>MacOS</strong> <br> <em>Tested on <strong>macOS High Sierra, Mojave, Catalina, Big Sur, and Monterey</strong></em></p>
+<li><p><strong>MacOS</strong> <br> <em>Tested on <strong>macOS High Sierra, Mojave, Catalina, Big Sur, Monterey and Ventura</strong>*</em></p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">System</span> <span class="pre">Preferences</span></code> → <code class="docutils literal notranslate"><span class="pre">Security</span> <span class="pre">&amp;</span> <span class="pre">Privacy</span></code> → <code class="docutils literal notranslate"><span class="pre">Privacy</span></code></p></li>
 <li><p>Click <code class="docutils literal notranslate"><span class="pre">+</span></code> sign and add the preferred <code class="docutils literal notranslate"><span class="pre">IDE</span></code> and <code class="docutils literal notranslate"><span class="pre">Terminal</span></code> in the following sections in left pane.</p>
@@ -109,6 +109,9 @@
 </li>
 </ul>
 </li>
+</ul>
+   <br>
+   :warning: Known Issue with <a href=https://pypi.org/project/pyttsx3/>pyttsx3 module</a> on <a href=https://www.apple.com/macos/ventura/> macOS Ventura 13.0</a>: This version of macOS does not hold the attribute VoiceAge. <a href=https://github.com/nateshmbhat/pyttsx3/pull/247>Workaround has been raised as a PR</a><br><br><ul class="simple">
 <li><p><strong>Windows</strong> <br> <em>Tested on <strong>Windows 10</strong></em></p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">Settings</span></code> → <code class="docutils literal notranslate"><span class="pre">Privacy</span></code></p>
@@ -152,16 +155,31 @@
 <li><p><strong>NAME</strong> - Name which Jarvis should address the user by. Defaults to <code class="docutils literal notranslate"><span class="pre">Vignesh</span></code></p></li>
 <li><p><strong>SENSITIVITY</strong> - Hot word detection sensitivity. Range: 0-1</p></li>
 <li><p><strong>WAKE_WORDS</strong> - List of wake words to initiate Jarvis’ listener. Defaults to <code class="docutils literal notranslate"><span class="pre">['jarvis']</span></code> (Defaults to <code class="docutils literal notranslate"><span class="pre">['alexa']</span></code> in legacy macOS)</p></li>
-<li><p><strong>RECOGNIZER_SETTINGS</strong> - A JSON object that has with customized speech recognition settings.</p></li>
 </ul>
 <p>:warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.</p>
+<ul class="simple">
+<li><p><strong>RECOGNIZER_SETTINGS</strong> - A JSON object that has with customized speech recognition settings.</p></li>
+<li><p><strong>VOICE_NAME</strong> - Name of the voice supported by the OperatingSystem. Defaults to the author’s favorite.</p></li>
+<li><p><strong>VOICE_RATE</strong> - Speed/rate at which the text should be spoken. Defaults to the value from <code class="docutils literal notranslate"><span class="pre">pyttsx3</span></code> module. Typically <code class="docutils literal notranslate"><span class="pre">200</span></code></p></li>
+</ul>
+<blockquote>
+<div><p>To add more voices:</p>
+<p>macOS:</p>
+<ul class="simple">
+<li><p>System Preferences → Accessibility → Spoken Content → System voice → Manage Voices…</p></li>
+</ul>
+<p>Windows:</p>
+<ul class="simple">
+<li><p>Settings → Time &amp; Language → Speech → Manage voices → Add voices</p></li>
+</ul>
+</div></blockquote>
 <details>
 <summary><strong>Custom settings for speech recognition</strong></summary><p>These are customized according to the author’s voice pitch.
 Please use <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/custom_recognizer.py">custom_recognizer.py</a> to figure out the suitable values in a trial and error method.</p>
 <blockquote>
-<div><p>These settings are added (optionally), to avoid the hard coded <code class="docutils literal notranslate"><span class="pre">VOICE_PHRASE_LIMIT</span></code>
+<div><p>These settings are added (optionally), to avoid the hard coded <code class="docutils literal notranslate"><span class="pre">PHRASE_LIMIT</span></code>
 <br>
-Cons in using hard coded <code class="docutils literal notranslate"><span class="pre">VOICE_PHRASE_LIMIT</span></code>:</p>
+Cons in using hard coded <code class="docutils literal notranslate"><span class="pre">PHRASE_LIMIT</span></code>:</p>
 <ul class="simple">
 <li><p>Disables the listener after the set limit even the speaker is actively talking.</p></li>
 <li><p>Listener will be active until the set limit even after the speaker has stopped talking.</p></li>
@@ -169,7 +187,7 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 </div></blockquote>
 <p>Sample settings (formatted as JSON object)</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">RECOGNIZER_SETTINGS</span></code>: <code class="docutils literal notranslate"><span class="pre">'{&quot;energy_threshold&quot;:</span> <span class="pre">1100,</span> <span class="pre">&quot;dynamic_energy_threshold&quot;:</span> <span class="pre">false,</span> <span class="pre">&quot;pause_threshold&quot;:</span> <span class="pre">2,</span> <span class="pre">&quot;phrase_threshold&quot;:</span> <span class="pre">0.1}'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RECOGNIZER_SETTINGS</span></code>: <code class="docutils literal notranslate"><span class="pre">'{&quot;energy_threshold&quot;:</span> <span class="pre">1100,</span> <span class="pre">&quot;dynamic_energy_threshold&quot;:</span> <span class="pre">false,</span> <span class="pre">&quot;pause_threshold&quot;:</span> <span class="pre">2,</span> <span class="pre">&quot;phrase_threshold&quot;:</span> <span class="pre">0.1,</span> <span class="pre">&quot;non_speaking_duration&quot;:</span> <span class="pre">2}'</span></code></p></li>
 </ul>
 <p><strong>Description</strong></p>
 <ul class="simple">
