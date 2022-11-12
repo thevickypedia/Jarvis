@@ -5,7 +5,10 @@
 
 """
 
+import requests
 from fastapi import HTTPException
+
+EgressErrors = (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout)
 
 
 class UnsupportedOS(OSError):

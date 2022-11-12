@@ -28,6 +28,9 @@ db = database.Database(database=models.fileio.base_db)
 def get_state(log: bool = True) -> int:
     """Reads the state of guard column in the base db.
 
+    Args:
+        log: Boolean flag whether to log state.
+
     Returns:
         int:
         0 or 1 to indicate if the security mode is enabled.
@@ -85,7 +88,7 @@ def security_runner() -> NoReturn:
         sys.stdout.write("\rSECURITY MODE")
         converted = listener.listen(sound=False)
         face_detected = datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p.jpg')
-        if not get_state(log=False) or word_match(phrase=converted, match_list=keywords.guard_disable):
+        if not get_state(log=False) or word_match(phrase=converted, match_list=keywords.keywords.guard_disable):
             guard_disable()
             break
         elif converted:

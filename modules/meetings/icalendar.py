@@ -11,6 +11,7 @@ from ics import Calendar
 
 from modules.audio import speaker
 from modules.database import database
+from modules.exceptions import EgressErrors
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.retry import retry
@@ -49,7 +50,7 @@ def meetings_gatherer() -> str:
         return f"I wasn't given a calendar URL to look up your meetings {models.env.title}!"
     try:
         response = requests.get(url=models.env.ics_url)
-    except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout) as error:
+    except EgressErrors as error:
         logger.error(error)
         return f"I was unable to connect to the internet {models.env.title}! Please check your connection."
     if not response.ok:

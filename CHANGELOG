@@ -1,6 +1,20 @@
 Change Log
 ==========
 
+6.5.9 (11/12/2022)
+------------------
+- Add multiple modules to test peripherals before startup
+- Fix guardian mode and frame response with end time
+- Include a public help message in Telegram API
+- Enable an option to lock and then start the vehicle
+- Condense connection errors into a single tuple for reuse
+- Set text as name for error images generated
+- Jarvis can now speak its version number
+- Set file removal thread to daemon in fast.py
+- Store keywords as a yaml file for optional custom keywords
+- Keep rewriting keywords in background processes
+- Update values in recognizer.py
+
 6.5.8 (11/04/2022)
 ------------------
 - Update README.md about bug in a dependent module

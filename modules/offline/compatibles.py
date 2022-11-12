@@ -1,6 +1,7 @@
 from typing import List
 
-from modules.conditions import conversation, keywords
+from modules.conditions import conversation
+from modules.conditions import keywords as keywords_mod
 from modules.utils import support
 
 
@@ -11,6 +12,7 @@ def offline_compatible() -> List[str]:
         list:
         Flat list from a matrix (list of lists) after removing the duplicates.
     """
+    keywords = keywords_mod.keywords
     offline_words = [keywords.sleep_control,
                      keywords.set_alarm,
                      keywords.current_time,
@@ -53,6 +55,7 @@ def offline_compatible() -> List[str]:
                      keywords.send_sms,
                      keywords.television,
                      keywords.automation,
+                     keywords.version,
                      conversation.age,
                      conversation.about_me,
                      conversation.capabilities,

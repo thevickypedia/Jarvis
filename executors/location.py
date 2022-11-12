@@ -10,10 +10,9 @@ import urllib.error
 import urllib.request
 import webbrowser
 from difflib import SequenceMatcher
-from typing import NoReturn, Tuple, Union
+from typing import Dict, NoReturn, Tuple, Union
 
 import certifi
-import requests
 import yaml
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
@@ -28,6 +27,7 @@ from timezonefinder import TimezoneFinder
 from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
+from modules.exceptions import EgressErrors
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import shared, support
@@ -67,7 +67,7 @@ def device_selector(phrase: str = None) -> Union[AppleDevice, None]:
     return icloud_api.devices[index]
 
 
-def public_ip_info() -> dict:
+def public_ip_info() -> Dict:
     """Get public IP information.
 
     Returns:
@@ -101,7 +101,7 @@ def get_coordinates_from_ip() -> Union[Tuple[float, float], Tuple[float, ...]]:
     return float(st.results.client["lat"]), float(st.results.client["lon"])
 
 
-def get_location_from_coordinates(coordinates: tuple) -> dict:
+def get_location_from_coordinates(coordinates: tuple) -> Dict:
     """Uses the latitude and longitude information to get the address information.
 
     Args:
@@ -152,7 +152,7 @@ def location_services(device: AppleDevice) -> Union[NoReturn,
             caller = sys._getframe(1).f_code.co_name  # noqa
             logger.error(f"Unable to retrieve location when called by {caller!r}::{error}")
         coordinates = get_coordinates_from_ip()
-    except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout) as error:
+    except EgressErrors as error:
         logger.error(error)
         raise ConnectionError(
             error
@@ -212,7 +212,7 @@ def locate_device(target_device: AppleDevice) -> NoReturn:
     """
     try:
         ignore_lat, ignore_lon, loc = location_services(device=target_device)
-    except ConnectionError:
+    except EgressErrors:
         speaker.speak(text="I was unable to connect to the internet. Please check your connection settings and retry.",
                       run=True)
         return
@@ -257,14 +257,14 @@ def locate(phrase: str) -> None:
     speaker.speak(text="Would you like to get the location details?", run=True)
     if not (phrase_location := listener.listen()):
         return
-    elif word_match(phrase=phrase_location, match_list=keywords.ok):
+    elif word_match(phrase=phrase_location, match_list=keywords.keywords.ok):
         return
 
     locate_device(target_device=target_device)
     if models.env.icloud_recovery:
         speaker.speak(text="I can also enable lost mode. Would you like to do it?", run=True)
         phrase_lost = listener.listen()
-        if word_match(phrase=phrase_lost, match_list=keywords.ok):
+        if word_match(phrase=phrase_lost, match_list=keywords.keywords.ok):
             target_device.lost_device(number=models.env.icloud_recovery, text="Return my phone immediately.")
             speaker.speak(text="I've enabled lost mode on your phone.")
         else:

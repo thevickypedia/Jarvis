@@ -15,10 +15,11 @@ import string
 import sys
 import time
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from difflib import SequenceMatcher
 from typing import Any, Hashable, List, NoReturn, Union
 
+import dateutil.tz
 import inflect
 import psutil
 import yaml
@@ -164,7 +165,7 @@ def get_capitalized(phrase: str, dot: bool = True) -> Union[str, None]:
     """
     place = ""
     for word in phrase.split():
-        if word[0].isupper() and word.lower() not in keywords.avoid:
+        if word[0].isupper() and word.lower() not in keywords.keywords.avoid:
             place += word + " "
         elif "." in word and dot:
             place += word + " "
@@ -320,7 +321,7 @@ def extract_str(input_: str) -> str:
     return "".join([i for i in input_ if not i.isdigit() and i not in [",", ".", "?", "-", ";", "!", ":"]]).strip()
 
 
-def matrix_to_flat_list(input_: List[list]) -> list:
+def matrix_to_flat_list(input_: List[list]) -> List:
     """Converts a matrix into flat list.
 
     Args:
@@ -389,7 +390,7 @@ def words_to_number(input_: str) -> int:
         'ninety': 90,
     }
     numbers = []
-    for word in input_.replace('-', ' ').split(' '):
+    for word in input_.replace('-', ' ').split():
         if word in number_mapping:
             numbers.append(number_mapping[word])
         elif word == 'hundred':
@@ -446,6 +447,21 @@ def check_restart() -> List[str]:
         cursor.execute("DELETE FROM restart")
         db.connection.commit()
     return flag
+
+
+def convert_utc_to_local(utc_dt: datetime) -> datetime:
+    """Converts UTC datetime object to local datetime object.
+
+    Args:
+        utc_dt: Takes UTC datetime object as an argument
+
+    Returns:
+        datetime:
+        Local datetime as an object.
+    """
+    utc_dt = utc_dt.replace(tzinfo=timezone.utc)  # Tell datetime object that the tz is UTC
+    local_tz = dateutil.tz.gettz(datetime.now().astimezone().tzname())  # Get local timezone
+    return utc_dt.astimezone(local_tz)  # Convert the UTC timestamp to local
 
 
 def check_stop() -> List[str]:

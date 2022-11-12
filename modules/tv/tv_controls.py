@@ -2,13 +2,13 @@ import os
 import socket
 import sys
 import time
-from typing import List, NoReturn
+from typing import Dict, List, NoReturn
 
 from dotenv import set_key
 from playsound import playsound
 from pywebostv.connection import WebOSClient
-from pywebostv.controls import (ApplicationControl, MediaControl,
-                                SourceControl, SystemControl)
+from pywebostv.controls import (ApplicationControl, AudioOutputSource,
+                                MediaControl, SourceControl, SystemControl)
 
 from modules.exceptions import TVError
 from modules.logger.custom_logger import logger
@@ -95,7 +95,7 @@ class TV:
             self.media.volume_down()
         self.system.notify(f"Jarvis::Decreased Volume: {self.media.get_volume()['volume']}%")
 
-    def get_volume(self) -> dict:
+    def get_volume(self) -> Dict:
         """Get volume status.
 
         Returns:
@@ -204,7 +204,7 @@ class TV:
         media_output_source = self.media.get_audio_output()
         sys.stdout.write(f'{media_output_source}')
 
-    def audio_output_source(self) -> list:
+    def audio_output_source(self) -> List[AudioOutputSource]:
         """Checks the list of audio output sources available.
 
         Returns:

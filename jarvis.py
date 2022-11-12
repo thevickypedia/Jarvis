@@ -8,6 +8,7 @@ import pvporcupine
 import pyaudio
 from playsound import playsound
 
+from _preexec import keywords_handler
 from executors.commander import initiator
 from executors.controls import exit_process, starter, terminator
 from executors.internet import get_ssid, ip_address, public_ip_info
@@ -143,7 +144,7 @@ class Activator:
                         self.executor()
                 if models.settings.limited:
                     continue
-                support.flush_screen()
+                keywords_handler.rewrite_keywords()
                 restart_checker()
                 if flag := support.check_stop():
                     logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")

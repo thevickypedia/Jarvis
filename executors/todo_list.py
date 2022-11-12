@@ -70,7 +70,7 @@ def add_todo() -> None:
     speaker.speak(text=f"I've added the item: {item} to the category: {category}. "
                        "Do you want to add anything else to your to-do list?", run=True)
     category_continue = listener.listen()
-    if word_match(phrase=category_continue.lower(), match_list=keywords.ok):
+    if word_match(phrase=category_continue.lower(), match_list=keywords.keywords.ok):
         add_todo()
     else:
         speaker.speak(text='Alright')

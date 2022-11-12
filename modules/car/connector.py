@@ -5,13 +5,13 @@ import os
 import time
 import urllib.error
 import urllib.request
-from typing import NoReturn, Union
+from typing import Dict, NoReturn, Union
 from uuid import UUID, uuid4
 
 from modules.logger.custom_logger import logger
 
 
-def _open(url: str, headers: dict = None, data: dict = None) -> dict:
+def _open(url: str, headers: dict = None, data: dict = None) -> Dict:
     """Open a connection to post the request.
 
     Args:
@@ -88,7 +88,7 @@ class Connect:
         self.expiration = auth_expiry
         self.username = username
 
-    def post_data(self, command: str, url: str, headers: dict, data: dict = None) -> dict:
+    def post_data(self, command: str, url: str, headers: dict, data: dict = None) -> Dict:
         """Add header authorization and sends a post request.
 
         Args:
@@ -150,7 +150,7 @@ class Connect:
             "Content-Type": "application/json"
         }
 
-    def _authenticate(self, data: dict = None) -> dict:
+    def _authenticate(self, data: dict = None) -> Dict:
         """Makes a post call to the tokens end point.
 
         Args:
@@ -168,7 +168,7 @@ class Connect:
         }
         return _open(url=url, headers=auth_headers, data=data)
 
-    def _register_device(self, headers: dict = None) -> dict:
+    def _register_device(self, headers: dict = None) -> Dict:
         """Frames the url and data to post to register the device.
 
         Args:
@@ -187,7 +187,7 @@ class Connect:
         }
         return _open(url=url, headers=headers, data=data)
 
-    def _login_user(self, headers: dict) -> dict:
+    def _login_user(self, headers: dict) -> Dict:
         """Login the user.
 
         Args:
@@ -217,7 +217,7 @@ class Connect:
         logger.debug("Tokens refreshed")
         self._register_device_and_log_in()
 
-    def get_vehicles(self, headers: dict) -> dict:
+    def get_vehicles(self, headers: dict) -> Dict:
         """Makes a post request to get the vehicles registered under the account.
 
         Args:
@@ -230,7 +230,7 @@ class Connect:
         url = f"{self.IF9_BASE_URL}/users/{self.user_id}/vehicles?primaryOnly=true"
         return _open(url=url, headers=headers)
 
-    def get_user_info(self) -> dict:
+    def get_user_info(self) -> Dict:
         """Makes a request to get the user information.
 
         Returns:

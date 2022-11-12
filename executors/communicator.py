@@ -31,7 +31,7 @@ def read_gmail() -> None:
                       run=True)
         if not (confirmation := listener.listen()):
             return
-        if not word_match(phrase=confirmation, match_list=keywords.ok):
+        if not word_match(phrase=confirmation, match_list=keywords.keywords.ok):
             return
         unread_emails = reader.read_email(response.body)
         for mail in list(unread_emails):
@@ -79,7 +79,7 @@ def send_sms(phrase: str) -> None:
     if body := listener.listen():
         speaker.speak(text=f'{body} to {number}. Do you want me to proceed?', run=True)
         if converted := listener.listen():
-            if word_match(phrase=converted, match_list=keywords.ok):
+            if word_match(phrase=converted, match_list=keywords.keywords.ok):
                 logger.info(f'{body} -> {number}')
                 notify(user=models.env.gmail_user, password=models.env.gmail_pass, number=number, body=body)
                 speaker.speak(text=f"Message has been sent {models.env.title}!")

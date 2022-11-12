@@ -31,7 +31,7 @@ config.multiprocessing_logger(filename=api_config.DEFAULT_LOG_FILENAME,
 stock_db = database.Database(database=models.fileio.stock_db)
 
 
-def generate_error_frame(text: str, dimension: Tuple[int, int, int]) -> bytes:
+def generate_error_frame(text: str, dimension: Tuple[int, int, int]) -> Tuple[bytes, str]:
     """Generates a single frame for error image.
 
     Args:
@@ -66,10 +66,12 @@ def generate_error_frame(text: str, dimension: Tuple[int, int, int]) -> bytes:
                 color=font_color,
                 thickness=thickness,
                 lineType=line_type)
-    cv2.imwrite(filename='temp.jpg', img=image)
-    with open('temp.jpg', 'rb') as image_file:
+    filename = text.translate(str.maketrans('', '', string.punctuation)).lower()
+    filename = filename.replace(' ', '_') + '.jpg'
+    cv2.imwrite(filename=filename, img=image)
+    with open(filename, 'rb') as image_file:
         encoded_string = base64.b64encode(image_file.read())
-    return encoded_string
+    return encoded_string, filename
 
 
 def test_camera() -> NoReturn:
@@ -131,7 +133,7 @@ def gen_frames(manager: Queue, index: int, available_cameras: List[str]) -> NoRe
         manager.put(frame)
 
 
-def streamer() -> ByteString:
+def streamer() -> Iterable[ByteString]:
     """Yields bytes string extracted from the multiprocessing queue, until the queue_manager is alive.
 
     Yields:
@@ -139,8 +141,8 @@ def streamer() -> ByteString:
         Concat frame one by one and yield the result.
 
     Warnings:
-        - | When pushing large items onto the queue, the items are essentially buffered, despite the immediate return
-          | of the queue’s put function. This can sometimes raise latency to a whopping ~20 seconds during live feed.
+        - | When pushing large items onto a multiprocess queue, the items are essentially buffered, despite the
+          | immediate return of the queue’s put function. This may increase the latency during live feed.
     """
     queue = surveillance.queue_manager[surveillance.client_id]
     try:
@@ -150,7 +152,7 @@ def streamer() -> ByteString:
         logger.error(error)
 
 
-def ticker_gatherer(character: str) -> None:
+def ticker_gatherer(character: str) -> NoReturn:
     """Gathers the stock ticker in NASDAQ. Runs on ``multi-threading`` which drops run time by ~7 times.
 
     Args:

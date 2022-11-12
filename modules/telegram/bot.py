@@ -11,6 +11,7 @@ from typing import NoReturn, Union
 import requests
 from pydantic import FilePath
 
+from _preexec import keywords_handler
 from executors.commander import timed_delay
 from executors.offline import offline_communicator
 from executors.word_match import word_match
@@ -27,7 +28,6 @@ from modules.utils import support
 importlib.reload(module=logging)
 
 db = database.Database(database=models.fileio.base_db)
-offline_compatible = compatibles.offline_compatible()
 
 USER_TITLE = {}
 
@@ -70,7 +70,7 @@ def intro() -> str:
     Returns:
         str:
     """
-    return "\nI am Jarvis, a pre-programmed virtual assistant designed by Mr. Rao\n" \
+    return "\nI am *Jarvis*, a pre-programmed virtual assistant designed by Mr. Rao\n" \
            "You may start giving me commands to execute.\n\n" \
            "*Examples*\n\n" \
            "*Car Controls*\n" \
@@ -248,6 +248,7 @@ class TelegramBot:
                 raise ConnectionError(
                     response.json()
                 )
+            keywords_handler.rewrite_keywords()
             if not response.get('result'):
                 continue
             for result in response['result']:
@@ -299,7 +300,7 @@ class TelegramBot:
         logger.warning(f"Request timed out when {payload['from']['username']} requested {payload.get('text')}")
         logger.warning(f"Request time: {request_time}")
         if "bypass" in payload.get('text', '').lower() and not \
-                word_match(phrase=payload.get('text', ''), match_list=keywords.kill):
+                word_match(phrase=payload.get('text', ''), match_list=keywords.keywords.kill):
             logger.info(f"{payload['from']['username']} requested a timeout bypass.")
             return True
         else:
@@ -317,7 +318,7 @@ class TelegramBot:
             bool:
             Boolean flag to indicate whether to proceed.
         """
-        if not word_match(phrase=payload.get('text', ''), match_list=keywords.kill):
+        if not word_match(phrase=payload.get('text', ''), match_list=keywords.keywords.kill):
             return True
         if "bypass" in payload.get('text', '').lower():
             logger.info(f"{payload['from']['username']} requested a STOP bypass.")
@@ -386,6 +387,12 @@ class TelegramBot:
         Args:
             payload: Payload received, to extract information from.
         """
+        if payload.get('text', '').lower() == 'help':
+            self.send_message(chat_id=payload['from']['id'],
+                              response=f"{greeting()} {payload['from']['first_name']}!\n"
+                                       f"Good {support.part_of_day()}! {intro()}\n\n"
+                                       "Please reach out at https://vigneshrao.com/contact for more info.")
+            return
         if not self.authenticate(payload=payload):
             return
         if not self.verify_timeout(payload=payload):
@@ -430,9 +437,9 @@ class TelegramBot:
             self.send_message(chat_id=payload['from']['id'], response="Test message received.")
             return
 
-        if ' and ' in command and not word_match(phrase=command, match_list=keywords.avoid):
+        if ' and ' in command and not word_match(phrase=command, match_list=keywords.keywords.avoid):
             for index, each in enumerate(command.split(' and '), 1 - len(command.split(' and '))):
-                if not word_match(phrase=each, match_list=offline_compatible):
+                if not word_match(phrase=each, match_list=compatibles.offline_compatible()):
                     logger.warning(f"'{each}' is not a part of offline communicator compatible request.")
                     self.send_message(chat_id=payload['from']['id'],
                                       response=f"'{each}' is not a part of offline communicator compatible request.")
@@ -440,9 +447,9 @@ class TelegramBot:
                     self.executor(command=each, payload=payload)
                     time.sleep(2) if index else None  # Avoid time.sleep during the last iteration
             return
-        elif ' also ' in command and not word_match(phrase=command, match_list=keywords.avoid):
+        elif ' also ' in command and not word_match(phrase=command, match_list=keywords.keywords.avoid):
             for index, each in enumerate(command.split(' also '), 1 - len(command.split(' also '))):
-                if not word_match(phrase=each, match_list=offline_compatible):
+                if not word_match(phrase=each, match_list=compatibles.offline_compatible()):
                     logger.warning(f"'{each}' is not a part of offline communicator compatible request.")
                     self.send_message(chat_id=payload['from']['id'],
                                       response=f"'{each}' is not a part of offline communicator compatible request.")
@@ -451,7 +458,7 @@ class TelegramBot:
                     time.sleep(2) if index else None  # Avoid time.sleep during the last iteration
             return
 
-        if not word_match(phrase=command, match_list=offline_compatible):
+        if not word_match(phrase=command, match_list=compatibles.offline_compatible()):
             logger.warning(f"'{command}' is not a part of offline communicator compatible request.")
             self.send_message(chat_id=payload['from']['id'],
                               response=f"'{command}' is not a part of offline communicator compatible request.")

@@ -55,8 +55,7 @@ if not os.path.isfile(config.APIConfig().ACCESS_LOG_FILENAME):
 if not os.path.isfile(config.APIConfig().DEFAULT_LOG_FILENAME):
     pathlib.Path(config.APIConfig().DEFAULT_LOG_FILENAME).touch()
 
-# Get offline compatible and websocket loaded
-offline_compatible = compatibles.offline_compatible()
+# Get websocket loaded
 ws_manager = ConnectionManager()
 
 # Configure logging
@@ -155,7 +154,7 @@ async def _keywords() -> Dict[str, List[str]]:
         dict:
         Key-value pairs of the keywords file.
     """
-    return {k: v for k, v in keywords.__dict__.items() if isinstance(v, list)}
+    return {k: v for k, v in keywords.keywords.__dict__.items() if isinstance(v, list)}
 
 
 @app.post(path='/conversation', dependencies=OFFLINE_PROTECTOR)
@@ -177,7 +176,7 @@ async def _offline_compatible() -> Dict[str, List[str]]:
         dict:
         Returns the list of api-compatible words as a dictionary.
     """
-    return {"compatible": offline_compatible}
+    return {"compatible": compatibles.offline_compatible()}
 
 
 @app.post(path='/speech-synthesis', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
@@ -218,7 +217,8 @@ async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: b
             return
     if os.path.isfile(path=models.fileio.speech_synthesis_wav):
         logger.debug(f'Speech synthesis file generated for {text!r}')
-        Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': models.fileio.speech_synthesis_wav}).start()
+        Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': models.fileio.speech_synthesis_wav},
+               daemon=True).start()
         return FileResponse(path=models.fileio.speech_synthesis_wav, media_type='application/octet-stream',
                             filename="synthesized.wav", status_code=HTTPStatus.OK.real)
     logger.error(f'File Not Found: {models.fileio.speech_synthesis_wav}')
@@ -267,10 +267,10 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         logger.info("Test message received.")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail="Test message received.")
 
-    if ' and ' in command and not word_match(phrase=command, match_list=keywords.avoid):
+    if ' and ' in command and not word_match(phrase=command, match_list=keywords.keywords.avoid):
         and_response = ""
         for each in command.split(' and '):
-            if not word_match(phrase=each, match_list=offline_compatible):
+            if not word_match(phrase=each, match_list=compatibles.offline_compatible()):
                 logger.warning(f"{each!r} is not a part of offline compatible request.")
                 and_response += f'{each!r} is not a part of off-line communicator compatible request.\n\n' \
                                 'Please try an instruction that does not require an user interaction.'
@@ -283,10 +283,10 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
                     and_response += error.__str__()
         logger.info(f"Response: {and_response}")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=and_response)
-    elif ' also ' in command and not word_match(phrase=command, match_list=keywords.avoid):
+    elif ' also ' in command and not word_match(phrase=command, match_list=keywords.keywords.avoid):
         also_response = ""
         for each in command.split(' also '):
-            if not word_match(phrase=each, match_list=offline_compatible):
+            if not word_match(phrase=each, match_list=compatibles.offline_compatible()):
                 logger.warning(f"{each!r} is not a part of offline compatible request.")
                 also_response += f'{each!r} is not a part of off-line communicator compatible request.\n\n' \
                                  'Please try an instruction that does not require an user interaction.'
@@ -299,7 +299,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
                     also_response += error.__str__()
         logger.info(f"Response: {also_response}")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=also_response)
-    if not word_match(phrase=command, match_list=offline_compatible):
+    if not word_match(phrase=command, match_list=compatibles.offline_compatible()):
         logger.warning(f"{command!r} is not a part of offline compatible request.")
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f'"{command}" is not a part of off-line communicator compatible request.\n\n'
@@ -319,13 +319,13 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
     logger.info(f"Response: {response}")
     if os.path.isfile(response) and response.endswith('.jpg'):
         logger.info("Response received as a file.")
-        Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': response}).start()
+        Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': response}, daemon=True).start()
         return FileResponse(path=response, media_type=f'image/{imghdr.what(file=response)}',
                             filename=os.path.split(response)[-1], status_code=HTTPStatus.OK.real)
     if input_data.native_audio:
         native_audio_wav = tts_stt.text_to_audio(text=response)
         logger.info(f"Storing response as {native_audio_wav} in native audio.")
-        Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': native_audio_wav}).start()
+        Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': native_audio_wav}, daemon=True).start()
         return FileResponse(path=native_audio_wav, media_type='application/octet-stream',
                             filename="synthesized.wav", status_code=HTTPStatus.OK.real)
     if input_data.speech_timeout:
@@ -361,11 +361,6 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=HTTPStatus.UNPROCESSABLE_ENTITY.__dict__['phrase'])
 
-    result = validate_email(email_address=input_data.email)
-    if result is False:
-        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
-                          detail=f"{input_data.email.split('@')[-1]!r} doesn't resolve to a valid mail server!")
-
     if input_data.request == "GET":
         logger.info(f"{input_data.email!r} requested their data.")
         if input_data.token:
@@ -380,6 +375,11 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
             raise APIResponse(status_code=HTTPStatus.OK.real, detail=data_frame.to_html())
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f"No entry found in database for {input_data.email!r}")
+
+    result = validate_email(email_address=input_data.email)
+    if result is False:
+        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
+                          detail=f"{input_data.email.split('@')[-1]!r} doesn't resolve to a valid mail server!")
 
     decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
     decoded['Ticker'] = decoded['Ticker'].upper()
@@ -693,15 +693,21 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
                                     f"{datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')}")
                     if data == "IMG_ERROR":
                         logger.info("Sending error image frame to client.")
-                        await websocket.send_bytes(data=squire.generate_error_frame(
+                        bytes_, tmp_file = squire.generate_error_frame(
                             dimension=surveillance.frame,
                             text="Unable to get image frame from "
-                                 f"{surveillance.available_cameras[surveillance.camera_index]}"))
+                                 f"{surveillance.available_cameras[surveillance.camera_index]}")
+                        await websocket.send_bytes(data=bytes_)
+                        Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': tmp_file},
+                               daemon=True).start()
                         raise WebSocketDisconnect  # Raise error to release camera after a failed read
                 if surveillance.session_manager[client_id] + models.env.surveillance_session_timeout <= time.time():
                     logger.info(f"Sending session timeout to client: {client_id}")
-                    await websocket.send_bytes(data=squire.generate_error_frame(
-                        dimension=surveillance.frame, text="SESSION EXPIRED! Re-authenticate to continue live stream."))
+                    bytes_, tmp_file = squire.generate_error_frame(
+                        dimension=surveillance.frame,
+                        text="SESSION EXPIRED! Re-authenticate to continue live stream.")
+                    await websocket.send_bytes(data=bytes_)
+                    Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': tmp_file}, daemon=True).start()
                     raise WebSocketDisconnect  # Raise error to release camera after a failed read
         except WebSocketDisconnect:
             ws_manager.disconnect(websocket)

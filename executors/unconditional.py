@@ -11,6 +11,7 @@ from geopy.distance import geodesic
 from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
+from modules.exceptions import EgressErrors
 from modules.logger.custom_logger import logger
 from modules.models import models
 
@@ -70,7 +71,7 @@ def google_maps(query: str) -> bool:
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
     try:
         response = requests.get(maps_url + 'query=' + query + '&key=' + models.env.maps_api)
-    except (requests.exceptions.RequestException, requests.exceptions.Timeout, ConnectionError, TimeoutError) as error:
+    except EgressErrors as error:
         logger.error(error)
         return False
     collection = response.json()['results']
@@ -131,7 +132,7 @@ def google_maps(query: str) -> bool:
         if converted := listener.listen():
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 break
-            elif word_match(phrase=converted.lower(), match_list=keywords.ok):
+            elif word_match(phrase=converted.lower(), match_list=keywords.keywords.ok):
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                 webbrowser.open(url=maps_url)
                 speaker.speak(text=f"Directions on your screen {models.env.title}!")

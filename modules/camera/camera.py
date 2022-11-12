@@ -1,5 +1,5 @@
 import subprocess
-from typing import Dict, List
+from typing import Dict, Iterable, List
 
 from modules.exceptions import CameraError
 from modules.models.classes import settings
@@ -59,7 +59,7 @@ class Camera:
         if error := err.decode(encoding='UTF-8'):
             raise CameraError(error)
 
-    def _get_camera_info_windows(self) -> List[Dict[str, str]]:
+    def _get_camera_info_windows(self) -> Iterable[Dict[str, str]]:
         """Get camera information for WindowsOS.
 
         Yields:
@@ -76,7 +76,7 @@ class Camera:
                 values[sub_list.split('=')[0]] = sub_list.split('=')[1]
             yield values
 
-    def _list_cameras_windows(self) -> List[str]:
+    def _list_cameras_windows(self) -> Iterable[str]:
         """Yields the camera name for WindowsOS.
 
         Yields:
@@ -85,7 +85,7 @@ class Camera:
         for camera in self._get_camera_info_windows():
             yield camera.get('Name')
 
-    def _get_camera_info_darwin(self) -> List[Dict[str, str]]:
+    def _get_camera_info_darwin(self) -> Iterable[Dict[str, str]]:
         """Get camera information for macOS.
 
         Returns:
@@ -106,7 +106,7 @@ class Camera:
                     values[sub_list.split(':')[0]] = sub_list.split(':')[1]
             yield values
 
-    def _list_cameras_darwin(self) -> List[str]:
+    def _list_cameras_darwin(self) -> Iterable[str]:
         """Yields the camera name for macOS.
 
         Yields:

@@ -5,10 +5,8 @@ import sys
 import time
 from typing import NoReturn
 
-import requests
-
 from executors.controls import restart_control
-from modules.exceptions import BotInUse
+from modules.exceptions import BotInUse, EgressErrors
 from modules.logger import config
 from modules.logger.custom_logger import logger
 from modules.models import models
@@ -38,7 +36,7 @@ def handler() -> NoReturn:
         logger.error(error)
         logger.info("Restarting message poll to take over..")
         handler()
-    except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout) as error:
+    except EgressErrors as error:
         logger.critical(error)
         FAILED_CONNECTIONS['count'] += 1
         if FAILED_CONNECTIONS['count'] > 3:

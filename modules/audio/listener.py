@@ -8,10 +8,10 @@ import sys
 from typing import Union
 
 from playsound import playsound
-from requests.exceptions import RequestException, Timeout
 from speech_recognition import (Microphone, Recognizer, RequestError,
                                 UnknownValueError, WaitTimeoutError)
 
+from modules.exceptions import EgressErrors
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import support
@@ -54,5 +54,5 @@ def listen(timeout: Union[int, float] = models.env.timeout, phrase_limit: Union[
             return recognized
         except (UnknownValueError, RequestError, WaitTimeoutError):
             return
-        except (ConnectionError, TimeoutError, RequestException, Timeout) as error:
+        except EgressErrors as error:
             logger.error(error)

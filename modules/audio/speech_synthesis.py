@@ -14,6 +14,7 @@ import docker
 import requests
 
 from executors.port_handler import is_port_in_use, kill_port_pid
+from modules.exceptions import EgressErrors
 from modules.logger.custom_logger import logger
 from modules.models import models
 
@@ -35,8 +36,7 @@ def check_existing() -> bool:
                             'is accessible.')
                 return True
             return False
-        except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout) as \
-                error:
+        except EgressErrors as error:
             logger.error(error)
             if not kill_port_pid(port=models.env.speech_synthesis_port):
                 logger.critical('Failed to kill existing PID. Attempting to re-create session.')

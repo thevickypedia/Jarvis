@@ -16,6 +16,7 @@ import yaml
 from playsound import playsound
 
 from modules.conditions import conversation, keywords
+from modules.exceptions import EgressErrors
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import shared
@@ -63,7 +64,7 @@ def speech_synthesizer(text: str, timeout: Union[int, float] = models.env.speech
         return False
     except UnicodeError as error:
         logger.error(error)
-    except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout) as error:
+    except EgressErrors as error:
         logger.error(error)
         logger.info("Disabling speech synthesis")
         models.env.speech_synthesis_timeout = 0

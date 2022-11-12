@@ -76,7 +76,7 @@ def github_controller(target: list) -> None:
         speaker.speak(text=f"I found {len(target)} results. On your screen {models.env.title}! "
                            "Which one shall I clone?", run=True)
         if not (converted := listener.listen()):
-            if word_match(phrase=converted, match_list=keywords.exit_):
+            if word_match(phrase=converted, match_list=keywords.keywords.exit_):
                 return
             if 'first' in converted.lower():
                 item = 1

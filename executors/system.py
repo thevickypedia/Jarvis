@@ -109,7 +109,7 @@ def system_vitals() -> None:
                                f"like me to restart it for you {models.env.title}?",
                           run=True)
             response = listener.listen()
-            if word_match(phrase=response.lower(), match_list=keywords.ok):
+            if word_match(phrase=response.lower(), match_list=keywords.keywords.ok):
                 logger.info(f'JARVIS::Restarting {shared.hosted_device.get("device")}')
                 restart(ask=False)
 

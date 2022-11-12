@@ -1,6 +1,8 @@
 import json
+import time
 import urllib.error
 import urllib.request
+from datetime import datetime
 from threading import Thread
 from typing import Tuple, Union
 
@@ -8,6 +10,7 @@ import yaml
 from playsound import playsound
 
 from executors.location import get_location_from_coordinates
+from executors.word_match import word_match
 from modules.audio import speaker
 from modules.car import connector, controller
 from modules.logger.custom_logger import logger
@@ -38,26 +41,29 @@ def get_current_temp(location: dict) -> Tuple[Union[int, str], int]:
     return f"{current_temp}\N{DEGREE SIGN}F", target_temp
 
 
-def car(phrase: str) -> None:
-    """Controls the car to lock, unlock or remote start.
+class Operations:
+    """Car operations that car condensed into its own object.
 
-    Args:
-        phrase: Takes the phrase spoken as an argument.
+    >>> Operations
 
-    See Also:
-        API climate controls: 31 is LO, 57 is HOT
-        Car Climate controls: 58 is LO, 84 is HOT
     """
-    if not all([models.env.car_email, models.env.car_pass, models.env.car_pin]):
-        logger.warning("InControl email or password or PIN not found.")
-        support.no_env_vars()
-        return
 
-    disconnected = f"I wasn't able to connect your car {models.env.title}! Please check the logs for more information."
+    def __init__(self):
+        """Initiates the callable function and a failure message."""
+        self.object = vehicle
+        self.disconnect = f"I wasn't able to connect your car {models.env.title}! " \
+                          "Please check the logs for more information."
 
-    if "start" in phrase or "set" in phrase or "turn on" in phrase:
-        if not shared.called_by_offline:
-            playsound(sound=models.indicators.exhaust, block=False)
+    def turn_on(self, phrase: str) -> str:
+        """Calls the vehicle function to turn the car on with the requested climate setting.
+
+        Args:
+            phrase: Takes the recognized phrase as an argument.
+
+        Returns:
+            str:
+            Response after turning on the vehicle.
+        """
         extras = ""
         if target_temp := support.extract_nos(input_=phrase, method=int):
             if target_temp < 57:
@@ -84,69 +90,164 @@ def car(phrase: str) -> None:
                     logger.error(error)
                     target_temp = 69
         extras += f"I've configured the climate setting to {target_temp}\N{DEGREE SIGN}F"
-        # if car_name := vehicle(operation="START-LOCK", temp=target_temp - 26):  # Takes time but locks before starting
-        if car_name := vehicle(operation="START", temp=target_temp - 26):
-            speaker.speak(text=f"Your {car_name} has been started {models.env.title}. {extras}")
+        opr = "START-LOCK" if 'lock' in phrase else "START"
+        if car_name := self.object(operation=opr, temp=target_temp - 26):
+            return f"Your {car_name} has been started {models.env.title}. {extras}"
         else:
-            speaker.speak(text=disconnected)
-    elif "turn off" in phrase or "stop" in phrase:
-        if not shared.called_by_offline:
-            playsound(sound=models.indicators.exhaust, block=False)
-        if car_name := vehicle(operation="STOP"):
-            speaker.speak(text=f"Your {car_name} has been turned off {models.env.title}!")
+            return self.disconnect
+
+    def turn_off(self) -> str:
+        """Calls the vehicle function to turn off the vehicle.
+
+        Returns:
+            str:
+            Response after turning off the vehicle.
+        """
+        if car_name := self.object(operation="STOP"):
+            return f"Your {car_name} has been turned off {models.env.title}!"
         else:
-            speaker.speak(text=disconnected)
-    elif "secure" in phrase or "guardian" in phrase or "security" in phrase:
-        if not shared.called_by_offline:
-            playsound(sound=models.indicators.exhaust, block=False)
-        if car_name := vehicle(operation="SECURE"):
-            speaker.speak(text=f"Guardian mode has been enabled {models.env.title}! Your {car_name} is now secure.")
+            return self.disconnect
+
+    def enable_guard(self, phrase) -> str:
+        """Requests vehicle function to enable guardian mode for the requested time.
+
+        Args:
+            phrase: Takes the recognized phrase as an argument.
+
+        See Also:
+            - Extracts a numeric value in the phrase or words that refer to a numeric value in the phrase
+
+        Returns:
+            str:
+            Response after enabling guardian mode on the vehicle.
+        """
+        requested_expiry = support.extract_nos(input_=phrase, method=int) or support.words_to_number(input_=phrase) or 1
+        if 'hour' in phrase:
+            seconds = requested_expiry * 3_600  # Defaults to 1 hour if no numeric value in phrase
+        elif 'day' in phrase:
+            seconds = requested_expiry * 86_400  # Defaults to 1 day if no numeric value in phrase
+        elif 'week' in phrase:
+            seconds = requested_expiry * 604_800  # Defaults to 1 week if no numeric value in phrase
         else:
-            speaker.speak(text=disconnected)
-    elif "unlock" in phrase:
-        if not shared.called_by_offline:
-            playsound(sound=models.indicators.exhaust, block=False)
-        if car_name := vehicle(operation="UNLOCK"):
-            speaker.speak(text=f"Your {car_name} has been unlocked {models.env.title}!")
+            seconds = 3_600  # Defaults to 1 hour if no datetime conversion was received
+        expire = int((time.time() + seconds) * 1000)  # multiply by 1000 to including microseconds making it 13 digits
+        if response := self.object(operation="SECURE", end_time=expire):
+            return response
         else:
-            speaker.speak(text=disconnected)
-    elif "lock" in phrase:
-        if not shared.called_by_offline:
-            playsound(sound=models.indicators.exhaust, block=False)
-        if car_name := vehicle(operation="LOCK"):
+            return self.disconnect
+
+    def lock(self) -> str:
+        """Calls vehicle function to perform the lock operation.
+
+        Returns:
+            str:
+            Response after locking the vehicle.
+        """
+        if car_name := self.object(operation="LOCK"):
             speaker.speak(text=f"Your {car_name} has been locked {models.env.title}!")
         else:
-            speaker.speak(text=disconnected)
-    elif "honk" in phrase or "blink" in phrase or "horn" in phrase:
+            return self.disconnect
+
+    def unlock(self) -> str:
+        """Calls vehicle function to perform the unlock operation.
+
+        Returns:
+            str:
+            Response after unlocking the vehicle.
+        """
+        if car_name := self.object(operation="UNLOCK"):
+            return f"Your {car_name} has been unlocked {models.env.title}!"
+        else:
+            return self.disconnect
+
+    def honk(self) -> str:
+        """Calls vehicle function to honk the car.
+
+        Returns:
+            str:
+            Response after honking the vehicle.
+        """
+        if car_name := self.object(operation="HONK"):
+            return f"I've made your {car_name} honk and blink {models.env.title}!"
+        else:
+            return self.disconnect
+
+    def locate(self) -> str:
+        """Calls vehicle function to locate the car.
+
+        Returns:
+            str:
+            Response after retrieving the location of the vehicle.
+        """
+        if location := self.object(operation="LOCATE"):
+            return location
+        else:
+            return self.disconnect
+
+
+def car(phrase: str) -> None:
+    """Controls the car to lock, unlock or remote start.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+
+    See Also:
+        API climate controls: 31 is LO, 57 is HOT
+        Car Climate controls: 58 is LO, 84 is HOT
+    """
+    if not all([models.env.car_email, models.env.car_pass, models.env.car_pin]):
+        logger.warning("InControl email or password or PIN not found.")
+        support.no_env_vars()
+        return
+
+    allowed_dict = {'on': ['start', 'set', 'turn on'],
+                    'off': ['stop', 'turn off'],
+                    'guard': ['secur', 'guard'],  # Intentional typo that covers both 'security' and 'secure' in phrase
+                    'lock': ['lock'], 'unlock': ['unlock'],
+                    'honk': ['honk', 'blink', 'horn'],
+                    'locate': ['locate', 'where']}
+
+    if word_match(phrase=phrase, match_list=support.matrix_to_flat_list(list(allowed_dict.values()))):
         if not shared.called_by_offline:
             playsound(sound=models.indicators.exhaust, block=False)
-        if car_name := vehicle(operation="HONK"):
-            speaker.speak(text=f"I've made your {car_name} honk and blink {models.env.title}!")
-        else:
-            speaker.speak(text=disconnected)
-    elif "locate" in phrase or "where" in phrase:
-        if not shared.called_by_offline:
-            playsound(sound=models.indicators.exhaust, block=False)
-        if location := vehicle(operation="LOCATE"):
-            speaker.speak(text=location)
-        else:
-            speaker.speak(text=disconnected)
     else:
         speaker.speak(text=f"I didn't quite get that {models.env.title}! What do you want me to do to your car?")
         Thread(target=support.unrecognized_dumper, args=[{"CAR": phrase}]).start()
+        return
+
+    response = "Unsupported operation for car controls."
+    caller = Operations()
+    if word_match(phrase=phrase, match_list=allowed_dict['on']):
+        response = caller.turn_on(phrase=phrase)
+    elif word_match(phrase=phrase, match_list=allowed_dict['off']):
+        response = caller.turn_off()
+    elif word_match(phrase=phrase, match_list=allowed_dict['guard']):
+        response = caller.enable_guard(phrase=phrase)
+    elif word_match(phrase=phrase, match_list=allowed_dict['unlock']):
+        response = caller.unlock()
+    elif word_match(phrase=phrase, match_list=allowed_dict['lock']):
+        response = caller.lock()
+    elif word_match(phrase=phrase, match_list=allowed_dict['honk']):
+        response = caller.honk()
+    elif word_match(phrase=phrase, match_list=allowed_dict['locate']):
+        response = caller.locate()
+    speaker.speak(text=response)
 
 
-def vehicle(operation: str, temp: int = None) -> Union[str, dict, None]:
+def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool = True) -> Union[str, dict, None]:
     """Establishes a connection with the car and returns an object to control the primary vehicle.
 
     Args:
         operation: Operation to be performed.
         temp: Temperature for climate control.
+        end_time: End time for guardian mode. Should be a 13 digit integer including microseconds.
+        retry: Retry logic used when guardian mode is enabled already.
 
     Returns:
         str:
         Returns the vehicle's name.
     """
+    control = None
     try:
         connection = connector.Connect(username=models.env.car_email, password=models.env.car_pass)
         connection.connect()
@@ -169,13 +270,27 @@ def vehicle(operation: str, temp: int = None) -> Union[str, dict, None]:
                 if lock_status.get('DOOR_IS_ALL_DOORS_LOCKED', 'FALSE') != 'TRUE' or \
                         lock_status.get('DOOR_BOOT_LOCK_STATUS', 'UNLOCKED') != 'LOCKED':
                     logger.warning("Car is unlocked when tried to remote start!")
-                    if lock_response := control.lock(pin=models.env.car_pin).get("failureDescription"):
+                    lock_response = control.lock(pin=models.env.car_pin)
+                    if lock_response.get("failureDescription"):
                         logger.error(lock_response)
+                    else:
+                        logger.info("Vehicle has been locked!")
+                        time.sleep(3)  # Wait before locking the car, so that there is no overlap in refresh token
             response = control.remote_engine_start(pin=models.env.car_pin, target_temperature=temp)
         elif operation == "STOP":
             response = control.remote_engine_stop(pin=models.env.car_pin)
         elif operation == "SECURE":
-            response = control.enable_guardian_mode(pin=models.env.car_pin)
+            control.enable_guardian_mode(pin=models.env.car_pin, expiration_time=end_time)
+            until = datetime.fromtimestamp(end_time / 1000).strftime("%A, %B %d, %I:%M %p")  # Remove microseconds
+            return f"Guardian mode has been enabled {models.env.title}! " \
+                   f"Your {control.get_attributes().get('vehicleBrand', 'car')} will be guarded until {until}"
+        elif operation == "SECURE_EXIST":  # Only called during recursion
+            current_end = control.get_guardian_mode_status().get('endTime')
+            if not current_end:
+                return
+            utc_dt = datetime.strptime(current_end, "%Y-%m-%dT%H:%M:%S.%fZ")  # Convert str to datetime object
+            until = support.convert_utc_to_local(utc_dt=utc_dt).strftime("%A, %B %d, %I:%M %p")
+            return f"Guardian mode is already enabled until {until} {models.env.title}! "
         elif operation == "HONK":
             response = control.honk_blink()
         elif operation == "LOCATE" or operation == "LOCATE_INTERNAL":
@@ -198,11 +313,13 @@ def vehicle(operation: str, temp: int = None) -> Union[str, dict, None]:
             else:
                 address = data
             return f"Your {control.get_attributes().get('vehicleBrand', 'car')} is at {address}"
-        if response.get("failureDescription"):
+        if response and response.get("failureDescription"):
             logger.fatal(response)
             return
         return control.get_attributes().get("vehicleBrand", "car")
     except (urllib.error.HTTPError, urllib.error.URLError) as error:
+        if operation == "SECURE" and hasattr(error, "code") and error.code == 409 and control and retry:
+            return vehicle(operation="SECURE_EXIST", retry=False)
         logger.error(error.__dict__)
         if hasattr(error, "url") and hasattr(error, "code"):
             logger.error(f"Failed to connect to {error.url} with error code: {error.code} while performing {operation}")

@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="https://vigneshrao.com/Jarvis/logo.png" width="200px" height="200px">
+</p>
+<h2 align="center">Natural Language User Interface Program with Python</h2>
+
 [![ForTheBadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 [![ForTheBadge built-with-swag](http://ForTheBadge.com/images/badges/built-with-swag.svg)](https://github.com/thevickypedia/Jarvis)
 
@@ -67,10 +72,7 @@
 
 [![Ask Me | Anything ](https://img.shields.io/badge/Ask%20me-Anything-1abc9c.svg)](https://vigneshrao.com/contact)
 
-# Jarvis
-IronMan's Jarvis with python
-
-### Prep
+### Prerequisites
    - **MacOS** <br> _Tested on **macOS High Sierra, Mojave, Catalina, Big Sur, Monterey and Ventura***_
      - `System Preferences` → `Security & Privacy` → `Privacy`
      - Click `+` sign and add the preferred `IDE` and `Terminal` in the following sections in left pane.
@@ -98,7 +100,12 @@ IronMan's Jarvis with python
      4. `chmod +x lib/install.sh` - Makes [installation file](https://github.com/thevickypedia/Jarvis/blob/master/lib/install.sh) as executable.
      5. `bash lib/installs.sh` - Installs the required modules based on the operating system.
      6. [`python jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis.
-        1. [PyCharm](https://www.jetbrains.com/pycharm/download) or similar IDE preferred to initiate Jarvis (Step `vi.`) to keep `stdout` clear.
+
+> **Test Peripherals**:
+>   - Camera: [camera.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/camera/camera.py)
+>   - Speaker: [speak.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/speaker/speak.py)
+>   - Microphone: [mic.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/mic.py)
+>   - Speech Recognition: [recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py)
 
 ### ENV Variables
 Environment variables are loaded from a `.env` file and validated using `pydantic`
@@ -117,19 +124,19 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **VOICE_NAME** - Name of the voice supported by the OperatingSystem. Defaults to the author's favorite.
 - **VOICE_RATE** - Speed/rate at which the text should be spoken. Defaults to the value from `pyttsx3` module. Typically `200`
 
-> To add more voices:
+> **To add more voices**:
 >
-> macOS:
+> **macOS**:
 >   - System Preferences → Accessibility → Spoken Content → System voice → Manage Voices...
 >
-> Windows:
+> **Windows**:
 >   - Settings → Time & Language → Speech → Manage voices → Add voices
 
 <details>
 <summary><strong>Custom settings for speech recognition</strong></summary>
 
 These are customized according to the author's voice pitch.
-Please use [custom_recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/custom_recognizer.py) to figure out the suitable values in a trial and error method.
+Please use [mic.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/mic.py) to figure out the suitable values in a trial and error method.
 
 > These settings are added (optionally), to avoid the hard coded `PHRASE_LIMIT`
 > <br>

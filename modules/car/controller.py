@@ -1,7 +1,6 @@
 """**API Reference:** https://documenter.getpostman.com/view/6250319/RznBMzqo for Jaguar LandRover InControl API."""
 
-import time
-from typing import Union
+from typing import Dict, List, NoReturn, Union
 
 from modules.car.connector import Connect
 
@@ -26,7 +25,7 @@ class Control:
         self.vin = vin
         self.IF9_BASE_URL = f'https://if9.prod-row.jlrmotor.com/if9/jlr/vehicles/{self.vin}'
 
-    def get_contact_info(self, mcc: str = '+1') -> dict:
+    def get_contact_info(self, mcc: str = '+1') -> Dict:
         """Get Road Side Assistance and Secure Vehicle Tracker contact information.
 
         Args:
@@ -39,7 +38,7 @@ class Control:
         headers = self.connection.head.copy()
         return self.post_data(command=f'contactinfo/{mcc}', headers=headers)
 
-    def get_attributes(self) -> dict:
+    def get_attributes(self) -> Dict:
         """Requests all vehicle attributes.
 
         Returns:
@@ -50,7 +49,7 @@ class Control:
         headers["Accept"] = "application/vnd.ngtp.org.VehicleAttributes-v3+json"
         return self.post_data(command='attributes', headers=headers)
 
-    def get_status(self, ev: bool = False) -> dict:
+    def get_status(self, ev: bool = False) -> Dict:
         """Makes a call to get the status of the vehicle.
 
         Args:
@@ -72,7 +71,7 @@ class Control:
 
         return result
 
-    def get_health_status(self) -> dict:
+    def get_health_status(self) -> Dict:
         """Checks for the vehicle health status.
 
         Returns:
@@ -85,7 +84,7 @@ class Control:
         vhs_data = self._authenticate_service(service_name="VHS")
         return self.post_data(command='healthstatus', headers=headers, data=vhs_data)
 
-    def get_departure_timers(self) -> dict:
+    def get_departure_timers(self) -> Dict:
         """Get departure timers for specified vehicle.
 
         Returns:
@@ -96,7 +95,7 @@ class Control:
         headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.DepartureTimerSettings-v1+json"
         return self.post_data(command="departuretimers", headers=headers)
 
-    def get_wakeup_time(self) -> dict:
+    def get_wakeup_time(self) -> Dict:
         """Get configured wakeup time for specified vehicle.
 
         Returns:
@@ -107,7 +106,7 @@ class Control:
         headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.VehicleWakeupTime-v2+json"
         return self.post_data(command="wakeuptime", headers=headers)
 
-    def get_subscription_packages(self) -> list:
+    def get_subscription_packages(self) -> List[Dict]:
         """Get list of subscription packages for a specific vehicle.
 
         Returns:
@@ -117,7 +116,7 @@ class Control:
         return self.post_data(command='subscriptionpackages',
                               headers=self.connection.head).get('subscriptionPackages', [])
 
-    def get_trips(self, count: int = 1_000) -> list:
+    def get_trips(self, count: int = 1_000) -> List[Dict]:
         """Get the trips associated with the specified vehicle.
 
         Args:
@@ -131,7 +130,7 @@ class Control:
         headers["Accept"] = "application/vnd.ngtp.org.triplist-v2+json"
         return self.post_data(command=f'trips?count={count}', headers=headers).get('trips', [])
 
-    def get_guardian_mode_alarms(self) -> list:
+    def get_guardian_mode_alarms(self) -> List:
         """Gets all the scheduled Guardian mode time periods.
 
         Returns:
@@ -154,7 +153,7 @@ class Control:
         headers["Accept-Encoding"] = "gzip,deflate"
         return self.post_data(command='gm/alerts', headers=headers)
 
-    def get_guardian_mode_status(self) -> dict:
+    def get_guardian_mode_status(self) -> Dict:
         """Get the Guardian Mode status indicating whether Guardian Mode is active.
 
         Returns:
@@ -165,7 +164,7 @@ class Control:
         headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.GuardianStatus-v1+json"
         return self.post_data(command='gm/status', headers=headers)
 
-    def get_guardian_mode_settings_user(self) -> dict:
+    def get_guardian_mode_settings_user(self) -> Dict:
         """Alarm, SMS and push notification settings (System) for guardian mode.
 
         Returns:
@@ -176,7 +175,7 @@ class Control:
         headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.GuardianUserSettings-v1+json"
         return self.post_data(command='gm/settings/user', headers=headers)
 
-    def get_guardian_mode_settings_system(self) -> dict:
+    def get_guardian_mode_settings_system(self) -> Dict:
         """Alarm, SMS and push notification settings (User) for guardian mode.
 
         Returns:
@@ -187,7 +186,7 @@ class Control:
         headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.GuardianSystemSettings-v1+json"
         return self.post_data(command='gm/settings/system', headers=headers)
 
-    def get_trip(self, trip_id: int, page: int = 1) -> dict:
+    def get_trip(self, trip_id: int, page: int = 1) -> Dict:
         """Get data associated with a specific trip.
 
         Args:
@@ -201,7 +200,7 @@ class Control:
         return self.post_data(command=f'trips/{trip_id}/route?pageSize=1000&page={page}',
                               headers=self.connection.head)
 
-    def get_position(self) -> dict:
+    def get_position(self) -> Dict:
         """Get the current position of the vehicle.
 
         Returns:
@@ -210,7 +209,7 @@ class Control:
         """
         return self.post_data(command='position', headers=self.connection.head)
 
-    def get_services(self) -> dict:
+    def get_services(self) -> Dict:
         """Get the service history of the vehicle.
 
         Returns:
@@ -219,7 +218,7 @@ class Control:
         """
         return self.post_data(command="services", headers=self.connection.head.copy())
 
-    def get_service_status(self, service_id: str) -> dict:
+    def get_service_status(self, service_id: str) -> Dict:
         """Get a particular service information of the vehicle.
 
         Args:
@@ -255,7 +254,7 @@ class Control:
         }
         self.post_data(command="attributes", headers=self.connection.head, data=attributes_data)
 
-    def lock(self, pin: int) -> dict:
+    def lock(self, pin: int) -> Dict:
         """Lock the vehicle.
 
         Args:
@@ -266,7 +265,7 @@ class Control:
         return self.post_data(command="lock", headers=headers,
                               data=self._authenticate_service(pin=pin, service_name="RDL"))
 
-    def unlock(self, pin: int) -> dict:
+    def unlock(self, pin: int) -> Dict:
         """Unlock the vehicle.
 
         Args:
@@ -289,7 +288,7 @@ class Control:
         self.post_data(command="unlock", headers=headers,
                        data=self._authenticate_service(pin=pin, service_name="ALOFF"))
 
-    def honk_blink(self) -> dict:
+    def honk_blink(self) -> Dict:
         """Honk the horn and flash the lights associated with the specified vehicle."""
         headers = self.connection.head.copy()
         headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json"
@@ -297,7 +296,7 @@ class Control:
         return self.post_data(command="honkBlink", headers=headers,
                               data=self._authenticate_vin_protected_service(service_name="HBLF"))
 
-    def remote_engine_start(self, pin: int, target_temperature: int) -> dict:
+    def remote_engine_start(self, pin: int, target_temperature: int) -> Dict:
         """Starts the vehicle remotely.
 
         Args:
@@ -310,7 +309,7 @@ class Control:
                 "engine_on": self.post_data(command="engineOn", headers=headers,
                                             data=self._authenticate_service(pin=pin, service_name="REON"))}
 
-    def remote_engine_stop(self, pin: int) -> dict:
+    def remote_engine_stop(self, pin: int) -> Dict:
         """Turn off the vehicle remotely.
 
         Args:
@@ -321,7 +320,7 @@ class Control:
         return self.post_data(command="engineOff", headers=headers,
                               data=self._authenticate_service(pin=pin, service_name="REOFF"))
 
-    def set_rcc_target_temperature(self, pin: int, target_temperature: int) -> dict:
+    def set_rcc_target_temperature(self, pin: int, target_temperature: int) -> Dict:
         """Set climate control with a target temperature.
 
         Args:
@@ -337,7 +336,7 @@ class Control:
         }
         return self.post_data(command="settings", headers=headers, data=service_parameters)
 
-    def preconditioning_start(self, celsius: float) -> dict:
+    def preconditioning_start(self, celsius: float) -> Dict:
         """Start the climate preconditioning at the specified temperature.
 
         Notes:
@@ -378,7 +377,7 @@ class Control:
         ]
         return self._preconditioning_control(service_parameters=service_parameters)
 
-    def climate_prioritize(self, priority: str) -> dict:
+    def climate_prioritize(self, priority: str) -> Dict:
         """Prioritize climate controls for either range or comfort.
 
         Args:
@@ -396,7 +395,7 @@ class Control:
         ]
         return self._preconditioning_control(service_parameters=service_parameters)
 
-    def _preconditioning_control(self, service_parameters: Union[list, dict]) -> dict:
+    def _preconditioning_control(self, service_parameters: Union[list, dict]) -> Dict:
         """Initiates climate pre-conditioning.
 
         Args:
@@ -434,7 +433,7 @@ class Control:
         ]
         self._charging_profile_control(service_parameter_key="serviceParameters", service_parameters=service_parameters)
 
-    def set_max_soc(self, max_charge_level: Union[int, float]) -> dict:
+    def set_max_soc(self, max_charge_level: Union[int, float]) -> Dict:
         """Set the maximum state of charge.
 
         Args:
@@ -456,7 +455,7 @@ class Control:
         return self._charging_profile_control(service_parameter_key="serviceParameters",
                                               service_parameters=service_parameters)
 
-    def set_one_off_max_soc(self, max_charge_level: Union[int, float]) -> dict:
+    def set_one_off_max_soc(self, max_charge_level: Union[int, float]) -> Dict:
         """Set the one-off maximum state of charge.
 
         Args:
@@ -479,7 +478,7 @@ class Control:
         return self._charging_profile_control(service_parameter_key="serviceParameters",
                                               service_parameters=service_parameters)
 
-    def add_departure_timer(self, index: int, year: int, month: int, day: int, hour: int, minute: int) -> dict:
+    def add_departure_timer(self, index: int, year: int, month: int, day: int, hour: int, minute: int) -> Dict:
         """Add a single departure timer for the specified vehicle.
 
         Args:
@@ -517,7 +516,7 @@ class Control:
         return self._charging_profile_control(service_parameter_key="departureTimerSetting",
                                               service_parameters=departure_timer_setting)
 
-    def add_repeated_departure_timer(self, index: int, schedule: dict, hour: int, minute: int) -> dict:
+    def add_repeated_departure_timer(self, index: int, schedule: dict, hour: int, minute: int) -> Dict:
         """Add repeated departure timer for the specified vehicle.
 
         Args:
@@ -552,7 +551,7 @@ class Control:
         return self._charging_profile_control(service_parameter_key="departureTimerSetting",
                                               service_parameters=departure_timer_setting)
 
-    def delete_departure_timer(self, index: int) -> dict:
+    def delete_departure_timer(self, index: int) -> Dict:
         """Delete departure timers specified by their index.
 
         Args:
@@ -573,7 +572,7 @@ class Control:
                                               service_parameters=departure_timer_setting)
 
     def add_charging_period(self, index: int, schedule: dict,
-                            hour_from: int, minute_from: int, hour_to: int, minute_to: int) -> dict:
+                            hour_from: int, minute_from: int, hour_to: int, minute_to: int) -> Dict:
         """Set a time period for charging. The vehicle will prioritize charging during the specified period.
 
         Args:
@@ -630,7 +629,7 @@ class Control:
         return self._charging_profile_control(service_parameter_key="tariffSettings",
                                               service_parameters=tariff_settings)
 
-    def _charging_profile_control(self, service_parameter_key: str, service_parameters: Union[dict, list]) -> dict:
+    def _charging_profile_control(self, service_parameter_key: str, service_parameters: Union[dict, list]) -> Dict:
         """Charging profile handler.
 
         Args:
@@ -648,7 +647,7 @@ class Control:
         cp_data[service_parameter_key] = service_parameters
         return self.post_data(command="chargeProfile", headers=headers, data=cp_data)
 
-    def set_wakeup_time(self, wakeup_time: int) -> dict:
+    def set_wakeup_time(self, wakeup_time: int) -> Dict:
         """Set wakeup time.
 
         Args:
@@ -669,7 +668,7 @@ class Control:
         swu_data["startTime"] = wakeup_time
         return self._set_wakeup(wakeup_data=swu_data)
 
-    def delete_wakeup_time(self) -> dict:
+    def delete_wakeup_time(self) -> Dict:
         """Cancel the wakeup timer.
 
         Returns:
@@ -680,7 +679,7 @@ class Control:
         swu_data["serviceCommand"] = "END"
         return self._set_wakeup(wakeup_data=swu_data)
 
-    def _set_wakeup(self, wakeup_data: dict) -> dict:
+    def _set_wakeup(self, wakeup_data: dict) -> Dict:
         """Handles setting wakeup timer.
 
         Args:
@@ -691,7 +690,7 @@ class Control:
         headers["Content-Type"] = DEFAULT_CONTENT_TYPE
         return self.post_data(command="swu", headers=headers, data=wakeup_data)
 
-    def enable_service_mode(self, pin: int, expiration_time: Union[int, float] = None) -> dict:
+    def enable_service_mode(self, pin: int, expiration_time: Union[int, float] = None) -> Dict:
         """Service Mode will allow the vehicle to be serviced without InControl triggering a vehicle theft alarm.
 
         Args:
@@ -702,10 +701,9 @@ class Control:
             dict:
             A dictionary response.
         """
-        return self._prov_command(pin=pin, expiration_time=expiration_time or int(time.time()) + 86_400,
-                                  mode="protectionStrategy_serviceMode")
+        return self._prov_command(pin=pin, expiration_time=expiration_time, mode="protectionStrategy_serviceMode")
 
-    def enable_guardian_mode(self, pin: int, expiration_time: Union[int, float] = None) -> dict:
+    def enable_guardian_mode(self, pin: int, expiration_time: Union[int, float]) -> NoReturn:
         """Guardian Mode is a security feature that will generate alarms when vehicle interaction is detected.
 
         Args:
@@ -723,11 +721,11 @@ class Control:
         headers = self.connection.head.copy()
         headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.GuardianAlarmList-v1+json"
         gm_data = self._authenticate_service(pin=pin, service_name="GM")
-        gm_data["endTime"] = expiration_time or int(time.time()) + 86_400
+        gm_data["endTime"] = expiration_time
         gm_data["status"] = "ACTIVE"
         return self.post_data(command="gm/alarms", headers=headers, data=gm_data)
 
-    def enable_transport_mode(self, pin: int, expiration_time: Union[int, float] = None) -> dict:
+    def enable_transport_mode(self, pin: int, expiration_time: Union[int, float] = None) -> Dict:
         """Allows the vehicle to be transported without InControl triggering a vehicle theft alarm.
 
         Args:
@@ -738,10 +736,9 @@ class Control:
             dict:
             A dictionary response.
         """
-        return self._prov_command(pin=pin, expiration_time=expiration_time or int(time.time()) + 86_400,
-                                  mode="protectionStrategy_transportMode")
+        return self._prov_command(pin=pin, expiration_time=expiration_time, mode="protectionStrategy_transportMode")
 
-    def enable_privacy_mode(self, pin: int) -> dict:
+    def enable_privacy_mode(self, pin: int) -> Dict:
         """The vehicle will not log journey information as long as privacy mode is enabled.
 
         Args:
@@ -753,7 +750,7 @@ class Control:
         """
         return self._prov_command(pin=pin, expiration_time=None, mode="privacySwitch_on")
 
-    def disable_privacy_mode(self, pin: int) -> dict:
+    def disable_privacy_mode(self, pin: int) -> Dict:
         """The vehicle will resume journey information logging.
 
         Args:
@@ -765,7 +762,7 @@ class Control:
         """
         return self._prov_command(pin=pin, expiration_time=None, mode="privacySwitch_off")
 
-    def _prov_command(self, pin: int, expiration_time: Union[int, float, None], mode: str) -> dict:
+    def _prov_command(self, pin: int, expiration_time: Union[int, float, None], mode: str) -> Dict:
         """Performs ServiceConfiguration commands.
 
         Args:
@@ -785,7 +782,7 @@ class Control:
         prov_data["endTime"] = expiration_time
         return self.post_data(command="prov", headers=headers, data=prov_data)
 
-    def _authenticate_vin_protected_service(self, service_name: str) -> dict:
+    def _authenticate_vin_protected_service(self, service_name: str) -> Dict:
         """Authenticates services that use VIN for auth.
 
         Args:

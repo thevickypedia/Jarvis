@@ -21,7 +21,7 @@ from executors.location import (directions, distance, locate, locate_places,
 from executors.myq_controller import garage
 from executors.others import (abusive, apps, facts, flip_a_coin, google_home,
                               jokes, meaning, music, news, notes, photo,
-                              repeat, report, sprint_name)
+                              repeat, report, sprint_name, version)
 from executors.remind import reminder
 from executors.robinhood import robinhood
 from executors.system import system_info, system_vitals
@@ -35,7 +35,8 @@ from executors.wiki import wikipedia_
 from executors.word_match import word_match
 from modules.audio.speaker import speak
 from modules.audio.voices import voice_changer
-from modules.conditions import conversation, keywords
+from modules.conditions import conversation
+from modules.conditions import keywords as keywords_mod
 from modules.exceptions import StopSignal
 from modules.logger.custom_logger import logger
 from modules.meetings.events import events
@@ -57,6 +58,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
         bool:
         Boolean True only when asked to sleep for conditioned sleep message.
     """
+    keywords = keywords_mod.keywords
     todo_checks = ['to do', 'to-do', 'todo']
 
     if "*" in phrase:
@@ -226,6 +228,9 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
 
     elif word_match(phrase=phrase, match_list=keywords.photo):
         photo()
+
+    elif word_match(phrase=phrase, match_list=keywords.version):
+        version()
 
     elif word_match(phrase=phrase, match_list=conversation.greeting):
         speak(text=random.choice(['I am spectacular. I hope you are doing fine too.', 'I am doing well. Thank you.',

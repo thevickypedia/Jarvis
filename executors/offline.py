@@ -9,6 +9,7 @@ from typing import AnyStr, List, NoReturn, Union
 import requests
 from pydantic import HttpUrl
 
+from _preexec import keywords_handler
 from executors.alarm import alarm_executor
 from executors.automation import auto_helper
 from executors.conditions import conditions
@@ -20,6 +21,7 @@ from modules.auth_bearer import BearerAuth
 from modules.conditions import keywords
 from modules.crontab import expression
 from modules.database import database
+from modules.exceptions import EgressErrors
 from modules.logger import config
 from modules.logger.custom_logger import logger
 from modules.meetings import events, icalendar
@@ -29,7 +31,6 @@ from modules.timer.executor import RepeatedTimer
 from modules.utils import shared, support
 
 db = database.Database(database=models.fileio.base_db)
-offline_compatible = compatibles.offline_compatible()
 
 
 def repeated_tasks() -> Union[List[RepeatedTimer], List]:
@@ -42,10 +43,10 @@ def repeated_tasks() -> Union[List[RepeatedTimer], List]:
     tasks = []
     logger.info(f"Background tasks: {len(models.env.tasks)}")
     for task in models.env.tasks:
-        if word_match(phrase=task.task, match_list=offline_compatible):
+        if word_match(phrase=task.task, match_list=compatibles.offline_compatible()):
             tasks.append(RepeatedTimer(task.seconds, offline_communicator, task.task))
         else:
-            logger.error(f"{task.task} is not a part of offline communication. Removing entry.")
+            logger.error(f"{task.task!r} is not a part of offline communication. Removing entry.")
             models.env.tasks.remove(task)
     return tasks
 
@@ -66,7 +67,7 @@ def automator() -> NoReturn:
         - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't repeat execution within a minute.
     """
     config.multiprocessing_logger(filename=os.path.join('logs', 'automation_%d-%m-%Y.log'))
-    offline_list = offline_compatible + keywords.restart_control
+    offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
     start_events = start_meetings = start_cron = time.time()
     events.event_app_launcher() if models.settings.macos else None
     dry_run = True
@@ -95,8 +96,7 @@ def automator() -> NoReturn:
                 try:
                     if requests.get(url=models.env.ics_url).status_code == 503:
                         models.env.sync_meetings = 21_600  # Set to 6 hours if unable to connect to the meetings URL
-                except (ConnectionError, TimeoutError, requests.exceptions.RequestException,
-                        requests.exceptions.Timeout) as error:
+                except EgressErrors as error:
                     logger.error(error)
                     models.env.sync_meetings = 99_999_999  # NEVER RUNs, as env vars are loaded only during start up
             start_meetings = time.time()
@@ -142,6 +142,8 @@ def automator() -> NoReturn:
                 if remind_time == datetime.now().strftime("%I_%M_%p"):
                     Thread(target=reminder_executor, args=[remind_msg]).start()
                     os.remove(os.path.join("reminder", each_reminder))
+
+        keywords_handler.rewrite_keywords()
 
         dry_run = False
 
@@ -210,7 +212,7 @@ def on_demand_offline_automation(task: str) -> Union[str, None]:
     try:
         response = requests.post(url=f'http://{models.env.offline_host}:{models.env.offline_port}/offline-communicator',
                                  json={'command': task}, auth=BearerAuth(token=models.env.offline_pass))
-    except (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout):
+    except EgressErrors:
         return
     if response.ok:
         return response.json()['detail'].split('\n')[-1]
@@ -228,12 +230,12 @@ def offline_communicator(command: str) -> Union[AnyStr, HttpUrl]:
     """
     shared.called_by_offline = True
     # Specific for offline communication and not needed for live conversations
-    if word_match(phrase=command, match_list=keywords.ngrok):
+    if word_match(phrase=command, match_list=keywords.keywords.ngrok):
         if public_url := get_tunnel():
             return public_url
         else:
             raise LookupError("Failed to retrieve the public URL")
-    if word_match(phrase=command, match_list=keywords.photo):
+    if word_match(phrase=command, match_list=keywords.keywords.photo):
         return photo()
     conditions(phrase=command, should_return=True)
     shared.called_by_offline = False

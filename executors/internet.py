@@ -5,7 +5,7 @@ import sys
 import urllib.error
 import urllib.request
 from multiprocessing import Process
-from typing import Union
+from typing import Dict, Union
 
 import psutil
 from speedtest import ConfigRetrievalError, Speedtest
@@ -59,7 +59,7 @@ def vpn_checker() -> Union[bool, str]:
         return False
 
 
-def public_ip_info() -> dict:
+def public_ip_info() -> Dict:
     """Get public IP information.
 
     Returns:

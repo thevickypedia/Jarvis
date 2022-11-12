@@ -55,7 +55,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
     """
     processes = {
         "handler": Process(target=handler),
-        "trigger_api": Process(target=trigger_api),
+        "trigger_api": Process(target=trigger_api),  # Does not support run-time keywords update from yaml file
         "automator": Process(target=automator),
         "initiate_tunneling": Process(target=initiate_tunneling),
         "synthesizer": Process(target=synthesizer)

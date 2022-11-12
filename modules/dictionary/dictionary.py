@@ -11,6 +11,7 @@ from typing import Dict, Union
 import requests
 from bs4 import BeautifulSoup
 
+from modules.exceptions import EgressErrors
 from modules.logger.custom_logger import logger
 
 
@@ -26,7 +27,7 @@ def meaning(term: str) -> Union[Dict, None]:
     """
     try:
         response = requests.get(f"http://wordnetweb.princeton.edu/perl/webwn?s={term}")
-    except (requests.RequestException, requests.exceptions.Timeout, ConnectionError, TimeoutError) as error:
+    except EgressErrors as error:
         logger.error(error)
         return
     if not response.ok:

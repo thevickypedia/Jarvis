@@ -36,10 +36,6 @@ elif env.voice_name not in _voice_names:
 
 indicators = Indicators()
 
-# Used by docs
-if not os.path.isdir('fileio'):
-    os.makedirs(name='fileio')
-
 env.website = env.website.lstrip(f"{env.website.scheme}://")
 
 if not all((env.alt_gmail_user, env.alt_gmail_pass)):

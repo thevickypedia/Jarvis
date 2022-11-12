@@ -12,10 +12,45 @@ Welcome to Jarvis's documentation!
 
    README
 
-Jarvis - Main Module
-====================
+----------Preflight Tests----------
+===================================
+Camera
+======
+.. automodule:: modules.camera.camera
+   :members:
+   :undoc-members:
+
+Speaker
+=======
+.. automodule:: modules.speaker.speak
+   :members:
+   :undoc-members:
+
+Microphone
+==========
+.. automodule:: modules.microphone.mic
+   :members:
+   :undoc-members:
+
+Speech Recognition
+==================
+.. automodule:: modules.microphone.recognizer
+   :members:
+   :undoc-members:
+
+----------Main Module----------
+===============================
+Jarvis
+======
 
 .. automodule:: jarvis
+   :members:
+   :undoc-members:
+
+Keywords Classifier
+===================
+
+.. automodule:: _preexec.keywords_handler
    :members:
    :undoc-members:
 
@@ -415,13 +450,6 @@ Auth Bearer
    :members:
    :undoc-members:
 
-Camera
-======
-
-.. automodule:: modules.camera.camera
-   :members:
-   :exclude-members:
-
 Car
 ===
 
@@ -445,6 +473,12 @@ Conditions
 ====
 
 .. automodule:: modules.conditions.keywords
+   :members:
+   :exclude-members:
+
+====
+
+.. automodule:: modules.conditions.keywords_base
    :members:
    :exclude-members: add_todo, apps, automation, avoid, bluetooth, brightness, car, create_db, current_date, current_time, delete_db, delete_todo, directions, distance, exit_, face_detection, facts, flip_a_coin, github, google_home, google_search, guard_disable, guard_enable, ip_info, jokes, kill, kill_alarm, lights, locate, locate_places, location, meaning, meetings, music, news, notes, ok, read_gmail, reminder, repeat, report, restart_control, robinhood, send_sms, set_alarm, shutdown, sleep_control, speed_test, system_info, system_vitals, television, todo, voice_changer, volume, vpn_server, weather, wikipedia_
 

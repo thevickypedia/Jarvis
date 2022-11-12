@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from typing import NoReturn
 
 import speech_recognition
 import yaml
@@ -17,8 +18,7 @@ defaults = dict(energy_threshold=RECOGNIZER.energy_threshold,
                 pause_threshold=RECOGNIZER.pause_threshold,
                 phrase_threshold=RECOGNIZER.phrase_threshold,
                 non_speaking_duration=RECOGNIZER.non_speaking_duration)
-
-RECOGNIZER.energy_threshold = 1100
+RECOGNIZER.energy_threshold = 300
 RECOGNIZER.dynamic_energy_threshold = False
 RECOGNIZER.pause_threshold = 2
 RECOGNIZER.phrase_threshold = 0.1
@@ -31,13 +31,13 @@ changed = dict(energy_threshold=RECOGNIZER.energy_threshold,
                non_speaking_duration=RECOGNIZER.non_speaking_duration)
 
 
-async def save_for_reference():
+async def save_for_reference() -> NoReturn:
     """Saves the original config and new config in a yaml file."""
     with open('speech_recognition_values.yaml', 'w') as file:
         yaml.dump(data={"defaults": defaults, "modified": changed}, stream=file)
 
 
-async def main():
+async def main() -> NoReturn:
     """Initiates yaml dump in an asynchronous call and initiates listener in a never ending loop."""
     asyncio.create_task(save_for_reference())
     with speech_recognition.Microphone() as source:
@@ -48,9 +48,11 @@ async def main():
                 logger.info('Recognizing..')
                 recognized = RECOGNIZER.recognize_google(audio_data=audio)  # Requires stable internet connection
                 # recognized = RECOGNIZER.recognize_sphinx(audio_data=audio)  # Requires pocketsphinx module
+                print(recognized)
                 if "stop" in recognized.lower().split():
                     break
-            except COMMON_ERRORS:
+            except COMMON_ERRORS as error:
+                logger.debug(error)
                 continue
 
 

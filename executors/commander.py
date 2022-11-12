@@ -17,8 +17,6 @@ from modules.models import models
 from modules.offline import compatibles
 from modules.utils import shared, support
 
-offline_list = compatibles.offline_compatible()
-
 
 def split_phrase(phrase: str, should_return: bool = False) -> bool:
     """Splits the input at 'and' or 'also' and makes it multiple commands to execute if found in statement.
@@ -39,11 +37,11 @@ def split_phrase(phrase: str, should_return: bool = False) -> bool:
                                f"{models.env.title}!")
             return False
 
-    if ' and ' in phrase and not word_match(phrase=phrase, match_list=keywords.avoid):
+    if ' and ' in phrase and not word_match(phrase=phrase, match_list=keywords.keywords.avoid):
         for each in phrase.split(' and '):
             exit_check = conditions(phrase=each.strip(), should_return=should_return)
             speaker.speak(run=True)
-    elif ' also ' in phrase and not word_match(phrase=phrase, match_list=keywords.avoid):
+    elif ' also ' in phrase and not word_match(phrase=phrase, match_list=keywords.keywords.avoid):
         for each in phrase.split(' also '):
             exit_check = conditions(phrase=each.strip(), should_return=should_return)
             speaker.speak(run=True)
@@ -100,9 +98,9 @@ def timed_delay(phrase: str) -> Tuple[str, Union[int, float]]:
         bool:
         Returns a boolean flag whether the time delay should be applied.
     """
-    if word_match(phrase=phrase, match_list=offline_list) and \
-            not word_match(phrase=phrase, match_list=keywords.set_alarm) and \
-            not word_match(phrase=phrase, match_list=keywords.reminder):
+    if word_match(phrase=phrase, match_list=compatibles.offline_compatible()) and \
+            not word_match(phrase=phrase, match_list=keywords.keywords.set_alarm) and \
+            not word_match(phrase=phrase, match_list=keywords.keywords.reminder):
         split_ = phrase.split('after')
         if task := split_[0].strip():
             delay = delay_calculator(phrase=split_[1].strip())

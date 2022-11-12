@@ -6,7 +6,7 @@ import os
 import sys
 import time
 from datetime import datetime
-from typing import Tuple
+from typing import NoReturn, Tuple
 
 import jinja2
 import requests
@@ -15,6 +15,7 @@ from pyrh.exceptions import InvalidTickerSymbol
 
 sys.path.insert(0, os.getcwd())
 
+from modules.exceptions import EgressErrors  # noqa
 from modules.logger import config  # noqa
 from modules.models import models  # noqa
 from modules.templates import templates  # noqa
@@ -71,7 +72,7 @@ class Investment:
             ticker = (raw_details['symbol'])
             try:
                 stock_name = requests.get(url=raw_details['instrument']).json()['simple_name']
-            except (ConnectionError, TimeoutError, requests.RequestException, requests.Timeout) as error:
+            except EgressErrors as error:
                 self.logger.error(error)
                 continue
             buy = round(float(data['average_buy_price']), 2)
@@ -168,7 +169,7 @@ class Investment:
                 continue
             try:
                 stock_name = requests.get(raw_details['instrument']).json()['simple_name']
-            except (ConnectionError, TimeoutError, requests.RequestException, requests.Timeout) as error:
+            except EgressErrors as error:
                 self.logger.error(error)
                 continue
             price = round(float(raw_details['last_trade_price']), 2)
@@ -181,7 +182,7 @@ class Investment:
                       f'{price:,} &#8593 {difference}\n'
         return r1, r2
 
-    def report_gatherer(self) -> None:
+    def gatherer(self) -> NoReturn:
         """Gathers all the necessary information and creates an ``index.html`` using a ``Jinja`` template."""
         if not self.result:
             return
@@ -207,8 +208,14 @@ class Investment:
                                                     WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)
         with open(models.fileio.robinhood, 'w') as static_file:
             static_file.write(rendered)
-
         self.logger.info(f'Static file generated in {round(float(time.perf_counter()), 2)}s')
+
+    def report_gatherer(self) -> NoReturn:
+        """Runs gatherer to call other dependent methods."""
+        try:
+            self.gatherer()
+        except EgressErrors as error:
+            main_logger.error(error)
 
 
 if __name__ == '__main__':

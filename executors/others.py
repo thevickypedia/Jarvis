@@ -1,3 +1,4 @@
+import ast
 import os
 import random
 import re
@@ -29,11 +30,12 @@ from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.database import database
 from modules.dictionary import dictionary
-from modules.exceptions import CameraError
+from modules.exceptions import CameraError, EgressErrors
 from modules.facenet import face
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import shared, support
+from version import version_info
 
 db = database.Database(database=models.fileio.base_db)
 
@@ -235,7 +237,7 @@ def meaning(phrase: str) -> None:
     if not keyword or keyword == 'word':
         speaker.speak(text="Please tell a keyword.", run=True)
         response = listener.listen()
-        if not response or word_match(phrase=response, match_list=keywords.exit_):
+        if not response or word_match(phrase=response, match_list=keywords.keywords.exit_):
             return
         meaning(phrase=response)
     else:
@@ -252,7 +254,7 @@ def meaning(phrase: str) -> None:
                 return
             speaker.speak(text=f'Do you wanna know how {keyword} is spelled?', run=True)
             response = listener.listen()
-            if word_match(phrase=response, match_list=keywords.ok):
+            if word_match(phrase=response, match_list=keywords.keywords.ok):
                 for letter in list(keyword.lower()):
                     speaker.speak(text=letter)
                 speaker.speak(run=True)
@@ -341,7 +343,7 @@ def time_travel() -> None:
     read_gmail()
     speaker.speak(text='Would you like to hear the latest news?', run=True)
     phrase = listener.listen()
-    if word_match(phrase=phrase.lower(), match_list=keywords.ok):
+    if word_match(phrase=phrase.lower(), match_list=keywords.keywords.ok):
         news()
 
 
@@ -349,7 +351,7 @@ def sprint_name() -> NoReturn:
     """Generates a random sprint name."""
     try:
         response = requests.get(url="https://sprint-name-gen.herokuapp.com/")
-    except (requests.exceptions.RequestException, requests.exceptions.Timeout, ConnectionError, TimeoutError) as error:
+    except EgressErrors as error:
         logger.error(error)
         speaker.speak(text="I wasn't able to get a sprint name sir! Why not name it, Jarvis failed?")
         return
@@ -395,3 +397,21 @@ def photo() -> str:
         return filename
     else:
         return f"I'm sorry {models.env.title}! I wasn't able to take a picture."
+
+
+def version() -> NoReturn:
+    """Speaks the version information along with the current version on GitHub."""
+    git_version_info = None
+    try:
+        response = requests.get(url='https://raw.githubusercontent.com/thevickypedia/Jarvis/master/version.py')
+        if response.ok:
+            git_version_info = ast.literal_eval(response.text.split('=')[1].strip())
+    except EgressErrors as error:
+        logger.error(error)
+    text = f"I'm currently running on version {'.'.join(str(c) for c in version_info)}"
+    if git_version_info:
+        if version_info == git_version_info:
+            text += ", I'm up to date."
+        else:
+            text += f", but the one on github is version {'.'.join(str(c) for c in git_version_info)}"
+    speaker.speak(text=text)
