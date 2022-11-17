@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://vigneshrao.com/Jarvis/logo.png" width="200px" height="200px">
+  <img src="https://vigneshrao.com/Jarvis/logo.png" width="371px" height="350px">
 </p>
 <h2 align="center">Natural Language User Interface Program with Python</h2>
 
@@ -10,8 +10,7 @@
 
 **Platform Supported**
 
-![Generic badge](https://img.shields.io/badge/Platform-Mac-1f425f.svg)
-![Generic badge](https://img.shields.io/badge/Platform-Windows-1f425f.svg)
+![Generic badge](https://img.shields.io/badge/Platform-MacOS|Windows-1f425f.svg)
 
 **Language Stats**
 
@@ -232,8 +231,10 @@ docker run \
 ```
 
 **[VPNServer](https://github.com/thevickypedia/vpn-server) integration**
-- **VPN_USERNAME** - Username to create vpn-server. Defaults to profile username or `openvpn`
-- **VPN_PASSWORD** - Password to authenticate vpn-server. Defaults to profile password or `aws_vpn_2021`
+- **VPN_USERNAME** - Username to create vpn-server. Defaults to profile username.
+- **VPN_PASSWORD** - Password to authenticate vpn-server. Defaults to profile password.
+- **VPN_DOMAIN** - Domain name for the hosted zone.
+- **VPN_RECORD_NAME** - Alias record name to access VPN server.
 
 **[TV](https://github.com/thevickypedia/Jarvis/blob/master/modules/tv/tv_controls.py) controls** - Applies only for [LGWebOS](https://en.wikipedia.org/wiki/WebOS)
 - **TV_CLIENT_KEY** - TV's Client key. Auto-generated when used for the first time.

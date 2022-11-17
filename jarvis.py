@@ -39,7 +39,7 @@ def restart_checker() -> NoReturn:
             shared.processes = start_processes()
         else:
             stop_processes(func_name=flag[1])
-            shared.processes[flag[1]] = start_processes(flag[1])
+            shared.processes[flag[1]] = start_processes(func_name=flag[1])
 
 
 class Activator:

@@ -196,6 +196,8 @@ class EnvConfig(BaseSettings):
     # VPN Server config
     vpn_username: str = Field(default=None, env='VPN_USERNAME')
     vpn_password: str = Field(default=None, env='VPN_PASSWORD')
+    vpn_domain: str = Field(default=None, env='VPN_DOMAIN')
+    vpn_record_name: str = Field(default=None, env='VPN_RECORD_NAME')
 
     # Vehicle config
     car_email: EmailStr = Field(default=None, env='CAR_EMAIL')

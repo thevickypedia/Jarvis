@@ -237,9 +237,6 @@ def starter() -> NoReturn:
         - voice_default: To change the voice to default value.
         - clear_logs: To purge log files older than 48 hours.
     """
-    limit = sys.getrecursionlimit()  # fetches current recursion limit
-    sys.setrecursionlimit(limit * 10)  # increases the recursion limit by 10 times
-    logger.info(f"Set recursion limit to {limit * 10}")
     volume(level=models.env.volume)
     voices.voice_default()
     clear_logs()

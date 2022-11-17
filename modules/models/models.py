@@ -36,7 +36,8 @@ elif env.voice_name not in _voice_names:
 
 indicators = Indicators()
 
-env.website = env.website.lstrip(f"{env.website.scheme}://")
+if env.website:
+    env.website = env.website.lstrip(f"{env.website.scheme}://")
 
 if not all((env.alt_gmail_user, env.alt_gmail_pass)):
     env.alt_gmail_user = env.gmail_user

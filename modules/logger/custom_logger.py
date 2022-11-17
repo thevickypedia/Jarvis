@@ -14,10 +14,9 @@ import sys
 import time
 from datetime import datetime
 from logging.config import dictConfig
-from multiprocessing import current_process
 from typing import Union
 
-from pytz import timezone, utc
+import pytz
 
 from modules.models import models
 
@@ -38,17 +37,7 @@ def log_file(filename: str) -> str:
         str:
         Log filename.
     """
-    filename = datetime.now().strftime(filename)
-    write = ''.join(['*' for _ in range(120)])
-    # Since stock_monitor.py imports support and squire modules, * gets logged which is unwanted
-    if current_process().name == 'MainProcess' and sys.argv[0].split(os.path.sep)[-1] != "stock_monitor.py":
-        with open(filename, 'a+') as file:
-            file.seek(0)
-            if not file.read():
-                file.write(f"{write}\n")
-            else:
-                file.write(f"\n{write}\n")
-    return filename
+    return datetime.now().strftime(filename)
 
 
 def custom_handler(filename: str = None, log_format: logging.Formatter = None) -> logging.FileHandler:
@@ -120,8 +109,8 @@ class TestLogger:
             A struct_time object which is a tuple of:
             **current year, month, day, hour, minute, second, weekday, year day and dst** *(Daylight Saving Time)*
         """
-        utc_dt = utc.localize(datetime.utcnow())
-        my_tz = timezone("US/Eastern")
+        utc_dt = pytz.utc.localize(datetime.utcnow())
+        my_tz = pytz.timezone("US/Eastern")
         converted = utc_dt.astimezone(my_tz)
         return converted.timetuple()
 

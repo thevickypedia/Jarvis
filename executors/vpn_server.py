@@ -53,8 +53,9 @@ def vpn_server_switch(operation: str) -> None:
     See Also:
         - Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
     """
-    vpn_object = VPNServer(vpn_username=models.env.vpn_username or models.env.root_user or 'openvpn',
-                           vpn_password=models.env.vpn_password or models.env.root_pass or 'aws_vpn_2021',
+    vpn_object = VPNServer(vpn_username=models.env.vpn_username or models.env.root_user,
+                           vpn_password=models.env.vpn_password or models.env.root_pass,
+                           domain=models.env.vpn_domain, record_name=models.env.vpn_record_name,
                            gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass,
                            recipient=models.env.recipient or models.env.gmail_user,
                            phone=models.env.phone_number, log='FILE')

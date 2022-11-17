@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+6.6.0 (11/16/2022)
+------------------
+- Upgrade VPN server to include hosted zone access
+- Update pypi publish to run only on release tags
+
 6.5.9 (11/12/2022)
 ------------------
 - Add multiple modules to test peripherals before startup
