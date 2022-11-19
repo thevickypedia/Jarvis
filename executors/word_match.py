@@ -20,8 +20,6 @@ def word_match(phrase: str, match_list: Iterable[str]) -> Union[str, NoReturn]:
     for word in match_list:
         if word in phrase.lower():  # include .split() for an exact match of words instead of a regex
             caller = sys._getframe(1).f_code.co_name  # noqa
-            if caller == 'auto_helper':
-                return word
             logger.debug(f'Matching word: {word}')
             logger.debug(f'Called by {caller!r}')
             return word

@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+6.6.3 (11/19/2022)
+------------------
+- Fix a bug in garage door controller
+- Identify the garage door by name
+- Improve README.md
+- Fix default password in vpn-server
+
+6.6.2 (11/19/2022)
+------------------
+- Update issue templates
+
 6.6.1 (11/19/2022)
 ------------------
 - Add feature to autoconnect WLAN

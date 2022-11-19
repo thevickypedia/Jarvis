@@ -5,8 +5,10 @@ from typing import Dict, NoReturn, Union
 import pymyq
 from aiohttp import ClientSession
 
+from modules.exceptions import NoCoversFound
 from modules.logger.custom_logger import logger
 from modules.models import models
+from modules.utils import support
 
 
 class Operation(str, Enum):
@@ -27,10 +29,11 @@ class Operation(str, Enum):
     STATE: str = "state"
 
 
-async def garage_controller(operation: str) -> Union[Dict, NoReturn]:
+async def garage_controller(operation: str, phrase: str) -> Union[Dict, NoReturn]:
     """Create an aiohttp session and run an operation on garage door.
 
     Args:
+        phrase: Takes the recognized phrase as an argument.
         operation: Takes the operation to be performed as an argument.
 
     Returns:
@@ -43,10 +46,16 @@ async def garage_controller(operation: str) -> Union[Dict, NoReturn]:
                                 websession=web_session)
 
         if not myq.covers:
-            logger.warning("No covers found.")
-            return
+            raise NoCoversFound("No covers found.")
 
+        device_names = [device_obj.device_json.get('name') for device_id, device_obj in myq.covers.items()]
+        logger.debug(f"Available covers: {device_names}")
+        device = support.get_closest_match(text=phrase, match_list=device_names)
+        logger.debug(f"Chosen cover: {device!r}")
         for device_id, device_obj in myq.covers.items():
+            if device_obj.device_json.get('name') != device:
+                logger.debug(f"{device_obj.device_json.get('name')!r} does not match {device!r}.")
+                continue
             if operation == Operation.OPEN:
                 open_result = await device_obj.open()
                 logger.debug(open_result)

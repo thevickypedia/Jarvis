@@ -81,3 +81,11 @@ class TVError(ConnectionResetError):
     >>> TVError
 
     """
+
+
+class NoCoversFound(NotImplementedError):
+    """Custom ``NotImplementedError`` to indicate that no garage doors were found.
+
+    >>> NoCoversFound
+
+    """
