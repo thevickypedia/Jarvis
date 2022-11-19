@@ -5,6 +5,7 @@ from typing import Any, Callable, NoReturn
 from pymyq.errors import AuthenticationError, InvalidCredentialsError, MyQError
 
 from modules.audio import speaker
+from modules.exceptions import NoCoversFound
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.myq import myq
@@ -70,7 +71,7 @@ def garage(phrase: str) -> NoReturn:
 
     logger.info("Getting status of the garage door.")
     try:
-        status = run_async(func=myq.garage_controller, operation=myq.Operation.STATE)
+        status = run_async(func=myq.garage_controller, operation=myq.Operation.STATE, phrase=phrase)
     except InvalidCredentialsError as error:
         logger.error(error)
         speaker.speak(text=f"I'm sorry {models.env.title}! Your credentials do not match.")
@@ -83,6 +84,11 @@ def garage(phrase: str) -> NoReturn:
         logger.error(error)
         speaker.speak(text=f"I wasn't able to connect to the module {models.env.title}! "
                            "Please check the logs for more information.")
+        return
+    except NoCoversFound as error:
+        logger.error(error)
+        speaker.speak(text=f"No garage doors were found in your MyQ account {models.env.title}! "
+                           "Please check your MyQ account and add a garage door name to control it.")
         return
 
     logger.info(status)
@@ -99,7 +105,7 @@ def garage(phrase: str) -> NoReturn:
             return
         logger.info(f"Opening {status['name']}.")
         speaker.speak(text=f"Opening your {status['name']} {models.env.title}!")
-        run_async(func=myq.garage_controller, operation=myq.Operation.OPEN)
+        run_async(func=myq.garage_controller, operation=myq.Operation.OPEN, phrase=phrase)
     elif myq.Operation.CLOSE in phrase:
         if status['state']['door_state'] == myq.Operation.CLOSED:
             speaker.speak(text=f"Your {status['name']} is already closed {models.env.title}!")
@@ -113,7 +119,7 @@ def garage(phrase: str) -> NoReturn:
             return
         logger.info(f"Closing {status['name']}.")
         speaker.speak(text=f"Closing your {status['name']} {models.env.title}!")
-        run_async(func=myq.garage_controller, operation=myq.Operation.CLOSE)
+        run_async(func=myq.garage_controller, operation=myq.Operation.CLOSE, phrase=phrase)
     else:
         logger.info(f"{status['name']}: {status['state']['door_state']}")
         speaker.speak(text=f"Your {status['name']} is currently {status['state']['door_state']} {models.env.title}! "

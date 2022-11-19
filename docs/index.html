@@ -49,9 +49,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="README.html">Prerequisites</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#setup">Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="README.html#env-variables">ENV Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="README.html#smart-devices">Smart Devices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="README.html#automation-setup-optional">Automation Setup [Optional]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#env-variables">ENV Variables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="README.html#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#smart-devices">Smart Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#automation-setup-optional">Automation Setup [Optional]</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#feature-s-implementation">Feature(s) Implementation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#coding-standards">Coding Standards</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#linting">Linting</a></li>
@@ -5363,6 +5366,15 @@ Pass 155 for LO and 285 for HI.</p>
 </div>
 </dd></dl>
 
+<dl class="py exception">
+<dt class="sig sig-object py" id="modules.exceptions.NoCoversFound">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">NoCoversFound</span></span><a class="headerlink" href="#modules.exceptions.NoCoversFound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code> to indicate that no garage doors were found.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">NoCoversFound</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="module-modules.facenet.face">
 <span id="facenet"></span><h1>FaceNet<a class="headerlink" href="#module-modules.facenet.face" title="Permalink to this heading">¶</a></h1>
@@ -5898,11 +5910,14 @@ Whites can have a value of None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.myq.myq.garage_controller">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.myq.myq.</span></span><span class="sig-name descname"><span class="pre">garage_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.myq.myq.garage_controller" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.myq.myq.</span></span><span class="sig-name descname"><span class="pre">garage_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.myq.myq.garage_controller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an aiohttp session and run an operation on garage door.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>operation</strong> – Takes the operation to be performed as an argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phrase</strong> – Takes the recognized phrase as an argument.</p></li>
+<li><p><strong>operation</strong> – Takes the operation to be performed as an argument.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Device state information as a dictionary.</p>

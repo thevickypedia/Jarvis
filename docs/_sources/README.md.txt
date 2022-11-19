@@ -71,7 +71,7 @@
 
 [![Ask Me | Anything ](https://img.shields.io/badge/Ask%20me-Anything-1abc9c.svg)](https://vigneshrao.com/contact)
 
-### Prerequisites
+## Prerequisites
    - **MacOS** <br> _Tested on **macOS High Sierra, Mojave, Catalina, Big Sur, Monterey and Ventura***_
      - `System Preferences` → `Security & Privacy` → `Privacy`
      - Click `+` sign and add the preferred `IDE` and `Terminal` in the following sections in left pane.
@@ -80,8 +80,8 @@
        - `Camera` - **[Optional]** Required only during face recognition/detection.
        - `Automation` - **Required** to control `System Events` and other apps like Outlook and Calendar.
        - `Files and Folders` **[OR]** `Full Disk Access` - **Required** for all `FileIO` operations.
-   <br>
-   :warning: Known Issue with [pyttsx3 module](https://pypi.org/project/pyttsx3/) on [macOS Ventura 13.0](https://www.apple.com/macos/ventura/): This version of macOS does not hold the attribute `VoiceAge`. [Workaround has been raised as a PR](https://github.com/nateshmbhat/pyttsx3/pull/247)<br><br>
+
+     :warning: Known Issue with <a href=https://pypi.org/project/pyttsx3/>pyttsx3 module</a> on <a href=https://www.apple.com/macos/ventura/> macOS Ventura 13.0</a>: This version of macOS does not hold the attribute `VoiceAge`. <a href=https://github.com/nateshmbhat/pyttsx3/pull/247>Workaround has been raised as a PR</a><br><br>
 
    - **Windows** <br> _Tested on **Windows 10**_
      - `Settings` → `Privacy`
@@ -90,9 +90,16 @@
        - Unlike macOS, `Windows` pops a confirmation window to **Allow** or **Deny** access to files and folders.
      - Install [Anaconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html#windows-installers), and [VisualStudio C++ BuildTools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
-### Setup
-   - Download the latest stable release at [pypi](https://github.com/thevickypedia/Jarvis/archive/master.zip)
-   - Download the latest un released version at [github](https://github.com/thevickypedia/Jarvis/archive/refs/heads/master.zip)
+## Setup
+
+> **Test Peripherals**:
+>   - Camera: [camera.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/camera/camera.py)
+>   - Speaker: [speak.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/speaker/speak.py)
+>   - Microphone: [mic.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/mic.py)
+>   - Speech Recognition: [recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py)
+
+   - Download the latest stable release from [pypi](https://github.com/thevickypedia/Jarvis/archive/master.zip) or the latest un released version from [github](https://github.com/thevickypedia/Jarvis/archive/refs/heads/master.zip)
+   - Navigate into the downloaded `jarvis` or `jarvis-master` directory.
    - Run the following commands in a command-line/terminal:
      1. `python3 -m venv venv` - Creates a virtual env named `venv`
      2. `source venv/bin/activate` - Activates the virtual env `venv`
@@ -101,140 +108,100 @@
      5. `bash lib/installs.sh` - Installs the required modules based on the operating system.
      6. [`python jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis.
 
-> **Test Peripherals**:
->   - Camera: [camera.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/camera/camera.py)
->   - Speaker: [speak.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/speaker/speak.py)
->   - Microphone: [mic.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/mic.py)
->   - Speech Recognition: [recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py)
-
-### ENV Variables
+## ENV Variables
 Environment variables are loaded from a `.env` file and validated using `pydantic`
 
 <details>
 <summary><strong>More on Environment variables</strong></summary>
 
+- **ROOT_PASSWORD** - System password to get the system vitals and run other `sudo` commands.
 - **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
-- **SENSITIVITY** - Hot word detection sensitivity. Range: 0-1
-- **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']` (Defaults to `['alexa']` in legacy macOS)
-
+- **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']` (Defaults to `['alexa']` in legacy macOS)<br>
 :warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.
 
-- **RECOGNIZER_SETTINGS** - A JSON object that has with customized speech recognition settings.
 - **VOICE_NAME** - Name of the voice supported by the OperatingSystem. Defaults to the author's favorite.
 - **VOICE_RATE** - Speed/rate at which the text should be spoken. Defaults to the value from `pyttsx3` module. Typically `200`
 
-> **To add more voices**:
->
-> **macOS**:
->   - System Preferences → Accessibility → Spoken Content → System voice → Manage Voices...
->
-> **Windows**:
->   - Settings → Time & Language → Speech → Manage voices → Add voices
+    <details>
+    <summary><strong><i>To add more voices</i></strong></summary>
 
-<details>
-<summary><strong>Custom settings for speech recognition</strong></summary>
+    **macOS**:
+    >   - System Preferences → Accessibility → Spoken Content → System voice → Manage Voices...
 
-These are customized according to the author's voice pitch.
-Please use [mic.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/mic.py) to figure out the suitable values in a trial and error method.
+    **Windows**:
+    >   - Settings → Time & Language → Speech → Manage voices → Add voices
 
-> These settings are added (optionally), to avoid the hard coded `PHRASE_LIMIT`
-> <br>
-> Cons in using hard coded `PHRASE_LIMIT`:
->   - Disables the listener after the set limit even the speaker is actively talking.
->   - Listener will be active until the set limit even after the speaker has stopped talking.
+    </details>
 
-Sample settings (formatted as JSON object)
-- `RECOGNIZER_SETTINGS`: `'{"energy_threshold": 1100, "dynamic_energy_threshold": false, "pause_threshold": 2, "phrase_threshold": 0.1, "non_speaking_duration": 2}'`
+- **SENSITIVITY** - Hot word detection sensitivity. Allowed range: [0-1] Defaults to `0.5`
+- **TIMEOUT** - Timeout in seconds until which the listener should wait for speech. Defaults to `3`
+- **PHRASE_LIMIT** - Timeout in seconds until which the listener will remain active. Defaults to `None`
+- **RECOGNIZER_SETTINGS** - A JSON object that has with customized speech recognition settings.
 
-**Description**
-- `energy_threshold`: Minimum audio energy to consider for recording. Greater the value, louder the speech should be.
-- `dynamic_energy_threshold`: Change considerable audio energy threshold dynamically.
-- `pause_threshold`: Seconds of non-speaking audio before a phrase is considered complete.
-- `phrase_threshold`: Minimum seconds of speaking audio before it can be considered a phrase - values below this are ignored. This helps to filter out clicks and pops.
-- `non_speaking_duration`: Seconds of non-speaking audio to keep on both sides of the recording.
+    <details>
+    <summary><strong><i>Custom settings for speech recognition</i></strong></summary>
+    
+    These are customized according to the author's voice pitch.
+    Please use [mic.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/mic.py) to figure out the suitable values in a trial and error method.
 
-</details>
+    > These settings are added (optionally), to avoid the hard coded `PHRASE_LIMIT`
+    > <br>
+    > Cons in using hard coded `PHRASE_LIMIT`:
+    >   - Disables the listener after the set limit even the speaker is actively talking.
+    >   - Listener will be active until the set limit even after the speaker has stopped talking.
 
-- **LIMITED** - Runs only the main version of `Jarvis` skipping all other background processes. Enforced based on the
-number of CPU cores. It can also be enabled with env-var.
+    Sample settings (formatted as JSON object)
+    - `RECOGNIZER_SETTINGS`: `'{"energy_threshold": 1100, "dynamic_energy_threshold": false, "pause_threshold": 2, "phrase_threshold": 0.1, "non_speaking_duration": 2}'`
+
+    **Description**
+    - `energy_threshold`: Minimum audio energy to consider for recording. Greater the value, louder the speech should be.
+    - `dynamic_energy_threshold`: Change considerable audio energy threshold dynamically.
+    - `pause_threshold`: Seconds of non-speaking audio before a phrase is considered complete.
+    - `phrase_threshold`: Minimum seconds of speaking audio before it can be considered a phrase - values below this are ignored. This helps to filter out clicks and pops.
+    - `non_speaking_duration`: Seconds of non-speaking audio to keep on both sides of the recording.
+
+    </details>
+
+- **LIMITED** - Boolean flag to run only the main version of `Jarvis` skipping background processes. Defaults to `False` Enforced based on the number of CPU cores.
 - **CAMERA_INDEX** - Camera index that has to be used. Run [camera.py](https://github.com/thevickypedia/Jarvis/tree/master/modules/camera/camera.py) to get the index value of each camera.
-- **DEBUG** - Boolean flag to enable debug level for logging.
+- **DEBUG** - Boolean flag to enable debug level for logging. Defaults to `False`
 
-**[Wi-Fi Controls](https://github.com/thevickypedia/Jarvis/tree/master/modules/wifi)**
-- **WIFI_SSID** - SSID of the wireless connection.
-- **WIFI_PASSWORD** - Password for the wireless connection.
-- **CONNECTION_RETRY** - Frequency in seconds to check for an active internet connection. Defaults to 10 seconds.
-
-**[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py)**
-- **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`
-- **OFFLINE_PASS** - Secure phrase to authenticate offline requests. Defaults to `OfflineComm`
-
-**Features**
+### Features
 - **GIT_USER** - GitHub Username
 - **GIT_PASS** - GitHub Token
 - **WEATHER_API** - API Key from [openweathermap](https://openweathermap.org/) 
 - **NEWS_API** - API Key from [newsapi](https://newsapi.org/docs/client-libraries/python)
 - **MAPS_API** - API Key for maps from [Google](https://developers.google.com/maps/documentation/maps-static/get-api-key)
+- **BIRTHDAY** - Birth date in the format DD-MM - Example: `24-April`
+- **WOLFRAM_API_KEY** - API Key from wolfram alpha.
+
+**[Email/SMS notifications](https://github.com/thevickypedia/gmail-connector)**
 - **GMAIL_USER** - Gmail account username to send and read emails.
 - **GMAIL_PASS** - Gmail account password to send and read emails.
 - **ALT_GMAIL_USER** - Alternate gmail account username to send an SMS. (`GMAIL_USER` can be re-used)
 - **ALT_GMAIL_PASS** - Alternate gmail account password to send an SMS. (`GMAIL_PASS` can be re-used)
 - **RECIPIENT** - Email address to which the emails from jarvis have to be received.
-- **ROBINHOOD_USER** - Robinhood account username.
-- **ROBINHOOD_PASS** - Robinhood account password.
-- **ROBINHOOD_QR** - Robinhood login [QR code](https://robinhood.com/account/settings)
-- **BIRTHDAY** - Birth date in the format DD-MM - Example: `24-April`
+
+**iOS integrations**
 - **ICLOUD_USER** - iCloud account username/email.
 - **ICLOUD_PASS** - iCloud account password.
 - **ICLOUD_RECOVERY** - Recovery phone number to activate lost mode on a target device - Example: `+11234567890`
 - **PHONE_NUMBER** - To send SMS from Jarvis - Example: `+11234567890`
-- **ROOT_PASSWORD** - System password for your `mac` to get the system vitals.
-- **WOLFRAM_API_KEY** - API Key from wolfram alpha.
+
+**Calendar/Meeting integrations**
 - **ICS_URL** - Shared calendar URL to get meetings information from. Should end with `.ics`
 - **EVENT_APP** - To read events from `outlook` or `calendar`. Defaults to `calendar` <br>
 :bulb: &nbsp; When `calender` is used, the name of the _calendar_ within the `Calendar.app` should be **Jarvis** <br>
-- **SPEECH_SYNTHESIS_TIMEOUT** - Timeout to connect to the docker container that processes text to speech requests. <br>
-  - To enable independent `speech-synthesis` run:
-```shell
-docker run \
-    -it \
-    -p 5002:5002 \
-    -e "HOME=${HOME}" \
-    -v "$HOME:${HOME}" \
-    -v /usr/share/ca-certificates:/usr/share/ca-certificates \
-    -v /etc/ssl/certs:/etc/ssl/certs \
-    -w "${PWD}" \
-    --user "$(id -u):$(id -g)" \
-    rhasspy/larynx
-```
-:bulb: &nbsp; Text to speech is optionally run on a docker container for better voices but the response might be slower. If you don't have docker installed or simply don't want to use it, set the `SPEECH_SYNTHESIS_TIMEOUT` env var to 0. This is also done automatically if failed to launch a docker container upon startup.
 
 **Background scans [Defaults to 1 hour]**
 - **SYNC_MEETINGS** - Interval in seconds to generate ``meetings`` information using `ics` URL.
 - **SYNC_EVENTS** - Interval in seconds to generate ``events`` information using `calendar` or `outlook` application.
 
-**API Features**
-- **ROBINHOOD_ENDPOINT_AUTH** - Authentication token to access the robinhood portfolio which is generated every hour.
-- **SURVEILLANCE_ENDPOINT_AUTH** - Token to access webcam live feed via Jarvis API.
-- **SURVEILLANCE_SESSION_TIMEOUT** - Session time out for `/surveillance`. Defaults to 300 seconds.
-- **STOCK_MONITOR_ENDPOINT_AUTH** - Token to add a stock price monitor. (Will soon be made `open-source`)
-
-- **TASKS** - Runs certain tasks at certain intervals.
-```yaml
-[
-  {"seconds": 10_800, "task": "remind me to drink water"},  # Runs every 3 hours
-  {"seconds": 21_600, "task": "turn off all lights"}  # Runs every 6 hours
-]
-```
-
-- **CRONTAB** - Runs scheduled tasks using cron expressions without using actual crontab.
-```yaml
-[
-  "0 0 * * 1-5/2 find /var/log -delete",
-  "0 5 * * 1 tar -zcf /var/backups/home.tgz /home/"
-]
-```
+**[Wi-Fi Controls](https://github.com/thevickypedia/Jarvis/tree/master/modules/wifi)**
+- **WIFI_SSID** - SSID of the wireless connection.
+- **WIFI_PASSWORD** - Password for the wireless connection.
+- **CONNECTION_RETRY** - Frequency in seconds to check for an active internet connection. Defaults to 10 seconds.
 
 **[VPNServer](https://github.com/thevickypedia/vpn-server) integration**
 - **VPN_USERNAME** - Username to create vpn-server. Defaults to profile username.
@@ -246,22 +213,92 @@ docker run \
 - **TV_CLIENT_KEY** - TV's Client key. Auto-generated when used for the first time.
 - **TV_MAC** - TV's mac address. Can be single [str] or multiple [list] mac addresses (to include both wired and wireless macs).
 
-**[Car Controls](https://github.com/thevickypedia/Jarvis/blob/master/modules/car)** - Applies only for JLR vehicles using `InControl API`.
+**[Car Controls](https://github.com/thevickypedia/Jarvis/blob/master/modules/car)** - Applies only for JLR vehicles subscribed to `InControl` application.
 - **CAR_EMAIL** - Email address to log in to InControl API.
 - **CAR_PASS** - Password to authenticate InControl API.
 - **CAR_PIN** - InControl PIN.
+
+**[Garage Controls](https://github.com/thevickypedia/Jarvis/blob/master/modules/myq)** - Applies only for garages using [MyQ garage controller](https://www.myq.com/products/smart-garage-control).
+- **MYQ_USERNAME** - Email address to log in to MyQ API.
+- **MYQ_PASSWORD** - Password to authenticate MyQ API.
 
 **[Telegram Bot](https://github.com/thevickypedia/Jarvis/blob/master/executors/telegram.py) integration**
 - **BOT_TOKEN** - Telegram BOT token.
 - **BOT_CHAT_IDS** - UserID/ChatID for a particular user.
 - **BOT_USERS** - Usernames that should have access to Jarvis.
+
+**[OS Agnostic Voice Model](https://github.com/thevickypedia/Jarvis/blob/master/modules/audio/speech_synthesis.py)**
+- **SPEECH_SYNTHESIS_TIMEOUT** - Timeout to connect to the docker container that processes text to speech requests. <br>
+    <details>
+    <summary><strong><i>To enable independent speech-synthesis</i></strong></summary>
+    
+    ```shell
+    docker run \
+        -it \
+        -p 5002:5002 \
+        -e "HOME=${HOME}" \
+        -v "$HOME:${HOME}" \
+        -v /usr/share/ca-certificates:/usr/share/ca-certificates \
+        -v /etc/ssl/certs:/etc/ssl/certs \
+        -w "${PWD}" \
+        --user "$(id -u):$(id -g)" \
+        rhasspy/larynx
+    ```
+
+    :bulb: &nbsp; Optionally run speech synthesis on a docker container for better voices but, response might be slower. If you don't have docker installed or simply don't want to use it, set the `SPEECH_SYNTHESIS_TIMEOUT` env var to 0. This is also done automatically if failed to launch a docker container upon startup.
+
+    </details>
+
+---
+
+**[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py)**
+- **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`
+- **OFFLINE_PASS** - Secure phrase to authenticate offline requests. Defaults to `OfflineComm`
+- **WORKERS** - Number of uvicorn workers (processes) to spin up. Defaults to `1`
+
+**Stock Portfolio**
+- **ROBINHOOD_USER** - Robinhood account username.
+- **ROBINHOOD_PASS** - Robinhood account password.
+- **ROBINHOOD_QR** - Robinhood login [QR code](https://robinhood.com/account/settings)
+
+**API Features**
+- **ROBINHOOD_ENDPOINT_AUTH** - Authentication token to access the robinhood portfolio which is generated every hour.
+- **SURVEILLANCE_ENDPOINT_AUTH** - Token to access webcam live feed via Jarvis API.
+- **SURVEILLANCE_SESSION_TIMEOUT** - Session time out for `/surveillance`. Defaults to 300 seconds.
+- **STOCK_MONITOR_ENDPOINT_AUTH** - Token to add a stock price monitor. (Will soon be made `open-source`)
+
+**Scheduler**
+- **TASKS** - Runs certain tasks at certain intervals.
+    <details>
+    <summary><strong><i>Sample value</i></strong></summary>
+    
+    ```yaml
+    [
+      {"seconds": 10_800, "task": "remind me to drink water"},  # Runs every 3 hours
+      {"seconds": 21_600, "task": "turn off all lights"}  # Runs every 6 hours
+    ]
+    ```
+    </details>
+
+- **CRONTAB** - Runs scheduled tasks using cron expressions without using actual crontab.
+    <details>
+    <summary><strong><i>Sample value</i></strong></summary>
+    
+    ```yaml
+    [
+      "0 0 * * 1-5/2 find /var/log -delete",
+      "0 5 * * 1 tar -zcf /var/backups/home.tgz /home/"
+    ]
+    ```
+    </details>
+
 </details>
 
 ### Smart Devices
 A source file `smart_devices.yaml` is used to store smart devices' hostnames. `Jarvis` supports [`MagicHome` lights](https://www.amazon.com/gp/product/B08C7GY43L) and `LGWebOS` TVs.
 
 <details>
-<summary><strong>Setup Instructions</strong></summary>
+<summary><strong><i>Setup Instructions</i></strong></summary>
 
 > Note: Jarvis currently supports only one hostname for TV but multiple for lights.
 
@@ -279,7 +316,7 @@ kitchen:
   - 'HOSTNAMES'
 living room:
   - 'HOSTNAMES'
-party mode:  # Light hostnames which needed to be engaged for party mode
+party mode:  # Light hostnames that needs to be engaged for party mode, if not present individual lights can be enabled
   - 'HOSTNAMES'
 tv: 'LGWEBOSTV'
 ```
@@ -291,7 +328,7 @@ at pre-defined times without any user interaction. Uses an `automation.yaml` fil
 within the directory `fileio`
 
 <details>
-<summary><strong>Setup Instructions</strong></summary>
+<summary><strong><i>Setup Instructions</i></strong></summary>
 
 The YAML file should be a dictionary within a dictionary that looks like the below.
 
@@ -319,17 +356,17 @@ The YAML file should be a dictionary within a dictionary that looks like the bel
 ```
 </details>
 
-### Feature(s) Implementation
+## Feature(s) Implementation
 Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, env variables, 
 features' overview and demo videos.
 
-### Coding Standards
+## Coding Standards
 Docstring format: [`Google`](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) <br>
 Styling conventions: [`PEP 8`](https://www.python.org/dev/peps/pep-0008/) <br>
 Clean code with pre-commit hooks: [`flake8`](https://flake8.pycqa.org/en/latest/) and 
 [`isort`](https://pycqa.github.io/isort/)
 
-### Linting
+## Linting
 `PreCommit` will ensure linting, and the doc creation are run on every commit.
 
 **Requirement**
@@ -340,12 +377,12 @@ Clean code with pre-commit hooks: [`flake8`](https://flake8.pycqa.org/en/latest/
 <br>
 `pre-commit run --all-files`
 
-### Pypi Package
+## Pypi Package
 [![pypi-module](https://img.shields.io/badge/Software%20Repository-pypi-1f425f.svg)](https://packaging.python.org/tutorials/packaging-projects/)
 
 [https://pypi.org/project/jarvis-ironman/](https://pypi.org/project/jarvis-ironman/)
 
-### Runbook
+## Runbook
 [![made-with-sphinx-doc](https://img.shields.io/badge/Code%20Docs-Sphinx-1f425f.svg)](https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html)
 
 [https://thevickypedia.github.io/Jarvis/](https://thevickypedia.github.io/Jarvis/)

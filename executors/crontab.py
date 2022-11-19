@@ -4,7 +4,7 @@ from typing import NoReturn
 
 from modules.logger import config
 
-LOG_FILE = os.path.join('logs', 'cron_%d-%m-%Y.log')
+LOG_FILE = os.path.join('logs', 'cron_%d-%m-%Y.log')  # Used by api functions that run on cron schedule
 
 
 def crontab_executor(statement: str) -> NoReturn:
