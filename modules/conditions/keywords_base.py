@@ -1,7 +1,7 @@
 # noinspection PyUnresolvedReferences
 """List of keywords for each variable which is condition matched in the main module.
 
->>> Keywords
+>>> KeywordsBase
 
 """
 

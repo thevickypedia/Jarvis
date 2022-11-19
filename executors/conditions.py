@@ -54,6 +54,10 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
         phrase: Takes the voice recognized statement as argument.
         should_return: A boolean flag sent by ``Activator`` to indicate that the ``else`` part shouldn't be executed.
 
+    Raises:
+        StopSignal:
+        When requested to stop Jarvis.
+
     Returns:
         bool:
         Boolean True only when asked to sleep for conditioned sleep message.

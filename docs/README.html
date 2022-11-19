@@ -110,7 +110,7 @@
 </li>
 </ul>
    <br>
-   :warning: Known Issue with <a href=https://pypi.org/project/pyttsx3/>pyttsx3 module</a> on <a href=https://www.apple.com/macos/ventura/> macOS Ventura 13.0</a>: This version of macOS does not hold the attribute VoiceAge. <a href=https://github.com/nateshmbhat/pyttsx3/pull/247>Workaround has been raised as a PR</a><br><br><ul class="simple">
+   :warning: Known Issue with [pyttsx3 module](https://pypi.org/project/pyttsx3/) on [macOS Ventura 13.0](https://www.apple.com/macos/ventura/): This version of macOS does not hold the attribute `VoiceAge`. [Workaround has been raised as a PR](https://github.com/nateshmbhat/pyttsx3/pull/247)<br><br><ul class="simple">
 <li><p><strong>Windows</strong> <br> <em>Tested on <strong>Windows 10</strong></em></p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">Settings</span></code> → <code class="docutils literal notranslate"><span class="pre">Privacy</span></code></p>
@@ -128,7 +128,8 @@
 <section id="setup">
 <h1>Setup<a class="headerlink" href="#setup" title="Permalink to this heading">¶</a></h1>
 <ul class="simple">
-<li><p>Clone this <a class="reference external" href="https://github.com/thevickypedia/Jarvis.git">repository</a> or download it from <a class="reference external" href="https://pypi.org/project/jarvis-ironman/">pypi</a></p></li>
+<li><p>Download the latest stable release at <a class="reference external" href="https://github.com/thevickypedia/Jarvis/archive/master.zip">pypi</a></p></li>
+<li><p>Download the latest un released version at <a class="reference external" href="https://github.com/thevickypedia/Jarvis/archive/refs/heads/master.zip">github</a></p></li>
 <li><p>Run the following commands in a command-line/terminal:</p>
 <ol class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">venv</span> <span class="pre">venv</span></code> - Creates a virtual env named <code class="docutils literal notranslate"><span class="pre">venv</span></code></p></li>
@@ -154,7 +155,7 @@
 <h1>ENV Variables<a class="headerlink" href="#env-variables" title="Permalink to this heading">¶</a></h1>
 <p>Environment variables are loaded from a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file and validated using <code class="docutils literal notranslate"><span class="pre">pydantic</span></code></p>
 <details>
-<summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary><ul class="simple">
+<summary><strong>More on Environment variables</strong></summary><ul class="simple">
 <li><p><strong>TITLE</strong> - Title which Jarvis should address the user by. Defaults to <code class="docutils literal notranslate"><span class="pre">sir</span></code></p></li>
 <li><p><strong>NAME</strong> - Name which Jarvis should address the user by. Defaults to <code class="docutils literal notranslate"><span class="pre">Vignesh</span></code></p></li>
 <li><p><strong>SENSITIVITY</strong> - Hot word detection sensitivity. Range: 0-1</p></li>
@@ -206,6 +207,12 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 number of CPU cores. It can also be enabled with env-var.</p></li>
 <li><p><strong>CAMERA_INDEX</strong> - Camera index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/modules/camera/camera.py">camera.py</a> to get the index value of each camera.</p></li>
 <li><p><strong>DEBUG</strong> - Boolean flag to enable debug level for logging.</p></li>
+</ul>
+<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/modules/wifi">Wi-Fi Controls</a></strong></p>
+<ul class="simple">
+<li><p><strong>WIFI_SSID</strong> - SSID of the wireless connection.</p></li>
+<li><p><strong>WIFI_PASSWORD</strong> - Password for the wireless connection.</p></li>
+<li><p><strong>CONNECTION_RETRY</strong> - Frequency in seconds to check for an active internet connection. Defaults to 10 seconds.</p></li>
 </ul>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py">Offline communicator</a></strong></p>
 <ul class="simple">
@@ -366,6 +373,11 @@ Date format should match exactly as described below.</p>
 </pre></div>
 </div>
 </details></section>
+<section id="feature-s-implementation">
+<h1>Feature(s) Implementation<a class="headerlink" href="#feature-s-implementation" title="Permalink to this heading">¶</a></h1>
+<p>Please refer <a class="reference external" href="https://github.com/thevickypedia/Jarvis/wiki">wiki</a> for API usage, access controls, env variables,
+features’ overview and demo videos.</p>
+</section>
 <section id="coding-standards">
 <h1>Coding Standards<a class="headerlink" href="#coding-standards" title="Permalink to this heading">¶</a></h1>
 <p>Docstring format: <a class="reference external" href="https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings"><code class="docutils literal notranslate"><span class="pre">Google</span></code></a> <br>
@@ -382,11 +394,6 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <p><strong>Usage</strong>
 <br>
 <code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">run</span> <span class="pre">--all-files</span></code></p>
-</section>
-<section id="feature-s-implementation">
-<h1>Feature(s) Implementation<a class="headerlink" href="#feature-s-implementation" title="Permalink to this heading">¶</a></h1>
-<p>Please refer <a class="reference external" href="https://github.com/thevickypedia/Jarvis/wiki">wiki</a> for API usage, access controls, env variables,
-features’ overview and demo videos.</p>
 </section>
 <section id="pypi-package">
 <h1>Pypi Package<a class="headerlink" href="#pypi-package" title="Permalink to this heading">¶</a></h1>
@@ -419,9 +426,9 @@ features’ overview and demo videos.</p>
 <li><a class="reference internal" href="#env-variables">ENV Variables</a></li>
 <li><a class="reference internal" href="#smart-devices">Smart Devices</a></li>
 <li><a class="reference internal" href="#automation-setup-optional">Automation Setup [Optional]</a></li>
+<li><a class="reference internal" href="#feature-s-implementation">Feature(s) Implementation</a></li>
 <li><a class="reference internal" href="#coding-standards">Coding Standards</a></li>
 <li><a class="reference internal" href="#linting">Linting</a></li>
-<li><a class="reference internal" href="#feature-s-implementation">Feature(s) Implementation</a></li>
 <li><a class="reference internal" href="#pypi-package">Pypi Package</a></li>
 <li><a class="reference internal" href="#runbook">Runbook</a></li>
 <li><a class="reference internal" href="#license-copyright">License &amp; copyright</a></li>

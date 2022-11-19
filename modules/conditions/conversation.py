@@ -1,7 +1,7 @@
 # noinspection PyUnresolvedReferences
 """List of conversational keywords for each variable which is condition matched in main module.
 
->>> Conditions
+>>> Conversation
 
 """
 

@@ -192,14 +192,15 @@ async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: b
             - quality: Quality of audio conversion.
             - voice: Voice model ot be used.
 
-    Returns:
-        FileResponse:
-        Audio file to be downloaded.
-
     Raises:
+        APIResponse:
         - 404: If audio file was not found after successful response.
         - 500: If the connection to speech synthesizer fails.
         - 204: If speech synthesis file wasn't found.
+
+    Returns:
+        FileResponse:
+        Audio file to be downloaded.
     """
     if not (text := input_data.text.strip()):
         logger.error('Empty requests cannot be processed.')
@@ -246,6 +247,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
             - speech_timeout: Timeout to process speech-synthesis.
 
     Raises:
+        APIResponse:
         - 200: A dictionary with the command requested and the response for it from Jarvis.
         - 204: If empty command was received.
         - 422: If the request is not part of offline compatible words.
@@ -347,6 +349,13 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
 
             - token: Authentication token.
             - email: Email to which the notifications have to be triggered.
+
+    Raises:
+        APIResponse:
+        - 422: For any invalid entry made by the user.
+        - 409: If current price is lesser than the minimum value or grater than the maximum value.
+        - 404: If a delete request is made against an entry that is not available in the database.
+        - 502: If price check fails.
 
     See Also:
         - This API endpoint is simply the backend for stock price monitoring.
@@ -459,7 +468,9 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
         """Authenticates the request and generates single use token.
 
         Raises:
-            200: If initial auth is successful and returns the single-use token.
+            APIResponse:
+            - 200: If initial auth is successful and single use token is successfully sent via email.
+            - 503: If failed to send the single use token via email.
 
         See Also:
             If basic auth (stored as an env var ``robinhood_endpoint_auth``) succeeds:
@@ -499,14 +510,15 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
             - request: Takes the ``Request`` class as an argument.
             - token: Takes custom auth token as an argument.
 
-        Returns:
-            HTMLResponse:
-            Renders the html page.
-
         Raises:
+            APIResponse:
             - 403: If token is ``null``.
             - 404: If the HTML file is not found.
             - 417: If token doesn't match the auto-generated value.
+
+        Returns:
+            HTMLResponse:
+            Renders the html page.
 
         See Also:
             - This endpoint is secured behind single use token sent via email as MFA (Multi-Factor Authentication)
@@ -544,7 +556,9 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
             cam: Index number of the chosen camera.
 
         Raises:
-            200: If initial auth is successful and returns the single-use token.
+            APIResponse:
+            - 200: If initial auth is successful and single use token is successfully sent via email.
+            - 503: If failed to send the single use token via email.
 
         See Also:
             If basic auth (stored as an env var ``SURVEILLANCE_ENDPOINT_AUTH``) succeeds:
@@ -591,13 +605,15 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
             - request: Takes the ``Request`` class as an argument.
             - token: Takes custom auth token as an argument.
 
+        Raises:
+            APIResponse:
+            - 307: If token matches the auto-generated value.
+            - 401: If token is ``null``.
+            - 417: If token doesn't match the auto-generated value.
+
         Returns:
             HTMLResponse:
             Renders the html page.
-
-        Raises:
-            - 403: If token is ``null``.
-            - 417: If token doesn't match the auto-generated value.
 
         See Also:
             - This endpoint is secured behind single use token sent via email as MFA (Multi-Factor Authentication)
@@ -625,6 +641,12 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
     @app.get('/video-feed')
     async def video_feed(request: Request, token: str = None) -> StreamingResponse:
         """Authenticates the request, and returns the frames generated as a ``StreamingResponse``.
+
+        Raises:
+            APIResponse:
+            - 307: If token matches the auto-generated value.
+            - 401: If token is ``null``.
+            - 417: If token doesn't match the auto-generated value.
 
         Args:
             - request: Takes the ``Request`` class as an argument.

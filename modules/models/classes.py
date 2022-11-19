@@ -32,6 +32,9 @@ class Settings(BaseSettings):
 
     >>> Settings
 
+    Raises:
+        UnsupportedOS:
+        If the hosted device is neither macOS nor Windows.
     """
 
     pid: PositiveInt = os.getpid()
@@ -128,8 +131,8 @@ class EnvConfig(BaseSettings):
     root_password: str = Field(default=None, env='ROOT_PASSWORD')
 
     # Built-in speaker config
-    voice_name: str = Field(default=None, env="VOICE_NAME")
-    voice_rate: Union[PositiveInt, PositiveFloat] = Field(default=audio_driver.getProperty("rate"), env="VOICE_RATE")
+    voice_name: str = Field(default=None, env='VOICE_NAME')
+    voice_rate: Union[PositiveInt, PositiveFloat] = Field(default=audio_driver.getProperty("rate"), env='VOICE_RATE')
 
     # Log config
     debug: bool = Field(default=False, env='DEBUG')
@@ -212,7 +215,7 @@ class EnvConfig(BaseSettings):
     sensitivity: Union[Sensitivity, List[Sensitivity]] = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
     timeout: Union[PositiveFloat, PositiveInt] = Field(default=3, env='TIMEOUT')
     phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=None, env='PHRASE_LIMIT')
-    recognizer_settings: RecognizerSettings = Field(default=None, env="RECOGNIZER_SETTINGS")
+    recognizer_settings: RecognizerSettings = Field(default=None, env='RECOGNIZER_SETTINGS')
 
     # Telegram config
     bot_token: str = Field(default=None, env='BOT_TOKEN')
@@ -225,8 +228,13 @@ class EnvConfig(BaseSettings):
     speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
 
     # Background tasks
-    tasks: List[CustomDict] = Field(default=[], env="TASKS")
+    tasks: List[CustomDict] = Field(default=[], env='TASKS')
     crontab: List[str] = Field(default=[], env='CRONTAB')
+
+    # WiFi config
+    wifi_ssid: str = Field(default=None, env='WIFI_SSID')
+    wifi_password: str = Field(default=None, env='WIFI_PASSWORD')
+    connection_retry: Union[PositiveInt, PositiveFloat] = Field(default=10, env='CONNECTION_RETRY')
 
     # Legacy macOS config
     if settings.legacy:

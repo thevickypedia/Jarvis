@@ -11,7 +11,7 @@ from playsound import playsound
 from _preexec import keywords_handler
 from executors.commander import initiator
 from executors.controls import exit_process, starter, terminator
-from executors.internet import get_ssid, ip_address, public_ip_info
+from executors.internet import get_connection_info, ip_address, public_ip_info
 from executors.location import write_current_location
 from executors.offline import repeated_tasks
 from executors.processor import clear_db, start_processes, stop_processes
@@ -21,6 +21,7 @@ from modules.exceptions import StopSignal
 from modules.logger.custom_logger import custom_handler, logger
 from modules.models import models
 from modules.utils import shared, support
+from modules.wifi.connector import ControlConnection, ControlPeripheral
 
 
 def restart_checker() -> NoReturn:
@@ -185,11 +186,13 @@ def begin() -> NoReturn:
     logger.info(f"Current Process ID: {models.settings.pid}")
     starter()
     if ip_address() and public_ip_info():
-        sys.stdout.write(f"\rINTERNET::Connected to {get_ssid() or 'the internet'}.")
+        sys.stdout.write(f"\rINTERNET::Connected to {get_connection_info() or 'the internet'}.")
     else:
-        sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
-        speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! Please check your connection.",
-                      run=True)
+        ControlPeripheral().enable()
+        if not ControlConnection().wifi_connector():
+            sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
+            speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! "
+                               "Please check your connection.", run=True)
     sys.stdout.write(f"\rCurrent Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
     shared.hosted_device = hosted_device_info()
     if not models.settings.limited:

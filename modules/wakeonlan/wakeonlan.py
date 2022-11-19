@@ -24,6 +24,10 @@ class WakeOnLan:
 
         Args:
             macaddress: the mac address that should be parsed into a magic packet.
+
+        Raises:
+            InvalidArgument:
+            If the argument ``macaddress`` is invalid.
         """
         if len(macaddress) == 17:
             macaddress = macaddress.replace(macaddress[2], "")

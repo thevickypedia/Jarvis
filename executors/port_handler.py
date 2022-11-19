@@ -89,4 +89,8 @@ def kill_port_pid(port: int, protocol: str = 'tcp') -> Union[bool, None]:
         logger.info(f'No active process running on {port}')
         return False
     except (subprocess.SubprocessError, subprocess.CalledProcessError) as error:
-        logger.error(error)
+        if isinstance(error, subprocess.CalledProcessError):
+            result = error.output.decode(encoding='UTF-8').strip()
+            logger.error(f"[{error.returncode}]: {result}")
+        else:
+            logger.error(error)

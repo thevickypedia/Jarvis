@@ -71,3 +71,7 @@ source_suffix = {
     '.txt': 'markdown',
     '.md': 'markdown',
 }
+
+# Retain the function/member order
+# Reference: https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autodoc_member_order
+autodoc_member_order = 'bysource'

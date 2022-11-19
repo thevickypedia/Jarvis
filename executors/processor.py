@@ -5,6 +5,7 @@ from typing import Dict, List, NoReturn, Tuple, Union
 import psutil
 
 from api.server import trigger_api
+from executors.connection import connection_handler
 from executors.offline import automator, initiate_tunneling
 from executors.telegram import handler
 from modules.audio.speech_synthesis import synthesizer
@@ -46,19 +47,20 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
     """Initiates multiple background processes to achieve parallelization.
 
     Methods
-        - poll_for_messages: Initiates polling for messages on the telegram bot.
+        - handler: Initiates polling for messages on the telegram bot.
         - trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.
         - automator: Initiates automator that executes offline commands and certain functions at said time.
         - initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
-        - speech_synthesis: Initiates larynx docker image.
-        - playsound: Plays a start-up sound.
+        - synthesizer: Initiates larynx docker image for speech synthesis.
+        - connection_handler: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections.
     """
     processes = {
         "handler": Process(target=handler),
         "trigger_api": Process(target=trigger_api),  # Does not support run-time keywords update from yaml file
         "automator": Process(target=automator),
         "initiate_tunneling": Process(target=initiate_tunneling),
-        "synthesizer": Process(target=synthesizer)
+        "synthesizer": Process(target=synthesizer),
+        "connection_handler": Process(target=connection_handler)  # Cannot hook up with other process due to timed wait
     }
     if func_name:
         processes = {func_name: processes[func_name]}

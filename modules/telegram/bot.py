@@ -227,8 +227,10 @@ class TelegramBot:
         """Polls ``api.telegram.org`` for new messages.
 
         Raises:
-            - BotInUse: When a new polling is initiated using the same token.
-            - ConnectionError: If unable to connect to the endpoint.
+            BotInUse:
+                - When a new polling is initiated using the same token.
+            ConnectionError:
+                - If unable to connect to the endpoint.
 
         See Also:
             Swaps ``offset`` value during every iteration to avoid hanging new messages.

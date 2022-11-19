@@ -38,7 +38,8 @@ def restart(ask: bool = True) -> NoReturn:
         ask: Boolean flag to get confirmation from user.
 
     Raises:
-        StopSignal: To stop Jarvis' PID.
+        StopSignal:
+        To stop Jarvis' PID.
     """
     if ask:
         speaker.speak(text=f"{random.choice(conversation.confirmation)} restart your "
@@ -148,9 +149,9 @@ def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
     else:
         caller = sys._getframe(1).f_code.co_name  # noqa
         logger.info(f'Called by {caller!r}')
-        if quiet:  # restarted due internal errors
+        if quiet:  # restarted by child processes due internal errors
             logger.info(f"Restarting {caller!r}")
-        elif shared.called_by_offline:  # restarted via automator
+        elif shared.called_by_offline:  # restarted via automator to restart all background processes
             logger.info("Restarting all background processes!")
             caller = "OFFLINE"
         else:

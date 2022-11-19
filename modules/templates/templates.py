@@ -35,7 +35,19 @@ class OriginTemplates:
 
     if models.settings.bot != 'sphinx-build':
         with open(os.path.join(models.fileio.templates, 'robinhood.html')) as file:
-            robinhood = file.read().strip()
+            robinhood = file.read()
 
         with open(os.path.join(models.fileio.templates, 'surveillance.html')) as file:
             surveillance = file.read()
+
+
+class GenericTemplates:
+    """HTML templates used for generic purposes.
+
+    >>> GenericTemplates
+
+    """
+
+    if models.settings.bot != 'sphinx-build':
+        with open(os.path.join(models.fileio.templates, 'win_wifi_config.xml')) as file:
+            win_wifi_xml = file.read()

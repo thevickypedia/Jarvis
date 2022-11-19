@@ -47,7 +47,12 @@ class Camera:
     """
 
     def __init__(self):
-        """Instantiates the camera object to run the OS specific builtin commands to get the camera information."""
+        """Instantiates the camera object to run the OS specific builtin commands to get the camera information.
+
+        Raises:
+            CameraError:
+            If unable to connect to the camera.
+        """
         cmd = Darwin if settings.macos else Windows
 
         self.output, err = subprocess.Popen(

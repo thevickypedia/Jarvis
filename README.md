@@ -81,7 +81,7 @@
        - `Automation` - **Required** to control `System Events` and other apps like Outlook and Calendar.
        - `Files and Folders` **[OR]** `Full Disk Access` - **Required** for all `FileIO` operations.
    <br>
-   :warning: Known Issue with <a href=https://pypi.org/project/pyttsx3/>pyttsx3 module</a> on <a href=https://www.apple.com/macos/ventura/> macOS Ventura 13.0</a>: This version of macOS does not hold the attribute VoiceAge. <a href=https://github.com/nateshmbhat/pyttsx3/pull/247>Workaround has been raised as a PR</a><br><br>
+   :warning: Known Issue with [pyttsx3 module](https://pypi.org/project/pyttsx3/) on [macOS Ventura 13.0](https://www.apple.com/macos/ventura/): This version of macOS does not hold the attribute `VoiceAge`. [Workaround has been raised as a PR](https://github.com/nateshmbhat/pyttsx3/pull/247)<br><br>
 
    - **Windows** <br> _Tested on **Windows 10**_
      - `Settings` → `Privacy`
@@ -91,7 +91,8 @@
      - Install [Anaconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html#windows-installers), and [VisualStudio C++ BuildTools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
 ### Setup
-   - Clone this [repository](https://github.com/thevickypedia/Jarvis.git) or download it from [pypi](https://pypi.org/project/jarvis-ironman/)
+   - Download the latest stable release at [pypi](https://github.com/thevickypedia/Jarvis/archive/master.zip)
+   - Download the latest un released version at [github](https://github.com/thevickypedia/Jarvis/archive/refs/heads/master.zip)
    - Run the following commands in a command-line/terminal:
      1. `python3 -m venv venv` - Creates a virtual env named `venv`
      2. `source venv/bin/activate` - Activates the virtual env `venv`
@@ -110,7 +111,7 @@
 Environment variables are loaded from a `.env` file and validated using `pydantic`
 
 <details>
-<summary><strong>More on <a href="https://github.com/thevickypedia/Jarvis/wiki#environment-variables">Environment variables</a></strong></summary>
+<summary><strong>More on Environment variables</strong></summary>
 
 - **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
@@ -159,6 +160,11 @@ Sample settings (formatted as JSON object)
 number of CPU cores. It can also be enabled with env-var.
 - **CAMERA_INDEX** - Camera index that has to be used. Run [camera.py](https://github.com/thevickypedia/Jarvis/tree/master/modules/camera/camera.py) to get the index value of each camera.
 - **DEBUG** - Boolean flag to enable debug level for logging.
+
+**[Wi-Fi Controls](https://github.com/thevickypedia/Jarvis/tree/master/modules/wifi)**
+- **WIFI_SSID** - SSID of the wireless connection.
+- **WIFI_PASSWORD** - Password for the wireless connection.
+- **CONNECTION_RETRY** - Frequency in seconds to check for an active internet connection. Defaults to 10 seconds.
 
 **[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py)**
 - **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`
@@ -313,6 +319,10 @@ The YAML file should be a dictionary within a dictionary that looks like the bel
 ```
 </details>
 
+### Feature(s) Implementation
+Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, env variables, 
+features' overview and demo videos.
+
 ### Coding Standards
 Docstring format: [`Google`](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) <br>
 Styling conventions: [`PEP 8`](https://www.python.org/dev/peps/pep-0008/) <br>
@@ -329,10 +339,6 @@ Clean code with pre-commit hooks: [`flake8`](https://flake8.pycqa.org/en/latest/
 **Usage**
 <br>
 `pre-commit run --all-files`
-
-### Feature(s) Implementation
-Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, env variables, 
-features' overview and demo videos.
 
 ### Pypi Package
 [![pypi-module](https://img.shields.io/badge/Software%20Repository-pypi-1f425f.svg)](https://packaging.python.org/tutorials/packaging-projects/)

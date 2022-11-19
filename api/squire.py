@@ -75,7 +75,12 @@ def generate_error_frame(text: str, dimension: Tuple[int, int, int]) -> Tuple[by
 
 
 def test_camera() -> NoReturn:
-    """Tests a camera connected on the index number provided by the user."""
+    """Tests a camera connected on the index number provided by the user.
+
+    Raises:
+        CameraError:
+        If unable to connect to the camera.
+    """
     camera_object = Camera()
     available_cameras = camera_object.list_cameras()
 

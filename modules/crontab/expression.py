@@ -36,6 +36,10 @@ class CronExpression:
     def __init__(self, line: str, epoch: tuple = DEFAULT_EPOCH, epoch_utc_offset: int = 0):
         """Instantiates a CronExpression object with an optionally defined epoch.
 
+        Raises:
+            InvalidArgument:
+            If the given number of fields is invalid.
+
         Notes:
             If the epoch is defined, the UTC offset can be specified one of two ways:
                 - As the sixth element in 'epoch' or supplied in epoch_utc_offset.
@@ -241,6 +245,10 @@ def parse_atom(parse: str, minmax: tuple) -> set:
     Args:
         parse: Element to be parsed.
         minmax: Two element iterable containing the inclusive upper and lower limits of the expression
+
+    Raises:
+        InvalidArgument:
+        If the cron expression is invalid.
 
     Examples:
         >>> parse_atom("1-5",(0,6))

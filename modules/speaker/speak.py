@@ -68,6 +68,14 @@ class Speaker:
             if name.lower() in voice['name'].lower():
                 yield voice
 
+    def get_voice_by_gender(self, gender: str) -> Iterable[Dict]:
+        """Yields all the available voices matching the given gender, converting attributes into dict."""
+        gender = "VoiceGenderMale" if gender.lower() == 'male' else "VoiceGenderFemale"
+        logger.info(f'Getting voices for the gender: {gender}')
+        for voice in self.get_all_voices():
+            if gender == voice['gender']:
+                yield voice
+
     # noinspection PyUnresolvedReferences
     def set_voice(self, voice_index: int, rate: int = 200) -> NoReturn:
         """Set voice attributes per given values.

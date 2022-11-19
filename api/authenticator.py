@@ -15,6 +15,10 @@ async def offline_has_access(token: HTTPBasicCredentials = Depends(security)) ->
 
     Args:
         token: Takes the authorization header token as an argument.
+
+    Raises:
+        APIResponse:
+        - 401: If authorization is invalid.
     """
     auth = token.dict().get('credentials', '')
     if auth.startswith('\\'):
@@ -29,6 +33,10 @@ async def stock_monitor_has_access(token: HTTPBasicCredentials = Depends(securit
 
     Args:
         token: Takes the authorization header token as an argument.
+
+    Raises:
+        APIResponse:
+        - 401: If authorization is invalid.
     """
     auth = token.dict().get('credentials', '')
     if auth.startswith('\\'):
@@ -43,6 +51,10 @@ async def robinhood_has_access(token: HTTPBasicCredentials = Depends(security)) 
 
     Args:
         token: Takes the authorization header token as an argument.
+
+    Raises:
+        APIResponse:
+        - 401: If authorization is invalid.
     """
     auth = token.dict().get('credentials')
     if auth.startswith('\\'):
@@ -57,6 +69,10 @@ async def surveillance_has_access(token: HTTPBasicCredentials = Depends(security
 
     Args:
         token: Takes the authorization header token as an argument.
+
+    Raises:
+        APIResponse:
+        - 401: If authorization is invalid.
     """
     auth = token.dict().get('credentials')
     if auth.startswith('\\'):

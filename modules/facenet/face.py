@@ -61,7 +61,12 @@ class FaceNet:
     MODEL = "hog"  # model using which the images are matched
 
     def __init__(self):
-        """Instantiates the ``Processor`` object and sources the camera hardware."""
+        """Instantiates the ``Processor`` object and sources the camera hardware.
+
+        Raises:
+            CameraError:
+            If unable to connect to the camera.
+        """
         if models.env.camera_index is None:
             raise CameraError(
                 "Unable to access camera."

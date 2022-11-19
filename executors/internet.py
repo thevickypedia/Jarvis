@@ -86,7 +86,7 @@ def ip_info(phrase: str) -> None:
         if not ip_address():
             speaker.speak(text=f"You are not connected to the internet {models.env.title}!")
             return
-        if ssid := get_ssid():
+        if ssid := get_connection_info():
             ssid = f"for the connection {ssid} "
         else:
             ssid = ""
@@ -99,35 +99,39 @@ def ip_info(phrase: str) -> None:
     speaker.speak(text=output)
 
 
-def get_ssid() -> Union[str, None]:
-    """Gets SSID of the network connected.
+def get_connection_info(target: str = "SSID") -> Union[str, None]:
+    """Gets information about the network connected.
 
     Returns:
         str:
-        Wi-Fi or Ethernet SSID.
+        Wi-Fi or Ethernet SSID or Name.
     """
     try:
         process = subprocess.Popen(
             ["/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport", "-I"],
             stdout=subprocess.PIPE
-        ) if models.settings.macos else subprocess.check_output("netsh wlan show interfaces")
+        ) if models.settings.macos else subprocess.check_output("netsh wlan show interfaces", shell=True)
     except (subprocess.CalledProcessError, subprocess.CalledProcessError, FileNotFoundError) as error:
-        logger.error(error)
+        if isinstance(error, subprocess.CalledProcessError):
+            result = error.output.decode(encoding='UTF-8').strip()
+            logger.error(f"[{error.returncode}]: {result}")
+        else:
+            logger.error(error)
         return
     if models.settings.macos:
         out, err = process.communicate()
         if error := process.returncode:
-            logger.error(f"Failed to fetch SSID with exit code: {error}\n{err}")
+            logger.error(f"Failed to fetch {target} with exit code: {error}\n{err}")
             return
         # noinspection PyTypeChecker
         return dict(map(str.strip, info.split(": ")) for info in out.decode("utf-8").splitlines()[:-1] if
-                    len(info.split()) == 2).get("SSID")
+                    len(info.split()) == 2).get(target)
     else:
-        if ssid := [i.decode().strip() for i in process.splitlines() if
-                    i.decode().strip().startswith('SSID')]:
-            return ssid[0].split(':')[-1].strip()
+        if result := [i.decode().strip() for i in process.splitlines() if
+                      i.decode().strip().startswith(target)]:
+            return result[0].split(':')[-1].strip()
         else:
-            logger.error("Failed to fetch SSID")
+            logger.error(f"Failed to fetch {target}")
 
 
 def speed_test() -> None:

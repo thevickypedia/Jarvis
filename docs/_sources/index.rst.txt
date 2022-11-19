@@ -158,15 +158,15 @@ API StockMonitor
 API Scheduler
 =============
 
-.. autoclass:: api.scheduler.MarketHours
+.. automodule:: api.scheduler.MarketHours
    :members:
    :exclude-members: hours
 
-.. autoclass:: api.scheduler.rh_cron_schedule
+.. automodule:: api.scheduler.rh_cron_schedule
    :members:
    :exclude-members:
 
-.. autoclass:: api.scheduler.sm_cron_schedule
+.. automodule:: api.scheduler.sm_cron_schedule
    :members:
    :exclude-members:
 
@@ -197,6 +197,13 @@ Communicator
 ============
 
 .. automodule:: executors.communicator
+   :members:
+   :undoc-members:
+
+Connection
+==========
+
+.. automodule:: executors.connection
    :members:
    :undoc-members:
 
@@ -468,7 +475,7 @@ Conditions
 
 .. automodule:: modules.conditions.conversation
    :members:
-   :exclude-members: about_me, acknowledgement, capabilities, confirmation, form, greeting, languages, wake_up1, wake_up2, wake_up3, what, whats_up, who
+   :exclude-members:
 
 ====
 
@@ -480,7 +487,7 @@ Conditions
 
 .. automodule:: modules.conditions.keywords_base
    :members:
-   :exclude-members: add_todo, apps, automation, avoid, bluetooth, brightness, car, create_db, current_date, current_time, delete_db, delete_todo, directions, distance, exit_, face_detection, facts, flip_a_coin, github, google_home, google_search, guard_disable, guard_enable, ip_info, jokes, kill, kill_alarm, lights, locate, locate_places, location, meaning, meetings, music, news, notes, ok, read_gmail, reminder, repeat, report, restart_control, robinhood, send_sms, set_alarm, shutdown, sleep_control, speed_test, system_info, system_vitals, television, todo, voice_changer, volume, vpn_server, weather, wikipedia_
+   :exclude-members:
 
 Crontab
 =======
@@ -608,11 +615,7 @@ Models
 MyQ
 ===
 
-.. autoclass:: modules.myq.myq.Operation(Enum)
-   :members:
-   :undoc-members:
-
-.. autoclass:: modules.myq.myq.garage_controller
+.. automodule:: modules.myq.myq
    :members:
    :undoc-members:
 
@@ -674,13 +677,7 @@ Temperature
 Templates
 =========
 
-.. autoclass:: modules.templates.templates.EmailTemplates
-   :members:
-   :exclude-members: source, _source
-
-====
-
-.. autoclass:: modules.templates.templates.OriginTemplates
+.. automodule:: modules.templates.templates
    :members:
    :exclude-members: source, _source
 
@@ -708,6 +705,13 @@ WakeOnLAN
 =========
 
 .. automodule:: modules.wakeonlan.wakeonlan
+   :members:
+   :undoc-members:
+
+Wi-Fi Connector
+===============
+
+.. automodule:: modules.wifi.connector
    :members:
    :undoc-members:
 

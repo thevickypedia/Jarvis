@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+6.6.1 (11/19/2022)
+------------------
+- Add feature to autoconnect WLAN
+- Onboard connector.py and connection.py modules
+- Run a process in background to check internet connection
+- Setup retry logic for internet check
+- Add a template for xml config
+- Add a function to get voice by gender in speak.py
+- Log more information in subprocess errors
+- Update install.sh, README.md and docstrings
+
 6.6.0 (11/16/2022)
 ------------------
 - Upgrade VPN server to include hosted zone access

@@ -24,7 +24,7 @@ class TV:
     """
 
     _init_status = False
-    reconnect = False
+    _reconnect = False
 
     def __init__(self, ip_address: str = None, client_key: str = None):
         """Client key will be logged and stored as SSM param when you accept the connection for the first time.
@@ -35,6 +35,12 @@ class TV:
         Args:
             ip_address: IP address of the TV.
             client_key: Client Key to authenticate connection.
+
+        Raises:
+            TVError:
+            - If unable to connect to the TV.
+            - If no TV was found in the IP range.
+            - If a connection timeout occurs (usually because of unstable internet or multiple connection types)
         """
         store = {'client_key': client_key} if client_key else {}
 
@@ -43,7 +49,7 @@ class TV:
             self.client.connect()
         except (socket.gaierror, ConnectionRefusedError) as error:
             logger.error(error)
-            self.reconnect = True
+            self._reconnect = True
             if not shared.called_by_offline:
                 playsound(sound=models.indicators.tv_scan, block=False)
             if discovered := WebOSClient.discover():
@@ -65,11 +71,11 @@ class TV:
                 break
             elif status == WebOSClient.PROMPTED:
                 playsound(sound=models.indicators.tv_connect, block=False)
-                self.reconnect = True
+                self._reconnect = True
                 sys.stdout.write('\rPlease accept the connection request on your TV.')
 
-        if self.reconnect:
-            self.reconnect = False
+        if self._reconnect:
+            self._reconnect = False
             if os.path.isfile('.env') and models.env.tv_client_key != store.get('client_key'):
                 set_key(dotenv_path='.env', key_to_set='TV_CLIENT_KEY', value_to_set=store.get('client_key'))
             else:
