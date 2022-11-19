@@ -1,9 +1,9 @@
 ---
 name: Bug report
 about: Create a report to help me improve
-title: ''
-labels: ''
-assignees: ''
+title: Bug report
+labels: bug
+assignees: thevickypedia
 
 ---
 
@@ -22,9 +22,9 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Version [e.g. 22]
+**Hosted device (please complete the following information):**
+ - OS: [e.g. macOS]
+ - Version [e.g. 10.13]
  - Module [e.g. [modules/lights/smart_lights.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/lights/smart_lights.py)]
  - Line number [e.g. 424]
 
