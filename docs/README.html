@@ -341,6 +341,22 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
   </details></li>
 </ul>
 </details></section>
+<section id="contacts">
+<h2>Contacts<a class="headerlink" href="#contacts" title="Permalink to this heading">¶</a></h2>
+<p>Jarvis can send on demand notifications using a <code class="docutils literal notranslate"><span class="pre">contacts.yaml</span></code> file stored in <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory. Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> for SMS and email notifications.</p>
+<details>
+<summary><strong><i>Setup Instructions</i></strong></summary><blockquote>
+<div><p>Note: Jarvis currently supports sending emails only when the <code class="docutils literal notranslate"><span class="pre">contacts.yaml</span></code> file is present, however phone numbers can be used directly.</p>
+</div></blockquote>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">phone</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">Tony</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0123456789</span><span class="w"></span>
+<span class="w">  </span><span class="nt">Thor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1234567890</span><span class="w"></span>
+<span class="nt">email</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">Eddard</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ned@gmail.com</span><span class="w"></span>
+<span class="w">  </span><span class="nt">Aegon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">egg@yahoo.com</span><span class="w"></span>
+</pre></div>
+</div>
+</details></section>
 <section id="smart-devices">
 <h2>Smart Devices<a class="headerlink" href="#smart-devices" title="Permalink to this heading">¶</a></h2>
 <p>A source file <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> is used to store smart devices’ hostnames. <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> supports <a class="reference external" href="https://www.amazon.com/gp/product/B08C7GY43L"><code class="docutils literal notranslate"><span class="pre">MagicHome</span></code> lights</a> and <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> TVs.</p>
@@ -370,7 +386,7 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 </details></section>
 <section id="automation-setup-optional">
 <h2>Automation Setup [Optional]<a class="headerlink" href="#automation-setup-optional" title="Permalink to this heading">¶</a></h2>
-<p>Executes <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/offline/compatibles.py">offline compatible</a> tasks
+<p>Jarvis can execute <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/offline/compatibles.py">offline compatible</a> tasks
 at pre-defined times without any user interaction. Uses an <code class="docutils literal notranslate"><span class="pre">automation.yaml</span></code> file as source which should be stored
 within the directory <code class="docutils literal notranslate"><span class="pre">fileio</span></code></p>
 <details>
@@ -451,6 +467,7 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <li><a class="reference internal" href="#setup">Setup</a></li>
 <li><a class="reference internal" href="#env-variables">ENV Variables</a><ul>
 <li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#contacts">Contacts</a></li>
 <li><a class="reference internal" href="#smart-devices">Smart Devices</a></li>
 <li><a class="reference internal" href="#automation-setup-optional">Automation Setup [Optional]</a></li>
 </ul>

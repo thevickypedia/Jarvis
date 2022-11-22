@@ -57,11 +57,11 @@ if settings.legacy:
         pvporcupine.KEYWORD_PATHS[x.split('_')[0]] = os.path.join(os.path.dirname(pvporcupine.__file__),
                                                                   f"resources/keyword_files/mac/{x}")
 
-if settings.bot != "sphinx-build":
+if settings.bot == "jarvis" and current_process().name == "MainProcess":
     for keyword in env.wake_words:
         if not pvporcupine.KEYWORD_PATHS.get(keyword) or not os.path.isfile(pvporcupine.KEYWORD_PATHS[keyword]):
             raise InvalidEnvVars(
-                f"Detecting '{keyword}' is unsupported!\n"
+                f"Detecting {keyword!r} is unsupported!\n"
                 f"Available keywords are: {', '.join(list(pvporcupine.KEYWORD_PATHS.keys()))}"
             )
 

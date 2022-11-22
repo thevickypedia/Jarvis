@@ -37,12 +37,12 @@ def split_phrase(phrase: str, should_return: bool = False) -> bool:
                                f"{models.env.title}!")
             return False
 
-    if ' and ' in phrase and not word_match(phrase=phrase, match_list=keywords.keywords.avoid):
+    # Keywords for which the ' and ' split should not happen.
+    multiexec = keywords.keywords.send_notification + keywords.keywords.reminder + keywords.keywords.distance
+
+    if ' and ' in phrase and not word_match(phrase=phrase, match_list=keywords.keywords.avoid) and \
+            not word_match(phrase=phrase, match_list=multiexec):
         for each in phrase.split(' and '):
-            exit_check = conditions(phrase=each.strip(), should_return=should_return)
-            speaker.speak(run=True)
-    elif ' also ' in phrase and not word_match(phrase=phrase, match_list=keywords.keywords.avoid):
-        for each in phrase.split(' also '):
             exit_check = conditions(phrase=each.strip(), should_return=should_return)
             speaker.speak(run=True)
     else:

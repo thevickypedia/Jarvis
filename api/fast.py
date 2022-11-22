@@ -269,7 +269,11 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         logger.info("Test message received.")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail="Test message received.")
 
-    if ' and ' in command and not word_match(phrase=command, match_list=keywords.keywords.avoid):
+    # Keywords for which the ' and ' split should not happen.
+    multiexec = keywords.keywords.send_notification + keywords.keywords.reminder + keywords.keywords.distance
+
+    if ' and ' in command and not word_match(phrase=command, match_list=keywords.keywords.avoid) and \
+            not word_match(phrase=command, match_list=multiexec):
         and_response = ""
         for each in command.split(' and '):
             if not word_match(phrase=each, match_list=compatibles.offline_compatible()):
@@ -285,22 +289,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
                     and_response += error.__str__()
         logger.info(f"Response: {and_response}")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=and_response)
-    elif ' also ' in command and not word_match(phrase=command, match_list=keywords.keywords.avoid):
-        also_response = ""
-        for each in command.split(' also '):
-            if not word_match(phrase=each, match_list=compatibles.offline_compatible()):
-                logger.warning(f"{each!r} is not a part of offline compatible request.")
-                also_response += f'{each!r} is not a part of off-line communicator compatible request.\n\n' \
-                                 'Please try an instruction that does not require an user interaction.'
-            else:
-                try:
-                    also_response = f"{offline_communicator(command=each)}\n"
-                except Exception as error:
-                    logger.error(error)
-                    logger.error(traceback.format_exc())
-                    also_response += error.__str__()
-        logger.info(f"Response: {also_response}")
-        raise APIResponse(status_code=HTTPStatus.OK.real, detail=also_response)
+
     if not word_match(phrase=command, match_list=compatibles.offline_compatible()):
         logger.warning(f"{command!r} is not a part of offline compatible request.")
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,

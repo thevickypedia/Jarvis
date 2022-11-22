@@ -88,7 +88,7 @@ class ThreadExecutor:
         for future in as_completed(futures):
             if future.exception():
                 thread_except += 1
-                logger.error(f'Thread processing for {iterator} received an exception: {future.exception()}')
+                logger.error(f'Thread processing for {iterator!r} received an exception: {future.exception()}')
         return thread_except
 
     def avail_check(self, function_to_call: Callable) -> NoReturn:
@@ -138,6 +138,18 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         # Checking for list since lights are inserted as a list and tv as string
         host_names = [value for key, value in smart_devices.items() if isinstance(value, list)]
         light_location = ""
+
+    # # FUTURE: Works only for same operation - Implementing different operations is too much work with little to gain
+    # # FUTURE: Add 'keywords' for 'lights' to 'multiexec' var
+    # elif 'and' in phrase.split():
+    #     host_names, light_location = [], []
+    #     for section in phrase.split(' and '):
+    #         light_location_section = support.get_closest_match(text=section, match_list=list(smart_devices.keys()))
+    #         host_names.append(smart_devices.get(light_location_section))
+    #         light_location.append(light_location_section.replace('_', ' ').replace('-', ''))
+    #     light_location = " and ".join(light_location)
+    #     logger.info(f"Lights location: {light_location}")
+
     else:
         # Get the closest matching name provided in smart_devices.yaml compared to what's requested by the user
         light_location = support.get_closest_match(text=phrase, match_list=list(smart_devices.keys()))
@@ -149,7 +161,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     host_names = list(filter(None, host_names))  # remove None values
     if light_location and not host_names:
         logger.warning(f"No hostname values found for {light_location} in {models.fileio.smart_devices}")
-        speaker.speak(text=f"I'm sorry {models.env.title}! You haven't mentioned the host names of '{light_location}' "
+        speaker.speak(text=f"I'm sorry {models.env.title}! You haven't mentioned the host names of {light_location!r} "
                            "lights.")
         return
     if not host_names:

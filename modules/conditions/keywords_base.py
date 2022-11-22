@@ -74,7 +74,7 @@ notes = ["notes", "note"]
 
 github = ["git", "github", "clone", "GitHub", "update yourself", "update your self"]
 
-send_sms = ["message", "text", "messages"]
+send_notification = ["message", "text", "sms", "mail"]
 
 television = ["tv", "television"]
 

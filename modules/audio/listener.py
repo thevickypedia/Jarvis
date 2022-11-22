@@ -25,16 +25,13 @@ if models.env.recognizer_settings:
     recognizer.phrase_threshold = models.env.recognizer_settings.phrase_threshold
     recognizer.dynamic_energy_threshold = models.env.recognizer_settings.dynamic_energy_threshold
     recognizer.non_speaking_duration = models.env.recognizer_settings.non_speaking_duration
-    models.env.phrase_limit = 7  # Override voice phrase limit when recognizer settings are available
+    models.env.phrase_limit = 10  # Override voice phrase limit when recognizer settings are available
 
 
-def listen(timeout: Union[int, float] = models.env.timeout, phrase_limit: Union[int, float] = models.env.phrase_limit,
-           sound: bool = True, stdout: bool = True) -> Union[str, None]:
+def listen(sound: bool = True, stdout: bool = True) -> Union[str, None]:
     """Function to activate listener, this function will be called by most upcoming functions to listen to user input.
 
     Args:
-        timeout: Time in seconds for the overall listener to be active.
-        phrase_limit: Time in seconds for the listener to actively listen to a sound.
         sound: Flag whether to play the listener indicator sound. Defaults to True unless set to False.
         stdout: Flag whether to print the listener status on screen.
 
@@ -46,7 +43,8 @@ def listen(timeout: Union[int, float] = models.env.timeout, phrase_limit: Union[
         try:
             playsound(sound=models.indicators.start, block=False) if sound else None
             sys.stdout.write("\rListener activated...") if stdout else None
-            listened = recognizer.listen(source=source, timeout=timeout, phrase_time_limit=phrase_limit)
+            listened = recognizer.listen(source=source, timeout=models.env.timeout,
+                                         phrase_time_limit=models.env.phrase_limit)
             playsound(sound=models.indicators.end, block=False) if sound else None
             support.flush_screen()
             recognized = recognizer.recognize_google(audio_data=listened)

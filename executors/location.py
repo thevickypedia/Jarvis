@@ -2,14 +2,12 @@ import json
 import math
 import os
 import re
-import socket
 import ssl
 import sys
 import time
 import urllib.error
 import urllib.request
 import webbrowser
-from difflib import SequenceMatcher
 from typing import Dict, NoReturn, Tuple, Union
 
 import certifi
@@ -17,17 +15,10 @@ import yaml
 from geopy.distance import geodesic
 from geopy.exc import GeocoderUnavailable, GeopyError
 from geopy.geocoders import Nominatim, options
-from pyicloud import PyiCloudService
-from pyicloud.exceptions import (PyiCloudAPIResponseException,
-                                 PyiCloudFailedLoginException)
-from pyicloud.services.findmyiphone import AppleDevice
 from speedtest import ConfigRetrievalError, Speedtest
 from timezonefinder import TimezoneFinder
 
-from executors.word_match import word_match
 from modules.audio import listener, speaker
-from modules.conditions import keywords
-from modules.exceptions import EgressErrors
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import shared, support
@@ -35,36 +26,6 @@ from modules.utils import shared, support
 # stores necessary values for geolocation to receive the latitude, longitude and address
 options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
 geo_locator = Nominatim(scheme="http", user_agent="test/1", timeout=3)
-
-
-def device_selector(phrase: str = None) -> Union[AppleDevice, None]:
-    """Selects a device using the received input string.
-
-    See Also:
-        - Opens a html table with the index value and name of device.
-        - When chosen an index value, the device name will be returned.
-
-    Args:
-        phrase: Takes the voice recognized statement as argument.
-
-    Returns:
-        AppleDevice:
-        Returns the selected device from the class ``AppleDevice``
-    """
-    if not all([models.env.icloud_user, models.env.icloud_pass]):
-        logger.warning("ICloud username or password not found.")
-        return
-    icloud_api = PyiCloudService(models.env.icloud_user, models.env.icloud_pass)
-    devices = [device for device in icloud_api.devices]
-    if not phrase:
-        phrase = socket.gethostname().split('.')[0]  # Temporary fix
-    devices_str = [{str(device).split(":")[0].strip(): str(device).split(":")[1].strip()} for device in devices]
-    closest_match = [
-        (SequenceMatcher(a=phrase, b=key).ratio() + SequenceMatcher(a=phrase, b=val).ratio()) / 2
-        for device in devices_str for key, val in device.items()
-    ]
-    index = closest_match.index(max(closest_match))
-    return icloud_api.devices[index]
 
 
 def public_ip_info() -> Dict:
@@ -119,49 +80,6 @@ def get_location_from_coordinates(coordinates: tuple) -> Dict:
         return {}
 
 
-def location_services(device: AppleDevice) -> Union[NoReturn,
-                                                    Tuple[str or float or None, str or float or None, str or None]]:
-    """Gets the current location of an Apple device.
-
-    Args:
-        device: Passed when locating a particular Apple device.
-
-    Returns:
-        None or Tuple[str or float, str or float, str or float]:
-        - On success, returns ``current latitude``, ``current longitude`` and ``location`` information as a ``dict``.
-        - On failure, calls the ``restart()`` or ``terminator()`` function depending on the error.
-
-    Raises:
-        PyiCloudFailedLoginException: Restarts if occurs once. Uses location by IP, if occurs once again.
-    """
-    try:
-        # tries with icloud api to get your device's location for precise location services
-        if not device:
-            if not (device := device_selector()):
-                raise PyiCloudFailedLoginException
-        raw_location = device.location()
-        if not raw_location and sys._getframe(1).f_code.co_name == "locate":  # noqa
-            return None, None, None
-        elif not raw_location:
-            raise PyiCloudAPIResponseException(reason=f"Unable to retrieve location for {device}")
-        else:
-            coordinates = raw_location["latitude"], raw_location["longitude"]
-        os.remove("pyicloud_error") if os.path.isfile("pyicloud_error") else None
-    except (PyiCloudAPIResponseException, PyiCloudFailedLoginException) as error:
-        if device:
-            caller = sys._getframe(1).f_code.co_name  # noqa
-            logger.error(f"Unable to retrieve location when called by {caller!r}::{error}")
-        coordinates = get_coordinates_from_ip()
-    except EgressErrors as error:
-        logger.error(error)
-        raise ConnectionError(
-            error
-        )
-
-    if location_info := get_location_from_coordinates(coordinates=coordinates):
-        return *coordinates, location_info
-
-
 def write_current_location() -> NoReturn:
     """Extracts location information from public IP address and writes it to a yaml file."""
     if os.path.isfile(models.fileio.location):
@@ -202,73 +120,6 @@ def location() -> NoReturn:
                        f"{current_location.get('address', {}).get('city', '')} "
                        f"{current_location.get('address', {}).get('state', '')} - "
                        f"in {current_location.get('address', {}).get('country', '')}")
-
-
-def locate_device(target_device: AppleDevice) -> NoReturn:
-    """Speaks the location information of the target device.
-
-    Args:
-        target_device: Takes the target device as an argument.
-    """
-    try:
-        ignore_lat, ignore_lon, loc = location_services(device=target_device)
-    except EgressErrors:
-        speaker.speak(text="I was unable to connect to the internet. Please check your connection settings and retry.",
-                      run=True)
-        return
-    lookup = str(target_device).split(":")[0].strip()
-    if not loc:
-        speaker.speak(text=f"I wasn't able to locate your {lookup} {models.env.title}! It is probably offline.")
-    else:
-        if shared.called_by_offline:
-            post_code = loc.get("postcode", "").split("-")[0]
-        else:
-            post_code = '"'.join(list(loc.get("postcode", "").split("-")[0]))
-        iphone_location = f"Your {lookup} is near {loc.get('road')}, {loc.get('city', loc.get('residential'))} " \
-                          f"{loc.get('state')}. Zipcode: {post_code}, {loc.get('country')}"
-        stat = target_device.status()
-        bat_percent = f"Battery: {round(stat['batteryLevel'] * 100)} %, " if stat["batteryLevel"] else ""
-        device_model = stat["deviceDisplayName"]
-        phone_name = stat["name"]
-        speaker.speak(text=f"{iphone_location}. Some more details. {bat_percent} Name: {phone_name}, "
-                           f"Model: {device_model}")
-
-
-def locate(phrase: str) -> None:
-    """Locates an Apple device using icloud api for python.
-
-    Args:
-        phrase: Takes the voice recognized statement as argument and extracts device name from it.
-    """
-    if not (target_device := device_selector(phrase=phrase)):
-        support.no_env_vars()
-        return
-    if shared.called_by_offline:
-        locate_device(target_device=target_device)
-        return
-    sys.stdout.write(f"\rLocating your {target_device}")
-    target_device.play_sound()
-    before_keyword, keyword, after_keyword = str(target_device).partition(":")  # partitions the hostname info
-    if before_keyword == "Accessory":
-        after_keyword = after_keyword.replace(f"{models.env.name}’s", "").replace(f"{models.env.name}'s", "").strip()
-        speaker.speak(text=f"I've located your {after_keyword} {models.env.title}!")
-    else:
-        speaker.speak(text=f"Your {before_keyword} should be ringing now {models.env.title}!")
-    speaker.speak(text="Would you like to get the location details?", run=True)
-    if not (phrase_location := listener.listen()):
-        return
-    elif word_match(phrase=phrase_location, match_list=keywords.keywords.ok):
-        return
-
-    locate_device(target_device=target_device)
-    if models.env.icloud_recovery:
-        speaker.speak(text="I can also enable lost mode. Would you like to do it?", run=True)
-        phrase_lost = listener.listen()
-        if word_match(phrase=phrase_lost, match_list=keywords.keywords.ok):
-            target_device.lost_device(number=models.env.icloud_recovery, text="Return my phone immediately.")
-            speaker.speak(text="I've enabled lost mode on your phone.")
-        else:
-            speaker.speak(text=f"No action taken {models.env.title}!")
 
 
 def distance(phrase) -> NoReturn:

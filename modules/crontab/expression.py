@@ -57,7 +57,7 @@ class CronExpression:
 
         if len(fields) < 6:
             raise InvalidArgument(
-                f"'{line}' has invalid cron expression!"
+                f"{line!r} has invalid cron expression!"
             )
 
         minutes, hours, dom, months, dow, self.comment = fields
@@ -77,7 +77,7 @@ class CronExpression:
             self.compute_numtab()
         except TypeError:
             raise InvalidArgument(
-                f"'{line}' has invalid cron expression!"
+                f"{line!r} has invalid cron expression!"
             )
         if len(epoch) == 5:
             y, mo, d, h, m = epoch

@@ -152,7 +152,7 @@ class ControlPeripheral:
     def win_enable(self) -> NoReturn:
         """Enables Wi-Fi on Windows."""
         try:
-            result = subprocess.check_output(f"netsh interface set interface '{self.name}' enabled", shell=True)
+            result = subprocess.check_output(f"netsh interface set interface {self.name!r} enabled", shell=True)
             result = result.decode(encoding="UTF-8").strip()
             if result:
                 logger.warning(result)
@@ -164,7 +164,7 @@ class ControlPeripheral:
     def win_disable(self) -> NoReturn:
         """Disables Wi-Fi on Windows."""
         try:
-            result = subprocess.check_output(f"netsh interface set interface '{self.name}' disabled", shell=True)
+            result = subprocess.check_output(f"netsh interface set interface {self.name!r} disabled", shell=True)
             result = result.decode(encoding="UTF-8").strip()
             if result:
                 logger.warning(result)

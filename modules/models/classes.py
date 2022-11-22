@@ -271,26 +271,40 @@ class FileIO(BaseModel):
 
     """
 
+    # Directories
     root: DirectoryPath = os.path.realpath('fileio')
+    templates: DirectoryPath = os.path.realpath(os.path.join('modules', 'templates'))
+
+    # Home automation
     automation: FilePath = os.path.join('fileio', 'automation.yaml')
     tmp_automation: FilePath = os.path.join('fileio', 'tmp_automation.yaml')
+    smart_devices: FilePath = os.path.join('fileio', 'smart_devices.yaml')
+    contacts: FilePath = os.path.join('fileio', 'contacts.yaml')
+
+    # Databases
     base_db: FilePath = os.path.join('fileio', 'database.db')
     task_db: FilePath = os.path.join('fileio', 'tasks.db')
     stock_db: FilePath = os.path.join('fileio', 'stock.db')
 
+    # API used
     stock_list_backup: FilePath = os.path.join('fileio', 'stock_list_backup.yaml')
+    robinhood: FilePath = os.path.join('fileio', 'robinhood.html')
+
+    # Future useful
     frequent: FilePath = os.path.join('fileio', 'frequent.yaml')
-    location: FilePath = os.path.join('fileio', 'location.yaml')
-    smart_devices: FilePath = os.path.join('fileio', 'smart_devices.yaml')
     training_data: FilePath = os.path.join('fileio', 'training_data.yaml')
 
+    # Jarvis internal
+    location: FilePath = os.path.join('fileio', 'location.yaml')
     notes: FilePath = os.path.join('fileio', 'notes.txt')
-    robinhood: FilePath = os.path.join('fileio', 'robinhood.html')
+
+    # macOS specifics
     app_launcher: FilePath = os.path.join('fileio', 'applauncher.scpt')
     event_script: FilePath = os.path.join('fileio', f'{env.event_app}.scpt')
+
+    # Speech Synthesis
     speech_synthesis_wav: FilePath = os.path.join('fileio', 'speech_synthesis.wav')
     speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))
-    templates: DirectoryPath = os.path.realpath(os.path.join('modules', 'templates'))
 
 
 fileio = FileIO()

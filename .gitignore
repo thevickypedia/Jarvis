@@ -8,9 +8,6 @@ venv
 Dockerfile
 lib/docker_requirements.txt
 
-# WIP: Contacts to call or message
-contacts.yml
-
 # File IO operations
 fileio/*.yaml
 fileio/*.html

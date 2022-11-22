@@ -1,14 +1,19 @@
-import re
+import string
 import sys
+from typing import Union
 
+import jinja2
 from gmailconnector.read_email import ReadEmail
+from gmailconnector.send_email import SendEmail
 from gmailconnector.send_sms import Messenger
+from pydantic import EmailStr
 
 from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.logger.custom_logger import logger
 from modules.models import models
+from modules.templates import templates
 from modules.utils import shared, support
 
 
@@ -43,51 +48,7 @@ def read_gmail() -> None:
         speaker.speak(text=f"I was unable to read your email {models.env.title}!")
 
 
-def send_sms(phrase: str) -> None:
-    """Sends a message to the number received.
-
-    If no number was received, it will ask for a number, looks if it is 10 digits and then sends a message.
-
-    Args:
-        phrase: Takes phrase spoken as an argument.
-    """
-    message = re.search('send (.*) to ', phrase) or re.search('Send (.*) to ', phrase)
-    body = message.group(1) if message else None
-    if number := support.extract_nos(input_=phrase, method=int):
-        number = str(number)
-    if number and body and shared.called_by_offline:
-        if len(number) != 10:
-            speaker.speak(text=f"I don't think that's a right number {models.env.title}! Phone numbers are 10 digits.")
-            return
-        notify(user=models.env.gmail_user, password=models.env.gmail_pass, number=number, body=body)
-        speaker.speak(text=f"Message has been sent {models.env.title}!")
-        return
-    elif shared.called_by_offline:
-        speaker.speak(text="Messenger format should be::send some message to some number.")
-        return
-    if not number:
-        speaker.speak(text=f"Please tell me a number {models.env.title}!", run=True)
-        if not (number := listener.listen()):
-            return
-        if 'exit' in number or 'quit' in number or 'Xzibit' in number:
-            return
-    if len(number) != 10:
-        speaker.speak(text=f"I don't think that's a right number {models.env.title}! Phone numbers are 10 digits. "
-                           "Try again!")
-        return
-    speaker.speak(text=f"What would you like to send {models.env.title}?", run=True)
-    if body := listener.listen():
-        speaker.speak(text=f'{body} to {number}. Do you want me to proceed?', run=True)
-        if converted := listener.listen():
-            if word_match(phrase=converted, match_list=keywords.keywords.ok):
-                logger.info(f'{body} -> {number}')
-                notify(user=models.env.gmail_user, password=models.env.gmail_pass, number=number, body=body)
-                speaker.speak(text=f"Message has been sent {models.env.title}!")
-            else:
-                speaker.speak(text=f"Message will not be sent {models.env.title}!")
-
-
-def notify(user: str, password: str, number: str, body: str, subject: str = None) -> None:
+def send_sms(user: str, password: str, number: Union[str, int], body: str, subject: str = None) -> Union[bool, str]:
     """Send text message through SMS gateway of destination number.
 
     References:
@@ -99,19 +60,50 @@ def notify(user: str, password: str, number: str, body: str, subject: str = None
         number: Phone number stored as env var.
         body: Content of the message.
         subject: Takes subject as an optional argument.
+
+    Returns:
+        Union[bool, str]:
+        - Boolean flag to indicate the SMS was sent successfully.
+        - Error response from gmail-connector.
     """
     if not any([models.env.phone_number, number]):
         logger.error('No phone number was stored in env vars to trigger a notification.')
-        return
+        return False
     if not subject:
         subject = "Message from Jarvis" if number == models.env.phone_number else f"Message from {models.env.name}"
     sms_object = Messenger(gmail_user=user, gmail_pass=password)
-    auth = sms_object.authenticate
-    if auth.ok:
-        response = sms_object.send_sms(phone=number or models.env.phone_number, subject=subject, message=body)
-        if response.ok:
-            logger.info('SMS notification has been sent.')
-        else:
-            logger.error(f'Unable to send SMS notification.\n{response.body}')
+    response = sms_object.send_sms(phone=number or models.env.phone_number, subject=subject, message=body)
+    if response.ok:
+        logger.info('SMS notification has been sent.')
+        return True
     else:
-        logger.error(f'Unable to send SMS notification.\n{auth.body}')
+        logger.error('Unable to send SMS notification.')
+        return response.body
+
+
+def send_email(body: str, recipient: Union[EmailStr, str]) -> Union[bool, str]:
+    """Sends an email using an email template formatted as html.
+
+    Args:
+        body: Message to be inserted as html body in the email.
+        recipient: Email address to which the mail has to be sent.
+
+    References:
+        Uses `gmail-connector <https://pypi.org/project/gmail-connector/>`__ to send the Email.
+
+    Returns:
+        Union[bool, str]:
+        - Boolean flag to indicate the email was sent successfully.
+        - Error response from gmail-connector.
+    """
+    body = string.capwords(body)
+    rendered = jinja2.Template(templates.EmailTemplates.notification).render(SENDER=models.env.name, MESSAGE=body)
+    email_object = SendEmail(gmail_user=models.env.gmail_user, gmail_pass=models.env.gmail_pass)
+    mail_stat = email_object.send_email(recipient=recipient, sender='Jarvis Communicator',
+                                        subject=f'Message from {models.env.name}', html_body=rendered)
+    if mail_stat.ok:
+        logger.info('Email notification has been sent')
+        return True
+    else:
+        logger.error('Unable to send email notification.')
+        return mail_stat.body
