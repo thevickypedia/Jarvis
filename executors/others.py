@@ -92,7 +92,7 @@ def apps(phrase: str) -> None:
         speaker.speak(text=f"I did not find the app {keyword}. Try again.")
         Thread(target=support.unrecognized_dumper, args=[{'APPLICATIONS': keyword}]).start()
         return
-    app_status = os.system(f"open /Applications/'{keyword}' > /dev/null 2>&1")
+    app_status = os.system(f"open /Applications/{keyword!r} > /dev/null 2>&1")
     keyword = keyword.replace('.app', '')
     if app_status == 256:
         speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to launch {keyword}. "
@@ -367,7 +367,7 @@ def abusive(phrase: str) -> NoReturn:
         phrase: Takes the phrase spoken as an argument.
     """
     logger.warning(phrase)
-    speaker.speak(text="I don't respond to abusive words. Ask me nicely, you'll get a response.")
+    speaker.speak(text="I don't respond to abusive words. Ask me nicely, you might get a response.")
 
 
 def photo() -> str:

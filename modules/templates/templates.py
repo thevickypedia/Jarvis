@@ -25,6 +25,9 @@ class EmailTemplates:
         with open(os.path.join(models.fileio.templates, 'email_OTP.html')) as file:
             one_time_passcode = file.read()
 
+        with open(os.path.join(models.fileio.templates, 'email.html')) as file:
+            notification = file.read()
+
 
 class OriginTemplates:
     """HTML templates used for hosting endpoints.

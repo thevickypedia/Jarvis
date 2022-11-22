@@ -52,7 +52,7 @@ def offline_compatible() -> List[str]:
                      keywords.speed_test,
                      keywords.ngrok,
                      keywords.locate,
-                     keywords.send_sms,
+                     keywords.send_notification,
                      keywords.television,
                      keywords.automation,
                      keywords.version,

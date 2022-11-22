@@ -46,7 +46,7 @@ def trigger_api() -> None:
         try:
             res = requests.get(url=url, timeout=1)
             if res.ok:
-                logger.info(f'{url} is accessible.')
+                logger.info(f'{url!r} is accessible.')
                 return
             raise requests.exceptions.ConnectionError
         except EgressErrors:

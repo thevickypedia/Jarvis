@@ -141,7 +141,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 
     <details>
     <summary><strong><i>Custom settings for speech recognition</i></strong></summary>
-    
+
     These are customized according to the author's voice pitch.
     Please use [mic.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/mic.py) to figure out the suitable values in a trial and error method.
 
@@ -231,7 +231,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **SPEECH_SYNTHESIS_TIMEOUT** - Timeout to connect to the docker container that processes text to speech requests. <br>
     <details>
     <summary><strong><i>To enable independent speech-synthesis</i></strong></summary>
-    
+
     ```shell
     docker run \
         -it \
@@ -271,7 +271,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **TASKS** - Runs certain tasks at certain intervals.
     <details>
     <summary><strong><i>Sample value</i></strong></summary>
-    
+
     ```yaml
     [
       {"seconds": 10_800, "task": "remind me to drink water"},  # Runs every 3 hours
@@ -283,7 +283,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **CRONTAB** - Runs scheduled tasks using cron expressions without using actual crontab.
     <details>
     <summary><strong><i>Sample value</i></strong></summary>
-    
+
     ```yaml
     [
       "0 0 * * 1-5/2 find /var/log -delete",
@@ -292,6 +292,24 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
     ```
     </details>
 
+</details>
+
+### Contacts
+Jarvis can send on demand notifications using a ``contacts.yaml`` file stored in ``fileio`` directory. Uses [gmail-connector](https://pypi.org/project/gmail-connector/) for SMS and email notifications.
+
+<details>
+<summary><strong><i>Setup Instructions</i></strong></summary>
+
+> Note: Jarvis currently supports sending emails only when the ``contacts.yaml`` file is present, however phone numbers can be used directly.
+
+```yaml
+phone:
+  Tony: 0123456789
+  Thor: 1234567890
+email:
+  Eddard: ned@gmail.com
+  Aegon: egg@yahoo.com
+```
 </details>
 
 ### Smart Devices
@@ -323,7 +341,7 @@ tv: 'LGWEBOSTV'
 </details>
 
 ### Automation Setup [Optional]
-Executes [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/modules/offline/compatibles.py) tasks 
+Jarvis can execute [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/modules/offline/compatibles.py) tasks 
 at pre-defined times without any user interaction. Uses an `automation.yaml` file as source which should be stored 
 within the directory `fileio`
 

@@ -8,16 +8,17 @@ from executors import controls
 from executors.alarm import kill_alarm, set_alarm
 from executors.automation import automation_handler
 from executors.car import car
-from executors.communicator import read_gmail, send_sms
+from executors.comm_squire import send_notification
+from executors.communicator import read_gmail
 from executors.date_time import current_date, current_time
 from executors.display_functions import brightness
 from executors.face import faces
 from executors.github import github
 from executors.guard import guard_disable, guard_enable
 from executors.internet import ip_info, speed_test
+from executors.ios_functions import locate
 from executors.lights import lights
-from executors.location import (directions, distance, locate, locate_places,
-                                location)
+from executors.location import directions, distance, locate_places, location
 from executors.myq_controller import garage
 from executors.others import (abusive, apps, facts, flip_a_coin, google_home,
                               jokes, meaning, music, news, notes, photo,
@@ -67,6 +68,9 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
 
     if "*" in phrase:
         abusive(phrase)
+
+    elif word_match(phrase=phrase, match_list=keywords.send_notification):
+        send_notification(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.lights):
         lights(phrase)
@@ -180,9 +184,6 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
 
     elif word_match(phrase=phrase, match_list=keywords.github):
         github(phrase)
-
-    elif word_match(phrase=phrase, match_list=keywords.send_sms):
-        send_sms(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.apps):
         apps(phrase)

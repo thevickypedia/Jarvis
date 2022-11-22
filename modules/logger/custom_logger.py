@@ -20,9 +20,10 @@ import pytz
 
 from modules.models import models
 
-api_logs = os.path.join('logs', 'api')
-if not os.path.isdir(api_logs):
-    os.makedirs(api_logs)  # Recursively creates both logs and api directories if unavailable
+if not os.path.isdir(os.path.join('logs', 'api')) and not models.settings.limited:
+    os.makedirs(os.path.join('logs', 'api'))  # Recursively creates both logs and api directories if unavailable
+elif not os.path.isdir('logs'):
+    os.mkdir('logs')  # Creates only logs dir if limited mode is enabled
 
 DEFAULT_LOG_FORMAT = logging.Formatter(
     datefmt='%b-%d-%Y %I:%M:%S %p',

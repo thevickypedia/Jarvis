@@ -111,8 +111,7 @@ class Activator:
         logger.debug(f"Detected {models.settings.bot} at {datetime.now()}")
         playsound(sound=models.indicators.acknowledgement, block=False)
         self.py_audio.close(stream=self.audio_stream)
-        if phrase := listener.listen(timeout=models.env.timeout, phrase_limit=models.env.phrase_limit,
-                                     sound=False):
+        if phrase := listener.listen(sound=False):
             try:
                 initiator(phrase=phrase, should_return=True)
             except Exception as error:

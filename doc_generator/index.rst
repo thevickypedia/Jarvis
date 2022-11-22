@@ -200,6 +200,13 @@ Communicator
    :members:
    :undoc-members:
 
+Communicator Squire
+===================
+
+.. automodule:: executors.comm_squire
+   :members:
+   :undoc-members:
+
 Connection
 ==========
 
@@ -281,6 +288,13 @@ Internet
 ========
 
 .. automodule:: executors.internet
+   :members:
+   :undoc-members:
+
+iOS Functions
+=============
+
+.. automodule:: executors.ios_functions
    :members:
    :undoc-members:
 

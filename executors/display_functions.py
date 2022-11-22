@@ -38,7 +38,7 @@ def increase_brightness() -> None:
         for _ in range(16):
             os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
     else:
-        subprocess.run(["powershell", POWERSHELL.format(l=0)])
+        subprocess.run(["powershell", POWERSHELL.format(l=100)])
 
 
 def decrease_brightness() -> None:
@@ -47,7 +47,7 @@ def decrease_brightness() -> None:
         for _ in range(16):
             os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
     else:
-        subprocess.run(["powershell", POWERSHELL.format(l=100)])
+        subprocess.run(["powershell", POWERSHELL.format(l=0)])
 
 
 def set_brightness(level: int) -> None:

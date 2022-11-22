@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+6.6.4 (11/21/2022)
+------------------
+- Include usage of contacts.yaml file to send notifications
+- Add a feature to send emails from Jarvis
+- Avoid creating api/logs directory when running on limited mode
+- Moves iOS related operations to a dedicated module
+- Enable optional strict word match in word_match.py on top of regex
+- Remove phrase being split on 'also' and make it a single command
+- Fix a bug in windows brightness where increase and decrease were swapped
+- Remove duplicate function arguments in listener.py
+- Add potential future work
+
 6.6.3 (11/19/2022)
 ------------------
 - Fix a bug in garage door controller

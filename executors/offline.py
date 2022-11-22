@@ -237,6 +237,7 @@ def offline_communicator(command: str) -> Union[AnyStr, HttpUrl]:
             raise LookupError("Failed to retrieve the public URL")
     if word_match(phrase=command, match_list=keywords.keywords.photo):
         return photo()
+    # Call condition instead of split_phrase as the 'and' and 'also' filter will overwrite the first response
     conditions(phrase=command, should_return=True)
     shared.called_by_offline = False
     if response := shared.text_spoken:
