@@ -20,7 +20,7 @@ from modules.database import database
 from modules.exceptions import StopSignal
 from modules.logger.custom_logger import logger
 from modules.models import models
-from modules.utils import shared, support
+from modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
 ram = support.size_converter(byte_size=models.settings.ram).replace('.0', '')
@@ -87,7 +87,7 @@ def exit_process() -> NoReturn:
     except RuntimeError as error:
         logger.critical(f"Received a RuntimeError while self terminating.\n{error}")
     sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
-                     f"\nTotal runtime: {support.time_converter(time.perf_counter())}")
+                     f"\nTotal runtime: {util.time_converter(time.perf_counter())}")
 
 
 def sleep_control() -> bool:

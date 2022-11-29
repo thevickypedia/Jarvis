@@ -668,6 +668,13 @@ Support
    :members:
    :undoc-members:
 
+Utilities
+=========
+
+.. automodule:: modules.utils.util
+   :members:
+   :undoc-members:
+
 Telegram
 ========
 

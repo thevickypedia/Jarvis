@@ -5,7 +5,7 @@ from typing import Any, Callable, NoReturn
 from pymyq.errors import AuthenticationError, InvalidCredentialsError, MyQError
 
 from modules.audio import speaker
-from modules.exceptions import NoCoversFound
+from modules.exceptions import CoverNotOnline, NoCoversFound
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.myq import myq
@@ -71,7 +71,7 @@ def garage(phrase: str) -> NoReturn:
 
     logger.info("Getting status of the garage door.")
     try:
-        status = run_async(func=myq.garage_controller, operation=myq.Operation.STATE, phrase=phrase)
+        status = run_async(func=myq.garage_controller, execute=myq.operation.STATE, phrase=phrase)
     except InvalidCredentialsError as error:
         logger.error(error)
         speaker.speak(text=f"I'm sorry {models.env.title}! Your credentials do not match.")
@@ -90,36 +90,40 @@ def garage(phrase: str) -> NoReturn:
         speaker.speak(text=f"No garage doors were found in your MyQ account {models.env.title}! "
                            "Please check your MyQ account and add a garage door name to control it.")
         return
+    except CoverNotOnline as error:
+        logger.error(error)
+        speaker.speak(text=f"I'm sorry {models.env.title}! Your {error.device} is not online!")
+        return
 
     logger.info(status)
-    if myq.Operation.OPEN in phrase:
-        if status['state']['door_state'] == myq.Operation.OPEN:
+    if myq.operation.OPEN in phrase:
+        if status['state']['door_state'] == myq.operation.OPEN:
             speaker.speak(text=f"Your {status['name']} is already open {models.env.title}!")
             return
-        elif status['state']['door_state'] == myq.Operation.OPENING:
+        elif status['state']['door_state'] == myq.operation.OPENING:
             speaker.speak(text=f"Your {status['name']} is currently opening {models.env.title}!")
             return
-        elif status['state']['door_state'] == myq.Operation.CLOSING:
+        elif status['state']['door_state'] == myq.operation.CLOSING:
             speaker.speak(text=f"Your {status['name']} is currently closing {models.env.title}! "
                                "You may want to retry after a minute or two!")
             return
         logger.info(f"Opening {status['name']}.")
-        speaker.speak(text=f"Opening your {status['name']} {models.env.title}!")
-        run_async(func=myq.garage_controller, operation=myq.Operation.OPEN, phrase=phrase)
-    elif myq.Operation.CLOSE in phrase:
-        if status['state']['door_state'] == myq.Operation.CLOSED:
+        response = run_async(func=myq.garage_controller, execute=myq.operation.OPEN, phrase=phrase)
+        speaker.speak(text=response)
+    elif myq.operation.CLOSE in phrase:
+        if status['state']['door_state'] == myq.operation.CLOSED:
             speaker.speak(text=f"Your {status['name']} is already closed {models.env.title}!")
             return
-        elif status['state']['door_state'] == myq.Operation.CLOSING:
+        elif status['state']['door_state'] == myq.operation.CLOSING:
             speaker.speak(text=f"Your {status['name']} is currently closing {models.env.title}!")
             return
-        elif status['state']['door_state'] == myq.Operation.OPENING:
+        elif status['state']['door_state'] == myq.operation.OPENING:
             speaker.speak(text=f"Your {status['name']} is currently opening {models.env.title}! "
                                "You may want to try to after a minute or two!")
             return
         logger.info(f"Closing {status['name']}.")
-        speaker.speak(text=f"Closing your {status['name']} {models.env.title}!")
-        run_async(func=myq.garage_controller, operation=myq.Operation.CLOSE, phrase=phrase)
+        response = run_async(func=myq.garage_controller, execute=myq.operation.CLOSE, phrase=phrase)
+        speaker.speak(text=response)
     else:
         logger.info(f"{status['name']}: {status['state']['door_state']}")
         speaker.speak(text=f"Your {status['name']} is currently {status['state']['door_state']} {models.env.title}! "

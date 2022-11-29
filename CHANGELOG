@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+6.6.5 (11/29/2022)
+------------------
+- Add responses when garage door controller is offline
+- Remove looping in garage module when device is chosen
+- Send an email when vehicle is unlocked remotely
+- Include timezone in vehicle's guardian mode response
+- Create a dedicated module for functions that only uses builtins
+
 6.6.4 (11/21/2022)
 ------------------
 - Include usage of contacts.yaml file to send notifications

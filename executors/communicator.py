@@ -81,12 +81,18 @@ def send_sms(user: str, password: str, number: Union[str, int], body: str, subje
         return response.body
 
 
-def send_email(body: str, recipient: Union[EmailStr, str]) -> Union[bool, str]:
+def send_email(body: str, recipient: Union[EmailStr, str], subject: str = None, sender: str = None,
+               gmail_user: Union[EmailStr, str] = None, gmail_pass: str = None, title: str = None) -> Union[bool, str]:
     """Sends an email using an email template formatted as html.
 
     Args:
         body: Message to be inserted as html body in the email.
+        sender: Sender name of the email.
+        subject: Subject of the email.
         recipient: Email address to which the mail has to be sent.
+        gmail_user: Username for email.
+        gmail_pass: Password for email.
+        title: Sender name on template.
 
     References:
         Uses `gmail-connector <https://pypi.org/project/gmail-connector/>`__ to send the Email.
@@ -97,10 +103,12 @@ def send_email(body: str, recipient: Union[EmailStr, str]) -> Union[bool, str]:
         - Error response from gmail-connector.
     """
     body = string.capwords(body)
-    rendered = jinja2.Template(templates.EmailTemplates.notification).render(SENDER=models.env.name, MESSAGE=body)
-    email_object = SendEmail(gmail_user=models.env.gmail_user, gmail_pass=models.env.gmail_pass)
-    mail_stat = email_object.send_email(recipient=recipient, sender='Jarvis Communicator',
-                                        subject=f'Message from {models.env.name}', html_body=rendered)
+    rendered = jinja2.Template(source=templates.EmailTemplates.notification).render(SENDER=title or models.env.name,
+                                                                                    MESSAGE=body)
+    email_object = SendEmail(gmail_user=gmail_user or models.env.gmail_user,
+                             gmail_pass=gmail_pass or models.env.gmail_pass)
+    mail_stat = email_object.send_email(recipient=recipient, sender=sender or 'Jarvis Communicator',
+                                        subject=subject or f'Message from {models.env.name}', html_body=rendered)
     if mail_stat.ok:
         logger.info('Email notification has been sent')
         return True

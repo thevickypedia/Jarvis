@@ -11,7 +11,7 @@ from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.logger.custom_logger import logger
 from modules.models import models
-from modules.utils import shared, support
+from modules.utils import shared, support, util
 
 
 def extract_contacts(name: str, key: str) -> Union[int, EmailStr, None]:
@@ -36,7 +36,7 @@ def extract_contacts(name: str, key: str) -> Union[int, EmailStr, None]:
             return
     if contacts.get(key):
         logger.info(f"Looking for {name!r} in contacts file.")
-        identifier = support.get_closest_match(text=name, match_list=list(contacts[key].keys()))
+        identifier = util.get_closest_match(text=name, match_list=list(contacts[key].keys()))
         return contacts[key][identifier]
 
 

@@ -16,7 +16,7 @@ from modules.conditions import conversation
 from modules.lights import preset_values, smart_lights
 from modules.logger.custom_logger import logger
 from modules.models import models
-from modules.utils import support
+from modules.utils import support, util
 
 
 def turn_off(host: str) -> NoReturn:
@@ -144,7 +144,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     # elif 'and' in phrase.split():
     #     host_names, light_location = [], []
     #     for section in phrase.split(' and '):
-    #         light_location_section = support.get_closest_match(text=section, match_list=list(smart_devices.keys()))
+    #         light_location_section = util.get_closest_match(text=section, match_list=list(smart_devices.keys()))
     #         host_names.append(smart_devices.get(light_location_section))
     #         light_location.append(light_location_section.replace('_', ' ').replace('-', ''))
     #     light_location = " and ".join(light_location)
@@ -152,7 +152,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
 
     else:
         # Get the closest matching name provided in smart_devices.yaml compared to what's requested by the user
-        light_location = support.get_closest_match(text=phrase, match_list=list(smart_devices.keys()))
+        light_location = util.get_closest_match(text=phrase, match_list=list(smart_devices.keys()))
         logger.info(f"Lights location: {light_location}")
         host_names = [smart_devices.get(light_location)]
         light_location = light_location.replace('_', ' ').replace('-', '')

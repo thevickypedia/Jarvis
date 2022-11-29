@@ -34,7 +34,7 @@ from modules.exceptions import CameraError, EgressErrors
 from modules.facenet import face
 from modules.logger.custom_logger import logger
 from modules.models import models
-from modules.utils import shared, support
+from modules.utils import shared, support, util
 from version import version_info
 
 db = database.Database(database=models.fileio.base_db)
@@ -156,7 +156,7 @@ def google_home(device: str = None, file: str = None) -> None:
     if not shared.called_by_offline:
         speaker.speak(text=f'Scanning your IP range for Google Home devices {models.env.title}!', run=True)
         sys.stdout.write('\rScanning your IP range for Google Home devices..')
-    network_id = '.'.join(network_id.split('.')[0:3])
+    network_id = '.'.join(network_id.split('.')[:3])
 
     def ip_scan(host_id: int) -> Tuple[str, str]:
         """Scans the IP range using the received args as host id in an IP address.
@@ -248,7 +248,7 @@ def meaning(phrase: str) -> None:
                 insert = 'an' if key[0] in vowel else 'a'
                 repeated = ' also ' if n != 0 else ' '
                 n += 1
-                mean = ', '.join(value[0:2])
+                mean = ', '.join(value[:2])
                 speaker.speak(text=f'{keyword} is{repeated}{insert} {key}, which means {mean}.')
             if shared.called_by_offline:
                 return
@@ -317,7 +317,7 @@ def report() -> NoReturn:
 
 def time_travel() -> None:
     """Triggered only from ``initiator()`` to give a quick update on the user's daily routine."""
-    part_day = support.part_of_day()
+    part_day = util.part_of_day()
     speaker.speak(text=f"Good {part_day} {models.env.name}!")
     if part_day == 'Night':
         if event := support.celebrate():

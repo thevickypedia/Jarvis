@@ -20,7 +20,7 @@ from modules.facenet import face
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.templates import templates
-from modules.utils import shared, support
+from modules.utils import shared, util
 
 db = database.Database(database=models.fileio.base_db)
 
@@ -71,7 +71,7 @@ def guard_disable() -> NoReturn:
     """
     if get_state():
         put_state(state=False)
-        text = f'Welcome back {models.env.title}! Good {support.part_of_day()}.'
+        text = f'Welcome back {models.env.title}! Good {util.part_of_day()}.'
         if [file for file in os.listdir('threat') if file.endswith('.jpg')]:
             text += f" We had a potential threat {models.env.title}! Please check your email, or the " \
                     "threat directory to confirm."
@@ -125,7 +125,7 @@ def guard_enable() -> NoReturn:
     logger.info('Enabled Security Mode')
     put_state(state=True)
     speaker.speak(text=f"Enabled security mode {models.env.title}! I will look out for potential threats and keep you "
-                       f"posted. Have a nice {support.part_of_day()}, and enjoy yourself {models.env.title}!")
+                       f"posted. Have a nice {util.part_of_day()}, and enjoy yourself {models.env.title}!")
     if shared.called_by_offline:
         process = Process(target=security_runner)
         process.start()
