@@ -82,7 +82,7 @@ def weather(phrase: str = None) -> None:
         elif 'next week' in phrase:
             key = -1
             next_week = datetime.fromtimestamp(response['daily'][-1]['dt']).strftime("%A, %B %d")
-            tell = f"on {' '.join(next_week.split()[0:-1])} {engine().ordinal(next_week.split()[-1])}"
+            tell = f"on {' '.join(next_week.split()[:-1])} {engine().ordinal(next_week.split()[-1])}"
         else:
             key = 0
             tell = 'today'

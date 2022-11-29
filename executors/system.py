@@ -17,7 +17,7 @@ from modules.conditions import keywords
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.temperature import temperature
-from modules.utils import shared, support
+from modules.utils import shared, support, util
 
 
 def system_info() -> NoReturn:
@@ -93,7 +93,7 @@ def system_vitals() -> None:
     restart_time = datetime.fromtimestamp(psutil.boot_time())
     second = (datetime.now() - restart_time).total_seconds()
     restart_time = datetime.strftime(restart_time, "%A, %B %d, at %I:%M %p")
-    restart_duration = support.time_converter(seconds=second)
+    restart_duration = util.time_converter(seconds=second)
     output += f'Restarted on: {restart_time} - {restart_duration} ago from now.'
     if shared.called_by_offline:
         speaker.speak(text=output)

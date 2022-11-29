@@ -9,6 +9,7 @@ from typing import Tuple, Union
 import yaml
 from playsound import playsound
 
+from executors.communicator import send_email
 from executors.location import get_location_from_coordinates
 from executors.word_match import word_match
 from modules.audio import speaker
@@ -16,7 +17,7 @@ from modules.car import connector, controller
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.temperature import temperature
-from modules.utils import shared, support
+from modules.utils import shared, support, util
 
 
 def get_current_temp(location: dict) -> Tuple[Union[int, str], int]:
@@ -148,7 +149,7 @@ class Operations:
         else:
             return self.disconnect
 
-    def unlock(self) -> str:
+    def unlock(self, dt_string: str = None) -> str:
         """Calls vehicle function to perform the unlock operation.
 
         Returns:
@@ -156,6 +157,11 @@ class Operations:
             Response after unlocking the vehicle.
         """
         if car_name := self.object(operation="UNLOCK"):
+            if dt_string and shared.called_by_offline:
+                send_email(body=f"Your {car_name} was successfully unlocked via offline communicator!",
+                           recipient=models.env.recipient, subject=f"Car unlock alert: {dt_string}",
+                           title="Vehicle Protection",
+                           gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
             return f"Your {car_name} has been unlocked {models.env.title}!"
         else:
             return self.disconnect
@@ -224,7 +230,13 @@ def car(phrase: str) -> None:
     elif word_match(phrase=phrase, match_list=allowed_dict['guard']):
         response = caller.enable_guard(phrase=phrase)
     elif word_match(phrase=phrase, match_list=allowed_dict['unlock']):
-        response = caller.unlock()
+        dt_string = datetime.now().strftime("%B %d, %Y - %I:%M %p")
+        if shared.called_by_offline:
+            send_email(body="Your vehicle has been requested to unlock via offline communicator!",
+                       recipient=models.env.recipient, subject=f"Car unlock alert: {dt_string}",
+                       title="Vehicle Protection",
+                       gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+        response = caller.unlock(dt_string=dt_string)
     elif word_match(phrase=phrase, match_list=allowed_dict['lock']):
         response = caller.lock()
     elif word_match(phrase=phrase, match_list=allowed_dict['honk']):
@@ -283,14 +295,15 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
             control.enable_guardian_mode(pin=models.env.car_pin, expiration_time=end_time)
             until = datetime.fromtimestamp(end_time / 1000).strftime("%A, %B %d, %I:%M %p")  # Remove microseconds
             return f"Guardian mode has been enabled {models.env.title}! " \
-                   f"Your {control.get_attributes().get('vehicleBrand', 'car')} will be guarded until {until}"
+                   f"Your {control.get_attributes().get('vehicleBrand', 'car')} will be guarded until " \
+                   f"{until} {util.get_timezone()}"
         elif operation == "SECURE_EXIST":  # Only called during recursion
             current_end = control.get_guardian_mode_status().get('endTime')
             if not current_end:
                 return
             utc_dt = datetime.strptime(current_end, "%Y-%m-%dT%H:%M:%S.%fZ")  # Convert str to datetime object
             until = support.convert_utc_to_local(utc_dt=utc_dt).strftime("%A, %B %d, %I:%M %p")
-            return f"Guardian mode is already enabled until {until} {models.env.title}! "
+            return f"Guardian mode is already enabled until {until} {util.get_timezone()} {models.env.title}!"
         elif operation == "HONK":
             response = control.honk_blink()
         elif operation == "LOCATE" or operation == "LOCATE_INTERNAL":

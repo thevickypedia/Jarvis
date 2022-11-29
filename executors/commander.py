@@ -15,7 +15,7 @@ from modules.conditions import conversation, keywords
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.offline import compatibles
-from modules.utils import shared, support
+from modules.utils import shared, support, util
 
 
 def split_phrase(phrase: str, should_return: bool = False) -> bool:
@@ -33,7 +33,7 @@ def split_phrase(phrase: str, should_return: bool = False) -> bool:
 
     if ' after ' in phrase:
         if delay_info := timed_delay(phrase=phrase):
-            speaker.speak(text=f"I will execute it after {support.time_converter(seconds=delay_info[1])} "
+            speaker.speak(text=f"I will execute it after {util.time_converter(seconds=delay_info[1])} "
                                f"{models.env.title}!")
             return False
 
@@ -78,7 +78,7 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
         phrase: Takes the phrase spoken as an argument.
         delay: Sleeps for the number of seconds.
     """
-    logger.info(f"{phrase!r} will be executed after {support.time_converter(seconds=delay)}")
+    logger.info(f"{phrase!r} will be executed after {util.time_converter(seconds=delay)}")
     time.sleep(delay)
     logger.info(f"Executing {phrase!r}")
     try:
@@ -113,7 +113,7 @@ def initialize() -> None:
     if shared.greeting:
         speaker.speak(text="What can I do for you?")
     else:
-        speaker.speak(text=f'Good {support.part_of_day()}.')
+        speaker.speak(text=f'Good {util.part_of_day()}.')
         shared.greeting = True
     speaker.speak(run=True)
     renew()

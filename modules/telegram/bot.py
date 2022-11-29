@@ -23,7 +23,7 @@ from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.offline import compatibles
 from modules.telegram import audio_handler
-from modules.utils import support
+from modules.utils import support, util
 
 importlib.reload(module=logging)
 
@@ -392,7 +392,7 @@ class TelegramBot:
         if payload.get('text', '').lower() == 'help':
             self.send_message(chat_id=payload['from']['id'],
                               response=f"{greeting()} {payload['from']['first_name']}!\n"
-                                       f"Good {support.part_of_day()}! {intro()}\n\n"
+                                       f"Good {util.part_of_day()}! {intro()}\n\n"
                                        "Please reach out at https://vigneshrao.com/contact for more info.")
             return
         if not self.authenticate(payload=payload):
@@ -407,7 +407,7 @@ class TelegramBot:
                                                                       "hey", "chao", "hiya", "aloha"], strict=True):
             self.reply_to(payload=payload,
                           response=f"{greeting()} {payload['from']['first_name']}!\n"
-                                   f"Good {support.part_of_day()}! How can I be of service today?")
+                                   f"Good {util.part_of_day()}! How can I be of service today?")
             return
         if payload['text'] == '/start':
             self.send_message(chat_id=payload['from']['id'],
@@ -464,7 +464,7 @@ class TelegramBot:
                 logger.info(f'Request: {delay_info[0]}')
                 self.process_response(payload=payload,
                                       response="I will execute it after "
-                                               f"{support.time_converter(seconds=delay_info[1])} {models.env.title}!")
+                                               f"{util.time_converter(seconds=delay_info[1])} {models.env.title}!")
                 logger.info(f'Response: Task will be executed after {delay_info[1]} seconds')
                 return
         self.executor(command=command, payload=payload)

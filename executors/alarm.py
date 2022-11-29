@@ -122,7 +122,7 @@ def kill_alarm(phrase: str) -> None:
     if not alarm_state:
         speaker.speak(text=f"You have no {word}s set {models.env.title}!")
     elif len(alarm_state) == 1:
-        hour, minute, am_pm = alarm_state[0][0:2], alarm_state[0][3:5], alarm_state[0][6:8]
+        hour, minute, am_pm = alarm_state[0][:2], alarm_state[0][3:5], alarm_state[0][6:8]
         os.remove(f"alarm/{alarm_state[0]}")
         speaker.speak(text=f"Your {word} at {hour}:{minute} {am_pm} has been silenced {models.env.title}!")
     else:

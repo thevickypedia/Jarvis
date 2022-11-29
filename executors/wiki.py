@@ -33,7 +33,7 @@ def wikipedia_() -> None:
                 speaker.speak(text=f"I'm sorry {models.env.title}! I didn't get a response for the phrase: {keyword}.")
                 return
             # stops with two sentences before reading whole passage
-            formatted = ". ".join(result.split(". ")[0:2]) + "."
+            formatted = ". ".join(result.split(". ")[:2]) + "."
             speaker.speak(text=f"{formatted}. Do you want me to continue {models.env.title}?", run=True)
             if response := listener.listen():
                 if word_match(phrase=response, match_list=keywords.keywords.ok):

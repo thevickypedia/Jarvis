@@ -7,7 +7,7 @@ import psutil
 from api.server import trigger_api
 from executors.connection import connection_handler
 from executors.offline import automator, initiate_tunneling
-from executors.telegram import handler
+from executors.telegram import telegram_handler
 from modules.audio.speech_synthesis import synthesizer
 from modules.database import database
 from modules.logger.custom_logger import logger
@@ -47,7 +47,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
     """Initiates multiple background processes to achieve parallelization.
 
     Methods
-        - handler: Initiates polling for messages on the telegram bot.
+        - telegram_handler: Initiates polling for messages on the telegram bot.
         - trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.
         - automator: Initiates automator that executes offline commands and certain functions at said time.
         - initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
@@ -55,7 +55,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         - connection_handler: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections.
     """
     processes = {
-        "handler": Process(target=handler),
+        "telegram_handler": Process(target=telegram_handler),
         "trigger_api": Process(target=trigger_api),  # Does not support run-time keywords update from yaml file
         "automator": Process(target=automator),
         "initiate_tunneling": Process(target=initiate_tunneling),

@@ -4,11 +4,12 @@ from typing import Dict, NoReturn, Union
 
 import pymyq
 from aiohttp import ClientSession
+from pymyq.garagedoor import MyQGaragedoor
 
-from modules.exceptions import NoCoversFound
+from modules.exceptions import CoverNotOnline, NoCoversFound
 from modules.logger.custom_logger import logger
 from modules.models import models
-from modules.utils import support
+from modules.utils import util
 
 
 class Operation(str, Enum):
@@ -29,12 +30,21 @@ class Operation(str, Enum):
     STATE: str = "state"
 
 
-async def garage_controller(operation: str, phrase: str) -> Union[Dict, NoReturn]:
+operation = Operation
+
+
+async def garage_controller(execute: str, phrase: str) -> Union[Dict, NoReturn]:
     """Create an aiohttp session and run an operation on garage door.
 
     Args:
         phrase: Takes the recognized phrase as an argument.
-        operation: Takes the operation to be performed as an argument.
+        execute: Takes the operation to be performed as an argument.
+
+    Raises:
+        NoCoversFound:
+        - If there were no garage doors found in the MyQ account.
+        CoverNotOnline:
+        - If the requested garage door is not online.
 
     Returns:
         dict:
@@ -48,19 +58,29 @@ async def garage_controller(operation: str, phrase: str) -> Union[Dict, NoReturn
         if not myq.covers:
             raise NoCoversFound("No covers found.")
 
-        device_names = [device_obj.device_json.get('name') for device_id, device_obj in myq.covers.items()]
-        logger.debug(f"Available covers: {device_names}")
-        device = support.get_closest_match(text=phrase, match_list=device_names)
+        # Create a new dictionary with names as keys and MyQ object as values to get the object by name during execution
+        devices: Dict[str, MyQGaragedoor] = {obj_.device_json.get('name'): obj_ for id_, obj_ in myq.covers.items()}
+        logger.debug(f"Available covers: {devices}")
+        device = util.get_closest_match(text=phrase, match_list=list(devices.keys()))
         logger.debug(f"Chosen cover: {device!r}")
-        for device_id, device_obj in myq.covers.items():
-            if device_obj.device_json.get('name') != device:
-                logger.debug(f"{device_obj.device_json.get('name')!r} does not match {device!r}.")
-                continue
-            if operation == Operation.OPEN:
-                open_result = await device_obj.open()
+
+        if not devices[device].online:
+            raise CoverNotOnline(device=device, msg=f"{device!r} not online.")
+
+        if execute == Operation.STATE:
+            return devices[device].device_json
+
+        if execute == Operation.OPEN:
+            if devices[device].open_allowed:
+                open_result = await devices[device].open()
                 logger.debug(open_result)
-            elif operation == Operation.CLOSE:
-                close_result = await device_obj.close()
+                return f"Opening your {device} {models.env.title}!"
+            else:
+                return f"Unattended open is disabled on your {device} {models.env.title}!"
+        elif execute == Operation.CLOSE:
+            if devices[device].close_allowed:
+                close_result = await devices[device].close()
                 logger.debug(close_result)
-            elif operation == Operation.STATE:
-                return device_obj.device_json
+                return f"Closing your {device} {models.env.title}!"
+            else:
+                return f"Unattended close is disabled on your {device} {models.env.title}!"

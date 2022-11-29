@@ -1,6 +1,7 @@
 import os
 import shutil
-from datetime import datetime
+
+from modules.utils import util
 
 
 class MarketHours:
@@ -45,7 +46,7 @@ def rh_cron_schedule(extended: bool = False) -> str:
         A crontab expression running every 30 minutes during market hours based on the current timezone.
     """
     command = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join('api', 'report_gatherer.py')}"
-    tz = datetime.utcnow().astimezone().tzname()
+    tz = util.get_timezone()
     if tz not in MarketHours.hours['REGULAR'] or tz not in MarketHours.hours['EXTENDED']:
         tz = 'OTHER'
     start = MarketHours.hours['EXTENDED'][tz]['OPEN'] if extended else MarketHours.hours['REGULAR'][tz]['OPEN']

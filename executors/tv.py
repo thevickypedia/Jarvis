@@ -15,7 +15,7 @@ from modules.exceptions import TVError
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.tv.tv_controls import TV
-from modules.utils import shared, support
+from modules.utils import shared, support, util
 from modules.wakeonlan import wakeonlan
 
 
@@ -168,7 +168,7 @@ def television(phrase: str) -> None:
             time.sleep(5)
         elif 'open' in phrase_lower or 'launch' in phrase_lower:
             cleaned = ' '.join([w for w in phrase.split() if w not in ['launch', 'open', 'tv', 'on', 'my', 'the']])
-            app_name = support.get_closest_match(text=cleaned, match_list=shared.tv.get_apps())
+            app_name = util.get_closest_match(text=cleaned, match_list=shared.tv.get_apps())
             logger.info(f'{phrase} -> {app_name}')
             shared.tv.launch_app(app_name=app_name)
             speaker.speak(text=f"I've launched {app_name} on your TV {models.env.title}!")
@@ -177,7 +177,7 @@ def television(phrase: str) -> None:
         elif 'change' in phrase_lower or 'source' in phrase_lower:
             cleaned = ' '.join([word for word in phrase.split() if word not in ('set', 'the', 'source', 'on', 'my',
                                                                                 'of', 'to', 'tv')])
-            source = support.get_closest_match(text=cleaned, match_list=shared.tv.get_sources())
+            source = util.get_closest_match(text=cleaned, match_list=shared.tv.get_sources())
             logger.info(f'{phrase} -> {source}')
             shared.tv.set_source(val=source)
             speaker.speak(text=f"I've changed the source to {source}.")

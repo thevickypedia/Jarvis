@@ -46,7 +46,7 @@ from modules.logger import config
 from modules.models import models
 from modules.offline import compatibles
 from modules.templates import templates
-from modules.utils import support
+from modules.utils import support, util
 
 # Creates log files
 if not os.path.isfile(config.APIConfig().ACCESS_LOG_FILENAME):
@@ -297,9 +297,9 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
                                  'Please try an instruction that does not require an user interaction.')
     if ' after ' in command.lower():
         if delay_info := timed_delay(phrase=command):
-            logger.info(f"{delay_info[0]!r} will be executed after {support.time_converter(seconds=delay_info[1])}")
+            logger.info(f"{delay_info[0]!r} will be executed after {util.time_converter(seconds=delay_info[1])}")
             raise APIResponse(status_code=HTTPStatus.OK.real,
-                              detail=f'I will execute it after {support.time_converter(seconds=delay_info[1])} '
+                              detail=f'I will execute it after {util.time_converter(seconds=delay_info[1])} '
                                      f'{models.env.title}!')
     try:
         response = offline_communicator(command=command)
@@ -472,7 +472,7 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
         auth_stat = mail_obj.authenticate
         if not auth_stat.ok:
             raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
-        robinhood.token = support.keygen_uuid(length=16)
+        robinhood.token = util.keygen_uuid(length=16)
         rendered = jinja2.Template(templates.EmailTemplates.one_time_passcode).render(ENDPOINT='robinhood',
                                                                                       TOKEN=robinhood.token,
                                                                                       EMAIL=models.env.recipient)
@@ -568,7 +568,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         if not auth_stat.ok:
             logger.error(auth_stat.json())
             raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
-        surveillance.token = support.keygen_uuid(length=16)
+        surveillance.token = util.keygen_uuid(length=16)
         rendered = jinja2.Template(templates.EmailTemplates.one_time_passcode).render(ENDPOINT='surveillance',
                                                                                       TOKEN=surveillance.token,
                                                                                       EMAIL=models.env.recipient)
