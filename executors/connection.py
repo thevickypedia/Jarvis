@@ -10,7 +10,7 @@ from modules.models import models
 from modules.wifi.connector import ControlConnection, ControlPeripheral
 
 
-def connection_handler() -> NoReturn:
+def wifi_connector() -> NoReturn:
     """Checks for internet connection as per given frequency. Enables Wi-Fi and connects to SSID if connection fails.
 
     See Also:

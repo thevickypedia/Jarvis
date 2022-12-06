@@ -17,7 +17,7 @@ importlib.reload(module=logging)
 FAILED_CONNECTIONS = {'count': 0}
 
 
-def telegram_handler() -> NoReturn:
+def telegram() -> NoReturn:
     """Initiates polling for new messages.
 
     Handles:
@@ -35,7 +35,7 @@ def telegram_handler() -> NoReturn:
     except BotInUse as error:
         logger.error(error)
         logger.info("Restarting message poll to take over..")
-        telegram_handler()
+        telegram()
     except EgressErrors as error:
         logger.critical(error)
         FAILED_CONNECTIONS['count'] += 1
@@ -45,7 +45,7 @@ def telegram_handler() -> NoReturn:
         else:
             logger.info(f"Restarting in {FAILED_CONNECTIONS['count'] * 10} seconds.")
             time.sleep(FAILED_CONNECTIONS['count'] * 10)
-            telegram_handler()
+            telegram()
     except RecursionError as error:
         logger.error(error)
         restart_control(quiet=True)

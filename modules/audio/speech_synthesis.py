@@ -42,7 +42,7 @@ def check_existing() -> bool:
                 logger.critical('Failed to kill existing PID. Attempting to re-create session.')
 
 
-def synthesizer() -> NoReturn:
+def speech_synthesizer() -> NoReturn:
     """Initiates speech synthesizer using docker."""
     if check_existing():
         return

@@ -85,7 +85,6 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
         if shared.called_by_offline:
             shared.offline_caller = caller
             return
-        logger.info(f'Speaker called by: {caller!r}')
         logger.info(f'Response: {text}')
         sys.stdout.write(f"\r{text}")
         if models.env.speech_synthesis_timeout and \
@@ -96,6 +95,7 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
         else:
             models.audio_driver.say(text=text)
     if run:
+        logger.info(f'Speaker called by: {caller!r}')
         models.audio_driver.runAndWait()
     Thread(target=frequently_used, kwargs={"function_name": caller}).start() if caller in FUNCTIONS_TO_TRACK else None
 

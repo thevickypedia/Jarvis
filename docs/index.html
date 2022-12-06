@@ -982,8 +982,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="api.server.trigger_api">
-<span class="sig-prename descclassname"><span class="pre">api.server.</span></span><span class="sig-name descname"><span class="pre">trigger_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.server.trigger_api" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="api.server.fastapi">
+<span class="sig-prename descclassname"><span class="pre">api.server.</span></span><span class="sig-name descname"><span class="pre">fastapi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.server.fastapi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates the fast API in a dedicated process using uvicorn server.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1832,8 +1832,8 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <section id="module-executors.connection">
 <span id="connection"></span><h1>Connection<a class="headerlink" href="#module-executors.connection" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.connection.connection_handler">
-<span class="sig-prename descclassname"><span class="pre">executors.connection.</span></span><span class="sig-name descname"><span class="pre">connection_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.connection.connection_handler" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="executors.connection.wifi_connector">
+<span class="sig-prename descclassname"><span class="pre">executors.connection.</span></span><span class="sig-name descname"><span class="pre">wifi_connector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.connection.wifi_connector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for internet connection as per given frequency. Enables Wi-Fi and connects to SSID if connection fails.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -2845,8 +2845,8 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.offline.initiate_tunneling">
-<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">initiate_tunneling</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.offline.initiate_tunneling" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="executors.offline.tunneling">
+<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">tunneling</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.offline.tunneling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates Ngrok to tunnel requests from external sources if they aren’t running already.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
@@ -3154,15 +3154,28 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="executors.processor.start_processes">
 <span class="sig-prename descclassname"><span class="pre">executors.processor.</span></span><span class="sig-name descname"><span class="pre">start_processes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Process</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Process</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.processor.start_processes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates multiple background processes to achieve parallelization.</p>
-<dl class="simple">
-<dt>Methods</dt><dd><ul class="simple">
-<li><p>telegram_handler: Initiates polling for messages on the telegram bot.</p></li>
-<li><p>trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.</p></li>
-<li><p>automator: Initiates automator that executes offline commands and certain functions at said time.</p></li>
-<li><p>initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
-<li><p>synthesizer: Initiates larynx docker image for speech synthesis.</p></li>
-<li><p>connection_handler: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func_name</strong> – Name of the function that has to be started.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>telegram: Initiates message polling for Telegram bot to execute offline commands.</p></li>
+<li><p>fastapi: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.</p></li>
+<li><p>automator: Initiates automator that executes timed tasks, store calendar and meetings information in database.</p></li>
+<li><p>tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
+<li><p>speech_synthesizer: Initiates larynx docker image for speech synthesis.</p></li>
+<li><p>connection_handler: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.</p></li>
 </ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns a process object if a function name is passed, otherwise a mapping of function name and process objects.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Union[Process, Dict[str, Process]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3286,8 +3299,8 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <section id="module-executors.telegram">
 <span id="telegram"></span><h1>Telegram<a class="headerlink" href="#module-executors.telegram" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.telegram.telegram_handler">
-<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">telegram_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.telegram.telegram_handler" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="executors.telegram.telegram">
+<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">telegram</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.telegram.telegram" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates polling for new messages.</p>
 <dl class="simple">
 <dt>Handles:</dt><dd><ul class="simple">
@@ -3617,8 +3630,8 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="modules.audio.speech_synthesis.synthesizer">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">synthesizer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.audio.speech_synthesis.synthesizer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.audio.speech_synthesis.speech_synthesizer">
+<span class="sig-prename descclassname"><span class="pre">modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.audio.speech_synthesis.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates speech synthesizer using docker.</p>
 </dd></dl>
 
@@ -5200,6 +5213,11 @@ Pass 155 for LO and 285 for HI.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.FileIO.notes">
 <span class="sig-name descname"><span class="pre">notes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.notes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.FileIO.processes">
+<span class="sig-name descname"><span class="pre">processes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.processes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
