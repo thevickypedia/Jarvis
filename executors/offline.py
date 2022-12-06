@@ -171,7 +171,7 @@ def get_tunnel() -> Union[HttpUrl, NoReturn]:
         logger.error(error)
 
 
-def initiate_tunneling() -> NoReturn:
+def tunneling() -> NoReturn:
     """Initiates Ngrok to tunnel requests from external sources if they aren't running already.
 
     Notes:

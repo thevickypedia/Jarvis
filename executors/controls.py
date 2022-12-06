@@ -179,6 +179,7 @@ def terminator() -> NoReturn:
 
     Using this, eliminates the hassle of forcing multiple threads to stop.
     """
+    os.remove(models.fileio.processes)
     proc = psutil.Process(pid=models.settings.pid)
     process_info = proc.as_dict()
     if process_info.get('environ'):

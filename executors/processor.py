@@ -3,12 +3,13 @@ from multiprocessing import Process
 from typing import Dict, List, NoReturn, Tuple, Union
 
 import psutil
+import yaml
 
-from api.server import trigger_api
-from executors.connection import connection_handler
-from executors.offline import automator, initiate_tunneling
-from executors.telegram import telegram_handler
-from modules.audio.speech_synthesis import synthesizer
+from api.server import fastapi
+from executors.connection import wifi_connector
+from executors.offline import automator, tunneling
+from executors.telegram import telegram
+from modules.audio.speech_synthesis import speech_synthesizer
 from modules.database import database
 from modules.logger.custom_logger import logger
 from modules.models import models
@@ -46,27 +47,43 @@ def clear_db() -> NoReturn:
 def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]:
     """Initiates multiple background processes to achieve parallelization.
 
-    Methods
-        - telegram_handler: Initiates polling for messages on the telegram bot.
-        - trigger_api: Initiates Jarvis API using uvicorn server to receive offline commands.
-        - automator: Initiates automator that executes offline commands and certain functions at said time.
-        - initiate_tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
-        - synthesizer: Initiates larynx docker image for speech synthesis.
-        - connection_handler: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections.
+    Args:
+        func_name: Name of the function that has to be started.
+
+    See Also:
+        - telegram: Initiates message polling for Telegram bot to execute offline commands.
+        - fastapi: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.
+        - automator: Initiates automator that executes timed tasks, store calendar and meetings information in database.
+        - tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
+        - speech_synthesizer: Initiates larynx docker image for speech synthesis.
+        - connection_handler: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.
+
+    Returns:
+        Union[Process, Dict[str, Process]]:
+        Returns a process object if a function name is passed, otherwise a mapping of function name and process objects.
     """
-    processes = {
-        "telegram_handler": Process(target=telegram_handler),
-        "trigger_api": Process(target=trigger_api),  # Does not support run-time keywords update from yaml file
+    process_dict = {
+        "telegram": Process(target=telegram),
+        "fastapi": Process(target=fastapi),  # Does not support run-time keywords update from yaml file
         "automator": Process(target=automator),
-        "initiate_tunneling": Process(target=initiate_tunneling),
-        "synthesizer": Process(target=synthesizer),
-        "connection_handler": Process(target=connection_handler)  # Cannot hook up with other process due to timed wait
+        "tunneling": Process(target=tunneling),
+        "speech_synthesizer": Process(target=speech_synthesizer),
+        "wifi_connector": Process(target=wifi_connector)  # Cannot hook up with other process due to timed wait
     }
-    if func_name:
-        processes = {func_name: processes[func_name]}
+    processes = {func_name: process_dict[func_name]} if func_name else process_dict
     for func, process in processes.items():
         process.start()
-        logger.info(f"Started function: {func} {process.sentinel} with PID: {process.pid}")
+        logger.info(f"Started function: {func} with PID: {process.pid}")
+    if func_name:
+        with open(models.fileio.processes) as file:
+            dump = yaml.load(stream=file, Loader=yaml.FullLoader)
+        dump[func_name] = processes[func_name].pid
+    else:
+        dump = {k: v.pid for k, v in processes.items()}
+        dump['jarvis'] = models.settings.pid
+    logger.debug(f"Processes data: {dump}")
+    with open(models.fileio.processes, 'w') as file:
+        yaml.dump(stream=file, data=dump, indent=4)
     return processes[func_name] if func_name else processes
 
 
@@ -96,7 +113,7 @@ def stop_child_processes() -> NoReturn:
 
 def stop_processes(func_name: str = None) -> NoReturn:
     """Stops all background processes initiated during startup and removes database source file."""
-    stop_child_processes() if not func_name or func_name in ["automator"] else None
+    stop_child_processes() if not func_name else None
     for func, process in shared.processes.items():
         if func_name and func_name != func:
             continue

@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     """
 
     pid: PositiveInt = os.getpid()
-    runenv: str = psutil.Process(os.getpid()).parent().name()
+    runenv: str = psutil.Process(pid).parent().name()
     ram: Union[PositiveInt, PositiveFloat] = psutil.virtual_memory().total
     physical_cores: PositiveInt = psutil.cpu_count(logical=False)
     logical_cores: PositiveInt = psutil.cpu_count(logical=True)
@@ -297,6 +297,7 @@ class FileIO(BaseModel):
     # Jarvis internal
     location: FilePath = os.path.join('fileio', 'location.yaml')
     notes: FilePath = os.path.join('fileio', 'notes.txt')
+    processes: FilePath = os.path.join('fileio', 'processes.yaml')
 
     # macOS specifics
     app_launcher: FilePath = os.path.join('fileio', 'applauncher.scpt')

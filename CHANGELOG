@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+6.6.6 (12/06/2022)
+------------------
+- Save process IDs and name map in a yaml file
+- Change module names to make better sense
+
 6.6.5 (11/29/2022)
 ------------------
 - Add responses when garage door controller is offline
