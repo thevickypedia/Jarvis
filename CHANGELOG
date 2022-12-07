@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+6.6.7 (12/07/2022)
+------------------
+- Change function names to avoid import conflicts
+
 6.6.6 (12/06/2022)
 ------------------
 - Save process IDs and name map in a yaml file

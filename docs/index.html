@@ -982,8 +982,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="api.server.fastapi">
-<span class="sig-prename descclassname"><span class="pre">api.server.</span></span><span class="sig-name descname"><span class="pre">fastapi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.server.fastapi" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="api.server.fast_api">
+<span class="sig-prename descclassname"><span class="pre">api.server.</span></span><span class="sig-name descname"><span class="pre">fast_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.server.fast_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates the fast API in a dedicated process using uvicorn server.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -3162,12 +3162,12 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>telegram: Initiates message polling for Telegram bot to execute offline commands.</p></li>
-<li><p>fastapi: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.</p></li>
+<li><p>telegram_api: Initiates message polling for Telegram bot to execute offline commands.</p></li>
+<li><p>fast_api: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.</p></li>
 <li><p>automator: Initiates automator that executes timed tasks, store calendar and meetings information in database.</p></li>
 <li><p>tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
 <li><p>speech_synthesizer: Initiates larynx docker image for speech synthesis.</p></li>
-<li><p>connection_handler: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.</p></li>
+<li><p>wifi_connector: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.</p></li>
 </ul>
 </div>
 <dl class="field-list simple">
@@ -3299,8 +3299,8 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <section id="module-executors.telegram">
 <span id="telegram"></span><h1>Telegram<a class="headerlink" href="#module-executors.telegram" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.telegram.telegram">
-<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">telegram</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.telegram.telegram" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="executors.telegram.telegram_api">
+<span class="sig-prename descclassname"><span class="pre">executors.telegram.</span></span><span class="sig-name descname"><span class="pre">telegram_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.telegram.telegram_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates polling for new messages.</p>
 <dl class="simple">
 <dt>Handles:</dt><dd><ul class="simple">
