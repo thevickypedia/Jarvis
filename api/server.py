@@ -31,7 +31,7 @@ class APIServer(uvicorn.Server):
         self.run()
 
 
-def fastapi() -> None:
+def fast_api() -> None:
     """Initiates the fast API in a dedicated process using uvicorn server.
 
     See Also:

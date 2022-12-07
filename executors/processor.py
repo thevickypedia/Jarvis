@@ -5,10 +5,10 @@ from typing import Dict, List, NoReturn, Tuple, Union
 import psutil
 import yaml
 
-from api.server import fastapi
+from api.server import fast_api
 from executors.connection import wifi_connector
 from executors.offline import automator, tunneling
-from executors.telegram import telegram
+from executors.telegram import telegram_api
 from modules.audio.speech_synthesis import speech_synthesizer
 from modules.database import database
 from modules.logger.custom_logger import logger
@@ -51,20 +51,20 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         func_name: Name of the function that has to be started.
 
     See Also:
-        - telegram: Initiates message polling for Telegram bot to execute offline commands.
-        - fastapi: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.
+        - telegram_api: Initiates message polling for Telegram bot to execute offline commands.
+        - fast_api: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.
         - automator: Initiates automator that executes timed tasks, store calendar and meetings information in database.
         - tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
         - speech_synthesizer: Initiates larynx docker image for speech synthesis.
-        - connection_handler: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.
+        - wifi_connector: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.
 
     Returns:
         Union[Process, Dict[str, Process]]:
         Returns a process object if a function name is passed, otherwise a mapping of function name and process objects.
     """
     process_dict = {
-        "telegram": Process(target=telegram),
-        "fastapi": Process(target=fastapi),  # Does not support run-time keywords update from yaml file
+        "telegram_api": Process(target=telegram_api),
+        "fast_api": Process(target=fast_api),  # Does not support run-time keywords update from yaml file
         "automator": Process(target=automator),
         "tunneling": Process(target=tunneling),
         "speech_synthesizer": Process(target=speech_synthesizer),
