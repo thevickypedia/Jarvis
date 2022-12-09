@@ -374,7 +374,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f"No entry found in database for {input_data.email!r}")
 
-    result = validate_email(email_address=input_data.email)
+    result = validate_email(email_address=input_data.email, smtp_check=False)
     if result is False:
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f"{input_data.email.split('@')[-1]!r} doesn't resolve to a valid mail server!")
