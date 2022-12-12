@@ -6,6 +6,7 @@ from typing import NoReturn
 
 import pvporcupine
 import pyaudio
+import yaml
 from playsound import playsound
 
 from _preexec import keywords_handler
@@ -194,7 +195,10 @@ def begin() -> NoReturn:
                                "Please check your connection.", run=True)
     sys.stdout.write(f"\rCurrent Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
     shared.hosted_device = hosted_device_info()
-    if not models.settings.limited:
+    if models.settings.limited:
+        with open(models.fileio.processes, 'w') as file:
+            yaml.dump(stream=file, data={"jarvis": models.settings.pid})
+    else:
         shared.processes = start_processes()
     write_current_location()
     Activator().start()

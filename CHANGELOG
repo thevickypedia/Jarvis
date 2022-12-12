@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+6.7.0 (12/11/2022)
+------------------
+- Add more `Linux` supporting features
+- Write processes.yaml file regardless of limited mode state
+
 6.6.9 (12/11/2022)
 ------------------
 - FEATURE::Add `Linux` support
