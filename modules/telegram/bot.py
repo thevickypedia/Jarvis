@@ -356,11 +356,11 @@ class TelegramBot:
             with open(filename, 'wb') as file:
                 file.write(bytes_obj)
             converted = False
-            if models.settings.macos:
+            if models.settings.os == "Darwin":
                 transcode = audio_handler.audio_converter_mac()
                 if transcode and transcode(input_file_name=filename, output_audio_format="flac"):
                     converted = True
-            else:
+            elif models.settings.os == "Windows":
                 if audio_handler.audio_converter_win(input_filename=filename, output_audio_format="flac"):
                     converted = True
             if converted:

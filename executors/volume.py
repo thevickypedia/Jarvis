@@ -18,10 +18,12 @@ def main_volume(level: int) -> NoReturn:
         level: Takes the volume level as an argument.
     """
     logger.info(f"Set system volume to {level!r}")
-    if models.settings.macos:
+    if models.settings.os == "Darwin":
         os.system(f'osascript -e "set Volume {round((8 * level) / 100)}"')
-    else:
+    elif models.settings.os == "Windows":
         win_volume.set_volume(level=level)
+    else:
+        os.system(f"amixer sset 'Master' {level}% /dev/null 2>&1")
 
 
 def speaker_volume(level: int) -> NoReturn:

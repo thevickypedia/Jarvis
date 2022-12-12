@@ -3271,7 +3271,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.system.system_vitals">
 <span class="sig-prename descclassname"><span class="pre">executors.system.</span></span><span class="sig-name descname"><span class="pre">system_vitals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.system.system_vitals" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads system vitals on macOS.</p>
+<dd><p>Reads system vitals.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
@@ -5348,8 +5348,8 @@ Pass 155 for LO and 285 for HI.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.Settings.macos">
-<span class="sig-name descname"><span class="pre">macos</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.models.classes.Settings.macos" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.models.classes.Settings.os">
+<span class="sig-name descname"><span class="pre">os</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.Settings.os" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -5835,7 +5835,7 @@ Whites can have a value of None.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TestLogger</span>
 </pre></div>
 </div>
-<p>Instantiates logger to self.logger which is used by the function methods.</p>
+<p>Instantiates logger.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.logger.custom_logger.TestLogger.test_log">
 <span class="sig-name descname"><span class="pre">test_log</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.logger.custom_logger.TestLogger.test_log" title="Permalink to this definition">¶</a></dt>
@@ -6509,6 +6509,12 @@ Whites can have a value of None.</p>
 <dt class="sig sig-object py" id="modules.utils.support.no_env_vars">
 <span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">no_env_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.utils.support.no_env_vars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Says a message about permissions when env vars are missing.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.unsupported_features">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">unsupported_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.utils.support.unsupported_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Says a message about unsupported features.</p>
 </dd></dl>
 
 <dl class="py function">

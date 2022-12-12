@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+6.6.9 (12/11/2022)
+------------------
+- FEATURE::Add `Linux` support
+- Set to limited mode by default for Linux
+- Update install.sh
+
 6.6.8 (12/09/2022)
 ------------------
 - Set smtp flag to false while email validation
@@ -23,7 +29,7 @@ Change Log
 - Include timezone in vehicle's guardian mode response
 - Create a dedicated module for functions that only uses builtins
 
-6.6.4 (11/21/2022)
+6.6.4 (11/22/2022)
 ------------------
 - Include usage of contacts.yaml file to send notifications
 - Add a feature to send emails from Jarvis

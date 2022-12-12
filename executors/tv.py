@@ -75,7 +75,7 @@ def television(phrase: str) -> None:
             Returns the reachable IP address from the list.
         """
         for ip in tv_ip_list:
-            if models.settings.macos:
+            if models.settings.os != "Windows":
                 if tv_stat := os.system(f"ping -c 1 -t 2 {ip} >/dev/null 2>&1"):
                     logger.error(f"Connection timed out on {ip}. Ping result: {tv_stat}") if not attempt else None
                 else:

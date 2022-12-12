@@ -18,17 +18,19 @@ from api.scheduler import rh_cron_schedule, sm_cron_schedule
 from modules.camera.camera import Camera
 from modules.crontab.expression import CronExpression
 from modules.database import database
-from modules.exceptions import CameraError, InvalidEnvVars
+from modules.exceptions import CameraError, InvalidEnvVars, MissingEnvVars
 from modules.models.classes import (Indicators, RecognizerSettings,
                                     audio_driver, env, fileio, settings)
 
 voices: Union[list, object] = audio_driver.getProperty("voices")
 _voice_names = [__voice.name for __voice in voices]
 if not env.voice_name:
-    if settings.macos:
+    if settings.os == "Darwin":
         env.voice_name = "Daniel"
-    else:
+    elif settings.os == "Windows":
         env.voice_name = "David"
+    elif settings.os == "Linux":
+        env.voice_name = "english-us"
 elif env.voice_name not in _voice_names:
     raise InvalidEnvVars(
         f"{env.voice_name!r} is not available.\nAvailable voices are: {', '.join(_voice_names)}"
@@ -95,6 +97,13 @@ if env.limited:
 # Validates crontab expression if provided
 for expression in env.crontab:
     CronExpression(expression)
+
+if settings.os == "Linux":
+    settings.limited = True
+    if not env.root_password:
+        raise MissingEnvVars(
+            "Linux requires the host machine's password to be set as the env var: ROOT_PASSWORD due to sudo dependency."
+        )
 
 # Create all necessary DB tables during startup
 db = database.Database(database=fileio.base_db)

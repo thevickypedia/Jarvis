@@ -444,6 +444,12 @@ def no_env_vars() -> NoReturn:
     speaker.speak(text=f"I'm sorry {models.env.title}! I lack the permissions!")
 
 
+def unsupported_features() -> NoReturn:
+    """Says a message about unsupported features."""
+    logger.error(f"Called by: {sys._getframe(1).f_code.co_name}")  # noqa
+    speaker.speak(text=f"I'm sorry {models.env.title}! This feature hasn't been implemented yet!")
+
+
 def flush_screen() -> NoReturn:
     """Flushes the screen output."""
     if models.settings.ide:

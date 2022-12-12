@@ -50,10 +50,12 @@ def restart(ask: bool = True) -> NoReturn:
         converted = 'yes'
     if word_match(phrase=converted, match_list=keywords.keywords.ok):
         stop_terminals()
-        if models.settings.macos:
+        if models.settings.os == "Darwin":
             subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
-        else:
+        elif models.settings.os == "Windows":
             os.system("shutdown /r /t 1")
+        else:
+            os.system(f"echo {models.env.root_password} | sudo -S reboot")
         raise StopSignal
     else:
         speaker.speak(text=f"Machine state is left intact {models.env.title}!")
@@ -95,12 +97,14 @@ def sleep_control() -> bool:
     Thread(target=decrease_brightness).start()
     # os.system("""osascript -e 'tell app "System Events" to sleep'""")  # requires restarting Jarvis manually
     # subprocess.call('rundll32.exe user32.dll, LockWorkStation')
-    if models.settings.macos:
+    if models.settings.os == "Darwin":
         os.system(
             """osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'"""
         )
-    else:
+    elif models.settings.os == "Windows":
         ctypes.windll.user32.LockWorkStation()
+    else:
+        os.system("gnome-screensaver-command --lock")
     if not (shared.called['report'] or shared.called['time_travel']):
         speaker.speak(text=random.choice(conversation.acknowledgement))
     return True
@@ -179,7 +183,7 @@ def terminator() -> NoReturn:
 
     Using this, eliminates the hassle of forcing multiple threads to stop.
     """
-    os.remove(models.fileio.processes)
+    os.remove(models.fileio.processes) if os.path.isfile(models.fileio.processes) else None
     proc = psutil.Process(pid=models.settings.pid)
     process_info = proc.as_dict()
     if process_info.get('environ'):
@@ -205,10 +209,12 @@ def shutdown(proceed: bool = False) -> NoReturn:
         converted = 'yes'
     if converted and word_match(phrase=converted, match_list=keywords.keywords.ok):
         stop_terminals()
-        if models.settings.macos:
+        if models.settings.os == "Darwin":
             subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
-        else:
+        elif models.settings.os == "Windows":
             os.system("shutdown /s /t 1")
+        else:
+            os.system(f"echo {models.env.root_password} | sudo -S shutdown -P now")
         raise StopSignal
     else:
         speaker.speak(text=f"Machine state is left intact {models.env.title}!")

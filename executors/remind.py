@@ -103,7 +103,7 @@ def reminder_executor(message: str) -> NoReturn:
     """
     communicator.send_sms(user=models.env.gmail_user, password=models.env.gmail_pass, number=models.env.phone_number,
                           body=message, subject="REMINDER from Jarvis")
-    if models.settings.macos:
+    if models.settings.os == "Darwin":
         os.system(f"""osascript -e 'display notification "{message}" with title "REMINDER from Jarvis"'""")
-    else:
+    elif models.settings.os == "Windows":
         win_notifications.WindowsBalloonTip(msg=message, title="REMINDER from Jarvis")
