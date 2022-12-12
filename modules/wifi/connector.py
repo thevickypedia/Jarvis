@@ -74,6 +74,19 @@ class ControlConnection:
             logger.error(f'Unable to connect to {models.env.wifi_ssid}')
             logger.error(error)
 
+    @staticmethod
+    def linux_connector() -> bool:
+        """Connects to Wi-Fi using SSID and password in env vars for Linux."""
+        cmd = f"nmcli d wifi connect '{models.env.wifi_ssid}' password '{models.env.wifi_password}'"
+        try:
+            result = subprocess.check_output(cmd, shell=True)
+        except ERRORS as error:
+            process_err(error)
+            return False
+        logger.info(f'Connected to {models.env.wifi_ssid}')
+        logger.debug(result.decode(encoding='UTF-8').strip())
+        return True
+
     def win_connector(self) -> bool:
         """Connects to Wi-Fi using SSID and password in env vars for Windows."""
         logger.info(f'Connecting to {models.env.wifi_ssid} in WiFi range')
@@ -120,6 +133,8 @@ class ControlConnection:
             return self.darwin_connector()
         elif models.settings.os == "Windows":
             return self.win_connector()
+        else:
+            return self.linux_connector()
 
 
 class ControlPeripheral:
@@ -150,6 +165,32 @@ class ControlPeripheral:
         except ERRORS as error:
             process_err(error)
 
+    @staticmethod
+    def linux_enable() -> NoReturn:
+        """Enables Wi-Fi on Linux."""
+        try:
+            result = subprocess.run("nmcli radio wifi on", shell=True)
+            if result.returncode:
+                logger.error("Failed to enable Wi-Fi")
+            else:
+                logger.info("Wi-Fi has been enabled.")
+            return result.returncode == 0
+        except ERRORS as error:
+            process_err(error)
+
+    @staticmethod
+    def linux_disable() -> NoReturn:
+        """Disables Wi-Fi on Linux."""
+        try:
+            result = subprocess.run("nmcli radio wifi on", shell=True)
+            if result.returncode:
+                logger.error("Failed to disable Wi-Fi")
+            else:
+                logger.info("Wi-Fi has been disabled.")
+            return result.returncode == 0
+        except ERRORS as error:
+            process_err(error)
+
     def win_enable(self) -> NoReturn:
         """Enables Wi-Fi on Windows."""
         try:
@@ -174,16 +215,20 @@ class ControlPeripheral:
         except ERRORS as error:
             process_err(error)
 
-    def enable(self) -> NoReturn:  # TODO: Implement for Linux
+    def enable(self) -> NoReturn:
         """Enable Wi-Fi (OS-agnostic)."""
         if models.settings.os == "Darwin":
             self.darwin_enable()
         elif models.settings.os == "Windows":
             self.win_enable()
+        else:
+            self.linux_enable()
 
-    def disable(self) -> NoReturn:  # TODO: Implement for Linux
+    def disable(self) -> NoReturn:
         """Disable Wi-Fi (OS-agnostic)."""
         if models.settings.os == "Darwin":
             self.darwin_disable()
         elif models.settings.os == "Windows":
             self.win_disable()
+        else:
+            self.linux_enable()

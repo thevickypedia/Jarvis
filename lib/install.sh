@@ -148,7 +148,7 @@ elif [[ "$OSName" == "Linux" ]]; then
   sudo apt install -y python3-gi
   sudo apt install -y pkg-config libcairo2-dev gcc python3-dev libgirepository1.0-dev
 
-  sudo apt install -y gnome-screensaver brightnessctl
+  sudo apt install -y gnome-screensaver brightnessctl v4l-utils
 
   os_independent_packages
 

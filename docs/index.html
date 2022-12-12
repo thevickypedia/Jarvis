@@ -120,7 +120,7 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.camera.camera.Camera.get_camera_info">
-<span class="sig-name descname"><span class="pre">get_camera_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.camera.camera.Camera.get_camera_info" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_camera_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.camera.camera.Camera.get_camera_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the yielded camera information as a generator object and returns as a list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -7524,6 +7524,12 @@ mac address given as a parameter.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="modules.wifi.connector.ControlConnection.linux_connector">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">linux_connector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.wifi.connector.ControlConnection.linux_connector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects to Wi-Fi using SSID and password in env vars for Linux.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="modules.wifi.connector.ControlConnection.win_connector">
 <span class="sig-name descname"><span class="pre">win_connector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.wifi.connector.ControlConnection.win_connector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connects to Wi-Fi using SSID and password in env vars for Windows.</p>
@@ -7560,6 +7566,18 @@ mac address given as a parameter.</p>
 <dt class="sig sig-object py" id="modules.wifi.connector.ControlPeripheral.darwin_disable">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">darwin_disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.wifi.connector.ControlPeripheral.darwin_disable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Disables Wi-Fi on macOS.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.wifi.connector.ControlPeripheral.linux_enable">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">linux_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.wifi.connector.ControlPeripheral.linux_enable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enables Wi-Fi on Linux.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.wifi.connector.ControlPeripheral.linux_disable">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">linux_disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.wifi.connector.ControlPeripheral.linux_disable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disables Wi-Fi on Linux.</p>
 </dd></dl>
 
 <dl class="py method">

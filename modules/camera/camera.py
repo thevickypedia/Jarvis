@@ -1,11 +1,12 @@
 import subprocess
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable, List, Union
 
 from modules.exceptions import CameraError
 from modules.models.classes import settings
 
 Windows = """wmic path CIM_LogicalDevice where "Description like 'USB Video%'" get /value"""
 Darwin = "system_profiler SPCameraDataType"
+Linux = "v4l2-ctl --list-devices"
 
 
 def list_splitter(original_list: List[str], delimiter: str) -> List[List[str]]:
@@ -57,8 +58,10 @@ class Camera:
             cmd = Darwin
         elif settings.os == "Windows":
             cmd = Windows
+        elif settings.os == "Linux":
+            cmd = Linux
         else:
-            cmd = ""  # TODO: Implement for Linux
+            cmd = ""
 
         self.output, err = subprocess.Popen(
             cmd,
@@ -68,6 +71,36 @@ class Camera:
         ).communicate()
         if error := err.decode(encoding='UTF-8'):
             raise CameraError(error)
+        self.output = self.output.decode(encoding='UTF-8').splitlines()
+
+    def _get_camera_info_linux(self) -> Iterable[str]:
+        """Get camera information for Linux.
+
+        Warnings:
+            - Results will be yielded in raw terminal output format.
+
+        Yields:
+            List[str]:
+            Returns the information of all connected cameras as a list of string.
+        """
+        for cam in self.output:
+            if cam.strip().startswith('/dev/video'):
+                result = subprocess.check_output(f"v4l2-ctl --device={cam.strip()} --all", shell=True)
+                yield result.decode(encoding='UTF-8')
+
+    def _list_cameras_linux(self) -> Iterable[str]:
+        """Yields the camera name for Linux.
+
+        Yields:
+            Names of the connected cameras.
+        """
+        for cam in self.output:
+            if cam.strip().startswith('/dev/video'):
+                try:
+                    result = subprocess.check_output(f"v4l2-ctl --device={cam.strip()} --all | grep Name", shell=True)
+                    yield result.decode(encoding='UTF-8').replace('Name', '').strip().lstrip(':').strip()
+                except subprocess.CalledProcessError:
+                    continue
 
     def _get_camera_info_windows(self) -> Iterable[Dict[str, str]]:
         """Get camera information for WindowsOS.
@@ -76,7 +109,7 @@ class Camera:
             List[Dict[str, str]]:
             Returns the information of all connected cameras as a list of dictionary.
         """
-        output = list(filter(None, self.output.decode(encoding='UTF-8').splitlines()))  # Filter null values in the list
+        output = list(filter(None, self.output))  # Filter null values in the list
         if not output:
             return
 
@@ -102,7 +135,7 @@ class Camera:
             Dict[str, Dict]:
             Returns the raw XML output as a dictionary.
         """
-        output = list(filter(None, self.output.decode(encoding='UTF-8').splitlines()))
+        output = list(filter(None, self.output))
         if not output:
             return
         output = [v.strip() for v in output][1:]
@@ -126,7 +159,7 @@ class Camera:
         for camera in self._get_camera_info_darwin():
             yield camera.get('Name')
 
-    def get_camera_info(self) -> List[Dict[str, str]]:
+    def get_camera_info(self) -> List[Union[Dict[str, str], str]]:
         """Gets the yielded camera information as a generator object and returns as a list.
 
         Returns:
@@ -138,7 +171,7 @@ class Camera:
         elif settings.os == "Windows":
             return list(self._get_camera_info_windows())
         else:
-            return []  # TODO: Implement for Linux
+            return list(self._get_camera_info_linux())
 
     def list_cameras(self) -> List[str]:
         """List of names of all cameras connected.
@@ -152,7 +185,7 @@ class Camera:
         elif settings.os == "Windows":
             return list(self._list_cameras_windows())
         else:
-            return []
+            return list(self._list_cameras_linux())
 
     def get_index(self) -> str:
         """Get the index and name of each connected camera.
