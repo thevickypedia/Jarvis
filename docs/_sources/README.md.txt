@@ -10,7 +10,7 @@
 
 **Platform Supported**
 
-![Generic badge](https://img.shields.io/badge/Platform-MacOS|Windows-1f425f.svg)
+![Generic badge](https://img.shields.io/badge/Platform-Linux|MacOS|Windows-1f425f.svg)
 
 **Language Stats**
 
@@ -114,7 +114,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 <details>
 <summary><strong>More on Environment variables</strong></summary>
 
-- **ROOT_PASSWORD** - System password to get the system vitals and run other `sudo` commands.
+- **ROOT_PASSWORD** - System password to get the system vitals and run other `sudo` commands. Mandatory for `Linux`
 - **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']` (Defaults to `['alexa']` in legacy macOS)<br>

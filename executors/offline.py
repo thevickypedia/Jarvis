@@ -69,7 +69,7 @@ def automator() -> NoReturn:
     config.multiprocessing_logger(filename=os.path.join('logs', 'automation_%d-%m-%Y.log'))
     offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
     start_events = start_meetings = start_cron = time.time()
-    events.event_app_launcher() if models.settings.macos else None
+    events.event_app_launcher() if models.settings.os == "Darwin" else None
     dry_run = True
     while True:
         if os.path.isfile(models.fileio.automation):
@@ -179,7 +179,7 @@ def tunneling() -> NoReturn:
         - The connection is tunneled through a public facing URL used to make ``POST`` requests to Jarvis API.
     """
     config.multiprocessing_logger(filename=os.path.join('logs', 'tunnel_%d-%m-%Y.log'))
-    if not models.settings.macos:
+    if models.settings.os != "Darwin":
         return
 
     if get_tunnel():

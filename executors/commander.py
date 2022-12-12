@@ -154,7 +154,7 @@ def initiator(phrase: str = None, should_return: bool = False) -> None:
         if (event := support.celebrate()) and 'night' not in phrase.lower():
             speaker.speak(text=f'Happy {event}!')
         if 'night' in phrase.split() or 'goodnight' in phrase.split():
-            Thread(target=sleep_control).start() if models.settings.macos else None
+            Thread(target=sleep_control).start()
         time_travel()
         shared.called['time_travel'] = False
     elif 'you there' in phrase.lower() or word_match(phrase=phrase, match_list=models.env.wake_words):

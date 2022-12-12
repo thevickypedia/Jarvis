@@ -13,6 +13,7 @@ classifiers = [
     'Intended Audience :: Information Technology',
     'Operating System :: MacOS :: MacOS X',
     'Operating System :: Microsoft :: Windows :: Windows 10',
+    'Operating System :: POSIX :: Linux',
     'License :: OSI Approved :: MIT License',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',

@@ -25,6 +25,8 @@ from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
 from modules.exceptions import InvalidEnvVars, UnsupportedOS
 
 audio_driver = pyttsx3.init()
+if not os.environ.get('AWS_DEFAULT_REGION'):
+    os.environ['AWS_DEFAULT_REGION'] = 'us-west-2'  # Required when import vpn-server module
 
 
 class Settings(BaseSettings):
@@ -49,11 +51,8 @@ class Settings(BaseSettings):
         ide = False
     else:
         ide = True
-    if platform.system() == "Windows":
-        macos: bool = False
-    elif platform.system() == "Darwin":
-        macos: bool = True
-    else:
+    os: str = platform.system()
+    if os not in ["Windows", "Darwin", "Linux"]:
         raise UnsupportedOS(
             f"\n{''.join('*' for _ in range(80))}\n\n"
             "Unsupported Operating System. Currently Jarvis can run only on Mac and Windows OS.\n\n"
@@ -61,7 +60,7 @@ class Settings(BaseSettings):
             "To reach out: https://vigneshrao.com/contact\n"
             f"\n{''.join('*' for _ in range(80))}\n"
         )
-    legacy: bool = True if macos and parser(platform.mac_ver()[0]) < parser('10.14') else False
+    legacy: bool = True if os == "Darwin" and parser(platform.mac_ver()[0]) < parser('10.14') else False
 
 
 settings = Settings()

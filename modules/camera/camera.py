@@ -53,7 +53,12 @@ class Camera:
             CameraError:
             If unable to connect to the camera.
         """
-        cmd = Darwin if settings.macos else Windows
+        if settings.os == "Darwin":
+            cmd = Darwin
+        elif settings.os == "Windows":
+            cmd = Windows
+        else:
+            cmd = ""  # TODO: Implement for Linux
 
         self.output, err = subprocess.Popen(
             cmd,
@@ -128,9 +133,12 @@ class Camera:
             List[Dict[str]]:
             List of dictionaries.
         """
-        if settings.macos:
+        if settings.os == "Darwin":
             return list(self._get_camera_info_darwin())
-        return list(self._get_camera_info_windows())
+        elif settings.os == "Windows":
+            return list(self._get_camera_info_windows())
+        else:
+            return []  # TODO: Implement for Linux
 
     def list_cameras(self) -> List[str]:
         """List of names of all cameras connected.
@@ -139,9 +147,12 @@ class Camera:
             List[str]:
             List of camera names.
         """
-        if settings.macos:
+        if settings.os == "Darwin":
             return list(self._list_cameras_darwin())
-        return list(self._list_cameras_windows())
+        elif settings.os == "Windows":
+            return list(self._list_cameras_windows())
+        else:
+            return []
 
     def get_index(self) -> str:
         """Get the index and name of each connected camera.

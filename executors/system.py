@@ -35,14 +35,14 @@ def system_info() -> NoReturn:
 
 
 def system_vitals() -> None:
-    """Reads system vitals on macOS.
+    """Reads system vitals.
 
     See Also:
         - Jarvis will suggest a reboot if the system uptime is more than 2 days.
         - If confirmed, invokes `restart <https://thevickypedia.github.io/Jarvis/#jarvis.restart>`__ function.
     """
     output = ""
-    if models.settings.macos:
+    if models.settings.os == "Darwin":
         if not models.env.root_password:
             speaker.speak(text=f"You haven't provided a root password for me to read system vitals {models.env.title}! "
                                "Add the root password as an environment variable for me to read.")
@@ -121,10 +121,13 @@ def hosted_device_info() -> Dict[str, str]:
         dict:
         A dictionary of key-value pairs with device type, operating system, os version.
     """
-    if models.settings.macos:
+    if models.settings.os == "Darwin":
         system_kernel = subprocess.check_output("sysctl hw.model", shell=True).decode('utf-8').splitlines()
         device = support.extract_str(system_kernel[0].split(':')[1])
-    else:
+    elif models.settings.os == "Windows":
         device = subprocess.getoutput("WMIC CSPRODUCT GET VENDOR").replace('Vendor', '').strip()
+    else:
+        device = subprocess.check_output("cat /sys/devices/virtual/dmi/id/product_name",
+                                         shell=True).decode('utf-8').strip()
     platform_info = platform.platform(terse=True).split('-')
     return {'device': device, 'os_name': platform_info[0], 'os_version': platform_info[1]}

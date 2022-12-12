@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OSName=$(UNAME)
+OSName=$(uname)
 ver=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
 echo_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')")
 
@@ -20,7 +20,7 @@ os_independent_packages() {
     python -m pip install --upgrade pip
 
     # Installs non version specific packages using --upgrade and --no-cache flag
-    python -m pip install --no-cache --upgrade setuptools gmail-connector vpn-server
+    python -m pip install --no-cache --upgrade setuptools requests gmail-connector vpn-server
 
     # Get to the current directory and install the module specific packages from requirements.txt
     current_dir="$(dirname "$(realpath "$0")")"
@@ -131,20 +131,43 @@ elif [[ "$OSName" == MSYS* ]]; then
     os_independent_packages
 
     # Install Windows specifics
-    python -m pip install pywin32==304 playsound==1.2.2 pydub==0.25.1
+    python -m pip install pywin32==304 playsound==1.2.2 pydub==0.25.1 pvporcupine==1.9.5
 
     # Install face-recognition/detection dependencies as stand alone so users aren't blocked until then
     python -m pip install opencv-python==4.5.5.64
     python -m pip install cmake==3.18.2.post1
     python -m pip install dlib==19.21.0
     python -m pip install face-recognition==1.3.0
+elif [[ "$OSName" == "Linux" ]]; then
+  dev_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+  sudo apt-get install -y git libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
+  sudo apt install -y build-essential ffmpeg espeak python3-pyaudio "python$dev_ver-dev"
+
+  sudo apt install -y libopencv-dev python3-opencv
+
+  sudo apt install -y python3-gi
+  sudo apt install -y pkg-config libcairo2-dev gcc python3-dev libgirepository1.0-dev
+
+  sudo apt install -y gnome-screensaver brightnessctl
+
+  os_independent_packages
+
+  python -m pip install pyaudio pvporcupine==1.9.5 PyAudio==0.2.12
+
+  python -m pip install cmake==3.18.2.post1
+  python -m pip install dlib==19.21.0
+  python -m pip install opencv-python==4.5.5.64
+  python -m pip install face-recognition==1.3.0
+
+  python -m pip install gobject PyGObject
+  python -m pip install playsound==1.3.0
 else
     clear
     echo "*****************************************************************************************************************"
     echo "*****************************************************************************************************************"
     echo ""
     echo "Current Operating System: $OSName"
-    echo "Jarvis is currently supported only on Mac and Windows"
+    echo "Jarvis is currently supported only on Linux, MacOS and Windows"
     echo ""
     echo "*****************************************************************************************************************"
     echo "*****************************************************************************************************************"

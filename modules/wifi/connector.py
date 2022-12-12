@@ -116,9 +116,10 @@ class ControlConnection:
         if not models.env.wifi_ssid or not models.env.wifi_password:
             logger.warning("Cannot connect to Wi-Fi without SSID and password.")
             return False
-        if models.settings.macos:
+        if models.settings.os == "Darwin":
             return self.darwin_connector()
-        return self.win_connector()
+        elif models.settings.os == "Windows":
+            return self.win_connector()
 
 
 class ControlPeripheral:
@@ -173,10 +174,16 @@ class ControlPeripheral:
         except ERRORS as error:
             process_err(error)
 
-    def enable(self) -> NoReturn:
+    def enable(self) -> NoReturn:  # TODO: Implement for Linux
         """Enable Wi-Fi (OS-agnostic)."""
-        self.darwin_enable() if models.settings.macos else self.win_enable()
+        if models.settings.os == "Darwin":
+            self.darwin_enable()
+        elif models.settings.os == "Windows":
+            self.win_enable()
 
-    def disable(self) -> NoReturn:
+    def disable(self) -> NoReturn:  # TODO: Implement for Linux
         """Disable Wi-Fi (OS-agnostic)."""
-        self.darwin_disable() if models.settings.macos else self.win_disable()
+        if models.settings.os == "Darwin":
+            self.darwin_disable()
+        elif models.settings.os == "Windows":
+            self.win_disable()

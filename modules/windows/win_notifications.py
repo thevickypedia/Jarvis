@@ -13,7 +13,7 @@ from typing import NoReturn
 
 from modules.models import models
 
-if not models.settings.macos:
+if models.settings.os == "Windows":
     # noinspection PyUnresolvedReferences,PyPackageRequirements
     import win32api
     # noinspection PyUnresolvedReferences,PyPackageRequirements

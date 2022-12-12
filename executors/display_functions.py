@@ -34,20 +34,24 @@ def brightness(phrase: str):
 
 def increase_brightness() -> None:
     """Increases the brightness to maximum in macOS."""
-    if models.settings.macos:
+    if models.settings.os == "Darwin":
         for _ in range(16):
             os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
-    else:
+    elif models.settings.os == "Windows":
         subprocess.run(["powershell", POWERSHELL.format(l=100)])
+    else:
+        os.system(f"echo {models.env.root_password} | sudo -S brightnessctl s 100 > /dev/null")
 
 
 def decrease_brightness() -> None:
     """Decreases the brightness to bare minimum in macOS."""
-    if models.settings.macos:
+    if models.settings.os == "Darwin":
         for _ in range(16):
             os.system("""osascript -e 'tell application "System Events"' -e 'key code 145' -e ' end tell'""")
-    else:
+    elif models.settings.os == "Windows":
         subprocess.run(["powershell", POWERSHELL.format(l=0)])
+    else:
+        os.system(f"echo {models.env.root_password} | sudo -S brightnessctl s 0 > /dev/null")
 
 
 def set_brightness(level: int) -> None:
@@ -59,10 +63,12 @@ def set_brightness(level: int) -> None:
     Args:
         level: Percentage of brightness to be set.
     """
-    if models.settings.macos:
+    if models.settings.os == "Darwin":
         level = round((16 * int(level)) / 100)
         decrease_brightness()
         for _ in range(level):
             os.system("""osascript -e 'tell application "System Events"' -e 'key code 144' -e ' end tell'""")
-    else:
+    elif models.settings.os == "Windows":
         subprocess.run(["powershell", POWERSHELL.format(l=level)])
+    else:
+        os.system(f"echo {models.env.root_password} | sudo -S brightnessctl s {level} > /dev/null")

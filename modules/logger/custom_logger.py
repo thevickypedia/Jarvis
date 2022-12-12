@@ -59,8 +59,7 @@ dictConfig({
     'version': 1,
     'disable_existing_loggers': True,
 })
-if not models.settings.macos:
-    logging.getLogger("_code_cache").propagate = False
+logging.getLogger("_code_cache").propagate = False
 
 logger = logging.getLogger('jarvis')
 logger.addHandler(hdlr=custom_handler())
@@ -81,7 +80,7 @@ class TestLogger:
     """
 
     def __init__(self):
-        """Instantiates logger to self.logger which is used by the function methods."""
+        """Instantiates logger."""
         self.logger = logger
 
     # noinspection PyUnresolvedReferences,PyProtectedMember

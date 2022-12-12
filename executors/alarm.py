@@ -150,7 +150,7 @@ def kill_alarm(phrase: str) -> None:
 def alarm_executor() -> NoReturn:
     """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
     volume(level=100)
-    if models.settings.macos:
+    if models.settings.os != "Windows":
         subprocess.call(["open", models.indicators.alarm])
     else:
         os.system(f'start wmplayer {models.indicators.alarm}')
