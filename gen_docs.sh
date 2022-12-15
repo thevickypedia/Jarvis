@@ -12,10 +12,10 @@ if [[ ! $checker =~ "version.py" ]]; then
   exit 255
 fi
 
-if [[ ! $checker =~ "CHANGELOG" ]]; then
-  echo -e "\n********************************************************************ERROR********************************************************************"
-  echo "Docs generation was ABORTED since CHANGELOG was not updated!! Changelog generator requires the commit number and package version in sync."
-  echo -e "*********************************************************************************************************************************************\n"
+if [[ ! $checker =~ "release_notes.rst" ]]; then
+  echo -e "\n********************************************************************ERROR**********************************************************"
+  echo "Docs generation was ABORTED since release notes was not updated!! Changelog generator requires the release notes to be in sync."
+  echo -e "***********************************************************************************************************************************\n"
   exit 255
 fi
 
