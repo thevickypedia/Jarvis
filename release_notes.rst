@@ -1,5 +1,11 @@
-Change Log
+Release Notes
 ==========
+
+6.7.1 (12/15/2022)
+------------------
+- Switch CHANGELOG to release_notes.rst
+- Remove CHANGELOG from pypi and link it to github
+- Add more classifiers for pypi
 
 6.7.0 (12/11/2022)
 ------------------
