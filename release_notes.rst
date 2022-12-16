@@ -1,6 +1,20 @@
 Release Notes
 ==========
 
+6.7.2 (12/15/2022)
+------------------
+- Implement speech synthesis for linux systems
+- Remove forcing limited mode for linux systems
+- Fix a bug in surveillance mode session check
+- Restrict alarm and reminder features in limited mode
+- Add an option to set voice and quality for speech synthesis
+- Delete docker container spun up for speech synthesis when stopped
+- Block ALSA errors in Linux OS during start up
+- Simplify models.py and update install.sh
+- Initiate speech synthesis even in limited mode
+- Include local changes when asked for Jarvis' version
+- Add distributor info for linux systems
+
 6.7.1 (12/15/2022)
 ------------------
 - Switch CHANGELOG to release_notes.rst

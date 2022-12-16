@@ -2056,10 +2056,25 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="executors.controls.delete_docker_container">
+<span class="sig-prename descclassname"><span class="pre">executors.controls.</span></span><span class="sig-name descname"><span class="pre">delete_docker_container</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.controls.delete_docker_container" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the docker container spun up (if any) for speech synthesis.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul>
+<li><div class="line-block">
+<div class="line">If the intention is to keep docker running forever, start the</div>
+<div class="line">docker container with the command in README before starting Jarvis.</div>
+</div>
+</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="executors.controls.terminator">
 <span class="sig-prename descclassname"><span class="pre">executors.controls.</span></span><span class="sig-name descname"><span class="pre">terminator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.controls.terminator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.</p>
-<p>Using this, eliminates the hassle of forcing multiple threads to stop.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -3282,6 +3297,20 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="executors.system.get_distributor_info_linux">
+<span class="sig-prename descclassname"><span class="pre">executors.system.</span></span><span class="sig-name descname"><span class="pre">get_distributor_info_linux</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.system.get_distributor_info_linux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns distributor information (i.e., Ubuntu) for Linux based systems.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A dictionary of key-value pairs with distributor id, name and version.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="executors.system.hosted_device_info">
 <span class="sig-prename descclassname"><span class="pre">executors.system.</span></span><span class="sig-name descname"><span class="pre">hosted_device_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.system.hosted_device_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets basic information of the hosted device.</p>
@@ -3530,7 +3559,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.audio.speaker.speech_synthesizer">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.speaker.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'high'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'en-us_northern_english_male-glow_tts'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.audio.speaker.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.audio.speaker.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SSQuality.Medium_Quality</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'en-us_northern_english_male-glow_tts'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.audio.speaker.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes a post call to docker container for speech synthesis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -3633,6 +3662,14 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="modules.audio.speech_synthesis.speech_synthesizer">
 <span class="sig-prename descclassname"><span class="pre">modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.audio.speech_synthesis.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates speech synthesizer using docker.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Initiates docker container using <code class="docutils literal notranslate"><span class="pre">docker-py</span></code> module for Windows and macOS.</p></li>
+<li><p>Initiates container using traditional commandline for Linux.</p></li>
+<li><p>Stores the container ID in a .cid file, to later stop and remove the container.</p></li>
+</ul>
+</div>
 </dd></dl>
 
 <hr class="docutils" />
@@ -4703,6 +4740,71 @@ Pass 155 for LO and 285 for HI.</p>
 <section id="classes">
 <h1>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
+<dt class="sig sig-object py" id="modules.models.classes.Settings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">Settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseSettings</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.classes.Settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads most common system values that do not change.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Settings</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#modules.exceptions.UnsupportedOS" title="modules.exceptions.UnsupportedOS"><strong>UnsupportedOS</strong></a> – </p></li>
+<li><p><strong>If the hosted device is neither macOS nor Windows.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.Settings.pid">
+<span class="sig-name descname"><span class="pre">pid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#modules.models.classes.Settings.pid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.Settings.runenv">
+<span class="sig-name descname"><span class="pre">runenv</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.Settings.runenv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.Settings.ram">
+<span class="sig-name descname"><span class="pre">ram</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.Settings.ram" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.Settings.physical_cores">
+<span class="sig-name descname"><span class="pre">physical_cores</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#modules.models.classes.Settings.physical_cores" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.Settings.logical_cores">
+<span class="sig-name descname"><span class="pre">logical_cores</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#modules.models.classes.Settings.logical_cores" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.Settings.limited">
+<span class="sig-name descname"><span class="pre">limited</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.models.classes.Settings.limited" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.Settings.bot">
+<span class="sig-name descname"><span class="pre">bot</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.Settings.bot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.Settings.os">
+<span class="sig-name descname"><span class="pre">os</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.Settings.os" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.Settings.legacy">
+<span class="sig-name descname"><span class="pre">legacy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.models.classes.Settings.legacy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
 <dt class="sig sig-object py" id="modules.models.classes.EventApp">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">EventApp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.classes.EventApp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Types of event applications supported by Jarvis.</p>
@@ -4717,6 +4819,83 @@ Pass 155 for LO and 285 for HI.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EventApp.OUTLOOK">
 <span class="sig-name descname"><span class="pre">OUTLOOK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'outlook'</span></em><a class="headerlink" href="#modules.models.classes.EventApp.OUTLOOK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.models.classes.Sensitivity">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">Sensitivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.classes.Sensitivity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allowed values for sensitivity.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Sensitivity</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.Sensitivity.sensitivity">
+<span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.Sensitivity.sensitivity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.models.classes.RecognizerSettings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">RecognizerSettings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseSettings</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.classes.RecognizerSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings for speech recognition.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">RecognizerSettings</span>
+</pre></div>
+</div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.RecognizerSettings.energy_threshold">
+<span class="sig-name descname"><span class="pre">energy_threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#modules.models.classes.RecognizerSettings.energy_threshold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.RecognizerSettings.pause_threshold">
+<span class="sig-name descname"><span class="pre">pause_threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.RecognizerSettings.pause_threshold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.RecognizerSettings.phrase_threshold">
+<span class="sig-name descname"><span class="pre">phrase_threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.RecognizerSettings.phrase_threshold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.RecognizerSettings.dynamic_energy_threshold">
+<span class="sig-name descname"><span class="pre">dynamic_energy_threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.models.classes.RecognizerSettings.dynamic_energy_threshold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.RecognizerSettings.non_speaking_duration">
+<span class="sig-name descname"><span class="pre">non_speaking_duration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.RecognizerSettings.non_speaking_duration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.models.classes.SSQuality">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">SSQuality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.classes.SSQuality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quality modes available for speech synthesis.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SSQuality</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.SSQuality.High_Quality">
+<span class="sig-name descname"><span class="pre">High_Quality</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'high'</span></em><a class="headerlink" href="#modules.models.classes.SSQuality.High_Quality" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.SSQuality.Medium_Quality">
+<span class="sig-name descname"><span class="pre">Medium_Quality</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'medium'</span></em><a class="headerlink" href="#modules.models.classes.SSQuality.Medium_Quality" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.SSQuality.Low_Quality">
+<span class="sig-name descname"><span class="pre">Low_Quality</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'low'</span></em><a class="headerlink" href="#modules.models.classes.SSQuality.Low_Quality" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -5028,7 +5207,7 @@ Pass 155 for LO and 285 for HI.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.sensitivity">
-<span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Sensitivity</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Sensitivity</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.sensitivity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">sensitivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.models.classes.Sensitivity" title="modules.models.classes.Sensitivity"><span class="pre">Sensitivity</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.models.classes.Sensitivity" title="modules.models.classes.Sensitivity"><span class="pre">Sensitivity</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.sensitivity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -5043,7 +5222,7 @@ Pass 155 for LO and 285 for HI.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.recognizer_settings">
-<span class="sig-name descname"><span class="pre">recognizer_settings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">RecognizerSettings</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.recognizer_settings" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">recognizer_settings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#modules.models.classes.RecognizerSettings" title="modules.models.classes.RecognizerSettings"><span class="pre">RecognizerSettings</span></a></em><a class="headerlink" href="#modules.models.classes.EnvConfig.recognizer_settings" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -5064,6 +5243,16 @@ Pass 155 for LO and 285 for HI.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.speech_synthesis_timeout">
 <span class="sig-name descname"><span class="pre">speech_synthesis_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.speech_synthesis_timeout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.speech_synthesis_voice">
+<span class="sig-name descname"><span class="pre">speech_synthesis_voice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.speech_synthesis_voice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.speech_synthesis_quality">
+<span class="sig-name descname"><span class="pre">speech_synthesis_quality</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#modules.models.classes.SSQuality" title="modules.models.classes.SSQuality"><span class="pre">SSQuality</span></a></em><a class="headerlink" href="#modules.models.classes.EnvConfig.speech_synthesis_quality" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -5240,6 +5429,11 @@ Pass 155 for LO and 285 for HI.</p>
 <span class="sig-name descname"><span class="pre">speech_synthesis_log</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.speech_synthesis_log" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.FileIO.speech_synthesis_id">
+<span class="sig-name descname"><span class="pre">speech_synthesis_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.speech_synthesis_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <hr class="docutils" />
@@ -5294,71 +5488,6 @@ Pass 155 for LO and 285 for HI.</p>
 
 </dd></dl>
 
-<hr class="docutils" />
-<dl class="py class">
-<dt class="sig sig-object py" id="modules.models.classes.Settings">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">Settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseSettings</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.classes.Settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads most common system values that do not change.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Settings</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#modules.exceptions.UnsupportedOS" title="modules.exceptions.UnsupportedOS"><strong>UnsupportedOS</strong></a> – </p></li>
-<li><p><strong>If the hosted device is neither macOS nor Windows.</strong> – </p></li>
-</ul>
-</dd>
-</dl>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.Settings.pid">
-<span class="sig-name descname"><span class="pre">pid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#modules.models.classes.Settings.pid" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.Settings.runenv">
-<span class="sig-name descname"><span class="pre">runenv</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.Settings.runenv" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.Settings.ram">
-<span class="sig-name descname"><span class="pre">ram</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.Settings.ram" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.Settings.physical_cores">
-<span class="sig-name descname"><span class="pre">physical_cores</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#modules.models.classes.Settings.physical_cores" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.Settings.logical_cores">
-<span class="sig-name descname"><span class="pre">logical_cores</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#modules.models.classes.Settings.logical_cores" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.Settings.limited">
-<span class="sig-name descname"><span class="pre">limited</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.models.classes.Settings.limited" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.Settings.bot">
-<span class="sig-name descname"><span class="pre">bot</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.Settings.bot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.Settings.os">
-<span class="sig-name descname"><span class="pre">os</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.Settings.os" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.Settings.legacy">
-<span class="sig-name descname"><span class="pre">legacy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.models.classes.Settings.legacy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </section>
 <section id="module-modules.database.database">
 <span id="database"></span><h1>Database<a class="headerlink" href="#module-modules.database.database" title="Permalink to this heading">¶</a></h1>
@@ -5401,6 +5530,34 @@ Pass 155 for LO and 285 for HI.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Exceptions</span>
 </pre></div>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.exceptions.py_error_handler">
+<span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">py_error_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ByteString</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ByteString</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ByteString</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.exceptions.py_error_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles errors from pyaudio module especially for Linux based operating systems.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.exceptions.no_alsa_err">
+<span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">no_alsa_err</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span></span></span><a class="headerlink" href="#modules.exceptions.no_alsa_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper to suppress ALSA error messages when <code class="docutils literal notranslate"><span class="pre">PyAudio</span></code> module is called.</p>
+<p class="rubric">Notes</p>
+<p>This happens specifically for Linux based operating systems.
+There are usually multiple sound APIs to choose from but not all of them might be configured correctly.
+PyAudio goes through “ALSA”, “PulseAudio” and “Jack” looking for some audio hardware and that triggers warnings.
+None of the options below seemed to work in all given conditions, so the approach taken was to hide them.</p>
+<dl class="simple">
+<dt>Options:</dt><dd><p>Comment off the ALSA devices where the error is triggered.
+Set energy threshold to the output from <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">speech_recognition</span></code>
+Setting dynamic energy threshold to <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://github.com/Uberi/speech_recognition/issues/100">https://github.com/Uberi/speech_recognition/issues/100</a>
+<a class="reference external" href="https://github.com/Uberi/speech_recognition/issues/182">https://github.com/Uberi/speech_recognition/issues/182</a>
+<a class="reference external" href="https://github.com/Uberi/speech_recognition/issues/191">https://github.com/Uberi/speech_recognition/issues/191</a>
+<a class="reference external" href="https://forums.raspberrypi.com/viewtopic.php?t=136974">https://forums.raspberrypi.com/viewtopic.php?t=136974</a></p>
+</dd></dl>
+
 <dl class="py exception">
 <dt class="sig sig-object py" id="modules.exceptions.UnsupportedOS">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedOS</span></span><a class="headerlink" href="#modules.exceptions.UnsupportedOS" title="Permalink to this definition">¶</a></dt>

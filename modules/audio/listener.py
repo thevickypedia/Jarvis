@@ -11,13 +11,17 @@ from playsound import playsound
 from speech_recognition import (Microphone, Recognizer, RequestError,
                                 UnknownValueError, WaitTimeoutError)
 
-from modules.exceptions import EgressErrors
+from modules.exceptions import EgressErrors, no_alsa_err
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import support
 
 recognizer = Recognizer()  # initiates recognizer that uses google's translation
-microphone = Microphone()  # initiates microphone object
+if models.settings.os == "Linux":
+    with no_alsa_err():
+        microphone = Microphone()  # initiates microphone object
+else:
+    microphone = Microphone()
 
 if models.env.recognizer_settings:
     recognizer.energy_threshold = models.env.recognizer_settings.energy_threshold

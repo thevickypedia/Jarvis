@@ -26,6 +26,7 @@ from modules.conditions import keywords
 from modules.database import database
 from modules.logger.custom_logger import logger
 from modules.models import models
+from modules.utils import shared
 
 db = database.Database(database=models.fileio.base_db)
 
@@ -447,7 +448,8 @@ def no_env_vars() -> NoReturn:
 def unsupported_features() -> NoReturn:
     """Says a message about unsupported features."""
     logger.error(f"Called by: {sys._getframe(1).f_code.co_name}")  # noqa
-    speaker.speak(text=f"I'm sorry {models.env.title}! This feature hasn't been implemented yet!")
+    speaker.speak(text=f"I'm sorry {models.env.title}! This feature is yet to be implemented on "
+                       f"{shared.hosted_device['os_name']}!")
 
 
 def flush_screen() -> NoReturn:

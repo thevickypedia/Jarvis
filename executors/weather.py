@@ -195,7 +195,7 @@ def weather(phrase: str = None) -> None:
                      f'{temp_feel_f}\N{DEGREE SIGN}. {weather_suggest}'
     else:
         output = f'The weather in {weather_location} is {temp_f}\N{DEGREE SIGN}F, with a high of {high}, and a low ' \
-                 f'of {low}. It currently feels Like {temp_feel_f}\N{DEGREE SIGN}F, and the current condition is ' \
+                 f'of {low}. It currently feels like {temp_feel_f}\N{DEGREE SIGN}F, and the current condition is ' \
                  f'{condition}. Sunrise at {sunrise}. Sunset at {sunset}.'
     if 'alerts' in response:
         alerts = response['alerts'][0]['event']

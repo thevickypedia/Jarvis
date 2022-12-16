@@ -9,6 +9,7 @@ import time
 from threading import Thread
 from typing import NoReturn
 
+import docker
 import psutil
 
 from executors.display_functions import decrease_brightness
@@ -178,17 +179,66 @@ def stop_terminals(apps: tuple = ("iterm", "terminal")) -> NoReturn:
             support.stop_process(pid=proc.pid)
 
 
-def terminator() -> NoReturn:
-    """Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.
+def delete_docker_container() -> NoReturn:
+    """Deletes the docker container spun up (if any) for speech synthesis.
 
-    Using this, eliminates the hassle of forcing multiple threads to stop.
+    See Also:
+        - | If the intention is to keep docker running forever, start the
+          | docker container with the command in README before starting Jarvis.
     """
+    if not os.path.isfile(models.fileio.speech_synthesis_id):
+        return
+    with open(models.fileio.speech_synthesis_id) as file:
+        container_id = file.read()
+    with open(models.fileio.speech_synthesis_log, "a") as log_file:
+        if models.settings.os == "Linux":
+            log_file.write(f"Stopping running container {container_id!r}\n")
+            try:
+                subprocess.Popen([f'echo {models.env.root_password} | sudo -S docker stop {container_id}'],
+                                 shell=True, bufsize=0, stdout=log_file, stderr=log_file)
+            except (subprocess.CalledProcessError, subprocess.SubprocessError, FileNotFoundError) as error:
+                if isinstance(error, subprocess.CalledProcessError):
+                    result = error.output.decode(encoding='UTF-8').strip()
+                    log_file.write(f"[{error.returncode}]: {result}\n")
+                else:
+                    log_file.write(str(error) + "\n")
+
+            log_file.write(f"Removing existing container {container_id!r}\n")
+            try:
+                subprocess.Popen([f'echo {models.env.root_password} | sudo -S docker rm -f {container_id}'],
+                                 shell=True, bufsize=0, stdout=log_file, stderr=log_file)
+            except (subprocess.CalledProcessError, subprocess.SubprocessError, FileNotFoundError) as error:
+                if isinstance(error, subprocess.CalledProcessError):
+                    result = error.output.decode(encoding='UTF-8').strip()
+                    log_file.write(f"[{error.returncode}]: {result}\n")
+                else:
+                    log_file.write(str(error) + "\n")
+        else:
+            from docker.errors import ContainerError, DockerException
+            try:
+                client = docker.from_env()
+            except DockerException as error:
+                log_file.write(error.__str__() + "\n")
+            try:
+                log_file.write(f"Stopping running container {container_id!r}\n")
+                client.api.kill(container_id)
+                log_file.write(f"Removing existing container {container_id!r}\n")
+                client.api.remove_container(container_id)
+            except ContainerError as error:
+                log_file.write(error.__str__() + "\n")
+        log_file.write(f"Removing cid file {models.fileio.speech_synthesis_id!r}\n")
+        os.remove(models.fileio.speech_synthesis_id)
+
+
+def terminator() -> NoReturn:
+    """Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc."""
+    delete_docker_container()
     os.remove(models.fileio.processes) if os.path.isfile(models.fileio.processes) else None
     proc = psutil.Process(pid=models.settings.pid)
     process_info = proc.as_dict()
     if process_info.get('environ'):
-        del process_info['environ']
-    logger.info(process_info)
+        del process_info['environ']  # To ensure env vars are not printed in log files
+    logger.debug(process_info)
     support.stop_process(pid=proc.pid)
     os._exit(1)  # noqa
 

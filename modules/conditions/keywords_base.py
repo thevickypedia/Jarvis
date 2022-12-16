@@ -51,7 +51,7 @@ avoid = ["sun", "moon", "mercury", "venus", "earth", "mars", "jupiter", "saturn"
 
 locate_places = ["where is", "where's", "which city", "which state", "which country", "which county", "wheres"]
 
-directions = ["take me", "get directions"]
+directions = ["take me", "directions"]
 
 set_alarm = ["alarm", "wake me", "timer"]
 

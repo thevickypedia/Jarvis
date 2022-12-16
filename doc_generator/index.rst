@@ -513,7 +513,31 @@ Crontab
 Classes
 =======
 
+.. autoclass:: modules.models.classes.Settings(pydantic.BaseSettings)
+   :members:
+   :undoc-members:
+
+====
+
 .. autoclass:: modules.models.classes.EventApp(Enum)
+   :members:
+   :undoc-members:
+
+====
+
+.. autoclass:: modules.models.classes.Sensitivity(Enum)
+   :members:
+   :undoc-members:
+
+====
+
+.. autoclass:: modules.models.classes.RecognizerSettings(pydantic.BaseSettings)
+   :members:
+   :undoc-members:
+
+====
+
+.. autoclass:: modules.models.classes.SSQuality(Enum)
    :members:
    :undoc-members:
 
@@ -538,12 +562,6 @@ Classes
 ====
 
 .. autoclass:: modules.models.classes.Indicators(pydantic.BaseModel)
-   :members:
-   :undoc-members:
-
-====
-
-.. autoclass:: modules.models.classes.Settings(pydantic.BaseSettings)
    :members:
    :undoc-members:
 

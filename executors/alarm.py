@@ -65,6 +65,9 @@ def set_alarm(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument and extracts time from it.
     """
+    if models.settings.limited:
+        speaker.speak(text="Alarm features are currently unavailable, as you're running on restricted mode.")
+        return
     if 'minute' in phrase:
         if minutes := support.extract_nos(input_=phrase, method=int):
             hour, minute, am_pm = (datetime.now() + timedelta(minutes=minutes)).strftime("%I %M %p").split()

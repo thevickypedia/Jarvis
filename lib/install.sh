@@ -1,12 +1,11 @@
 #!/bin/bash
+# 'set -e' stops the execution of a script if a command or pipeline has an error.
+# This is the opposite of the default shell behaviour, which is to ignore errors in scripts.
+set -e
 
 OSName=$(uname)
 ver=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
 echo_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')")
-
-echo -e '\n***************************************************************************************************'
-echo "                               $OSName running python $echo_ver"
-echo -e '***************************************************************************************************\n'
 
 if [ "$ver" -ge 38 ] && [ "$ver" -le 311 ]; then
   pyaudio="PyAudio-0.2.11-cp$ver-cp$ver-win_amd64.whl"
@@ -14,6 +13,10 @@ else
   echo "Python version $echo_ver is unsupported for Jarvis. Please use any python version between 3.8.* and 3.11.*"
   exit
 fi
+
+echo -e '\n***************************************************************************************************'
+echo "                               $OSName running python $echo_ver"
+echo -e '***************************************************************************************************\n'
 
 os_independent_packages() {
     # Upgrades pip module
@@ -27,7 +30,7 @@ os_independent_packages() {
     python -m pip install --no-cache-dir -r "$current_dir"/requirements.txt
 }
 
-download_from_ext_sources() {
+download_from_ext_sources_windows() {
     # Downloads FFmpeg for audio conversion when received voice commands from Telegram API
     curl -L https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-lgpl.zip --output ffmpeg.zip --silent && unzip ffmpeg.zip && rm -rf ffmpeg.zip && mv ffmpeg-master-latest-win64-lgpl ffmpeg
 
@@ -43,24 +46,33 @@ download_from_ext_sources() {
 }
 
 if [[ "$OSName" == "Darwin" ]]; then
-    xcode-select --install
-    # Looks for brew installation and installs only if brew is not found in /usr/local/bin
+    # Looks for xcode installation and installs only if xcode is not found already
+    which xcodebuild > tmp_xcode && xcode_check=$(cat tmp_xcode) && rm tmp_xcode
+    if  [[ "$xcode_check" == "/usr/bin/xcodebuild" ]] || [[ $HOST == "/*" ]] ; then
+        xcode_version=$(pkgutil --pkg-info=com.apple.pkg.CLTools_Executables | grep version)
+        echo "Found xcode version $xcode_version, skipping installation"
+    else
+        echo "Installing xcode"
+        xcode-select --install
+    fi
+
+    # Looks for brew installation and installs only if brew is not found
     brew_check=$(which brew)
-    brew_condition="/usr/local/bin/brew"
-    if [[ "$brew_check" != "$brew_condition" ]]; then
+    if [[ "$brew_check" == "/usr/local/bin/brew" ]] || [[ "$brew_check" == "/usr/bin/brew" ]]; then
+        brew -v > tmp_brew && brew_version=$(head -n 1 tmp_brew) && rm tmp_brew
+        echo "Found $brew_version, skipping installation"
+    else
         echo "Installing Homebrew"
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-        else echo "Found Homebrew, skipping installation"
     fi
 
     # Looks for git and installs only if git is not found in /usr/bin or /usr/local/bin (if installed using brew)
     git_check=$(which git)
-    git_condition_1="/usr/bin/git"
-    git_condition_2="/usr/local/bin/git"
-    if [[ "$git_check" == "$git_condition_1" || "$git_check" == "$git_condition_2" ]]; then
-        echo "Found Git CLI, skipping installation"
-        else echo "Installing Git CLI"
-        brew install git
+    if [[ "$git_check" == "/usr/bin/git" || "$git_check" == "/usr/local/bin/git" ]]; then
+        echo "Found $(git -v), skipping installation"
+    else
+      echo "Installing Git CLI"
+      brew install git
     fi
 
     # Packages installed using homebrew
@@ -76,13 +88,12 @@ if [[ "$OSName" == "Darwin" ]]; then
     base_ver="10.14"  # Versions older than Mojave (High Sierra and older versions)
     os_ver=$(sw_vers | grep ProductVersion | cut -d':' -f2 | tr -d ' ')
     if awk "BEGIN {exit !($base_ver > $os_ver)}"; then
-      pip install 'pvporcupine==1.6.0'
+      python -m pip install opencv-python==4.4.0.44 pvporcupine==1.6.0
     else
-      pip install 'pvporcupine==1.9.5'
+      python -m pip install opencv-python==4.5.5.64 pvporcupine==1.9.5
     fi
 
     # Install face-recognition/detection dependencies as stand alone so users aren't blocked until then
-    python -m pip install opencv-python==4.4.0.44
     python -m pip install cmake==3.18.2.post1
     python -m pip install dlib==19.21.0
     python -m pip install face-recognition==1.3.0
@@ -113,10 +124,10 @@ elif [[ "$OSName" == MSYS* ]]; then
     current_working_dir=$(pwd)
     if [[ $current_working_dir == *lib ]]
     then
-      download_from_ext_sources "MOVE"
+      download_from_ext_sources_windows "MOVE"
     elif [[ $current_working_dir == *Jarvis ]]
     then
-      download_from_ext_sources "DO_NOT_MOVE"
+      download_from_ext_sources_windows "DO_NOT_MOVE"
     else
       echo ""
       echo "***************************************************************************************************************"
@@ -140,6 +151,7 @@ elif [[ "$OSName" == MSYS* ]]; then
     python -m pip install face-recognition==1.3.0
 elif [[ "$OSName" == "Linux" ]]; then
   dev_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+  sudo apt install -y "python$dev_ver-distutils"  # Install distutils for the current python version
   sudo apt-get install -y git libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
   sudo apt install -y build-essential ffmpeg espeak python3-pyaudio "python$dev_ver-dev"
 

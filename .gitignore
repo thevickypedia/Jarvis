@@ -14,6 +14,7 @@ fileio/*.html
 fileio/*.db
 fileio/*.txt
 fileio/*.jpg
+fileio/*.cid
 
 # Log files
 logs
@@ -48,9 +49,9 @@ ffmpeg
 pyicloud_error
 
 # future work
-temp.py
-test.py
-test_voices.py
+temp_*.py
 
 # pypi package files
 jarvis_ironman.egg-info
+package.py
+package.zip

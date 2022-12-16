@@ -26,8 +26,10 @@ CONVERSATION = [__conversation for __conversation in dir(conversation) if not __
 FUNCTIONS_TO_TRACK = KEYWORDS + CONVERSATION
 
 
-def speech_synthesizer(text: str, timeout: Union[int, float] = models.env.speech_synthesis_timeout,
-                       quality: str = "high", voice: str = "en-us_northern_english_male-glow_tts") -> bool:
+def speech_synthesizer(text: str,
+                       timeout: Union[int, float] = models.env.speech_synthesis_timeout,
+                       quality: str = models.env.speech_synthesis_quality,
+                       voice: str = models.env.speech_synthesis_voice) -> bool:
     """Makes a post call to docker container for speech synthesis.
 
     Args:
@@ -40,6 +42,7 @@ def speech_synthesizer(text: str, timeout: Union[int, float] = models.env.speech
         bool:
         A boolean flag to indicate whether speech synthesis has worked.
     """
+    # TODO: Research if speech synthesis can be processed in batches
     logger.info(f"Request for speech synthesis: {text}")
     if time_in_str := re.findall(r'(\d+:\d+\s?(?:AM|PM|am|pm:?))', text):
         for t_12 in time_in_str:
@@ -49,10 +52,13 @@ def speech_synthesizer(text: str, timeout: Union[int, float] = models.env.speech
     if 'IP' in text.split():
         ip_new = '-'.join([i for i in text.split(' ')[-1]]).replace('-.-', ', ')  # 192.168.1.1 -> 1-9-2, 1-6-8, 1, 1
         text = text.replace(text.split(' ')[-1], ip_new).replace(' IP ', ' I.P. ')
+    # Raises UnicodeDecodeError within docker container
+    text = text.replace("\N{DEGREE SIGN}F", "degrees fahrenheit")
+    text = text.replace("\N{DEGREE SIGN}C", "degrees celsius")
     try:
         response = requests.post(
             url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/tts",
-            headers={"Content-Type": "text/plain"}, params={"voice": voice, "quality": quality}, data=text,
+            headers={"Content-Type": "text/plain"}, params={"voice": voice, "vocoder": quality}, data=text,
             verify=False, timeout=timeout
         )
         if response.ok:
@@ -67,7 +73,9 @@ def speech_synthesizer(text: str, timeout: Union[int, float] = models.env.speech
     except EgressErrors as error:
         logger.error(error)
         logger.info("Disabling speech synthesis")
-        models.env.speech_synthesis_timeout = 0
+        # Purposely exclude timeout since, larynx takes more time during first iteration to download the required voice
+        if not any((isinstance(error, TimeoutError), isinstance(error, requests.exceptions.Timeout))):
+            models.env.speech_synthesis_timeout = 0
 
 
 def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:

@@ -28,7 +28,14 @@ def system_info() -> NoReturn:
     free = support.size_converter(byte_size=free)
     ram = support.size_converter(byte_size=models.settings.ram).replace('.0', '')
     ram_used = support.size_converter(byte_size=psutil.virtual_memory().percent).replace(' B', ' %')
-    speaker.speak(text=f"You're running {platform.platform(terse=True)}, with {models.settings.physical_cores} "
+    system = None
+    if models.settings.os == "Linux":
+        mapping = get_distributor_info_linux()
+        if mapping.get('distributor_id') and mapping.get('release'):
+            system = f"{mapping['distributor_id']} {mapping['release']}"
+    if not system:
+        system = f"{shared.hosted_device['os_name']} {shared.hosted_device['os_version']}"
+    speaker.speak(text=f"You're running {system}, with {models.settings.physical_cores} "
                        f"physical cores and {models.settings.logical_cores} logical cores. Your physical drive "
                        f"capacity is {total}. You have used up {used} of space. Your free space is {free}. Your "
                        f"RAM capacity is {ram}. You are currently utilizing {ram_used} of your memory.")
@@ -112,6 +119,26 @@ def system_vitals() -> None:
             if word_match(phrase=response.lower(), match_list=keywords.keywords.ok):
                 logger.info(f'JARVIS::Restarting {shared.hosted_device.get("device")}')
                 restart(ask=False)
+
+
+def get_distributor_info_linux() -> Dict[str, str]:
+    """Returns distributor information (i.e., Ubuntu) for Linux based systems.
+
+    Returns:
+        dict:
+        A dictionary of key-value pairs with distributor id, name and version.
+    """
+    try:
+        result = subprocess.check_output('lsb_release -a', shell=True, stderr=subprocess.DEVNULL)
+        return {i.split(':')[0].strip().lower().replace(' ', '_'): i.split(':')[1].strip()
+                for i in result.decode(encoding="UTF-8").splitlines() if ':' in i}
+    except (subprocess.SubprocessError, subprocess.CalledProcessError) as error:
+        if isinstance(error, subprocess.CalledProcessError):
+            result = error.output.decode(encoding='UTF-8').strip()
+            logger.error(f"[{error.returncode}]: {result}")
+        else:
+            logger.error(error)
+        return {}
 
 
 def hosted_device_info() -> Dict[str, str]:
