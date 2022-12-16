@@ -43,6 +43,9 @@ def reminder(phrase: str) -> None:
     Args:
         phrase: Takes the voice recognized statement as argument and extracts the time and message from it.
     """
+    if models.settings.limited:
+        speaker.speak(text="Reminder features are currently unavailable, as you're running on restricted mode.")
+        return
     message = re.search(' to (.*) at ', phrase) or re.search(' about (.*) at ', phrase) or \
         re.search(' to (.*) after ', phrase) or re.search(' about (.*) after ', phrase) or \
         re.search(' to (.*) in ', phrase) or re.search(' about (.*) in ', phrase) or \

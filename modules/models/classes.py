@@ -101,6 +101,18 @@ class EventApp(str, Enum):
     OUTLOOK = 'outlook'
 
 
+class SSQuality(str, Enum):
+    """Quality modes available for speech synthesis.
+
+    >>> SSQuality
+
+    """
+
+    High_Quality = 'high'
+    Medium_Quality = 'medium'
+    Low_Quality = 'low'
+
+
 class CustomDict(BaseModel):
     """Custom links model."""
 
@@ -223,6 +235,8 @@ class EnvConfig(BaseSettings):
 
     # Speech synthesis config
     speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
+    speech_synthesis_voice: str = Field(default='en-us_northern_english_male-glow_tts', env='SPEECH_SYNTHESIS_VOICE')
+    speech_synthesis_quality: SSQuality = Field(default=SSQuality.Medium_Quality, env='SPEECH_SYNTHESIS_QUALITY')
     speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'), env='SPEECH_SYNTHESIS_HOST')
     speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
 
@@ -305,6 +319,7 @@ class FileIO(BaseModel):
     # Speech Synthesis
     speech_synthesis_wav: FilePath = os.path.join('fileio', 'speech_synthesis.wav')
     speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))
+    speech_synthesis_id: FilePath = datetime.now().strftime(os.path.join('fileio', 'speech_synthesis_%d-%m-%Y.cid'))
 
 
 fileio = FileIO()

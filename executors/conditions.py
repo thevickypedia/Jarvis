@@ -69,7 +69,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
     if "*" in phrase:
         abusive(phrase)
 
-    elif word_match(phrase=phrase, match_list=keywords.send_notification):
+    elif word_match(phrase=phrase, match_list=keywords.send_notification) and 'send' in phrase:
         send_notification(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.lights):
@@ -155,9 +155,6 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
             not word_match(phrase=phrase, match_list=keywords.avoid):
         distance(phrase)
 
-    elif word_match(phrase=phrase, match_list=conversation.form):
-        speak(text="I am a program, I'm without form.")
-
     elif word_match(phrase=phrase, match_list=keywords.locate_places):
         locate_places(phrase)
 
@@ -236,6 +233,9 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
 
     elif word_match(phrase=phrase, match_list=keywords.version):
         version()
+
+    elif word_match(phrase=phrase, match_list=conversation.form):
+        speak(text="I am a program, I'm without form.")
 
     elif word_match(phrase=phrase, match_list=conversation.greeting):
         speak(text=random.choice(['I am spectacular. I hope you are doing fine too.', 'I am doing well. Thank you.',

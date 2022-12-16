@@ -69,7 +69,8 @@ def automator() -> NoReturn:
     config.multiprocessing_logger(filename=os.path.join('logs', 'automation_%d-%m-%Y.log'))
     offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
     start_events = start_meetings = start_cron = time.time()
-    events.event_app_launcher() if models.settings.os == "Darwin" else None
+    if models.settings.os == "Darwin":
+        events.event_app_launcher()
     dry_run = True
     while True:
         if os.path.isfile(models.fileio.automation):

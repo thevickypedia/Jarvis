@@ -712,7 +712,8 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
                         Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': tmp_file},
                                daemon=True).start()
                         raise WebSocketDisconnect  # Raise error to release camera after a failed read
-                if surveillance.session_manager[client_id] + models.env.surveillance_session_timeout <= time.time():
+                if surveillance.session_manager.get(client_id, time.time()) + \
+                        models.env.surveillance_session_timeout <= time.time():
                     logger.info(f"Sending session timeout to client: {client_id}")
                     bytes_, tmp_file = squire.generate_error_frame(
                         dimension=surveillance.frame,

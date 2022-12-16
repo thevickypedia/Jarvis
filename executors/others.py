@@ -412,10 +412,31 @@ def version() -> NoReturn:
             git_version_info = ast.literal_eval(response.text.split('=')[1].strip())
     except EgressErrors as error:
         logger.error(error)
+
+    local_changes = None
+    try:
+        git_status = subprocess.check_output('git status -s', shell=True).decode('UTF-8')
+        git_status = [g.strip() for g in git_status.splitlines()]
+        local_changes = [file.split()[-1] for file in git_status
+                         if (file.startswith('M') or file.startswith('R') or file.startswith('A'))]
+        logger.info(local_changes)
+    except (subprocess.CalledProcessError, subprocess.CalledProcessError, FileNotFoundError) as error:
+        if isinstance(error, subprocess.CalledProcessError):
+            result = error.output.decode(encoding='UTF-8').strip()
+            logger.error(f"[{error.returncode}]: {result}")
+        else:
+            logger.error(error)
+
     text = f"I'm currently running on version {'.'.join(str(c) for c in version_info)}"
     if git_version_info:
         if version_info == git_version_info:
             text += ", I'm up to date."
+            if local_changes:
+                text += f" However, I have {len(local_changes)} local changes yet to be committed."
         else:
             text += f", but the one on github is version {'.'.join(str(c) for c in git_version_info)}"
+            if local_changes:
+                text += f". I also have {len(local_changes)} local changes yet to be committed."
+    else:
+        text += f". I have {len(local_changes)} local changes yet to be committed."
     speaker.speak(text=text)

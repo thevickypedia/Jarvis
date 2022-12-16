@@ -12,6 +12,7 @@ from typing import Union
 
 import cv2
 import pvporcupine
+import requests
 from pydantic import PositiveInt
 
 from api.scheduler import rh_cron_schedule, sm_cron_schedule
@@ -98,12 +99,50 @@ if env.limited:
 for expression in env.crontab:
     CronExpression(expression)
 
+# Validate root password present for linux systems
 if settings.os == "Linux":
-    settings.limited = True
     if not env.root_password:
         raise MissingEnvVars(
             "Linux requires the host machine's password to be set as the env var: ROOT_PASSWORD due to sudo dependency."
         )
+
+# Validate if able to read camera only if a camera env var is set,
+try:
+    if env.camera_index is None:
+        cameras = []
+    else:
+        cameras = Camera().list_cameras()
+except CameraError:
+    cameras = []
+if cameras:
+    if env.camera_index >= len(cameras):
+        raise CameraError(
+            f"Camera index # {env.camera_index} unavailable.\n"
+            "Camera index cannot exceed the number of available cameras.\n"
+            f"Available Cameras [{len(cameras)}]: {', '.join([f'{i}-{c}' for i, c in enumerate(cameras)])}"
+        )
+else:
+    env.camera_index = None
+
+if env.camera_index is not None:
+    cam = cv2.VideoCapture(env.camera_index)
+    if cam is None or not cam.isOpened() or cam.read() == (False, None):
+        raise CameraError(f"Unable to read the camera - {cameras[env.camera_index]}")
+    cam.release()
+
+# Validate voice for speech synthesis
+try:
+    response = requests.get(url=f"http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/voices",
+                            timeout=(1, 1))
+    if response.ok:
+        available_voices = [value.get('id').replace('/', '_') for key, value in response.json().items()]
+        if env.speech_synthesis_voice not in available_voices:
+            raise InvalidEnvVars(
+                f"{env.speech_synthesis_voice} is not available.\n"
+                f"Available Voices for Speech Synthesis: {', '.join(available_voices).replace('/', '_')}"
+            )
+except requests.RequestException:
+    pass
 
 # Create all necessary DB tables during startup
 db = database.Database(database=fileio.base_db)
@@ -119,33 +158,3 @@ TABLES = {
 }
 for table, column in TABLES.items():
     db.create_table(table_name=table, columns=column)
-
-if settings.bot == "jarvis" and current_process().name == "MainProcess":
-    try:
-        cameras = Camera().list_cameras()
-    except CameraError:
-        cameras = []
-
-    if cameras:
-        if len(cameras) == 0:
-            env.camera_index = 0
-        else:
-            if env.camera_index is None:
-                env.camera_index = 0
-            elif env.camera_index >= len(cameras):
-                raise CameraError(
-                    f"Camera index # {env.camera_index} unavailable.\n"
-                    "Camera index cannot exceed the number of available cameras.\n"
-                    f"Available Cameras [{len(cameras)}]: {', '.join([f'{i}-{c}' for i, c in enumerate(cameras)])}"
-                )
-    else:
-        env.camera_index = None
-
-    if env.camera_index is not None:
-        cam = cv2.VideoCapture(env.camera_index)
-        if cam is None or not cam.isOpened() or cam.read() == (False, None):
-            raise CameraError(f"Unable to read the camera - {cameras[env.camera_index]}")
-        cam.release()
-else:
-    if env.camera_index is None:  # Set default index to 0 when called by processes other than jarvis
-        env.camera_index = 0

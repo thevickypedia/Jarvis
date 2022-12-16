@@ -198,6 +198,8 @@ def begin() -> NoReturn:
     if models.settings.limited:
         with open(models.fileio.processes, 'w') as file:
             yaml.dump(stream=file, data={"jarvis": models.settings.pid})
+        if models.settings.os != "Darwin":
+            shared.processes = start_processes(func_name="speech_synthesizer")
     else:
         shared.processes = start_processes()
     write_current_location()
