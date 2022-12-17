@@ -87,8 +87,12 @@
      - `Settings` → `Privacy`
        - `Microphone` - **Required** to listen and respond.
        - `Camera` - **[Optional]** Required only during face recognition/detection.
-       - Unlike macOS, `Windows` pops a confirmation window to **Allow** or **Deny** access to files and folders.
+       - Unlike `macOS`, `Windows` pops a confirmation window to **Allow** or **Deny** access to files and folders.
      - Install [Anaconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html#windows-installers), and [VisualStudio C++ BuildTools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+
+   - **Linux** <br> _Tested on **Ubuntu 22.04 LTS**_
+     - Store the host machine's password as the env var: `ROOT_PASSWORD`
+     - Unlike macOS and Windows, `Ubuntu` does not have app specific permissions.
 
 ## Setup
 
@@ -228,7 +232,9 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **BOT_USERS** - Usernames that should have access to Jarvis.
 
 **[OS Agnostic Voice Model](https://github.com/thevickypedia/Jarvis/blob/master/modules/audio/speech_synthesis.py)**
-- **SPEECH_SYNTHESIS_TIMEOUT** - Timeout to connect to the docker container that processes text to speech requests. <br>
+- **SPEECH_SYNTHESIS_TIMEOUT** - Timeout to connect to the docker container that processes text to speech requests.
+- **SPEECH_SYNTHESIS_VOICE** - Voice for the speech synthesis model. Defaults to author's favorite.
+- **SPEECH_SYNTHESIS_QUALITY** - Quality of speech synthesis conversion. Defaults to `medium`. <br>
     <details>
     <summary><strong><i>To enable independent speech-synthesis</i></strong></summary>
 
@@ -245,7 +251,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
         rhasspy/larynx
     ```
 
-    :bulb: &nbsp; Optionally run speech synthesis on a docker container for better voices but, response might be slower. If you don't have docker installed or simply don't want to use it, set the `SPEECH_SYNTHESIS_TIMEOUT` env var to 0. This is also done automatically if failed to launch a docker container upon startup.
+    :bulb: &nbsp; Speech Synthesis can run on a docker container for better voices but, response might be slower. If you don't have docker installed or simply don't want to use it, set the `SPEECH_SYNTHESIS_TIMEOUT` env var to 0. This is also done automatically if failed to launch a docker container upon startup.
 
     </details>
 

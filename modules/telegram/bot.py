@@ -233,7 +233,7 @@ class TelegramBot:
                 - If unable to connect to the endpoint.
 
         See Also:
-            Swaps ``offset`` value during every iteration to avoid hanging new messages.
+            Swaps ``offset`` value during every iteration to avoid reprocessing messages.
         """
         offset = 0
         logger.info(msg="Polling for incoming messages..")

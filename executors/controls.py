@@ -301,5 +301,6 @@ def starter() -> NoReturn:
     delete_pycache()
     for file in os.listdir("fileio"):
         f_path = os.path.join("fileio", file)
-        os.chmod(f_path, os.stat(f_path).st_mode | stat.S_IEXEC)
-    # [os.chmod(file, int('755', base=8) or 0o755) for file in os.listdir("fileio")]
+        if not file.endswith('.cid'):
+            os.chmod(f_path, os.stat(f_path).st_mode | stat.S_IEXEC)
+    # [os.chmod(file, int('755', base=8) or 0o755) for file in os.listdir("fileio") if not file.endswith('.cid')]

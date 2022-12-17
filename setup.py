@@ -90,7 +90,7 @@ setup(
     project_urls={
         'Source': base_url,
         'Docs': 'https://thevickypedia.github.io/Jarvis',
-        'Release Notes': f'{base_url}/blob/main/release_notes.rst',
+        'Release Notes': f'{base_url}/blob/master/release_notes.rst',
         'Demo': 'https://vigneshrao.com/Jarvis/Jarvis_Demo.mp4',
         'Bug Tracker': f'{base_url}/issues'
     },

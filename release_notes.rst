@@ -1,6 +1,14 @@
 Release Notes
 ==========
 
+6.7.3 (12/17/2022)
+------------------
+- More optimizations for Linux
+- Rename automation.yaml instead of removing if invalid
+- Allow an option to brute force non-limited mode
+- Fix release notes hyperlink in pypi
+- Update README.md
+
 6.7.2 (12/15/2022)
 ------------------
 - Implement speech synthesis for linux systems

@@ -1,15 +1,23 @@
 import asyncio
 import logging
+import platform
 from typing import NoReturn
 
 import speech_recognition
 import yaml
+
+from modules.exceptions import no_alsa_err
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler())
 
 RECOGNIZER = speech_recognition.Recognizer()
+if platform.system() == "Linux":
+    with no_alsa_err():
+        MICROPHONE = speech_recognition.Microphone()
+else:
+    MICROPHONE = speech_recognition.Microphone()
 COMMON_ERRORS = speech_recognition.UnknownValueError, speech_recognition.RequestError, \
     speech_recognition.WaitTimeoutError, TimeoutError, ConnectionError,
 
@@ -40,7 +48,7 @@ async def save_for_reference() -> NoReturn:
 async def main() -> NoReturn:
     """Initiates yaml dump in an asynchronous call and initiates listener in a never ending loop."""
     asyncio.create_task(save_for_reference())
-    with speech_recognition.Microphone() as source:
+    with MICROPHONE as source:
         while True:
             try:
                 logger.info('Listening..')
