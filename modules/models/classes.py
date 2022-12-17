@@ -137,7 +137,7 @@ class EnvConfig(BaseSettings):
     # System config
     home: DirectoryPath = Field(default=os.path.expanduser('~'), env='HOME')
     volume: PositiveInt = Field(default=50, env='VOLUME')
-    limited: bool = Field(default=False, env='LIMITED')
+    limited: bool = Field(default=None, env='LIMITED')
     root_user: str = Field(default=getpass.getuser(), env='USER')
     root_password: str = Field(default=None, env='ROOT_PASSWORD')
 

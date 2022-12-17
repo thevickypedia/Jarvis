@@ -74,11 +74,11 @@ def auto_helper(offline_list: list) -> Union[str, None]:
             "AUTOMATION FILE :: Invalid file format."
         )
         logger.error(f"Invalid file format. "
-                     f"Logging automation data and removing the file to avoid endless errors.\n"
+                     f"Logging automation data and renaming the file to avoid repeated errors in a loop.\n"
                      f"{''.join(['*' for _ in range(120)])}"
                      f"\n\n{read_file.read()}\n\n"
                      f"{''.join(['*' for _ in range(120)])}")
-        os.remove(models.fileio.automation)
+        os.rename(src=models.fileio.automation, dst=models.fileio.tmp_automation)
         return
 
     for automation_time, automation_info in automation_data.items():

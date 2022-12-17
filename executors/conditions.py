@@ -263,7 +263,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
     elif word_match(phrase=phrase, match_list=conversation.age):
         relative_date = relativedelta(dt1=datetime.strptime(datetime.strftime(datetime.now(), "%Y-%m-%d"), "%Y-%m-%d"),
                                       dt2=datetime.strptime("2020-09-06", "%Y-%m-%d"))
-        statement = f"{relative_date.years} years, {relative_date.months} months and {relative_date.days} days."
+        statement = f"{relative_date.years} years, {relative_date.months} months and {relative_date.days} days"
         if not relative_date.years:
             statement = statement.replace(f"{relative_date.years} years, ", "")
         elif relative_date.years == 1:

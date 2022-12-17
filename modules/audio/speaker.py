@@ -53,8 +53,8 @@ def speech_synthesizer(text: str,
         ip_new = '-'.join([i for i in text.split(' ')[-1]]).replace('-.-', ', ')  # 192.168.1.1 -> 1-9-2, 1-6-8, 1, 1
         text = text.replace(text.split(' ')[-1], ip_new).replace(' IP ', ' I.P. ')
     # Raises UnicodeDecodeError within docker container
-    text = text.replace("\N{DEGREE SIGN}F", "degrees fahrenheit")
-    text = text.replace("\N{DEGREE SIGN}C", "degrees celsius")
+    text = text.replace("\N{DEGREE SIGN}F", " degrees fahrenheit")
+    text = text.replace("\N{DEGREE SIGN}C", " degrees celsius")
     try:
         response = requests.post(
             url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/tts",

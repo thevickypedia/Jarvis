@@ -115,10 +115,16 @@
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">Microphone</span></code> - <strong>Required</strong> to listen and respond.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Camera</span></code> - <strong>[Optional]</strong> Required only during face recognition/detection.</p></li>
-<li><p>Unlike macOS, <code class="docutils literal notranslate"><span class="pre">Windows</span></code> pops a confirmation window to <strong>Allow</strong> or <strong>Deny</strong> access to files and folders.</p></li>
+<li><p>Unlike <code class="docutils literal notranslate"><span class="pre">macOS</span></code>, <code class="docutils literal notranslate"><span class="pre">Windows</span></code> pops a confirmation window to <strong>Allow</strong> or <strong>Deny</strong> access to files and folders.</p></li>
 </ul>
 </li>
 <li><p>Install <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/">Anaconda</a> or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html#windows-installers">Miniconda</a>, and <a class="reference external" href="https://visualstudio.microsoft.com/visual-cpp-build-tools/">VisualStudio C++ BuildTools</a></p></li>
+</ul>
+</li>
+<li><p><strong>Linux</strong> <br> <em>Tested on <strong>Ubuntu 22.04 LTS</strong></em></p>
+<ul class="simple">
+<li><p>Store the host machine’s password as the env var: <code class="docutils literal notranslate"><span class="pre">ROOT_PASSWORD</span></code></p></li>
+<li><p>Unlike macOS and Windows, <code class="docutils literal notranslate"><span class="pre">Ubuntu</span></code> does not have app specific permissions.</p></li>
 </ul>
 </li>
 </ul>
@@ -282,7 +288,9 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 </ul>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/audio/speech_synthesis.py">OS Agnostic Voice Model</a></strong></p>
 <ul>
-<li><p><strong>SPEECH_SYNTHESIS_TIMEOUT</strong> - Timeout to connect to the docker container that processes text to speech requests. <br></p>
+<li><p><strong>SPEECH_SYNTHESIS_TIMEOUT</strong> - Timeout to connect to the docker container that processes text to speech requests.</p></li>
+<li><p><strong>SPEECH_SYNTHESIS_VOICE</strong> - Voice for the speech synthesis model. Defaults to author’s favorite.</p></li>
+<li><p><strong>SPEECH_SYNTHESIS_QUALITY</strong> - Quality of speech synthesis conversion. Defaults to <code class="docutils literal notranslate"><span class="pre">medium</span></code>. <br></p>
   <details>
   <summary><strong><i>To enable independent speech-synthesis</i></strong></summary><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker run <span class="se">\</span>
     -it <span class="se">\</span>
@@ -296,7 +304,7 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
     rhasspy/larynx
 </pre></div>
 </div>
-<p>:bulb:   Optionally run speech synthesis on a docker container for better voices but, response might be slower. If you don’t have docker installed or simply don’t want to use it, set the <code class="docutils literal notranslate"><span class="pre">SPEECH_SYNTHESIS_TIMEOUT</span></code> env var to 0. This is also done automatically if failed to launch a docker container upon startup.</p>
+<p>:bulb:   Speech Synthesis can run on a docker container for better voices but, response might be slower. If you don’t have docker installed or simply don’t want to use it, set the <code class="docutils literal notranslate"><span class="pre">SPEECH_SYNTHESIS_TIMEOUT</span></code> env var to 0. This is also done automatically if failed to launch a docker container upon startup.</p>
   </details></li>
 </ul>
 <hr class="docutils" />

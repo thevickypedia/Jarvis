@@ -10,7 +10,7 @@ class MarketHours:
     >>> MarketHours
 
     See Also:
-        Class variable ``hours`` contains key-value pairs for both ``EXTENDED`` and ``REGULAR`` market hours.
+        Class member ``hours`` contains key-value pairs for both ``EXTENDED`` and ``REGULAR`` market hours.
     """
 
     hours = {

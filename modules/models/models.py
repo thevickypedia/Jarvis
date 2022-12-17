@@ -91,9 +91,10 @@ if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
     env.crontab.append(rh_cron_schedule(extended=True))
 env.crontab.append(sm_cron_schedule())
 
-# Forces limited version if env var is set, otherwise it is enforced based on the number of physical cores
-if env.limited:
+if env.limited:  # Forces limited version if env var is set, otherwise it is enforced based on the number of cores
     settings.limited = True
+if env.limited is False:  # If env var is set as False to brute force full version on a device with < 4 processors
+    settings.limited = False
 
 # Validates crontab expression if provided
 for expression in env.crontab:

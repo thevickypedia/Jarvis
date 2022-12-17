@@ -16,10 +16,10 @@ from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import support
 
-recognizer = Recognizer()  # initiates recognizer that uses google's translation
+recognizer = Recognizer()
 if models.settings.os == "Linux":
     with no_alsa_err():
-        microphone = Microphone()  # initiates microphone object
+        microphone = Microphone()
 else:
     microphone = Microphone()
 
