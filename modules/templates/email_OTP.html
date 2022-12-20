@@ -1,3 +1,19 @@
+<script>
+function copier() {
+  var copied = document.getElementById("token").innerHTML;
+  setTimeout(async()=> await window.navigator.clipboard.writeText(copied), 3000)
+  if (document.selection) { // IE
+        var range = document.body.createTextRange();
+        range.moveToElementText(document.getElementById("token"));
+        range.select();
+    } else if (window.getSelection) {
+        var range = document.createRange();
+        range.selectNode(document.getElementById("token"));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+    }
+}
+</script>
 <table width="480" align="center" cellpadding="0" cellspacing="0" border="0">
   <tbody>
     <tr>
@@ -25,9 +41,12 @@
                           <tbody>
                             <tr align="center">
                               <td align="center" style="padding:10px 80px;border:1px solid;background-color:#f5f5f5">
-                                <div style="background-color:#f5f5f5;font-family:'Helvetica Neue',arial;font-size:32px">
-                                  {{ TOKEN }}
-                                </div>
+                                <div style="background-color:#f5f5f5;font-family:'Helvetica Neue',arial;font-size:32px" id="token">{{ TOKEN }}</div>
+                              </td>
+                            </tr>
+                            <tr align="center">
+                              <td align="center">
+                                <button onclick="copier()">Copy text</button>
                               </td>
                             </tr>
                           </tbody>

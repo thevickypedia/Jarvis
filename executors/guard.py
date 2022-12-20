@@ -155,15 +155,13 @@ def threat_notify(converted: str, face_detected: Union[str, None]) -> NoReturn:
                               number=models.env.phone_number, subject="!!INTRUDER ALERT!!",
                               body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\nINTRUDER SPOKE: {converted}\n\n"
                                    f"Intruder picture has been sent to {recipient}")
-        template = templates.EmailTemplates.threat_audio
-        rendered = jinja2.Template(template).render(CONVERTED=converted)
+        rendered = jinja2.Template(templates.email.threat_audio).render(CONVERTED=converted)
     elif face_detected:
         communicator.send_sms(user=models.env.gmail_user, password=models.env.gmail_pass,
                               number=models.env.phone_number, subject="!!INTRUDER ALERT!!",
                               body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\n"
                                    "Check your email for more information.")
-        template = templates.EmailTemplates.threat_no_audio
-        rendered = jinja2.Template(template).render()
+        rendered = jinja2.Template(templates.email.threat_no_audio).render()
     else:
         logger.warning("Un-processable arguments received.")
         return

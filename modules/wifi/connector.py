@@ -110,11 +110,10 @@ class ControlConnection:
         """Establish a new connection using a xml config for Windows."""
         logger.info(f"Establishing a new connection to {models.env.wifi_ssid}")
         command = "netsh wlan add profile filename=\"" + models.env.wifi_ssid + ".xml\"" + " interface=Wi-Fi"
-        config = templates.GenericTemplates.win_wifi_xml
-        template = jinja2.Template(config).render(WIFI_SSID=models.env.wifi_ssid,
-                                                  WIFI_PASSWORD=models.env.wifi_password)
+        rendered = jinja2.Template(templates.generic.win_wifi_xml).render(WIFI_SSID=models.env.wifi_ssid,
+                                                                          WIFI_PASSWORD=models.env.wifi_password)
         with open(f'{models.env.wifi_ssid}.xml', 'w') as file:
-            file.write(template)
+            file.write(rendered)
         try:
             result = subprocess.check_output(command, shell=True)
             logger.info(result.decode(encoding="UTF-8"))

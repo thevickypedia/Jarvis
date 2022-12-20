@@ -103,8 +103,8 @@ def send_email(body: str, recipient: Union[EmailStr, str], subject: str = None, 
         - Error response from gmail-connector.
     """
     body = string.capwords(body)
-    rendered = jinja2.Template(source=templates.EmailTemplates.notification).render(SENDER=title or models.env.name,
-                                                                                    MESSAGE=body)
+    rendered = jinja2.Template(source=templates.email.notification).render(SENDER=title or models.env.name,
+                                                                           MESSAGE=body)
     email_object = SendEmail(gmail_user=gmail_user or models.env.gmail_user,
                              gmail_pass=gmail_pass or models.env.gmail_pass)
     mail_stat = email_object.send_email(recipient=recipient, sender=sender or 'Jarvis Communicator',

@@ -473,9 +473,9 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
         if not auth_stat.ok:
             raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
         robinhood.token = util.keygen_uuid(length=16)
-        rendered = jinja2.Template(templates.EmailTemplates.one_time_passcode).render(ENDPOINT='robinhood',
-                                                                                      TOKEN=robinhood.token,
-                                                                                      EMAIL=models.env.recipient)
+        rendered = jinja2.Template(templates.email.one_time_passcode).render(ENDPOINT='robinhood',
+                                                                             TOKEN=robinhood.token,
+                                                                             EMAIL=models.env.recipient)
         mail_stat = mail_obj.send_email(recipient=models.env.recipient, sender='Jarvis API',
                                         subject=f"Robinhood Token - {datetime.now().strftime('%c')}",
                                         html_body=rendered)
@@ -569,9 +569,9 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
             logger.error(auth_stat.json())
             raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
         surveillance.token = util.keygen_uuid(length=16)
-        rendered = jinja2.Template(templates.EmailTemplates.one_time_passcode).render(ENDPOINT='surveillance',
-                                                                                      TOKEN=surveillance.token,
-                                                                                      EMAIL=models.env.recipient)
+        rendered = jinja2.Template(templates.email.one_time_passcode).render(ENDPOINT='surveillance',
+                                                                             TOKEN=surveillance.token,
+                                                                             EMAIL=models.env.recipient)
         mail_stat = mail_obj.send_email(recipient=models.env.recipient, sender='Jarvis API',
                                         subject=f"Surveillance Token - {datetime.now().strftime('%c')}",
                                         html_body=rendered)
@@ -617,7 +617,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
                               detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
         if token == surveillance.token:
             surveillance.client_id = int(''.join(str(time.time()).split('.')))  # include milliseconds to avoid dupes
-            rendered = jinja2.Template(templates.OriginTemplates.surveillance).render(CLIENT_ID=surveillance.client_id)
+            rendered = jinja2.Template(templates.origin.surveillance).render(CLIENT_ID=surveillance.client_id)
             content_type, _ = mimetypes.guess_type(rendered)
             return HTMLResponse(status_code=HTTPStatus.TEMPORARY_REDIRECT.real,
                                 content=rendered, media_type=content_type)
