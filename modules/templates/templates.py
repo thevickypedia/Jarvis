@@ -54,3 +54,8 @@ class GenericTemplates:
     if models.settings.bot != 'sphinx-build':
         with open(os.path.join(models.fileio.templates, 'win_wifi_config.xml')) as file:
             win_wifi_xml = file.read()
+
+
+email = EmailTemplates
+origin = OriginTemplates
+generic = GenericTemplates

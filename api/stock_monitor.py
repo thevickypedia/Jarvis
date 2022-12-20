@@ -182,7 +182,6 @@ class StockMonitor:
             self.logger.info("Database is empty!")
             return
         subject = f"Stock Price Alert - {datetime.now().strftime('%c')}"
-        email_template = templates.EmailTemplates.stock_alert
         prices = self.get_prices()
         for k, v in self.email_grouped.items():
             mail_obj = SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
@@ -219,7 +218,9 @@ class StockMonitor:
             if not datastore['text_gathered']:
                 self.logger.info("Nothing to report")
                 return
-            template = jinja2.Template(email_template).render(CONVERTED="<br><br>".join(datastore['text_gathered']))
+            template = jinja2.Template(templates.email.stock_alert).render(
+                CONVERTED="<br><br>".join(datastore['text_gathered'])
+            )
             response = mail_obj.send_email(subject=subject, recipient=k, html_body=template, sender="Jarvis",
                                            attachment=datastore['attachments'])
             if response.ok:  # Remove entry if notification was successful

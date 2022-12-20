@@ -1,5 +1,10 @@
 Release Notes
-==========
+=============
+
+6.7.4 (12/20/2022)
+------------------
+- Load templates upon startup
+- Add one click copy to emailOTP.html (Unsupported in emails)
 
 6.7.3 (12/17/2022)
 ------------------
