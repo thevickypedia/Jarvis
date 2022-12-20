@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+6.7.5 (12/20/2022)
+------------------
+- Remove `Javascript` from email_OTP.html
+
 6.7.4 (12/20/2022)
 ------------------
 - Load templates upon startup
