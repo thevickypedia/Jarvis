@@ -19,9 +19,9 @@ from modules.utils import support
 recognizer = Recognizer()
 if models.settings.os == "Linux":
     with no_alsa_err():
-        microphone = Microphone()
+        microphone = Microphone(device_index=models.env.microphone_index)
 else:
-    microphone = Microphone()
+    microphone = Microphone(device_index=models.env.microphone_index)
 
 if models.env.recognizer_settings:
     recognizer.energy_threshold = models.env.recognizer_settings.energy_threshold

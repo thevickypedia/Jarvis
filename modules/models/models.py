@@ -117,10 +117,10 @@ except CameraError:
     cameras = []
 if cameras:
     if env.camera_index >= len(cameras):
-        raise CameraError(
+        raise InvalidEnvVars(
             f"Camera index # {env.camera_index} unavailable.\n"
             "Camera index cannot exceed the number of available cameras.\n"
-            f"Available Cameras [{len(cameras)}]: {', '.join([f'{i}-{c}' for i, c in enumerate(cameras)])}"
+            f"{len(cameras)} available cameras: {', '.join([f'{i}: {c}' for i, c in enumerate(cameras)])}"
         )
 else:
     env.camera_index = None

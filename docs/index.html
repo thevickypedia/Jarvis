@@ -50,6 +50,7 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html">Prerequisites</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#setup">Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#env-variables">ENV Variables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="README.html#peripherals">Peripherals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#features">Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#contacts">Contacts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#smart-devices">Smart Devices</a></li>
@@ -163,8 +164,50 @@
 </dd></dl>
 
 </section>
+<section id="module-modules.peripherals">
+<span id="audio-devices"></span><h1>Audio Devices<a class="headerlink" href="#module-modules.peripherals" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.peripherals.ChannelType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.peripherals.</span></span><span class="sig-name descname"><span class="pre">ChannelType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.peripherals.ChannelType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allowed values for channel types.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ChannelType</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.peripherals.ChannelType.input_channels">
+<span class="sig-name descname"><span class="pre">input_channels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'maxInputChannels'</span></em><a class="headerlink" href="#modules.peripherals.ChannelType.input_channels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.peripherals.ChannelType.output_channels">
+<span class="sig-name descname"><span class="pre">output_channels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'maxOutputChannels'</span></em><a class="headerlink" href="#modules.peripherals.ChannelType.output_channels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.peripherals.channel_type">
+<span class="sig-prename descclassname"><span class="pre">modules.peripherals.</span></span><span class="sig-name descname"><span class="pre">channel_type</span></span><a class="headerlink" href="#modules.peripherals.channel_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#modules.peripherals.ChannelType" title="modules.peripherals.ChannelType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChannelType</span></code></a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.peripherals.get_audio_devices">
+<span class="sig-prename descclassname"><span class="pre">modules.peripherals.</span></span><span class="sig-name descname"><span class="pre">get_audio_devices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.peripherals.get_audio_devices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates over all devices and yields the device that has input channels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>channels</strong> – Takes an argument to determine whether to yield input or output channels.</p>
+</dd>
+<dt class="field-even">Yields</dt>
+<dd class="field-even"><p><em>Iterable</em> – Yields a dictionary with all the input devices available.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-modules.speaker.speak">
-<span id="speaker"></span><h1>Speaker<a class="headerlink" href="#module-modules.speaker.speak" title="Permalink to this heading">¶</a></h1>
+<span id="text-to-speech"></span><h1>Text To Speech<a class="headerlink" href="#module-modules.speaker.speak" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="modules.speaker.speak.Speaker">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.speaker.speak.</span></span><span class="sig-name descname"><span class="pre">Speaker</span></span><a class="headerlink" href="#modules.speaker.speak.Speaker" title="Permalink to this definition">¶</a></dt>
@@ -249,17 +292,8 @@
 </dd></dl>
 
 </section>
-<section id="module-modules.microphone.mic">
-<span id="microphone"></span><h1>Microphone<a class="headerlink" href="#module-modules.microphone.mic" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="modules.microphone.mic.get_audio_devices">
-<span class="sig-prename descclassname"><span class="pre">modules.microphone.mic.</span></span><span class="sig-name descname"><span class="pre">get_audio_devices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.microphone.mic.get_audio_devices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the index of audio devices available. This function can be called on demand to check the indices.</p>
-</dd></dl>
-
-</section>
 <section id="module-modules.microphone.recognizer">
-<span id="speech-recognition"></span><h1>Speech Recognition<a class="headerlink" href="#module-modules.microphone.recognizer" title="Permalink to this heading">¶</a></h1>
+<span id="speech-to-text"></span><h1>Speech To Text<a class="headerlink" href="#module-modules.microphone.recognizer" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.microphone.recognizer.save_for_reference">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.microphone.recognizer.</span></span><span class="sig-name descname"><span class="pre">save_for_reference</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.microphone.recognizer.save_for_reference" title="Permalink to this definition">¶</a></dt>
@@ -286,7 +320,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.Activator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">Activator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_device_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.Activator" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.</span></span><span class="sig-name descname"><span class="pre">Activator</span></span><a class="headerlink" href="#jarvis.Activator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Awaits for the keyword <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> and triggers <code class="docutils literal notranslate"><span class="pre">initiator</span></code> when heard.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Activator</span>
 </pre></div>
@@ -301,11 +335,6 @@
 </ul>
 </div>
 <p>Initiates Porcupine object for hot word detection.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input_device_index</strong> – Index of Input Device to use.</p>
-</dd>
-</dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
@@ -4977,6 +5006,21 @@ Pass 155 for LO and 285 for HI.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.camera_index">
+<span class="sig-name descname"><span class="pre">camera_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.camera_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.speaker_index">
+<span class="sig-name descname"><span class="pre">speaker_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.speaker_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.microphone_index">
+<span class="sig-name descname"><span class="pre">microphone_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.microphone_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.debug">
 <span class="sig-name descname"><span class="pre">debug</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.debug" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -5089,11 +5133,6 @@ Pass 155 for LO and 285 for HI.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.sync_events">
 <span class="sig-name descname"><span class="pre">sync_events</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.sync_events" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.camera_index">
-<span class="sig-name descname"><span class="pre">camera_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.camera_index" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -5315,6 +5354,18 @@ Pass 155 for LO and 285 for HI.</p>
 <span class="sig-name descname"><span class="pre">env_file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'.env'</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.Config.env_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.parse_microphone_index">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_microphone_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.models.classes.EnvConfig.parse_microphone_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates microphone index.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.parse_speaker_index">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_speaker_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.models.classes.EnvConfig.parse_speaker_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates speaker index.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -8085,9 +8136,9 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#">Welcome to Jarvis’s documentation!</a></li>
 <li><a class="reference internal" href="#preflight-tests">———-Preflight Tests———-</a></li>
 <li><a class="reference internal" href="#module-modules.camera.camera">Camera</a></li>
-<li><a class="reference internal" href="#module-modules.speaker.speak">Speaker</a></li>
-<li><a class="reference internal" href="#module-modules.microphone.mic">Microphone</a></li>
-<li><a class="reference internal" href="#module-modules.microphone.recognizer">Speech Recognition</a></li>
+<li><a class="reference internal" href="#module-modules.peripherals">Audio Devices</a></li>
+<li><a class="reference internal" href="#module-modules.speaker.speak">Text To Speech</a></li>
+<li><a class="reference internal" href="#module-modules.microphone.recognizer">Speech To Text</a></li>
 <li><a class="reference internal" href="#main-module">———-Main Module———-</a></li>
 <li><a class="reference internal" href="#module-jarvis">Jarvis</a></li>
 <li><a class="reference internal" href="#module-_preexec.keywords_handler">Keywords Classifier</a></li>

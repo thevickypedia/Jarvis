@@ -98,9 +98,8 @@
 
 > **Test Peripherals**:
 >   - Camera: [camera.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/camera/camera.py)
->   - Speaker: [speak.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/speaker/speak.py)
->   - Microphone: [mic.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/mic.py)
->   - Speech Recognition: [recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py)
+>   - Text to Speech: [speak.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/speaker/speak.py)
+>   - Speech to Text: [recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py)
 
    - Download the latest stable release from [pypi](https://github.com/thevickypedia/Jarvis/archive/master.zip) or the latest un released version from [github](https://github.com/thevickypedia/Jarvis/archive/refs/heads/master.zip)
    - Navigate into the downloaded `jarvis` or `jarvis-master` directory.
@@ -141,13 +140,15 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **SENSITIVITY** - Hot word detection sensitivity. Allowed range: [0-1] Defaults to `0.5`
 - **TIMEOUT** - Timeout in seconds until which the listener should wait for speech. Defaults to `3`
 - **PHRASE_LIMIT** - Timeout in seconds until which the listener will remain active. Defaults to `None`
+- **LIMITED** - Boolean flag to run only the main version of `Jarvis` skipping background processes. Defaults to `False` Enforced based on the number of CPU cores.
+- **DEBUG** - Boolean flag to enable debug level for logging. Defaults to `False`
 - **RECOGNIZER_SETTINGS** - A JSON object that has with customized speech recognition settings.
 
     <details>
     <summary><strong><i>Custom settings for speech recognition</i></strong></summary>
 
     These are customized according to the author's voice pitch.
-    Please use [mic.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/mic.py) to figure out the suitable values in a trial and error method.
+    Please use [recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py) to figure out the suitable values on a trial and error basis.
 
     > These settings are added (optionally), to avoid the hard coded `PHRASE_LIMIT`
     > <br>
@@ -167,9 +168,12 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 
     </details>
 
-- **LIMITED** - Boolean flag to run only the main version of `Jarvis` skipping background processes. Defaults to `False` Enforced based on the number of CPU cores.
+---
+
+### Peripherals
 - **CAMERA_INDEX** - Camera index that has to be used. Run [camera.py](https://github.com/thevickypedia/Jarvis/tree/master/modules/camera/camera.py) to get the index value of each camera.
-- **DEBUG** - Boolean flag to enable debug level for logging. Defaults to `False`
+- **SPEAKER_INDEX** - Speaker index that has to be used. Run [peripherals.py](https://github.com/thevickypedia/Jarvis/tree/master/modules/peripherals.py) to get the index value of each speaker.
+- **MICROPHONE_INDEX** - Microphone index that has to be used. Run [peripherals.py](https://github.com/thevickypedia/Jarvis/tree/master/modules/peripherals.py) to get the index value of each microphone.
 
 ### Features
 - **GIT_USER** - GitHub Username
@@ -195,11 +199,11 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 
 **Calendar/Meeting integrations**
 - **ICS_URL** - Shared calendar URL to get meetings information from. Should end with `.ics`
-- **EVENT_APP** - To read events from `outlook` or `calendar`. Defaults to `calendar` <br>
+- **EVENT_APP** - To read events from `outlook` or `calendar` application in `macOS`. Defaults to `calendar` <br>
 :bulb: &nbsp; When `calender` is used, the name of the _calendar_ within the `Calendar.app` should be **Jarvis** <br>
 
 **Background scans [Defaults to 1 hour]**
-- **SYNC_MEETINGS** - Interval in seconds to generate ``meetings`` information using `ics` URL.
+- **SYNC_MEETINGS** - Interval in seconds to generate ``meetings`` information using an `ics` URL.
 - **SYNC_EVENTS** - Interval in seconds to generate ``events`` information using `calendar` or `outlook` application.
 
 **[Wi-Fi Controls](https://github.com/thevickypedia/Jarvis/tree/master/modules/wifi)**
