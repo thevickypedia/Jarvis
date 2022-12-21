@@ -20,20 +20,20 @@ Camera
    :members:
    :undoc-members:
 
-Speaker
-=======
+Audio Devices
+=============
+.. automodule:: modules.peripherals
+   :members:
+   :undoc-members:
+
+Text To Speech
+==============
 .. automodule:: modules.speaker.speak
    :members:
    :undoc-members:
 
-Microphone
-==========
-.. automodule:: modules.microphone.mic
-   :members:
-   :undoc-members:
-
-Speech Recognition
-==================
+Speech To Text
+==============
 .. automodule:: modules.microphone.recognizer
    :members:
    :undoc-members:

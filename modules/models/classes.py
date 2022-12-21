@@ -11,6 +11,7 @@ import pathlib
 import platform
 import socket
 import sys
+from collections import ChainMap
 from datetime import datetime
 from enum import Enum
 from typing import List, Union
@@ -23,6 +24,7 @@ from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       validator)
 
 from modules.exceptions import InvalidEnvVars, UnsupportedOS
+from modules.peripherals import channel_type, get_audio_devices
 
 audio_driver = pyttsx3.init()
 if not os.environ.get('AWS_DEFAULT_REGION'):
@@ -145,6 +147,11 @@ class EnvConfig(BaseSettings):
     voice_name: str = Field(default=None, env='VOICE_NAME')
     voice_rate: Union[PositiveInt, PositiveFloat] = Field(default=audio_driver.getProperty("rate"), env='VOICE_RATE')
 
+    # Peripheral config
+    camera_index: Union[int, PositiveInt] = Field(default=None, ge=0, env='CAMERA_INDEX')
+    speaker_index: Union[int, PositiveInt] = Field(default=None, ge=0, env='SPEAKER_INDEX')
+    microphone_index: Union[int, PositiveInt] = Field(default=None, ge=0, env='MICROPHONE_INDEX')
+
     # Log config
     debug: bool = Field(default=False, env='DEBUG')
 
@@ -180,8 +187,7 @@ class EnvConfig(BaseSettings):
     sync_meetings: PositiveInt = Field(default=3_600, env='SYNC_MEETINGS')
     sync_events: PositiveInt = Field(default=3_600, env='SYNC_EVENTS')
 
-    # Camera config
-    camera_index: Union[int, PositiveInt] = Field(default=None, le=1, ge=0, env='CAMERA_INDEX')
+    # Surveillance config
     surveillance_endpoint_auth: str = Field(default=None, env='SURVEILLANCE_ENDPOINT_AUTH')
     surveillance_session_timeout: PositiveInt = Field(default=300, env='SURVEILLANCE_SESSION_TIMEOUT')
 
@@ -262,6 +268,33 @@ class EnvConfig(BaseSettings):
         env_file = ".env"
 
     # noinspection PyMethodParameters
+    @validator("microphone_index", pre=True, allow_reuse=True)
+    def parse_microphone_index(cls, value: Union[int, PositiveInt]) -> Union[int, PositiveInt, None]:
+        """Validates microphone index."""
+        if not value:
+            return
+        if int(value) in list(map(lambda tag: tag['index'], get_audio_devices(channels=channel_type.input_channels))):
+            return value
+        else:
+            complicated = dict(ChainMap(*list(map(lambda tag: {tag['index']: tag['name']},
+                                                  get_audio_devices(channels=channel_type.input_channels)))))
+            raise InvalidEnvVars(f"value should be one of {complicated}")
+
+    # noinspection PyMethodParameters
+    @validator("speaker_index", pre=True, allow_reuse=True)
+    def parse_speaker_index(cls, value: Union[int, PositiveInt]) -> Union[int, PositiveInt, None]:
+        """Validates speaker index."""
+        # TODO: Create an OS agnostic model for usage
+        if not value:
+            return
+        if int(value) in list(map(lambda tag: tag['index'], get_audio_devices(channels=channel_type.output_channels))):
+            return value
+        else:
+            complicated = dict(ChainMap(*list(map(lambda tag: {tag['index']: tag['name']},
+                                                  get_audio_devices(channels=channel_type.output_channels)))))
+            raise InvalidEnvVars(f"value should be one of {complicated}")
+
+    # noinspection PyMethodParameters
     @validator("birthday", pre=True, allow_reuse=True)
     def parse_birthday(cls, value: str) -> Union[str, None]:
         """Validates date value to be in DD-MM format."""
@@ -271,7 +304,7 @@ class EnvConfig(BaseSettings):
             if datetime.strptime(value, "%d-%B"):
                 return value
         except ValueError:
-            raise InvalidEnvVars('Format should be DD-MM')
+            raise InvalidEnvVars('format should be DD-MM')
 
 
 env = EnvConfig()

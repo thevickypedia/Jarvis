@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+6.7.6 (12/21/2022)
+------------------
+- Add an option to choose between microphones to use
+- Implement a better way to get audio IO devices info
+
 6.7.5 (12/20/2022)
 ------------------
 - Remove `Javascript` from email_OTP.html

@@ -56,11 +56,8 @@ class Activator:
         - The ``should_return`` flag ensures, the user is not disturbed when accidentally woke up by wake work engine.
     """
 
-    def __init__(self, input_device_index: int = None):
+    def __init__(self):
         """Initiates Porcupine object for hot word detection.
-
-        Args:
-            input_device_index: Index of Input Device to use.
 
         See Also:
             - Instantiates an instance of Porcupine object and monitors audio stream for occurrences of keywords.
@@ -72,7 +69,6 @@ class Activator:
         """
         logger.info(f"Initiating hot-word detector with sensitivity: {models.env.sensitivity}")
         keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words]
-        self.input_device_index = input_device_index
 
         self.py_audio = pyaudio.PyAudio()
         arguments = {
@@ -104,7 +100,7 @@ class Activator:
             format=pyaudio.paInt16,
             input=True,
             frames_per_buffer=self.detector.frame_length,
-            input_device_index=self.input_device_index
+            input_device_index=models.env.microphone_index
         )
 
     def executor(self) -> NoReturn:

@@ -135,9 +135,8 @@
 <div><p><strong>Test Peripherals</strong>:</p>
 <ul class="simple">
 <li><p>Camera: <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/camera/camera.py">camera.py</a></p></li>
-<li><p>Speaker: <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/speaker/speak.py">speak.py</a></p></li>
-<li><p>Microphone: <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/mic.py">mic.py</a></p></li>
-<li><p>Speech Recognition: <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py">recognizer.py</a></p></li>
+<li><p>Text to Speech: <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/speaker/speak.py">speak.py</a></p></li>
+<li><p>Speech to Text: <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py">recognizer.py</a></p></li>
 </ul>
 </div></blockquote>
 <ul class="simple">
@@ -184,10 +183,12 @@
 <li><p><strong>SENSITIVITY</strong> - Hot word detection sensitivity. Allowed range: [0-1] Defaults to <code class="docutils literal notranslate"><span class="pre">0.5</span></code></p></li>
 <li><p><strong>TIMEOUT</strong> - Timeout in seconds until which the listener should wait for speech. Defaults to <code class="docutils literal notranslate"><span class="pre">3</span></code></p></li>
 <li><p><strong>PHRASE_LIMIT</strong> - Timeout in seconds until which the listener will remain active. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>LIMITED</strong> - Boolean flag to run only the main version of <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> skipping background processes. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code> Enforced based on the number of CPU cores.</p></li>
+<li><p><strong>DEBUG</strong> - Boolean flag to enable debug level for logging. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>RECOGNIZER_SETTINGS</strong> - A JSON object that has with customized speech recognition settings.</p>
   <details>
   <summary><strong><i>Custom settings for speech recognition</i></strong></summary><p>These are customized according to the author’s voice pitch.
-Please use <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/mic.py">mic.py</a> to figure out the suitable values in a trial and error method.</p>
+Please use <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py">recognizer.py</a> to figure out the suitable values on a trial and error basis.</p>
 <blockquote>
 <div><p>These settings are added (optionally), to avoid the hard coded <code class="docutils literal notranslate"><span class="pre">PHRASE_LIMIT</span></code>
 <br>
@@ -210,10 +211,16 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <li><p><code class="docutils literal notranslate"><span class="pre">non_speaking_duration</span></code>: Seconds of non-speaking audio to keep on both sides of the recording.</p></li>
 </ul>
   </details></li>
-<li><p><strong>LIMITED</strong> - Boolean flag to run only the main version of <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> skipping background processes. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code> Enforced based on the number of CPU cores.</p></li>
-<li><p><strong>CAMERA_INDEX</strong> - Camera index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/modules/camera/camera.py">camera.py</a> to get the index value of each camera.</p></li>
-<li><p><strong>DEBUG</strong> - Boolean flag to enable debug level for logging. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
+<hr class="docutils" />
+<section id="peripherals">
+<h2>Peripherals<a class="headerlink" href="#peripherals" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>CAMERA_INDEX</strong> - Camera index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/modules/camera/camera.py">camera.py</a> to get the index value of each camera.</p></li>
+<li><p><strong>SPEAKER_INDEX</strong> - Speaker index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/modules/peripherals.py">peripherals.py</a> to get the index value of each speaker.</p></li>
+<li><p><strong>MICROPHONE_INDEX</strong> - Microphone index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/modules/peripherals.py">peripherals.py</a> to get the index value of each microphone.</p></li>
+</ul>
+</section>
 <section id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
@@ -243,12 +250,12 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <p><strong>Calendar/Meeting integrations</strong></p>
 <ul class="simple">
 <li><p><strong>ICS_URL</strong> - Shared calendar URL to get meetings information from. Should end with <code class="docutils literal notranslate"><span class="pre">.ics</span></code></p></li>
-<li><p><strong>EVENT_APP</strong> - To read events from <code class="docutils literal notranslate"><span class="pre">outlook</span></code> or <code class="docutils literal notranslate"><span class="pre">calendar</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">calendar</span></code> <br>
+<li><p><strong>EVENT_APP</strong> - To read events from <code class="docutils literal notranslate"><span class="pre">outlook</span></code> or <code class="docutils literal notranslate"><span class="pre">calendar</span></code> application in <code class="docutils literal notranslate"><span class="pre">macOS</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">calendar</span></code> <br>
 :bulb:   When <code class="docutils literal notranslate"><span class="pre">calender</span></code> is used, the name of the <em>calendar</em> within the <code class="docutils literal notranslate"><span class="pre">Calendar.app</span></code> should be <strong>Jarvis</strong> <br></p></li>
 </ul>
 <p><strong>Background scans [Defaults to 1 hour]</strong></p>
 <ul class="simple">
-<li><p><strong>SYNC_MEETINGS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">meetings</span></code> information using <code class="docutils literal notranslate"><span class="pre">ics</span></code> URL.</p></li>
+<li><p><strong>SYNC_MEETINGS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">meetings</span></code> information using an <code class="docutils literal notranslate"><span class="pre">ics</span></code> URL.</p></li>
 <li><p><strong>SYNC_EVENTS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">events</span></code> information using <code class="docutils literal notranslate"><span class="pre">calendar</span></code> or <code class="docutils literal notranslate"><span class="pre">outlook</span></code> application.</p></li>
 </ul>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/modules/wifi">Wi-Fi Controls</a></strong></p>
@@ -474,6 +481,7 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <li><a class="reference internal" href="#">Prerequisites</a></li>
 <li><a class="reference internal" href="#setup">Setup</a></li>
 <li><a class="reference internal" href="#env-variables">ENV Variables</a><ul>
+<li><a class="reference internal" href="#peripherals">Peripherals</a></li>
 <li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#contacts">Contacts</a></li>
 <li><a class="reference internal" href="#smart-devices">Smart Devices</a></li>
