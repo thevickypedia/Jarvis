@@ -88,7 +88,9 @@
        - `Microphone` - **Required** to listen and respond.
        - `Camera` - **[Optional]** Required only during face recognition/detection.
        - Unlike `macOS`, `Windows` pops a confirmation window to **Allow** or **Deny** access to files and folders.
-     - Install [Anaconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html#windows-installers), and [VisualStudio C++ BuildTools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+     - Install [Anaconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html#windows-installers), [VisualStudio C++ BuildTools](https://visualstudio.microsoft.com/visual-cpp-build-tools/), and [Git](https://git-scm.com/download/win/)
+     - Make sure C++ build tools are installed completely and restart
+     - Add anaconda/miniconda scripts location to `PATH` in Environment Variables
 
    - **Linux** <br> _Tested on **Ubuntu 22.04 LTS**_
      - Store the host machine's password as the env var: `ROOT_PASSWORD`
@@ -385,8 +387,7 @@ The YAML file should be a dictionary within a dictionary that looks like the bel
 </details>
 
 ## Feature(s) Implementation
-Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, env variables, 
-features' overview and demo videos.
+Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, env variables, features' overview and demo videos.
 
 ## Coding Standards
 Docstring format: [`Google`](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) <br>

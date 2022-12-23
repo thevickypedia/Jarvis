@@ -90,7 +90,7 @@ def exit_process() -> NoReturn:
     except RuntimeError as error:
         logger.critical(f"Received a RuntimeError while self terminating.\n{error}")
     sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
-                     f"\nTotal runtime: {util.time_converter(time.perf_counter())}")
+                     f"\nTotal runtime: {util.time_converter(time.time() - shared.start_time)}")
 
 
 def sleep_control() -> bool:

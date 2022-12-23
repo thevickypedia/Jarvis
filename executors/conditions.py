@@ -82,10 +82,10 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
         volume(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.car):
-        car(phrase.lower())
+        car(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.garage):
-        garage(phrase.lower())
+        garage(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.weather):
         weather(phrase)

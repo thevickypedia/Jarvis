@@ -32,10 +32,19 @@ def weather(phrase: str = None) -> None:
     place = None
     if phrase:
         place = support.get_capitalized(phrase=phrase)
+        week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+        for day in week:
+            place = place.replace(day, '')
         phrase = phrase.lower()
-    sys.stdout.write('\rGetting your weather info')
     if place:
+        sys.stdout.write(f'\rGetting your weather info at {place}')
+        logger.info(f'Identified place: {place}')
         desired_location = geo_locator.geocode(place)
+        if not desired_location:
+            logger.error(f"Failed to get coordinates for the place: {place!r}")
+            speaker.speak(text=f"I'm sorry {models.env.title}! "
+                               f"I wasn't able to get the weather information at {place}!")
+            return
         coordinates = desired_location.latitude, desired_location.longitude
         located = geo_locator.reverse(coordinates, language='en')
         address = located.raw['address']
@@ -44,6 +53,7 @@ def weather(phrase: str = None) -> None:
         lat = located.latitude
         lon = located.longitude
     else:
+        sys.stdout.write('\rGetting your weather info')
         try:
             with open(models.fileio.location) as file:
                 current_location = yaml.load(stream=file, Loader=yaml.FullLoader)

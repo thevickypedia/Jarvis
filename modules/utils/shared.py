@@ -5,6 +5,9 @@
 
 """
 
+import time
+
+start_time = time.time()
 greeting = False
 called_by_offline = False
 

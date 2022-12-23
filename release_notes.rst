@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+6.7.7 (12/23/2022)
+------------------
+- Load `PyAudio` during start up to avoid `ALSA` errors on `Linux`
+- Add a condition check for weather location to avoid crash
+- Remove the usage of `time.perf_counter()`
+- Optimize globally accessible variables
+
 6.7.6 (12/21/2022)
 ------------------
 - Add an option to choose between microphones to use

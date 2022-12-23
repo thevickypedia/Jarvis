@@ -4,7 +4,6 @@ import logging
 import math
 import os
 import sys
-import time
 from datetime import datetime
 from typing import NoReturn, Tuple
 
@@ -207,7 +206,7 @@ class Investment:
                                                                       LOSS=loss_web, WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)
         with open(models.fileio.robinhood, 'w') as static_file:
             static_file.write(rendered)
-        self.logger.info(f'Static file generated in {round(float(time.perf_counter()), 2)}s')
+        self.logger.info(f'Static file {models.fileio.robinhood!r} has been generated.')
 
     def report_gatherer(self) -> NoReturn:
         """Runs gatherer to call other dependent methods."""
