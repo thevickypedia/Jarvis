@@ -1,3 +1,4 @@
+import string
 import struct
 import sys
 import traceback
@@ -21,6 +22,7 @@ from modules.audio import listener, speaker
 from modules.exceptions import StopSignal
 from modules.logger.custom_logger import custom_handler, logger
 from modules.models import models
+from modules.peripherals import audio_engine
 from modules.utils import shared, support
 from modules.wifi.connector import ControlConnection, ControlPeripheral
 
@@ -67,10 +69,11 @@ class Activator:
         References:
             - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
         """
-        logger.info(f"Initiating hot-word detector with sensitivity: {models.env.sensitivity}")
+        self.label = ', '.join([f'{string.capwords(wake)!r}: {sens}' for wake, sens in
+                                zip(models.env.wake_words, models.env.sensitivity)])
+        logger.info(f"Initiating hot-word detector with sensitivity: {self.label}")
         keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words]
 
-        self.py_audio = pyaudio.PyAudio()
         arguments = {
             "library_path": pvporcupine.LIBRARY_PATH,
             "sensitivities": models.env.sensitivity
@@ -86,6 +89,7 @@ class Activator:
         self.detector = pvporcupine.create(**arguments)
         self.audio_stream = self.open_stream()
         self.tasks = repeated_tasks()
+        self.label = f"Awaiting: [{self.label}]"
 
     def open_stream(self) -> pyaudio.Stream:
         """Initializes an audio stream.
@@ -94,7 +98,7 @@ class Activator:
             pyaudio.Stream:
             Audio stream from pyaudio.
         """
-        return self.py_audio.open(
+        return audio_engine.open(
             rate=self.detector.sample_rate,
             channels=1,
             format=pyaudio.paInt16,
@@ -107,7 +111,7 @@ class Activator:
         """Calls the listener for actionable phrase and runs the speaker node for response."""
         logger.debug(f"Detected {models.settings.bot} at {datetime.now()}")
         playsound(sound=models.indicators.acknowledgement, block=False)
-        self.py_audio.close(stream=self.audio_stream)
+        audio_engine.close(stream=self.audio_stream)
         if phrase := listener.listen(sound=False):
             try:
                 initiator(phrase=phrase, should_return=True)
@@ -123,7 +127,7 @@ class Activator:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
             while True:
-                sys.stdout.write(f"\rAwaiting: [{', '.join(models.env.wake_words).upper()}]")
+                sys.stdout.write(f"\r{self.label}")
                 pcm = struct.unpack_from("h" * self.detector.frame_length,
                                          self.audio_stream.read(num_frames=self.detector.frame_length,
                                                                 exception_on_overflow=False))
@@ -171,10 +175,10 @@ class Activator:
         self.detector.delete()
         if self.audio_stream and self.audio_stream.is_active():
             logger.info("Closing Audio Stream.")
-            self.py_audio.close(stream=self.audio_stream)
+            audio_engine.close(stream=self.audio_stream)
             self.audio_stream.close()
         logger.info("Releasing PortAudio resources.")
-        self.py_audio.terminate()
+        audio_engine.terminate()
 
 
 def begin() -> NoReturn:

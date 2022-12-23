@@ -20,6 +20,8 @@ from modules.models import models
 
 def voice_default() -> Engine:
     """Sets voice module to default."""
+    if models.settings.bot != "jarvis":
+        return models.audio_driver
     for voice in models.voices:
         if voice.name == models.env.voice_name or models.env.voice_name in voice.name:
             if current_process().name == 'MainProcess':

@@ -65,7 +65,9 @@ def garage(phrase: str) -> NoReturn:
     Args:
         phrase: Takes the recognized phrase as an argument.
     """
-    if not all([models.env.myq_username, models.env.myq_password]):
+    if all([models.env.myq_username, models.env.myq_password]):
+        phrase = phrase.lower()
+    else:
         support.no_env_vars()
         return
 

@@ -1,12 +1,19 @@
 import json
+import platform
 from enum import Enum
 from typing import Dict, Iterable, Union
 
 import pyaudio
 
-_audio_engine = pyaudio.PyAudio()
+from modules.exceptions import no_alsa_err
+
+if platform.system() == "Linux":
+    with no_alsa_err():
+        audio_engine = pyaudio.PyAudio()
+else:
+    audio_engine = pyaudio.PyAudio()
 # audio_engine.open(output_device_index=6, output=True, channels=1, format=pyaudio.paInt16, rate=16000)
-_device_range = _audio_engine.get_device_count()
+_device_range = audio_engine.get_device_count()
 
 
 class ChannelType(str, Enum):
@@ -34,7 +41,7 @@ def get_audio_devices(channels: str) -> Iterable[Dict[str, Union[str, int, float
         Yields a dictionary with all the input devices available.
     """
     for index in range(_device_range):
-        device_info = _audio_engine.get_device_info_by_index(device_index=index)
+        device_info = audio_engine.get_device_info_by_index(device_index=index)
         if device_info.get(channels, 0) > 0:
             yield device_info
 

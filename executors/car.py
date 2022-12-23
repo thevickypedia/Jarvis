@@ -201,7 +201,9 @@ def car(phrase: str) -> None:
         API climate controls: 31 is LO, 57 is HOT
         Car Climate controls: 58 is LO, 84 is HOT
     """
-    if not all([models.env.car_email, models.env.car_pass, models.env.car_pin]):
+    if all([models.env.car_email, models.env.car_pass, models.env.car_pin]):
+        phrase = phrase.lower()
+    else:
         logger.warning("InControl email or password or PIN not found.")
         support.no_env_vars()
         return

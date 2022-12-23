@@ -75,3 +75,6 @@ source_suffix = {
 # Retain the function/member order
 # Reference: https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autodoc_member_order
 autodoc_member_order = 'bysource'
+
+# Make left pane scroll
+html_css_files = ["static.css"]
