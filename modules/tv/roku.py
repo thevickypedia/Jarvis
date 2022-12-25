@@ -160,9 +160,10 @@ class TV:
         """
         response = self.make_call(path='/query/active-app', method='GET')
         xml_parsed = ElementTree.fromstring(response.content)
-        if not (app_info := xml_parsed.find('screensaver')):
+        app_info = xml_parsed.find('screensaver')
+        if app_info is None:
             app_info = xml_parsed.find('app')
-        if not app_info:
+        if app_info is None:
             return
         logger.debug(dict(id=app_info.get('id'), version=app_info.get('version'), name=app_info.text))
         return app_info.text
