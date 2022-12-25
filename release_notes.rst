@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+6.7.9 (12/25/2022)
+------------------
+- Bug fix for `RokuTV`
+- Check for existing app before launching `Home`
+- Fix method fetching current app on TV
+
 6.7.8 (12/24/2022)
 ------------------
 - Add support for multiple TVs and add `RokuTV` controls

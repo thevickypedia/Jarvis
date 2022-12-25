@@ -30,7 +30,8 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str, clien
                 shared.tv = lg.TV(ip_address=tv_ip, client_key=client_key)
             elif identifier == 'ROKU':
                 shared.tv = roku.TV(ip_address=tv_ip)
-                shared.tv.startup()
+                if not shared.tv.current_app():
+                    shared.tv.startup()
         except TVError as error:
             logger.error(f"Failed to connect to the TV. {error}")
             speaker.speak(text=f"I was unable to connect to the {nickname} {models.env.title}! "
