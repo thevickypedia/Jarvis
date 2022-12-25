@@ -13,7 +13,7 @@ called_by_offline = False
 
 text_spoken = None
 offline_caller = None
-tv = None
+tv = {}
 
 processes = {}
 hosted_device = {}

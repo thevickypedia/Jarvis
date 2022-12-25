@@ -39,7 +39,7 @@ def calculate_checksum(bytes_: list) -> int:
 
 
 class MagicHomeApi:
-    """Controller for ``MagicHome`` smart devices.
+    """Wrapper for ``MagicHome`` lights.
 
     >>> MagicHomeApi
 

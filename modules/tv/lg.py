@@ -1,7 +1,7 @@
 import socket
 import sys
 import time
-from typing import Dict, List, NoReturn
+from typing import Dict, Iterable, List, NoReturn
 
 from playsound import playsound
 from pywebostv.connection import WebOSClient
@@ -14,10 +14,10 @@ from modules.models import models
 from modules.utils import shared
 
 
-class TV:
-    """All the TV controls wrapped in dedicated methods.
+class LGWebOS:
+    """Wrapper for ``LGWebOS`` TVs.
 
-    >>> TV
+    >>> LGWebOS
 
     """
 
@@ -144,14 +144,15 @@ class TV:
         self.system.notify("Jarvis::Forward")
         self.media.fast_forward()
 
-    def get_apps(self) -> List[str]:
+    def get_apps(self) -> Iterable[str]:
         """Checks the applications installed on the TV.
 
         Returns:
             list:
             List of available apps on the TV.
         """
-        return [app["title"] for app in self.app.list_apps()]
+        for app in self.app.list_apps():
+            yield app["title"]
 
     def launch_app(self, app_name: str) -> NoReturn:
         """Launches an application.
@@ -170,14 +171,15 @@ class TV:
         """
         self.app.close(self.launch_app(app_name))
 
-    def get_sources(self) -> List[str]:
+    def get_sources(self) -> Iterable[str]:
         """Checks for the input sources on the TV.
 
         Returns:
             list:
             List of ``InputSource`` instances.
         """
-        return [source['label'] for source in self.source_control.list_sources()]
+        for source in self.source_control.list_sources():
+            yield source['label']
 
     def set_source(self, val: str) -> NoReturn:
         """Sets an ``InputSource`` instance.
@@ -186,7 +188,7 @@ class TV:
             val: Takes the input source instance value as argument.
         """
         sources = self.source_control.list_sources()
-        index = self.get_sources().index(val)
+        index = list(self.get_sources()).index(val)
         self.source_control.set_source(sources[index])
 
     def current_app(self) -> str:

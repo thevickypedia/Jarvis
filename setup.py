@@ -84,8 +84,8 @@ setup(
     python_requires=">=3.8",
     install_requires=dependencies(),
     classifiers=classifiers,
-    keywords='python, natural-language-processing, text-to-speech, speech-recognition, jarvis, hotword-detection,'
-             'virtual-assistant, multiprocessing, threadpool',
+    keywords='python, home-automation, natural-language-processing, text-to-speech, speech-recognition, jarvis, '
+             'hotword-detection, virtual-assistant',
     download_url=f'{base_url}/archive/master.zip',
     project_urls={
         'Source': base_url,

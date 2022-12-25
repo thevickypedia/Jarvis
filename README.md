@@ -257,7 +257,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
         rhasspy/larynx
     ```
 
-    :bulb: &nbsp; Speech Synthesis can run on a docker container for better voices but, response might be slower. If you don't have docker installed or simply don't want to use it, set the `SPEECH_SYNTHESIS_TIMEOUT` env var to 0. This is also done automatically if failed to launch a docker container upon startup.
+    :bulb: &nbsp; Speech Synthesis can run on a docker container for better voices but, response might be negligibly slower. If you don't have docker installed or simply don't want to use it, set the `SPEECH_SYNTHESIS_TIMEOUT` env var to 0. This is also done automatically if failed to launch a docker container upon startup.
 
     </details>
 
@@ -353,7 +353,7 @@ party mode:  # Light hostnames that needs to be engaged for party mode, if not p
   - 'HOSTNAMES'
 living room tv:
   hostname: 'HOSTNAME'
-  client_key: 'CLIENT_KEY'
+  client_key: 'CLIENT_KEY'  # Generated automatically if unavailable
   mac_address:  # Mac addresses can either be a string or a list
   - 'WIRED_MAC_ADDRESS'
   - 'WIRELESS_MAC_ADDRESS'
@@ -394,6 +394,8 @@ The YAML file should be a dictionary within a dictionary that looks like the bel
   task: set my bedroom lights to 100%
 09:00 PM:  # Runs daily
   task: set my bedroom lights to 5%
+12:00 AM:  # Even performs tasks that are not supported via voice commands
+  task: restart all background processes
 ```
 </details>
 

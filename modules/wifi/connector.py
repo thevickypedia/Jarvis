@@ -32,7 +32,7 @@ def process_err(error: Union[subprocess.CalledProcessError, subprocess.Subproces
 
 
 class ControlConnection:
-    """Controller for Wi-Fi connection settings.
+    """Wrapper for Wi-Fi connection.
 
     >>> ControlConnection
 

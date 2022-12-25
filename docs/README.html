@@ -314,7 +314,7 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
     rhasspy/larynx
 </pre></div>
 </div>
-<p>:bulb:   Speech Synthesis can run on a docker container for better voices but, response might be slower. If you don’t have docker installed or simply don’t want to use it, set the <code class="docutils literal notranslate"><span class="pre">SPEECH_SYNTHESIS_TIMEOUT</span></code> env var to 0. This is also done automatically if failed to launch a docker container upon startup.</p>
+<p>:bulb:   Speech Synthesis can run on a docker container for better voices but, response might be negligibly slower. If you don’t have docker installed or simply don’t want to use it, set the <code class="docutils literal notranslate"><span class="pre">SPEECH_SYNTHESIS_TIMEOUT</span></code> env var to 0. This is also done automatically if failed to launch a docker container upon startup.</p>
   </details></li>
 </ul>
 <hr class="docutils" />
@@ -402,7 +402,7 @@ Jarvis supports <code class="docutils literal notranslate"><span class="pre">Mag
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span><span class="w"></span>
 <span class="nt">living room tv</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;HOSTNAME&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">client_key</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;CLIENT_KEY&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">client_key</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;CLIENT_KEY&#39;</span><span class="w">  </span><span class="c1"># Generated automatically if unavailable</span><span class="w"></span>
 <span class="w">  </span><span class="nt">mac_address</span><span class="p">:</span><span class="w">  </span><span class="c1"># Mac addresses can either be a string or a list</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;WIRED_MAC_ADDRESS&#39;</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;WIRELESS_MAC_ADDRESS&#39;</span><span class="w"></span>
@@ -439,6 +439,8 @@ Date format should match exactly as described below.</p>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 100%</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">09:00 PM</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="c1"># Runs daily</span><span class="w"></span>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 5%</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">12:00 AM</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="c1"># Even performs tasks that are not supported via voice commands</span><span class="w"></span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">restart all background processes</span><span class="w"></span>
 </pre></div>
 </div>
 </details></section>
