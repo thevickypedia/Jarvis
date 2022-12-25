@@ -121,6 +121,8 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     try:
         with open(models.fileio.smart_devices) as file:
             smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+            if smart_devices:
+                smart_devices = {key: value for key, value in smart_devices.items() if 'tv' not in key.lower()}
     except yaml.YAMLError as error:
         logger.error(error)
         speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to read the source information. "
@@ -128,7 +130,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         return
 
     if not any(smart_devices):
-        logger.warning(f"{models.fileio.smart_devices} is empty.")
+        logger.warning(f"{models.fileio.smart_devices!r} is empty for lights.")
         support.no_env_vars()
         return
 

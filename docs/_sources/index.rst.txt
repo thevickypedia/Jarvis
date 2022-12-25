@@ -389,6 +389,12 @@ TV
    :members:
    :undoc-members:
 
+====
+
+.. automodule:: executors.tv_controls
+   :members:
+   :undoc-members:
+
 Unconditional
 =============
 
@@ -736,7 +742,13 @@ Timeout
 TV Connector
 ============
 
-.. automodule:: modules.tv.tv_controls
+.. automodule:: modules.tv.lg
+   :members:
+   :undoc-members:
+
+====
+
+.. automodule:: modules.tv.roku
    :members:
    :undoc-members:
 

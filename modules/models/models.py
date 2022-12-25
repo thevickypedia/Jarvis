@@ -109,9 +109,6 @@ def _global_validations() -> NoReturn:
             "'ICS_URL' should end with .ics"
         )
 
-    if env.tv_mac and isinstance(env.tv_mac, str):
-        env.tv_mac = [env.tv_mac]
-
     if env.speech_synthesis_port == env.offline_port:
         raise InvalidEnvVars(
             "Speech synthesizer and offline communicator cannot run simultaneously on the same port number."

@@ -377,13 +377,15 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 </details></section>
 <section id="smart-devices">
 <h2>Smart Devices<a class="headerlink" href="#smart-devices" title="Permalink to this heading">¶</a></h2>
-<p>A source file <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> is used to store smart devices’ hostnames. <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> supports <a class="reference external" href="https://www.amazon.com/gp/product/B08C7GY43L"><code class="docutils literal notranslate"><span class="pre">MagicHome</span></code> lights</a> and <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> TVs.</p>
+<p>A source file <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> is used to store smart devices’ hostnames.
+Jarvis supports <code class="docutils literal notranslate"><span class="pre">MagicHome</span></code> for <a class="reference external" href="https://www.amazon.com/gp/product/B08C7GY43L">lights</a>, <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> and <code class="docutils literal notranslate"><span class="pre">Roku</span></code> for TVs.</p>
 <details>
-<summary><strong><i>Setup Instructions</i></strong></summary><blockquote>
-<div><p>Note: Jarvis currently supports only one hostname for TV but multiple for lights.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p>The name used in the keys will be the identifier of those light bulbs.</p></li>
+<summary><strong><i>Setup Instructions</i></strong></summary><ul class="simple">
+<li><p>TV identifiers should have the word <code class="docutils literal notranslate"><span class="pre">tv</span></code> to distinguish between lights and tv.</p></li>
+<li><p>TV hostnames should either have <code class="docutils literal notranslate"><span class="pre">LG</span></code> or <code class="docutils literal notranslate"><span class="pre">Roku</span></code> to distinguish the modules accordingly.</p></li>
+<li><p>The name used in the keys will be the identifier.</p></li>
+<li><p>Lights should be a dictionary of identifier and a list of hostnames.</p></li>
+<li><p>TVs should be a nested dictionary of multiple parameters.</p></li>
 <li><p>The source file (<code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code>) should be as following:</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">bedroom</span><span class="p">:</span><span class="w"></span>
@@ -398,7 +400,15 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span><span class="w"></span>
 <span class="nt">party mode</span><span class="p">:</span><span class="w">  </span><span class="c1"># Light hostnames that needs to be engaged for party mode, if not present individual lights can be enabled</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span><span class="w"></span>
-<span class="nt">tv</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LGWEBOSTV&#39;</span><span class="w"></span>
+<span class="nt">living room tv</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;HOSTNAME&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">client_key</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;CLIENT_KEY&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">mac_address</span><span class="p">:</span><span class="w">  </span><span class="c1"># Mac addresses can either be a string or a list</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;WIRED_MAC_ADDRESS&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;WIRELESS_MAC_ADDRESS&#39;</span><span class="w"></span>
+<span class="nt">bedroom tv</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;HOSTNAME&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">mac_address</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;MAC_ADDRESS&#39;</span><span class="w"></span>
 </pre></div>
 </div>
 </details></section>

@@ -209,10 +209,6 @@ class EnvConfig(BaseSettings):
     git_user: str = Field(default=None, env='GIT_USER')
     git_pass: str = Field(default=None, env='GIT_PASS')
 
-    # TV config
-    tv_client_key: str = Field(default=None, env='TV_CLIENT_KEY')
-    tv_mac: Union[str, list] = Field(default=None, env='TV_MAC')
-
     # VPN Server config
     vpn_username: str = Field(default=None, env='VPN_USERNAME')
     vpn_password: str = Field(default=None, env='VPN_PASSWORD')
