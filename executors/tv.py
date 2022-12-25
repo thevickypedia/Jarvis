@@ -94,7 +94,7 @@ def television(phrase: str) -> None:
         return
 
     if 'lg' in tv_name.lower() or 'roku' in tv_name.lower():
-        logger.info(f"{tv_name!r} is supported.")
+        logger.debug(f"{tv_name!r} is supported.")
     else:
         logger.error("tv's name is not supported.")
         speaker.speak(text=f"I'm sorry {models.env.title}! Your {target_tv}'s name is neither LG or Roku."
@@ -122,8 +122,9 @@ def television(phrase: str) -> None:
     elif not (tv_ip := tv_status(tv_ip_list=tv_ip_list)):
         logger.info(f"Trying to power on the device using the mac addresses: {tv_mac}")
         power_controller = wakeonlan.WakeOnLan()
-        with ThreadPoolExecutor(max_workers=len(tv_mac)) as executor:
-            executor.map(power_controller.send_packet, tv_mac)
+        for _ in range(3):  # REDUNDANT-Roku: Send magic packets thrice to ensure device wakes up from sleep
+            with ThreadPoolExecutor(max_workers=len(tv_mac)) as executor:
+                executor.map(power_controller.send_packet, tv_mac)
         if not shared.called_by_offline:
             speaker.speak(text=f"Looks like your {target_tv} is powered off {models.env.title}! "
                                "Let me try to turn it back on!", run=True)
@@ -134,10 +135,15 @@ def television(phrase: str) -> None:
                 break
             time.sleep(0.5)
         else:
-            speaker.speak(text=f"I wasn't able to connect to your TV {models.env.title}! Please make sure you are on "
-                               f"the same network as your TV, and your TV is connected to a power source.")
+            speaker.speak(text=f"I wasn't able to connect to your {target_tv} {models.env.title}! "
+                               "Please make sure you are on the same network as your TV, and "
+                               "your TV is connected to a power source.")
             return
 
+    # Instantiate dictionary if not present
+    if not shared.tv.get(target_tv):
+        shared.tv[target_tv] = None
+    logger.debug(f"TV database: {shared.tv}")
     if 'lg' in tv_name.lower():
         tv_controller(phrase=phrase, tv_ip=tv_ip, identifier='LG', client_key=tv_client_key, nickname=target_tv)
     else:

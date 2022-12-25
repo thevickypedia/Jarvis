@@ -1,5 +1,6 @@
+import socket
 from threading import Thread
-from typing import Dict, List, NoReturn, Union
+from typing import Dict, Iterable, NoReturn, Union
 from xml.etree import ElementTree
 
 import requests
@@ -8,17 +9,17 @@ from modules.exceptions import TVError
 from modules.logger.custom_logger import logger
 
 
-class TV:
-    """Controller for Roku TV's.
+class RokuECP:
+    """Wrapper for ``RokuECP`` TVs.
 
-    >>> TV
+    >>> RokuECP
 
     References:
         https://developer.roku.com/docs/developer-program/debugging/external-control-api.md
     """
 
-    PORT = 8060
-    SESSION = requests.Session()
+    PORT: int = 8060
+    SESSION: requests.Session = requests.Session()
 
     def __init__(self, ip_address: str):
         """Instantiates the roku tv and makes a test call.
@@ -28,10 +29,22 @@ class TV:
         """
         self.BASE_URL = f'http://{ip_address}:{self.PORT}'
         try:
-            requests.get(url=self.BASE_URL)
+            response = requests.get(url=self.BASE_URL)
         except requests.RequestException as error:
             logger.error(error)
             raise TVError
+        else:
+            if response.ok:
+                try:
+                    resolved = socket.gethostbyaddr(ip_address)
+                except socket.error as error:
+                    logger.error(error)
+                    raise TVError
+                else:
+                    logger.info(f"Connected to {resolved[0].split('.')[0]!r}")
+            else:
+                logger.error(f"{response.status_code} - {response.text}")
+                raise TVError
 
     def make_call(self, path, method) -> requests.Response:
         """Makes a session call using the path and method provided.
@@ -113,16 +126,16 @@ class TV:
         """Sends a keypress to rewind content on TV."""
         self.make_call(path='/keypress/Rev', method='POST')
 
-    @staticmethod
-    def get_sources() -> List[str]:
+    def get_sources(self) -> Iterable[str]:
         """Returns a list of predetermined sources.
 
         Returns:
             list:
             Preset sources.
         """
-        # todo: find a call to get this info
-        return ['InputHDMI1', 'InputHDMI2', 'InputHDMI3', 'InputHDMI4', 'InputAV1']
+        for app in self.get_apps(raw=True):
+            if app['id'].startswith('tvinput'):
+                yield app['name']
 
     def set_source(self, val: str) -> NoReturn:
         """Set input source on TV.
@@ -169,10 +182,9 @@ class TV:
         return app_info.text
 
     @staticmethod
-    def get_volume():
-        """Get current volume on the TV. Placeholder method."""
-        # todo: find a call to get this info
-        return 'Unknown'
+    def get_volume() -> str:
+        """Placeholder method as there is no call to get this information at the time of development."""
+        return 'unknown'
 
     def launch_app(self, app_name: str) -> NoReturn:
         """Launches an application on the TV.
@@ -180,7 +192,6 @@ class TV:
         Args:
             app_name: Name of the application to launch.
         """
-        # noinspection PyTypeChecker
         app_id = next((item for item in self.get_apps(raw=True)
                        if item['name'].lower() == app_name.lower()), {}).get('id')
         if app_id:
@@ -190,7 +201,7 @@ class TV:
         else:
             logger.error(f'{app_name} not found in tv')
 
-    def get_apps(self, raw: bool = False) -> Union[List[str], List[Dict[str, str]]]:
+    def get_apps(self, raw: bool = False) -> Union[Iterable[Dict[str, str]], Iterable[str]]:
         """Get list of applications installed on the TV.
 
         Args:
@@ -203,5 +214,8 @@ class TV:
         response = self.make_call(path='/query/apps', method='GET')
         xml_parsed = ElementTree.fromstring(response.content)
         if raw:
-            return [dict(id=node.get('id'), version=node.get('version'), name=node.text) for node in xml_parsed]
-        return [node.text for node in xml_parsed]
+            for node in xml_parsed:
+                yield dict(id=node.get('id'), version=node.get('version'), name=node.text)
+        else:
+            for node in xml_parsed:
+                yield node.text

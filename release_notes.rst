@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+6.8.0 (12/25/2022)
+------------------
+- Add feature to control multiple TVs simultaneously
+- Iterate over a loop to power on and launch home for RokuTVs
+- Improve type hints
+
 6.7.9 (12/25/2022)
 ------------------
 - Bug fix for `RokuTV`

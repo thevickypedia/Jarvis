@@ -42,7 +42,6 @@ def speech_synthesizer(text: str,
         bool:
         A boolean flag to indicate whether speech synthesis has worked.
     """
-    # TODO: Research if speech synthesis can be processed in batches
     logger.info(f"Request for speech synthesis: {text}")
     if time_in_str := re.findall(r'(\d+:\d+\s?(?:AM|PM|am|pm:?))', text):
         for t_12 in time_in_str:
