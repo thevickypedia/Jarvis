@@ -325,14 +325,17 @@ email:
 </details>
 
 ### Smart Devices
-A source file `smart_devices.yaml` is used to store smart devices' hostnames. `Jarvis` supports [`MagicHome` lights](https://www.amazon.com/gp/product/B08C7GY43L) and `LGWebOS` TVs.
+A source file `smart_devices.yaml` is used to store smart devices' hostnames.
+Jarvis supports `MagicHome` for [lights](https://www.amazon.com/gp/product/B08C7GY43L), `LGWebOS` and `Roku` for TVs.
 
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary>
 
-> Note: Jarvis currently supports only one hostname for TV but multiple for lights.
-
-- The name used in the keys will be the identifier of those light bulbs.
+- TV identifiers should have the word `tv` to distinguish between lights and tv.
+- TV hostnames should either have `LG` or `Roku` to distinguish the modules accordingly.
+- The name used in the keys will be the identifier.
+- Lights should be a dictionary of identifier and a list of hostnames.
+- TVs should be a nested dictionary of multiple parameters.
 - The source file (`smart_devices.yaml`) should be as following:
 
 ```yaml
@@ -348,7 +351,15 @@ living room:
   - 'HOSTNAMES'
 party mode:  # Light hostnames that needs to be engaged for party mode, if not present individual lights can be enabled
   - 'HOSTNAMES'
-tv: 'LGWEBOSTV'
+living room tv:
+  hostname: 'HOSTNAME'
+  client_key: 'CLIENT_KEY'
+  mac_address:  # Mac addresses can either be a string or a list
+  - 'WIRED_MAC_ADDRESS'
+  - 'WIRELESS_MAC_ADDRESS'
+bedroom tv:
+  hostname: 'HOSTNAME'
+  mac_address: 'MAC_ADDRESS'
 ```
 </details>
 

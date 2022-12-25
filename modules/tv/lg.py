@@ -1,10 +1,8 @@
-import os
 import socket
 import sys
 import time
 from typing import Dict, List, NoReturn
 
-from dotenv import set_key
 from playsound import playsound
 from pywebostv.connection import WebOSClient
 from pywebostv.controls import (ApplicationControl, AudioOutputSource,
@@ -26,11 +24,10 @@ class TV:
     _init_status = False
     _reconnect = False
 
-    def __init__(self, ip_address: str = None, client_key: str = None):
-        """Client key will be logged and stored as SSM param when you accept the connection for the first time.
+    def __init__(self, ip_address: str, client_key: str):
+        """Instantiates the ``WebOSClient`` and connects to the TV.
 
-        Store the dict value as an env variable and use it as below. Using TV's ip makes the initial
-        response much quicker, but it also scans the network for the TV's ip if ip arg is not received.
+        Using TV's ip makes the initial response much quicker, but it can also scan the network for the TV's ip.
 
         Args:
             ip_address: IP address of the TV.
@@ -76,11 +73,8 @@ class TV:
 
         if self._reconnect:
             self._reconnect = False
-            if os.path.isfile('.env') and models.env.tv_client_key != store.get('client_key'):
-                set_key(dotenv_path='.env', key_to_set='TV_CLIENT_KEY', value_to_set=store.get('client_key'))
-            else:
-                logger.critical('Client key has been generated. Store it in env vars to re-use.')
-                logger.critical(f"TV_CLIENT_KEY: {store.get('client_key')}")
+            logger.critical(f'Client key has been generated. Store it in {models.fileio.smart_devices!r} to re-use.')
+            logger.critical(str(store))
 
         self.system = SystemControl(self.client)
         self.system.notify("Jarvis is controlling the TV now.") if not self._init_status else None

@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+6.7.8 (12/24/2022)
+------------------
+- Add support for multiple TVs and add `RokuTV` controls
+- Restructure the usage of `smart_devices.yaml` file
+- Update README.md and requirements.txt
+
 6.7.7 (12/23/2022)
 ------------------
 - Load `PyAudio` during start up to avoid `ALSA` errors on `Linux`
