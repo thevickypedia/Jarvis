@@ -6,6 +6,7 @@ import stat
 import subprocess
 import sys
 import time
+from datetime import datetime
 from threading import Thread
 from typing import NoReturn
 
@@ -270,11 +271,13 @@ def shutdown(proceed: bool = False) -> NoReturn:
         speaker.speak(text=f"Machine state is left intact {models.env.title}!")
 
 
-def clear_logs() -> NoReturn:
+def delete_logs() -> NoReturn:
     """Deletes log files that were updated before 48 hours."""
     for __path, __directory, __file in os.walk('logs'):
         for file_ in __file:
-            if int(time.time() - os.stat(os.path.join(__path, file_)).st_mtime) > 172_800:
+            if (datetime.now() - datetime.strptime(file_.split('_')[-1].split('.')[0],
+                                                   '%d-%m-%Y')).total_seconds() > 172_800:
+                logger.debug(f"Deleting log file: {os.path.join(__path, file_)}")
                 os.remove(os.path.join(__path, file_))  # removes the file if it is older than 48 hours
 
 
@@ -282,9 +285,9 @@ def delete_pycache() -> NoReturn:
     """Deletes ``__pycache__`` folder from all sub-dir."""
     for __path, __directory, __file in os.walk(os.getcwd()):
         if '__pycache__' in __directory:
-            deletion = os.path.join(__path, '__pycache__')
-            if os.path.exists(deletion):
-                shutil.rmtree(deletion)
+            if os.path.exists(os.path.join(__path, '__pycache__')):
+                logger.debug(f"Deleting pycache: {os.path.join(__path, '__pycache__')}")
+                shutil.rmtree(os.path.join(__path, '__pycache__'))
 
 
 def starter() -> NoReturn:
@@ -297,7 +300,7 @@ def starter() -> NoReturn:
     """
     volume(level=models.env.volume)
     voices.voice_default()
-    clear_logs()
+    delete_logs()
     delete_pycache()
     for file in os.listdir("fileio"):
         f_path = os.path.join("fileio", file)

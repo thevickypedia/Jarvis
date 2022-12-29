@@ -2,7 +2,8 @@ import sqlite3
 import time
 from datetime import datetime
 from multiprocessing import Process
-from multiprocessing.context import TimeoutError as ThreadTimeoutError
+from multiprocessing.context import \
+    TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
 from typing import NoReturn
 
@@ -90,12 +91,14 @@ def meetings() -> None:
     if meeting_status and meeting_status[1] == datetime.now().strftime('%Y_%m_%d'):
         speaker.speak(text=meeting_status[0])
     elif meeting_status:
-        Process(target=meetings_writer).start()
         logger.warning(f"Date in meeting status ({meeting_status[1]}) does not match the current date "
                        f"({datetime.now().strftime('%Y_%m_%d')})")
+        logger.info("Starting adhoc process to update ics table.")
+        Process(target=meetings_writer).start()
         speaker.speak(text=f"Meetings table is outdated {models.env.title}. Please try again in a minute or two.")
     else:
         if shared.called_by_offline:
+            logger.info("Starting adhoc process to get meetings from ICS.")
             Process(target=meetings_writer).start()
             speaker.speak(text=f"Meetings table is empty {models.env.title}. Please try again in a minute or two.")
             return
