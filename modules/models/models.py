@@ -25,16 +25,18 @@ from modules.models.classes import (Indicators, RecognizerSettings,
 # Shared across other modules
 voices: Union[list, object] = audio_driver.getProperty("voices")
 indicators = Indicators()
+# TABLES to be created in `fileio.base_db`
 TABLES = {
-    env.event_app: ["info", "date"],
-    "ics": ["info", "date"],
-    "stopper": ["flag", "caller"],
-    "restart": ["flag", "caller"],
-    "children": ["meetings", "events", "crontab", "party", "guard", "surveillance"],
-    "vpn": ["state"],
-    "party": ["pid"],
-    "guard": ["state"]
+    env.event_app: ("info", "date"),
+    "ics": ("info", "date"),
+    "stopper": ("flag", "caller"),
+    "restart": ("flag", "caller"),
+    "children": ("meetings", "events", "crontab", "party", "guard", "surveillance"),
+    "vpn": ("state",),
+    "party": ("pid",),
+    "guard": ("state",),
 }
+KEEP_TABLES = ("vpn", "party")  # TABLES to keep from `fileio.base_db`
 
 
 def _main_process_validations() -> NoReturn:

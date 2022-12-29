@@ -88,7 +88,7 @@ class Activator:
 
         self.detector = pvporcupine.create(**arguments)
         self.audio_stream = self.open_stream()
-        self.tasks = repeated_tasks()
+        self.tasks = list(repeated_tasks())
         self.label = f"Awaiting: [{self.label}]"
 
     def open_stream(self) -> pyaudio.Stream:
@@ -168,6 +168,12 @@ class Activator:
         """
         for task in self.tasks:
             task.stop()
+        # right approach for consistency but speech_synthesizer runs in a container that will be stopped at the end
+        # if models.settings.limited:
+        #     if models.settings.os != "Darwin":  # Check this condition only for limited mode
+        #         stop_processes(func_name="speech_synthesizer")
+        # else:
+        #     stop_processes()
         if not models.settings.limited:
             stop_processes()
         clear_db()
@@ -196,6 +202,8 @@ def begin() -> NoReturn:
     sys.stdout.write(f"\rCurrent Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
     shared.hosted_device = hosted_device_info()
     if models.settings.limited:
+        # Write processes mapping file before calling start_processes with func_name flag,
+        # as passing the flag will look for the file's presence
         with open(models.fileio.processes, 'w') as file:
             yaml.dump(stream=file, data={"jarvis": models.settings.pid})
         if models.settings.os != "Darwin":

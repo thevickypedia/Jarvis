@@ -1,6 +1,6 @@
 import os
 from multiprocessing import Process
-from typing import Dict, List, NoReturn, Tuple, Union
+from typing import Dict, List, NoReturn, Union
 
 import psutil
 import yaml
@@ -33,14 +33,16 @@ def delete_db() -> NoReturn:
 
 
 def clear_db() -> NoReturn:
-    """Deletes entries from all databases except for VPN."""
+    """Deletes entries from all databases except for the tables assigned to hold data forever."""
     with db.connection:
         cursor = db.connection.cursor()
         for table, column in models.TABLES.items():
-            if table == "vpn" or table == "party" or table == "stock":
+            if table in models.KEEP_TABLES:
                 continue
             # Use f-string or %s as table names cannot be parametrized
-            logger.info(f"Deleting data from {table}: {cursor.execute(f'SELECT * FROM {table}').fetchall()}")
+            data = cursor.execute(f'SELECT * FROM {table}').fetchall()
+            logger.info(f"Deleting data from {table}: "
+                        f"{support.matrix_to_flat_list([list(filter(None, d)) for d in data if any(d)])}")
             cursor.execute(f"DELETE FROM {table}")
 
 
@@ -74,7 +76,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
     for func, process in processes.items():
         process.start()
         logger.info(f"Started function: {func} with PID: {process.pid}")
-    if func_name:
+    if func_name:  # Assumes a processes mapping file exists already, since flag passed during process specific restart
         with open(models.fileio.processes) as file:
             dump = yaml.load(stream=file, Loader=yaml.FullLoader)
         dump[func_name] = processes[func_name].pid
@@ -89,22 +91,20 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
 
 def stop_child_processes() -> NoReturn:
     """Stops sub processes (for meetings and events) triggered by child processes."""
-    children = {}
+    children: Dict[str, List[int]] = {}
     with db.connection:
         cursor = db.connection.cursor()
         for child in models.TABLES["children"]:
             # Use f-string or %s as condition cannot be parametrized
-            children[child]: List[Tuple[Union[None, str]]] = cursor.execute(f"SELECT {child} FROM children").fetchall()
-    logger.info(children)
+            data = cursor.execute(f"SELECT {child} FROM children").fetchall()
+            children[child]: List[int] = support.matrix_to_flat_list([list(filter(None, d)) for d in data if any(d)])
+    logger.info(children)  # Include empty lists so logs have more information but will get skipped when looping anyway
     for category, pids in children.items():
         for pid in pids:
-            pid = pid[0]
-            if not pid:
-                continue
             try:
                 proc = psutil.Process(pid=pid)
             except psutil.NoSuchProcess:
-                # Occurs commonly since child processes run only for a short time
+                # Occurs commonly since child processes run only for a short time and `INSERT OR REPLACE` leaves dupes
                 logger.debug(f"Process [{category}] PID not found {pid}")
                 continue
             logger.info(f"Stopping process [{category}] with PID: {pid}")

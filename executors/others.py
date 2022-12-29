@@ -340,7 +340,7 @@ def time_travel() -> None:
     with db.connection:
         cursor = db.connection.cursor()
         # Use f-string or %s as table names cannot be parametrized
-        event_status = cursor.execute(f"SELECT info FROM {models.env.event_app}").fetchone()
+        event_status = cursor.execute(f"SELECT info, date FROM {models.env.event_app}").fetchone()
     if event_status and event_status[0].startswith('You'):
         speaker.speak(text=event_status[0])
     todo()

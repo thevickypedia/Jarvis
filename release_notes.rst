@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+6.8.1 (12/25/2022)
+------------------
+- Minor optimizations for memory usage and efficiency
+- More clear logging and inline comments
+
 6.8.0 (12/25/2022)
 ------------------
 - Add feature to control multiple TVs simultaneously

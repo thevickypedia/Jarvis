@@ -4,7 +4,7 @@ import traceback
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
-from typing import AnyStr, List, NoReturn, Union
+from typing import AnyStr, Iterable, NoReturn, Union
 
 import requests
 from pydantic import HttpUrl
@@ -28,27 +28,26 @@ from modules.meetings import events, icalendar
 from modules.models import models
 from modules.offline import compatibles
 from modules.timer.executor import RepeatedTimer
-from modules.utils import shared, support
+from modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
 
 
-def repeated_tasks() -> Union[List[RepeatedTimer], List]:
+def repeated_tasks() -> Iterable[RepeatedTimer]:
     """Runs tasks on a timed basis.
 
-    Returns:
-        list:
-        Returns a list of RepeatedTimer object(s).
+    Yields:
+        Iterable:
+        RepeatedTimer object(s).
     """
-    tasks = []
     logger.info(f"Background tasks: {len(models.env.tasks)}")
     for task in models.env.tasks:
         if word_match(phrase=task.task, match_list=compatibles.offline_compatible()):
-            tasks.append(RepeatedTimer(task.seconds, offline_communicator, task.task))
+            logger.info(f"{task.task!r} will be executed every {util.time_converter(seconds=task.seconds)}")
+            yield RepeatedTimer(task.seconds, offline_communicator, task.task)
         else:
             logger.error(f"{task.task!r} is not a part of offline communication. Removing entry.")
             models.env.tasks.remove(task)
-    return tasks
 
 
 def automator() -> NoReturn:
@@ -84,7 +83,7 @@ def automator() -> NoReturn:
         if start_events + models.env.sync_events <= time.time() or dry_run:
             start_events = time.time()
             event_process = Process(target=events.events_writer)
-            logger.info(f"Getting calendar events from {models.env.event_app}") if dry_run else None
+            logger.info(f"Getting events from {models.env.event_app}.") if dry_run else None
             event_process.start()
             with db.connection:
                 cursor = db.connection.cursor()
@@ -102,7 +101,7 @@ def automator() -> NoReturn:
                     models.env.sync_meetings = 99_999_999  # NEVER RUNs, as env vars are loaded only during start up
             start_meetings = time.time()
             meeting_process = Process(target=icalendar.meetings_writer)
-            logger.info("Getting calendar schedule from ICS.") if dry_run else None
+            logger.info("Getting meetings from ICS.") if dry_run else None
             meeting_process.start()
             with db.connection:
                 cursor = db.connection.cursor()

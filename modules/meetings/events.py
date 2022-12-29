@@ -4,7 +4,8 @@ import sqlite3
 import subprocess
 from datetime import datetime
 from multiprocessing import Process
-from multiprocessing.context import TimeoutError as ThreadTimeoutError
+from multiprocessing.context import \
+    TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
 from typing import NoReturn
 
@@ -120,12 +121,14 @@ def events() -> None:
     if event_status and event_status[1] == datetime.now().strftime('%Y_%m_%d'):
         speaker.speak(text=event_status[0])
     elif event_status:
-        Process(target=events_writer).start()
         logger.warning(f"Date in event status ({event_status[1]}) does not match the current date "
                        f"({datetime.now().strftime('%Y_%m_%d')})")
+        logger.info(f"Starting adhoc process to update {models.env.event_app} table.")
+        Process(target=events_writer).start()
         speaker.speak(text=f"Events table is outdated {models.env.title}. Please try again in a minute or two.")
     else:
         if shared.called_by_offline:
+            logger.info(f"Starting adhoc process to get events from {models.env.event_app}.")
             Process(target=events_writer).start()
             speaker.speak(text=f"Events table is empty {models.env.title}. Please try again in a minute or two.")
             return
