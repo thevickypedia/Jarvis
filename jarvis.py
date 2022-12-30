@@ -15,7 +15,6 @@ from executors.commander import initiator
 from executors.controls import exit_process, starter, terminator
 from executors.internet import get_connection_info, ip_address, public_ip_info
 from executors.location import write_current_location
-from executors.offline import repeated_tasks
 from executors.processor import clear_db, start_processes, stop_processes
 from executors.system import hosted_device_info
 from modules.audio import listener, speaker
@@ -88,7 +87,6 @@ class Activator:
 
         self.detector = pvporcupine.create(**arguments)
         self.audio_stream = self.open_stream()
-        self.tasks = list(repeated_tasks())
         self.label = f"Awaiting: [{self.label}]"
 
     def open_stream(self) -> pyaudio.Stream:
@@ -166,8 +164,6 @@ class Activator:
             - Closes audio stream.
             - Releases port audio resources.
         """
-        for task in self.tasks:
-            task.stop()
         # right approach for consistency but speech_synthesizer runs in a container that will be stopped at the end
         # if models.settings.limited:
         #     if models.settings.os != "Darwin":  # Check this condition only for limited mode

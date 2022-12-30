@@ -1,10 +1,8 @@
-import os
 import socket
 import time
 from typing import NoReturn
 
 from executors.controls import restart_control
-from modules.logger import config
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.wifi.connector import ControlConnection, ControlPeripheral
@@ -16,7 +14,6 @@ def wifi_connector() -> NoReturn:
     See Also:
         - Logs up to 10 consecutive errors from socket module or a total of 5 unknown errors before restarting process.
     """
-    config.multiprocessing_logger(filename=os.path.join('logs', 'connection_checker_%d-%m-%Y.log'))
     if not models.env.wifi_ssid or not models.env.wifi_password:
         logger.warning("Cannot retry connections without SSID and password.")
         return

@@ -13,6 +13,7 @@ from _preexec import keywords_handler
 from executors.alarm import alarm_executor
 from executors.automation import auto_helper
 from executors.conditions import conditions
+from executors.connection import wifi_connector
 from executors.crontab import crontab_executor
 from executors.others import photo
 from executors.remind import reminder_executor
@@ -33,6 +34,13 @@ from modules.utils import shared, support, util
 db = database.Database(database=models.fileio.base_db)
 
 
+def background_tasks() -> NoReturn:
+    """Initiates background tasks in a thread and runs Wi-Fi connector concurrently."""
+    config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
+    list(repeated_tasks())
+    wifi_connector()
+
+
 def repeated_tasks() -> Iterable[RepeatedTimer]:
     """Runs tasks on a timed basis.
 
@@ -43,7 +51,7 @@ def repeated_tasks() -> Iterable[RepeatedTimer]:
     logger.info(f"Background tasks: {len(models.env.tasks)}")
     for task in models.env.tasks:
         if word_match(phrase=task.task, match_list=compatibles.offline_compatible()):
-            logger.info(f"{task.task!r} will be executed every {util.time_converter(seconds=task.seconds)}")
+            logger.info(f"{task.task!r} will be executed every {util.time_converter(second=task.seconds)}")
             yield RepeatedTimer(task.seconds, offline_communicator, task.task)
         else:
             logger.error(f"{task.task!r} is not a part of offline communication. Removing entry.")
