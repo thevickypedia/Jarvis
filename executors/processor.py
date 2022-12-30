@@ -6,8 +6,7 @@ import psutil
 import yaml
 
 from api.server import fast_api
-from executors.connection import wifi_connector
-from executors.offline import automator, tunneling
+from executors.offline import automator, background_tasks, tunneling
 from executors.telegram import telegram_api
 from modules.audio.speech_synthesis import speech_synthesizer
 from modules.database import database
@@ -65,12 +64,12 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         Returns a process object if a function name is passed, otherwise a mapping of function name and process objects.
     """
     process_dict = {
+        "speech_synthesizer": Process(target=speech_synthesizer),
         "telegram_api": Process(target=telegram_api),
         "fast_api": Process(target=fast_api),  # Does not support run-time keywords update from yaml file
         "automator": Process(target=automator),
+        "background_tasks": Process(target=background_tasks),
         "tunneling": Process(target=tunneling),
-        "speech_synthesizer": Process(target=speech_synthesizer),
-        "wifi_connector": Process(target=wifi_connector)  # Cannot hook up with other process due to timed wait
     }
     processes = {func_name: process_dict[func_name]} if func_name else process_dict
     for func, process in processes.items():

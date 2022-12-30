@@ -100,7 +100,7 @@ def system_vitals() -> None:
     restart_time = datetime.fromtimestamp(psutil.boot_time())
     second = (datetime.now() - restart_time).total_seconds()
     restart_time = datetime.strftime(restart_time, "%A, %B %d, at %I:%M %p")
-    restart_duration = util.time_converter(seconds=second)
+    restart_duration = util.time_converter(second=second)
     output += f'Restarted on: {restart_time} - {restart_duration} ago from now.'
     if shared.called_by_offline:
         speaker.speak(text=output)

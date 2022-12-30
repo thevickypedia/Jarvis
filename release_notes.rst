@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+6.8.3 (12/29/2022)
+------------------
+- Bug fix on `background_tasks`
+- Move background tasks from thread to process as `called_by_offline` flag should not be set in main process
+- Running it as a thread will raise `RuntimeError` as `runAndWait()` will not be called
+- Remove unsafe code in `pluralize` function
+
 6.8.2 (12/29/2022)
 ------------------
 - Make `time_converter` grammatically correct

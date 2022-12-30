@@ -6,9 +6,7 @@
 """
 
 import hashlib
-import inspect
 import random
-import re
 import string
 import uuid
 from datetime import datetime
@@ -47,52 +45,59 @@ def part_of_day() -> str:
     return "Night"
 
 
-def pluralize(count: int) -> str:
-    """Helper for ``time_converter`` function."""
-    pluralize.counter += 1  # noqa: PyUnresolvedReferences
-    frame = inspect.currentframe()
-    frame = inspect.getouterframes(frame)[1]
-    word = re.findall('\((.*?)\)', frame.code_context[0].strip())[pluralize.counter]  # noqa: PyUnresolvedReferences
+def pluralize(count: int, word: str) -> str:
+    """Helper for ``time_converter`` function.
+
+    Args:
+        count: Number based on which plural form should be determined.
+        word: Word for which the plural form should be converted.
+
+    Returns:
+        str:
+        String formatted time in singular or plural.
+    """
     return f"{count} {engine.plural(text=word, count=count)}"
 
 
-def time_converter(seconds: float) -> str:
+def time_converter(second: float) -> str:
     """Modifies seconds to appropriate days/hours/minutes/seconds.
 
     Args:
-        seconds: Takes number of seconds as argument.
+        second: Takes number of seconds as argument.
 
     Returns:
         str:
         Seconds converted to days or hours or minutes or seconds.
     """
-    day = round(seconds // 86400)
-    seconds = round(seconds % (24 * 3600))
-    hour = round(seconds // 3600)
-    seconds %= 3600
-    minute = round(seconds // 60)
-    seconds %= 60
+    day = round(second // 86400)
+    second = round(second % (24 * 3600))
+    hour = round(second // 3600)
+    second %= 3600
+    minute = round(second // 60)
+    second %= 60
     pluralize.counter = -1
-    if day and hour and minute and seconds:
-        return f"{pluralize(day)}, {pluralize(hour)}, {pluralize(minute)}, and {pluralize(seconds)}"
+    if day and hour and minute and second:
+        return f"{pluralize(day, 'day')}, {pluralize(hour, 'hour')}, " \
+               f"{pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
     elif day and hour and minute:
-        return f"{pluralize(day)}, {pluralize(hour)}, and {pluralize(minute)}"
+        return f"{pluralize(day, 'day')}, {pluralize(hour, 'hour')}, " \
+               f"and {pluralize(minute, 'minute')}"
     elif day and hour:
-        return f"{pluralize(day)}, and {pluralize(hour)}"
+        return f"{pluralize(day, 'day')}, and {pluralize(hour, 'hour')}"
     elif day:
-        return pluralize(day)
-    elif hour and minute and seconds:
-        return f"{pluralize(hour)}, {pluralize(minute)}, and {pluralize(seconds)}"
+        return pluralize(day, 'day')
+    elif hour and minute and second:
+        return f"{pluralize(hour, 'hour')}, {pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
     elif hour and minute:
-        return f"{pluralize(hour)}, and {pluralize(minute)}"
+        return f"{pluralize(hour, 'hour')}, and {pluralize(minute, 'minute')}"
     elif hour:
-        return pluralize(hour)
-    elif minute and seconds:
-        return f"{pluralize(minute)}, and {pluralize(seconds)}"
+        return pluralize(hour, 'hour')
+    elif minute and second:
+        return f"{pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
     elif minute:
-        return pluralize(minute)
+        return pluralize(minute, 'minute')
     else:
-        return pluralize(seconds)
+        return pluralize(second, 'second')
 
 
 def get_closest_match(text: str, match_list: list) -> str:
