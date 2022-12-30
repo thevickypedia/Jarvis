@@ -1,7 +1,11 @@
 Release Notes
 =============
 
-6.8.1 (12/25/2022)
+6.8.2 (12/29/2022)
+------------------
+- Make `time_converter` grammatically correct
+
+6.8.1 (12/29/2022)
 ------------------
 - Minor optimizations for memory usage and efficiency
 - More clear logging and inline comments

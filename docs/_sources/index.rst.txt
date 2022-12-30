@@ -674,7 +674,7 @@ Retry Handler
 Repeated Timer
 ==============
 
-.. automodule:: modules.timer.executor
+.. automodule:: modules.timer.repeated_timer
    :members:
    :undoc-members:
 
