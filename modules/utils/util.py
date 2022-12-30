@@ -6,12 +6,18 @@
 """
 
 import hashlib
+import inspect
 import random
+import re
 import string
 import uuid
 from datetime import datetime
 from difflib import SequenceMatcher
 from typing import Hashable
+
+import inflect
+
+engine = inflect.engine()
 
 
 def get_timezone() -> str:
@@ -41,6 +47,15 @@ def part_of_day() -> str:
     return "Night"
 
 
+def pluralize(count: int) -> str:
+    """Helper for ``time_converter`` function."""
+    pluralize.counter += 1  # noqa: PyUnresolvedReferences
+    frame = inspect.currentframe()
+    frame = inspect.getouterframes(frame)[1]
+    word = re.findall('\((.*?)\)', frame.code_context[0].strip())[pluralize.counter]  # noqa: PyUnresolvedReferences
+    return f"{count} {engine.plural(text=word, count=count)}"
+
+
 def time_converter(seconds: float) -> str:
     """Modifies seconds to appropriate days/hours/minutes/seconds.
 
@@ -51,32 +66,33 @@ def time_converter(seconds: float) -> str:
         str:
         Seconds converted to days or hours or minutes or seconds.
     """
-    days = round(seconds // 86400)
+    day = round(seconds // 86400)
     seconds = round(seconds % (24 * 3600))
-    hours = round(seconds // 3600)
+    hour = round(seconds // 3600)
     seconds %= 3600
-    minutes = round(seconds // 60)
+    minute = round(seconds // 60)
     seconds %= 60
-    if days and hours and minutes and seconds:
-        return f"{days} days, {hours} hours, {minutes} minutes, and {seconds} seconds"
-    elif days and hours and minutes:
-        return f"{days} days, {hours} hours, and {minutes} minutes"
-    elif days and hours:
-        return f"{days} days, and {hours} hours"
-    elif days:
-        return f"{days} days"
-    elif hours and minutes and seconds:
-        return f"{hours} hours, {minutes} minutes, and {seconds} seconds"
-    elif hours and minutes:
-        return f"{hours} hours, and {minutes} minutes"
-    elif hours:
-        return f"{hours} hours"
-    elif minutes and seconds:
-        return f"{minutes} minutes, and {seconds} seconds"
-    elif minutes:
-        return f"{minutes} minutes"
+    pluralize.counter = -1
+    if day and hour and minute and seconds:
+        return f"{pluralize(day)}, {pluralize(hour)}, {pluralize(minute)}, and {pluralize(seconds)}"
+    elif day and hour and minute:
+        return f"{pluralize(day)}, {pluralize(hour)}, and {pluralize(minute)}"
+    elif day and hour:
+        return f"{pluralize(day)}, and {pluralize(hour)}"
+    elif day:
+        return pluralize(day)
+    elif hour and minute and seconds:
+        return f"{pluralize(hour)}, {pluralize(minute)}, and {pluralize(seconds)}"
+    elif hour and minute:
+        return f"{pluralize(hour)}, and {pluralize(minute)}"
+    elif hour:
+        return pluralize(hour)
+    elif minute and seconds:
+        return f"{pluralize(minute)}, and {pluralize(seconds)}"
+    elif minute:
+        return pluralize(minute)
     else:
-        return f"{seconds} seconds"
+        return pluralize(seconds)
 
 
 def get_closest_match(text: str, match_list: list) -> str:

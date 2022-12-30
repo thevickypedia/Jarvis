@@ -37,12 +37,13 @@ class RepeatedTimer:
     def start(self) -> NoReturn:
         """Checks if task is running, schedules a thread timer otherwise."""
         if not self.is_running:
+            logger.info(f"Starting {self.function.__name__!r} to execute {self.args or self.kwargs}")
             self._timer = Timer(self.interval, self._run)
             self._timer.start()
             self.is_running = True
 
     def stop(self) -> NoReturn:
         """Flips the running flag to False and cancels the existing timer."""
-        logger.info(f"Stopping {self.function.__name__} while executing {self.args or self.kwargs}")
+        logger.info(f"Stopping {self.function.__name__!r} while executing {self.args or self.kwargs}")
         self._timer.cancel()
         self.is_running = False

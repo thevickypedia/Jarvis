@@ -2841,7 +2841,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <span id="offline"></span><h1>Offline<a class="headerlink" href="#module-executors.offline" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.offline.repeated_tasks">
-<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">repeated_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.timer.executor.RepeatedTimer" title="modules.timer.executor.RepeatedTimer"><span class="pre">RepeatedTimer</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.offline.repeated_tasks" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">repeated_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.timer.repeated_timer.RepeatedTimer" title="modules.timer.repeated_timer.RepeatedTimer"><span class="pre">RepeatedTimer</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.offline.repeated_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs tasks on a timed basis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Yields</dt>
@@ -6359,11 +6359,11 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
-<section id="module-modules.timer.executor">
-<span id="repeated-timer"></span><h1>Repeated Timer<a class="headerlink" href="#module-modules.timer.executor" title="Permalink to this heading">¶</a></h1>
+<section id="module-modules.timer.repeated_timer">
+<span id="repeated-timer"></span><h1>Repeated Timer<a class="headerlink" href="#module-modules.timer.repeated_timer" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="modules.timer.executor.RepeatedTimer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.timer.executor.</span></span><span class="sig-name descname"><span class="pre">RepeatedTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.timer.executor.RepeatedTimer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.timer.repeated_timer.RepeatedTimer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.timer.repeated_timer.</span></span><span class="sig-name descname"><span class="pre">RepeatedTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.timer.repeated_timer.RepeatedTimer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiate <code class="docutils literal notranslate"><span class="pre">RepeatedTimer</span></code> object to run a task repeated after given intervals.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">RepeatedTimer</span>
 </pre></div>
@@ -6380,14 +6380,14 @@ Whites can have a value of None.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="modules.timer.executor.RepeatedTimer.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.timer.executor.RepeatedTimer.start" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.timer.repeated_timer.RepeatedTimer.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.timer.repeated_timer.RepeatedTimer.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if task is running, schedules a thread timer otherwise.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="modules.timer.executor.RepeatedTimer.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.timer.executor.RepeatedTimer.stop" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.timer.repeated_timer.RepeatedTimer.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.timer.repeated_timer.RepeatedTimer.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flips the running flag to False and cancels the existing timer.</p>
 </dd></dl>
 
@@ -6833,6 +6833,12 @@ Whites can have a value of None.</p>
 <dd class="field-even"><p>str</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.util.pluralize">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">pluralize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.util.pluralize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for <code class="docutils literal notranslate"><span class="pre">time_converter</span></code> function.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -8451,7 +8457,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-modules.myq.myq">MyQ</a></li>
 <li><a class="reference internal" href="#id5">Offline</a></li>
 <li><a class="reference internal" href="#module-modules.retry.retry">Retry Handler</a></li>
-<li><a class="reference internal" href="#module-modules.timer.executor">Repeated Timer</a></li>
+<li><a class="reference internal" href="#module-modules.timer.repeated_timer">Repeated Timer</a></li>
 <li><a class="reference internal" href="#module-modules.utils.shared">Shared Resources</a></li>
 <li><a class="reference internal" href="#module-modules.utils.support">Support</a></li>
 <li><a class="reference internal" href="#module-modules.utils.util">Utilities</a></li>

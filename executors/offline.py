@@ -27,7 +27,7 @@ from modules.logger.custom_logger import logger
 from modules.meetings import events, icalendar
 from modules.models import models
 from modules.offline import compatibles
-from modules.timer.executor import RepeatedTimer
+from modules.timer.repeated_timer import RepeatedTimer
 from modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
