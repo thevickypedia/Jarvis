@@ -14,7 +14,7 @@ import sys
 from collections import ChainMap
 from datetime import datetime
 from enum import Enum
-from typing import List, Union
+from typing import List, Optional, Union
 
 import psutil
 import pyttsx3
@@ -115,18 +115,31 @@ class SSQuality(str, Enum):
     Low_Quality = 'low'
 
 
-class CustomDict(BaseModel):
+class BackgroundTask(BaseModel):
     """Custom links model."""
 
     seconds: int
     task: constr(strip_whitespace=True)
+    ignore_hours: Optional[List[int]] = []
 
     @validator('task', allow_reuse=True)
     def check_empty_string(cls, v, values, **kwargs):  # noqa
         """Validate task field in tasks."""
         if v:
             return v
-        raise ValueError('Bad value')
+        raise ValueError('bad value')
+
+    @validator('ignore_hours', allow_reuse=True)
+    def check_hours_format(cls, v, values, **kwargs):  # noqa
+        """Validate each entry in ignore hours list."""
+        if not v:
+            return []
+        for hour in v:
+            try:
+                datetime.strptime(str(hour), '%H')
+            except ValueError:
+                raise ValueError('ignore hours should be a list of integers in 24H format')
+        return v
 
 
 class EnvConfig(BaseSettings):
@@ -243,7 +256,7 @@ class EnvConfig(BaseSettings):
     speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
 
     # Background tasks
-    tasks: List[CustomDict] = Field(default=[], env='TASKS')
+    tasks: List[BackgroundTask] = Field(default=[], env='TASKS')
     crontab: List[str] = Field(default=[], env='CRONTAB')
 
     # WiFi config

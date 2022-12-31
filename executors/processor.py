@@ -6,6 +6,7 @@ import psutil
 import yaml
 
 from api.server import fast_api
+from executors.connection import wifi_connector
 from executors.offline import automator, background_tasks, tunneling
 from executors.telegram import telegram_api
 from modules.audio.speech_synthesis import speech_synthesizer
@@ -70,6 +71,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         "automator": Process(target=automator),
         "background_tasks": Process(target=background_tasks),
         "tunneling": Process(target=tunneling),
+        "wifi_connector": Process(target=wifi_connector)  # Cannot hook up with other process as socket needs timed wait
     }
     processes = {func_name: process_dict[func_name]} if func_name else process_dict
     for func, process in processes.items():

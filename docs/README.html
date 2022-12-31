@@ -337,18 +337,19 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <li><p><strong>SURVEILLANCE_SESSION_TIMEOUT</strong> - Session time out for <code class="docutils literal notranslate"><span class="pre">/surveillance</span></code>. Defaults to 300 seconds.</p></li>
 <li><p><strong>STOCK_MONITOR_ENDPOINT_AUTH</strong> - Token to add a stock price monitor. (Will soon be made <code class="docutils literal notranslate"><span class="pre">open-source</span></code>)</p></li>
 </ul>
-<p><strong>Scheduler</strong></p>
+<p><strong>Background Tasks</strong>
+There are two options to run background tasks on Jarvis.</p>
 <ul>
-<li><p><strong>TASKS</strong> - Runs certain tasks at certain intervals.</p>
+<li><p><strong>TASKS</strong> - Runs Jarvis’ internal tasks at certain intervals.</p>
   <details>
   <summary><strong><i>Sample value</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">{</span><span class="s">&quot;seconds&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">10_800</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;task&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;remind</span><span class="nv"> </span><span class="s">me</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">drink</span><span class="nv"> </span><span class="s">water&quot;</span><span class="p p-Indicator">},</span><span class="w">  </span><span class="c1"># Runs every 3 hours</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">{</span><span class="s">&quot;seconds&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">10_800</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;task&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;remind</span><span class="nv"> </span><span class="s">me</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">drink</span><span class="nv"> </span><span class="s">water&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;ignore_hours&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">20</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">21</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">22</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">23</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">6</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">7</span><span class="p p-Indicator">]},</span><span class="w">  </span><span class="c1"># Runs every 3 hours ignoring the hours specified</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">{</span><span class="s">&quot;seconds&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">21_600</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;task&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;turn</span><span class="nv"> </span><span class="s">off</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">lights&quot;</span><span class="p p-Indicator">}</span><span class="w">  </span><span class="c1"># Runs every 6 hours</span><span class="w"></span>
 <span class="p p-Indicator">]</span><span class="w"></span>
 </pre></div>
 </div>
   </details></li>
-<li><p><strong>CRONTAB</strong> - Runs scheduled tasks using cron expressions without using actual crontab.</p>
+<li><p><strong>CRONTAB</strong> - Runs external tasks using cron expressions.</p>
   <details>
   <summary><strong><i>Sample value</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="w"></span>
 <span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1-5/2</span><span class="nv"> </span><span class="s">find</span><span class="nv"> </span><span class="s">/var/log</span><span class="nv"> </span><span class="s">-delete&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
@@ -456,15 +457,28 @@ Styling conventions: <a class="reference external" href="https://www.python.org/
 Clean code with pre-commit hooks: <a class="reference external" href="https://flake8.pycqa.org/en/latest/"><code class="docutils literal notranslate"><span class="pre">flake8</span></code></a> and
 <a class="reference external" href="https://pycqa.github.io/isort/"><code class="docutils literal notranslate"><span class="pre">isort</span></code></a></p>
 </section>
+<section id="release-notes">
+<h1><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/release_notes.rst">Release Notes</a><a class="headerlink" href="#release-notes" title="Permalink to this heading">¶</a></h1>
+<p><strong>Requirement</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python -m pip install changelog-generator
+</pre></div>
+</div>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>changelog reverse -f release_notes.rst -t <span class="s1">&#39;Release Notes&#39;</span>
+</pre></div>
+</div>
+</section>
 <section id="linting">
 <h1>Linting<a class="headerlink" href="#linting" title="Permalink to this heading">¶</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">PreCommit</span></code> will ensure linting, and the doc creation are run on every commit.</p>
-<p><strong>Requirement</strong>
-<br>
-<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--no-cache</span> <span class="pre">--upgrade</span> <span class="pre">sphinx</span> <span class="pre">pre-commit</span> <span class="pre">recommonmark</span></code></p>
-<p><strong>Usage</strong>
-<br>
-<code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">run</span> <span class="pre">--all-files</span></code></p>
+<p><strong>Requirement</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install --no-cache --upgrade <span class="nv">sphinx</span><span class="o">==</span><span class="m">5</span>.1.1 pre-commit recommonmark
+</pre></div>
+</div>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pre-commit run --all-files
+</pre></div>
+</div>
 </section>
 <section id="pypi-package">
 <h1>Pypi Package<a class="headerlink" href="#pypi-package" title="Permalink to this heading">¶</a></h1>
@@ -504,6 +518,7 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 </li>
 <li><a class="reference internal" href="#feature-s-implementation">Feature(s) Implementation</a></li>
 <li><a class="reference internal" href="#coding-standards">Coding Standards</a></li>
+<li><a class="reference internal" href="#release-notes">Release Notes</a></li>
 <li><a class="reference internal" href="#linting">Linting</a></li>
 <li><a class="reference internal" href="#pypi-package">Pypi Package</a></li>
 <li><a class="reference internal" href="#runbook">Runbook</a></li>

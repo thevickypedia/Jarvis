@@ -78,7 +78,7 @@ def events_gatherer() -> str:
         elif err_code in ["(-10810)", "(-609)", "(-600)"]:  # If unable to launch the app or app terminates.
             event_app_launcher()
         if not failure:
-            failure = f"Unable to read {models.env.event_app} - [{error}]\n{err_msg}"
+            failure = f"[{models.env.event_app}:{error}] - {err_msg}"
         logger.error(failure)
         # failure = failure.replace('"', '')  # An identifier can’t go after this “"”
         # os.system(f"""osascript -e 'display notification "{failure}" with title "Jarvis"'""")

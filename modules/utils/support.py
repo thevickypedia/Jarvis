@@ -68,8 +68,8 @@ def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
             if _ipaddr_list[0].split('.')[0] == ip_addr.split('.')[0]:
                 return _ipaddr_list
             else:
-                logger.error(f"NetworkID of the InterfaceIP of host {hostname!r} does not match the network id of the "
-                             f"DeviceIP.")
+                logger.error(f"NetworkID of the InterfaceIP [{ip_addr}] of host {hostname!r} does not match the "
+                             f"network id of the DeviceIP [{', '.join(_ipaddr_list)}].")
                 return []
         else:
             return _ipaddr_list

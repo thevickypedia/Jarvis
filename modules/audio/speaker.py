@@ -101,7 +101,7 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
             os.remove(models.fileio.speech_synthesis_wav)
         else:
             models.audio_driver.say(text=text)
-    if run:
+    if run and not shared.called_by_offline:
         logger.info(f'Speaker called by: {caller!r}')
         models.audio_driver.runAndWait()
     Thread(target=frequently_used, kwargs={"function_name": caller}).start() if caller in FUNCTIONS_TO_TRACK else None

@@ -68,9 +68,9 @@ class Activator:
         References:
             - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
         """
-        self.label = ', '.join([f'{string.capwords(wake)!r}: {sens}' for wake, sens in
-                                zip(models.env.wake_words, models.env.sensitivity)])
-        logger.info(f"Initiating hot-word detector with sensitivity: {self.label}")
+        label = ', '.join([f'{string.capwords(wake)!r}: {sens}' for wake, sens in
+                           zip(models.env.wake_words, models.env.sensitivity)])
+        logger.info(f"Initiating hot-word detector with sensitivity: {label}")
         keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words]
 
         arguments = {
@@ -87,7 +87,7 @@ class Activator:
 
         self.detector = pvporcupine.create(**arguments)
         self.audio_stream = self.open_stream()
-        self.label = f"Awaiting: [{self.label}]"
+        self.label = f"Awaiting: [{label}]"
 
     def open_stream(self) -> pyaudio.Stream:
         """Initializes an audio stream.

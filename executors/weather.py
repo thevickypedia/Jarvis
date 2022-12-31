@@ -48,8 +48,8 @@ def weather(phrase: str = None) -> None:
         coordinates = desired_location.latitude, desired_location.longitude
         located = geo_locator.reverse(coordinates, language='en')
         address = located.raw['address']
-        city = address.get('city')
-        state = address.get('state')
+        city = address.get('city') or address.get('town') or address.get('hamlet') or 'Unknown'
+        state = address.get('state', 'Unknown')
         lat = located.latitude
         lon = located.longitude
     else:
@@ -63,7 +63,7 @@ def weather(phrase: str = None) -> None:
             return
 
         address = current_location.get('address', {})
-        city = address.get('city', address.get('hamlet', 'Unknown'))
+        city = address.get('city') or address.get('town') or address.get('hamlet') or 'Unknown'
         state = address.get('state', 'Unknown')
         lat = current_location['latitude']
         lon = current_location['longitude']
@@ -80,6 +80,7 @@ def weather(phrase: str = None) -> None:
 
     if phrase and word_match(phrase=phrase,
                              match_list=['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']):
+        # when the weather info was requested
         if 'tonight' in phrase:
             key = 0
             tell = 'tonight'
@@ -96,20 +97,23 @@ def weather(phrase: str = None) -> None:
         else:
             key = 0
             tell = 'today'
+
+        # which part of the day (after noon or noon is considered as full day as midday values range same as full day)
         if 'morning' in phrase:
             when = 'morn'
-            tell += 'morning'
+            tell += ' morning'
         elif 'evening' in phrase:
             when = 'eve'
-            tell += 'evening'
+            tell += ' evening'
         elif 'tonight' in phrase:
             when = 'night'
         elif 'night' in phrase:
             when = 'night'
-            tell += 'night'
+            tell += ' night'
         else:
             when = 'day'
             tell += ''
+
         if 'alerts' in response:
             alerts = response['alerts'][0]['event']
             start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")

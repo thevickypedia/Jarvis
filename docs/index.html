@@ -60,6 +60,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#feature-s-implementation">Feature(s) Implementation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#coding-standards">Coding Standards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#release-notes">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#linting">Linting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#pypi-package">Pypi Package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#runbook">Runbook</a></li>
@@ -2842,16 +2843,16 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.offline.background_tasks">
 <span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">background_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.offline.background_tasks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates background tasks in a thread and runs Wi-Fi connector concurrently.</p>
+<dd><p>Initiates background tasks as per the set time.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.offline.repeated_tasks">
-<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">repeated_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.timer.repeated_timer.RepeatedTimer" title="modules.timer.repeated_timer.RepeatedTimer"><span class="pre">RepeatedTimer</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.offline.repeated_tasks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs tasks on a timed basis.</p>
+<dt class="sig sig-object py" id="executors.offline.validate_background_tasks">
+<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">validate_background_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.models.classes.BackgroundTask" title="modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.offline.validate_background_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates each background task if it is offline compatible.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Yields</dt>
-<dd class="field-odd"><p><em>Iterable</em> – RepeatedTimer object(s).</p>
+<dd class="field-odd"><p><em>Iterable</em> – BackgroundTask object(s).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4979,25 +4980,36 @@ Pass 155 for LO and 285 for HI.</p>
 
 <hr class="docutils" />
 <dl class="py class">
-<dt class="sig sig-object py" id="modules.models.classes.CustomDict">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">CustomDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.classes.CustomDict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.models.classes.BackgroundTask">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">BackgroundTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.classes.BackgroundTask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom links model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.CustomDict.seconds">
-<span class="sig-name descname"><span class="pre">seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.models.classes.CustomDict.seconds" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.models.classes.BackgroundTask.seconds">
+<span class="sig-name descname"><span class="pre">seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.models.classes.BackgroundTask.seconds" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.CustomDict.task">
-<span class="sig-name descname"><span class="pre">task</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ConstrainedStrValue</span></em><a class="headerlink" href="#modules.models.classes.CustomDict.task" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.models.classes.BackgroundTask.task">
+<span class="sig-name descname"><span class="pre">task</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ConstrainedStrValue</span></em><a class="headerlink" href="#modules.models.classes.BackgroundTask.task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.BackgroundTask.ignore_hours">
+<span class="sig-name descname"><span class="pre">ignore_hours</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.BackgroundTask.ignore_hours" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="modules.models.classes.CustomDict.check_empty_string">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_empty_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.classes.CustomDict.check_empty_string" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="modules.models.classes.BackgroundTask.check_empty_string">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_empty_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.classes.BackgroundTask.check_empty_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate task field in tasks.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.models.classes.BackgroundTask.check_hours_format">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_hours_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.classes.BackgroundTask.check_hours_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate each entry in ignore hours list.</p>
 </dd></dl>
 
 </dd></dl>
@@ -5344,7 +5356,7 @@ Pass 155 for LO and 285 for HI.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.tasks">
-<span class="sig-name descname"><span class="pre">tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.models.classes.CustomDict" title="modules.models.classes.CustomDict"><span class="pre">CustomDict</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.tasks" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.models.classes.BackgroundTask" title="modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.tasks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -6362,41 +6374,6 @@ Whites can have a value of None.</p>
 <dd class="field-odd"><p>Callable</p>
 </dd>
 </dl>
-</dd></dl>
-
-</section>
-<section id="module-modules.timer.repeated_timer">
-<span id="repeated-timer"></span><h1>Repeated Timer<a class="headerlink" href="#module-modules.timer.repeated_timer" title="Permalink to this heading">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="modules.timer.repeated_timer.RepeatedTimer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.timer.repeated_timer.</span></span><span class="sig-name descname"><span class="pre">RepeatedTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.timer.repeated_timer.RepeatedTimer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiate <code class="docutils literal notranslate"><span class="pre">RepeatedTimer</span></code> object to run a task repeated after given intervals.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">RepeatedTimer</span>
-</pre></div>
-</div>
-<p>Instantiates the object and starts the task.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>interval</strong> – Seconds after which the task should be triggered repeatedly.</p></li>
-<li><p><strong>function</strong> – Function that has to be called.</p></li>
-<li><p><strong>*args</strong> – Arguments.</p></li>
-<li><p><strong>**kwargs</strong> – Keyword arguments.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="modules.timer.repeated_timer.RepeatedTimer.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.timer.repeated_timer.RepeatedTimer.start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if task is running, schedules a thread timer otherwise.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="modules.timer.repeated_timer.RepeatedTimer.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.timer.repeated_timer.RepeatedTimer.stop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Flips the running flag to False and cancels the existing timer.</p>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -8477,7 +8454,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-modules.myq.myq">MyQ</a></li>
 <li><a class="reference internal" href="#id5">Offline</a></li>
 <li><a class="reference internal" href="#module-modules.retry.retry">Retry Handler</a></li>
-<li><a class="reference internal" href="#module-modules.timer.repeated_timer">Repeated Timer</a></li>
 <li><a class="reference internal" href="#module-modules.utils.shared">Shared Resources</a></li>
 <li><a class="reference internal" href="#module-modules.utils.support">Support</a></li>
 <li><a class="reference internal" href="#module-modules.utils.util">Utilities</a></li>
