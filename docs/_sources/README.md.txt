@@ -279,20 +279,22 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **SURVEILLANCE_SESSION_TIMEOUT** - Session time out for `/surveillance`. Defaults to 300 seconds.
 - **STOCK_MONITOR_ENDPOINT_AUTH** - Token to add a stock price monitor. (Will soon be made `open-source`)
 
-**Scheduler**
-- **TASKS** - Runs certain tasks at certain intervals.
+**Background Tasks**
+There are two options to run background tasks on Jarvis.
+
+- **TASKS** - Runs Jarvis' internal tasks at certain intervals.
     <details>
     <summary><strong><i>Sample value</i></strong></summary>
 
     ```yaml
     [
-      {"seconds": 10_800, "task": "remind me to drink water"},  # Runs every 3 hours
+      {"seconds": 10_800, "task": "remind me to drink water", "ignore_hours": [20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6, 7]},  # Runs every 3 hours ignoring the hours specified
       {"seconds": 21_600, "task": "turn off all lights"}  # Runs every 6 hours
     ]
     ```
     </details>
 
-- **CRONTAB** - Runs scheduled tasks using cron expressions without using actual crontab.
+- **CRONTAB** - Runs external tasks using cron expressions.
     <details>
     <summary><strong><i>Sample value</i></strong></summary>
 
@@ -408,16 +410,29 @@ Styling conventions: [`PEP 8`](https://www.python.org/dev/peps/pep-0008/) <br>
 Clean code with pre-commit hooks: [`flake8`](https://flake8.pycqa.org/en/latest/) and 
 [`isort`](https://pycqa.github.io/isort/)
 
+## [Release Notes](https://github.com/thevickypedia/Jarvis/blob/master/release_notes.rst)
+**Requirement**
+```shell
+python -m pip install changelog-generator
+```
+
+**Usage**
+```shell
+changelog reverse -f release_notes.rst -t 'Release Notes'
+```
+
 ## Linting
 `PreCommit` will ensure linting, and the doc creation are run on every commit.
 
 **Requirement**
-<br>
-`pip install --no-cache --upgrade sphinx pre-commit recommonmark`
+```shell
+pip install --no-cache --upgrade sphinx==5.1.1 pre-commit recommonmark
+```
 
 **Usage**
-<br>
-`pre-commit run --all-files`
+```shell
+pre-commit run --all-files
+```
 
 ## Pypi Package
 [![pypi-module](https://img.shields.io/badge/Software%20Repository-pypi-1f425f.svg)](https://packaging.python.org/tutorials/packaging-projects/)

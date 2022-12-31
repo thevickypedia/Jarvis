@@ -148,8 +148,8 @@ def initiator(phrase: str = None, should_return: bool = False) -> None:
     if not phrase and should_return:
         return
     support.flush_screen()
-    if [word for word in phrase.lower().split() if word in ['morning', 'night', 'afternoon',
-                                                            'after noon', 'evening', 'goodnight']]:
+    if 'good' in phrase.lower() and word_match(phrase=phrase, match_list=('morning', 'night', 'afternoon', 'after noon',
+                                                                          'evening', 'goodnight')):
         shared.called['time_travel'] = True
         if (event := support.celebrate()) and 'night' not in phrase.lower():
             speaker.speak(text=f'Happy {event}!')

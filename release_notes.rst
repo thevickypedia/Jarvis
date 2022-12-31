@@ -1,6 +1,17 @@
 Release Notes
 =============
 
+6.8.4 (12/31/2022)
+------------------
+- Remove overlapping `Thread` for background processes
+- Run `wifi_connector` as a process to let `socket` sleep
+- Add an option to set hours to ignore in background tasks
+- Upgrade `PyAudio` for `macOS`
+- More consistent logging
+- Get CSS and JS required for night mode in robinhood.html via URL
+- Ignore speaker.run when called by offline
+- Update README.md
+
 6.8.3 (12/29/2022)
 ------------------
 - Bug fix on `background_tasks`

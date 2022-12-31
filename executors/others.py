@@ -347,7 +347,7 @@ def time_travel() -> None:
     read_gmail()
     speaker.speak(text='Would you like to hear the latest news?', run=True)
     phrase = listener.listen()
-    if word_match(phrase=phrase.lower(), match_list=keywords.keywords.ok):
+    if phrase and word_match(phrase=phrase.lower(), match_list=keywords.keywords.ok):
         news()
 
 

@@ -4,7 +4,7 @@ import traceback
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
-from typing import AnyStr, Iterable, NoReturn, Union
+from typing import AnyStr, Iterable, List, NoReturn, Union
 
 import requests
 from pydantic import HttpUrl
@@ -13,7 +13,6 @@ from _preexec import keywords_handler
 from executors.alarm import alarm_executor
 from executors.automation import auto_helper
 from executors.conditions import conditions
-from executors.connection import wifi_connector
 from executors.crontab import crontab_executor
 from executors.others import photo
 from executors.remind import reminder_executor
@@ -27,35 +26,73 @@ from modules.logger import config
 from modules.logger.custom_logger import logger
 from modules.meetings import events, icalendar
 from modules.models import models
+from modules.models.classes import BackgroundTask
 from modules.offline import compatibles
-from modules.timer.repeated_timer import RepeatedTimer
 from modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
 
 
 def background_tasks() -> NoReturn:
-    """Initiates background tasks in a thread and runs Wi-Fi connector concurrently."""
+    """Initiates background tasks as per the set time."""
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
-    list(repeated_tasks())
-    wifi_connector()
+
+    tasks: List[BackgroundTask] = list(validate_background_tasks())
+    if not tasks and not models.env.crontab:
+        logger.info("No tasks to run in the background.")
+        return
+
+    start_cron = time.time()
+    task_dict = {i: time.time() for i in range(len(tasks))}  # Creates a start time for each task
+    dry_run = True
+    while True:
+        for i, task in enumerate(tasks):
+            if task_dict[i] + task.seconds <= time.time() or dry_run:  # Checks a particular tasks' elapsed time
+                task_dict[i] = time.time()  # Updates that particular tasks' start time
+                if datetime.now().hour in task.ignore_hours:
+                    logger.info("Schedule skipped honoring ignore hours")
+                    continue
+                logger.info(f'Executing {task.task}')
+                try:
+                    offline_communicator(task.task)
+                except Exception as error:
+                    logger.error(error)
+                    logger.warning(f"Removing {task} from background tasks.")
+                    tasks.remove(task)
+
+        if start_cron + 60 <= time.time():  # Condition passes every minute
+            start_cron = time.time()
+            for cron in models.env.crontab:
+                job = expression.CronExpression(line=cron)
+                if job.check_trigger():
+                    cron_process = Process(target=crontab_executor, args=(job.comment,))
+                    cron_process.start()
+                    with db.connection:
+                        cursor = db.connection.cursor()
+                        cursor.execute("INSERT or REPLACE INTO children (crontab) VALUES (?);", (cron_process.pid,))
+                        db.connection.commit()
+
+        if not tasks and not models.env.crontab:
+            logger.warning("No background tasks to run.")
+            break
+
+        dry_run = False
 
 
-def repeated_tasks() -> Iterable[RepeatedTimer]:
-    """Runs tasks on a timed basis.
+def validate_background_tasks() -> Iterable[BackgroundTask]:
+    """Validates each background task if it is offline compatible.
 
     Yields:
         Iterable:
-        RepeatedTimer object(s).
+        BackgroundTask object(s).
     """
     logger.info(f"Background tasks: {len(models.env.tasks)}")
     for task in models.env.tasks:
         if word_match(phrase=task.task, match_list=compatibles.offline_compatible()):
             logger.info(f"{task.task!r} will be executed every {util.time_converter(second=task.seconds)}")
-            yield RepeatedTimer(task.seconds, offline_communicator, task.task)
+            yield task
         else:
-            logger.error(f"{task.task!r} is not a part of offline communication. Removing entry.")
-            models.env.tasks.remove(task)
+            logger.error(f"{task.task!r} is not a part of offline communication compatible request.")
 
 
 def automator() -> NoReturn:
@@ -75,7 +112,7 @@ def automator() -> NoReturn:
     """
     config.multiprocessing_logger(filename=os.path.join('logs', 'automation_%d-%m-%Y.log'))
     offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
-    start_events = start_meetings = start_cron = time.time()
+    start_events = start_meetings = time.time()
     if models.settings.os == "Darwin":
         events.event_app_launcher()
     dry_run = True
@@ -116,18 +153,6 @@ def automator() -> NoReturn:
                 cursor.execute("UPDATE children SET meetings=null")
                 cursor.execute("INSERT or REPLACE INTO children (meetings) VALUES (?);", (meeting_process.pid,))
                 db.connection.commit()
-
-        if start_cron + 60 <= time.time():  # Condition passes every minute
-            start_cron = time.time()
-            for cron in models.env.crontab:
-                job = expression.CronExpression(line=cron)
-                if job.check_trigger():
-                    cron_process = Process(target=crontab_executor, args=(job.comment,))
-                    cron_process.start()
-                    with db.connection:
-                        cursor = db.connection.cursor()
-                        cursor.execute("INSERT or REPLACE INTO children (crontab) VALUES (?);", (cron_process.pid,))
-                        db.connection.commit()
 
         if alarm_state := support.lock_files(alarm_files=True):
             for each_alarm in alarm_state:

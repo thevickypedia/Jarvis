@@ -82,7 +82,7 @@ if [[ "$OSName" == "Darwin" ]]; then
     os_independent_packages
 
     # Mac specifics
-    python -m pip install PyAudio==0.2.11 playsound==1.3.0 ftransc==7.0.3 pyobjc-framework-CoreWLAN==8.2
+    python -m pip install PyAudio==0.2.13 playsound==1.3.0 ftransc==7.0.3 pyobjc-framework-CoreWLAN==8.2
 
     # Checks current version and installs legacy pvporcupine version if macOS is older han 10.14
     base_ver="10.14"  # Versions older than Mojave (High Sierra and older versions)

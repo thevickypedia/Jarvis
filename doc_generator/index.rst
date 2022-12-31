@@ -549,7 +549,7 @@ Classes
 
 ====
 
-.. autoclass:: modules.models.classes.CustomDict(pydantic.BaseModel)
+.. autoclass:: modules.models.classes.BackgroundTask(pydantic.BaseModel)
    :members:
    :undoc-members:
 
@@ -668,13 +668,6 @@ Retry Handler
 =============
 
 .. automodule:: modules.retry.retry
-   :members:
-   :undoc-members:
-
-Repeated Timer
-==============
-
-.. automodule:: modules.timer.repeated_timer
    :members:
    :undoc-members:
 
