@@ -79,6 +79,10 @@ def intro() -> str:
            "turn off my car\n" \
            "lock my car\n" \
            "unlock my car\n\n" \
+           "*Garage Controls*\n" \
+           "get me the status of my garage\n" \
+           "close my garage\n" \
+           "open my garage\n" \
            "*TV*\n" \
            "launch Netflix on my tv\n" \
            "increase the volume on my tv\n" \

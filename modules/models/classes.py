@@ -360,6 +360,7 @@ class FileIO(BaseModel):
 
     # Speech Synthesis
     speech_synthesis_wav: FilePath = os.path.join('fileio', 'speech_synthesis.wav')
+    # Store log file name in a variable as it is used in multiple modules with file IO
     speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))
     speech_synthesis_id: FilePath = datetime.now().strftime(os.path.join('fileio', 'speech_synthesis_%d-%m-%Y.cid'))
 

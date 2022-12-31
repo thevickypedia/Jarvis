@@ -1,4 +1,5 @@
 import os
+import warnings
 from multiprocessing import Process
 from typing import Dict, List, NoReturn, Union
 
@@ -46,47 +47,79 @@ def clear_db() -> NoReturn:
             cursor.execute(f"DELETE FROM {table}")
 
 
+def create_process_mapping(processes: Dict[str, Process], func_name: str = None) -> NoReturn:
+    """Creates or updates the processes mapping file.
+
+    Args:
+        processes: Dictionary of process names and the process.
+        func_name: Function name of each process.
+
+    See Also:
+        - This is a special function, that uses doc strings to create a python dict.
+
+    Handles:
+        - speech_synthesizer: Speech Synthesis
+        - telegram_api: Telegram Bot
+        - fast_api: Offline communicator, Robinhood report gatherer, Jarvis UI, Stock monitor, Surveillance
+        - automator: Home automation, Alarms and Reminders, Timed sync for Meetings and Events
+        - background_tasks: Cron jobs, Custom background tasks
+        - tunneling: Reverse Proxy
+        - wifi_connector: Wi-Fi Re-connector
+    """
+    impact_lib = {doc.strip().split(':')[0].lstrip('- '): doc.strip().split(':')[1].strip().split(', ')
+                  for doc in create_process_mapping.__doc__.split('Handles:')[1].splitlines() if doc.strip()}
+    if not func_name and list(impact_lib.keys()) != list(processes.keys()):
+        warnings.warn(message=f"{list(impact_lib.keys())} does not match {list(processes.keys())}")
+    if func_name:  # Assumes a processes mapping file exists already, since flag passed during process specific restart
+        with open(models.fileio.processes) as file:
+            dump = yaml.load(stream=file, Loader=yaml.FullLoader)
+        dump[func_name] = [processes[func_name].pid, impact_lib[func_name]]
+    else:
+        dump = {k: [v.pid, impact_lib[k]] for k, v in processes.items()}
+        dump["jarvis"] = [models.settings.pid, ["Main Process"]]
+    logger.debug(f"Processes data: {dump}")
+    # Remove temporary processes that doesn't need to be stored in mapping file
+    if dump.get("tunneling"):
+        del dump["tunneling"]
+    if dump.get("speech_synthesizer"):
+        del dump["speech_synthesizer"]
+    with open(models.fileio.processes, 'w') as file:
+        yaml.dump(stream=file, data=dump, indent=4)
+
+
 def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]:
     """Initiates multiple background processes to achieve parallelization.
 
     Args:
         func_name: Name of the function that has to be started.
 
-    See Also:
-        - telegram_api: Initiates message polling for Telegram bot to execute offline commands.
-        - fast_api: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.
-        - automator: Initiates automator that executes timed tasks, store calendar and meetings information in database.
-        - tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
-        - speech_synthesizer: Initiates larynx docker image for speech synthesis.
-        - wifi_connector: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.
-
     Returns:
         Union[Process, Dict[str, Process]]:
         Returns a process object if a function name is passed, otherwise a mapping of function name and process objects.
+
+    See Also:
+        - speech_synthesizer: Initiates larynx docker image for speech synthesis.
+        - telegram_api: Initiates message polling for Telegram bot to execute offline commands.
+        - fast_api: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.
+        - automator: Initiates automator that executes timed tasks, store calendar and meetings information in database.
+        - background_tasks: Initiates internal background tasks and runs cron jobs.
+        - tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
+        - wifi_connector: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.
     """
     process_dict = {
-        "speech_synthesizer": Process(target=speech_synthesizer),
-        "telegram_api": Process(target=telegram_api),
-        "fast_api": Process(target=fast_api),  # Does not support run-time keywords update from yaml file
-        "automator": Process(target=automator),
-        "background_tasks": Process(target=background_tasks),
-        "tunneling": Process(target=tunneling),
-        "wifi_connector": Process(target=wifi_connector)  # Cannot hook up with other process as socket needs timed wait
+        speech_synthesizer.__name__: Process(target=speech_synthesizer),
+        telegram_api.__name__: Process(target=telegram_api),
+        fast_api.__name__: Process(target=fast_api),  # Does not support run-time keywords update from yaml file
+        automator.__name__: Process(target=automator),
+        background_tasks.__name__: Process(target=background_tasks),
+        tunneling.__name__: Process(target=tunneling),
+        wifi_connector.__name__: Process(target=wifi_connector)  # Run individually as socket needs timed wait
     }
     processes = {func_name: process_dict[func_name]} if func_name else process_dict
     for func, process in processes.items():
         process.start()
         logger.info(f"Started function: {func} with PID: {process.pid}")
-    if func_name:  # Assumes a processes mapping file exists already, since flag passed during process specific restart
-        with open(models.fileio.processes) as file:
-            dump = yaml.load(stream=file, Loader=yaml.FullLoader)
-        dump[func_name] = processes[func_name].pid
-    else:
-        dump = {k: v.pid for k, v in processes.items()}
-        dump['jarvis'] = models.settings.pid
-    logger.debug(f"Processes data: {dump}")
-    with open(models.fileio.processes, 'w') as file:
-        yaml.dump(stream=file, data=dump, indent=4)
+    create_process_mapping(processes=processes, func_name=func_name)
     return processes[func_name] if func_name else processes
 
 

@@ -12,8 +12,8 @@ Welcome to Jarvis's documentation!
 
    README
 
-----------Preflight Tests----------
-===================================
+--------Preflight Tests--------
+===============================
 Camera
 ======
 .. automodule:: modules.camera.camera
@@ -619,7 +619,11 @@ Config
    :members:
    :exclude-members:
 
-.. autoclass:: modules.logger.config.multiprocessing_logger
+.. autoclass:: modules.logger.config.AddProcessName(logging.Filter)
+   :members:
+   :exclude-members:
+
+.. automodule:: modules.logger.config.multiprocessing_logger
    :members:
    :exclude-members:
 
