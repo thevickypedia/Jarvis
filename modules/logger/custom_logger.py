@@ -25,10 +25,8 @@ if not os.path.isdir(os.path.join('logs', 'api')) and not models.settings.limite
 elif not os.path.isdir('logs'):
     os.mkdir('logs')  # Creates only logs dir if limited mode is enabled
 
-DEFAULT_LOG_FORMAT = logging.Formatter(
-    datefmt='%b-%d-%Y %I:%M:%S %p',
-    fmt='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
-)
+DEFAULT_LOG_FORM = '%(asctime)s - %(levelname)s - [%(processName)s:%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
+DEFAULT_FORMATTER = logging.Formatter(datefmt='%b-%d-%Y %I:%M:%S %p', fmt=DEFAULT_LOG_FORM)
 
 
 def log_file(filename: str) -> str:
@@ -50,7 +48,7 @@ def custom_handler(filename: str = None, log_format: logging.Formatter = None) -
     """
     handler = logging.FileHandler(filename=log_file(filename=filename or os.path.join('logs', 'jarvis_%d-%m-%Y.log')),
                                   mode='a')
-    handler.setFormatter(fmt=log_format or DEFAULT_LOG_FORMAT)
+    handler.setFormatter(fmt=log_format or DEFAULT_FORMATTER)
     return handler
 
 

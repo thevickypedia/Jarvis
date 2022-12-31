@@ -6,7 +6,6 @@
 """
 
 import os
-import pathlib
 import subprocess
 import traceback
 from typing import NoReturn
@@ -16,6 +15,7 @@ import requests
 
 from executors.port_handler import is_port_in_use, kill_port_pid
 from modules.exceptions import EgressErrors
+from modules.logger import config
 from modules.logger.custom_logger import logger
 from modules.models import models
 
@@ -64,10 +64,10 @@ def speech_synthesizer() -> NoReturn:
         - Initiates container using traditional commandline for Linux.
         - Stores the container ID in a .cid file, to later stop and remove the container.
     """
+    config.multiprocessing_logger(filename=models.fileio.speech_synthesis_log)
+    logger.addFilter(filter=config.AddProcessName(process_name=speech_synthesizer.__name__))
     if check_existing():
         return
-    if not os.path.isfile(models.fileio.speech_synthesis_log):
-        pathlib.Path(models.fileio.speech_synthesis_log).touch()
 
     log_file = open(file=models.fileio.speech_synthesis_log, mode="a", buffering=1)  # 1 line buffer on file
     os.fsync(log_file.fileno())  # Tell os module to write the buffer of the file

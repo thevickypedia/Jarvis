@@ -35,21 +35,21 @@ def no_alsa_err() -> Iterable:
     """Wrapper to suppress ALSA error messages when ``PyAudio`` module is called.
 
     Notes:
-        This happens specifically for Linux based operating systems.
-        There are usually multiple sound APIs to choose from but not all of them might be configured correctly.
-        PyAudio goes through "ALSA", "PulseAudio" and "Jack" looking for some audio hardware and that triggers warnings.
-        None of the options below seemed to work in all given conditions, so the approach taken was to hide them.
+        - This happens specifically for Linux based operating systems.
+        - There are usually multiple sound APIs to choose from but not all of them might be configured correctly.
+        - PyAudio goes through "ALSA", "PulseAudio" and "Jack" looking for audio hardware and that triggers warnings.
+        - None of the options below seemed to work in all given conditions, so the approach taken was to hide them.
 
     Options:
-        Comment off the ALSA devices where the error is triggered.
-        Set energy threshold to the output from ``python -m speech_recognition``
-        Setting dynamic energy threshold to ``True``
+        - Comment off the ALSA devices where the error is triggered.
+        - Set energy threshold to the output from ``python -m speech_recognition``
+        - Setting dynamic energy threshold to ``True``
 
     References:
-        https://github.com/Uberi/speech_recognition/issues/100
-        https://github.com/Uberi/speech_recognition/issues/182
-        https://github.com/Uberi/speech_recognition/issues/191
-        https://forums.raspberrypi.com/viewtopic.php?t=136974
+        - https://github.com/Uberi/speech_recognition/issues/100
+        - https://github.com/Uberi/speech_recognition/issues/182
+        - https://github.com/Uberi/speech_recognition/issues/191
+        - https://forums.raspberrypi.com/viewtopic.php?t=136974
     """
     sound = ctypes.cdll.LoadLibrary('libasound.so')
     sound.snd_lib_error_set_handler(c_error_handler)

@@ -28,6 +28,7 @@ from modules.models import models
 api_config = config.APIConfig()
 config.multiprocessing_logger(filename=api_config.DEFAULT_LOG_FILENAME,
                               log_format=logging.Formatter(api_config.DEFAULT_LOG_FORMAT))
+logger.addFilter(filter=config.AddProcessName(process_name='fast_api'))  # Hard code process name
 stock_db = database.Database(database=models.fileio.stock_db)
 
 

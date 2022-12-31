@@ -201,7 +201,7 @@ def begin() -> NoReturn:
         # Write processes mapping file before calling start_processes with func_name flag,
         # as passing the flag will look for the file's presence
         with open(models.fileio.processes, 'w') as file:
-            yaml.dump(stream=file, data={"jarvis": models.settings.pid})
+            yaml.dump(stream=file, data={"jarvis": [models.settings.pid, ["Main Process"]]})
         if models.settings.os != "Darwin":
             shared.processes = start_processes(func_name="speech_synthesizer")
     else:

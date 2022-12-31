@@ -69,7 +69,7 @@
 </div>
 </section>
 <section id="preflight-tests">
-<h1>———-Preflight Tests———-<a class="headerlink" href="#preflight-tests" title="Permalink to this heading">¶</a></h1>
+<h1>——–Preflight Tests——–<a class="headerlink" href="#preflight-tests" title="Permalink to this heading">¶</a></h1>
 </section>
 <section id="module-modules.camera.camera">
 <span id="camera"></span><h1>Camera<a class="headerlink" href="#module-modules.camera.camera" title="Permalink to this heading">¶</a></h1>
@@ -3200,6 +3200,38 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="executors.processor.create_process_mapping">
+<span class="sig-prename descclassname"><span class="pre">executors.processor.</span></span><span class="sig-name descname"><span class="pre">create_process_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">processes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Process</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.processor.create_process_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates or updates the processes mapping file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>processes</strong> – Dictionary of process names and the process.</p></li>
+<li><p><strong>func_name</strong> – Function name of each process.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>This is a special function, that uses doc strings to create a python dict.</p></li>
+</ul>
+</div>
+<dl class="simple">
+<dt>Handles:</dt><dd><ul class="simple">
+<li><p>speech_synthesizer: Speech Synthesis</p></li>
+<li><p>telegram_api: Telegram Bot</p></li>
+<li><p>fast_api: Offline communicator, Robinhood report gatherer, Jarvis UI, Stock monitor, Surveillance</p></li>
+<li><p>automator: Home automation, Alarms and Reminders, Timed sync for Meetings and Events</p></li>
+<li><p>background_tasks: Cron jobs, Custom background tasks</p></li>
+<li><p>tunneling: Reverse Proxy</p></li>
+<li><p>wifi_connector: Wi-Fi Re-connector</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="executors.processor.start_processes">
 <span class="sig-prename descclassname"><span class="pre">executors.processor.</span></span><span class="sig-name descname"><span class="pre">start_processes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Process</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Process</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.processor.start_processes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates multiple background processes to achieve parallelization.</p>
@@ -3207,26 +3239,25 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>func_name</strong> – Name of the function that has to be started.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a process object if a function name is passed, otherwise a mapping of function name and process objects.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Union[Process, Dict[str, Process]]</p>
+</dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
+<li><p>speech_synthesizer: Initiates larynx docker image for speech synthesis.</p></li>
 <li><p>telegram_api: Initiates message polling for Telegram bot to execute offline commands.</p></li>
 <li><p>fast_api: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.</p></li>
 <li><p>automator: Initiates automator that executes timed tasks, store calendar and meetings information in database.</p></li>
+<li><p>background_tasks: Initiates internal background tasks and runs cron jobs.</p></li>
 <li><p>tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
-<li><p>speech_synthesizer: Initiates larynx docker image for speech synthesis.</p></li>
 <li><p>wifi_connector: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.</p></li>
 </ul>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Returns a process object if a function name is passed, otherwise a mapping of function name and process objects.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Union[Process, Dict[str, Process]]</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -5642,21 +5673,27 @@ Pass 155 for LO and 285 for HI.</p>
 <span class="sig-prename descclassname"><span class="pre">modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">no_alsa_err</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span></span></span><a class="headerlink" href="#modules.exceptions.no_alsa_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper to suppress ALSA error messages when <code class="docutils literal notranslate"><span class="pre">PyAudio</span></code> module is called.</p>
 <p class="rubric">Notes</p>
-<p>This happens specifically for Linux based operating systems.
-There are usually multiple sound APIs to choose from but not all of them might be configured correctly.
-PyAudio goes through “ALSA”, “PulseAudio” and “Jack” looking for some audio hardware and that triggers warnings.
-None of the options below seemed to work in all given conditions, so the approach taken was to hide them.</p>
+<ul class="simple">
+<li><p>This happens specifically for Linux based operating systems.</p></li>
+<li><p>There are usually multiple sound APIs to choose from but not all of them might be configured correctly.</p></li>
+<li><p>PyAudio goes through “ALSA”, “PulseAudio” and “Jack” looking for audio hardware and that triggers warnings.</p></li>
+<li><p>None of the options below seemed to work in all given conditions, so the approach taken was to hide them.</p></li>
+</ul>
 <dl class="simple">
-<dt>Options:</dt><dd><p>Comment off the ALSA devices where the error is triggered.
-Set energy threshold to the output from <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">speech_recognition</span></code>
-Setting dynamic energy threshold to <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+<dt>Options:</dt><dd><ul class="simple">
+<li><p>Comment off the ALSA devices where the error is triggered.</p></li>
+<li><p>Set energy threshold to the output from <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">speech_recognition</span></code></p></li>
+<li><p>Setting dynamic energy threshold to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
 </dd>
 </dl>
 <p class="rubric">References</p>
-<p><a class="reference external" href="https://github.com/Uberi/speech_recognition/issues/100">https://github.com/Uberi/speech_recognition/issues/100</a>
-<a class="reference external" href="https://github.com/Uberi/speech_recognition/issues/182">https://github.com/Uberi/speech_recognition/issues/182</a>
-<a class="reference external" href="https://github.com/Uberi/speech_recognition/issues/191">https://github.com/Uberi/speech_recognition/issues/191</a>
-<a class="reference external" href="https://forums.raspberrypi.com/viewtopic.php?t=136974">https://forums.raspberrypi.com/viewtopic.php?t=136974</a></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/Uberi/speech_recognition/issues/100">https://github.com/Uberi/speech_recognition/issues/100</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Uberi/speech_recognition/issues/182">https://github.com/Uberi/speech_recognition/issues/182</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Uberi/speech_recognition/issues/191">https://github.com/Uberi/speech_recognition/issues/191</a></p></li>
+<li><p><a class="reference external" href="https://forums.raspberrypi.com/viewtopic.php?t=136974">https://forums.raspberrypi.com/viewtopic.php?t=136974</a></p></li>
+</ul>
 </dd></dl>
 
 <dl class="py exception">
@@ -6136,9 +6173,27 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="modules.logger.config.multiprocessing_logger">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.logger.config.</span></span><span class="sig-name descname"><span class="pre">multiprocessing_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Formatter</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.logger.config.multiprocessing_logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove existing handlers and adds a new handler when a subprocess kicks in.</p>
+<dt class="sig sig-object py" id="modules.logger.config.AddProcessName">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.logger.config.</span></span><span class="sig-name descname"><span class="pre">AddProcessName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logging.Filter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.logger.config.AddProcessName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper that overrides <code class="docutils literal notranslate"><span class="pre">logging.Filter</span></code> to add <code class="docutils literal notranslate"><span class="pre">processName</span></code> to the existing log format.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AddProcessName</span>
+</pre></div>
+</div>
+<p>Instantiates super class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>process_name</strong> – Takes name of the process to be added as argument.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.logger.config.AddProcessName.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.logger.config.AddProcessName.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overrides built-in.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-modules.logger.config.multiprocessing_logger"></span><p>Remove existing handlers and adds a new handler when a subprocess kicks in.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -6147,8 +6202,6 @@ Whites can have a value of None.</p>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
 </section>
 <section id="module-modules.dictionary.dictionary">
 <span id="meanings"></span><h1>Meanings<a class="headerlink" href="#module-modules.dictionary.dictionary" title="Permalink to this heading">¶</a></h1>
@@ -8378,7 +8431,7 @@ mac address given as a parameter.</p>
     <h3><a href="#">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Welcome to Jarvis’s documentation!</a></li>
-<li><a class="reference internal" href="#preflight-tests">———-Preflight Tests———-</a></li>
+<li><a class="reference internal" href="#preflight-tests">——–Preflight Tests——–</a></li>
 <li><a class="reference internal" href="#module-modules.camera.camera">Camera</a></li>
 <li><a class="reference internal" href="#module-modules.peripherals">Audio Devices</a></li>
 <li><a class="reference internal" href="#module-modules.speaker.speak">Text To Speech</a></li>

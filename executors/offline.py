@@ -36,7 +36,7 @@ db = database.Database(database=models.fileio.base_db)
 def background_tasks() -> NoReturn:
     """Initiates background tasks as per the set time."""
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
-
+    logger.addFilter(filter=config.AddProcessName(process_name=background_tasks.__name__))
     tasks: List[BackgroundTask] = list(validate_background_tasks())
     if not tasks and not models.env.crontab:
         logger.info("No tasks to run in the background.")
@@ -77,6 +77,7 @@ def background_tasks() -> NoReturn:
             break
 
         dry_run = False
+        time.sleep(1)  # Reduces CPU utilization
 
 
 def validate_background_tasks() -> Iterable[BackgroundTask]:
@@ -111,6 +112,7 @@ def automator() -> NoReturn:
         - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't repeat execution within a minute.
     """
     config.multiprocessing_logger(filename=os.path.join('logs', 'automation_%d-%m-%Y.log'))
+    logger.addFilter(filter=config.AddProcessName(process_name=automator.__name__))
     offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
     start_events = start_meetings = time.time()
     if models.settings.os == "Darwin":
@@ -179,6 +181,7 @@ def automator() -> NoReturn:
         keywords_handler.rewrite_keywords()
 
         dry_run = False
+        time.sleep(1)  # Reduces CPU utilization
 
 
 def get_tunnel() -> Union[HttpUrl, NoReturn]:
@@ -211,6 +214,7 @@ def tunneling() -> NoReturn:
         - ``forever_ngrok.py`` is a simple script that triggers ngrok connection in the given offline port.
         - The connection is tunneled through a public facing URL used to make ``POST`` requests to Jarvis API.
     """
+    # processName filter is not added since process runs on a single function that is covered by funcName
     config.multiprocessing_logger(filename=os.path.join('logs', 'tunnel_%d-%m-%Y.log'))
     if models.settings.os != "Darwin":
         return

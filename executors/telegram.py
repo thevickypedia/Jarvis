@@ -25,6 +25,7 @@ def telegram_api() -> NoReturn:
         - ConnectionError: Initiates after 10, 20 or 30 seconds. Depends on retry count. Shuts off after 3 attempts.
     """
     config.multiprocessing_logger(filename=os.path.join('logs', 'telegram_%d-%m-%Y.log'))
+    logger.addFilter(filter=config.AddProcessName(process_name=telegram_api.__name__))
     if not models.env.bot_token:
         logger.info("Bot token is required to start the Telegram Bot")
         return

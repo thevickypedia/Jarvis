@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+6.8.5 (12/31/2022)
+------------------
+- Add custom `processName` to log format
+- Override logging filter to add process name
+- Create process mapping file along with the components handled
+- Use timed wait to optimize CPU utilization on long-running processes
+
 6.8.4 (12/31/2022)
 ------------------
 - Remove overlapping `Thread` for background processes

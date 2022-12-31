@@ -64,6 +64,7 @@ LOGGING = config.APIConfig()
 dictConfig(config=LOGGING.LOG_CONFIG)
 logging.getLogger("uvicorn.access").propagate = False  # Disables access logger in default logger to log independently
 logger = logging.getLogger('uvicorn.default')
+logger.addFilter(filter=config.AddProcessName(process_name='fast_api'))  # Hard code process name
 
 # Initiate api
 app = FastAPI(
@@ -113,9 +114,6 @@ def run_robinhood() -> NoReturn:
 @app.on_event(event_type='startup')
 async def start_robinhood() -> Any:
     """Initiates robinhood gatherer in a process and adds a cron schedule if not present already."""
-    from modules.logger.custom_logger import logger
-    config.multiprocessing_logger(filename=LOGGING.DEFAULT_LOG_FILENAME,
-                                  log_format=logging.Formatter(fmt=LOGGING.DEFAULT_LOG_FORMAT))
     await enable_cors()
     squire.nasdaq()
     logger.info(f'Hosting at http://{models.env.offline_host}:{models.env.offline_port}')
@@ -255,8 +253,8 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
     See Also:
         - Keeps waiting for the record ``response`` in the database table ``offline``
     """
-    logger.info(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
-                f"{request.headers.get('user-agent')}")
+    logger.debug(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
+                 f"{request.headers.get('user-agent')}")
     if not (command := input_data.command.strip()):
         raise APIResponse(status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.__dict__['phrase'])
 
@@ -350,8 +348,8 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
         - This API endpoint is simply the backend for stock price monitoring.
         - This function validates the user information and stores it to a database.
     """
-    logger.info(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
-                f"{request.headers.get('user-agent')}")
+    logger.debug(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
+                 f"{request.headers.get('user-agent')}")
 
     input_data.request = input_data.request.upper()
     if input_data.request not in ("GET", "PUT", "DELETE"):
@@ -487,7 +485,6 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
             logger.error(mail_stat.json())
             raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=mail_stat.body)
 
-
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
                                               models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
@@ -517,8 +514,8 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
             - The UUID is deleted from the object as soon as the argument is checked for the first time.
             - Page refresh is useless because the value in memory is cleared as soon as it is authed once.
         """
-        logger.info(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
-                    f"{request.headers.get('user-agent')}")
+        logger.debug(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
+                     f"{request.headers.get('user-agent')}")
         if not token:
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
                               detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
@@ -645,8 +642,8 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
             StreamingResponse:
             StreamingResponse with a collective of each frame.
         """
-        logger.info(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
-                    f"{request.headers.get('user-agent')}")
+        logger.debug(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
+                     f"{request.headers.get('user-agent')}")
         if not token:
             logger.warning('/video-feed was accessed directly.')
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
