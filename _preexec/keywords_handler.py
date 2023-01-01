@@ -1,5 +1,5 @@
-import ast
 import os
+import warnings
 from typing import NoReturn
 
 import yaml
@@ -10,8 +10,8 @@ from modules.conditions import keywords, keywords_base
 if not os.path.isdir('fileio'):
     os.makedirs(name='fileio')
 
-keywords_key = [__keyword for __keyword in dir(keywords_base) if not __keyword.startswith('__')]
-keywords_src = os.path.join('fileio', 'keywords.yaml')
+keywords_src = keywords_base.keyword_mapping()
+keywords_dst = os.path.join('fileio', 'keywords.yaml')
 
 
 class Dict2Class(object):
@@ -29,27 +29,36 @@ class Dict2Class(object):
 
 def rewrite_keywords() -> NoReturn:
     """Loads keywords.yaml file if available, else loads the base keywords module as an object."""
-    if os.path.isfile(keywords_src):
-        with open(keywords_src) as file:
-            data = yaml.load(stream=file, Loader=yaml.FullLoader)
-        if list(data.keys()) == keywords_key and list(data.values()) and all(list(data.values())):
+    if os.path.isfile(keywords_dst):
+        warn = True
+        with open(keywords_dst) as file:
+            try:
+                data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+            except yaml.YAMLError as error:
+                warn = False
+                warnings.warn(message=str(error))
+                data = {}
+
+        if not data:  # Either an error occurred when reading or a manual deletion
+            if warn:
+                warnings.warn(
+                    f"\nSomething went wrong. {keywords_dst!r} appears to be empty."
+                    f"\nRe-sourcing {keywords_dst!r} from base."
+                )
+        elif sorted(list(data.keys())) == sorted(list(keywords_src.keys())) and data.values() and all(data.values()):
             keywords.keywords = Dict2Class(data)
             return
+        else:  # Mismatch in keys
+            warnings.warn(
+                "\nData mismatch between base keywords and custom keyword mapping."
+                "\nPlease note: This mapping file is only to change the value for keywords, not the key(s) itself."
+                f"\nRe-sourcing {keywords_dst!r} from base."
+            )
 
-    with open(keywords_base.__file__) as file:
-        data = file.read().split('\n\n')
+    with open(keywords_dst, 'w') as file:
+        yaml.dump(stream=file, data=keywords_src, indent=4)
 
-    dictionary = {}
-    for d in data:
-        if '=' not in d:
-            continue
-        var, lis = d.split(' = ')
-        dictionary[var] = ast.literal_eval(lis)
-
-    with open(keywords_src, 'w') as file:
-        yaml.dump(stream=file, data=dictionary, indent=4)
-
-    keywords.keywords = Dict2Class(dictionary)
+    keywords.keywords = Dict2Class(keywords_src)
 
 
 rewrite_keywords()

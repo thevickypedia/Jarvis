@@ -15,15 +15,10 @@ import requests
 import yaml
 from playsound import playsound
 
-from modules.conditions import conversation, keywords
 from modules.exceptions import EgressErrors
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import shared
-
-KEYWORDS = [__keyword for __keyword in dir(keywords) if not __keyword.startswith('__')]
-CONVERSATION = [__conversation for __conversation in dir(conversation) if not __conversation.startswith('__')]
-FUNCTIONS_TO_TRACK = KEYWORDS + CONVERSATION
 
 
 def speech_synthesizer(text: str,
@@ -85,7 +80,9 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
         run: Takes a boolean flag to choose whether to run the ``audio_driver.say`` loop.
         block: Takes a boolean flag to wait other tasks while speaking. [Applies only for larynx running on docker]
     """
-    caller = sys._getframe(1).f_code.co_name  # noqa
+    caller = sys._getframe(1).f_code.co_name  # noqa: PyProtectedMember,PyUnresolvedReferences
+    if caller != 'conditions':  # function where all the magic happens
+        Thread(target=frequently_used, kwargs={"function_name": caller}).start()
     if text:
         text = text.replace('\n', '\t').strip()
         shared.text_spoken = text
@@ -104,7 +101,6 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
     if run and not shared.called_by_offline:
         logger.info(f'Speaker called by: {caller!r}')
         models.audio_driver.runAndWait()
-    Thread(target=frequently_used, kwargs={"function_name": caller}).start() if caller in FUNCTIONS_TO_TRACK else None
 
 
 def frequently_used(function_name: str) -> NoReturn:
@@ -132,3 +128,4 @@ def frequently_used(function_name: str) -> NoReturn:
     with open(models.fileio.frequent, 'w') as file:
         yaml.dump(data={k: v for k, v in sorted(data.items(), key=lambda x: x[1], reverse=True)},
                   stream=file, sort_keys=False)
+        file.flush()  # Write everything in buffer to file right away

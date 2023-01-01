@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+6.8.8 (01/01/2023)
+------------------
+- `Bug fixes` and `Remove redundancies`
+- Custom keyword mapping being overwritten
+- Writing frequently used functions in yaml file
+- Weather breaking when phrase is available but not place
+- Remove redundant regex when getting capitalized
+
 6.8.7 (12/31/2022)
 ------------------
 - Add an api endpoint to get voices available for speech synthesis

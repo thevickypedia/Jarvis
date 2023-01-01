@@ -304,13 +304,11 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
         phrase: Takes the phrase spoken as an argument.
         no_repeat: A placeholder flag switched during ``recursion`` so that, ``Jarvis`` doesn't repeat himself.
     """
-    place = support.get_capitalized(phrase=phrase)
-    place = place.replace("I ", "").strip() if place else None
+    place = support.get_capitalized(phrase=phrase, ignore=("I ",))
     if not place:
         speaker.speak(text="You might want to give a location.", run=True)
         if converted := listener.listen():
-            place = support.get_capitalized(phrase=converted)
-            place = place.replace("I ", "").strip()
+            place = support.get_capitalized(phrase=converted, ignore=("I ",))
             if not place:
                 if no_repeat:
                     return
