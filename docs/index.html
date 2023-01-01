@@ -477,12 +477,16 @@
 <dd><p>Process request to convert text to speech if docker container is running.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>- input_data</strong> – Takes the following arguments as <code class="docutils literal notranslate"><span class="pre">GetText</span></code> class instead of a QueryString.</p>
-<ul class="simple">
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>- input_data</strong> – Takes the following arguments as <code class="docutils literal notranslate"><span class="pre">GetText</span></code> class instead of a QueryString.</p></li>
+<li><p><strong>- raise_for_status</strong> – Takes a boolean flag to determine whether the result should be raised as an API response.</p>
+<ul>
 <li><p>text: Text to be processed with speech synthesis.</p></li>
 <li><p>timeout: Timeout for speech-synthesis API call.</p></li>
 <li><p>quality: Quality of audio conversion.</p></li>
 <li><p>voice: Voice model ot be used.</p></li>
+</ul>
+</li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -519,7 +523,7 @@
 <li><p><strong>- input_data</strong> – Takes the following arguments as <code class="docutils literal notranslate"><span class="pre">OfflineCommunicatorModal</span></code> class instead of a QueryString.</p>
 <ul>
 <li><p>command: The task which Jarvis has to do.</p></li>
-<li><p>native_audio: Whether the response should be as an audio file with the server’s voice.</p></li>
+<li><p>native_audio: Whether the response should be as an audio file with the server’s built-in voice.</p></li>
 <li><p>speech_timeout: Timeout to process speech-synthesis.</p></li>
 </ul>
 </li>

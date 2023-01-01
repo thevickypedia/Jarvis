@@ -184,6 +184,7 @@ async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: b
 
     Args:
         - input_data: Takes the following arguments as ``GetText`` class instead of a QueryString.
+        - raise_for_status: Takes a boolean flag to determine whether the result should be raised as an API response.
 
             - text: Text to be processed with speech synthesis.
             - timeout: Timeout for speech-synthesis API call.
@@ -241,7 +242,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         - input_data: Takes the following arguments as ``OfflineCommunicatorModal`` class instead of a QueryString.
 
             - command: The task which Jarvis has to do.
-            - native_audio: Whether the response should be as an audio file with the server's voice.
+            - native_audio: Whether the response should be as an audio file with the server's built-in voice.
             - speech_timeout: Timeout to process speech-synthesis.
 
     Raises:
@@ -320,7 +321,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
     if input_data.speech_timeout:
         logger.info(f"Storing response as {models.fileio.speech_synthesis_wav}")
         if binary := await speech_synthesis(input_data=SpeechSynthesisModal(
-                text=response, timeout=input_data.speech_timeout, quality="low"
+                text=response, timeout=input_data.speech_timeout, quality="low"  # low quality to speed up response
         ), raise_for_status=False):
             return binary
     raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)

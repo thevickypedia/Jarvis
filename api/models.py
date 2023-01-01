@@ -2,6 +2,8 @@ from typing import Any, Optional, Union
 
 from pydantic import BaseModel, EmailStr
 
+from modules.models import models
+
 
 class OfflineCommunicatorModal(BaseModel):
     """BaseModel that handles input data for the API which is treated as members for the class ``OfflineCommunicatorModal``.
@@ -46,5 +48,5 @@ class SpeechSynthesisModal(BaseModel):
 
     text: str
     timeout: Optional[Union[int, float]] = None
-    quality: Optional[str] = "high"
-    voice: Optional[str] = "en-us_northern_english_male-glow_tts"
+    quality: Optional[str] = models.env.speech_synthesis_quality
+    voice: Optional[str] = models.env.speech_synthesis_voice
