@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+6.8.7 (12/31/2022)
+------------------
+- Add an api endpoint to get voices available for speech synthesis
+- Make API docs page look neater
+
 6.8.6 (12/31/2022)
 ------------------
 - Set defaults on `SpeechSynthesisModal` as per env vars
