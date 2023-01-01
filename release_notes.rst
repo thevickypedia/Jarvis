@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+6.8.6 (12/31/2022)
+------------------
+- Set defaults on `SpeechSynthesisModal` as per env vars
+
 6.8.5 (12/31/2022)
 ------------------
 - Add custom `processName` to log format
