@@ -10,6 +10,7 @@ import time
 import traceback
 from datetime import datetime
 from http import HTTPStatus
+from json import JSONDecodeError
 from logging.config import dictConfig
 from multiprocessing import Process, Queue
 from threading import Thread
@@ -18,6 +19,7 @@ from typing import Any, Dict, List, NoReturn, Union
 import jinja2
 import jwt
 import pandas
+import requests
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import (FileResponse, HTMLResponse, RedirectResponse,
@@ -41,7 +43,7 @@ from executors.word_match import word_match
 from modules.audio import speaker, tts_stt
 from modules.conditions import conversation, keywords
 from modules.database import database
-from modules.exceptions import APIResponse, CameraError
+from modules.exceptions import APIResponse, CameraError, EgressErrors
 from modules.logger import config
 from modules.models import models
 from modules.offline import compatibles
@@ -126,6 +128,7 @@ async def redirect_index() -> str:
     """Redirect to docs in ``read-only`` mode.
 
     Returns:
+
         str:
         Redirects the root endpoint ``/`` url to read-only doc location.
     """
@@ -137,6 +140,7 @@ async def get_favicon() -> FileResponse:
     """Gets the favicon.ico and adds to the API endpoint.
 
     Returns:
+
         FileResponse:
         Uses FileResponse to send the favicon.ico to support the robinhood script's robinhood.html.
     """
@@ -149,6 +153,7 @@ async def _keywords() -> Dict[str, List[str]]:
     """Converts the keywords.py file into a dictionary of key-value pairs.
 
     Returns:
+
         dict:
         Key-value pairs of the keywords file.
     """
@@ -160,6 +165,7 @@ async def _conversations() -> Dict[str, List[str]]:
     """Converts the conversation.py file into a dictionary of key-value pairs.
 
     Returns:
+
         dict:
         Key-value pairs of the conversation file.
     """
@@ -171,10 +177,42 @@ async def _offline_compatible() -> Dict[str, List[str]]:
     """Returns the list of api compatible words.
 
     Returns:
+
         dict:
         Returns the list of api-compatible words as a dictionary.
     """
     return {"compatible": compatibles.offline_compatible()}
+
+
+@app.get(path='/speech-synthesis-voices', dependencies=OFFLINE_PROTECTOR)
+async def speech_synthesis_voices() -> NoReturn:
+    """Get all available voices in speech synthesis.
+
+    Raises:
+
+        - 200: If call to speech synthesis endpoint was successful.
+        - 500: If call to speech synthesis fails.
+    """
+    try:
+        response = requests.get(
+            url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/voices", timeout=3
+        )
+    except EgressErrors as error:
+        logger.error(error)
+        raise APIResponse(status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real, detail=str(error))
+    if response.ok:
+        try:
+            json_response = response.json()
+        except JSONDecodeError as error:
+            logger.error(error)
+            raise APIResponse(status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real, detail=str(error))
+        available_voices = [value.get('id').replace('/', '_') for key, value in json_response.items()]
+        logger.info(f"Available voices: {len(available_voices)}")
+        logger.debug(available_voices)
+        raise APIResponse(status_code=HTTPStatus.OK.real, detail=available_voices)
+    else:
+        logger.error(response.content)
+        raise APIResponse(status_code=response.status_code, detail=response.content)
 
 
 @app.post(path='/speech-synthesis', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
@@ -183,6 +221,7 @@ async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: b
     """Process request to convert text to speech if docker container is running.
 
     Args:
+
         - input_data: Takes the following arguments as ``GetText`` class instead of a QueryString.
         - raise_for_status: Takes a boolean flag to determine whether the result should be raised as an API response.
 
@@ -192,12 +231,14 @@ async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: b
             - voice: Voice model ot be used.
 
     Raises:
+
         APIResponse:
         - 404: If audio file was not found after successful response.
         - 500: If the connection to speech synthesizer fails.
         - 204: If speech synthesis file wasn't found.
 
     Returns:
+
         FileResponse:
         Audio file to be downloaded.
     """
@@ -238,6 +279,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
     """Offline Communicator API endpoint for Jarvis.
 
     Args:
+
         - request: Takes the ``Request`` class as an argument.
         - input_data: Takes the following arguments as ``OfflineCommunicatorModal`` class instead of a QueryString.
 
@@ -246,12 +288,14 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
             - speech_timeout: Timeout to process speech-synthesis.
 
     Raises:
+
         APIResponse:
         - 200: A dictionary with the command requested and the response for it from Jarvis.
         - 204: If empty command was received.
         - 422: If the request is not part of offline compatible words.
 
     See Also:
+
         - Keeps waiting for the record ``response`` in the database table ``offline``
     """
     logger.debug(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
@@ -332,6 +376,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
     """Stock monitor api endpoint.
 
     Args:
+
         - request: Takes the ``Request`` class as an argument.
         - input_data: Takes the following arguments as ``OfflineCommunicatorModal`` class instead of a QueryString.
 
@@ -339,6 +384,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
             - email: Email to which the notifications have to be triggered.
 
     Raises:
+
         APIResponse:
         - 422: For any invalid entry made by the user.
         - 409: If current price is lesser than the minimum value or grater than the maximum value.
@@ -346,6 +392,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
         - 502: If price check fails.
 
     See Also:
+
         - This API endpoint is simply the backend for stock price monitoring.
         - This function validates the user information and stores it to a database.
     """
@@ -456,11 +503,13 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
         """Authenticates the request and generates single use token.
 
         Raises:
+
             APIResponse:
             - 200: If initial auth is successful and single use token is successfully sent via email.
             - 503: If failed to send the single use token via email.
 
         See Also:
+
             If basic auth (stored as an env var ``robinhood_endpoint_auth``) succeeds:
 
             - Sends a token for MFA via email.
@@ -489,25 +538,29 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
                                               models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
-    @app.get(path="/investment", response_class=HTMLResponse, include_in_schema=True)
+    @app.get(path="/investment", response_class=HTMLResponse)
     async def robinhood_path(request: Request, token: str = None) -> HTMLResponse:
         """Serves static file.
 
         Args:
+
             - request: Takes the ``Request`` class as an argument.
             - token: Takes custom auth token as an argument.
 
         Raises:
+
             APIResponse:
             - 403: If token is ``null``.
             - 404: If the HTML file is not found.
             - 417: If token doesn't match the auto-generated value.
 
         Returns:
+
             HTMLResponse:
             Renders the html page.
 
         See Also:
+
             - This endpoint is secured behind single use token sent via email as MFA (Multi-Factor Authentication)
             - Initial check is done by the function authenticate_robinhood behind the path "/robinhood-authenticate"
             - Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the ``Robinhood`` object.
@@ -540,14 +593,17 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         """Tests the given camera index, generates a token for the endpoint to authenticate.
 
         Args:
+
             cam: Index number of the chosen camera.
 
         Raises:
+
             APIResponse:
             - 200: If initial auth is successful and single use token is successfully sent via email.
             - 503: If failed to send the single use token via email.
 
         See Also:
+
             If basic auth (stored as an env var ``SURVEILLANCE_ENDPOINT_AUTH``) succeeds:
 
             - Sends a token for MFA via email.
@@ -589,20 +645,24 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         """Serves the monitor page's frontend after updating it with video origin and websocket origins.
 
         Args:
+
             - request: Takes the ``Request`` class as an argument.
             - token: Takes custom auth token as an argument.
 
         Raises:
+
             APIResponse:
             - 307: If token matches the auto-generated value.
             - 401: If token is ``null``.
             - 417: If token doesn't match the auto-generated value.
 
         Returns:
+
             HTMLResponse:
             Renders the html page.
 
         See Also:
+
             - This endpoint is secured behind single use token sent via email as MFA (Multi-Factor Authentication)
             - Initial check is done by ``authenticate_surveillance`` behind the path "/surveillance-authenticate"
             - Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the ``Surveillance`` object.
@@ -630,16 +690,19 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         """Authenticates the request, and returns the frames generated as a ``StreamingResponse``.
 
         Raises:
+
             APIResponse:
             - 307: If token matches the auto-generated value.
             - 401: If token is ``null``.
             - 417: If token doesn't match the auto-generated value.
 
         Args:
+
             - request: Takes the ``Request`` class as an argument.
             - token: Token generated in ``/surveillance-authenticate`` endpoint to restrict direct access.
 
         Returns:
+
             StreamingResponse:
             StreamingResponse with a collective of each frame.
         """
@@ -675,14 +738,17 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         """Initiates a websocket connection.
 
         Args:
+
             websocket: WebSocket.
             client_id: Epoch time generated when each user renders the video file.
 
         See Also:
+
             - Websocket checks the frontend and kills the backend process to release the camera if connection is closed.
             - Closing the multiprocessing queue is not required as the backend process will be terminated anyway.
 
         Notes:
+
             - Closing queue before process termination will raise ValueError as the process is still updating the queue.
             - Closing queue after process termination will raise EOFError as the queue will not be available to close.
         """

@@ -18,7 +18,8 @@ from api.scheduler import rh_cron_schedule, sm_cron_schedule
 from modules.camera.camera import Camera
 from modules.crontab.expression import CronExpression
 from modules.database import database
-from modules.exceptions import CameraError, InvalidEnvVars, MissingEnvVars
+from modules.exceptions import (CameraError, EgressErrors, InvalidEnvVars,
+                                MissingEnvVars)
 from modules.models.classes import (Indicators, RecognizerSettings,
                                     audio_driver, env, fileio, settings)
 
@@ -164,7 +165,7 @@ def _global_validations() -> NoReturn:
                     f"{env.speech_synthesis_voice} is not available.\n"
                     f"Available Voices for Speech Synthesis: {', '.join(available_voices).replace('/', '_')}"
                 )
-    except requests.RequestException:
+    except EgressErrors:
         pass
 
 

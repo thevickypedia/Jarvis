@@ -472,6 +472,20 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="api.fast.speech_synthesis_voices">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.speech_synthesis_voices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all available voices in speech synthesis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>- 200</strong> – If call to speech synthesis endpoint was successful.</p></li>
+<li><p><strong>- 500</strong> – If call to speech synthesis fails.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="api.fast.speech_synthesis">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.SpeechSynthesisModal" title="api.models.SpeechSynthesisModal"><span class="pre">SpeechSynthesisModal</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_for_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">FileResponse</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.fast.speech_synthesis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process request to convert text to speech if docker container is running.</p>
