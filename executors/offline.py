@@ -60,11 +60,12 @@ def background_tasks() -> NoReturn:
                     logger.warning(f"Removing {task} from background tasks.")
                     tasks.remove(task)
 
-        if start_cron + 60 <= time.time():  # Condition passes every minute
+        if start_cron + 60 <= time.time() or dry_run:  # Condition passes every minute
             start_cron = time.time()
             for cron in models.env.crontab:
                 job = expression.CronExpression(line=cron)
                 if job.check_trigger():
+                    logger.info(f"Executing cron job: {job.comment}")
                     cron_process = Process(target=crontab_executor, args=(job.comment,))
                     cron_process.start()
                     with db.connection:
@@ -77,7 +78,7 @@ def background_tasks() -> NoReturn:
             break
 
         dry_run = False
-        time.sleep(1)  # Reduces CPU utilization
+        time.sleep(1)  # Reduces CPU utilization as constant fileIO operations spike CPU %
 
 
 def validate_background_tasks() -> Iterable[BackgroundTask]:

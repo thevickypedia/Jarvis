@@ -31,10 +31,8 @@ def weather(phrase: str = None) -> None:
 
     place = None
     if phrase:
-        place = support.get_capitalized(phrase=phrase)
-        week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-        for day in week:
-            place = place.replace(day, '')
+        place = support.get_capitalized(phrase=phrase, ignore=('Sunday', 'Monday', 'Tuesday',
+                                                               'Wednesday', 'Thursday', 'Friday', 'Saturday'))
         phrase = phrase.lower()
     if place:
         sys.stdout.write(f'\rGetting your weather info at {place}')

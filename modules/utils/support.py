@@ -12,7 +12,7 @@ import socket
 import sys
 import time
 from datetime import datetime, timezone
-from typing import Any, List, NoReturn, Union
+from typing import Any, Iterable, List, NoReturn, Union
 
 import dateutil.tz
 import inflect
@@ -93,20 +93,23 @@ def celebrate() -> str:
         return "Birthday"
 
 
-def get_capitalized(phrase: str, dot: bool = True) -> Union[str, None]:
+def get_capitalized(phrase: str, ignore: Iterable = None, dot: bool = True) -> Union[str, None]:
     """Looks for words starting with an upper-case letter.
 
     Args:
         phrase: Takes input string as an argument.
+        ignore: Takes an iterable of upper case strings to be ignored.
         dot: Takes a boolean flag whether to include words separated by (.) dot.
 
     Returns:
         str:
         Returns the upper case words if skimmed.
     """
+    # Set ignore as a tuple with avoid keywords regardless of current state
+    ignore = tuple(ignore or ()) + tuple(keywords.keywords.avoid)
     place = ""
     for word in phrase.split():
-        if word[0].isupper() and word.lower() not in keywords.keywords.avoid:
+        if word[0].isupper() and word.lower() not in map(lambda x: x.lower(), ignore):  # convert iterable to lowercase
             place += word + " "
         elif "." in word and dot:
             place += word + " "
