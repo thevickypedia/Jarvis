@@ -7,6 +7,7 @@ from dateutil.relativedelta import relativedelta
 from executors import controls
 from executors.alarm import kill_alarm, set_alarm
 from executors.automation import automation_handler
+from executors.background_tasks import background_task_handler
 from executors.car import car
 from executors.comm_squire import send_notification
 from executors.communicator import read_gmail
@@ -223,7 +224,10 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
         vpn_server(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.automation):
-        automation_handler(phrase.lower())
+        automation_handler(phrase)
+
+    elif word_match(phrase=phrase, match_list=keywords.background_tasks):
+        background_task_handler(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.sprint):
         sprint_name()

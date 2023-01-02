@@ -14,13 +14,14 @@ from json import JSONDecodeError
 from logging.config import dictConfig
 from multiprocessing import Process, Queue
 from threading import Thread
-from typing import Any, Dict, List, NoReturn, Union
+from typing import Any, Dict, List, NoReturn, Set, Union
 
 import jinja2
 import jwt
 import pandas
 import requests
-from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
+from fastapi import (FastAPI, Request, UploadFile, WebSocket,
+                     WebSocketDisconnect)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import (FileResponse, HTMLResponse, RedirectResponse,
                                StreamingResponse)
@@ -148,7 +149,7 @@ async def get_favicon() -> FileResponse:
         return FileResponse(filename='favicon.ico', path=os.getcwd(), status_code=HTTPStatus.OK.real)
 
 
-@app.post(path='/keywords', dependencies=OFFLINE_PROTECTOR)
+@app.get(path='/keywords', dependencies=OFFLINE_PROTECTOR)
 async def _keywords() -> Dict[str, List[str]]:
     """Converts the keywords.py file into a dictionary of key-value pairs.
 
@@ -160,7 +161,7 @@ async def _keywords() -> Dict[str, List[str]]:
     return {k: v for k, v in keywords.keywords.__dict__.items() if isinstance(v, list)}
 
 
-@app.post(path='/conversation', dependencies=OFFLINE_PROTECTOR)
+@app.get(path='/conversation', dependencies=OFFLINE_PROTECTOR)
 async def _conversations() -> Dict[str, List[str]]:
     """Converts the conversation.py file into a dictionary of key-value pairs.
 
@@ -172,7 +173,62 @@ async def _conversations() -> Dict[str, List[str]]:
     return {k: v for k, v in conversation.__dict__.items() if isinstance(v, list)}
 
 
-@app.post(path='/api-compatible', dependencies=OFFLINE_PROTECTOR)
+@app.get(path='/files', dependencies=OFFLINE_PROTECTOR)
+async def _files() -> Set[str]:
+    """Get all ``YAML`` files from ``fileio`` directory.
+
+    Returns:
+
+        Set:
+        Set of files that can be downloaded or uploaded.
+    """
+    return {f for f in os.listdir(models.fileio.root) if f.endswith('.yaml')}
+
+
+@app.get(path='/get-file', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
+async def _get_file(filename: str) -> FileResponse:
+    """Download a particular ``YAML`` file from ``fileio`` directory.
+
+    Args:
+
+        filename: Name of the file that has to be downloaded.
+
+    Returns:
+
+        FileResponse:
+        Returns a download-able version of the file.
+    """
+    allowed_files = await _files()
+    if filename not in allowed_files:
+        raise APIResponse(status_code=HTTPStatus.NOT_ACCEPTABLE.real,
+                          detail=f"{filename!r} is either unavailable or not allowed.\n"
+                                 f"Downloadable files:{allowed_files}")
+    target_file = os.path.join(models.fileio.root, filename)
+    logger.info(f"Requested file: {filename!r} for download.")
+    return FileResponse(status_code=HTTPStatus.OK.real, path=target_file, media_type="text/yaml", filename=filename)
+
+
+@app.post(path='/put-file', dependencies=OFFLINE_PROTECTOR)
+async def _put_file(file: UploadFile) -> NoReturn:
+    """Upload a particular ``YAML`` file to the ``fileio`` directory.
+
+    Args:
+
+        file: Takes the ``UploadFile`` object as an argument.
+    """
+    allowed_files = await _files()
+    if file.filename not in allowed_files:
+        raise APIResponse(status_code=HTTPStatus.NOT_ACCEPTABLE.real,
+                          detail=f"{file.filename!r} is not allowed for an update.\n"
+                                 f"Upload-able files:{allowed_files}")
+    logger.info(f"Requested file: {file.filename!r} for upload.")
+    content = await file.read()
+    with open(os.path.join(models.fileio.root, file.filename), "wb") as f_stream:
+        f_stream.write(content)
+    raise APIResponse(status_code=HTTPStatus.OK.real, detail=f"{file.filename!r} was uploaded to {models.fileio.root}.")
+
+
+@app.get(path='/api-compatible', dependencies=OFFLINE_PROTECTOR)
 async def _offline_compatible() -> Dict[str, List[str]]:
     """Returns the list of api compatible words.
 
@@ -215,7 +271,7 @@ async def speech_synthesis_voices() -> NoReturn:
         raise APIResponse(status_code=response.status_code, detail=response.content)
 
 
-@app.post(path='/speech-synthesis', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
+@app.get(path='/speech-synthesis', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
 async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: bool = True) -> \
         Union[FileResponse, None]:
     """Process request to convert text to speech if docker container is running.

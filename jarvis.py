@@ -211,9 +211,4 @@ def begin() -> NoReturn:
 
 
 if __name__ == '__main__':
-    # TODO: Convert list to tuples where iterable is not required to be mutable (include type hinting so it is evident)
-    # TODO 1: Convert tasks and recognizer settings to a mapping file instead of env variables
-    #  This is to avoid stopping Jarvis if there's a change needed to be made
-    # TODO 2: Extend this further to making all the mapping files available for upload and download via fastapi
-    #  This is to make the files available remotely
     begin()

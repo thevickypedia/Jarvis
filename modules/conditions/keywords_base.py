@@ -75,6 +75,7 @@ def keyword_mapping() -> Dict[str, List[str]]:
         car=["car", "vehicle", "guard"],
         garage=["garage"],
         automation=["automation"],
+        background_tasks=["background"],
         sprint=["sprint"],
         photo=["picture", "snap", "photo"],
         version=["version"],

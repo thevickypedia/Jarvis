@@ -4,14 +4,17 @@ import traceback
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
-from typing import AnyStr, Iterable, List, NoReturn, Union
+from typing import AnyStr, List, NoReturn, Union
 
 import requests
+from deepdiff import DeepDiff
 from pydantic import HttpUrl
 
 from _preexec import keywords_handler
 from executors.alarm import alarm_executor
 from executors.automation import auto_helper
+from executors.background_tasks import (remove_corrupted,
+                                        validate_background_tasks)
 from executors.conditions import conditions
 from executors.crontab import crontab_executor
 from executors.others import photo
@@ -28,7 +31,7 @@ from modules.meetings import events, icalendar
 from modules.models import models
 from modules.models.classes import BackgroundTask
 from modules.offline import compatibles
-from modules.utils import shared, support, util
+from modules.utils import shared, support
 
 db = database.Database(database=models.fileio.base_db)
 
@@ -38,9 +41,6 @@ def background_tasks() -> NoReturn:
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
     logger.addFilter(filter=config.AddProcessName(process_name=background_tasks.__name__))
     tasks: List[BackgroundTask] = list(validate_background_tasks())
-    if not tasks and not models.env.crontab:
-        logger.info("No tasks to run in the background.")
-        return
 
     start_cron = time.time()
     task_dict = {i: time.time() for i in range(len(tasks))}  # Creates a start time for each task
@@ -58,7 +58,7 @@ def background_tasks() -> NoReturn:
                 except Exception as error:
                     logger.error(error)
                     logger.warning(f"Removing {task} from background tasks.")
-                    tasks.remove(task)
+                    remove_corrupted(task=task)
 
         if start_cron + 60 <= time.time() or dry_run:  # Condition passes every minute
             start_cron = time.time()
@@ -73,28 +73,14 @@ def background_tasks() -> NoReturn:
                         cursor.execute("INSERT or REPLACE INTO children (crontab) VALUES (?);", (cron_process.pid,))
                         db.connection.commit()
 
-        if not tasks and not models.env.crontab:
-            logger.warning("No background tasks to run.")
-            break
-
         dry_run = False
         time.sleep(1)  # Reduces CPU utilization as constant fileIO operations spike CPU %
-
-
-def validate_background_tasks() -> Iterable[BackgroundTask]:
-    """Validates each background task if it is offline compatible.
-
-    Yields:
-        Iterable:
-        BackgroundTask object(s).
-    """
-    logger.info(f"Background tasks: {len(models.env.tasks)}")
-    for task in models.env.tasks:
-        if word_match(phrase=task.task, match_list=compatibles.offline_compatible()):
-            logger.info(f"{task.task!r} will be executed every {util.time_converter(second=task.seconds)}")
-            yield task
-        else:
-            logger.error(f"{task.task!r} is not a part of offline communication compatible request.")
+        new_tasks: List[BackgroundTask] = list(validate_background_tasks(log=False))  # Re-check for tasks
+        if new_tasks != tasks:
+            logger.warning("New task list found! Re-starting background tasks.")
+            logger.debug(DeepDiff(tasks, new_tasks, ignore_order=True))
+            tasks = new_tasks
+            task_dict = {i: time.time() for i in range(len(tasks))}  # Re-create start time for each task
 
 
 def automator() -> NoReturn:
