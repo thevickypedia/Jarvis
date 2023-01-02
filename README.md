@@ -64,7 +64,7 @@
 [![Active Development](https://img.shields.io/badge/Development%20Level-Actively%20Developed-success.svg)](https://github.com/thevickypedia/Jarvis)
 [![Actively Maintained](https://img.shields.io/badge/Maintenance%20Level-Actively%20Maintained-success.svg)](https://github.com/thevickypedia/Jarvis)
 
-[![Maintained](https://img.shields.io/maintenance/yes/2022)](https://api.github.com/repos/thevickypedia/Jarvis)
+[![Maintained](https://img.shields.io/maintenance/yes/2023)](https://api.github.com/repos/thevickypedia/Jarvis)
 [![Maintainer](https://img.shields.io/badge/Maintained%20By-Vignesh%20Sivanandha%20Rao-blue.svg)](https://vigneshrao.com/)
 
 **Reach Out**
@@ -279,22 +279,37 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **SURVEILLANCE_SESSION_TIMEOUT** - Session time out for `/surveillance`. Defaults to 300 seconds.
 - **STOCK_MONITOR_ENDPOINT_AUTH** - Token to add a stock price monitor. (Will soon be made `open-source`)
 
-**Background Tasks**
+</details>
+
+### Background Tasks
 There are two options to run background tasks on Jarvis.
 
-- **TASKS** - Runs Jarvis' internal tasks at certain intervals.
+- Jarvis can run internal tasks (offline communicator compatible) at certain intervals using a `background_tasks.yaml` file stored in `fileio` directory.
     <details>
-    <summary><strong><i>Sample value</i></strong></summary>
+    <summary><strong><i>Setup Instructions</i></strong></summary>
+
+  This is the sample content of `background_tasks.yaml`
 
     ```yaml
-    [
-      {"seconds": 10_800, "task": "remind me to drink water", "ignore_hours": [20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6, 7]},  # Runs every 3 hours ignoring the hours specified
-      {"seconds": 21_600, "task": "turn off all lights"}  # Runs every 6 hours
-    ]
+    - seconds: 1_800
+      task: turn off all lights  # Runs every 30 minutes
+    - seconds: 10_800
+      task: remind me to drink water  # Runs every 3 hours ignoring the hours specified
+      ignore_hours:
+       - 21
+       - 22
+       - 23
+       - 0
+       - 1
+       - 2
+       - 3
+       - 4
+       - 5
+       - 6
     ```
     </details>
 
-- **CRONTAB** - Runs external tasks using cron expressions.
+- **CRONTAB** - Runs external tasks using cron expressions. Needs to be stored as env var.
     <details>
     <summary><strong><i>Sample value</i></strong></summary>
 
@@ -305,8 +320,6 @@ There are two options to run background tasks on Jarvis.
     ]
     ```
     </details>
-
-</details>
 
 ### Contacts
 Jarvis can send on demand notifications using a ``contacts.yaml`` file stored in ``fileio`` directory. Uses [gmail-connector](https://pypi.org/project/gmail-connector/) for SMS and email notifications.

@@ -88,7 +88,7 @@
 <p><strong>Development and Maintenance</strong></p>
 <p><a class="reference external" href="https://github.com/thevickypedia/Jarvis"><img alt="Active Development" src="https://img.shields.io/badge/Development%20Level-Actively%20Developed-success.svg" /></a>
 <a class="reference external" href="https://github.com/thevickypedia/Jarvis"><img alt="Actively Maintained" src="https://img.shields.io/badge/Maintenance%20Level-Actively%20Maintained-success.svg" /></a></p>
-<p><a class="reference external" href="https://api.github.com/repos/thevickypedia/Jarvis"><img alt="Maintained" src="https://img.shields.io/maintenance/yes/2022" /></a>
+<p><a class="reference external" href="https://api.github.com/repos/thevickypedia/Jarvis"><img alt="Maintained" src="https://img.shields.io/maintenance/yes/2023" /></a>
 <a class="reference external" href="https://vigneshrao.com/"><img alt="Maintainer" src="https://img.shields.io/badge/Maintained%20By-Vignesh%20Sivanandha%20Rao-blue.svg" /></a></p>
 <p><strong>Reach Out</strong></p>
 <p><a class="reference external" href="https://vigneshrao.com/contact"><img alt="Ask Me | Anything " src="https://img.shields.io/badge/Ask%20me-Anything-1abc9c.svg" /></a></p>
@@ -337,19 +337,33 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <li><p><strong>SURVEILLANCE_SESSION_TIMEOUT</strong> - Session time out for <code class="docutils literal notranslate"><span class="pre">/surveillance</span></code>. Defaults to 300 seconds.</p></li>
 <li><p><strong>STOCK_MONITOR_ENDPOINT_AUTH</strong> - Token to add a stock price monitor. (Will soon be made <code class="docutils literal notranslate"><span class="pre">open-source</span></code>)</p></li>
 </ul>
-<p><strong>Background Tasks</strong>
-There are two options to run background tasks on Jarvis.</p>
+</details></section>
+<section id="background-tasks">
+<h2>Background Tasks<a class="headerlink" href="#background-tasks" title="Permalink to this heading">¶</a></h2>
+<p>There are two options to run background tasks on Jarvis.</p>
 <ul>
-<li><p><strong>TASKS</strong> - Runs Jarvis’ internal tasks at certain intervals.</p>
+<li><p>Jarvis can run internal tasks (offline communicator compatible) at certain intervals using a <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code> file stored in <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
   <details>
-  <summary><strong><i>Sample value</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">{</span><span class="s">&quot;seconds&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">10_800</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;task&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;remind</span><span class="nv"> </span><span class="s">me</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">drink</span><span class="nv"> </span><span class="s">water&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;ignore_hours&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">20</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">21</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">22</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">23</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">6</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">7</span><span class="p p-Indicator">]},</span><span class="w">  </span><span class="c1"># Runs every 3 hours ignoring the hours specified</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">{</span><span class="s">&quot;seconds&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">21_600</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;task&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;turn</span><span class="nv"> </span><span class="s">off</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">lights&quot;</span><span class="p p-Indicator">}</span><span class="w">  </span><span class="c1"># Runs every 6 hours</span><span class="w"></span>
-<span class="p p-Indicator">]</span><span class="w"></span>
+  <summary><strong><i>Setup Instructions</i></strong></summary><p>This is the sample content of <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1_800</span><span class="w"></span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">turn off all lights</span><span class="w">  </span><span class="c1"># Runs every 30 minutes</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10_800</span><span class="w"></span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">remind me to drink water</span><span class="w">  </span><span class="c1"># Runs every 3 hours ignoring the hours specified</span><span class="w"></span>
+<span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w"></span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">21</span><span class="w"></span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">22</span><span class="w"></span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">23</span><span class="w"></span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w"></span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"></span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"></span>
 </pre></div>
 </div>
   </details></li>
-<li><p><strong>CRONTAB</strong> - Runs external tasks using cron expressions.</p>
+<li><p><strong>CRONTAB</strong> - Runs external tasks using cron expressions. Needs to be stored as env var.</p>
   <details>
   <summary><strong><i>Sample value</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="w"></span>
 <span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1-5/2</span><span class="nv"> </span><span class="s">find</span><span class="nv"> </span><span class="s">/var/log</span><span class="nv"> </span><span class="s">-delete&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
@@ -359,7 +373,7 @@ There are two options to run background tasks on Jarvis.</p>
 </div>
   </details></li>
 </ul>
-</details></section>
+</section>
 <section id="contacts">
 <h2>Contacts<a class="headerlink" href="#contacts" title="Permalink to this heading">¶</a></h2>
 <p>Jarvis can send on demand notifications using a <code class="docutils literal notranslate"><span class="pre">contacts.yaml</span></code> file stored in <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory. Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> for SMS and email notifications.</p>
@@ -511,6 +525,7 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <li><a class="reference internal" href="#env-variables">ENV Variables</a><ul>
 <li><a class="reference internal" href="#peripherals">Peripherals</a></li>
 <li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#background-tasks">Background Tasks</a></li>
 <li><a class="reference internal" href="#contacts">Contacts</a></li>
 <li><a class="reference internal" href="#smart-devices">Smart Devices</a></li>
 <li><a class="reference internal" href="#automation-setup-optional">Automation Setup [Optional]</a></li>

@@ -53,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html#env-variables">ENV Variables</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="README.html#peripherals">Peripherals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#background-tasks">Background Tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#contacts">Contacts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#smart-devices">Smart Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#automation-setup-optional">Automation Setup [Optional]</a></li>
@@ -401,18 +402,6 @@
 </section>
 <section id="module-_preexec.keywords_handler">
 <span id="keywords-classifier"></span><h1>Keywords Classifier<a class="headerlink" href="#module-_preexec.keywords_handler" title="Permalink to this heading">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="preexec.keywords_handler.Dict2Class">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">_preexec.keywords_handler.</span></span><span class="sig-name descname"><span class="pre">Dict2Class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#preexec.keywords_handler.Dict2Class" title="Permalink to this definition">¶</a></dt>
-<dd><p>Turns a dictionary into an object.</p>
-<p>Creates an object and inserts the key value pairs as members of the class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dictionary</strong> – Takes the dictionary to be converted as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="preexec.keywords_handler.rewrite_keywords">
 <span class="sig-prename descclassname"><span class="pre">_preexec.keywords_handler.</span></span><span class="sig-name descname"><span class="pre">rewrite_keywords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#preexec.keywords_handler.rewrite_keywords" title="Permalink to this definition">¶</a></dt>
@@ -1516,7 +1505,7 @@
 <span id="automation"></span><h1>Automation<a class="headerlink" href="#module-executors.automation" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.automation.automation_handler">
-<span class="sig-prename descclassname"><span class="pre">executors.automation.</span></span><span class="sig-name descname"><span class="pre">automation_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.automation.automation_handler" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.automation.</span></span><span class="sig-name descname"><span class="pre">automation_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.automation.automation_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handles automation file resets by renaming it to tmp if requested to disable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1527,7 +1516,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.automation.rewrite_automator">
-<span class="sig-prename descclassname"><span class="pre">executors.automation.</span></span><span class="sig-name descname"><span class="pre">rewrite_automator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">write_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.automation.rewrite_automator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.automation.</span></span><span class="sig-name descname"><span class="pre">rewrite_automator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">write_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.automation.rewrite_automator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rewrites the automation file with the updated dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1549,6 +1538,45 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-executors.background_tasks">
+<span id="background-tasks"></span><h1>Background Tasks<a class="headerlink" href="#module-executors.background_tasks" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.background_tasks.background_task_handler">
+<span class="sig-prename descclassname"><span class="pre">executors.background_tasks.</span></span><span class="sig-name descname"><span class="pre">background_task_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.background_tasks.background_task_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles background tasks file resets by renaming it to tmp if requested to disable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the recognized phrase as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.background_tasks.remove_corrupted">
+<span class="sig-prename descclassname"><span class="pre">executors.background_tasks.</span></span><span class="sig-name descname"><span class="pre">remove_corrupted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.models.classes.BackgroundTask" title="modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.background_tasks.remove_corrupted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a corrupted task from the background tasks feed file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>task</strong> – Takes a background task object as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.background_tasks.validate_background_tasks">
+<span class="sig-prename descclassname"><span class="pre">executors.background_tasks.</span></span><span class="sig-name descname"><span class="pre">validate_background_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.models.classes.BackgroundTask" title="modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.background_tasks.validate_background_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates each background task if it is offline compatible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>log</strong> – Takes a boolean flag to suppress info level logging.</p>
+</dd>
+<dt class="field-even">Yields</dt>
+<dd class="field-even"><p><em>Iterable</em> – BackgroundTask object(s).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2862,17 +2890,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="executors.offline.background_tasks">
 <span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">background_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.offline.background_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates background tasks as per the set time.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.offline.validate_background_tasks">
-<span class="sig-prename descclassname"><span class="pre">executors.offline.</span></span><span class="sig-name descname"><span class="pre">validate_background_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.models.classes.BackgroundTask" title="modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.offline.validate_background_tasks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validates each background task if it is offline compatible.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Yields</dt>
-<dd class="field-odd"><p><em>Iterable</em> – BackgroundTask object(s).</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -5418,11 +5435,6 @@ Pass 155 for LO and 285 for HI.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.tasks">
-<span class="sig-name descname"><span class="pre">tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.models.classes.BackgroundTask" title="modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.tasks" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.crontab">
 <span class="sig-name descname"><span class="pre">crontab</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.crontab" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -5511,6 +5523,16 @@ Pass 155 for LO and 285 for HI.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.FileIO.tmp_automation">
 <span class="sig-name descname"><span class="pre">tmp_automation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.tmp_automation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.FileIO.background_tasks">
+<span class="sig-name descname"><span class="pre">background_tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.background_tasks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.FileIO.tmp_background_tasks">
+<span class="sig-name descname"><span class="pre">tmp_background_tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.tmp_background_tasks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -6876,6 +6898,18 @@ Whites can have a value of None.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Util</span>
 </pre></div>
 </div>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.utils.util.Dict2Class">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">Dict2Class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.utils.util.Dict2Class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns a dictionary into an object.</p>
+<p>Creates an object and inserts the key value pairs as members of the class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dictionary</strong> – Takes the dictionary to be converted as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.utils.util.get_timezone">
 <span class="sig-prename descclassname"><span class="pre">modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">get_timezone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.utils.util.get_timezone" title="Permalink to this definition">¶</a></dt>
@@ -8486,6 +8520,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#executors">———-Executors———-</a></li>
 <li><a class="reference internal" href="#module-executors.alarm">Alarm</a></li>
 <li><a class="reference internal" href="#module-executors.automation">Automation</a></li>
+<li><a class="reference internal" href="#module-executors.background_tasks">Background Tasks</a></li>
 <li><a class="reference internal" href="#module-executors.car">Car</a></li>
 <li><a class="reference internal" href="#module-executors.communicator">Communicator</a></li>
 <li><a class="reference internal" href="#module-executors.comm_squire">Communicator Squire</a></li>

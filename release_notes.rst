@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+6.8.9 (01/02/2023)
+------------------
+- Read background tasks via YAML file instead of env vars
+- Change some HTTP requests methods from POST to GET calls
+- Add an option to disable background tasks on demand
+- Make `yaml` files in fileio directory to be available via API calls
+- Update README.md
+
 6.8.8 (01/01/2023)
 ------------------
 - `Bug fixes` and `Remove redundancies`

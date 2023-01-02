@@ -186,6 +186,13 @@ Automation
    :members:
    :undoc-members:
 
+Background Tasks
+================
+
+.. automodule:: executors.background_tasks
+   :members:
+   :undoc-members:
+
 Car
 ===
 

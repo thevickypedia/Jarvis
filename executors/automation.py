@@ -2,7 +2,7 @@ import os
 import warnings
 from datetime import datetime
 from string import punctuation
-from typing import Union
+from typing import NoReturn, Union
 
 import yaml
 from deepdiff import DeepDiff
@@ -13,13 +13,13 @@ from modules.logger.custom_logger import logger
 from modules.models import models
 
 
-def automation_handler(phrase: str) -> None:
+def automation_handler(phrase: str) -> NoReturn:
     """Handles automation file resets by renaming it to tmp if requested to disable.
 
     Args:
         phrase: Takes the recognized phrase as an argument.
     """
-    if "enable" in phrase:
+    if "enable" in phrase.lower():
         if os.path.isfile(models.fileio.tmp_automation):
             os.rename(src=models.fileio.tmp_automation, dst=models.fileio.automation)
             speaker.speak(text=f"Automation has been enabled {models.env.title}!")
@@ -27,7 +27,7 @@ def automation_handler(phrase: str) -> None:
             speaker.speak(text=f"Automation was never disabled {models.env.title}!")
         else:
             speaker.speak(text=f"I couldn't not find the source file to enable automation {models.env.title}!")
-    elif "disable" in phrase:
+    elif "disable" in phrase.lower():
         if os.path.isfile(models.fileio.automation):
             os.rename(src=models.fileio.automation, dst=models.fileio.tmp_automation)
             speaker.speak(text=f"Automation has been disabled {models.env.title}!")
@@ -37,7 +37,7 @@ def automation_handler(phrase: str) -> None:
             speaker.speak(text=f"I couldn't not find the source file to disable automation {models.env.title}!")
 
 
-def rewrite_automator(write_data: dict) -> None:
+def rewrite_automator(write_data: dict) -> NoReturn:
     """Rewrites the automation file with the updated dictionary.
 
     Args:
@@ -50,7 +50,7 @@ def rewrite_automator(write_data: dict) -> None:
         except yaml.YAMLError as error:
             logger.error(error)
             read_data = {}
-    logger.info(DeepDiff(read_data, write_data, ignore_order=True))
+    logger.debug(DeepDiff(read_data, write_data, ignore_order=True))
     with open(models.fileio.automation, 'w') as file:
         yaml.dump(data=write_data, stream=file, indent=2, sort_keys=False)
 

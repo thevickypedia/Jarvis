@@ -256,8 +256,7 @@ class EnvConfig(BaseSettings):
     speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
 
     # Background tasks
-    tasks: List[BackgroundTask] = Field(default=[], env='TASKS')
-    crontab: List[str] = Field(default=[], env='CRONTAB')
+    crontab: List[str] = Field(default=[], env='CRONTAB')  # User input is gathered from fileio/crontab.yaml
 
     # WiFi config
     wifi_ssid: str = Field(default=None, env='WIFI_SSID')
@@ -333,6 +332,8 @@ class FileIO(BaseModel):
     # Home automation
     automation: FilePath = os.path.join('fileio', 'automation.yaml')
     tmp_automation: FilePath = os.path.join('fileio', 'tmp_automation.yaml')
+    background_tasks: FilePath = os.path.join('fileio', 'background_tasks.yaml')
+    tmp_background_tasks: FilePath = os.path.join('fileio', 'tmp_background_tasks.yaml')
     smart_devices: FilePath = os.path.join('fileio', 'smart_devices.yaml')
     contacts: FilePath = os.path.join('fileio', 'contacts.yaml')
 
