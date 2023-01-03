@@ -7,7 +7,8 @@
 
 import os
 import time
-from multiprocessing import Process
+from multiprocessing.context import TimeoutError  # noqa: PyProtectedMember
+from multiprocessing.pool import ThreadPool
 from typing import NoReturn, Union
 
 import soundfile
@@ -35,12 +36,15 @@ def _generate_audio_file(filename: Union[FilePath, str], text: str) -> NoReturn:
     audio_driver.runAndWait()
 
 
-def text_to_audio(text: str, filename: Union[FilePath, str] = None) -> Union[FilePath, str]:
-    """Converts text into an audio file.
+def text_to_audio(text: str, filename: Union[FilePath, str] = None) -> Union[FilePath, str, None]:
+    """Converts text into an audio file using the default speaker configuration.
 
     Args:
         filename: Name of the file that has to be generated.
         text: Text that has to be converted to audio.
+
+    Warnings:
+        This can be flaky at times as it relies on converting native wav to kernel specific wav format.
     """
     if not filename:
         if shared.offline_caller:
@@ -48,16 +52,19 @@ def text_to_audio(text: str, filename: Union[FilePath, str] = None) -> Union[Fil
             shared.offline_caller = None  # Reset caller after using it
         else:
             filename = f"{int(time.time())}.wav"
-    process = Process(target=_generate_audio_file, kwargs={'filename': filename, 'text': text})
-    process.start()
-    while True:
-        if os.path.isfile(filename) and os.stat(filename).st_size:
-            time.sleep(0.5)
-            break
-    logger.info(f"Generated {filename}")
-    data, samplerate = soundfile.read(file=filename)
-    soundfile.write(file=filename, data=data, samplerate=samplerate)
-    return filename
+    dynamic_timeout = len(text.split())
+    logger.info(f"Timeout for text to speech conversion: {dynamic_timeout}s")
+    process = ThreadPool(processes=1).apply_async(func=_generate_audio_file, kwds={'filename': filename, 'text': text})
+    try:
+        process.get(timeout=dynamic_timeout)
+    except TimeoutError as error:
+        logger.error(error)
+        return
+    if os.path.isfile(filename) and os.stat(filename).st_size:
+        logger.info(f"Generated {filename}")
+        data, samplerate = soundfile.read(file=filename)
+        soundfile.write(file=filename, data=data, samplerate=samplerate)
+        return filename
 
 
 def audio_to_text(filename: Union[FilePath, str]) -> str:
