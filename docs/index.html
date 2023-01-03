@@ -417,7 +417,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.enable_cors">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">enable_cors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.enable_cors" title="Permalink to this definition">¶</a></dt>
-<dd><p>Allow <code class="docutils literal notranslate"><span class="pre">CORS:</span> <span class="pre">Cross-Origin</span> <span class="pre">Resource</span> <span class="pre">Sharing</span></code> to allow restricted resources on the API.</p>
+<dd><p>Allow CORS: Cross-Origin Resource Sharing to allow restricted resources on the API.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -435,13 +435,24 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.redirect_index">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">redirect_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#api.fast.redirect_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Redirect to docs in <code class="docutils literal notranslate"><span class="pre">read-only</span></code> mode.</p>
+<dd><p>Redirect to docs in read-only mode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Redirects the root endpoint <code class="docutils literal notranslate"><span class="pre">/</span></code> url to read-only doc location.</p>
+<dd class="field-odd"><p>Redirects the root endpoint / url to read-only doc location.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.fast.health">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">health</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.health" title="Permalink to this definition">¶</a></dt>
+<dd><p>Health Check for OfflineCommunicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>- 200</strong> – For a successful health check.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -481,7 +492,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>- input_data</strong> – Takes the following arguments as <code class="docutils literal notranslate"><span class="pre">GetText</span></code> class instead of a QueryString.</p></li>
+<li><p><strong>- input_data</strong> – Takes the following arguments as GetText class instead of a QueryString.</p></li>
 <li><p><strong>- raise_for_status</strong> – Takes a boolean flag to determine whether the result should be raised as an API response.</p>
 <ul>
 <li><p>text: Text to be processed with speech synthesis.</p></li>
@@ -510,20 +521,14 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="api.fast.health">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">health</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.health" title="Permalink to this definition">¶</a></dt>
-<dd><p>Health Check for OfflineCommunicator.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="api.fast.offline_communicator_api">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">offline_communicator_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.OfflineCommunicatorModal" title="api.models.OfflineCommunicatorModal"><span class="pre">OfflineCommunicatorModal</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FileResponse</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.fast.offline_communicator_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Offline Communicator API endpoint for Jarvis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>- request</strong> – Takes the <code class="docutils literal notranslate"><span class="pre">Request</span></code> class as an argument.</p></li>
-<li><p><strong>- input_data</strong> – Takes the following arguments as <code class="docutils literal notranslate"><span class="pre">OfflineCommunicatorModal</span></code> class instead of a QueryString.</p>
+<li><p><strong>- request</strong> – Takes the Request class as an argument.</p></li>
+<li><p><strong>- input_data</strong> – Takes the following arguments as OfflineCommunicatorModal class instead of a QueryString.</p>
 <ul>
 <li><p>command: The task which Jarvis has to do.</p></li>
 <li><p>native_audio: Whether the response should be as an audio file with the server’s built-in voice.</p></li>
@@ -544,7 +549,7 @@
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>Keeps waiting for the record <code class="docutils literal notranslate"><span class="pre">response</span></code> in the database table <code class="docutils literal notranslate"><span class="pre">offline</span></code></p></li>
+<li><p>Keeps waiting for the record response in the database table offline</p></li>
 </ul>
 </div>
 </dd></dl>
@@ -556,11 +561,25 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>- request</strong> – Takes the <code class="docutils literal notranslate"><span class="pre">Request</span></code> class as an argument.</p></li>
-<li><p><strong>- input_data</strong> – Takes the following arguments as <code class="docutils literal notranslate"><span class="pre">OfflineCommunicatorModal</span></code> class instead of a QueryString.</p>
+<li><p><strong>- request</strong> – Takes the Request class as an argument.</p></li>
+<li><p><strong>- input_data</strong> – Takes the following arguments as OfflineCommunicatorModal class instead of a QueryString.</p>
 <ul>
 <li><p>token: Authentication token.</p></li>
 <li><p>email: Email to which the notifications have to be triggered.</p></li>
+<li><p>request: Request type. Takes any of GET/PUT/DELETE</p></li>
+<li><p>plaintext: Takes a boolean flag if a plain text response is expected for GET request.</p></li>
+<li><p>token is not required for GET requests.</p></li>
+<li><dl class="simple">
+<dt>For PUT and DELETE requests, token should be a JWT of the following keys:</dt><dd><ul>
+<li><p>Ticker: Stock ticker.</p></li>
+<li><p>Max: Max price for notification.</p></li>
+<li><p>Min: Min price for notification.</p></li>
+<li><p>Correction: Correction percentage.5</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Use <a class="reference external" href="https://vigneshrao.com/jwt">https://vigneshrao.com/jwt</a> for conversion.</p></li>
 </ul>
 </li>
 </ul>
@@ -599,10 +618,10 @@
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>If basic auth (stored as an env var <code class="docutils literal notranslate"><span class="pre">robinhood_endpoint_auth</span></code>) succeeds:</p>
+<p>If basic auth (stored as an env var robinhood_endpoint_auth) succeeds:</p>
 <ul class="simple">
 <li><p>Sends a token for MFA via email.</p></li>
-<li><p>Also stores the token in the <code class="docutils literal notranslate"><span class="pre">Robinhood</span></code> object which is verified in the <code class="docutils literal notranslate"><span class="pre">/investment</span></code> endpoint.</p></li>
+<li><p>Also stores the token in the Robinhood object which is verified in the /investment endpoint.</p></li>
 <li><p>The token is nullified in the object as soon as it is verified, making it single use.</p></li>
 </ul>
 </div>
@@ -615,14 +634,14 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>- request</strong> – Takes the <code class="docutils literal notranslate"><span class="pre">Request</span></code> class as an argument.</p></li>
+<li><p><strong>- request</strong> – Takes the Request class as an argument.</p></li>
 <li><p><strong>- token</strong> – Takes custom auth token as an argument.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="#modules.exceptions.APIResponse" title="modules.exceptions.APIResponse"><strong>APIResponse</strong></a> – </p></li>
-<li><p><strong>- 403</strong> – If token is <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></li>
+<li><p><strong>- 403</strong> – If token is null.</p></li>
 <li><p><strong>- 404</strong> – If the HTML file is not found.</p></li>
 <li><p><strong>- 417</strong> – If token doesn’t match the auto-generated value.</p></li>
 </ul>
@@ -639,8 +658,8 @@
 <ul class="simple">
 <li><p>This endpoint is secured behind single use token sent via email as MFA (Multi-Factor Authentication)</p></li>
 <li><p>Initial check is done by the function authenticate_robinhood behind the path “/robinhood-authenticate”</p></li>
-<li><p>Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the <code class="docutils literal notranslate"><span class="pre">Robinhood</span></code> object.</p></li>
-<li><p>This UUID is sent via email to the env var <code class="docutils literal notranslate"><span class="pre">RECIPIENT</span></code>, which should be entered as query string.</p></li>
+<li><p>Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the Robinhood object.</p></li>
+<li><p>This UUID is sent via email to the env var RECIPIENT, which should be entered as query string.</p></li>
 <li><p>The UUID is deleted from the object as soon as the argument is checked for the first time.</p></li>
 <li><p>Page refresh is useless because the value in memory is cleared as soon as it is authed once.</p></li>
 </ul>
@@ -665,10 +684,10 @@
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>If basic auth (stored as an env var <code class="docutils literal notranslate"><span class="pre">SURVEILLANCE_ENDPOINT_AUTH</span></code>) succeeds:</p>
+<p>If basic auth (stored as an env var SURVEILLANCE_ENDPOINT_AUTH) succeeds:</p>
 <ul class="simple">
 <li><p>Sends a token for MFA via email.</p></li>
-<li><p>Also stores the token in the <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object which is verified in the <code class="docutils literal notranslate"><span class="pre">/surveillance</span></code> endpoint.</p></li>
+<li><p>Also stores the token in the Surveillance object which is verified in the /surveillance endpoint.</p></li>
 <li><p>The token is nullified in the object as soon as it is verified, making it single use.</p></li>
 </ul>
 </div>
@@ -681,7 +700,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>- request</strong> – Takes the <code class="docutils literal notranslate"><span class="pre">Request</span></code> class as an argument.</p></li>
+<li><p><strong>- request</strong> – Takes the Request class as an argument.</p></li>
 <li><p><strong>- token</strong> – Takes custom auth token as an argument.</p></li>
 </ul>
 </dd>
@@ -689,7 +708,7 @@
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="#modules.exceptions.APIResponse" title="modules.exceptions.APIResponse"><strong>APIResponse</strong></a> – </p></li>
 <li><p><strong>- 307</strong> – If token matches the auto-generated value.</p></li>
-<li><p><strong>- 401</strong> – If token is <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></li>
+<li><p><strong>- 401</strong> – If token is null.</p></li>
 <li><p><strong>- 417</strong> – If token doesn’t match the auto-generated value.</p></li>
 </ul>
 </dd>
@@ -704,9 +723,9 @@
 <p class="admonition-title">See also</p>
 <ul class="simple">
 <li><p>This endpoint is secured behind single use token sent via email as MFA (Multi-Factor Authentication)</p></li>
-<li><p>Initial check is done by <code class="docutils literal notranslate"><span class="pre">authenticate_surveillance</span></code> behind the path “/surveillance-authenticate”</p></li>
-<li><p>Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object.</p></li>
-<li><p>This UUID is sent via email to the env var <code class="docutils literal notranslate"><span class="pre">RECIPIENT</span></code>, which should be entered as query string.</p></li>
+<li><p>Initial check is done by authenticate_surveillance behind the path “/surveillance-authenticate”</p></li>
+<li><p>Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the Surveillance object.</p></li>
+<li><p>This UUID is sent via email to the env var RECIPIENT, which should be entered as query string.</p></li>
 <li><p>The UUID is deleted from the object as soon as the argument is checked for the last time.</p></li>
 <li><p>Page refresh is useless because the value in memory is cleared as soon as the video is rendered.</p></li>
 </ul>
@@ -716,20 +735,20 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="api.fast.video_feed">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">video_feed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">StreamingResponse</span></span></span><a class="headerlink" href="#api.fast.video_feed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Authenticates the request, and returns the frames generated as a <code class="docutils literal notranslate"><span class="pre">StreamingResponse</span></code>.</p>
+<dd><p>Authenticates the request, and returns the frames generated as a StreamingResponse.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference internal" href="#modules.exceptions.APIResponse" title="modules.exceptions.APIResponse"><strong>APIResponse</strong></a> – </p></li>
 <li><p><strong>- 307</strong> – If token matches the auto-generated value.</p></li>
-<li><p><strong>- 401</strong> – If token is <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></li>
+<li><p><strong>- 401</strong> – If token is null.</p></li>
 <li><p><strong>- 417</strong> – If token doesn’t match the auto-generated value.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Parameters</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>- request</strong> – Takes the <code class="docutils literal notranslate"><span class="pre">Request</span></code> class as an argument.</p></li>
-<li><p><strong>- token</strong> – Token generated in <code class="docutils literal notranslate"><span class="pre">/surveillance-authenticate</span></code> endpoint to restrict direct access.</p></li>
+<li><p><strong>- request</strong> – Takes the Request class as an argument.</p></li>
+<li><p><strong>- token</strong> – Token generated in /surveillance-authenticate endpoint to restrict direct access.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns</dt>
@@ -3823,8 +3842,8 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.audio.tts_stt.text_to_audio">
-<span class="sig-prename descclassname"><span class="pre">modules.audio.tts_stt.</span></span><span class="sig-name descname"><span class="pre">text_to_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.audio.tts_stt.text_to_audio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts text into an audio file.</p>
+<span class="sig-prename descclassname"><span class="pre">modules.audio.tts_stt.</span></span><span class="sig-name descname"><span class="pre">text_to_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.audio.tts_stt.text_to_audio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts text into an audio file using the default speaker configuration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -3833,6 +3852,10 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </ul>
 </dd>
 </dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This can be flaky at times as it relies on converting native wav to kernel specific wav format.</p>
+</div>
 </dd></dl>
 
 <dl class="py function">

@@ -27,6 +27,7 @@ class StockMonitorModal(BaseModel):
     email: EmailStr
     token: Any
     request: Any
+    plaintext: bool = False
 
 
 class CameraIndexModal(BaseModel):

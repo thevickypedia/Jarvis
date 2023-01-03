@@ -85,7 +85,7 @@ stock_db.create_table(table_name="stock", columns=stock_monitor.user_info)
 
 
 async def enable_cors() -> NoReturn:
-    """Allow ``CORS: Cross-Origin Resource Sharing`` to allow restricted resources on the API."""
+    """Allow CORS: Cross-Origin Resource Sharing to allow restricted resources on the API."""
     logger.info('Setting CORS policy.')
     origins = [
         "http://localhost.com",
@@ -126,14 +126,25 @@ async def start_robinhood() -> Any:
 
 @app.get(path="/", response_class=RedirectResponse, include_in_schema=False)
 async def redirect_index() -> str:
-    """Redirect to docs in ``read-only`` mode.
+    """Redirect to docs in read-only mode.
 
     Returns:
 
         str:
-        Redirects the root endpoint ``/`` url to read-only doc location.
+        Redirects the root endpoint / url to read-only doc location.
     """
     return app.redoc_url
+
+
+@app.get(path="/health", include_in_schema=False)
+async def health() -> NoReturn:
+    """Health Check for OfflineCommunicator.
+
+    Raises:
+
+        - 200: For a successful health check.
+    """
+    raise APIResponse(status_code=HTTPStatus.OK, detail=HTTPStatus.OK.__dict__['phrase'])
 
 
 @app.get(path="/favicon.ico", include_in_schema=False)
@@ -175,7 +186,7 @@ async def _conversations() -> Dict[str, List[str]]:
 
 @app.get(path='/files', dependencies=OFFLINE_PROTECTOR)
 async def _files() -> Set[str]:
-    """Get all ``YAML`` files from ``fileio`` directory.
+    """Get all YAML files from fileio directory.
 
     Returns:
 
@@ -187,7 +198,7 @@ async def _files() -> Set[str]:
 
 @app.get(path='/get-file', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
 async def _get_file(filename: str) -> FileResponse:
-    """Download a particular ``YAML`` file from ``fileio`` directory.
+    """Download a particular YAML file from fileio directory.
 
     Args:
 
@@ -210,11 +221,11 @@ async def _get_file(filename: str) -> FileResponse:
 
 @app.post(path='/put-file', dependencies=OFFLINE_PROTECTOR)
 async def _put_file(file: UploadFile) -> NoReturn:
-    """Upload a particular ``YAML`` file to the ``fileio`` directory.
+    """Upload a particular YAML file to the fileio directory.
 
     Args:
 
-        file: Takes the ``UploadFile`` object as an argument.
+        file: Takes the UploadFile object as an argument.
     """
     allowed_files = await _files()
     if file.filename not in allowed_files:
@@ -271,14 +282,14 @@ async def speech_synthesis_voices() -> NoReturn:
         raise APIResponse(status_code=response.status_code, detail=response.content)
 
 
-@app.get(path='/speech-synthesis', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
+@app.post(path='/speech-synthesis', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
 async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: bool = True) -> \
         Union[FileResponse, None]:
     """Process request to convert text to speech if docker container is running.
 
     Args:
 
-        - input_data: Takes the following arguments as ``GetText`` class instead of a QueryString.
+        - input_data: Takes the following arguments as GetText class instead of a QueryString.
         - raise_for_status: Takes a boolean flag to determine whether the result should be raised as an API response.
 
             - text: Text to be processed with speech synthesis.
@@ -323,12 +334,6 @@ async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: b
         raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.__dict__['phrase'])
 
 
-@app.get(path="/health", include_in_schema=False)
-async def health() -> NoReturn:
-    """Health Check for OfflineCommunicator."""
-    raise APIResponse(status_code=HTTPStatus.OK, detail=HTTPStatus.OK.__dict__['phrase'])
-
-
 @app.post(path="/offline-communicator", dependencies=OFFLINE_PROTECTOR)
 async def offline_communicator_api(request: Request, input_data: OfflineCommunicatorModal) -> \
         Union[FileResponse, NoReturn]:
@@ -336,8 +341,8 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
 
     Args:
 
-        - request: Takes the ``Request`` class as an argument.
-        - input_data: Takes the following arguments as ``OfflineCommunicatorModal`` class instead of a QueryString.
+        - request: Takes the Request class as an argument.
+        - input_data: Takes the following arguments as OfflineCommunicatorModal class instead of a QueryString.
 
             - command: The task which Jarvis has to do.
             - native_audio: Whether the response should be as an audio file with the server's built-in voice.
@@ -352,7 +357,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
 
     See Also:
 
-        - Keeps waiting for the record ``response`` in the database table ``offline``
+        - Keeps waiting for the record response in the database table offline
     """
     logger.debug(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
                  f"{request.headers.get('user-agent')}")
@@ -412,32 +417,48 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': response}, daemon=True).start()
         return FileResponse(path=response, media_type=f'image/{imghdr.what(file=response)}',
                             filename=os.path.split(response)[-1], status_code=HTTPStatus.OK.real)
-    if input_data.native_audio:
-        native_audio_wav = tts_stt.text_to_audio(text=response)
-        logger.info(f"Storing response as {native_audio_wav} in native audio.")
-        Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': native_audio_wav}, daemon=True).start()
-        return FileResponse(path=native_audio_wav, media_type='application/octet-stream',
-                            filename="synthesized.wav", status_code=HTTPStatus.OK.real)
     if input_data.speech_timeout:
         logger.info(f"Storing response as {models.fileio.speech_synthesis_wav}")
         if binary := await speech_synthesis(input_data=SpeechSynthesisModal(
                 text=response, timeout=input_data.speech_timeout, quality="low"  # low quality to speed up response
         ), raise_for_status=False):
             return binary
-    raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
+    elif input_data.native_audio:
+        if native_audio_wav := tts_stt.text_to_audio(text=response):
+            logger.info(f"Storing response as {native_audio_wav} in native audio.")
+            Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': native_audio_wav}, daemon=True).start()
+            return FileResponse(path=native_audio_wav, media_type='application/octet-stream',
+                                filename="synthesized.wav", status_code=HTTPStatus.OK.real)
+        else:
+            raise APIResponse(status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real,
+                              detail="Failed to generate audio file in native voice. "
+                                     "This feature can be flaky at times as it relies on native wav to kernel specific "
+                                     "wav conversion. Please use `speech_timeout` instead to get an audio response.")
+    else:
+        raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
 
-@app.post(path="/stock-monitor/", dependencies=STOCK_PROTECTOR)
+@app.post(path="/stock-monitor", dependencies=STOCK_PROTECTOR)
 async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> NoReturn:
     """Stock monitor api endpoint.
 
     Args:
 
-        - request: Takes the ``Request`` class as an argument.
-        - input_data: Takes the following arguments as ``OfflineCommunicatorModal`` class instead of a QueryString.
+        - request: Takes the Request class as an argument.
+        - input_data: Takes the following arguments as OfflineCommunicatorModal class instead of a QueryString.
 
             - token: Authentication token.
             - email: Email to which the notifications have to be triggered.
+            - request: Request type. Takes any of GET/PUT/DELETE
+            - plaintext: Takes a boolean flag if a plain text response is expected for GET request.
+
+            - token is not required for GET requests.
+            - For PUT and DELETE requests, token should be a JWT of the following keys:
+                - Ticker: Stock ticker.
+                - Max: Max price for notification.
+                - Min: Min price for notification.
+                - Correction: Correction percentage.5
+            - Use `https://vigneshrao.com/jwt <https://vigneshrao.com/jwt>`__ for conversion.
 
     Raises:
 
@@ -463,12 +484,15 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
 
     if input_data.request == "GET":
         logger.info(f"{input_data.email!r} requested their data.")
-        if input_data.token:
-            decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
-            logger.warning(f"Unwanted information received: {decoded!r}")
+        # Token is not required for GET method
+        # if input_data.token:
+        #     decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
+        #     logger.warning(f"Unwanted information received: {decoded!r}")
         if data := squire.get_stock_userdata(email=input_data.email):  # Filter data from DB by the email input received
             data_dict = [dict(zip(stock_monitor.user_info, each_entry)) for each_entry in data]
             logger.info(data_dict)
+            if input_data.plaintext:
+                raise APIResponse(status_code=HTTPStatus.OK.real, detail=data_dict)
             # Customized UI with HTML and CSS can consume this dataframe into a table, comment it otherwise
             pandas.set_option('display.max_columns', None)
             data_frame = pandas.DataFrame(data=data_dict)
@@ -480,8 +504,19 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
     if result is False:
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f"{input_data.email.split('@')[-1]!r} doesn't resolve to a valid mail server!")
-
-    decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
+    try:
+        decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
+    except jwt.DecodeError as error:
+        logger.error(error)
+        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
+                          detail="Invalid JWT received. Please re-check the input and try-again.")
+    # Validated individually
+    # if any(map(lambda x: x is None, (decoded.get('Ticker'), decoded.get('Max'), decoded.get('Min')))):
+    #     raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
+    #                       detail="Keys 'Ticker', 'Max' and 'Min' are mandatory.")
+    if not decoded.get('Ticker'):
+        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
+                          detail="Cannot proceed without the key 'Ticker'")
     decoded['Ticker'] = decoded['Ticker'].upper()
     decoded['Max'] = support.extract_nos(input_=decoded['Max'], method=float)
     decoded['Min'] = support.extract_nos(input_=decoded['Min'], method=float)
@@ -489,7 +524,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
 
     if decoded['Correction'] is None:  # Consider 0 as valid in case user doesn't want any correction value
         decoded['Correction'] = 5
-    if decoded['Max'] is None and decoded['Min'] is None:
+    if decoded['Max'] is None or decoded['Min'] is None:
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail="Minimum and maximum values should be integers. "
                                  "If you don't want a notification for any one of of it, please mark it as 0.")
@@ -566,10 +601,10 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
 
         See Also:
 
-            If basic auth (stored as an env var ``robinhood_endpoint_auth``) succeeds:
+            If basic auth (stored as an env var robinhood_endpoint_auth) succeeds:
 
             - Sends a token for MFA via email.
-            - Also stores the token in the ``Robinhood`` object which is verified in the ``/investment`` endpoint.
+            - Also stores the token in the Robinhood object which is verified in the /investment endpoint.
             - The token is nullified in the object as soon as it is verified, making it single use.
         """
         mail_obj = SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
@@ -600,13 +635,13 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
 
         Args:
 
-            - request: Takes the ``Request`` class as an argument.
+            - request: Takes the Request class as an argument.
             - token: Takes custom auth token as an argument.
 
         Raises:
 
             APIResponse:
-            - 403: If token is ``null``.
+            - 403: If token is null.
             - 404: If the HTML file is not found.
             - 417: If token doesn't match the auto-generated value.
 
@@ -619,8 +654,8 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
 
             - This endpoint is secured behind single use token sent via email as MFA (Multi-Factor Authentication)
             - Initial check is done by the function authenticate_robinhood behind the path "/robinhood-authenticate"
-            - Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the ``Robinhood`` object.
-            - This UUID is sent via email to the env var ``RECIPIENT``, which should be entered as query string.
+            - Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the Robinhood object.
+            - This UUID is sent via email to the env var RECIPIENT, which should be entered as query string.
             - The UUID is deleted from the object as soon as the argument is checked for the first time.
             - Page refresh is useless because the value in memory is cleared as soon as it is authed once.
         """
@@ -660,10 +695,10 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
 
         See Also:
 
-            If basic auth (stored as an env var ``SURVEILLANCE_ENDPOINT_AUTH``) succeeds:
+            If basic auth (stored as an env var SURVEILLANCE_ENDPOINT_AUTH) succeeds:
 
             - Sends a token for MFA via email.
-            - Also stores the token in the ``Surveillance`` object which is verified in the ``/surveillance`` endpoint.
+            - Also stores the token in the Surveillance object which is verified in the /surveillance endpoint.
             - The token is nullified in the object as soon as it is verified, making it single use.
         """
         surveillance.camera_index = cam.index
@@ -702,14 +737,14 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
 
         Args:
 
-            - request: Takes the ``Request`` class as an argument.
+            - request: Takes the Request class as an argument.
             - token: Takes custom auth token as an argument.
 
         Raises:
 
             APIResponse:
             - 307: If token matches the auto-generated value.
-            - 401: If token is ``null``.
+            - 401: If token is null.
             - 417: If token doesn't match the auto-generated value.
 
         Returns:
@@ -720,9 +755,9 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         See Also:
 
             - This endpoint is secured behind single use token sent via email as MFA (Multi-Factor Authentication)
-            - Initial check is done by ``authenticate_surveillance`` behind the path "/surveillance-authenticate"
-            - Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the ``Surveillance`` object.
-            - This UUID is sent via email to the env var ``RECIPIENT``, which should be entered as query string.
+            - Initial check is done by authenticate_surveillance behind the path "/surveillance-authenticate"
+            - Once the auth succeeds, a one-time usable hex-uuid is generated and stored in the Surveillance object.
+            - This UUID is sent via email to the env var RECIPIENT, which should be entered as query string.
             - The UUID is deleted from the object as soon as the argument is checked for the last time.
             - Page refresh is useless because the value in memory is cleared as soon as the video is rendered.
         """
@@ -743,19 +778,19 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
 if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
     @app.get('/video-feed')
     async def video_feed(request: Request, token: str = None) -> StreamingResponse:
-        """Authenticates the request, and returns the frames generated as a ``StreamingResponse``.
+        """Authenticates the request, and returns the frames generated as a StreamingResponse.
 
         Raises:
 
             APIResponse:
             - 307: If token matches the auto-generated value.
-            - 401: If token is ``null``.
+            - 401: If token is null.
             - 417: If token doesn't match the auto-generated value.
 
         Args:
 
-            - request: Takes the ``Request`` class as an argument.
-            - token: Token generated in ``/surveillance-authenticate`` endpoint to restrict direct access.
+            - request: Takes the Request class as an argument.
+            - token: Token generated in /surveillance-authenticate endpoint to restrict direct access.
 
         Returns:
 

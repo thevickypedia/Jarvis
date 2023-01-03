@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+6.9.0 (01/02/2023)
+------------------
+- Add exception handlers in `stock-monitor` endpoint for JWT
+- Fix native audio conversion in tts_stt.py
+- Get plain text information for `stock-monitor` GET requests
+
 6.8.9 (01/02/2023)
 ------------------
 - Read background tasks via YAML file instead of env vars
