@@ -200,6 +200,27 @@ def extract_time(input_: str) -> List[str]:
         re.findall(r'(\d+\s?(?:am|pm:?))', input_)
 
 
+def delay_calculator(phrase: str) -> Union[int, float]:
+    """Calculates the delay in phrase (if any).
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+
+    Returns:
+        int:
+        Seconds of delay.
+    """
+    if not (count := extract_nos(input_=phrase)):
+        count = 1
+    if 'hour' in phrase:
+        delay = 3_600
+    elif 'minute' in phrase:
+        delay = 60
+    else:  # Default to # as seconds
+        delay = 60
+    return count * delay
+
+
 def extract_nos(input_: str, method: type = float) -> Union[int, float]:
     """Extracts number part from a string.
 

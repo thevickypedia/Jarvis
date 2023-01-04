@@ -23,7 +23,7 @@ from executors.location import directions, distance, locate_places, location
 from executors.myq_controller import garage
 from executors.others import (abusive, apps, facts, flip_a_coin, google_home,
                               jokes, meaning, music, news, notes, photo,
-                              repeat, report, sprint_name, version)
+                              repeat, report, version)
 from executors.remind import reminder
 from executors.robinhood import robinhood
 from executors.system import system_info, system_vitals
@@ -228,9 +228,6 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
 
     elif word_match(phrase=phrase, match_list=keywords.background_tasks):
         background_task_handler(phrase)
-
-    elif word_match(phrase=phrase, match_list=keywords.sprint):
-        sprint_name()
 
     elif word_match(phrase=phrase, match_list=keywords.photo):
         photo()

@@ -10,7 +10,6 @@ from threading import Thread
 from typing import NoReturn, Tuple
 
 import requests
-from bs4 import BeautifulSoup
 from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
 from joke.jokes import chucknorris, geek, icanhazdad, icndb
@@ -349,19 +348,6 @@ def time_travel() -> None:
     phrase = listener.listen()
     if phrase and word_match(phrase=phrase.lower(), match_list=keywords.keywords.ok):
         news()
-
-
-def sprint_name() -> NoReturn:
-    """Generates a random sprint name."""
-    try:
-        response = requests.get(url="https://sprint-name-gen.herokuapp.com/")
-    except EgressErrors as error:
-        logger.error(error)
-        speaker.speak(text="I wasn't able to get a sprint name sir! Why not name it, Jarvis failed?")
-        return
-    soup = BeautifulSoup(response.content, 'html.parser')
-    name = soup.find('span', {'class': 'sprint-name'}).text
-    speaker.speak(text=name)
 
 
 def abusive(phrase: str) -> NoReturn:
