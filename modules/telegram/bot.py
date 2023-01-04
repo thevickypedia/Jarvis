@@ -6,6 +6,7 @@ import random
 import string
 import time
 import traceback
+from threading import Thread
 from typing import NoReturn, Union
 
 import requests
@@ -448,14 +449,13 @@ class TelegramBot:
 
         if ' and ' in command and not word_match(phrase=command, match_list=keywords.keywords.avoid) and \
                 not word_match(phrase=command, match_list=multiexec):
-            for index, each in enumerate(command.split(' and '), 1 - len(command.split(' and '))):
+            for each in command.split(' and '):
                 if not word_match(phrase=each, match_list=compatibles.offline_compatible()):
                     logger.warning(f"{each!r} is not a part of offline communicator compatible request.")
                     self.send_message(chat_id=payload['from']['id'],
                                       response=f"{each!r} is not a part of offline communicator compatible request.")
                 else:
-                    self.executor(command=each, payload=payload)
-                    time.sleep(2) if index else None  # Avoid time.sleep during the last iteration
+                    Thread(target=self.executor, kwargs=dict(command=each, payload=payload)).start()
             return
 
         if not word_match(phrase=command, match_list=compatibles.offline_compatible()):
