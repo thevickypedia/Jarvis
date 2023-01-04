@@ -48,7 +48,6 @@ def offline_compatible() -> List[str]:
                      keywords.car,
                      keywords.garage,
                      keywords.github,
-                     keywords.sprint,
                      keywords.speed_test,
                      keywords.ngrok,
                      keywords.locate,

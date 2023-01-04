@@ -80,6 +80,7 @@ app = FastAPI(
 )
 # TODO: Break this giant file into sub modules, and add them as routes
 # TODO: Hook up the verified email address with a session ID, to add another layer of security
+# TODO: Make stock-monitor UI look cooler (at least like JarvisMonitor)
 
 # Setup databases
 db = database.Database(database=models.fileio.base_db)

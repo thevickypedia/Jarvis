@@ -2010,23 +2010,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.commander.delay_calculator">
-<span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">delay_calculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.commander.delay_calculator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the delay in phrase (if any).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Seconds of delay.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="executors.commander.delay_condition">
 <span class="sig-prename descclassname"><span class="pre">executors.commander.</span></span><span class="sig-name descname"><span class="pre">delay_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.commander.delay_condition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delays the execution after sleeping for the said time, after which it is sent to <code class="docutils literal notranslate"><span class="pre">offline_communicator</span></code>.</p>
@@ -3134,12 +3117,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="executors.others.time_travel">
 <span class="sig-prename descclassname"><span class="pre">executors.others.</span></span><span class="sig-name descname"><span class="pre">time_travel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.others.time_travel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Triggered only from <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> to give a quick update on the user’s daily routine.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="executors.others.sprint_name">
-<span class="sig-prename descclassname"><span class="pre">executors.others.</span></span><span class="sig-name descname"><span class="pre">sprint_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.others.sprint_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a random sprint name.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -6673,6 +6650,23 @@ Whites can have a value of None.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.support.delay_calculator">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">delay_calculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.utils.support.delay_calculator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the delay in phrase (if any).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Seconds of delay.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>

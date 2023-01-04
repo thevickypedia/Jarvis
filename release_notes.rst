@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+6.9.2 (01/04/2023)
+------------------
+- Add a feature to mute for a certain amount of time
+- Remove sprint name feature as source is broken and rare usage
+
 6.9.1 (01/04/2023)
 ------------------
 - Make `stock-monitor` endpoint open-source

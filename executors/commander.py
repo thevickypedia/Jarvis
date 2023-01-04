@@ -50,27 +50,6 @@ def split_phrase(phrase: str, should_return: bool = False) -> bool:
     return exit_check
 
 
-def delay_calculator(phrase: str) -> Union[int, float]:
-    """Calculates the delay in phrase (if any).
-
-    Args:
-        phrase: Takes the phrase spoken as an argument.
-
-    Returns:
-        int:
-        Seconds of delay.
-    """
-    if not (count := support.extract_nos(input_=phrase)):
-        count = 1
-    if 'hour' in phrase:
-        delay = 3_600
-    elif 'minute' in phrase:
-        delay = 60
-    else:  # Default to # as seconds
-        delay = 1
-    return count * delay
-
-
 def delay_condition(phrase: str, delay: Union[int, float]) -> None:
     """Delays the execution after sleeping for the said time, after which it is sent to ``offline_communicator``.
 
@@ -103,7 +82,7 @@ def timed_delay(phrase: str) -> Tuple[str, Union[int, float]]:
             not word_match(phrase=phrase, match_list=keywords.keywords.reminder):
         split_ = phrase.split('after')
         if task := split_[0].strip():
-            delay = delay_calculator(phrase=split_[1].strip())
+            delay = support.delay_calculator(phrase=split_[1].strip())
             Process(target=delay_condition, kwargs={'phrase': task, 'delay': delay}).start()
             return task, delay
 
