@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+6.9.3 (01/04/2023)
+------------------
+- Run multiple commands concurrently when sent via offline communicators
+- This can't be implemented in main process as listeners and speakers can't overlap
+
 6.9.2 (01/04/2023)
 ------------------
 - Add a feature to mute for a certain amount of time
