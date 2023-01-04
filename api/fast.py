@@ -31,13 +31,14 @@ from webull import webull
 
 from api import squire
 from api.authenticator import (OFFLINE_PROTECTOR, ROBINHOOD_PROTECTOR,
-                               STOCK_PROTECTOR, SURVEILLANCE_PROTECTOR)
+                               SURVEILLANCE_PROTECTOR)
 from api.models import (CameraIndexModal, OfflineCommunicatorModal,
                         SpeechSynthesisModal, StockMonitorModal)
 from api.report_gatherer import Investment
 from api.settings import (ConnectionManager, robinhood, stock_monitor,
-                          surveillance)
-from api.timeout_otp import reset_robinhood, reset_surveillance
+                          stock_monitor_helper, surveillance)
+from api.timeout_otp import (reset_robinhood, reset_stock_monitor,
+                             reset_surveillance)
 from executors.commander import timed_delay
 from executors.offline import offline_communicator
 from executors.word_match import word_match
@@ -50,6 +51,7 @@ from modules.models import models
 from modules.offline import compatibles
 from modules.templates import templates
 from modules.utils import support, util
+from version import version_info
 
 # Creates log files
 if not os.path.isfile(config.APIConfig().ACCESS_LOG_FILENAME):
@@ -72,11 +74,12 @@ logger.addFilter(filter=config.AddProcessName(process_name='fast_api'))  # Hard 
 # Initiate api
 app = FastAPI(
     title="Jarvis API",
-    description="Handles offline communication with **Jarvis** and generates a one time auth token for "
-                "**Robinhood** and **Surveillance endpoints**.\n\n"
+    description="Acts as a Gateway to communicate with **Jarvis**, and an entry point for cutting edge features.\n\n"
                 "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)",
-    version="v1.0"
+    version='.'.join(str(c) for c in version_info)
 )
+# TODO: Break this giant file into sub modules, and add them as routes
+# TODO: Hook up the verified email address with a session ID, to add another layer of security
 
 # Setup databases
 db = database.Database(database=models.fileio.base_db)
@@ -438,9 +441,43 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
 
-@app.post(path="/stock-monitor", dependencies=STOCK_PROTECTOR)
+async def send_otp_stock_monitor(email_address, reset_timeout: int = 60) -> NoReturn:
+    """Send one time password via email.
+
+    Args:
+
+        email_address: Email address to which the token has to be sent.
+        reset_timeout: Seconds after which the token has to expire.
+
+    Raises:
+
+        - 200: If email delivery was successful.
+        - 503: If failed to send an email.
+    """
+    mail_obj = SendEmail(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
+    logger.info("Setting stock monitor token")
+    stock_monitor_helper.otp[email_address] = util.keygen_uuid(length=16)
+    rendered = jinja2.Template(templates.email.stock_monitor_otp).render(
+        TIMEOUT=f"{support.format_nos(input_=reset_timeout / 60)} minute(s)",
+        TOKEN=stock_monitor_helper.otp[email_address], EMAIL=email_address
+    )
+    mail_stat = mail_obj.send_email(recipient=email_address, sender='Jarvis API',
+                                    subject=f"Stock Monitor - {datetime.now().strftime('%c')}",
+                                    html_body=rendered)
+    if mail_stat.ok:
+        logger.debug(mail_stat.body)
+        logger.debug(f"Token will be reset in {reset_timeout / 60} minute(s).")
+        Thread(target=reset_stock_monitor, args=(email_address, reset_timeout)).start()
+        raise APIResponse(status_code=HTTPStatus.OK.real,
+                          detail="Please enter the OTP sent via email to verify email address:")
+    else:
+        logger.error(mail_stat.json())
+        raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=mail_stat.body)
+
+
+@app.post(path="/stock-monitor")
 async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> NoReturn:
-    """Stock monitor api endpoint.
+    """`Stock monitor api endpoint <https://vigneshrao.com/stock-monitor>`__.
 
     Args:
 
@@ -482,6 +519,23 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=HTTPStatus.UNPROCESSABLE_ENTITY.__dict__['phrase'])
 
+    # Internal dump has the token stored but user did not send a token (pass if verified already within a minute)
+    if stock_monitor_helper.otp.get(input_data.email) and not input_data.otp:
+        if input_data.email in stock_monitor_helper.validated:  # Condition passes only if the following condition runs
+            logger.debug(f"{input_data.email} has an existing session that hasn't expired yet.")
+            input_data.otp = stock_monitor_helper.otp[input_data.email]
+
+    if stock_monitor_helper.otp.get(input_data.email, '') == input_data.otp:
+        logger.debug(f"{input_data.email} has been verified.")
+        stock_monitor_helper.validated.append(input_data.email)
+    else:
+        result = validate_email(email_address=input_data.email, smtp_check=False)
+        logger.info(result.body)
+        if result.ok is False:
+            raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
+                              detail=f"{input_data.email.split('@')[-1]!r} doesn't resolve to a valid mail server!")
+        await send_otp_stock_monitor(email_address=input_data.email)
+
     if input_data.request == "GET":
         logger.info(f"{input_data.email!r} requested their data.")
         # Token is not required for GET method
@@ -500,10 +554,6 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal) -> 
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f"No entry found in database for {input_data.email!r}")
 
-    result = validate_email(email_address=input_data.email, smtp_check=False)
-    if result is False:
-        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
-                          detail=f"{input_data.email.split('@')[-1]!r} doesn't resolve to a valid mail server!")
     try:
         decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
     except jwt.DecodeError as error:

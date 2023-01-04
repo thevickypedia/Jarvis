@@ -185,6 +185,8 @@ class EnvConfig(BaseSettings):
     gmail_pass: str = Field(default=None, env='GMAIL_PASS')
     alt_gmail_user: EmailStr = Field(default=None, env='ALT_GMAIL_USER')
     alt_gmail_pass: str = Field(default=None, env='ALT_GMAIL_PASS')
+    open_gmail_user: EmailStr = Field(default=None, env='OPEN_GMAIL_USER')
+    open_gmail_pass: str = Field(default=None, env='OPEN_GMAIL_PASS')
     recipient: EmailStr = Field(default=None, env='RECIPIENT')
     phone_number: str = Field(default=None, regex="\\d{10}$", env='PHONE_NUMBER')
 
@@ -214,9 +216,6 @@ class EnvConfig(BaseSettings):
     robinhood_pass: str = Field(default=None, env='ROBINHOOD_PASS')
     robinhood_qr: str = Field(default=None, env='ROBINHOOD_QR')
     robinhood_endpoint_auth: str = Field(default=None, env='ROBINHOOD_ENDPOINT_AUTH')
-
-    # StockMonitor endpoint auth
-    stock_monitor_endpoint_auth: str = Field(default=None, env='STOCK_MONITOR_ENDPOINT_AUTH')
 
     # GitHub config
     git_user: str = Field(default=None, env='GIT_USER')

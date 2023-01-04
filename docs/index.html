@@ -555,9 +555,29 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="api.fast.send_otp_stock_monitor">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">send_otp_stock_monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">60</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.send_otp_stock_monitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send one time password via email.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>email_address</strong> – Email address to which the token has to be sent.</p></li>
+<li><p><strong>reset_timeout</strong> – Seconds after which the token has to expire.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>- 200</strong> – If email delivery was successful.</p></li>
+<li><p><strong>- 503</strong> – If failed to send an email.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="api.fast.stock_monitor_api">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.fast.</span></span><span class="sig-name descname"><span class="pre">stock_monitor_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.models.StockMonitorModal" title="api.models.StockMonitorModal"><span class="pre">StockMonitorModal</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.fast.stock_monitor_api" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stock monitor api endpoint.</p>
+<dd><p><a class="reference external" href="https://vigneshrao.com/stock-monitor">Stock monitor api endpoint</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -958,23 +978,6 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="api.authenticator.stock_monitor_has_access">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.authenticator.</span></span><span class="sig-name descname"><span class="pre">stock_monitor_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.authenticator.stock_monitor_has_access" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validates the token if mentioned as a dependency.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>token</strong> – Takes the authorization header token as an argument.</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#modules.exceptions.APIResponse" title="modules.exceptions.APIResponse"><strong>APIResponse</strong></a> – </p></li>
-<li><p><strong>- 401</strong> – If authorization is invalid.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="api.authenticator.robinhood_has_access">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.authenticator.</span></span><span class="sig-name descname"><span class="pre">robinhood_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.authenticator.robinhood_has_access" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates the token if mentioned as a dependency.</p>
@@ -1224,8 +1227,22 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="api.timeout_otp.reset_stock_monitor">
+<span class="sig-prename descclassname"><span class="pre">api.timeout_otp.</span></span><span class="sig-name descname"><span class="pre">reset_stock_monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EmailStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.timeout_otp.reset_stock_monitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets stock monitor OTP after the set time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>email_address</strong> – Email address that should be cleared.</p></li>
+<li><p><strong>after</strong> – Number of seconds after which the token has to be invalidated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="api.timeout_otp.reset_surveillance">
-<span class="sig-prename descclassname"><span class="pre">api.timeout_otp.</span></span><span class="sig-name descname"><span class="pre">reset_surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.timeout_otp.reset_surveillance" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">api.timeout_otp.</span></span><span class="sig-name descname"><span class="pre">reset_surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.timeout_otp.reset_surveillance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets surveillance token after the set time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5243,6 +5260,16 @@ Pass 155 for LO and 285 for HI.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.open_gmail_user">
+<span class="sig-name descname"><span class="pre">open_gmail_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.open_gmail_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.open_gmail_pass">
+<span class="sig-name descname"><span class="pre">open_gmail_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.open_gmail_pass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.recipient">
 <span class="sig-name descname"><span class="pre">recipient</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.recipient" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -5335,11 +5362,6 @@ Pass 155 for LO and 285 for HI.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.robinhood_endpoint_auth">
 <span class="sig-name descname"><span class="pre">robinhood_endpoint_auth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.robinhood_endpoint_auth" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.stock_monitor_endpoint_auth">
-<span class="sig-name descname"><span class="pre">stock_monitor_endpoint_auth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.stock_monitor_endpoint_auth" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

@@ -105,6 +105,10 @@ def _global_validations() -> NoReturn:
         env.alt_gmail_user = env.gmail_user
         env.alt_gmail_pass = env.gmail_pass
 
+    if not all((env.open_gmail_user, env.open_gmail_pass)):
+        env.open_gmail_user = env.alt_gmail_user
+        env.open_gmail_pass = env.alt_gmail_pass
+
     # Note: Pydantic validation for ICS_URL can be implemented using regex=".*ics$"
     # However it will NOT work in this use case, since the type hint is HttpUrl
     if env.ics_url and not env.ics_url.endswith('.ics'):
