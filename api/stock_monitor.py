@@ -184,7 +184,7 @@ class StockMonitor:
         subject = f"Stock Price Alert - {datetime.now().strftime('%c')}"
         prices = self.get_prices()
         for k, v in self.email_grouped.items():
-            mail_obj = SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+            mail_obj = SendEmail(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
             datastore = {'text_gathered': [], 'removals': [], 'attachments': []}  # unique datastore for each user
             for trigger in v:
                 ticker = trigger[0]

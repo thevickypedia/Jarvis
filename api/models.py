@@ -28,6 +28,7 @@ class StockMonitorModal(BaseModel):
     token: Any
     request: Any
     plaintext: bool = False
+    otp: Any = None
 
 
 class CameraIndexModal(BaseModel):

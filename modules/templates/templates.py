@@ -25,6 +25,9 @@ class EmailTemplates:
         with open(os.path.join(models.fileio.templates, 'email_OTP.html')) as file:
             one_time_passcode = file.read()
 
+        with open(os.path.join(models.fileio.templates, 'stock_monitor_OTP.html')) as file:
+            stock_monitor_otp = file.read()
+
         with open(os.path.join(models.fileio.templates, 'email.html')) as file:
             notification = file.read()
 

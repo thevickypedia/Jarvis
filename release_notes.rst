@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+6.9.1 (01/04/2023)
+------------------
+- Make `stock-monitor` endpoint open-source
+- Setup email verification service using one time passcodes
+- Create custom email template for stock monitor OTP
+- Set Jarvis API version to match main module
+
 6.9.0 (01/02/2023)
 ------------------
 - Add exception handlers in `stock-monitor` endpoint for JWT

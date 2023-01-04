@@ -2,7 +2,7 @@ from multiprocessing import Process, Queue
 from typing import Dict, Hashable, List, NoReturn, Tuple
 
 from fastapi import WebSocket
-from pydantic import BaseConfig, BaseModel, HttpUrl
+from pydantic import BaseConfig, BaseModel, EmailStr, HttpUrl
 
 
 class Robinhood(BaseModel):
@@ -16,6 +16,20 @@ class Robinhood(BaseModel):
 
 
 robinhood = Robinhood()
+
+
+class StockMonitorHelper(BaseModel):
+    """Initiates ``StockMonitorHelper`` object to handle members across modules.
+
+    >>> StockMonitorHelper
+
+    """
+
+    otp: Dict[EmailStr, Hashable] = {}
+    validated: List[EmailStr] = []
+
+
+stock_monitor_helper = StockMonitorHelper()
 
 
 class Surveillance(BaseConfig):
