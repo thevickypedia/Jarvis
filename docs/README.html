@@ -274,11 +274,6 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <li><p><strong>VPN_DOMAIN</strong> - Domain name for the hosted zone.</p></li>
 <li><p><strong>VPN_RECORD_NAME</strong> - Alias record name to access VPN server.</p></li>
 </ul>
-<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/tv/tv_controls.py">TV</a> controls</strong> - Applies only for <a class="reference external" href="https://en.wikipedia.org/wiki/WebOS">LGWebOS</a></p>
-<ul class="simple">
-<li><p><strong>TV_CLIENT_KEY</strong> - TV’s Client key. Auto-generated when used for the first time.</p></li>
-<li><p><strong>TV_MAC</strong> - TV’s mac address. Can be single [str] or multiple [list] mac addresses (to include both wired and wireless macs).</p></li>
-</ul>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/car">Car Controls</a></strong> - Applies only for JLR vehicles subscribed to <code class="docutils literal notranslate"><span class="pre">InControl</span></code> application.</p>
 <ul class="simple">
 <li><p><strong>CAR_EMAIL</strong> - Email address to log in to InControl API.</p></li>
@@ -393,11 +388,28 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <h2>Smart Devices<a class="headerlink" href="#smart-devices" title="Permalink to this heading">¶</a></h2>
 <p>A source file <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> is used to store smart devices’ hostnames.
 Jarvis supports <code class="docutils literal notranslate"><span class="pre">MagicHome</span></code> for <a class="reference external" href="https://www.amazon.com/gp/product/B08C7GY43L">lights</a>, <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> and <code class="docutils literal notranslate"><span class="pre">Roku</span></code> for TVs.</p>
+<ul>
+<li><p>TV hostnames should include the brand name [<code class="docutils literal notranslate"><span class="pre">LG</span></code>/<code class="docutils literal notranslate"><span class="pre">Roku</span></code>] to distinguish the modules accordingly.</p>
+<ul class="simple">
+<li><p>This will be set by default, if yours doesn’t include the brand name change it in the TV settings.</p></li>
+</ul>
+</li>
+<li><p>For <code class="docutils literal notranslate"><span class="pre">Roku</span></code> TVs, make sure the <code class="docutils literal notranslate"><span class="pre">Bandwidth</span> <span class="pre">saver</span></code> feature is turned off under,</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Settings/Network/Bandwidth saver &gt;&gt; Off
+</pre></div>
+</div>
+</li>
+<li><p>For first time users on <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> TVs, there will be a prompt on the TV to accept the connection request.</p>
+<ul class="simple">
+<li><p>Once the connection request is accepted a client key will be generated and logged.</p></li>
+<li><p>Please make sure to store this in <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> file to avoid repeated connection prompt.</p></li>
+</ul>
+</li>
+</ul>
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary><ul class="simple">
 <li><p>TV identifiers should have the word <code class="docutils literal notranslate"><span class="pre">tv</span></code> to distinguish between lights and tv.</p></li>
-<li><p>TV hostnames should either have <code class="docutils literal notranslate"><span class="pre">LG</span></code> or <code class="docutils literal notranslate"><span class="pre">Roku</span></code> to distinguish the modules accordingly.</p></li>
-<li><p>The name used in the keys will be the identifier.</p></li>
+<li><p>The name used in the keys (for both lights and tv) will be the identifier when an action is requested.</p></li>
 <li><p>Lights should be a dictionary of identifier and a list of hostnames.</p></li>
 <li><p>TVs should be a nested dictionary of multiple parameters.</p></li>
 <li><p>The source file (<code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code>) should be as following:</p></li>

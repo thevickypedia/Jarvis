@@ -14,7 +14,7 @@ import pvporcupine
 import requests
 from pydantic import PositiveInt
 
-from api.scheduler import rh_cron_schedule, sm_cron_schedule
+from api.squire.scheduler import rh_cron_schedule, sm_cron_schedule
 from modules.camera.camera import Camera
 from modules.crontab.expression import CronExpression
 from modules.database import database

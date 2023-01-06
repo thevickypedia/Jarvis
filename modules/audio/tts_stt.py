@@ -24,7 +24,7 @@ recognizer = Recognizer()
 audio_driver = voices.voice_default()
 
 
-def _generate_audio_file(filename: Union[FilePath, str], text: str) -> NoReturn:
+def generate_audio_file(filename: Union[FilePath, str], text: str) -> NoReturn:
     """Generates an audio file from text.
 
     Args:
@@ -54,7 +54,7 @@ def text_to_audio(text: str, filename: Union[FilePath, str] = None) -> Union[Fil
             filename = f"{int(time.time())}.wav"
     dynamic_timeout = len(text.split())
     logger.info(f"Timeout for text to speech conversion: {dynamic_timeout}s")
-    process = ThreadPool(processes=1).apply_async(func=_generate_audio_file, kwds={'filename': filename, 'text': text})
+    process = ThreadPool(processes=1).apply_async(func=generate_audio_file, kwds={'filename': filename, 'text': text})
     try:
         process.get(timeout=dynamic_timeout)
     except TimeoutError as error:

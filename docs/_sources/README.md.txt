@@ -219,10 +219,6 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **VPN_DOMAIN** - Domain name for the hosted zone.
 - **VPN_RECORD_NAME** - Alias record name to access VPN server.
 
-**[TV](https://github.com/thevickypedia/Jarvis/blob/master/modules/tv/tv_controls.py) controls** - Applies only for [LGWebOS](https://en.wikipedia.org/wiki/WebOS)
-- **TV_CLIENT_KEY** - TV's Client key. Auto-generated when used for the first time.
-- **TV_MAC** - TV's mac address. Can be single [str] or multiple [list] mac addresses (to include both wired and wireless macs).
-
 **[Car Controls](https://github.com/thevickypedia/Jarvis/blob/master/modules/car)** - Applies only for JLR vehicles subscribed to `InControl` application.
 - **CAR_EMAIL** - Email address to log in to InControl API.
 - **CAR_PASS** - Password to authenticate InControl API.
@@ -342,12 +338,23 @@ email:
 A source file `smart_devices.yaml` is used to store smart devices' hostnames.
 Jarvis supports `MagicHome` for [lights](https://www.amazon.com/gp/product/B08C7GY43L), `LGWebOS` and `Roku` for TVs.
 
+- TV hostnames should include the brand name [`LG`/`Roku`] to distinguish the modules accordingly.
+  - This will be set by default, if yours doesn't include the brand name change it in the TV settings.
+
+- For `Roku` TVs, make sure the `Bandwidth saver` feature is turned off under,
+    ```text
+    Settings/Network/Bandwidth saver >> Off
+    ```
+
+- For first time users on `LGWebOS` TVs, there will be a prompt on the TV to accept the connection request. 
+  - Once the connection request is accepted a client key will be generated and logged.
+  - Please make sure to store this in `smart_devices.yaml` file to avoid repeated connection prompt.
+
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary>
 
 - TV identifiers should have the word `tv` to distinguish between lights and tv.
-- TV hostnames should either have `LG` or `Roku` to distinguish the modules accordingly.
-- The name used in the keys will be the identifier.
+- The name used in the keys (for both lights and tv) will be the identifier when an action is requested.
 - Lights should be a dictionary of identifier and a list of hostnames.
 - TVs should be a nested dictionary of multiple parameters.
 - The source file (`smart_devices.yaml`) should be as following:
