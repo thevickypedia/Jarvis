@@ -56,119 +56,189 @@ Keywords Classifier
 
 ----------Jarvis API----------
 ==============================
-API Handler
-===========
+API - Application
+=================
 
 .. automodule:: api.fast
    :members:
    :undoc-members:
 
-API Squire
-==========
-
-.. automodule:: api.squire
-   :members:
-   :undoc-members:
-
-API Authenticator
-=================
-
-.. automodule:: api.authenticator
-   :members:
-   :undoc-members:
-
-API Server
-==========
+API - Server
+============
 
 .. automodule:: api.server
    :members:
    :undoc-members:
 
-API Models
-==========
+Modals - Authenticator
+======================
 
-.. autoclass:: api.models.OfflineCommunicatorModal(pydantic.BaseModel)
+.. automodule:: api.modals.authenticator
+   :members:
+   :undoc-members:
+
+Modals - Models
+===============
+
+.. autoclass:: api.modals.models.OfflineCommunicatorModal(pydantic.BaseModel)
    :members:
    :exclude-members:
 
 ====
 
-.. autoclass:: api.models.StockMonitorModal(pydantic.BaseModel)
+.. autoclass:: api.modals.models.StockMonitorModal(pydantic.BaseModel)
    :members:
    :exclude-members:
 
 ====
 
-.. autoclass:: api.models.CameraIndexModal(pydantic.BaseModel)
+.. autoclass:: api.modals.models.CameraIndexModal(pydantic.BaseModel)
    :members:
    :exclude-members:
 
 ====
 
-.. autoclass:: api.models.SpeechSynthesisModal(pydantic.BaseModel)
+.. autoclass:: api.modals.models.SpeechSynthesisModal(pydantic.BaseModel)
    :members:
    :exclude-members:
 
-API Settings
-============
+Modals - Settings
+=================
 
-.. autoclass:: api.settings.Robinhood(pydantic.BaseModel)
+.. autoclass:: api.modals.settings.Robinhood(pydantic.BaseModel)
    :members:
    :undoc-members:
 
 ====
 
-.. autoclass:: api.settings.Surveillance(pydantic.BaseConfig)
+.. autoclass:: api.modals.settings.Surveillance(pydantic.BaseConfig)
    :members:
    :undoc-members:
 
 ====
 
-.. autoclass:: api.settings.StockMonitor(pydantic.BaseModel)
+.. autoclass:: api.modals.settings.StockMonitor(pydantic.BaseModel)
    :members:
    :undoc-members:
 
 ====
 
-.. automodule:: api.settings.ConnectionManager
+.. automodule:: api.modals.settings.ConnectionManager
    :members:
    :undoc-members:
 
-API Timeout OTPs
+Routers - Basic
+===============
+
+.. automodule:: api.routers.basics
+   :members:
+   :undoc-members:
+
+Routers - FileIO
 ================
 
-.. automodule:: api.timeout_otp
+.. automodule:: api.routers.fileio
    :members:
    :undoc-members:
 
-API Robinhood
-=============
-
-.. automodule:: api.report_gatherer
-   :members:
-   :undoc-members:
-
-API StockMonitor
+Routers - Helper
 ================
 
-.. automodule:: api.stock_monitor
+.. automodule:: api.routers.helper
    :members:
    :undoc-members:
 
-API Scheduler
-=============
+Routers - Investment
+====================
 
-.. automodule:: api.scheduler.MarketHours
+.. automodule:: api.routers.investment
+   :members:
+   :undoc-members:
+
+Routers - Offline
+=================
+
+.. automodule:: api.routers.offline
+   :members:
+   :undoc-members:
+
+Routers - SpeechSynthesis
+=========================
+
+.. automodule:: api.routers.speech_synthesis
+   :members:
+   :undoc-members:
+
+Routers - StockMonitor
+======================
+
+.. automodule:: api.routers.stock_monitor
+   :members:
+   :undoc-members:
+
+Routers - Surveillance
+======================
+
+.. automodule:: api.routers.surveillance
+   :members:
+   :undoc-members:
+
+Squire - Logger
+===============
+
+.. automodule:: api.squire.logger
+   :members:
+   :undoc-members:
+
+Squire - Scheduler
+==================
+
+.. automodule:: api.squire.scheduler.MarketHours
    :members:
    :exclude-members: hours
 
-.. automodule:: api.scheduler.rh_cron_schedule
+.. automodule:: api.squire.scheduler.rh_cron_schedule
    :members:
    :exclude-members:
 
-.. automodule:: api.scheduler.sm_cron_schedule
+.. automodule:: api.squire.scheduler.sm_cron_schedule
    :members:
    :exclude-members:
+
+Squire - StockMonitor
+=====================
+
+.. automodule:: api.squire.stockmonitor_squire
+   :members:
+   :undoc-members:
+
+Squire - Surveillance
+=====================
+
+.. automodule:: api.squire.surveillance_squire
+   :members:
+   :undoc-members:
+
+Squire - Timeout OTP
+====================
+
+.. automodule:: api.squire.timeout_otp
+   :members:
+   :undoc-members:
+
+Triggers - StockMonitor
+=======================
+
+.. automodule:: api.triggers.stock_monitor
+   :members:
+   :undoc-members:
+
+Triggers - StockReport
+======================
+
+.. automodule:: api.triggers.stock_report
+   :members:
+   :undoc-members:
 
 ----------Executors----------
 =============================

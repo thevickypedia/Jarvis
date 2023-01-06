@@ -213,7 +213,7 @@ def tunneling() -> NoReturn:
     if os.path.exists(f"{models.env.home}/JarvisHelper/venv/bin/activate"):
         logger.info('Initiating ngrok connection for offline communicator.')
         initiate = f'cd {models.env.home}/JarvisHelper && ' \
-                   f'source venv/bin/activate && export host={models.env.offline_host} ' \
+                   f'source venv/bin/activate && export HOST={models.env.offline_host} ' \
                    f'export PORT={models.env.offline_port} && python forever_ngrok.py'
         os.system(f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null""")
     else:

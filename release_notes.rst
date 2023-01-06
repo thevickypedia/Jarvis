@@ -1,6 +1,17 @@
 Release Notes
 =============
 
+6.9.4 (01/05/2023)
+------------------
+- Restructure Jarvis API
+- Setup dedicated logger module for API
+- Send OTP from stock-monitor endpoint to Jarvis via headers
+- Break giant application into modules with routes
+- Support updating keywords for Jarvis API
+- Set stock_monitor.py to run on weekends
+- Avoid reading keywords.yaml file when it's not modified
+- Update README.md and docs
+
 6.9.3 (01/04/2023)
 ------------------
 - Run multiple commands concurrently when sent via offline communicators

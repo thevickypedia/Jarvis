@@ -1,3 +1,5 @@
+"""Runs on a cron schedule every 15 minutes during weekdays."""
+
 import logging
 import math
 import os
@@ -14,8 +16,7 @@ from webull import webull
 
 sys.path.insert(0, os.getcwd())
 
-from api import squire  # noqa
-from modules.logger import config  # noqa
+from api.squire import stockmonitor_squire  # noqa
 from modules.models import models  # noqa
 from modules.templates import templates  # noqa
 from modules.utils import support  # noqa
@@ -79,7 +80,7 @@ class StockMonitor:
         Args:
             logger: Takes the class ``logging.Logger`` as an argument.
         """
-        self.data = squire.get_stock_userdata()
+        self.data = stockmonitor_squire.get_stock_userdata()
         self.webull = webull()
         self.logger = logger
         self.ticker_grouped = defaultdict(list)
@@ -227,7 +228,7 @@ class StockMonitor:
                 self.logger.info(f'Email has been sent to {k!r}')
                 for entry in datastore['removals']:
                     self.logger.info(f"Removing {entry!r} from database.")
-                    squire.delete_stock_userdata(data=entry)
+                    stockmonitor_squire.delete_stock_userdata(data=entry)
             else:
                 self.logger.error(response.json())
             [os.remove(stock_graph) for stock_graph in datastore['attachments'] if os.path.isfile(stock_graph)]
@@ -235,11 +236,10 @@ class StockMonitor:
 
 if __name__ == '__main__':
     from executors.crontab import LOG_FILE
+    from modules.logger import config
     from modules.logger.custom_logger import logger as main_logger
 
-    filename = config.multiprocessing_logger(filename=LOG_FILE)
+    config.multiprocessing_logger(filename=LOG_FILE)
+    for log_filter in main_logger.filters:
+        main_logger.removeFilter(filter=log_filter)
     StockMonitor(logger=main_logger).send_notification()
-
-    with open(filename, 'a') as file:
-        file.seek(0)
-        file.write('\n')

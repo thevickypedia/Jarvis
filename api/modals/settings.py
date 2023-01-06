@@ -1,5 +1,5 @@
 from multiprocessing import Process, Queue
-from typing import Dict, Hashable, List, NoReturn, Tuple
+from typing import Dict, Hashable, List, NoReturn, Optional, Tuple
 
 from fastapi import WebSocket
 from pydantic import BaseConfig, BaseModel, EmailStr, HttpUrl
@@ -25,8 +25,8 @@ class StockMonitorHelper(BaseModel):
 
     """
 
-    otp: Dict[EmailStr, Hashable] = {}
-    validated: List[EmailStr] = []
+    otp_sent: Dict[EmailStr, Hashable] = {}
+    otp_recd: Dict[EmailStr, Optional[Hashable]] = {}
 
 
 stock_monitor_helper = StockMonitorHelper()

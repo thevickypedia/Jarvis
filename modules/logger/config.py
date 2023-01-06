@@ -49,7 +49,7 @@ def multiprocessing_logger(filename: str, log_format: Formatter = None) -> str:
 
 
 class APIConfig(BaseModel):
-    """Custom log configuration to redirect uvicorn logs to a log file.
+    """Custom log configuration to redirect all uvicorn logs to individual log files.
 
     >>> APIConfig
 

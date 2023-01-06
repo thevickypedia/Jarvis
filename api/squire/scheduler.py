@@ -32,7 +32,7 @@ class MarketHours:
 
 
 def rh_cron_schedule(extended: bool = False) -> str:
-    """Creates a cron expression for ``report_gatherer.py``. Determines cron schedule based on current timezone.
+    """Creates a cron expression for ``stock_report.py``. Determines cron schedule based on current timezone.
 
     Args:
         extended: Uses extended hours.
@@ -45,7 +45,7 @@ def rh_cron_schedule(extended: bool = False) -> str:
         str:
         A crontab expression running every 30 minutes during market hours based on the current timezone.
     """
-    command = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join('api', 'report_gatherer.py')}"
+    command = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join('api', 'triggers', 'stock_report.py')}"
     tz = util.get_timezone()
     if tz not in MarketHours.hours['REGULAR'] or tz not in MarketHours.hours['EXTENDED']:
         tz = 'OTHER'
@@ -54,12 +54,17 @@ def rh_cron_schedule(extended: bool = False) -> str:
     return f"*/30 {start}-{end} * * 1-5 {command}"
 
 
-def sm_cron_schedule() -> str:
-    """Creates a cron expression for ``stock_monitor``.
+def sm_cron_schedule(include_weekends: bool = True) -> str:
+    """Creates a cron expression for ``stock_monitor.py``.
+
+    Args:
+        include_weekends: Takes a boolean flag to run cron schedule over the weekends.
 
     Returns:
         str:
         A crontab expression running every 15 minutes.
     """
-    command = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join('api', 'stock_monitor.py')}"
+    command = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join('api', 'triggers', 'stock_monitor.py')}"
+    if include_weekends:
+        return f"*/15 * * * * {command}"
     return f"*/15 * * * 1-5 {command}"
