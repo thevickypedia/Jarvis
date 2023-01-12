@@ -5,6 +5,7 @@ import wikipedia
 from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
+from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import shared
 
@@ -20,7 +21,7 @@ def wikipedia_() -> None:
             try:
                 result = wikipedia.summary(keyword)
             except wikipedia.DisambiguationError as error:
-                sys.stdout.write(f"\r{error}")
+                logger.error(error)
                 speaker.speak(text=f"Your keyword has multiple results {models.env.title}. {' '.join(error.options)}"
                                    "Please pick one and try again.")
                 if shared.called_by_offline:
@@ -29,7 +30,8 @@ def wikipedia_() -> None:
                 if not (keyword1 := listener.listen()):
                     return
                 result = wikipedia.summary(keyword1)
-            except wikipedia.PageError:
+            except wikipedia.PageError as error:
+                logger.error(error)
                 speaker.speak(text=f"I'm sorry {models.env.title}! I didn't get a response for the phrase: {keyword}.")
                 return
             # stops with two sentences before reading whole passage

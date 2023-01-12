@@ -38,10 +38,10 @@ def telegram_api() -> NoReturn:
         logger.info("Restarting message poll to take over..")
         telegram_api()
     except EgressErrors as error:
-        logger.critical(error)
+        logger.error(error)
         FAILED_CONNECTIONS['count'] += 1
         if FAILED_CONNECTIONS['count'] > 3:
-            logger.critical("Couldn't recover from connection error. Restarting current process.")
+            logger.critical("ATTENTION::Couldn't recover from connection error. Restarting current process.")
             restart_control(quiet=True)
         else:
             logger.info(f"Restarting in {FAILED_CONNECTIONS['count'] * 10} seconds.")

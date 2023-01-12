@@ -54,6 +54,7 @@ def offline_compatible() -> List[str]:
                      keywords.send_notification,
                      keywords.television,
                      keywords.automation,
+                     keywords.background_tasks,
                      keywords.version,
                      conversation.age,
                      conversation.about_me,

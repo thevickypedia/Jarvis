@@ -101,7 +101,7 @@ class ControlConnection:
         if result == f'There is no profile "{models.env.wifi_ssid}" assigned to the specified interface.':
             return self.win_create_new_connection()
         elif result != "Connection request was completed successfully.":
-            logger.critical(result)
+            logger.critical(f"ATTENTION::{result}")
             return False
         return True
 

@@ -53,7 +53,7 @@ def check_existing() -> bool:
         except EgressErrors as error:
             logger.error(error)
             if not kill_port_pid(port=models.env.speech_synthesis_port):
-                logger.critical('Failed to kill existing PID. Attempting to re-create session.')
+                logger.critical('ATTENTION::Failed to kill existing PID. Attempting to re-create session.')
 
 
 def speech_synthesizer() -> NoReturn:

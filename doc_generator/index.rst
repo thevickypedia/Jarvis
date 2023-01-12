@@ -193,17 +193,10 @@ Squire - Logger
 Squire - Scheduler
 ==================
 
-.. automodule:: api.squire.scheduler.MarketHours
+.. automodule:: api.squire.scheduler
    :members:
    :exclude-members: hours
 
-.. automodule:: api.squire.scheduler.rh_cron_schedule
-   :members:
-   :exclude-members:
-
-.. automodule:: api.squire.scheduler.sm_cron_schedule
-   :members:
-   :exclude-members:
 
 Squire - StockMonitor
 =====================
@@ -694,13 +687,13 @@ Config
 
 .. autoclass:: modules.logger.config.APIConfig(pydantic.BaseModel)
    :members:
-   :exclude-members:
+   :exclude-members: _abc_impl
 
 .. autoclass:: modules.logger.config.AddProcessName(logging.Filter)
    :members:
    :exclude-members:
 
-.. automodule:: modules.logger.config.multiprocessing_logger
+.. autoclass:: modules.logger.config.multiprocessing_logger
    :members:
    :exclude-members:
 
@@ -837,19 +830,6 @@ Wi-Fi Connector
 ===============
 
 .. automodule:: modules.wifi.connector
-   :members:
-   :undoc-members:
-
-Windows
-=======
-
-.. automodule:: modules.windows.win_notifications
-   :members:
-   :undoc-members:
-
-====
-
-.. automodule:: modules.windows.win_volume
    :members:
    :undoc-members:
 

@@ -37,7 +37,7 @@ def rewrite_keywords(init: bool = False) -> NoReturn:
                 data = None
 
         if not data:  # Either an error occurred when reading or a manual deletion
-            if data is {} and init:  # ignore when None, since a warning will be displayed already
+            if data is {} and not init:  # ignore when None, since a warning would have been displayed already
                 warnings.warn(
                     f"\nSomething went wrong. {keywords_dst!r} appears to be empty."
                     f"\nRe-sourcing {keywords_dst!r} from base."
@@ -46,7 +46,7 @@ def rewrite_keywords(init: bool = False) -> NoReturn:
             keywords.keywords = util.Dict2Class(data)
             return
         else:  # Mismatch in keys
-            if init:
+            if not init:
                 warnings.warn(
                     "\nData mismatch between base keywords and custom keyword mapping."
                     "\nPlease note: This mapping file is only to change the value for keywords, not the key(s) itself."

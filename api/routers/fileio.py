@@ -1,6 +1,6 @@
 import os
 from http import HTTPStatus
-from typing import NoReturn, Set
+from typing import Dict, List, NoReturn
 
 from fastapi import APIRouter, UploadFile
 from fastapi.responses import FileResponse
@@ -14,20 +14,21 @@ router = APIRouter()
 
 
 @router.get(path="/list-files", dependencies=OFFLINE_PROTECTOR)
-async def list_files() -> Set[str]:
-    """Get all YAML files from fileio directory.
+async def list_files() -> Dict[str, List[str]]:
+    """Get all YAML files from fileio and all log files from logs directory.
 
     Returns:
 
-        Set:
-        Set of files that can be downloaded or uploaded.
+        Dict:
+        Dictionary of files that can be downloaded or uploaded.
     """
-    return {f for f in os.listdir(models.fileio.root) if f.endswith('.yaml')}
+    return {**{"logs": [file_ for __path, __directory, __file in os.walk('logs') for file_ in __file]},
+            **{"fileio": [f for f in os.listdir(models.fileio.root) if f.endswith('.yaml')]}}
 
 
 @router.get(path="/get-file", response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
 async def get_file(filename: str) -> FileResponse:
-    """Download a particular YAML file from fileio directory.
+    """Download a particular YAML file from fileio or log file from logs directory.
 
     Args:
 
@@ -36,14 +37,21 @@ async def get_file(filename: str) -> FileResponse:
     Returns:
 
         FileResponse:
-        Returns a download-able version of the file.
+        Returns the FileResponse object of the file.
     """
     allowed_files = await list_files()
-    if filename not in allowed_files:
+    if filename not in allowed_files["fileio"] + allowed_files["logs"]:
         raise APIResponse(status_code=HTTPStatus.NOT_ACCEPTABLE.real,
                           detail=f"{filename!r} is either unavailable or not allowed.\n"
                                  f"Downloadable files:{allowed_files}")
-    target_file = os.path.join(models.fileio.root, filename)
+    if filename.endswith(".log"):
+        if path := [__path for __path, __directory, __file in os.walk("logs") if filename in __file]:
+            target_file = os.path.join(path[0], filename)
+        else:
+            logger.critical(f"ATTENTION::{filename!r} wasn't found.")
+            raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.__dict__['phrase'])
+    else:
+        target_file = os.path.join(models.fileio.root, filename)
     logger.info(f"Requested file: {filename!r} for download.")
     return FileResponse(status_code=HTTPStatus.OK.real, path=target_file, media_type="text/yaml", filename=filename)
 
@@ -57,10 +65,10 @@ async def put_file(file: UploadFile) -> NoReturn:
         file: Takes the UploadFile object as an argument.
     """
     allowed_files = await list_files()
-    if file.filename not in allowed_files:
+    if file.filename not in allowed_files["fileio"]:
         raise APIResponse(status_code=HTTPStatus.NOT_ACCEPTABLE.real,
                           detail=f"{file.filename!r} is not allowed for an update.\n"
-                                 f"Upload-able files:{allowed_files}")
+                                 f"Upload-able files:{allowed_files['fileio']}")
     logger.info(f"Requested file: {file.filename!r} for upload.")
     content = await file.read()
     with open(os.path.join(models.fileio.root, file.filename), "wb") as f_stream:

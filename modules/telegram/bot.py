@@ -306,9 +306,9 @@ class TelegramBot:
         request_time = time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(payload['date']))
         logger.warning(f"Request timed out when {payload['from']['username']} requested {payload.get('text')}")
         logger.warning(f"Request time: {request_time}")
-        if "bypass" in payload.get('text', '').lower() and not \
+        if "override" in payload.get('text', '').lower() and not \
                 word_match(phrase=payload.get('text', ''), match_list=keywords.keywords.kill):
-            logger.info(f"{payload['from']['username']} requested a timeout bypass.")
+            logger.info(f"{payload['from']['username']} requested a timeout override.")
             return True
         else:
             self.reply_to(payload=payload,
@@ -316,7 +316,7 @@ class TelegramBot:
                                    f"Processed: {time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(time.time()))}")
 
     def verify_stop(self, payload: dict) -> bool:
-        """Stops Jarvis by setting stop flag in ``fileio.base_db`` if stop is requested by the user with a bypass flag.
+        """Stops Jarvis by setting stop flag in ``base_db`` if stop is requested by the user with an override flag.
 
         Args:
             payload: Payload received, to extract information from.
@@ -327,8 +327,8 @@ class TelegramBot:
         """
         if not word_match(phrase=payload.get('text', ''), match_list=keywords.keywords.kill):
             return True
-        if "bypass" in payload.get('text', '').lower():
-            logger.info(f"{payload['from']['username']} requested a STOP bypass.")
+        if "override" in payload.get('text', '').lower():
+            logger.info(f"{payload['from']['username']} requested a STOP override.")
             self.reply_to(payload=payload, response=f"Shutting down now {models.env.title}!\n{support.exit_message()}")
             with db.connection:
                 cursor = db.connection.cursor()
@@ -336,7 +336,7 @@ class TelegramBot:
                 cursor.connection.commit()
         else:
             self.reply_to(payload=payload,
-                          response="Jarvis cannot be stopped via offline communication without a 'bypass' flag.")
+                          response="Jarvis cannot be stopped via offline communication without a 'override' flag.")
 
     def process_voice(self, payload: dict) -> None:
         """Processes the payload received after checking for authentication.
@@ -406,7 +406,7 @@ class TelegramBot:
             return
         if not self.verify_stop(payload=payload):
             return
-        payload['text'] = payload.get('text', '').replace('bypass', '').replace('BYPASS', '')
+        payload['text'] = payload.get('text', '').replace('override', '').replace('OVERRIDE', '')
         if word_match(phrase=payload.get('text').lower(), match_list=["hey", "hi", "hola", "what's up",
                                                                       "ssup", "whats up", "hello", "howdy",
                                                                       "hey", "chao", "hiya", "aloha"], strict=True):

@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://vigneshrao.com/Jarvis/logo.png" width="371px" height="350px">
 </p>
-<h2 align="center">Natural Language User Interface Program with Python</h2>
+<h2 align="center">Natural Language User Interface</h2>
 
 [![ForTheBadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 [![ForTheBadge built-with-swag](http://ForTheBadge.com/images/badges/built-with-swag.svg)](https://github.com/thevickypedia/Jarvis)
@@ -58,6 +58,7 @@
 [![GitHub Repo created](https://img.shields.io/date/1599432310)](https://api.github.com/repos/thevickypedia/Jarvis)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/y/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
 [![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+[![GitHub last release](https://img.shields.io/github/release-date/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
 
 **Development and Maintenance**
 
@@ -69,6 +70,7 @@
 
 **Reach Out**
 
+[![StackOverflow](https://img.shields.io/stackexchange/stackoverflow/r/13691532)](https://stackoverflow.com/users/13691532/vignesh-rao)
 [![Ask Me | Anything ](https://img.shields.io/badge/Ask%20me-Anything-1abc9c.svg)](https://vigneshrao.com/contact)
 
 ## Prerequisites
@@ -103,7 +105,7 @@
 >   - Text to Speech: [speak.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/speaker/speak.py)
 >   - Speech to Text: [recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py)
 
-   - Download the latest stable release from [pypi](https://github.com/thevickypedia/Jarvis/archive/master.zip) or the latest un released version from [github](https://github.com/thevickypedia/Jarvis/archive/refs/heads/master.zip)
+   - Download the latest version of Jarvis from [pypi](https://github.com/thevickypedia/Jarvis/archive/master.zip) or [github](https://github.com/thevickypedia/Jarvis/archive/refs/heads/master.zip)
    - Navigate into the downloaded `jarvis` or `jarvis-master` directory.
    - Run the following commands in a command-line/terminal:
      1. `python3 -m venv venv` - Creates a virtual env named `venv`
