@@ -56,6 +56,7 @@ def offline_compatible() -> List[str]:
                      keywords.automation,
                      keywords.background_tasks,
                      keywords.version,
+                     keywords.simulation,
                      conversation.age,
                      conversation.about_me,
                      conversation.capabilities,

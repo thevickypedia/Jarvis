@@ -16,7 +16,7 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str, clien
     """Controller for Roku or LG tv actions.
 
     Args:
-        phrase: Takes the voice recognized statement as argument.
+        phrase: Takes the phrase spoken as an argument.
         tv_ip: IP address of the television.
         identifier: String to control roku or LG WebOS.
         nickname: Name as in the source yaml file.

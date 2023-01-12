@@ -1,5 +1,4 @@
 import json
-import sys
 import urllib.error
 import urllib.request
 from datetime import datetime
@@ -35,7 +34,6 @@ def weather(phrase: str = None) -> None:
                                                                'Wednesday', 'Thursday', 'Friday', 'Saturday'))
         phrase = phrase.lower()
     if place:
-        sys.stdout.write(f'\rGetting your weather info at {place}')
         logger.info(f'Identified place: {place}')
         desired_location = geo_locator.geocode(place)
         if not desired_location:
@@ -51,7 +49,6 @@ def weather(phrase: str = None) -> None:
         lat = located.latitude
         lon = located.longitude
     else:
-        sys.stdout.write('\rGetting your weather info')
         try:
             with open(models.fileio.location) as file:
                 current_location = yaml.load(stream=file, Loader=yaml.FullLoader)

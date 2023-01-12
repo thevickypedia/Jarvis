@@ -36,7 +36,7 @@ def voice_changer(phrase: str = None) -> None:
     """Speaks to the user with available voices and prompts the user to choose one.
 
     Args:
-        phrase: Initiates changing voices with the model name. If none, defaults to ``Daniel``
+        phrase: Takes the phrase spoken as an argument.
     """
     if not phrase:
         voice_default()

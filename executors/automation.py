@@ -17,7 +17,7 @@ def automation_handler(phrase: str) -> NoReturn:
     """Handles automation file resets by renaming it to tmp if requested to disable.
 
     Args:
-        phrase: Takes the recognized phrase as an argument.
+        phrase: Takes the phrase spoken as an argument.
     """
     if "enable" in phrase.lower():
         if os.path.isfile(models.fileio.tmp_automation):

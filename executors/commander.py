@@ -121,7 +121,7 @@ def initiator(phrase: str = None, should_return: bool = False) -> None:
     """When invoked by ``Activator``, checks for the right keyword to wake up and gets into action.
 
     Args:
-        phrase: Takes the processed string from ``SentryMode`` as input.
+        phrase: Takes the phrase spoken as an argument.
         should_return: Flag to return the function if nothing is heard.
     """
     if not phrase and should_return:

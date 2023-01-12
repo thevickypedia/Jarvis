@@ -80,7 +80,7 @@ def ip_info(phrase: str) -> None:
     """Gets IP address of the host machine.
 
     Args:
-        phrase: Takes the spoken phrase an argument and tells the public IP if requested.
+        phrase: Takes the phrase spoken as an argument.
     """
     if "public" in phrase.lower():
         if not ip_address():

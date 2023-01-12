@@ -1,7 +1,6 @@
 """Initiates robinhood client to get the portfolio details."""
 
 import math
-import sys
 
 from pyrh import Robinhood
 from pyrh.exceptions import InvalidInstrumentId, InvalidTickerSymbol
@@ -70,7 +69,6 @@ def robinhood() -> None:
         support.no_env_vars()
         return
 
-    sys.stdout.write("\rGetting your investment details.")
     rh = Robinhood()
     rh.login(username=models.env.robinhood_user, password=models.env.robinhood_pass, qr_code=models.env.robinhood_qr)
     raw_result = rh.positions()

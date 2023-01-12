@@ -472,6 +472,19 @@ Date format should match exactly as described below.</p>
 </pre></div>
 </div>
 </details></section>
+<section id="simulation-setup-optional">
+<h2>Simulation Setup [Optional]<a class="headerlink" href="#simulation-setup-optional" title="Permalink to this heading">¶</a></h2>
+<p>Jarvis can execute <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/offline/compatibles.py">offline compatible</a> tasks
+as a simulation to test the required functions and send an email with the results. Uses an <code class="docutils literal notranslate"><span class="pre">simulation.yaml</span></code> file as source which should be stored
+within the directory <code class="docutils literal notranslate"><span class="pre">fileio</span></code></p>
+<details>
+<summary><strong><i>Setup Instructions</i></strong></summary><p>The YAML file should be a list of phrases within a dictionary that looks like the below.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">meeting_event</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get me the events from my calendar</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">what meetings do I have today</span><span class="w"></span>
+</pre></div>
+</div>
+</details></section>
 </section>
 <section id="feature-s-implementation">
 <h1>Feature(s) Implementation<a class="headerlink" href="#feature-s-implementation" title="Permalink to this heading">¶</a></h1>
@@ -542,6 +555,7 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <li><a class="reference internal" href="#contacts">Contacts</a></li>
 <li><a class="reference internal" href="#smart-devices">Smart Devices</a></li>
 <li><a class="reference internal" href="#automation-setup-optional">Automation Setup [Optional]</a></li>
+<li><a class="reference internal" href="#simulation-setup-optional">Simulation Setup [Optional]</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#feature-s-implementation">Feature(s) Implementation</a></li>

@@ -336,6 +336,9 @@ class FileIO(BaseModel):
     smart_devices: FilePath = os.path.join('fileio', 'smart_devices.yaml')
     contacts: FilePath = os.path.join('fileio', 'contacts.yaml')
 
+    # Simulation
+    simulation: FilePath = os.path.join('fileio', 'simulation.yaml')
+
     # Databases
     base_db: FilePath = os.path.join('fileio', 'database.db')
     task_db: FilePath = os.path.join('fileio', 'tasks.db')

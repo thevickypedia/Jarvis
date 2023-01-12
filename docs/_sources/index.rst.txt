@@ -431,6 +431,13 @@ Robinhood
    :members:
    :undoc-members:
 
+Simulator
+=========
+
+.. automodule:: executors.simulator
+   :members:
+   :undoc-members:
+
 System
 ======
 

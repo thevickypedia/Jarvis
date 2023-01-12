@@ -37,7 +37,7 @@ async def garage_controller(execute: str, phrase: str) -> Union[Dict, NoReturn]:
     """Create an aiohttp session and run an operation on garage door.
 
     Args:
-        phrase: Takes the recognized phrase as an argument.
+        phrase: Takes the phrase spoken as an argument.
         execute: Takes the operation to be performed as an argument.
 
     Raises:

@@ -27,7 +27,7 @@ from executors.others import (abusive, apps, facts, flip_a_coin, google_home,
 from executors.remind import reminder
 from executors.robinhood import robinhood
 from executors.system import system_info, system_vitals
-from executors.todo_list import add_todo, delete_todo, delete_todo_items, todo
+from executors.todo_list import todo
 from executors.tv import television
 from executors.unconditional import alpha, google_maps
 from executors.volume import volume
@@ -53,7 +53,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
     Uses the keywords to match pre-defined conditions and trigger the appropriate function which has dedicated task.
 
     Args:
-        phrase: Takes the voice recognized statement as argument.
+        phrase: Takes the phrase spoken as an argument.
         should_return: A boolean flag sent by ``Activator`` to indicate that the ``else`` part shouldn't be executed.
 
     Raises:
@@ -65,7 +65,6 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
         Boolean True only when asked to sleep for conditioned sleep message.
     """
     keywords = keywords_mod.keywords
-    todo_checks = ['to do', 'to-do', 'todo']
 
     if "*" in phrase:
         abusive(phrase)
@@ -137,20 +136,8 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
     elif word_match(phrase=phrase, match_list=keywords.meaning):
         meaning(phrase)
 
-    elif word_match(phrase=phrase, match_list=keywords.delete_todo) and 'items' in phrase.lower() and \
-            word_match(phrase=phrase, match_list=todo_checks):
-        delete_todo_items()
-
     elif word_match(phrase=phrase, match_list=keywords.todo):
-        todo()
-
-    elif word_match(phrase=phrase, match_list=keywords.add_todo) and \
-            word_match(phrase=phrase, match_list=todo_checks):
-        add_todo()
-
-    elif word_match(phrase=phrase, match_list=keywords.delete_todo) and \
-            word_match(phrase=phrase, match_list=todo_checks):
-        delete_todo()
+        todo(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.distance) and \
             not word_match(phrase=phrase, match_list=keywords.avoid):
@@ -234,6 +221,10 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
 
     elif word_match(phrase=phrase, match_list=keywords.version):
         version()
+
+    elif word_match(phrase=phrase, match_list=keywords.simulation):
+        from executors.simulator import run_simulation
+        run_simulation()
 
     elif word_match(phrase=phrase, match_list=conversation.form):
         speak(text="I am a program, I'm without form.")

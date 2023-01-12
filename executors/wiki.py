@@ -1,5 +1,3 @@
-import sys
-
 import wikipedia
 
 from executors.word_match import word_match
@@ -17,7 +15,6 @@ def wikipedia_() -> None:
         if word_match(phrase=keyword, match_list=keywords.keywords.exit_):
             return
         else:
-            sys.stdout.write(f"\rGetting your info from Wikipedia API for {keyword}")
             try:
                 result = wikipedia.summary(keyword)
             except wikipedia.DisambiguationError as error:

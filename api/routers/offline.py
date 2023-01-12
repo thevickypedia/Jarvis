@@ -3,7 +3,6 @@ import os
 import string
 import traceback
 from http import HTTPStatus
-from multiprocessing.pool import ThreadPool
 from threading import Thread
 from typing import NoReturn, Union
 
@@ -71,7 +70,6 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
 
     if ' and ' in command and not word_match(phrase=command, match_list=keywords.keywords.avoid) and \
             not word_match(phrase=command, match_list=multiexec):
-        threads = []
         and_response = ""
         for each in command.split(' and '):
             if not word_match(phrase=each, match_list=compatibles.offline_compatible()):
@@ -79,14 +77,12 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
                 and_response += f'{each!r} is not a part of off-line communicator compatible request.\n\n' \
                                 'Please try an instruction that does not require an user interaction.'
             else:
-                threads.append(ThreadPool(processes=1).apply_async(func=offline_communicator, args=(each,)))
-        for thread in threads:
-            try:
-                and_response += thread.get() + "\n"
-            except Exception as error:
-                logger.error(error)
-                logger.error(traceback.format_exc())
-                and_response += error.__str__()
+                try:
+                    and_response += f"{offline_communicator(command=each)}\n"
+                except Exception as error:
+                    logger.error(error)
+                    logger.error(traceback.format_exc())
+                    and_response += error.__str__()
         logger.info(f"Response: {and_response.strip()}")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=and_response.strip())
 

@@ -11,7 +11,7 @@ import string
 import uuid
 from datetime import datetime
 from difflib import SequenceMatcher
-from typing import Hashable, List, Optional
+from typing import Hashable
 
 import inflect
 
@@ -27,68 +27,6 @@ class Dict2Class:
         Args:
             dictionary: Takes the dictionary to be converted as an argument.
         """
-        # For keywords
-        self.add_todo: Optional[List[str]] = None
-        self.apps: Optional[List[str]] = None
-        self.automation: Optional[List[str]] = None
-        self.avoid: Optional[List[str]] = None
-        self.background_tasks: Optional[List[str]] = None
-        self.brightness: Optional[List[str]] = None
-        self.car: Optional[List[str]] = None
-        self.current_date: Optional[List[str]] = None
-        self.current_time: Optional[List[str]] = None
-        self.delete_todo: Optional[List[str]] = None
-        self.directions: Optional[List[str]] = None
-        self.distance: Optional[List[str]] = None
-        self.events: Optional[List[str]] = None
-        self.exit_: Optional[List[str]] = None
-        self.faces: Optional[List[str]] = None
-        self.facts: Optional[List[str]] = None
-        self.flip_a_coin: Optional[List[str]] = None
-        self.garage: Optional[List[str]] = None
-        self.github: Optional[List[str]] = None
-        self.google_home: Optional[List[str]] = None
-        self.guard_disable: Optional[List[str]] = None
-        self.guard_enable: Optional[List[str]] = None
-        self.ip_info: Optional[List[str]] = None
-        self.jokes: Optional[List[str]] = None
-        self.kill: Optional[List[str]] = None
-        self.kill_alarm: Optional[List[str]] = None
-        self.lights: Optional[List[str]] = None
-        self.locate: Optional[List[str]] = None
-        self.locate_places: Optional[List[str]] = None
-        self.location: Optional[List[str]] = None
-        self.meaning: Optional[List[str]] = None
-        self.meetings: Optional[List[str]] = None
-        self.music: Optional[List[str]] = None
-        self.news: Optional[List[str]] = None
-        self.ngrok: Optional[List[str]] = None
-        self.notes: Optional[List[str]] = None
-        self.ok: Optional[List[str]] = None
-        self.photo: Optional[List[str]] = None
-        self.read_gmail: Optional[List[str]] = None
-        self.reminder: Optional[List[str]] = None
-        self.repeat: Optional[List[str]] = None
-        self.report: Optional[List[str]] = None
-        self.restart_control: Optional[List[str]] = None
-        self.robinhood: Optional[List[str]] = None
-        self.send_notification: Optional[List[str]] = None
-        self.sentry: Optional[List[str]] = None
-        self.set_alarm: Optional[List[str]] = None
-        self.shutdown: Optional[List[str]] = None
-        self.sleep_control: Optional[List[str]] = None
-        self.speed_test: Optional[List[str]] = None
-        self.system_info: Optional[List[str]] = None
-        self.system_vitals: Optional[List[str]] = None
-        self.television: Optional[List[str]] = None
-        self.todo: Optional[List[str]] = None
-        self.version: Optional[List[str]] = None
-        self.voice_changer: Optional[List[str]] = None
-        self.volume: Optional[List[str]] = None
-        self.vpn_server: Optional[List[str]] = None
-        self.weather: Optional[List[str]] = None
-        self.wikipedia_: Optional[List[str]] = None
-
         for key in dictionary:
             setattr(self, key, dictionary[key])
 

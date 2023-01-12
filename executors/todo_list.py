@@ -1,5 +1,5 @@
 import json
-import sys
+from typing import NoReturn
 
 from executors.word_match import word_match
 from modules.audio import listener, speaker
@@ -12,9 +12,30 @@ tdb = database.Database(database=models.fileio.task_db)
 tdb.create_table(table_name="tasks", columns=["category", "item"])
 
 
-def todo() -> None:
+def todo(phrase: str) -> None:
+    """Figure out the task to be executed on the DB and call the appropriate function.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+    """
+    if "plan" in phrase.lower():
+        get_todo()
+        return
+    if shared.called_by_offline:
+        speaker.speak(text="Todo actions are limited to live conversations.")
+        return
+    if "add" in phrase.lower():
+        add_todo()
+        return
+    if word_match(phrase=phrase, match_list=["remove", "delete"]):
+        if "items" in phrase.lower():
+            delete_todo_items()
+        else:
+            delete_todo()
+
+
+def get_todo() -> None:
     """Says the item and category stored in the to-do list."""
-    sys.stdout.write("\rQuerying DB for to-do list..")
     with tdb.connection:
         cursor = tdb.connection.cursor()
         downloaded = cursor.execute("SELECT category, item FROM tasks").fetchall()
@@ -22,7 +43,7 @@ def todo() -> None:
     for category, item in downloaded:
         # condition below makes sure one category can have multiple items without repeating category for each item
         if category not in result:
-            result.update({category: item})  # creates dict for category and item if category is not found in result
+            result[category] = item  # creates dict for category and item if category is not found in result
         else:
             result[category] = result[category] + ', ' + item  # updates category if already found in result
     if result:
@@ -89,7 +110,7 @@ def delete_todo_items() -> None:
     speaker.speak(text=f'Done {models.env.title}!', run=True)
 
 
-def delete_todo() -> None:
+def delete_todo() -> NoReturn:
     """Drops the table ``tasks`` from the database."""
     with tdb.connection:
         cursor = tdb.connection.cursor()
