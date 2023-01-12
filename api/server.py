@@ -59,7 +59,7 @@ def fast_api() -> None:
             logger.error('Unable to connect to existing uvicorn server.')
 
         if not kill_port_pid(port=models.env.offline_port):  # This might terminate Jarvis
-            logger.critical('Failed to kill existing PID. Attempting to re-create session.')
+            logger.critical('ATTENTION::Failed to kill existing PID. Attempting to re-create session.')
 
     argument_dict = {
         "app": "api.fast:app",

@@ -58,7 +58,7 @@ def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
         return []
     logger.debug({"Hostname": _hostname, "Alias": _alias_list, "Interfaces": _ipaddr_list})
     if not _ipaddr_list:
-        logger.critical(f"No interfaces found for {hostname}")
+        logger.critical(f"ATTENTION::No interfaces found for {hostname}")
     elif len(_ipaddr_list) > 1:
         logger.warning(f"Host {hostname} has multiple interfaces. {_ipaddr_list}") if localhost else None
         return _ipaddr_list

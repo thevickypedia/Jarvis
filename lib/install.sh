@@ -22,12 +22,10 @@ os_independent_packages() {
     # Upgrades pip module
     python -m pip install --upgrade pip
 
-    # Installs non version specific packages using --upgrade and --no-cache flag
-    python -m pip install --no-cache --upgrade setuptools requests gmail-connector vpn-server
-
-    # Get to the current directory and install the module specific packages from requirements.txt
+    # Get to the current directory and install the module specific packages
     current_dir="$(dirname "$(realpath "$0")")"
-    python -m pip install --no-cache-dir -r "$current_dir"/requirements.txt
+    python -m pip install --no-cache-dir -r "$current_dir"/version_locked_requirements.txt
+    python -m pip install --no-cache --upgrade -r "$current_dir"/version_upgrade_requirements.txt
 }
 
 download_from_ext_sources_windows() {

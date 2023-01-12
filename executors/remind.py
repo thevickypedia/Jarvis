@@ -5,13 +5,14 @@ import re
 from datetime import datetime, timedelta
 from typing import NoReturn
 
+from pynotification import pynotifier
+
 from executors import communicator
 from modules.audio import listener, speaker
 from modules.conditions import conversation
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.utils import shared, support
-from modules.windows import win_notifications
 
 
 def create_reminder(hour, minute, am_pm, message, to_about, timer: str = None) -> NoReturn:
@@ -110,9 +111,4 @@ def reminder_executor(message: str) -> NoReturn:
     title = "REMINDER from Jarvis"
     communicator.send_sms(user=models.env.gmail_user, password=models.env.gmail_pass, number=models.env.phone_number,
                           body=message, subject=title)
-    if models.settings.os == "Darwin":
-        os.system(f"""osascript -e 'display notification "{message}" with title "{title}"'""")
-    elif models.settings.os == "Windows":
-        win_notifications.WindowsBalloonTip(msg=message, title=title)
-    else:
-        os.system(f"""notify-send -t 0 '{title}' '{message}'""")
+    pynotifier(title=title, message=message, debug=True, logger=logger)

@@ -1,6 +1,16 @@
 Release Notes
 =============
 
+6.9.5 (01/11/2023)
+------------------
+- Remove windows modules and use packages instead
+- Add a feature to download logs via API calls
+- Replace bypass flag with override in telegram bot
+- Remove mute for a particular time feature since it overlaps
+- Split packages that are version locked and upgradable
+- Add background tasks to offline compatible list
+- Add Attention to critical logs for easy look up
+
 6.9.4 (01/05/2023)
 ------------------
 - Restructure Jarvis API

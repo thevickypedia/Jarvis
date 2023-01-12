@@ -89,7 +89,7 @@ def exit_process() -> NoReturn:
     try:
         speaker.speak(text=support.exit_message(), run=True)
     except RuntimeError as error:
-        logger.critical(f"Received a RuntimeError while self terminating.\n{error}")
+        logger.critical(f"ATTENTION::Received a RuntimeError while self terminating.\n{error}")
     sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
                      f"\nTotal runtime: {util.time_converter(second=time.time() - shared.start_time)}")
 
