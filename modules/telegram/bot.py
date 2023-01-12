@@ -6,7 +6,6 @@ import random
 import string
 import time
 import traceback
-from threading import Thread
 from typing import NoReturn, Union
 
 import requests
@@ -455,7 +454,7 @@ class TelegramBot:
                     self.send_message(chat_id=payload['from']['id'],
                                       response=f"{each!r} is not a part of offline communicator compatible request.")
                 else:
-                    Thread(target=self.executor, kwargs=dict(command=each, payload=payload)).start()
+                    self.executor(command=each, payload=payload)
             return
 
         if not word_match(phrase=command, match_list=compatibles.offline_compatible()):

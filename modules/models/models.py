@@ -42,19 +42,6 @@ KEEP_TABLES = ("vpn", "party")  # TABLES to keep from `fileio.base_db`
 
 def _main_process_validations() -> NoReturn:
     """Validations that should happen only when the main process is triggered."""
-    voice_names = [__voice.name for __voice in voices]
-    if not env.voice_name:
-        if settings.os == "Darwin":
-            env.voice_name = "Daniel"
-        elif settings.os == "Windows":
-            env.voice_name = "David"
-        elif settings.os == "Linux":
-            env.voice_name = "english-us"
-    elif env.voice_name not in voice_names:
-        raise InvalidEnvVars(
-            f"{env.voice_name!r} is not available.\nAvailable voices are: {', '.join(voice_names)}"
-        )
-
     if not env.recognizer_settings and not env.phrase_limit:
         env.recognizer_settings = RecognizerSettings()  # Default override when phrase limit is not available
 
@@ -97,6 +84,19 @@ def _global_validations() -> NoReturn:
                 "Linux requires the host machine's password to be set as the env var: "
                 "ROOT_PASSWORD due to terminal automations."
             )
+
+    voice_names = [__voice.name for __voice in voices]
+    if not env.voice_name:
+        if settings.os == "Darwin":
+            env.voice_name = "Daniel"
+        elif settings.os == "Windows":
+            env.voice_name = "David"
+        elif settings.os == "Linux":
+            env.voice_name = "english-us"
+    elif env.voice_name not in voice_names:
+        raise InvalidEnvVars(
+            f"{env.voice_name!r} is not available.\nAvailable voices are: {', '.join(voice_names)}"
+        )
 
     if env.website:
         env.website = env.website.lstrip(f"{env.website.scheme}://")

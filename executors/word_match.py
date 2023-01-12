@@ -8,7 +8,7 @@ def word_match(phrase: str, match_list: Iterable[str], strict: bool = False) -> 
     """Matches phrase to word list given.
 
     Args:
-        phrase: Takes the spoken phrase in the form of list as an argument.
+        phrase: Takes the phrase spoken as an argument.
         match_list: List or tuple of words against which the phrase has to be checked.
         strict: Look for the exact word match instead of regex.
 

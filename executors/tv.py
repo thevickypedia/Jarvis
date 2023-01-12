@@ -43,7 +43,7 @@ def television(phrase: str) -> None:
     """Controls all actions on a TV (LG Web OS or Roku).
 
     Args:
-        phrase: Takes the voice recognized statement as argument.
+        phrase: Takes the phrase spoken as an argument.
     """
     match_words = ['turn on', 'connect', 'shutdown', 'shut down', 'turn off', 'increase',
                    'decrease', 'reduce', 'mute', 'stop', 'content', 'stop', 'pause', 'resume', 'play',

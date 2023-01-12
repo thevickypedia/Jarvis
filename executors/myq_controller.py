@@ -63,7 +63,7 @@ def garage(phrase: str) -> NoReturn:
     """Handler for the garage door controller.
 
     Args:
-        phrase: Takes the recognized phrase as an argument.
+        phrase: Takes the phrase spoken as an argument.
     """
     if all([models.env.myq_username, models.env.myq_password]):
         phrase = phrase.lower()

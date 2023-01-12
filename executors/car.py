@@ -59,7 +59,7 @@ class Operations:
         """Calls the vehicle function to turn the car on with the requested climate setting.
 
         Args:
-            phrase: Takes the recognized phrase as an argument.
+            phrase: Takes the phrase spoken as an argument.
 
         Returns:
             str:
@@ -113,7 +113,7 @@ class Operations:
         """Requests vehicle function to enable guardian mode for the requested time.
 
         Args:
-            phrase: Takes the recognized phrase as an argument.
+            phrase: Takes the phrase spoken as an argument.
 
         See Also:
             - Extracts a numeric value in the phrase or words that refer to a numeric value in the phrase

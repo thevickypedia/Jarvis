@@ -57,6 +57,7 @@
 <li class="toctree-l2"><a class="reference internal" href="README.html#contacts">Contacts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#smart-devices">Smart Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#automation-setup-optional">Automation Setup [Optional]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#simulation-setup-optional">Simulation Setup [Optional]</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#feature-s-implementation">Feature(s) Implementation</a></li>
@@ -1861,7 +1862,7 @@ last_value: the last value assigned or None</p>
 <li><p><strong>hour</strong> – Hour of alarm time.</p></li>
 <li><p><strong>minute</strong> – Minute of alarm time.</p></li>
 <li><p><strong>am_pm</strong> – AM/PM of alarm time.</p></li>
-<li><p><strong>phrase</strong> – Phrase spoken.</p></li>
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
 <li><p><strong>timer</strong> – Number of minutes/hours to alarm.</p></li>
 <li><p><strong>repeat</strong> – Boolean flag if the alarm should be repeated every day.</p></li>
 <li><p><strong>day</strong> – Day of week when the alarm should be repeated.</p></li>
@@ -1876,7 +1877,7 @@ last_value: the last value assigned or None</p>
 <dd><p>Passes hour, minute and am/pm to <code class="docutils literal notranslate"><span class="pre">Alarm</span></code> class which initiates a thread for alarm clock in the background.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument and extracts time from it.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1887,7 +1888,7 @@ last_value: the last value assigned or None</p>
 <dd><p>Removes lock file to stop the alarm which rings only when the certain lock file is present.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument and extracts time from it.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1907,7 +1908,7 @@ last_value: the last value assigned or None</p>
 <dd><p>Handles automation file resets by renaming it to tmp if requested to disable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the recognized phrase as an argument.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1949,7 +1950,7 @@ last_value: the last value assigned or None</p>
 <dd><p>Handles background tasks file resets by renaming it to tmp if requested to disable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the recognized phrase as an argument.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2013,7 +2014,7 @@ last_value: the last value assigned or None</p>
 <dd><p>Calls the vehicle function to turn the car on with the requested climate setting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the recognized phrase as an argument.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Response after turning on the vehicle.</p>
@@ -2044,7 +2045,7 @@ last_value: the last value assigned or None</p>
 <dd><p>Requests vehicle function to enable guardian mode for the requested time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the recognized phrase as an argument.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -2329,7 +2330,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>phrase</strong> – Takes the voice recognized statement as argument.</p></li>
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
 <li><p><strong>should_return</strong> – A boolean flag sent by <code class="docutils literal notranslate"><span class="pre">Activator</span></code> to indicate that the <code class="docutils literal notranslate"><span class="pre">else</span></code> part shouldn’t be executed.</p></li>
 </ul>
 </dd>
@@ -2426,7 +2427,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>phrase</strong> – Takes the processed string from <code class="docutils literal notranslate"><span class="pre">SentryMode</span></code> as input.</p></li>
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
 <li><p><strong>should_return</strong> – Flag to return the function if nothing is heard.</p></li>
 </ul>
 </dd>
@@ -2727,7 +2728,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd><p>Handler for the garage door controller.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the recognized phrase as an argument.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2889,7 +2890,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd><p>Gets IP address of the host machine.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the spoken phrase an argument and tells the public IP if requested.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2925,7 +2926,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd><p>Selects a device using the received input string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Returns the selected device from the class <code class="docutils literal notranslate"><span class="pre">AppleDevice</span></code></p>
@@ -2970,7 +2971,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd><p>Locates an Apple device using icloud api for python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument and extracts device name from it.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3063,7 +3064,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd><p>Controller for smart lights.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3709,7 +3710,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd><p>Passes hour, minute, am/pm and reminder message to Reminder class which initiates a thread for reminder.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument and extracts the time and message from it.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3753,6 +3754,40 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="executors.robinhood.robinhood">
 <span class="sig-prename descclassname"><span class="pre">executors.robinhood.</span></span><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.robinhood.robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets investment details from robinhood API.</p>
+</dd></dl>
+
+</section>
+<section id="module-executors.simulator">
+<span id="simulator"></span><h1>Simulator<a class="headerlink" href="#module-executors.simulator" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.simulator.get_simulation_data">
+<span class="sig-prename descclassname"><span class="pre">executors.simulator.</span></span><span class="sig-name descname"><span class="pre">get_simulation_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#executors.simulator.get_simulation_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the simulation file and loads it as a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the required data to run the simulation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict[str, List[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.simulator.initiate_simulator">
+<span class="sig-prename descclassname"><span class="pre">executors.simulator.</span></span><span class="sig-name descname"><span class="pre">initiate_simulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.simulator.initiate_simulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs simulation on a preset of phrases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>simulation_data</strong> – A key value pair of category and phrase list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.simulator.run_simulation">
+<span class="sig-prename descclassname"><span class="pre">executors.simulator.</span></span><span class="sig-name descname"><span class="pre">run_simulation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.simulator.run_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates simulation in a dedicated process logging into a dedicated file.</p>
 </dd></dl>
 
 </section>
@@ -3826,7 +3861,18 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <span id="to-do"></span><h1>To Do<a class="headerlink" href="#module-executors.todo_list" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.todo_list.todo">
-<span class="sig-prename descclassname"><span class="pre">executors.todo_list.</span></span><span class="sig-name descname"><span class="pre">todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.todo_list.todo" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.todo_list.</span></span><span class="sig-name descname"><span class="pre">todo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.todo_list.todo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Figure out the task to be executed on the DB and call the appropriate function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.todo_list.get_todo">
+<span class="sig-prename descclassname"><span class="pre">executors.todo_list.</span></span><span class="sig-name descname"><span class="pre">get_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.todo_list.get_todo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Says the item and category stored in the to-do list.</p>
 </dd></dl>
 
@@ -3844,7 +3890,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.todo_list.delete_todo">
-<span class="sig-prename descclassname"><span class="pre">executors.todo_list.</span></span><span class="sig-name descname"><span class="pre">delete_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#executors.todo_list.delete_todo" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">executors.todo_list.</span></span><span class="sig-name descname"><span class="pre">delete_todo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.todo_list.delete_todo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Drops the table <code class="docutils literal notranslate"><span class="pre">tasks</span></code> from the database.</p>
 </dd></dl>
 
@@ -3877,7 +3923,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd><p>Controls all actions on a TV (LG Web OS or Roku).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the voice recognized statement as argument.</p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3890,7 +3936,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>phrase</strong> – Takes the voice recognized statement as argument.</p></li>
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
 <li><p><strong>tv_ip</strong> – IP address of the television.</p></li>
 <li><p><strong>identifier</strong> – String to control roku or LG WebOS.</p></li>
 <li><p><strong>nickname</strong> – Name as in the source yaml file.</p></li>
@@ -4043,7 +4089,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>phrase</strong> – Takes the spoken phrase in the form of list as an argument.</p></li>
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
 <li><p><strong>match_list</strong> – List or tuple of words against which the phrase has to be checked.</p></li>
 <li><p><strong>strict</strong> – Look for the exact word match instead of regex.</p></li>
 </ul>
@@ -4262,7 +4308,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd><p>Speaks to the user with available voices and prompts the user to choose one.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Initiates changing voices with the model name. If none, defaults to <code class="docutils literal notranslate"><span class="pre">Daniel</span></code></p>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -6318,6 +6364,11 @@ last_value: the last value assigned or None</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.FileIO.simulation">
+<span class="sig-name descname"><span class="pre">simulation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.simulation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.FileIO.base_db">
 <span class="sig-name descname"><span class="pre">base_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#modules.models.classes.FileIO.base_db" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -7282,7 +7333,7 @@ last_value: the last value assigned or None</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>phrase</strong> – Takes the recognized phrase as an argument.</p></li>
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
 <li><p><strong>execute</strong> – Takes the operation to be performed as an argument.</p></li>
 </ul>
 </dd>
@@ -9225,6 +9276,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-executors.processor">Processor</a></li>
 <li><a class="reference internal" href="#module-executors.remind">Remind</a></li>
 <li><a class="reference internal" href="#module-executors.robinhood">Robinhood</a></li>
+<li><a class="reference internal" href="#module-executors.simulator">Simulator</a></li>
 <li><a class="reference internal" href="#module-executors.system">System</a></li>
 <li><a class="reference internal" href="#module-executors.telegram">Telegram</a></li>
 <li><a class="reference internal" href="#module-executors.todo_list">To Do</a></li>

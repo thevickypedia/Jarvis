@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+6.9.6 (01/12/2023)
+------------------
+- Add a feature to run simulation on demand
+- Remove running multiple commands concurrently in offline communicators
+- Fix unnecessary complication with todo list in conditions.py
+- Set voice name for global validations so child processes don't fail
+
 6.9.5 (01/11/2023)
 ------------------
 - Remove windows modules and use packages instead

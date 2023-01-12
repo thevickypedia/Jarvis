@@ -108,7 +108,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     """Controller for smart lights.
 
     Args:
-        phrase: Takes the voice recognized statement as argument.
+        phrase: Takes the phrase spoken as an argument.
     """
     if not vpn_checker():
         return

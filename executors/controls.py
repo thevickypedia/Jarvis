@@ -6,7 +6,6 @@ import stat
 import subprocess
 import sys
 import time
-from datetime import datetime
 from threading import Thread
 from typing import NoReturn
 
@@ -275,8 +274,7 @@ def delete_logs() -> NoReturn:
     """Deletes log files that were updated before 48 hours."""
     for __path, __directory, __file in os.walk('logs'):
         for file_ in __file:
-            if (datetime.now() - datetime.strptime(file_.split('_')[-1].split('.')[0],
-                                                   '%d-%m-%Y')).total_seconds() > 172_800:
+            if time.time() - os.stat(os.path.join(__path, file_)).st_ctime > 172_800:  # when file's inode was changed
                 logger.debug(f"Deleting log file: {os.path.join(__path, file_)}")
                 os.remove(os.path.join(__path, file_))  # removes the file if it is older than 48 hours
 

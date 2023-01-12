@@ -23,7 +23,7 @@ def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = N
         hour: Hour of alarm time.
         minute: Minute of alarm time.
         am_pm: AM/PM of alarm time.
-        phrase: Phrase spoken.
+        phrase: Takes the phrase spoken as an argument.
         timer: Number of minutes/hours to alarm.
         repeat: Boolean flag if the alarm should be repeated every day.
         day: Day of week when the alarm should be repeated.
@@ -63,7 +63,7 @@ def set_alarm(phrase: str) -> None:
     """Passes hour, minute and am/pm to ``Alarm`` class which initiates a thread for alarm clock in the background.
 
     Args:
-        phrase: Takes the voice recognized statement as argument and extracts time from it.
+        phrase: Takes the phrase spoken as an argument.
     """
     if models.settings.limited:
         speaker.speak(text="Alarm features are currently unavailable, as you're running on restricted mode.")
@@ -118,7 +118,7 @@ def kill_alarm(phrase: str) -> None:
     """Removes lock file to stop the alarm which rings only when the certain lock file is present.
 
     Args:
-        phrase: Takes the voice recognized statement as argument and extracts time from it.
+        phrase: Takes the phrase spoken as an argument.
     """
     word = 'timer' if 'timer' in phrase else 'alarm'
     alarm_state = support.lock_files(alarm_files=True)

@@ -21,7 +21,7 @@ def device_selector(phrase: str) -> Union[AppleDevice, None]:
     """Selects a device using the received input string.
 
     Args:
-        phrase: Takes the voice recognized statement as argument.
+        phrase: Takes the phrase spoken as an argument.
 
     Returns:
         AppleDevice:
@@ -96,7 +96,7 @@ def locate(phrase: str) -> None:
     """Locates an Apple device using icloud api for python.
 
     Args:
-        phrase: Takes the voice recognized statement as argument and extracts device name from it.
+        phrase: Takes the phrase spoken as an argument.
     """
     if not all([models.env.icloud_user, models.env.icloud_pass]):
         logger.warning("ICloud username or password not found.")

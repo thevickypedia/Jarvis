@@ -14,7 +14,7 @@ if not os.path.isdir('fileio'):
 keywords_src = keywords_base.keyword_mapping()
 keywords_dst = os.path.join('fileio', 'keywords.yaml')
 
-get_time = lambda file: os.stat(file).st_ctime  # noqa: E731
+get_time = lambda file: os.stat(file).st_mtime  # noqa: E731
 _updated = {'time': 0.0}  # Initiate a dict
 
 

@@ -422,6 +422,24 @@ The YAML file should be a dictionary within a dictionary that looks like the bel
 ```
 </details>
 
+### Simulation Setup [Optional]
+Jarvis can execute [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/modules/offline/compatibles.py) tasks 
+as a simulation to test the required functions and send an email with the results. Uses an `simulation.yaml` file as source which should be stored
+within the directory `fileio`
+
+<details>
+<summary><strong><i>Setup Instructions</i></strong></summary>
+
+The YAML file should be a list of phrases within a dictionary that looks like the below.
+
+```yaml
+meeting_event:
+- get me the events from my calendar
+- what meetings do I have today
+```
+
+</details>
+
 ## Feature(s) Implementation
 Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, env variables, features' overview and demo videos.
 

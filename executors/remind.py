@@ -42,7 +42,7 @@ def reminder(phrase: str) -> None:
     """Passes hour, minute, am/pm and reminder message to Reminder class which initiates a thread for reminder.
 
     Args:
-        phrase: Takes the voice recognized statement as argument and extracts the time and message from it.
+        phrase: Takes the phrase spoken as an argument.
     """
     if models.settings.limited:
         speaker.speak(text="Reminder features are currently unavailable, as you're running on restricted mode.")
