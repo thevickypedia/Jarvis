@@ -159,7 +159,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         host_names = [smart_devices.get(light_location)]
         light_location = light_location.replace('_', ' ').replace('-', '')
 
-    host_names = support.matrix_to_flat_list(input_=host_names)
+    host_names = util.matrix_to_flat_list(input_=host_names)
     host_names = list(filter(None, host_names))  # remove None values
     if light_location and not host_names:
         logger.warning(f"No hostname values found for {light_location} in {models.fileio.smart_devices}")
@@ -171,10 +171,10 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         speaker.speak(text=f"I'm not sure which lights you meant {models.env.title}!")
         return
 
-    host_names = support.remove_duplicates(input_=host_names)  # duplicates occur when party mode is present
+    host_names = util.remove_duplicates(input_=host_names)  # duplicates occur when party mode is present
     host_ip = [support.hostname_to_ip(hostname=hostname) for hostname in host_names]
     # host_ip = list(filter(None, host_ip))
-    host_ip = support.matrix_to_flat_list(input_=host_ip)
+    host_ip = util.matrix_to_flat_list(input_=host_ip)
     if not host_ip:
         plural = 'lights' if len(host_names) > 1 else 'light'
         speaker.speak(text=f"I wasn't able to connect to your {light_location} {plural} {models.env.title}! "
@@ -226,7 +226,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         elif 'dim' in phrase:
             level = 50
         else:
-            level = support.extract_nos(input_=phrase, method=int)
+            level = util.extract_nos(input_=phrase, method=int)
             if level is None:
                 level = 100
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "

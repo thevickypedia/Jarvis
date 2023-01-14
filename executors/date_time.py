@@ -18,14 +18,13 @@ def current_time(converted: str = None) -> None:
     """
     place = support.get_capitalized(phrase=converted) if converted else None
     if place and len(place) > 3:
-        tf = TimezoneFinder()
         place_tz = geo_locator.geocode(place)
         coordinates = place_tz.latitude, place_tz.longitude
         located = geo_locator.reverse(coordinates, language='en')
         address = located.raw.get('address', {})
         city, state = address.get('city'), address.get('state')
         time_location = f'{city} {state}'.replace('None', '') if city or state else place
-        zone = tf.timezone_at(lat=place_tz.latitude, lng=place_tz.longitude)
+        zone = TimezoneFinder().timezone_at(lat=place_tz.latitude, lng=place_tz.longitude)
         datetime_zone = datetime.now(pytz.timezone(zone))
         date_tz = datetime_zone.strftime("%A, %B %d, %Y")
         time_tz = datetime_zone.strftime("%I:%M %p")

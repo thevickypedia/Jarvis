@@ -467,7 +467,7 @@ class TelegramBot:
                 logger.info(f'Request: {delay_info[0]}')
                 self.process_response(payload=payload,
                                       response="I will execute it after "
-                                               f"{util.time_converter(second=delay_info[1])} {models.env.title}!")
+                                               f"{support.time_converter(second=delay_info[1])} {models.env.title}!")
                 logger.info(f'Response: Task will be executed after {delay_info[1]} seconds')
                 return
         self.executor(command=command, payload=payload)

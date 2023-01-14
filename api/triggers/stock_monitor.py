@@ -19,7 +19,7 @@ sys.path.insert(0, os.getcwd())
 from api.squire import stockmonitor_squire  # noqa
 from modules.models import models  # noqa
 from modules.templates import templates  # noqa
-from modules.utils import support  # noqa
+from modules.utils import util  # noqa
 
 
 def generate_graph(logger: logging.Logger, ticker: str, bars: int = 300) -> Union[str, NoReturn]:
@@ -38,7 +38,7 @@ def generate_graph(logger: logging.Logger, ticker: str, bars: int = 300) -> Unio
     refined = dataframe[['close']]
     if len(refined) == 0:
         refined = dataframe[['open']]
-    x = support.matrix_to_flat_list(input_=refined.values.tolist())
+    x = util.matrix_to_flat_list(input_=refined.values.tolist())
     y = [i.to_pydatetime() for i in refined.iloc[:, 0].keys()]
 
     fig, ax = plt.subplots()
@@ -198,8 +198,8 @@ class StockMonitor:
                                      f'{prices[ticker]["exchange_code"].lower()}-{ticker.lower()}">{ticker}</a>'
                 if not maximum and not minimum:
                     raise ValueError("Un-processable without both min and max")
-                maximum = support.format_nos(maximum)
-                minimum = support.format_nos(minimum)
+                maximum = util.format_nos(maximum)
+                minimum = util.format_nos(minimum)
                 email_text = ""
                 if maximum and prices[ticker]['price'] >= maximum:
                     email_text += f"{ticker_hyperlinked} has increased more than the set value: ${maximum:,}"

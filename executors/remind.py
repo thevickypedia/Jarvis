@@ -12,7 +12,7 @@ from modules.audio import listener, speaker
 from modules.conditions import conversation
 from modules.logger.custom_logger import logger
 from modules.models import models
-from modules.utils import shared, support
+from modules.utils import shared, util
 
 
 def create_reminder(hour, minute, am_pm, message, to_about, timer: str = None) -> NoReturn:
@@ -57,27 +57,27 @@ def reminder(phrase: str) -> None:
     to_about = 'about' if 'about' in phrase else 'to'
     if 'minute' in phrase or "now" in phrase:
         phrase = phrase.replace("a minute", "1 minute").replace("now", "1 minute")
-        if minutes := support.extract_nos(input_=phrase, method=int):
+        if minutes := util.extract_nos(input_=phrase, method=int):
             min_ = 'minutes' if minutes > 1 else 'minute'
             hour, minute, am_pm = (datetime.now() + timedelta(minutes=minutes)).strftime("%I %M %p").split()
             create_reminder(hour=hour, minute=minute, am_pm=am_pm, message=message.group(1).strip(),
                             timer=f"{minutes} {min_}", to_about=to_about)
             return
     elif 'hour' in phrase:
-        if hours := support.extract_nos(input_=phrase, method=int):
+        if hours := util.extract_nos(input_=phrase, method=int):
             hour_ = 'hours' if hours > 1 else 'hour'
             hour, minute, am_pm = (datetime.now() + timedelta(hours=hours)).strftime("%I %M %p").split()
             create_reminder(hour=hour, minute=minute, am_pm=am_pm, message=message.group(1).strip(),
                             timer=f"{hours} {hour_}", to_about=to_about)
             return
-    if not (extracted_time := support.extract_time(input_=phrase)):
+    if not (extracted_time := util.extract_time(input_=phrase)):
         if shared.called_by_offline:
             speaker.speak(text='Reminder format should be::Remind me to do something, at some time.')
             return
         speaker.speak(text=f"When do you want to be reminded {models.env.title}?", run=True)
         if not (phrase := listener.listen()):
             return
-        if not (extracted_time := support.extract_time(input_=phrase)):
+        if not (extracted_time := util.extract_time(input_=phrase)):
             return
     message = message.group(1).strip()
     extracted_time = extracted_time[0]

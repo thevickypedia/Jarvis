@@ -12,7 +12,7 @@ from modules.audio import listener, speaker
 from modules.conditions import conversation
 from modules.logger.custom_logger import logger
 from modules.models import models
-from modules.utils import shared, support
+from modules.utils import shared, support, util
 
 
 def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = None,
@@ -69,16 +69,16 @@ def set_alarm(phrase: str) -> None:
         speaker.speak(text="Alarm features are currently unavailable, as you're running on restricted mode.")
         return
     if 'minute' in phrase:
-        if minutes := support.extract_nos(input_=phrase, method=int):
+        if minutes := util.extract_nos(input_=phrase, method=int):
             hour, minute, am_pm = (datetime.now() + timedelta(minutes=minutes)).strftime("%I %M %p").split()
             create_alarm(hour=hour, minute=minute, am_pm=am_pm, phrase=phrase, timer=f"{minutes} minutes")
             return
     elif 'hour' in phrase:
-        if hours := support.extract_nos(input_=phrase, method=int):
+        if hours := util.extract_nos(input_=phrase, method=int):
             hour, minute, am_pm = (datetime.now() + timedelta(hours=hours)).strftime("%I %M %p").split()
             create_alarm(hour=hour, minute=minute, am_pm=am_pm, phrase=phrase, timer=f"{hours} hours")
             return
-    if extracted_time := support.extract_time(input_=phrase):
+    if extracted_time := util.extract_time(input_=phrase):
         extracted_time = extracted_time[0]
         alarm_time = extracted_time.split()[0]
         if ":" in extracted_time:

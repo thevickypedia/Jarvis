@@ -31,6 +31,9 @@ class EmailTemplates:
         with open(os.path.join(models.fileio.templates, 'email.html')) as file:
             notification = file.read()
 
+        with open(os.path.join(models.fileio.templates, 'car_report.html')) as file:
+            car_report = file.read()
+
 
 class OriginTemplates:
     """HTML templates used for hosting endpoints.

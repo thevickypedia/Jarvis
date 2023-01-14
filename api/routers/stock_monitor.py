@@ -41,7 +41,7 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 6
     logger.info("Setting stock monitor token")
     stock_monitor_helper.otp_sent[email_address] = util.keygen_uuid(length=16)
     rendered = jinja2.Template(templates.email.stock_monitor_otp).render(
-        TIMEOUT=util.pluralize(count=support.format_nos(input_=reset_timeout / 60), word="minute"),
+        TIMEOUT=support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word="minute"),
         TOKEN=stock_monitor_helper.otp_sent[email_address], EMAIL=email_address
     )
     mail_stat = mail_obj.send_email(recipient=email_address, sender='Jarvis API',
@@ -51,7 +51,7 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 6
         logger.debug(mail_stat.body)
         if models.env.debug:  # Why do all the conversions if it's not going to be logged anyway
             logger.debug(f"Token will be reset in "
-                         f"{util.pluralize(count=support.format_nos(input_=reset_timeout / 60), word='minute')}.")
+                         f"{support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word='minute')}.")
         Thread(target=timeout_otp.reset_stock_monitor, args=(email_address, reset_timeout)).start()
         raise APIResponse(status_code=HTTPStatus.OK.real,
                           detail="Please enter the OTP sent via email to verify email address:")
@@ -154,9 +154,9 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail="Cannot proceed without the key 'Ticker'")
     decoded['Ticker'] = decoded['Ticker'].upper()
-    decoded['Max'] = support.extract_nos(input_=decoded['Max'], method=float)
-    decoded['Min'] = support.extract_nos(input_=decoded['Min'], method=float)
-    decoded['Correction'] = support.extract_nos(input_=decoded['Correction'], method=int)
+    decoded['Max'] = util.extract_nos(input_=decoded['Max'], method=float)
+    decoded['Min'] = util.extract_nos(input_=decoded['Min'], method=float)
+    decoded['Correction'] = util.extract_nos(input_=decoded['Correction'], method=int)
 
     if decoded['Correction'] is None:  # Consider 0 as valid in case user doesn't want any correction value
         decoded['Correction'] = 5

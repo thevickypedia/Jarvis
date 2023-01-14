@@ -1,0 +1,56 @@
+<h3>{{title}}</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Alert Key</th>
+        <th>Alert Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for alert in alerts %}
+    {% for key, value in alert.items() %}
+    <tr>
+        <td style="height: 30px; vertical-align: bottom; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd;"> {{ key }}</td>
+        <td style="height: 30px; vertical-align: bottom; text-align: right; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd;"> {{ value }}</td>
+    </tr>
+    {% endfor %}
+    {% endfor %}
+    </tbody>
+    <thead>
+    <tr>
+        <th>Status Key</th>
+        <th>Status Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for key, value in status.items() %}
+    <tr>
+        <td style="height: 30px; vertical-align: bottom; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd;"> {{ key }}</td>
+        <td style="height: 30px; vertical-align: bottom; text-align: right; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd;"> {{ value }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    <thead>
+    <tr>
+        <th>Subscription Name</th>
+        <th>Expiration Date</th>
+        <th>Activation Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for subscription in subscriptions %}
+    {% for key, value in subscription.items() %}
+    <tr>
+        <td style="height: 30px; vertical-align: bottom; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd;"> {{ key }}</td>
+        <td style="height: 30px; vertical-align: bottom; text-align: right; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd;"> {{ value[0] }}</td>
+        <td style="height: 30px; vertical-align: bottom; text-align: right; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd;"> {{ value[1] }}</td>
+    </tr>
+    {% endfor %}
+    {% endfor %}
+    </tbody>
+</table>
+<div style="font-family:'Helvetica Neue';font-size:12px;line-height:20px;margin-bottom:10px;color:#444444;line-height:20px;padding:16px 16px 16px 16px;text-align:center;">
+    <br><b>Source code:</b> <a href="https://github.com/thevickypedia/JarvisMonitor" target="_bottom">https://github.com/thevickypedia/Jarvis</a>
+    <br><b>Communicate:</b> <a href="https://vigneshrao.com/jarvisoffline" target="_bottom">https://vigneshrao.com/jarvisoffline</a>
+    <br><b>Reach out:</b> <a href="https://vigneshrao.com/contact" target="_bottom">https://vigneshrao.com/contact</a>
+</div>

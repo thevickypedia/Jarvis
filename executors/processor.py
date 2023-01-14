@@ -15,7 +15,7 @@ from modules.database import database
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.retry import retry
-from modules.utils import shared, support
+from modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
 
@@ -43,7 +43,7 @@ def clear_db() -> NoReturn:
             # Use f-string or %s as table names cannot be parametrized
             data = cursor.execute(f'SELECT * FROM {table}').fetchall()
             logger.info(f"Deleting data from {table}: "
-                        f"{support.matrix_to_flat_list([list(filter(None, d)) for d in data if any(d)])}")
+                        f"{util.matrix_to_flat_list([list(filter(None, d)) for d in data if any(d)])}")
             cursor.execute(f"DELETE FROM {table}")
 
 
@@ -131,7 +131,7 @@ def stop_child_processes() -> NoReturn:
         for child in models.TABLES["children"]:
             # Use f-string or %s as condition cannot be parametrized
             data = cursor.execute(f"SELECT {child} FROM children").fetchall()
-            children[child]: List[int] = support.matrix_to_flat_list([list(filter(None, d)) for d in data if any(d)])
+            children[child]: List[int] = util.matrix_to_flat_list([list(filter(None, d)) for d in data if any(d)])
     logger.info(children)  # Include empty lists so logs have more information but will get skipped when looping anyway
     for category, pids in children.items():
         for pid in pids:

@@ -13,7 +13,7 @@ from modules.logger import config
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.offline import compatibles
-from modules.utils import shared, util
+from modules.utils import shared, support
 
 
 def get_simulation_data() -> Dict[str, List[str]]:
@@ -71,7 +71,7 @@ def initiate_simulator(simulation_data: Dict[str, List[str]]) -> NoReturn:
                                    attachment=log_file, recipient=models.env.recipient, sender="Jarvis Simulator",
                                    body=f"Total simulations attempted: {sum(len(i) for i in simulation_data.values())}"
                                         f"\n\nSuccessful: {successful}\n\nFailed: {failed}\n\nError-ed: {errors}\n\n"
-                                        f"Run Time: {util.time_converter(second=time.time() - start)}")
+                                        f"Run Time: {support.time_converter(second=time.time() - start)}")
     if mail_res.ok:
         logger.info("Test result has been sent via email")
     else:

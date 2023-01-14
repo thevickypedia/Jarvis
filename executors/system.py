@@ -83,24 +83,24 @@ def system_vitals() -> None:
 
         if cpu_temp:
             cpu = f'Your current average CPU temperature is ' \
-                  f'{support.format_nos(input_=temperature.c2f(arg=support.extract_nos(input_=cpu_temp)))}' \
+                  f'{util.format_nos(input_=temperature.c2f(arg=util.extract_nos(input_=cpu_temp)))}' \
                   f'\N{DEGREE SIGN}F. '
             output += cpu
             speaker.speak(text=cpu)
         if gpu_temp:
-            gpu = f'GPU temperature is {support.format_nos(temperature.c2f(support.extract_nos(gpu_temp)))}' \
+            gpu = f'GPU temperature is {util.format_nos(temperature.c2f(util.extract_nos(gpu_temp)))}' \
                   f'\N{DEGREE SIGN}F. '
             output += gpu
             speaker.speak(text=gpu)
         if fan_speed:
-            fan = f'Current fan speed is {support.format_nos(support.extract_nos(fan_speed))} RPM. '
+            fan = f'Current fan speed is {util.format_nos(util.extract_nos(fan_speed))} RPM. '
             output += fan
             speaker.speak(text=fan)
 
     restart_time = datetime.fromtimestamp(psutil.boot_time())
     second = (datetime.now() - restart_time).total_seconds()
     restart_time = datetime.strftime(restart_time, "%A, %B %d, at %I:%M %p")
-    restart_duration = util.time_converter(second=second)
+    restart_duration = support.time_converter(second=second)
     output += f'Restarted on: {restart_time} - {restart_duration} ago from now.'
     if shared.called_by_offline:
         speaker.speak(text=output)
@@ -150,7 +150,7 @@ def hosted_device_info() -> Dict[str, str]:
     """
     if models.settings.os == "Darwin":
         system_kernel = subprocess.check_output("sysctl hw.model", shell=True).decode('utf-8').splitlines()
-        device = support.extract_str(system_kernel[0].split(':')[1])
+        device = util.extract_str(system_kernel[0].split(':')[1])
     elif models.settings.os == "Windows":
         device = subprocess.getoutput("WMIC CSPRODUCT GET VENDOR").replace('Vendor', '').strip()
     else:

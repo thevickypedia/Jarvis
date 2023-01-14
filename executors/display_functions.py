@@ -6,7 +6,7 @@ from threading import Thread
 from modules.audio import speaker
 from modules.conditions import conversation
 from modules.models import models
-from modules.utils import support
+from modules.utils import util
 
 POWERSHELL = '(Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods).WmiSetBrightness(1,' + '{l}' + ')'
 
@@ -20,7 +20,7 @@ def brightness(phrase: str):
     phrase = phrase.lower()
     speaker.speak(text=random.choice(conversation.acknowledgement))
     if 'set' in phrase:
-        level = support.extract_nos(input_=phrase, method=int)
+        level = util.extract_nos(input_=phrase, method=int)
         if level is None:
             level = 50
         Thread(target=set_brightness, args=[level]).start()
