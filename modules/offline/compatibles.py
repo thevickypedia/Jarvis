@@ -2,7 +2,7 @@ from typing import List
 
 from modules.conditions import conversation
 from modules.conditions import keywords as keywords_mod
-from modules.utils import support
+from modules.utils import util
 
 
 def offline_compatible() -> List[str]:
@@ -66,4 +66,4 @@ def offline_compatible() -> List[str]:
                      conversation.what,
                      conversation.whats_up,
                      conversation.who]
-    return support.remove_duplicates(input_=support.matrix_to_flat_list(input_=offline_words))
+    return util.remove_duplicates(input_=util.matrix_to_flat_list(input_=offline_words))

@@ -3,10 +3,15 @@ import time
 import urllib.error
 import urllib.request
 from datetime import datetime
+from multiprocessing.context import \
+    TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
+from multiprocessing.pool import ThreadPool
 from threading import Thread
-from typing import Tuple, Union
+from typing import Dict, List, Tuple, Union
 
+import jinja2
 import yaml
+from gmailconnector.send_email import SendEmail
 from playsound import playsound
 
 from executors.communicator import send_email
@@ -17,6 +22,7 @@ from modules.car import connector, controller
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.temperature import temperature
+from modules.templates import templates
 from modules.utils import shared, support, util
 
 
@@ -66,7 +72,7 @@ class Operations:
             Response after turning on the vehicle.
         """
         extras = ""
-        if target_temp := support.extract_nos(input_=phrase, method=int):
+        if target_temp := util.extract_nos(input_=phrase, method=int):
             if target_temp < 57:
                 target_temp = 57
             elif target_temp > 83:
@@ -122,7 +128,7 @@ class Operations:
             str:
             Response after enabling guardian mode on the vehicle.
         """
-        requested_expiry = support.extract_nos(input_=phrase, method=int) or support.words_to_number(input_=phrase) or 1
+        requested_expiry = util.extract_nos(input_=phrase, method=int) or util.words_to_number(input_=phrase) or 1
         if 'hour' in phrase:
             seconds = requested_expiry * 3_600  # Defaults to 1 hour if no numeric value in phrase
         elif 'day' in phrase:
@@ -190,6 +196,18 @@ class Operations:
         else:
             return self.disconnect
 
+    def report(self) -> str:
+        """Calls vehicle function to get the status report.
+
+        Returns:
+            str:
+            Response after generating a status report of the vehicle.
+        """
+        if response := self.object(operation="REPORT"):
+            return response
+        else:
+            return self.disconnect
+
 
 def car(phrase: str) -> None:
     """Controls the car to lock, unlock or remote start.
@@ -210,12 +228,13 @@ def car(phrase: str) -> None:
 
     allowed_dict = {'on': ['start', 'set', 'turn on'],
                     'off': ['stop', 'turn off'],
+                    'report': ['report'],
                     'guard': ['secur', 'guard'],  # Intentional typo that covers both 'security' and 'secure' in phrase
                     'lock': ['lock'], 'unlock': ['unlock'],
                     'honk': ['honk', 'blink', 'horn'],
                     'locate': ['locate', 'where']}
 
-    if word_match(phrase=phrase, match_list=support.matrix_to_flat_list(list(allowed_dict.values()))):
+    if word_match(phrase=phrase, match_list=util.matrix_to_flat_list(list(allowed_dict.values()))):
         if not shared.called_by_offline:
             playsound(sound=models.indicators.exhaust, block=False)
     else:
@@ -229,6 +248,8 @@ def car(phrase: str) -> None:
         response = caller.turn_on(phrase=phrase)
     elif word_match(phrase=phrase, match_list=allowed_dict['off']):
         response = caller.turn_off()
+    elif word_match(phrase=phrase, match_list=allowed_dict['report']):
+        response = caller.report()
     elif word_match(phrase=phrase, match_list=allowed_dict['guard']):
         response = caller.enable_guard(phrase=phrase)
     elif word_match(phrase=phrase, match_list=allowed_dict['unlock']):
@@ -246,6 +267,94 @@ def car(phrase: str) -> None:
     elif word_match(phrase=phrase, match_list=allowed_dict['locate']):
         response = caller.locate()
     speaker.speak(text=response)
+
+
+def convert_dt_report(dt_string: str) -> str:
+    """Converts UTC to local datetime string. Helper function for generating car report.
+
+    Args:
+        dt_string: Takes the UTC datetime string as an argument.
+
+    Returns:
+        str:
+        Returns the local datetime string.
+    """
+    utc_dt = datetime.strptime(dt_string, "%Y-%m-%dT%H:%M:%S+0000")
+    return support.utc_to_local(utc_dt=utc_dt).strftime("%A, %B %d %Y - %I:%M %p")
+
+
+def report(status_data: Dict[str, Union[str, Union[Dict[str, str]]]],
+           subscription_data: List[Dict[str, str]],
+           attributes: Dict[str, Union[List[Dict[str, str]], Dict[str, str]]]) -> str:
+    """Generates a report based on the vehicle's status and sends an email notification.
+
+    Args:
+        status_data: Raw status data.
+        subscription_data: Raw subscription data.
+        attributes: Raw attributes data.
+
+    Returns:
+        str:
+        Response to the user.
+    """
+    default_dt_string = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+0000")
+    report_time = convert_dt_report(dt_string=status_data.get('lastUpdatedTime', default_dt_string))
+    overall_status = {'alerts': [], 'subscriptions': [], 'status': {}}
+    overall_status['status']: Dict[str, str]
+    overall_status['alerts']: List[Dict[str, str]]
+    overall_status['subscriptions']: List[Dict[str, List[str]]]
+    for alert in status_data.get('vehicleAlerts', [{}]):
+        if alert.get('active', False) and alert.get('value', 'false') == 'true':
+            alert['lastUpdatedTime'] = convert_dt_report(dt_string=alert.get('lastUpdatedTime', default_dt_string))
+            overall_status['alerts'].append({alert['key']: alert['lastUpdatedTime']})
+    for status in status_data.get('vehicleStatus', {}):
+        for dict_ in status_data['vehicleStatus'].get(status, [{}]):
+            if dict_.get('key', '') in ("SRS_STATUS", "DOOR_IS_ALL_DOORS_LOCKED"):
+                overall_status['status'][dict_['key']] = dict_['value']
+            if dict_.get('key', '') == "ENGINE_COOLANT_TEMP":
+                overall_status['status'][dict_['key']] = f"{dict_['value']}\N{DEGREE SIGN}F"
+            if dict_.get('key', '') == "ODOMETER_MILES":
+                overall_status['status'][dict_['key']] = f"{int(dict_['value']):02,} miles"
+            if dict_.get('key', '') == "FUEL_LEVEL_PERC":
+                overall_status['status'][dict_['key']] = dict_['value'] + '%'
+            if dict_.get('key', '') == "BATTERY_VOLTAGE":
+                overall_status['status'][dict_['key']] = dict_['value'] + 'v'
+            if dict_.get('key', '') == "DISTANCE_TO_EMPTY_FUEL":
+                overall_status['status'][dict_['key']] = f"{int(util.kms_to_miles(float(dict_['value']))):02,} miles"
+            if dict_.get('key', '') in ["TYRE_PRESSURE_FRONT_LEFT", "TYRE_PRESSURE_FRONT_RIGHT",
+                                        "TYRE_PRESSURE_REAR_LEFT", "TYRE_PRESSURE_REAR_RIGHT"]:
+                overall_status['status'][dict_['key']] = f"{round(int(dict_['value']) * 14.696 / 100)} psi"
+    for package in subscription_data:
+        expiration_date = package.get('expirationDate')
+        name = package.get('name')
+        pkg_status = package.get('status')
+        if name and pkg_status and expiration_date:
+            overall_status['subscriptions'].append({name: [convert_dt_report(dt_string=expiration_date), pkg_status]})
+    if overall_status['status']:  # sort dict by key
+        overall_status['status'] = dict(sorted(overall_status['status'].items()))
+    if overall_status['alerts']:  # sort list of dict by the key in each dict
+        overall_status['alerts'] = sorted(overall_status['alerts'], key=lambda d: list(d.keys()))
+    if overall_status['subscriptions']:  # sort list of dict by the key in each dict
+        overall_status['subscriptions'] = sorted(overall_status['subscriptions'], key=lambda d: list(d.values())[0])
+    logger.debug(overall_status)
+    template = jinja2.Template(templates.EmailTemplates.car_report)
+    rendered = template.render(title=f"Last Connected: {report_time}",
+                               alerts=overall_status['alerts'] or [{'ALL_OK': report_time}],
+                               status=overall_status['status'] or {'NOTHING_TO_REPORT': report_time},
+                               subscriptions=overall_status['subscriptions'] or [{'NO_SUBSCRIPTIONS': ['N/A', 'N/A']}])
+    mail_obj = SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+    car_name = f"{attributes.get('vehicleBrand', 'Car')} " \
+               f"{attributes.get('vehicleType', '')} " \
+               f"{attributes.get('modelYear', '')}"
+    response = mail_obj.send_email(subject=f"{car_name} Report - {datetime.now().strftime('%c')}",
+                                   sender="Jarvis", html_body=rendered)
+    if response.ok:
+        logger.info("Report has been sent via email.")
+        return f"Vehicle report has been sent via email {models.env.title}!"
+    else:
+        logger.error("Failed to send report.")
+        logger.error(response.json())
+        return f"Failed to send the vehicle report {models.env.title}! Please check the logs for more information."
 
 
 def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool = True) -> Union[str, dict, None]:
@@ -271,6 +380,7 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
         primary_vehicle = [each_vehicle for each_vehicle in vehicles if each_vehicle.get("role") == "Primary"][0]
         control = controller.Control(vin=primary_vehicle.get("vin"), connection=connection)
 
+        attributes = ThreadPool(processes=1).apply_async(func=control.get_attributes)
         response = {}
         if operation == "LOCK":
             response = control.lock(pin=models.env.car_pin)
@@ -304,7 +414,7 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
             if not current_end:
                 return
             utc_dt = datetime.strptime(current_end, "%Y-%m-%dT%H:%M:%S.%fZ")  # Convert str to datetime object
-            until = support.convert_utc_to_local(utc_dt=utc_dt).strftime("%A, %B %d, %I:%M %p")
+            until = support.utc_to_local(utc_dt=utc_dt).strftime("%A, %B %d, %I:%M %p")
             return f"Guardian mode is already enabled until {until} {util.get_timezone()} {models.env.title}!"
         elif operation == "HONK":
             response = control.honk_blink()
@@ -312,6 +422,7 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
             if not (position := control.get_position().get('position')):
                 logger.error("Unable to get position of the vehicle.")
                 return
+            logger.info(f"latitude: {position['latitude']}, longitude: {position['longitude']}")
             data = get_location_from_coordinates(coordinates=(position['latitude'], position['longitude']))
             number = data.get('streetNumber', data.get('house_number', ''))
             street = data.get('street', data.get('road'))
@@ -328,10 +439,22 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
             else:
                 address = data
             return f"Your {control.get_attributes().get('vehicleBrand', 'car')} is at {address}"
+        elif operation == "REPORT":
+            status = ThreadPool(processes=1).apply_async(func=control.get_status)
+            subscriptions = ThreadPool(processes=1).apply_async(func=control.get_subscription_packages)
+            attributes = attributes.get()
+            status = status.get()
+            subscriptions = subscriptions.get()
+            return report(status_data=status, subscription_data=subscriptions, attributes=attributes)
         if response and response.get("failureDescription"):
             logger.fatal(response)
             return
-        return control.get_attributes().get("vehicleBrand", "car")
+        try:
+            car_name = attributes.get(timeout=3).get("vehicleBrand", "car")
+        except ThreadTimeoutError as error:
+            logger.error(error)
+            car_name = "car"
+        return car_name
     except (urllib.error.HTTPError, urllib.error.URLError) as error:
         if operation == "SECURE" and hasattr(error, "code") and error.code == 409 and control and retry:
             return vehicle(operation="SECURE_EXIST", retry=False)

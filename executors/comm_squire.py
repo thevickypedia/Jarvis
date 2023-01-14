@@ -117,7 +117,7 @@ def initiate_sms(body: str, to: Union[str, int]) -> None:
     if not to[0].isdigit():
         number = str(extract_contacts(name=to, key='phone'))
     if not number:
-        number = str(support.extract_nos(input_=to, method=int))
+        number = str(util.extract_nos(input_=to, method=int))
 
     if number and len(number) != 10:
         speaker.speak(text=f"I don't think that's a right number {models.env.title}! Phone numbers are 10 digits.")

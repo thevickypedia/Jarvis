@@ -343,12 +343,12 @@ Jarvis supports `MagicHome` for [lights](https://www.amazon.com/gp/product/B08C7
 - TV hostnames should include the brand name [`LG`/`Roku`] to distinguish the modules accordingly.
   - This will be set by default, if yours doesn't include the brand name change it in the TV settings.
 
-- For `Roku` TVs, make sure the `Bandwidth saver` feature is turned off under,
+- To wake up `Roku` TVs using MAC address, make sure the `Bandwidth saver` feature is turned off under,
     ```text
     Settings/Network/Bandwidth saver >> Off
     ```
 
-- For first time users on `LGWebOS` TVs, there will be a prompt on the TV to accept the connection request. 
+- For first time users on `LGWebOS` TVs, there will be a prompt on the TV to accept the connection request.
   - Once the connection request is accepted a client key will be generated and logged.
   - Please make sure to store this in `smart_devices.yaml` file to avoid repeated connection prompt.
 

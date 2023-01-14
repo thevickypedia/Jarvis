@@ -21,7 +21,7 @@ from modules.conditions import keywords
 from modules.exceptions import APIResponse
 from modules.models import models
 from modules.offline import compatibles
-from modules.utils import support, util
+from modules.utils import support
 
 router = APIRouter()
 
@@ -93,9 +93,9 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
                                  'Please try an instruction that does not require an user interaction.')
     if ' after ' in command.lower():
         if delay_info := timed_delay(phrase=command):
-            logger.info(f"{delay_info[0]!r} will be executed after {util.time_converter(second=delay_info[1])}")
+            logger.info(f"{delay_info[0]!r} will be executed after {support.time_converter(second=delay_info[1])}")
             raise APIResponse(status_code=HTTPStatus.OK.real,
-                              detail=f'I will execute it after {util.time_converter(second=delay_info[1])} '
+                              detail=f'I will execute it after {support.time_converter(second=delay_info[1])} '
                                      f'{models.env.title}!')
     try:
         response = offline_communicator(command=command)

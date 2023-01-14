@@ -7,7 +7,8 @@
 
 import os
 import time
-from multiprocessing.context import TimeoutError  # noqa: PyProtectedMember
+from multiprocessing.context import \
+    TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
 from typing import NoReturn, Union
 
@@ -57,7 +58,7 @@ def text_to_audio(text: str, filename: Union[FilePath, str] = None) -> Union[Fil
     process = ThreadPool(processes=1).apply_async(func=generate_audio_file, kwds={'filename': filename, 'text': text})
     try:
         process.get(timeout=dynamic_timeout)
-    except TimeoutError as error:
+    except ThreadTimeoutError as error:
         logger.error(error)
         return
     if os.path.isfile(filename) and os.stat(filename).st_size:

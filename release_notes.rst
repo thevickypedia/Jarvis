@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+6.9.7 (01/14/2023)
+------------------
+- Add a feature to send vehicle report via email
+- Add a note in both requirements.txt
+- Move functions that only use built-ins from support.py to util.py
+
 6.9.6 (01/12/2023)
 ------------------
 - Add a feature to run simulation on demand

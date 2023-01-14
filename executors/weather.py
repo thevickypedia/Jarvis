@@ -3,8 +3,8 @@ import urllib.error
 import urllib.request
 from datetime import datetime
 
+import inflect
 import yaml
-from inflect import engine
 
 from executors.location import geo_locator
 from executors.word_match import word_match
@@ -88,7 +88,7 @@ def weather(phrase: str = None) -> None:
         elif 'next week' in phrase:
             key = -1
             next_week = datetime.fromtimestamp(response['daily'][-1]['dt']).strftime("%A, %B %d")
-            tell = f"on {' '.join(next_week.split()[:-1])} {engine().ordinal(next_week.split()[-1])}"
+            tell = f"on {' '.join(next_week.split()[:-1])} {inflect.engine().ordinal(next_week.split()[-1])}"
         else:
             key = 0
             tell = 'today'

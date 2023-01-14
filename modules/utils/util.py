@@ -6,16 +6,15 @@
 """
 
 import hashlib
+import os
 import random
+import re
 import string
+import sys
 import uuid
 from datetime import datetime
 from difflib import SequenceMatcher
-from typing import Hashable
-
-import inflect
-
-engine = inflect.engine()
+from typing import Any, Hashable, List, NoReturn, Union
 
 
 class Dict2Class:
@@ -41,6 +40,11 @@ def get_timezone() -> str:
     return datetime.utcnow().astimezone().tzname()
 
 
+def kms_to_miles(kms: Union[int, float]) -> float:
+    """Takes kilometers as an argument and returns it in miles."""
+    return round(kms * 0.621371, 2)
+
+
 def part_of_day() -> str:
     """Checks the current hour to determine the part of day.
 
@@ -56,61 +60,6 @@ def part_of_day() -> str:
     if 16 <= current_hour <= 19:
         return "Evening"
     return "Night"
-
-
-def pluralize(count: int, word: str) -> str:
-    """Helper for ``time_converter`` function.
-
-    Args:
-        count: Number based on which plural form should be determined.
-        word: Word for which the plural form should be converted.
-
-    Returns:
-        str:
-        String formatted time in singular or plural.
-    """
-    return f"{count} {engine.plural(text=word, count=count)}"
-
-
-def time_converter(second: float) -> str:
-    """Modifies seconds to appropriate days/hours/minutes/seconds.
-
-    Args:
-        second: Takes number of seconds as argument.
-
-    Returns:
-        str:
-        Seconds converted to days or hours or minutes or seconds.
-    """
-    day = round(second // 86400)
-    second = round(second % (24 * 3600))
-    hour = round(second // 3600)
-    second %= 3600
-    minute = round(second // 60)
-    second %= 60
-    pluralize.counter = -1
-    if day and hour and minute and second:
-        return f"{pluralize(day, 'day')}, {pluralize(hour, 'hour')}, " \
-               f"{pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
-    elif day and hour and minute:
-        return f"{pluralize(day, 'day')}, {pluralize(hour, 'hour')}, " \
-               f"and {pluralize(minute, 'minute')}"
-    elif day and hour:
-        return f"{pluralize(day, 'day')}, and {pluralize(hour, 'hour')}"
-    elif day:
-        return pluralize(day, 'day')
-    elif hour and minute and second:
-        return f"{pluralize(hour, 'hour')}, {pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
-    elif hour and minute:
-        return f"{pluralize(hour, 'hour')}, and {pluralize(minute, 'minute')}"
-    elif hour:
-        return pluralize(hour, 'hour')
-    elif minute and second:
-        return f"{pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
-    elif minute:
-        return pluralize(minute, 'minute')
-    else:
-        return pluralize(second, 'second')
 
 
 def get_closest_match(text: str, match_list: list) -> str:
@@ -180,3 +129,191 @@ def keygen_uuid(length: int = 32) -> str:
         Random key of specified length.
     """
     return uuid.uuid4().hex.upper()[:length]
+
+
+def words_to_number(input_: str) -> int:
+    """Converts words into integers.
+
+    Args:
+        input_: Takes an integer wording as an argument.
+
+    Returns:
+        int:
+        Integer version of the words.
+    """
+    input_ = input_.lower()
+    number_mapping = {
+        'zero': 0,
+        'one': 1,
+        'two': 2,
+        'three': 3,
+        'four': 4,
+        'five': 5,
+        'six': 6,
+        'seven': 7,
+        'eight': 8,
+        'nine': 9,
+        'ten': 10,
+        'eleven': 11,
+        'twelve': 12,
+        'thirteen': 13,
+        'fourteen': 14,
+        'fifteen': 15,
+        'sixteen': 16,
+        'seventeen': 17,
+        'eighteen': 18,
+        'nineteen': 19,
+        'twenty': 20,
+        'thirty': 30,
+        'forty': 40,
+        'fifty': 50,
+        'sixty': 60,
+        'seventy': 70,
+        'eighty': 80,
+        'ninety': 90,
+    }
+    numbers = []
+    for word in input_.replace('-', ' ').split():
+        if word in number_mapping:
+            numbers.append(number_mapping[word])
+        elif word == 'hundred':
+            numbers[-1] *= 100
+        elif word == 'thousand':
+            numbers = [x * 1000 for x in numbers]
+        elif word == 'million':
+            numbers = [x * 1000000 for x in numbers]
+    return sum(numbers)
+
+
+def comma_separator(list_: list) -> str:
+    """Separates commas using simple ``.join()`` function and analysis based on length of the list taken as argument.
+
+    Args:
+        list_: Takes a list of elements as an argument.
+
+    Returns:
+        str:
+        Comma separated list of elements.
+    """
+    return ", and ".join([", ".join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
+
+
+def extract_time(input_: str) -> List[str]:
+    """Extracts 12-hour time value from a string.
+
+    Args:
+        input_: Int if found, else returns the received float value.
+
+    Returns:
+        list:
+        Extracted time from the string.
+    """
+    return re.findall(r'(\d+:\d+\s?(?:a.m.|p.m.:?))', input_) or \
+        re.findall(r'(\d+\s?(?:a.m.|p.m.:?))', input_) or \
+        re.findall(r'(\d+:\d+\s?(?:am|pm:?))', input_) or \
+        re.findall(r'(\d+\s?(?:am|pm:?))', input_)
+
+
+def delay_calculator(phrase: str) -> Union[int, float]:
+    """Calculates the delay in phrase (if any).
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+
+    Returns:
+        int:
+        Seconds of delay.
+    """
+    if not (count := extract_nos(input_=phrase)):
+        count = 1
+    if 'hour' in phrase:
+        delay = 3_600
+    elif 'minute' in phrase:
+        delay = 60
+    else:  # Default to # as seconds
+        delay = 60
+    return count * delay
+
+
+def extract_nos(input_: str, method: type = float) -> Union[int, float]:
+    """Extracts number part from a string.
+
+    Args:
+        input_: Takes string as an argument.
+        method: Takes a type to return a float or int value.
+
+    Returns:
+        float:
+        Float values.
+    """
+    if value := re.findall(r"\d+", input_):
+        if method == float:
+            try:
+                return method(".".join(value))
+            except ValueError:
+                method = int
+        if method == int:
+            return method("".join(value))
+
+
+def format_nos(input_: float) -> int:
+    """Removes ``.0`` float values.
+
+    Args:
+        input_: Strings or integers with ``.0`` at the end.
+
+    Returns:
+        int:
+        Int if found, else returns the received float value.
+    """
+    return int(input_) if isinstance(input_, float) and input_.is_integer() else input_
+
+
+def extract_str(input_: str) -> str:
+    """Extracts strings from the received input.
+
+    Args:
+        input_: Takes a string as argument.
+
+    Returns:
+        str:
+        A string after removing special characters.
+    """
+    return "".join([i for i in input_ if not i.isdigit() and i not in [",", ".", "?", "-", ";", "!", ":"]]).strip()
+
+
+def matrix_to_flat_list(input_: List[list]) -> List:
+    """Converts a matrix into flat list.
+
+    Args:
+        input_: Takes a list of list as an argument.
+
+    Returns:
+        list:
+        Flat list.
+    """
+    return sum(input_, []) or [item for sublist in input_ for item in sublist]
+
+
+def remove_duplicates(input_: List[Any]) -> List[Any]:
+    """Remove duplicate values from a list.
+
+    Args:
+        input_: Takes a list as an argument.
+
+    Returns:
+        list:
+        Returns a cleaned up list.
+    """
+    # return list(set(input_))
+    return [i.strip() for n, i in enumerate(input_) if i not in input_[n + 1:]]
+
+
+def block_print() -> NoReturn:
+    """Suppresses print statement."""
+    sys.stdout = open(os.devnull, 'w')
+
+
+def release_print() -> NoReturn:
+    """Removes print statement's suppression."""
+    sys.stdout = sys.__stdout__

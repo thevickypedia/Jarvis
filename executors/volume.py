@@ -8,7 +8,7 @@ from modules.audio import speaker
 from modules.conditions import conversation
 from modules.logger.custom_logger import logger
 from modules.models import models
-from modules.utils import shared, support
+from modules.utils import shared, util
 
 
 def main_volume(level: int) -> NoReturn:
@@ -51,7 +51,7 @@ def volume(phrase: str = None, level: int = None) -> NoReturn:
         elif 'max' in phrase or 'full' in phrase:
             level = 100
         else:
-            level = support.extract_nos(input_=phrase, method=int)
+            level = util.extract_nos(input_=phrase, method=int)
     if level is None:
         level = models.env.volume
     phrase = phrase or ""

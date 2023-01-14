@@ -33,7 +33,7 @@ def split_phrase(phrase: str, should_return: bool = False) -> bool:
 
     if ' after ' in phrase:
         if delay_info := timed_delay(phrase=phrase):
-            speaker.speak(text=f"I will execute it after {util.time_converter(second=delay_info[1])} "
+            speaker.speak(text=f"I will execute it after {support.time_converter(second=delay_info[1])} "
                                f"{models.env.title}!")
             return False
 
@@ -57,7 +57,7 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
         phrase: Takes the phrase spoken as an argument.
         delay: Sleeps for the number of seconds.
     """
-    logger.info(f"{phrase!r} will be executed after {util.time_converter(second=delay)}")
+    logger.info(f"{phrase!r} will be executed after {support.time_converter(second=delay)}")
     time.sleep(delay)
     logger.info(f"Executing {phrase!r}")
     try:
@@ -82,7 +82,7 @@ def timed_delay(phrase: str) -> Tuple[str, Union[int, float]]:
             not word_match(phrase=phrase, match_list=keywords.keywords.reminder):
         split_ = phrase.split('after')
         if task := split_[0].strip():
-            delay = support.delay_calculator(phrase=split_[1].strip())
+            delay = util.delay_calculator(phrase=split_[1].strip())
             Process(target=delay_condition, kwargs={'phrase': task, 'delay': delay}).start()
             return task, delay
 

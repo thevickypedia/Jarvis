@@ -22,7 +22,7 @@ from executors.communicator import read_gmail
 from executors.date_time import current_date, current_time
 from executors.internet import vpn_checker
 from executors.robinhood import robinhood
-from executors.todo_list import todo
+from executors.todo_list import get_todo
 from executors.weather import weather
 from executors.word_match import word_match
 from modules.audio import listener, speaker
@@ -190,7 +190,7 @@ def google_home(device: str = None, file: str = None) -> None:
     if not device or not file:
         support.flush_screen()
         speaker.speak(text=f"You have {len(devices)} devices in your IP range {models.env.title}! "
-                           f"{support.comma_separator(list(devices.keys()))}. You can choose one and ask me to play "
+                           f"{util.comma_separator(list(devices.keys()))}. You can choose one and ask me to play "
                            f"some music on any of these.")
         return
     else:
@@ -198,14 +198,14 @@ def google_home(device: str = None, file: str = None) -> None:
         if not chosen:
             speaker.speak(text=f"I don't see any matching devices {models.env.title}!. Let me help you. "
                                f"You have {len(devices)} devices in your IP range {models.env.title}! "
-                               f"{support.comma_separator(list(devices.keys()))}.")
+                               f"{util.comma_separator(list(devices.keys()))}.")
             return
         for target in chosen:
             file_url = serve_file(file, "audio/mp3")  # serves the file on local host and generates the play url
             support.flush_screen()
-            support.block_print()
+            util.block_print()
             GoogleHome(host=target).play(file_url, "audio/mp3")
-            support.release_print()
+            util.release_print()
         if len(chosen) > 1:
             speaker.speak(text=f"That's interesting, you've asked me to play on {len(chosen)} devices at a time. "
                                f"I hope you'll enjoy this {models.env.title}.", run=True)
@@ -311,7 +311,7 @@ def report() -> NoReturn:
     current_date()
     current_time()
     weather()
-    todo()
+    get_todo()
     read_gmail()
     robinhood()
     news()
@@ -342,7 +342,7 @@ def time_travel() -> None:
         event_status = cursor.execute(f"SELECT info, date FROM {models.env.event_app}").fetchone()
     if event_status and event_status[0].startswith('You'):
         speaker.speak(text=event_status[0])
-    todo()
+    get_todo()
     read_gmail()
     speaker.speak(text='Would you like to hear the latest news?', run=True)
     phrase = listener.listen()

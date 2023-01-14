@@ -11,7 +11,7 @@ from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.models.classes import BackgroundTask
 from modules.offline import compatibles
-from modules.utils import util
+from modules.utils import support
 
 
 def background_task_handler(phrase: str) -> NoReturn:
@@ -93,7 +93,7 @@ def validate_background_tasks(log: bool = True) -> Iterable[BackgroundTask]:
                 continue
             if word_match(phrase=task.task, match_list=compatibles.offline_compatible()):
                 if log:
-                    logger.info(f"{task.task!r} will be executed every {util.time_converter(second=task.seconds)}")
+                    logger.info(f"{task.task!r} will be executed every {support.time_converter(second=task.seconds)}")
                 yield task
             else:
                 logger.error(f"{task.task!r} is not a part of offline communication compatible request.")

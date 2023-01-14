@@ -3,7 +3,7 @@ import time
 import warnings
 from typing import Any, Callable, NoReturn, Union
 
-from inflect import engine
+import inflect
 
 from modules.logger.custom_logger import logger
 
@@ -54,7 +54,8 @@ def retry(attempts: int = 3, interval: Union[int, float] = 0, warn: bool = False
                 try:
                     return_val = func(*args, **kwargs)
                     # Log messages only when the function did not return during the first attempt
-                    logger.info(msg=f"{func.__name__} returned at {engine().ordinal(num=i)} attempt") if i > 1 else None
+                    if i > 1:
+                        logger.info(msg=f"{func.__name__} returned at {inflect.engine().ordinal(num=i)} attempt")
                     return return_val
                 except exclude_exc or KeyboardInterrupt as excl_error:
                     logger.error(msg=excl_error)

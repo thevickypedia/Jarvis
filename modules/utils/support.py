@@ -7,12 +7,11 @@
 
 import math
 import os
-import re
 import socket
 import sys
 import time
 from datetime import datetime, timezone
-from typing import Any, Iterable, List, NoReturn, Union
+from typing import Iterable, List, NoReturn, Union
 
 import dateutil.tz
 import inflect
@@ -171,202 +170,6 @@ def size_converter(byte_size: int) -> str:
     return f"{round(byte_size / pow(1024, index), 2)} {size_name[index]}"
 
 
-def comma_separator(list_: list) -> str:
-    """Separates commas using simple ``.join()`` function and analysis based on length of the list taken as argument.
-
-    Args:
-        list_: Takes a list of elements as an argument.
-
-    Returns:
-        str:
-        Comma separated list of elements.
-    """
-    return ", and ".join([", ".join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
-
-
-def extract_time(input_: str) -> List[str]:
-    """Extracts 12-hour time value from a string.
-
-    Args:
-        input_: Int if found, else returns the received float value.
-
-    Returns:
-        list:
-        Extracted time from the string.
-    """
-    return re.findall(r'(\d+:\d+\s?(?:a.m.|p.m.:?))', input_) or \
-        re.findall(r'(\d+\s?(?:a.m.|p.m.:?))', input_) or \
-        re.findall(r'(\d+:\d+\s?(?:am|pm:?))', input_) or \
-        re.findall(r'(\d+\s?(?:am|pm:?))', input_)
-
-
-def delay_calculator(phrase: str) -> Union[int, float]:
-    """Calculates the delay in phrase (if any).
-
-    Args:
-        phrase: Takes the phrase spoken as an argument.
-
-    Returns:
-        int:
-        Seconds of delay.
-    """
-    if not (count := extract_nos(input_=phrase)):
-        count = 1
-    if 'hour' in phrase:
-        delay = 3_600
-    elif 'minute' in phrase:
-        delay = 60
-    else:  # Default to # as seconds
-        delay = 60
-    return count * delay
-
-
-def extract_nos(input_: str, method: type = float) -> Union[int, float]:
-    """Extracts number part from a string.
-
-    Args:
-        input_: Takes string as an argument.
-        method: Takes a type to return a float or int value.
-
-    Returns:
-        float:
-        Float values.
-    """
-    if value := re.findall(r"\d+", input_):
-        if method == float:
-            try:
-                return method(".".join(value))
-            except ValueError as error:
-                caller = sys._getframe(1).f_code.co_name  # noqa
-                logger.error(error)
-                logger.error(f"Called by: {caller!r}")
-                method = int
-        if method == int:
-            return method("".join(value))
-
-
-def format_nos(input_: float) -> int:
-    """Removes ``.0`` float values.
-
-    Args:
-        input_: Strings or integers with ``.0`` at the end.
-
-    Returns:
-        int:
-        Int if found, else returns the received float value.
-    """
-    return int(input_) if isinstance(input_, float) and input_.is_integer() else input_
-
-
-def extract_str(input_: str) -> str:
-    """Extracts strings from the received input.
-
-    Args:
-        input_: Takes a string as argument.
-
-    Returns:
-        str:
-        A string after removing special characters.
-    """
-    return "".join([i for i in input_ if not i.isdigit() and i not in [",", ".", "?", "-", ";", "!", ":"]]).strip()
-
-
-def matrix_to_flat_list(input_: List[list]) -> List:
-    """Converts a matrix into flat list.
-
-    Args:
-        input_: Takes a list of list as an argument.
-
-    Returns:
-        list:
-        Flat list.
-    """
-    return sum(input_, []) or [item for sublist in input_ for item in sublist]
-
-
-def remove_duplicates(input_: List[Any]) -> List[Any]:
-    """Remove duplicate values from a list.
-
-    Args:
-        input_: Takes a list as an argument.
-
-    Returns:
-        list:
-        Returns a cleaned up list.
-    """
-    # return list(set(input_))
-    return [i.strip() for n, i in enumerate(input_) if i not in input_[n + 1:]]
-
-
-def words_to_number(input_: str) -> int:
-    """Converts words into integers.
-
-    Args:
-        input_: Takes an integer wording as an argument.
-
-    Returns:
-        int:
-        Integer version of the words.
-    """
-    input_ = input_.lower()
-    number_mapping = {
-        'zero': 0,
-        'one': 1,
-        'two': 2,
-        'three': 3,
-        'four': 4,
-        'five': 5,
-        'six': 6,
-        'seven': 7,
-        'eight': 8,
-        'nine': 9,
-        'ten': 10,
-        'eleven': 11,
-        'twelve': 12,
-        'thirteen': 13,
-        'fourteen': 14,
-        'fifteen': 15,
-        'sixteen': 16,
-        'seventeen': 17,
-        'eighteen': 18,
-        'nineteen': 19,
-        'twenty': 20,
-        'thirty': 30,
-        'forty': 40,
-        'fifty': 50,
-        'sixty': 60,
-        'seventy': 70,
-        'eighty': 80,
-        'ninety': 90,
-    }
-    numbers = []
-    for word in input_.replace('-', ' ').split():
-        if word in number_mapping:
-            numbers.append(number_mapping[word])
-        elif word == 'hundred':
-            numbers[-1] *= 100
-        elif word == 'thousand':
-            numbers = [x * 1000 for x in numbers]
-        elif word == 'million':
-            numbers = [x * 1000000 for x in numbers]
-    return sum(numbers)
-
-
-def number_to_words(input_: Union[int, str], capitalize: bool = False) -> str:
-    """Converts integer version of a number into words.
-
-    Args:
-        input_: Takes the integer version of a number as an argument.
-        capitalize: Boolean flag to capitalize the first letter.
-
-    Returns:
-        str:
-        String version of the number.
-    """
-    result = inflect.engine().number_to_words(num=input_)
-    return result[0].upper() + result[1:] if capitalize else result
-
-
 def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> List[str]:
     """Checks for ``*.lock`` files within the ``alarm`` directory if present.
 
@@ -399,7 +202,7 @@ def check_restart() -> List[str]:
     return flag
 
 
-def convert_utc_to_local(utc_dt: datetime) -> datetime:
+def utc_to_local(utc_dt: datetime) -> datetime:
     """Converts UTC datetime object to local datetime object.
 
     Args:
@@ -486,14 +289,74 @@ def flush_screen() -> NoReturn:
         sys.stdout.write(f"\r{' '.join(['' for _ in range(os.get_terminal_size().columns)])}")
 
 
-def block_print() -> NoReturn:
-    """Suppresses print statement."""
-    sys.stdout = open(os.devnull, 'w')
+def number_to_words(input_: Union[int, str], capitalize: bool = False) -> str:
+    """Converts integer version of a number into words.
+
+    Args:
+        input_: Takes the integer version of a number as an argument.
+        capitalize: Boolean flag to capitalize the first letter.
+
+    Returns:
+        str:
+        String version of the number.
+    """
+    result = inflect.engine().number_to_words(num=input_)
+    return result[0].upper() + result[1:] if capitalize else result
 
 
-def release_print() -> NoReturn:
-    """Removes print statement's suppression."""
-    sys.stdout = sys.__stdout__
+def pluralize(count: int, word: str) -> str:
+    """Helper for ``time_converter`` function.
+
+    Args:
+        count: Number based on which plural form should be determined.
+        word: Word for which the plural form should be converted.
+
+    Returns:
+        str:
+        String formatted time in singular or plural.
+    """
+    return f"{count} {inflect.engine().plural(text=word, count=count)}"
+
+
+def time_converter(second: float) -> str:
+    """Modifies seconds to appropriate days/hours/minutes/seconds.
+
+    Args:
+        second: Takes number of seconds as argument.
+
+    Returns:
+        str:
+        Seconds converted to days or hours or minutes or seconds.
+    """
+    day = round(second // 86400)
+    second = round(second % (24 * 3600))
+    hour = round(second // 3600)
+    second %= 3600
+    minute = round(second // 60)
+    second %= 60
+    pluralize.counter = -1
+    if day and hour and minute and second:
+        return f"{pluralize(day, 'day')}, {pluralize(hour, 'hour')}, " \
+               f"{pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
+    elif day and hour and minute:
+        return f"{pluralize(day, 'day')}, {pluralize(hour, 'hour')}, " \
+               f"and {pluralize(minute, 'minute')}"
+    elif day and hour:
+        return f"{pluralize(day, 'day')}, and {pluralize(hour, 'hour')}"
+    elif day:
+        return pluralize(day, 'day')
+    elif hour and minute and second:
+        return f"{pluralize(hour, 'hour')}, {pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
+    elif hour and minute:
+        return f"{pluralize(hour, 'hour')}, and {pluralize(minute, 'minute')}"
+    elif hour:
+        return pluralize(hour, 'hour')
+    elif minute and second:
+        return f"{pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
+    elif minute:
+        return pluralize(minute, 'minute')
+    else:
+        return pluralize(second, 'second')
 
 
 def remove_file(filepath: str, delay: int = 0) -> NoReturn:
