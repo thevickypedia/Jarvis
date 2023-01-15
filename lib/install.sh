@@ -25,7 +25,7 @@ os_independent_packages() {
     # Get to the current directory and install the module specific packages
     current_dir="$(dirname "$(realpath "$0")")"
     python -m pip install --no-cache-dir -r "$current_dir"/version_locked_requirements.txt
-    python -m pip install --no-cache --upgrade -r "$current_dir"/version_upgrade_requirements.txt
+    python -m pip install --no-cache-dir --upgrade -r "$current_dir"/version_upgrade_requirements.txt
 }
 
 download_from_ext_sources_windows() {

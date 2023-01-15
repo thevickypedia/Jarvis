@@ -5,10 +5,12 @@
 
 """
 
+import contextlib
 import hashlib
 import os
 import random
 import re
+import socket
 import string
 import sys
 import uuid
@@ -317,3 +319,29 @@ def block_print() -> NoReturn:
 def release_print() -> NoReturn:
     """Removes print statement's suppression."""
     sys.stdout = sys.__stdout__
+
+
+def get_free_port() -> int:
+    """Chooses a PORT number dynamically that is not being used to ensure we don't rely on a single port.
+
+    Instead of binding to a specific port, ``sock.bind(('', 0))`` is used to bind to 0.
+
+    See Also:
+        - The port number chosen can be found using ``sock.getsockname()[1]``
+        - Passing it on to the slaves so that they can connect back.
+        - ``sock`` is the socket that was created, returned by socket.socket.
+
+    Notes:
+        - Well-Known ports: 0 to 1023
+        - Registered ports: 1024 to 49151
+        - Dynamically available: 49152 to 65535
+        - The OS will then pick an available port.
+
+    Returns:
+        int:
+        Randomly chosen port number that is not in use.
+    """
+    with contextlib.closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
+        sock.bind(('', 0))
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        return sock.getsockname()[1]
