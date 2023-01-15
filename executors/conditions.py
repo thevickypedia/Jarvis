@@ -110,7 +110,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
         ip_info(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.wikipedia_):
-        wikipedia_()
+        wikipedia_(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.news):
         news()

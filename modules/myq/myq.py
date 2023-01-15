@@ -1,6 +1,6 @@
 from enum import Enum
 from logging.config import dictConfig
-from typing import Dict, NoReturn, Union
+from typing import Dict
 
 import pymyq
 from aiohttp import ClientSession
@@ -33,12 +33,11 @@ class Operation(str, Enum):
 operation = Operation
 
 
-async def garage_controller(execute: str, phrase: str) -> Union[Dict, NoReturn]:
+async def garage_controller(phrase: str) -> str:
     """Create an aiohttp session and run an operation on garage door.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
-        execute: Takes the operation to be performed as an argument.
 
     Raises:
         NoCoversFound:
@@ -47,8 +46,8 @@ async def garage_controller(execute: str, phrase: str) -> Union[Dict, NoReturn]:
         - If the requested garage door is not online.
 
     Returns:
-        dict:
-        Device state information as a dictionary.
+        str:
+        Response back to the user.
     """
     dictConfig({'version': 1, 'disable_existing_loggers': True})
     async with ClientSession() as web_session:
@@ -61,26 +60,49 @@ async def garage_controller(execute: str, phrase: str) -> Union[Dict, NoReturn]:
         # Create a new dictionary with names as keys and MyQ object as values to get the object by name during execution
         devices: Dict[str, MyQGaragedoor] = {obj_.device_json.get('name'): obj_ for id_, obj_ in myq.covers.items()}
         logger.debug(f"Available covers: {devices}")
-        device = util.get_closest_match(text=phrase, match_list=list(devices.keys()))
+        device: str = util.get_closest_match(text=phrase, match_list=list(devices.keys()))
         logger.debug(f"Chosen cover: {device!r}")
 
         if not devices[device].online:
             raise CoverNotOnline(device=device, msg=f"{device!r} not online.")
 
-        if execute == Operation.STATE:
-            return devices[device].device_json
+        status = devices[device].device_json
 
-        if execute == Operation.OPEN:
+        if models.env.debug:
+            assert device == status['name'], f"{device!r} and {status['name']!r} doesn't match"
+
+        logger.debug(status)
+        if operation.OPEN in phrase:
+            if status['state']['door_state'] == operation.OPEN:
+                return f"Your {device} is already open {models.env.title}!"
+            elif status['state']['door_state'] == operation.OPENING:
+                return f"Your {device} is currently opening {models.env.title}!"
+            elif status['state']['door_state'] == operation.CLOSING:
+                return f"Your {device} is currently closing {models.env.title}! " \
+                       "You may want to retry after a minute or two!"
+            logger.info(f"Opening {device}.")
             if devices[device].open_allowed:
                 open_result = await devices[device].open()
                 logger.debug(open_result)
                 return f"Opening your {device} {models.env.title}!"
             else:
                 return f"Unattended open is disabled on your {device} {models.env.title}!"
-        elif execute == Operation.CLOSE:
+        elif operation.CLOSE in phrase:
+            if status['state']['door_state'] == operation.CLOSED:
+                return f"Your {device} is already closed {models.env.title}!"
+            elif status['state']['door_state'] == operation.CLOSING:
+                return f"Your {device} is currently closing {models.env.title}!"
+            elif status['state']['door_state'] == operation.OPENING:
+                return f"Your {device} is currently opening {models.env.title}! " \
+                       "You may want to try to after a minute or two!"
+            logger.info(f"Closing {device}.")
             if devices[device].close_allowed:
                 close_result = await devices[device].close()
                 logger.debug(close_result)
                 return f"Closing your {device} {models.env.title}!"
             else:
                 return f"Unattended close is disabled on your {device} {models.env.title}!"
+        else:
+            logger.info(f"{device}: {status['state']['door_state']}")
+            return f"Your {device} is currently {status['state']['door_state']} {models.env.title}! " \
+                   f"What do you want me to do to your {device}?"
