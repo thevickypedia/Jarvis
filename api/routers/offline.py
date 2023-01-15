@@ -4,7 +4,6 @@ import string
 import traceback
 from http import HTTPStatus
 from threading import Thread
-from typing import NoReturn, Union
 
 from fastapi import APIRouter, Request
 from fastapi.responses import FileResponse
@@ -27,8 +26,7 @@ router = APIRouter()
 
 
 @router.post(path="/offline-communicator", dependencies=OFFLINE_PROTECTOR)
-async def offline_communicator_api(request: Request, input_data: OfflineCommunicatorModal) -> \
-        Union[FileResponse, NoReturn]:
+async def offline_communicator_api(request: Request, input_data: OfflineCommunicatorModal):
     """Offline Communicator API endpoint for Jarvis.
 
     Args:
@@ -50,6 +48,11 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
     See Also:
 
         - Keeps waiting for the record response in the database table offline
+
+    Returns:
+
+        FileResponse:
+        Returns the audio file as a response if audio request is made.
     """
     logger.debug(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
                  f"{request.headers.get('user-agent')}")

@@ -1,6 +1,5 @@
 import os
 from http import HTTPStatus
-from typing import Dict, List, NoReturn
 
 from fastapi import APIRouter, UploadFile
 from fastapi.responses import FileResponse
@@ -14,12 +13,12 @@ router = APIRouter()
 
 
 @router.get(path="/list-files", dependencies=OFFLINE_PROTECTOR)
-async def list_files() -> Dict[str, List[str]]:
+async def list_files():
     """Get all YAML files from fileio and all log files from logs directory.
 
     Returns:
 
-        Dict:
+        Dict[str, List[str]]:
         Dictionary of files that can be downloaded or uploaded.
     """
     return {**{"logs": [file_ for __path, __directory, __file in os.walk('logs') for file_ in __file]},
@@ -27,7 +26,7 @@ async def list_files() -> Dict[str, List[str]]:
 
 
 @router.get(path="/get-file", response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
-async def get_file(filename: str) -> FileResponse:
+async def get_file(filename: str):
     """Download a particular YAML file from fileio or log file from logs directory.
 
     Args:
@@ -57,7 +56,7 @@ async def get_file(filename: str) -> FileResponse:
 
 
 @router.post(path="/put-file", dependencies=OFFLINE_PROTECTOR)
-async def put_file(file: UploadFile) -> NoReturn:
+async def put_file(file: UploadFile):
     """Upload a particular YAML file to the fileio directory.
 
     Args:

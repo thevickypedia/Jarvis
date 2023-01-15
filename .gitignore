@@ -4,6 +4,9 @@
 __pycache__
 venv
 
+# module generated
+did.bin
+
 # WIP: Dockerfile and it's requirements file
 Dockerfile
 lib/docker_requirements.txt

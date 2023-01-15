@@ -905,7 +905,7 @@ last_value: the last value assigned or None</p>
 <span id="routers-basic"></span><h1>Routers - Basic<a class="headerlink" href="#module-api.routers.basics" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.basics.redirect_index">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.basics.</span></span><span class="sig-name descname"><span class="pre">redirect_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#api.routers.basics.redirect_index" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.basics.</span></span><span class="sig-name descname"><span class="pre">redirect_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.basics.redirect_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redirect to docs in read-only mode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -919,7 +919,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.basics.health">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.basics.</span></span><span class="sig-name descname"><span class="pre">health</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.routers.basics.health" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.basics.</span></span><span class="sig-name descname"><span class="pre">health</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.basics.health" title="Permalink to this definition">¶</a></dt>
 <dd><p>Health Check for OfflineCommunicator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -930,7 +930,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.basics.get_favicon">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.basics.</span></span><span class="sig-name descname"><span class="pre">get_favicon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FileResponse</span></span></span><a class="headerlink" href="#api.routers.basics.get_favicon" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.basics.</span></span><span class="sig-name descname"><span class="pre">get_favicon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.basics.get_favicon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the favicon.ico and adds to the API endpoint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -947,21 +947,21 @@ last_value: the last value assigned or None</p>
 <span id="routers-fileio"></span><h1>Routers - FileIO<a class="headerlink" href="#module-api.routers.fileio" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.fileio.list_files">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.fileio.</span></span><span class="sig-name descname"><span class="pre">list_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.routers.fileio.list_files" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.fileio.</span></span><span class="sig-name descname"><span class="pre">list_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.fileio.list_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all YAML files from fileio and all log files from logs directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Dictionary of files that can be downloaded or uploaded.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Dict</p>
+<dd class="field-even"><p>Dict[str, List[str]]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.fileio.get_file">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.fileio.</span></span><span class="sig-name descname"><span class="pre">get_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FileResponse</span></span></span><a class="headerlink" href="#api.routers.fileio.get_file" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.fileio.</span></span><span class="sig-name descname"><span class="pre">get_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.fileio.get_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download a particular YAML file from fileio or log file from logs directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -978,7 +978,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.fileio.put_file">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.fileio.</span></span><span class="sig-name descname"><span class="pre">put_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UploadFile</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.routers.fileio.put_file" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.fileio.</span></span><span class="sig-name descname"><span class="pre">put_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UploadFile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.fileio.put_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload a particular YAML file to the fileio directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -992,42 +992,42 @@ last_value: the last value assigned or None</p>
 <span id="routers-helper"></span><h1>Routers - Helper<a class="headerlink" href="#module-api.routers.helper" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.helper.keywords">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.helper.</span></span><span class="sig-name descname"><span class="pre">keywords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.routers.helper.keywords" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.helper.</span></span><span class="sig-name descname"><span class="pre">keywords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.helper.keywords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the keywords.py file into a dictionary of key-value pairs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Key-value pairs of the keywords file.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>dict</p>
+<dd class="field-even"><p>Dict[str, List[str]]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.helper.conversations">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.helper.</span></span><span class="sig-name descname"><span class="pre">conversations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.routers.helper.conversations" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.helper.</span></span><span class="sig-name descname"><span class="pre">conversations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.helper.conversations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the conversation.py file into a dictionary of key-value pairs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Key-value pairs of the conversation file.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>dict</p>
+<dd class="field-even"><p>Dict[str, List[str]]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.helper.offline_compatible">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.helper.</span></span><span class="sig-name descname"><span class="pre">offline_compatible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.routers.helper.offline_compatible" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.helper.</span></span><span class="sig-name descname"><span class="pre">offline_compatible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.helper.offline_compatible" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the list of api compatible words.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Returns the list of api-compatible words as a dictionary.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>dict</p>
+<dd class="field-even"><p>Dict[str, List[str]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1037,7 +1037,7 @@ last_value: the last value assigned or None</p>
 <span id="routers-investment"></span><h1>Routers - Investment<a class="headerlink" href="#module-api.routers.investment" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.investment.authenticate_robinhood">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.investment.</span></span><span class="sig-name descname"><span class="pre">authenticate_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.routers.investment.authenticate_robinhood" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.investment.</span></span><span class="sig-name descname"><span class="pre">authenticate_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.investment.authenticate_robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Authenticates the request and generates single use token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -1061,7 +1061,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.investment.robinhood_path">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.investment.</span></span><span class="sig-name descname"><span class="pre">robinhood_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">HTMLResponse</span></span></span><a class="headerlink" href="#api.routers.investment.robinhood_path" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.investment.</span></span><span class="sig-name descname"><span class="pre">robinhood_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.investment.robinhood_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Serves static file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1103,7 +1103,7 @@ last_value: the last value assigned or None</p>
 <span id="routers-offline"></span><h1>Routers - Offline<a class="headerlink" href="#module-api.routers.offline" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.offline.offline_communicator_api">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.offline.</span></span><span class="sig-name descname"><span class="pre">offline_communicator_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.modals.models.OfflineCommunicatorModal" title="api.modals.models.OfflineCommunicatorModal"><span class="pre">OfflineCommunicatorModal</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FileResponse</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.routers.offline.offline_communicator_api" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.offline.</span></span><span class="sig-name descname"><span class="pre">offline_communicator_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.modals.models.OfflineCommunicatorModal" title="api.modals.models.OfflineCommunicatorModal"><span class="pre">OfflineCommunicatorModal</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.offline.offline_communicator_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Offline Communicator API endpoint for Jarvis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1133,6 +1133,14 @@ last_value: the last value assigned or None</p>
 <li><p>Keeps waiting for the record response in the database table offline</p></li>
 </ul>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the audio file as a response if audio request is made.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>FileResponse</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -1140,7 +1148,7 @@ last_value: the last value assigned or None</p>
 <span id="routers-speechsynthesis"></span><h1>Routers - SpeechSynthesis<a class="headerlink" href="#module-api.routers.speech_synthesis" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.speech_synthesis.speech_synthesis_voices">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.routers.speech_synthesis.speech_synthesis_voices" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.speech_synthesis.speech_synthesis_voices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all available voices in speech synthesis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -1154,7 +1162,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.speech_synthesis.speech_synthesis">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.modals.models.SpeechSynthesisModal" title="api.modals.models.SpeechSynthesisModal"><span class="pre">SpeechSynthesisModal</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_for_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">FileResponse</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.routers.speech_synthesis.speech_synthesis" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.modals.models.SpeechSynthesisModal" title="api.modals.models.SpeechSynthesisModal"><span class="pre">SpeechSynthesisModal</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_for_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.speech_synthesis.speech_synthesis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process request to convert text to speech if docker container is running.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1192,7 +1200,7 @@ last_value: the last value assigned or None</p>
 <span id="routers-stockmonitor"></span><h1>Routers - StockMonitor<a class="headerlink" href="#module-api.routers.stock_monitor" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.stock_monitor.send_otp_stock_monitor">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.stock_monitor.</span></span><span class="sig-name descname"><span class="pre">send_otp_stock_monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EmailStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">60</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.routers.stock_monitor.send_otp_stock_monitor" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.stock_monitor.</span></span><span class="sig-name descname"><span class="pre">send_otp_stock_monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EmailStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">60</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.stock_monitor.send_otp_stock_monitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send one time password via email.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1212,7 +1220,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.stock_monitor.stock_monitor_api">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.stock_monitor.</span></span><span class="sig-name descname"><span class="pre">stock_monitor_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.modals.models.StockMonitorModal" title="api.modals.models.StockMonitorModal"><span class="pre">StockMonitorModal</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">email_otp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Header(None)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.routers.stock_monitor.stock_monitor_api" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.stock_monitor.</span></span><span class="sig-name descname"><span class="pre">stock_monitor_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.modals.models.StockMonitorModal" title="api.modals.models.StockMonitorModal"><span class="pre">StockMonitorModal</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">email_otp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Header(None)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.stock_monitor.stock_monitor_api" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="https://vigneshrao.com/stock-monitor">Stock monitor api endpoint</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1268,7 +1276,7 @@ last_value: the last value assigned or None</p>
 <span id="routers-surveillance"></span><h1>Routers - Surveillance<a class="headerlink" href="#module-api.routers.surveillance" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.surveillance.authenticate_surveillance">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.surveillance.</span></span><span class="sig-name descname"><span class="pre">authenticate_surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cam</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.modals.models.CameraIndexModal" title="api.modals.models.CameraIndexModal"><span class="pre">CameraIndexModal</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#api.routers.surveillance.authenticate_surveillance" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.surveillance.</span></span><span class="sig-name descname"><span class="pre">authenticate_surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cam</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#api.modals.models.CameraIndexModal" title="api.modals.models.CameraIndexModal"><span class="pre">CameraIndexModal</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.surveillance.authenticate_surveillance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests the given camera index, generates a token for the endpoint to authenticate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1295,7 +1303,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.surveillance.monitor">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.surveillance.</span></span><span class="sig-name descname"><span class="pre">monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">HTMLResponse</span></span></span><a class="headerlink" href="#api.routers.surveillance.monitor" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.surveillance.</span></span><span class="sig-name descname"><span class="pre">monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.surveillance.monitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Serves the monitor page’s frontend after updating it with video origin and websocket origins.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1334,7 +1342,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.surveillance.video_feed">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.surveillance.</span></span><span class="sig-name descname"><span class="pre">video_feed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">StreamingResponse</span></span></span><a class="headerlink" href="#api.routers.surveillance.video_feed" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.surveillance.</span></span><span class="sig-name descname"><span class="pre">video_feed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.surveillance.video_feed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Authenticates the request, and returns the frames generated as a StreamingResponse.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -1362,7 +1370,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.routers.surveillance.websocket_endpoint">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.surveillance.</span></span><span class="sig-name descname"><span class="pre">websocket_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">websocket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebSocket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#api.routers.surveillance.websocket_endpoint" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.routers.surveillance.</span></span><span class="sig-name descname"><span class="pre">websocket_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">websocket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebSocket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routers.surveillance.websocket_endpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates a websocket connection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1596,7 +1604,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="api.squire.surveillance_squire.streamer">
-<span class="sig-prename descclassname"><span class="pre">api.squire.surveillance_squire.</span></span><span class="sig-name descname"><span class="pre">streamer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">ByteString</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.squire.surveillance_squire.streamer" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">api.squire.surveillance_squire.</span></span><span class="sig-name descname"><span class="pre">streamer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterable</span><span class="p"><span class="pre">[</span></span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.squire.surveillance_squire.streamer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields bytes string extracted from the multiprocessing queue, until the queue_manager is alive.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Yields</dt>

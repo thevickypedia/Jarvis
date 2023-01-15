@@ -1,6 +1,5 @@
 import os
 from http import HTTPStatus
-from typing import NoReturn
 
 from fastapi import APIRouter
 from fastapi.responses import FileResponse, RedirectResponse
@@ -12,7 +11,7 @@ router = APIRouter()
 
 
 @router.get(path="/", response_class=RedirectResponse, include_in_schema=False)
-async def redirect_index() -> str:
+async def redirect_index():
     """Redirect to docs in read-only mode.
 
     Returns:
@@ -24,7 +23,7 @@ async def redirect_index() -> str:
 
 
 @router.get(path="/health", include_in_schema=False)
-async def health() -> NoReturn:
+async def health():
     """Health Check for OfflineCommunicator.
 
     Raises:
@@ -35,7 +34,7 @@ async def health() -> NoReturn:
 
 
 @router.get(path="/favicon.ico", include_in_schema=False)
-async def get_favicon() -> FileResponse:
+async def get_favicon():
     """Gets the favicon.ico and adds to the API endpoint.
 
     Returns:

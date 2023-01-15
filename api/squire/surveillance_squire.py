@@ -1,7 +1,7 @@
 import base64
 import string
 from multiprocessing import Queue
-from typing import ByteString, Iterable, List, NoReturn, Tuple
+from typing import AsyncIterable, List, NoReturn, Tuple
 
 import cv2
 import numpy
@@ -119,7 +119,7 @@ def gen_frames(manager: Queue, index: int, available_cameras: List[str]) -> NoRe
         manager.put(frame)
 
 
-def streamer() -> Iterable[ByteString]:
+def streamer() -> AsyncIterable[bytes]:
     """Yields bytes string extracted from the multiprocessing queue, until the queue_manager is alive.
 
     Yields:

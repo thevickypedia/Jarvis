@@ -1,7 +1,7 @@
 from datetime import datetime
 from http import HTTPStatus
 from threading import Thread
-from typing import NoReturn, Optional
+from typing import Optional
 
 import jinja2
 import jwt
@@ -24,7 +24,7 @@ from modules.utils import support, util
 router = APIRouter()
 
 
-async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 60) -> NoReturn:
+async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 60):
     """Send one time password via email.
 
     Args:
@@ -62,7 +62,7 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 6
 
 @router.post(path="/stock-monitor")
 async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
-                            email_otp: Optional[str] = Header(None)) -> NoReturn:
+                            email_otp: Optional[str] = Header(None)):
     """`Stock monitor api endpoint <https://vigneshrao.com/stock-monitor>`__.
 
     Args:
@@ -112,7 +112,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
     email_otp = email_otp or request.headers.get('email_otp')
     if email_otp:
         recd_dict[input_data.email] = email_otp
-    if recd_dict.get(input_data.email) and recd_dict[input_data.email] == sent_dict[input_data.email]:
+    if recd_dict.get(input_data.email, 'DO_NOT') == sent_dict.get(input_data.email, 'MATCH'):
         logger.debug(f"{input_data.email} has been verified.")
     else:
         result = validate_email(email_address=input_data.email, smtp_check=False)
@@ -175,8 +175,8 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
 
     if decoded['Ticker'] not in stock_monitor.stock_list:
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
-                          detail=f"{decoded['Ticker']} not a part of NASDAQ stock list [OR] Jarvis currently doesn't "
-                                 f"support tracking prices for {decoded['Ticker']}.")
+                          detail=f"{decoded['Ticker']!r} not a part of NASDAQ stock list [OR] Jarvis currently doesn't "
+                                 f"support tracking prices for {decoded['Ticker']!r}")
 
     # Forms a tuple of the new entry provided by the user
     new_entry = (str(decoded['Ticker']), input_data.email, float(decoded['Max']), float(decoded['Min']),
