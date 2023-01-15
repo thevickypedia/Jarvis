@@ -2,7 +2,6 @@ import os
 from http import HTTPStatus
 from json import JSONDecodeError
 from threading import Thread
-from typing import NoReturn, Union
 
 import requests
 from fastapi import APIRouter
@@ -20,7 +19,7 @@ router = APIRouter()
 
 
 @router.get(path='/speech-synthesis-voices', dependencies=OFFLINE_PROTECTOR)
-async def speech_synthesis_voices() -> NoReturn:
+async def speech_synthesis_voices():
     """Get all available voices in speech synthesis.
 
     Raises:
@@ -51,8 +50,7 @@ async def speech_synthesis_voices() -> NoReturn:
 
 
 @router.post(path='/speech-synthesis', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
-async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: bool = True) -> \
-        Union[FileResponse, None]:
+async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: bool = True):
     """Process request to convert text to speech if docker container is running.
 
     Args:

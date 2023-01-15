@@ -67,8 +67,7 @@ def fast_api() -> None:
         "port": models.env.offline_port,
         "ws_ping_interval": 20.0,
         "ws_ping_timeout": 20.0,
-        "workers": models.env.workers,
-        "reload": True
+        "workers": models.env.workers
     }
 
     logger.debug(argument_dict)

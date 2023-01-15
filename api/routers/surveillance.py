@@ -6,7 +6,6 @@ from datetime import datetime
 from http import HTTPStatus
 from multiprocessing import Process, Queue
 from threading import Thread
-from typing import NoReturn
 
 import jinja2
 from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
@@ -35,7 +34,7 @@ ws_manager = ConnectionManager()
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
     @router.post(path="/surveillance-authenticate", dependencies=SURVEILLANCE_PROTECTOR)
-    async def authenticate_surveillance(cam: CameraIndexModal) -> NoReturn:
+    async def authenticate_surveillance(cam: CameraIndexModal):
         """Tests the given camera index, generates a token for the endpoint to authenticate.
 
         Args:
@@ -87,7 +86,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
     @router.get('/surveillance')
-    async def monitor(token: str = None) -> HTMLResponse:
+    async def monitor(token: str = None):
         """Serves the monitor page's frontend after updating it with video origin and websocket origins.
 
         Args:
@@ -132,7 +131,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
     @router.get('/video-feed')
-    async def video_feed(request: Request, token: str = None) -> StreamingResponse:
+    async def video_feed(request: Request, token: str = None):
         """Authenticates the request, and returns the frames generated as a StreamingResponse.
 
         Raises:
@@ -181,7 +180,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
 # Conditional endpoint: Condition matches without env vars during docs generation
 if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
     @router.websocket("/ws/{client_id}")
-    async def websocket_endpoint(websocket: WebSocket, client_id: int) -> None:
+    async def websocket_endpoint(websocket: WebSocket, client_id: int):
         """Initiates a websocket connection.
 
         Args:

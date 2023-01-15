@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+6.9.8 (01/14/2023)
+------------------
+- Upgrade packages in version_locked_requirements.txt
+- Add comments for retaining older versions
+- Remove return type annotations in api routers
+- Bug fix on face recognition module skipping face detection
+
 6.9.7 (01/14/2023)
 ------------------
 - Add a feature to send vehicle report via email

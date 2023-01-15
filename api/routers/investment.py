@@ -3,7 +3,6 @@ import os
 from datetime import datetime
 from http import HTTPStatus
 from threading import Thread
-from typing import NoReturn
 
 import jinja2
 from fastapi import APIRouter, Request
@@ -25,7 +24,7 @@ router = APIRouter()
 if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
                                               models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
     @router.post(path="/robinhood-authenticate", dependencies=ROBINHOOD_PROTECTOR)
-    async def authenticate_robinhood() -> NoReturn:
+    async def authenticate_robinhood():
         """Authenticates the request and generates single use token.
 
         Raises:
@@ -65,7 +64,7 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
 if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
                                               models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
     @router.get(path="/investment", response_class=HTMLResponse)
-    async def robinhood_path(request: Request, token: str = None) -> HTMLResponse:
+    async def robinhood_path(request: Request, token: str = None):
         """Serves static file.
 
         Args:
