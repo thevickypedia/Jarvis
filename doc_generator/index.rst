@@ -748,6 +748,13 @@ Offline
 Retry Handler
 =============
 
+.. automodule:: modules.responder
+   :members:
+   :undoc-members:
+
+Retry Handler
+=============
+
 .. automodule:: modules.retry.retry
    :members:
    :undoc-members:
@@ -786,6 +793,12 @@ Telegram
    :members:
    :undoc-members:
 
+====
+
+.. automodule:: modules.telegram.file_handler
+   :members:
+   :undoc-members:
+
 Temperature
 ===========
 
@@ -804,12 +817,6 @@ Timeout
 =======
 
 .. automodule:: modules.timeout.timeout
-   :members:
-   :undoc-members:
-
-====
-
-.. automodule:: modules.timeout.responder
    :members:
    :undoc-members:
 

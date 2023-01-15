@@ -7410,9 +7410,55 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 </section>
-<section id="module-modules.retry.retry">
-<span id="retry-handler"></span><h1>Retry Handler<a class="headerlink" href="#module-modules.retry.retry" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
+<section id="module-modules.responder">
+<span id="retry-handler"></span><h1>Retry Handler<a class="headerlink" href="#module-modules.responder" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.responder.Response">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.responder.</span></span><span class="sig-name descname"><span class="pre">Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.responder.Response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to format the response, so that it can be accessed as an object variable.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Response</span>
+</pre></div>
+</div>
+<p>Extracts the property <code class="docutils literal notranslate"><span class="pre">ok</span></code> from a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dictionary</strong> – Takes a dictionary of key-value pairs as an argument.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.responder.Response.ok">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ok</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.responder.Response.ok" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the extracted class variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> based on the arg value received.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.responder.Response.info">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.responder.Response.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the extracted class variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> based on the arg value received.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="id6">
+<h1>Retry Handler<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h1>
+<span class="target" id="module-modules.retry.retry"></span><dl class="py function">
 <dt class="sig sig-object py" id="modules.retry.retry.retry">
 <span class="sig-prename descclassname"><span class="pre">modules.retry.retry.</span></span><span class="sig-name descname"><span class="pre">retry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attempts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_exc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.retry.retry.retry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for any function that has to be retried upon failure.</p>
@@ -8068,8 +8114,8 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 </section>
-<section id="id6">
-<h1>Telegram<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h1>
+<section id="id7">
+<h1>Telegram<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-modules.telegram.bot"></span><dl class="py function">
 <dt class="sig sig-object py" id="modules.telegram.bot.greeting">
 <span class="sig-prename descclassname"><span class="pre">modules.telegram.bot.</span></span><span class="sig-name descname"><span class="pre">greeting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.telegram.bot.greeting" title="Permalink to this definition">¶</a></dt>
@@ -8158,7 +8204,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response">Response</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.responder.Response" title="modules.responder.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -8179,7 +8225,28 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response">Response</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.responder.Response" title="modules.responder.Response">Response</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.send_document">
+<span class="sig-name descname"><span class="pre">send_document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FilePath</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HTML'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.send_document" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a document to the user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chat_id</strong> – Chat ID.</p></li>
+<li><p><strong>filename</strong> – Name of the audio file that has to be sent.</p></li>
+<li><p><strong>parse_mode</strong> – Parse mode. Defaults to <code class="docutils literal notranslate"><span class="pre">HTML</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Response class.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.responder.Response" title="modules.responder.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -8199,7 +8266,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response">Response</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.responder.Response" title="modules.responder.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -8220,14 +8287,14 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response">Response</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.responder.Response" title="modules.responder.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.send_message">
-<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.send_message" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.send_message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a payload to reply to a message received.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -8241,7 +8308,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response">Response</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.responder.Response" title="modules.responder.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -8333,6 +8400,17 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.process_document">
+<span class="sig-name descname"><span class="pre">process_document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.process_document" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes the payload received after checking for authentication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>payload</strong> – Payload received, to extract information from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="modules.telegram.bot.TelegramBot.process_text">
 <span class="sig-name descname"><span class="pre">process_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.telegram.bot.TelegramBot.process_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processes the payload received after checking for authentication.</p>
@@ -8413,6 +8491,72 @@ last_value: the last value assigned or None</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Output filename if conversion is successful.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="module-modules.telegram.file_handler"></span><dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.file_handler._list_files">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.file_handler.</span></span><span class="sig-name descname"><span class="pre">_list_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.telegram.file_handler._list_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all YAML files from fileio and all log files from logs directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dictionary of files that can be downloaded or uploaded.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict[str, List[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.file_handler.list_files">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.file_handler.</span></span><span class="sig-name descname"><span class="pre">list_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.telegram.file_handler.list_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all downloadable files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns response as a string.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.file_handler.get_file">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.file_handler.</span></span><span class="sig-name descname"><span class="pre">get_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modules.responder.Response" title="modules.responder.Response"><span class="pre">Response</span></a></span></span><a class="headerlink" href="#modules.telegram.file_handler.get_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a particular YAML file from fileio or log file from logs directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – Name of the file that has to be downloaded.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the Response object to further process send document via API.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.responder.Response" title="modules.responder.Response">Response</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.telegram.file_handler.put_file">
+<span class="sig-prename descclassname"><span class="pre">modules.telegram.file_handler.</span></span><span class="sig-name descname"><span class="pre">put_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#modules.telegram.file_handler.put_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload a particular YAML file to the fileio directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – Name of the file.</p></li>
+<li><p><strong>file_content</strong> – Content of the file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Response to the user.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
@@ -8582,7 +8726,7 @@ last_value: the last value assigned or None</p>
 <span id="timeout"></span><h1>Timeout<a class="headerlink" href="#module-modules.timeout.timeout" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="modules.timeout.timeout.timeout">
-<span class="sig-prename descclassname"><span class="pre">modules.timeout.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Logger</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response"><span class="pre">Response</span></a></span></span><a class="headerlink" href="#modules.timeout.timeout.timeout" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">modules.timeout.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Logger</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modules.responder.Response" title="modules.responder.Response"><span class="pre">Response</span></a></span></span><a class="headerlink" href="#modules.timeout.timeout.timeout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs the given function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -8598,53 +8742,9 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>A custom response class to indicate whether the function completed within the set timeout.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#modules.timeout.responder.Response" title="modules.timeout.responder.Response">Response</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#modules.responder.Response" title="modules.responder.Response">Response</a></p>
 </dd>
 </dl>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="module-modules.timeout.responder"></span><dl class="py class">
-<dt class="sig sig-object py" id="modules.timeout.responder.Response">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.timeout.responder.</span></span><span class="sig-name descname"><span class="pre">Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.timeout.responder.Response" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to format the response, so that it can be accessed as an object variable.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Response</span>
-</pre></div>
-</div>
-<p>Extracts the property <code class="docutils literal notranslate"><span class="pre">ok</span></code> from a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dictionary</strong> – Takes a dictionary of key-value pairs as an argument.</p>
-</dd>
-</dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="modules.timeout.responder.Response.ok">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ok</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.timeout.responder.Response.ok" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the extracted class variable.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> based on the arg value received.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="modules.timeout.responder.Response.info">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#modules.timeout.responder.Response.info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the extracted class variable.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> based on the arg value received.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -9379,11 +9479,12 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-modules.models.models">Models</a></li>
 <li><a class="reference internal" href="#module-modules.myq.myq">MyQ</a></li>
 <li><a class="reference internal" href="#id5">Offline</a></li>
-<li><a class="reference internal" href="#module-modules.retry.retry">Retry Handler</a></li>
+<li><a class="reference internal" href="#module-modules.responder">Retry Handler</a></li>
+<li><a class="reference internal" href="#id6">Retry Handler</a></li>
 <li><a class="reference internal" href="#module-modules.utils.shared">Shared Resources</a></li>
 <li><a class="reference internal" href="#module-modules.utils.support">Support</a></li>
 <li><a class="reference internal" href="#module-modules.utils.util">Utilities</a></li>
-<li><a class="reference internal" href="#id6">Telegram</a></li>
+<li><a class="reference internal" href="#id7">Telegram</a></li>
 <li><a class="reference internal" href="#module-modules.temperature.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-modules.templates.templates">Templates</a></li>
 <li><a class="reference internal" href="#module-modules.timeout.timeout">Timeout</a></li>

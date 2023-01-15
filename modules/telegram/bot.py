@@ -22,7 +22,7 @@ from modules.exceptions import BotInUse
 from modules.logger.custom_logger import logger
 from modules.models import models
 from modules.offline import compatibles
-from modules.telegram import audio_handler
+from modules.telegram import audio_handler, file_handler
 from modules.utils import support, util
 
 importlib.reload(module=logging)
@@ -179,6 +179,24 @@ class TelegramBot:
         return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendAudio', files=files,
                                   payload={'chat_id': chat_id, 'title': filename, 'parse_mode': parse_mode})
 
+    def send_document(self, chat_id: int, filename: Union[str, FilePath], parse_mode: str = 'HTML') -> \
+            requests.Response:
+        """Sends a document to the user.
+
+        Args:
+            chat_id: Chat ID.
+            filename: Name of the audio file that has to be sent.
+            parse_mode: Parse mode. Defaults to ``HTML``
+
+        Returns:
+            Response:
+            Response class.
+        """
+        files = {'document': open(filename, 'rb')}
+        return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendDocument', files=files,
+                                  payload={'chat_id': chat_id, 'caption': os.path.basename(filename),
+                                           'parse_mode': parse_mode})
+
     def send_photo(self, chat_id: int, filename: Union[str, FilePath]) -> requests.Response:
         """Sends an image file to the user.
 
@@ -212,7 +230,7 @@ class TelegramBot:
                                            'reply_to_message_id': payload['message_id'],
                                            'text': response, 'parse_mode': parse_mode})
 
-    def send_message(self, chat_id: int, response: str, parse_mode: str = 'markdown') -> requests.Response:
+    def send_message(self, chat_id: int, response: str, parse_mode: Union[str, None] = 'markdown') -> requests.Response:
         """Generates a payload to reply to a message received.
 
         Args:
@@ -224,8 +242,11 @@ class TelegramBot:
             Response:
             Response class.
         """
-        return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendMessage',
-                                  payload={'chat_id': chat_id, 'text': response, 'parse_mode': parse_mode})
+        if parse_mode:
+            payload = {'chat_id': chat_id, 'text': response, 'parse_mode': parse_mode}
+        else:
+            payload = {'chat_id': chat_id, 'text': response}
+        return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendMessage', payload=payload)
 
     def poll_for_messages(self) -> NoReturn:
         """Polls ``api.telegram.org`` for new messages.
@@ -263,6 +284,8 @@ class TelegramBot:
                     self.process_text(payload=message)
                 elif message.get('voice'):
                     self.process_voice(payload=message)
+                elif message.get('document'):
+                    self.process_document(payload=message)
                 offset = result['update_id'] + 1
 
     def authenticate(self, payload: dict) -> bool:
@@ -387,6 +410,25 @@ class TelegramBot:
         self.send_audio(filename=filename, chat_id=payload['from']['id'])
         os.remove(filename)
 
+    def process_document(self, payload: dict) -> None:
+        """Processes the payload received after checking for authentication.
+
+        Args:
+            payload: Payload received, to extract information from.
+        """
+        if not self.authenticate(payload=payload):
+            return
+        if not self.verify_timeout(payload=payload):
+            return
+        if bytes_obj := self._get_file(payload=payload['document']):
+            filename = payload['document']['file_name']
+            response = file_handler.put_file(filename=filename, file_content=bytes_obj)
+            self.process_response(response=response, payload=payload)
+        else:
+            title = USER_TITLE.get(payload['from']['username'], models.env.title)
+            self.reply_to(payload=payload, response=f"I'm sorry {title}! I was unable to process your document. "
+                                                    "Please try again!")
+
     def process_text(self, payload: dict) -> None:
         """Processes the payload received after checking for authentication.
 
@@ -424,6 +466,25 @@ class TelegramBot:
                                        "commands directly instead.")
             payload['text'] = payload['text'].lstrip('/').replace('jarvis', '').replace('_', ' ').strip()
         if not payload['text']:
+            return
+        split_text = payload['text'].lower().split()
+        if ('file' in split_text or 'files' in split_text) and \
+                ('send' in split_text or 'get' in split_text or 'list' in split_text):
+            if 'list' in split_text and ('files' in split_text or 'file' in split_text):
+                # Set parse_mode to an explicit None, so the API doesn't try to parse as HTML or Markdown
+                # since the result has file names and paths
+                self.send_message(chat_id=payload['from']['id'], response=file_handler.list_files(), parse_mode=None)
+                return
+            _, _, filename = payload['text'].partition(' file ')
+            if filename:
+                response = file_handler.get_file(filename=filename.strip())
+                if response.ok:
+                    self.send_document(filename=response.info, chat_id=payload['from']['id'])
+                else:
+                    self.reply_to(payload=payload, response=response.info)
+            else:
+                self.reply_to(payload=payload, response="No filename was received. "
+                                                        "Please include only the filename after the keyword 'file'.")
             return
         self.jarvis(payload=payload)
 
