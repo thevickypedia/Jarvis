@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+7.0.0 (01/15/2023)
+------------------
+- Improve garage door controls' response time
+- Avoid repeated login attempts on a single session
+- Fix improper suggestions in Wikipedia module
+- Make wikipedia keywords available on offline communicator
+
 6.9.9 (01/15/2023)
 ------------------
 - Avoid raising errors for global validations on child processes

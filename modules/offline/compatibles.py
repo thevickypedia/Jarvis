@@ -22,6 +22,7 @@ def offline_compatible() -> List[str]:
                      keywords.faces,
                      keywords.facts,
                      keywords.weather,
+                     keywords.wikipedia_,
                      keywords.flip_a_coin,
                      keywords.jokes,
                      keywords.todo,
