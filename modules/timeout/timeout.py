@@ -3,7 +3,7 @@ import time
 from logging import Logger
 from typing import Callable, Union
 
-from modules.timeout.responder import Response
+from modules.responder import Response
 
 
 def timeout(seconds: Union[int, float], function: Callable,

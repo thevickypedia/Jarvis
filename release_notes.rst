@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+7.0.1 (01/15/2023)
+------------------
+- Add a feature to send and receive files via telegram API
+
 7.0.0 (01/15/2023)
 ------------------
 - Improve garage door controls' response time
