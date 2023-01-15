@@ -3577,36 +3577,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <section id="module-executors.port_handler">
 <span id="port-handler"></span><h1>Port Handler<a class="headerlink" href="#module-executors.port_handler" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="executors.port_handler.get_free_port">
-<span class="sig-prename descclassname"><span class="pre">executors.port_handler.</span></span><span class="sig-name descname"><span class="pre">get_free_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#executors.port_handler.get_free_port" title="Permalink to this definition">¶</a></dt>
-<dd><p>Chooses a PORT number dynamically that is not being used to ensure we don’t rely on a single port.</p>
-<p>Instead of binding to a specific port, <code class="docutils literal notranslate"><span class="pre">sock.bind(('',</span> <span class="pre">0))</span></code> is used to bind to 0.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>The port number chosen can be found using <code class="docutils literal notranslate"><span class="pre">sock.getsockname()[1]</span></code></p></li>
-<li><p>Passing it on to the slaves so that they can connect back.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sock</span></code> is the socket that was created, returned by socket.socket.</p></li>
-</ul>
-</div>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>Well-Known ports: 0 to 1023</p></li>
-<li><p>Registered ports: 1024 to 49151</p></li>
-<li><p>Dynamically available: 49152 to 65535</p></li>
-<li><p>The OS will then pick an available port.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Randomly chosen port number that is not in use.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="executors.port_handler.is_port_in_use">
 <span class="sig-prename descclassname"><span class="pre">executors.port_handler.</span></span><span class="sig-name descname"><span class="pre">is_port_in_use</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.port_handler.is_port_in_use" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to a remote socket at address, to identify if the port is currently being used.</p>
@@ -7296,6 +7266,12 @@ Whites can have a value of None.</p>
 </pre></div>
 </div>
 <dl class="py function">
+<dt class="sig sig-object py" id="modules.models.models._set_default_voice_name">
+<span class="sig-prename descclassname"><span class="pre">modules.models.models.</span></span><span class="sig-name descname"><span class="pre">_set_default_voice_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.models.models._set_default_voice_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set default voice name based on the Operating System.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="modules.models.models._main_process_validations">
 <span class="sig-prename descclassname"><span class="pre">modules.models.models.</span></span><span class="sig-name descname"><span class="pre">_main_process_validations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.models.models._main_process_validations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validations that should happen only when the main process is triggered.</p>
@@ -8057,6 +8033,36 @@ last_value: the last value assigned or None</p>
 <dt class="sig sig-object py" id="modules.utils.util.release_print">
 <span class="sig-prename descclassname"><span class="pre">modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">release_print</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.utils.util.release_print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes print statement’s suppression.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.utils.util.get_free_port">
+<span class="sig-prename descclassname"><span class="pre">modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">get_free_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#modules.utils.util.get_free_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chooses a PORT number dynamically that is not being used to ensure we don’t rely on a single port.</p>
+<p>Instead of binding to a specific port, <code class="docutils literal notranslate"><span class="pre">sock.bind(('',</span> <span class="pre">0))</span></code> is used to bind to 0.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>The port number chosen can be found using <code class="docutils literal notranslate"><span class="pre">sock.getsockname()[1]</span></code></p></li>
+<li><p>Passing it on to the slaves so that they can connect back.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sock</span></code> is the socket that was created, returned by socket.socket.</p></li>
+</ul>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Well-Known ports: 0 to 1023</p></li>
+<li><p>Registered ports: 1024 to 49151</p></li>
+<li><p>Dynamically available: 49152 to 65535</p></li>
+<li><p>The OS will then pick an available port.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Randomly chosen port number that is not in use.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

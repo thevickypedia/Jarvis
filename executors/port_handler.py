@@ -1,4 +1,3 @@
-import contextlib
 import os
 import signal
 import socket
@@ -9,32 +8,6 @@ from typing import Union
 
 from modules.logger.custom_logger import logger
 from modules.models import models
-
-
-def get_free_port() -> int:
-    """Chooses a PORT number dynamically that is not being used to ensure we don't rely on a single port.
-
-    Instead of binding to a specific port, ``sock.bind(('', 0))`` is used to bind to 0.
-
-    See Also:
-        - The port number chosen can be found using ``sock.getsockname()[1]``
-        - Passing it on to the slaves so that they can connect back.
-        - ``sock`` is the socket that was created, returned by socket.socket.
-
-    Notes:
-        - Well-Known ports: 0 to 1023
-        - Registered ports: 1024 to 49151
-        - Dynamically available: 49152 to 65535
-        - The OS will then pick an available port.
-
-    Returns:
-        int:
-        Randomly chosen port number that is not in use.
-    """
-    with contextlib.closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
-        sock.bind(('', 0))
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        return sock.getsockname()[1]
 
 
 def is_port_in_use(port: int) -> bool:

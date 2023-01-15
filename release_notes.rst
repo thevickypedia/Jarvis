@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+6.9.9 (01/15/2023)
+------------------
+- Avoid raising errors for global validations on child processes
+- Replace errors with warnings to make sure child processes restart fine
+- Set automatic pypi upload to push on master branch
+- Fix path to requirements on setup.py
+
 6.9.8 (01/14/2023)
 ------------------
 - Upgrade packages in version_locked_requirements.txt
@@ -31,7 +38,7 @@ Release Notes
 - Add background tasks to offline compatible list
 - Add Attention to critical logs for easy look up
 
-6.9.4 (01/05/2023)
+6.9.4 (01/06/2023)
 ------------------
 - Restructure Jarvis API
 - Setup dedicated logger module for API

@@ -57,14 +57,17 @@ def read(name: str) -> str:
     return content
 
 
-def dependencies() -> List[str]:
+def dependencies(filename: str) -> List[str]:
     """Gathers dependencies from requirements file.
+
+    Args:
+        filename: Takes the requirements filename as an argument.
 
     Returns:
         list:
         List of dependencies to be installed.
     """
-    requirement_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lib', 'requirements.txt')
+    requirement_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lib', filename)
     if os.path.isfile(requirement_file):
         with open(requirement_file) as requirements:
             install_requires = requirements.read().splitlines()
@@ -82,7 +85,7 @@ setup(
     License='MIT',
     url=base_url,
     python_requires=">=3.8",
-    install_requires=dependencies(),
+    install_requires=dependencies('version_locked_requirements.txt') + dependencies('version_upgrade_requirements.txt'),
     classifiers=classifiers,
     keywords='python, home-automation, natural-language-processing, text-to-speech, speech-recognition, jarvis, '
              'hotword-detection, virtual-assistant',

@@ -6,6 +6,7 @@
 """
 
 import os
+import warnings
 from multiprocessing import current_process
 from typing import NoReturn, Union
 
@@ -22,6 +23,7 @@ from modules.exceptions import (CameraError, EgressErrors, InvalidEnvVars,
                                 MissingEnvVars)
 from modules.models.classes import (Indicators, RecognizerSettings,
                                     audio_driver, env, fileio, settings)
+from modules.utils import util
 
 # Shared across other modules
 voices: Union[list, object] = audio_driver.getProperty("voices")
@@ -38,6 +40,16 @@ TABLES = {
     "guard": ("state",),
 }
 KEEP_TABLES = ("vpn", "party")  # TABLES to keep from `fileio.base_db`
+
+
+def _set_default_voice_name():
+    """Set default voice name based on the Operating System."""
+    if settings.os == "Darwin":
+        env.voice_name = "Daniel"
+    elif settings.os == "Windows":
+        env.voice_name = "David"
+    elif settings.os == "Linux":
+        env.voice_name = "english-us"
 
 
 def _main_process_validations() -> NoReturn:
@@ -77,6 +89,7 @@ def _main_process_validations() -> NoReturn:
 
 def _global_validations() -> NoReturn:
     """Validations that should happen for all processes including parent and child."""
+    main = True if current_process().name == "MainProcess" else False
     # Validate root password present for linux systems
     if settings.os == "Linux":
         if not env.root_password:
@@ -87,16 +100,17 @@ def _global_validations() -> NoReturn:
 
     voice_names = [__voice.name for __voice in voices]
     if not env.voice_name:
-        if settings.os == "Darwin":
-            env.voice_name = "Daniel"
-        elif settings.os == "Windows":
-            env.voice_name = "David"
-        elif settings.os == "Linux":
-            env.voice_name = "english-us"
+        _set_default_voice_name()
     elif env.voice_name not in voice_names:
-        raise InvalidEnvVars(
-            f"{env.voice_name!r} is not available.\nAvailable voices are: {', '.join(voice_names)}"
-        )
+        if main:
+            raise InvalidEnvVars(
+                f"{env.voice_name!r} is not available.\nAvailable voices are: {', '.join(voice_names)}"
+            )
+        else:
+            _set_default_voice_name()
+            warnings.warn(
+                f"{env.voice_name!r} is not available. Defaulting to {env.voice_name!r}"
+            )
 
     if env.website:
         env.website = env.website.lstrip(f"{env.website.scheme}://")
@@ -112,14 +126,27 @@ def _global_validations() -> NoReturn:
     # Note: Pydantic validation for ICS_URL can be implemented using regex=".*ics$"
     # However it will NOT work in this use case, since the type hint is HttpUrl
     if env.ics_url and not env.ics_url.endswith('.ics'):
-        raise InvalidEnvVars(
-            "'ICS_URL' should end with .ics"
-        )
+        if main:
+            raise InvalidEnvVars(
+                "'ICS_URL' should end with .ics"
+            )
+        else:
+            env.ics_url = None
+            warnings.warn(
+                "'ICS_URL' should end with .ics"
+            )
 
     if env.speech_synthesis_port == env.offline_port:
-        raise InvalidEnvVars(
-            "Speech synthesizer and offline communicator cannot run simultaneously on the same port number."
-        )
+        if main:
+            raise InvalidEnvVars(
+                "Speech synthesizer and offline communicator cannot run simultaneously on the same port number."
+            )
+        else:
+            env.speech_synthesis_port = util.get_free_port()
+            warnings.warn(
+                "Speech synthesizer and offline communicator cannot run on same port number. "
+                f"Defaulting to {env.speech_synthesis_port}"
+            )
 
     if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
         env.crontab.append(rh_cron_schedule(extended=True))
@@ -144,18 +171,30 @@ def _global_validations() -> NoReturn:
         cameras = []
     if cameras:
         if env.camera_index >= len(cameras):
-            raise InvalidEnvVars(
-                f"Camera index # {env.camera_index} unavailable.\n"
-                "Camera index cannot exceed the number of available cameras.\n"
-                f"{len(cameras)} available cameras: {', '.join([f'{i}: {c}' for i, c in enumerate(cameras)])}"
-            )
+            if main:
+                raise InvalidEnvVars(
+                    f"Camera index # {env.camera_index} unavailable.\n"
+                    "Camera index cannot exceed the number of available cameras.\n"
+                    f"{len(cameras)} available cameras: {', '.join([f'{i}: {c}' for i, c in enumerate(cameras)])}"
+                )
+            else:
+                warnings.warn(
+                    f"Camera index # {env.camera_index} unavailable.\n"
+                    "Camera index cannot exceed the number of available cameras.\n"
+                    f"{len(cameras)} available cameras: {', '.join([f'{i}: {c}' for i, c in enumerate(cameras)])}"
+                )
+                env.camera_index = None
     else:
         env.camera_index = None
 
     if env.camera_index is not None:
         cam = cv2.VideoCapture(env.camera_index)
         if cam is None or not cam.isOpened() or cam.read() == (False, None):
-            raise CameraError(f"Unable to read the camera - {cameras[env.camera_index]}")
+            if main:
+                raise CameraError(f"Unable to read the camera - {cameras[env.camera_index]}")
+            else:
+                warnings.warn(f"Unable to read the camera - {cameras[env.camera_index]}")
+                env.camera_index = None
         cam.release()
 
     # Validate voice for speech synthesis
@@ -165,10 +204,16 @@ def _global_validations() -> NoReturn:
         if response.ok:
             available_voices = [value.get('id').replace('/', '_') for key, value in response.json().items()]
             if env.speech_synthesis_voice not in available_voices:
-                raise InvalidEnvVars(
-                    f"{env.speech_synthesis_voice} is not available.\n"
-                    f"Available Voices for Speech Synthesis: {', '.join(available_voices).replace('/', '_')}"
-                )
+                if main:
+                    raise InvalidEnvVars(
+                        f"{env.speech_synthesis_voice} is not available.\n"
+                        f"Available Voices for Speech Synthesis: {', '.join(available_voices).replace('/', '_')}"
+                    )
+                else:
+                    warnings.warn(
+                        f"{env.speech_synthesis_voice} is not available.\n"
+                        f"Available Voices for Speech Synthesis: {', '.join(available_voices).replace('/', '_')}"
+                    )
     except EgressErrors:
         pass
 
