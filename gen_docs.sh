@@ -22,6 +22,6 @@ fi
 rm -rf docs
 mkdir docs
 mkdir -p doc_generator/_static  # creates a _static folder if unavailable
-cp README.md doc_generator && cd doc_generator && make clean html && mv _build/html/* ../docs && rm -rf README.md fileio logs
+cp README.md doc_generator && cd doc_generator && make clean html && mv _build/html/* ../docs && mv README.md ../docs && rm -rf fileio logs
 touch ../docs/.nojekyll
 cp static.css ../docs/_static

@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+7.0.2 (01/16/2023)
+------------------
+- Keep `README.md` in `docs` page
+
 7.0.1 (01/15/2023)
 ------------------
 - Add a feature to send and receive files via telegram API
