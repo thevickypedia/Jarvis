@@ -122,8 +122,9 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 <summary><strong>More on Environment variables</strong></summary>
 
 - **ROOT_PASSWORD** - System password to get the system vitals and run other `sudo` commands. Mandatory for `Linux`
-- **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
+- **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
+- **PLOT_MIC** - Boolean value whether to show microphone usage in realtime.
 - **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']` (Defaults to `['alexa']` in legacy macOS)<br>
 :warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.
 
@@ -289,7 +290,7 @@ There are two options to run background tasks on Jarvis.
 
     ```yaml
     - seconds: 1_800
-      task: turn off all lights  # Runs every 30 minutes
+      task: just turn off all lights  # Runs every 30 minutes - 'just' flag retains the lights' last setting (eg: brightness or color)
     - seconds: 10_800
       task: remind me to drink water  # Runs every 3 hours ignoring the hours specified
       ignore_hours:

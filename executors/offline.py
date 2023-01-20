@@ -50,7 +50,7 @@ def background_tasks() -> NoReturn:
             if task_dict[i] + task.seconds <= time.time() or dry_run:  # Checks a particular tasks' elapsed time
                 task_dict[i] = time.time()  # Updates that particular tasks' start time
                 if datetime.now().hour in task.ignore_hours:
-                    logger.info("Schedule skipped honoring ignore hours")
+                    logger.info(f"{task!r} skipped honoring ignore hours")
                     continue
                 logger.info(f'Executing {task.task}')
                 try:

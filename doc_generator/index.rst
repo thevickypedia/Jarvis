@@ -38,6 +38,12 @@ Speech To Text
    :members:
    :undoc-members:
 
+Realtime Microphone Usage
+=========================
+.. automodule:: modules.microphone.graph_mic
+   :members:
+   :undoc-members:
+
 ----------Main Module----------
 ===============================
 Jarvis

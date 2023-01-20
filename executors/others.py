@@ -39,14 +39,27 @@ from version import version_info
 db = database.Database(database=models.fileio.base_db)
 
 
-def repeat() -> NoReturn:
-    """Repeats whatever is heard."""
-    speaker.speak(text="Please tell me what to repeat.", run=True)
-    if keyword := listener.listen():
-        if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
-            pass
+def repeat(phrase: str) -> NoReturn:
+    """Repeats whatever is heard or what was said earlier.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+    """
+    if "i" in phrase.lower().split():
+        speaker.speak(text="Please tell me what to repeat.", run=True)
+        if keyword := listener.listen():
+            if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
+                pass
+            else:
+                speaker.speak(text=f"I heard {keyword}")
+    else:
+        if text := shared.text_spoken:
+            if text.startswith(f"Sure {models.env.title}, "):
+                speaker.speak(text)
+            else:
+                speaker.speak(f"Sure {models.env.title}, {text}")
         else:
-            speaker.speak(text=f"I heard {keyword}")
+            repeat("i")
 
 
 def apps(phrase: str) -> None:

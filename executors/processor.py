@@ -13,6 +13,7 @@ from executors.telegram import telegram_api
 from modules.audio.speech_synthesis import speech_synthesizer
 from modules.database import database
 from modules.logger.custom_logger import logger
+from modules.microphone.graph_mic import plot_mic
 from modules.models import models
 from modules.retry import retry
 from modules.utils import shared, support, util
@@ -65,9 +66,12 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
         - background_tasks: Cron jobs, Custom background tasks
         - tunneling: Reverse Proxy
         - wifi_connector: Wi-Fi Re-connector
+        - plot_mic: Plot microphone usage in real time
     """
     impact_lib = {doc.strip().split(':')[0].lstrip('- '): doc.strip().split(':')[1].strip().split(', ')
                   for doc in create_process_mapping.__doc__.split('Handles:')[1].splitlines() if doc.strip()}
+    if not models.env.plot_mic:
+        impact_lib.pop('plot_mic')
     if not func_name and list(impact_lib.keys()) != list(processes.keys()):
         warnings.warn(message=f"{list(impact_lib.keys())} does not match {list(processes.keys())}")
     if func_name:  # Assumes a processes mapping file exists already, since flag passed during process specific restart
@@ -105,6 +109,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         - background_tasks: Initiates internal background tasks and runs cron jobs.
         - tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
         - wifi_connector: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.
+        - plot_mic: Initiates plotting microphone usage using matplotlib.
     """
     process_dict = {
         speech_synthesizer.__name__: Process(target=speech_synthesizer),
@@ -113,8 +118,11 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         automator.__name__: Process(target=automator),
         background_tasks.__name__: Process(target=background_tasks),
         tunneling.__name__: Process(target=tunneling),
-        wifi_connector.__name__: Process(target=wifi_connector)  # Run individually as socket needs timed wait
+        wifi_connector.__name__: Process(target=wifi_connector),  # Run individually as socket needs timed wait
+        plot_mic.__name__: Process(target=plot_mic)
     }
+    if not models.env.plot_mic:
+        process_dict.pop(plot_mic.__name__)
     processes = {func_name: process_dict[func_name]} if func_name else process_dict
     for func, process in processes.items():
         process.start()
