@@ -122,7 +122,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
         robinhood()
 
     elif word_match(phrase=phrase, match_list=keywords.repeat):
-        repeat()
+        repeat(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.location):
         location()

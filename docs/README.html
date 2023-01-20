@@ -165,8 +165,9 @@
 <details>
 <summary><strong>More on Environment variables</strong></summary><ul>
 <li><p><strong>ROOT_PASSWORD</strong> - System password to get the system vitals and run other <code class="docutils literal notranslate"><span class="pre">sudo</span></code> commands. Mandatory for <code class="docutils literal notranslate"><span class="pre">Linux</span></code></p></li>
-<li><p><strong>TITLE</strong> - Title which Jarvis should address the user by. Defaults to <code class="docutils literal notranslate"><span class="pre">sir</span></code></p></li>
 <li><p><strong>NAME</strong> - Name which Jarvis should address the user by. Defaults to <code class="docutils literal notranslate"><span class="pre">Vignesh</span></code></p></li>
+<li><p><strong>TITLE</strong> - Title which Jarvis should address the user by. Defaults to <code class="docutils literal notranslate"><span class="pre">sir</span></code></p></li>
+<li><p><strong>PLOT_MIC</strong> - Boolean value whether to show microphone usage in realtime.</p></li>
 <li><p><strong>WAKE_WORDS</strong> - List of wake words to initiate Jarvis’ listener. Defaults to <code class="docutils literal notranslate"><span class="pre">['jarvis']</span></code> (Defaults to <code class="docutils literal notranslate"><span class="pre">['alexa']</span></code> in legacy macOS)<br>
 :warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.</p></li>
 <li><p><strong>VOICE_NAME</strong> - Name of the voice supported by the OperatingSystem. Defaults to the author’s favorite.</p></li>
@@ -342,7 +343,7 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
   <details>
   <summary><strong><i>Setup Instructions</i></strong></summary><p>This is the sample content of <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1_800</span><span class="w"></span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">turn off all lights</span><span class="w">  </span><span class="c1"># Runs every 30 minutes</span><span class="w"></span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">just turn off all lights</span><span class="w">  </span><span class="c1"># Runs every 30 minutes - &#39;just&#39; flag retains the lights&#39; last setting (eg: brightness or color)</span><span class="w"></span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10_800</span><span class="w"></span>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">remind me to drink water</span><span class="w">  </span><span class="c1"># Runs every 3 hours ignoring the hours specified</span><span class="w"></span>
 <span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w"></span>

@@ -173,6 +173,7 @@ class EnvConfig(BaseSettings):
     title: str = Field(default='sir', env='TITLE')
     name: str = Field(default='Vignesh', env='NAME')
     website: HttpUrl = Field(default='https://vigneshrao.com', env='WEBSITE')
+    plot_mic: bool = Field(default=True, env='PLOT_MIC')
 
     # Third party api config
     weather_api: str = Field(default=None, env='WEATHER_API')

@@ -417,6 +417,59 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 </section>
+<section id="module-modules.microphone.graph_mic">
+<span id="realtime-microphone-usage"></span><h1>Realtime Microphone Usage<a class="headerlink" href="#module-modules.microphone.graph_mic" title="Permalink to this heading">¶</a></h1>
+<p>Source: <a class="reference external" href="https://python-sounddevice.readthedocs.io/en/0.3.14/examples.html#plot-microphone-signal-s-in-real-time">https://python-sounddevice.readthedocs.io/en/0.3.14/examples.html#plot-microphone-signal-s-in-real-time</a>.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.microphone.graph_mic.list_devices">
+<span class="sig-prename descclassname"><span class="pre">modules.microphone.graph_mic.</span></span><span class="sig-name descname"><span class="pre">list_devices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DeviceList</span></span></span><a class="headerlink" href="#modules.microphone.graph_mic.list_devices" title="Permalink to this definition">¶</a></dt>
+<dd><p>List audion devices.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.microphone.graph_mic.audio_callback">
+<span class="sig-prename descclassname"><span class="pre">modules.microphone.graph_mic.</span></span><span class="sig-name descname"><span class="pre">audio_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Struct</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackFlags</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.microphone.graph_mic.audio_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is called (from a separate thread) for each audio block.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.microphone.graph_mic.update_plot">
+<span class="sig-prename descclassname"><span class="pre">modules.microphone.graph_mic.</span></span><span class="sig-name descname"><span class="pre">update_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Line2D</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.microphone.graph_mic.update_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is called by matplotlib for each plot update.</p>
+<ul>
+<li><div class="line-block">
+<div class="line">Typically, audio callbacks happen more frequently than plot updates,</div>
+<div class="line">therefore the queue tends to contain multiple blocks of audio data.</div>
+</div>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.microphone.graph_mic.plot_mic">
+<span class="sig-prename descclassname"><span class="pre">modules.microphone.graph_mic.</span></span><span class="sig-name descname"><span class="pre">plot_mic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samplerate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">downsample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.microphone.graph_mic.plot_mic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads all the arguments into a dict and kicks off the mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channels</strong> – Input channels to plot (default: the first [1])</p></li>
+<li><p><strong>device</strong> – Input device (numeric ID or substring)</p></li>
+<li><p><strong>window</strong> – Visible time slot (default: 200 ms)</p></li>
+<li><p><strong>interval</strong> – Minimum time between plot updates (default: 30 ms)</p></li>
+<li><p><strong>samplerate</strong> – Sampling rate of audio device.</p></li>
+<li><p><strong>downsample</strong> – Display every Nth sample (default: 10)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.microphone.graph_mic._kick_off">
+<span class="sig-prename descclassname"><span class="pre">modules.microphone.graph_mic.</span></span><span class="sig-name descname"><span class="pre">_kick_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#modules.microphone.graph_mic._kick_off" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the live microphone signal(s) with matplotlib.</p>
+</dd></dl>
+
+</section>
 <section id="main-module">
 <h1>———-Main Module———-<a class="headerlink" href="#main-module" title="Permalink to this heading">¶</a></h1>
 </section>
@@ -3420,8 +3473,13 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <span id="others"></span><h1>Others<a class="headerlink" href="#module-executors.others" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="executors.others.repeat">
-<span class="sig-prename descclassname"><span class="pre">executors.others.</span></span><span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.others.repeat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Repeats whatever is heard.</p>
+<span class="sig-prename descclassname"><span class="pre">executors.others.</span></span><span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.others.repeat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repeats whatever is heard or what was said earlier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -3667,6 +3725,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <li><p>background_tasks: Cron jobs, Custom background tasks</p></li>
 <li><p>tunneling: Reverse Proxy</p></li>
 <li><p>wifi_connector: Wi-Fi Re-connector</p></li>
+<li><p>plot_mic: Plot microphone usage in real time</p></li>
 </ul>
 </dd>
 </dl>
@@ -3697,6 +3756,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <li><p>background_tasks: Initiates internal background tasks and runs cron jobs.</p></li>
 <li><p>tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
 <li><p>wifi_connector: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.</p></li>
+<li><p>plot_mic: Initiates plotting microphone usage using matplotlib.</p></li>
 </ul>
 </div>
 </dd></dl>
@@ -6020,6 +6080,11 @@ last_value: the last value assigned or None</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="modules.models.classes.EnvConfig.website">
 <span class="sig-name descname"><span class="pre">website</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HttpUrl</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.website" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.models.classes.EnvConfig.plot_mic">
+<span class="sig-name descname"><span class="pre">plot_mic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#modules.models.classes.EnvConfig.plot_mic" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -9397,6 +9462,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-modules.peripherals">Audio Devices</a></li>
 <li><a class="reference internal" href="#module-modules.speaker.speak">Text To Speech</a></li>
 <li><a class="reference internal" href="#module-modules.microphone.recognizer">Speech To Text</a></li>
+<li><a class="reference internal" href="#module-modules.microphone.graph_mic">Realtime Microphone Usage</a></li>
 <li><a class="reference internal" href="#main-module">———-Main Module———-</a></li>
 <li><a class="reference internal" href="#module-jarvis">Jarvis</a></li>
 <li><a class="reference internal" href="#module-_preexec.keywords_handler">Keywords Classifier</a></li>

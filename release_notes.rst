@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+7.0.3 (01/19/2023)
+------------------
+- Add feature to display realtime microphone usage
+- Add a feature to repeat the last statement spoke
+- Add a feature to turn off lights retaining the last custom setting
+
 7.0.2 (01/16/2023)
 ------------------
 - Keep `README.md` in `docs` page

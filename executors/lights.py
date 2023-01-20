@@ -198,8 +198,11 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning off {len(host_ip)} {plural}')
         if state := lights_squire.check_status():
             support.stop_process(pid=int(state[0]))
-        Thread(target=executor.thread_worker, args=[cool]).run()
-        executor.avail_check(function_to_call=turn_off)
+        if 'just' in phrase or 'simply' in phrase:
+            executor.avail_check(function_to_call=turn_off)
+        else:
+            Thread(target=executor.thread_worker, args=[cool]).run()
+            executor.avail_check(function_to_call=turn_off)
     elif 'party mode' in phrase:
         if lights_squire.party_mode(host_ip=host_ip, phrase=phrase):
             Thread(target=executor.thread_worker, args=[cool]).run()
