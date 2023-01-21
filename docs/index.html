@@ -3263,6 +3263,45 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
+<section id="module-executors.listener_controls">
+<span id="listener-controls"></span><h1>Listener Controls<a class="headerlink" href="#module-executors.listener_controls" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.listener_controls.listener_control">
+<span class="sig-prename descclassname"><span class="pre">executors.listener_controls.</span></span><span class="sig-name descname"><span class="pre">listener_control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.listener_controls.listener_control" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controls the listener table in base db.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.listener_controls.get_state">
+<span class="sig-prename descclassname"><span class="pre">executors.listener_controls.</span></span><span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#executors.listener_controls.get_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the current state of listener.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A boolean flag to indicate if the listener is active.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="executors.listener_controls.put_state">
+<span class="sig-prename descclassname"><span class="pre">executors.listener_controls.</span></span><span class="sig-name descname"><span class="pre">put_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#executors.listener_controls.put_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the state of the listener.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> – Takes the boolean value to be inserted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-executors.location">
 <span id="location"></span><h1>Location<a class="headerlink" href="#module-executors.location" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
@@ -9509,6 +9548,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-executors.ios_functions">iOS Functions</a></li>
 <li><a class="reference internal" href="#module-executors.lights">Lights</a></li>
 <li><a class="reference internal" href="#module-executors.lights_squire">Lights Squire</a></li>
+<li><a class="reference internal" href="#module-executors.listener_controls">Listener Controls</a></li>
 <li><a class="reference internal" href="#module-executors.location">Location</a></li>
 <li><a class="reference internal" href="#module-executors.offline">Offline</a></li>
 <li><a class="reference internal" href="#module-executors.others">Others</a></li>

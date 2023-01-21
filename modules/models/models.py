@@ -38,6 +38,7 @@ TABLES = {
     "vpn": ("state",),
     "party": ("pid",),
     "guard": ("state",),
+    "listener": ("state",),
 }
 KEEP_TABLES = ("vpn", "party")  # TABLES to keep from `fileio.base_db`
 
@@ -187,7 +188,9 @@ def _global_validations() -> NoReturn:
     else:
         env.camera_index = None
 
-    if env.camera_index is not None:
+    if env.camera_index is None:
+        env.camera_index = 0  # Set default but skip validation
+    else:
         cam = cv2.VideoCapture(env.camera_index)
         if cam is None or not cam.isOpened() or cam.read() == (False, None):
             if main:

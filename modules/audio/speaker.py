@@ -99,7 +99,7 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
         else:
             models.audio_driver.say(text=text)
     if run and not shared.called_by_offline:
-        logger.info(f'Speaker called by: {caller!r}')
+        logger.debug(f'Speaker called by: {caller!r}')
         models.audio_driver.runAndWait()
 
 

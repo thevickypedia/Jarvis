@@ -2,6 +2,7 @@ import os
 import shutil
 import sys
 import time
+import warnings
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
@@ -15,7 +16,6 @@ from executors.word_match import word_match
 from modules.audio import listener, speaker
 from modules.conditions import keywords
 from modules.database import database
-from modules.exceptions import CameraError
 from modules.facenet import face
 from modules.logger.custom_logger import logger
 from modules.models import models
@@ -83,6 +83,7 @@ def guard_disable() -> NoReturn:
 def security_runner() -> NoReturn:
     """Enables microphone and camera to watch and listen for potential threats. Notifies if any."""
     notified, converted = None, None
+    face_object = face.FaceNet()
     while True:
         # Listens for any recognizable speech and saves it to a notes file
         sys.stdout.write("\rSECURITY MODE")
@@ -94,10 +95,16 @@ def security_runner() -> NoReturn:
         elif converted:
             logger.info(f'Conversation::{converted}')
         try:
-            if not face.FaceNet().face_detection(filename=face_detected, mirror=True):
+            recognized = face_object.face_recognition(location=os.path.realpath("train"), retry_count=1)
+            if recognized:
+                logger.warning(f"Located {recognized!r} when guardian mode was enabled.")
+                continue
+            if not face_object.face_detection(filename=face_detected, mirror=True):
                 face_detected = None
-        except CameraError as error:
+        except Exception as error:  # Catch wide exceptions here to prevent guardian mode from getting disabled
             logger.error(error)
+            warnings.warn(error.__str__())
+            continue
         if not any((face_detected, converted)):
             continue
         elif face_detected:
