@@ -37,6 +37,7 @@ def offline_compatible() -> List[str]:
                      keywords.ip_info,
                      keywords.brightness,
                      keywords.news,
+                     keywords.listener_control,
                      keywords.location,
                      keywords.vpn_server,
                      keywords.reminder,

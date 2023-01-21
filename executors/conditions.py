@@ -19,6 +19,8 @@ from executors.guard import guard_disable, guard_enable
 from executors.internet import ip_info, speed_test
 from executors.ios_functions import locate
 from executors.lights import lights
+from executors.listener_controls import get_state as get_listener_state
+from executors.listener_controls import listener_control
 from executors.location import directions, distance, locate_places, location
 from executors.myq_controller import garage
 from executors.others import (abusive, apps, facts, flip_a_coin, google_home,
@@ -44,7 +46,7 @@ from modules.logger.custom_logger import logger
 from modules.meetings.events import events
 from modules.meetings.icalendar import meetings
 from modules.models.models import settings
-from modules.utils import support
+from modules.utils import shared, support
 
 
 def conditions(phrase: str, should_return: bool = False) -> bool:
@@ -66,7 +68,14 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
     """
     keywords = keywords_mod.keywords
 
-    if "*" in phrase:
+    if word_match(phrase=phrase, match_list=keywords.listener_control):
+        listener_control(phrase)
+
+    elif not get_listener_state() and not shared.called_by_offline:  # Allow conditions during offline communication
+        logger.info(f"Ignoring {phrase!r} since listener is deactivated.")
+        return False
+
+    elif "*" in phrase:
         abusive(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.send_notification) and 'send' in phrase:

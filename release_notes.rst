@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+7.0.4 (01/21/2023)
+------------------
+- Add feature to activate/deactivate the listener
+- Set default camera index when env var is set to None
+- Fix a bug in guardian mode that sets off in case of exceptions
+- Suppress notifications for known faces in guardian mode
+
 7.0.3 (01/19/2023)
 ------------------
 - Add feature to display realtime microphone usage

@@ -28,6 +28,7 @@ def keyword_mapping() -> Dict[str, List[str]]:
         report=["report"],
         robinhood=["robinhood", "investment", "portfolio", "summary"],
         apps=["launch"],
+        listener_control=["listener"],
         repeat=["repeat", "train"],
         location=["location", "where are you"],
         locate=["locate", "where is my", "where's my", "wheres my"],

@@ -13,6 +13,7 @@ import docker
 import psutil
 
 from executors.display_functions import decrease_brightness
+from executors.listener_controls import put_state as put_listener_state
 from executors.volume import volume
 from executors.word_match import word_match
 from modules.audio import listener, speaker, voices
@@ -296,6 +297,7 @@ def starter() -> NoReturn:
         - voice_default: To change the voice to default value.
         - clear_logs: To purge log files older than 48 hours.
     """
+    put_listener_state(state=True)
     volume(level=models.env.volume)
     voices.voice_default()
     delete_logs()

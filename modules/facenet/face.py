@@ -7,7 +7,6 @@ import face_recognition
 from PIL import Image, UnidentifiedImageError
 from pydantic import FilePath
 
-from modules.exceptions import CameraError
 from modules.logger.custom_logger import logger
 from modules.models import models
 
@@ -67,10 +66,6 @@ class FaceNet:
             CameraError:
             If unable to connect to the camera.
         """
-        if models.env.camera_index is None:
-            raise CameraError(
-                "Unable to access camera."
-            )
         self.validation_video = cv2.VideoCapture(models.env.camera_index)
         self.train_faces, self.train_names = [], []
 
