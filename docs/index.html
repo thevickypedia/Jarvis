@@ -1448,6 +1448,71 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 </section>
+<section id="module-api.squire.discover">
+<span id="squire-discover-routers"></span><h1>Squire - Discover Routers<a class="headerlink" href="#module-api.squire.discover" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="api.squire.discover.Entrypoint">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">api.squire.discover.</span></span><span class="sig-name descname"><span class="pre">Entrypoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.squire.discover.Entrypoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for Entrypoint object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Entrypoint</span>
+</pre></div>
+</div>
+<p>Wraps entry point into an object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>module</strong> – Router path in the form of a module.</p></li>
+<li><p><strong>stem</strong> – Bare name of the module.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.squire.discover.get_entrypoints">
+<span class="sig-prename descclassname"><span class="pre">api.squire.discover.</span></span><span class="sig-name descname"><span class="pre">get_entrypoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">routers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#api.squire.discover.Entrypoint" title="api.squire.discover.Entrypoint"><span class="pre">Entrypoint</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.squire.discover.get_entrypoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the routers as a module that can be imported.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>package</strong> – Directory name of the package.</p></li>
+<li><p><strong>routers</strong> – Directory name where the potential router modules are present.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The attribute within the module should be named as <code class="docutils literal notranslate"><span class="pre">router</span></code> for the auto discovery to recognize.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is a crude way of scanning modules for routers.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Yields</dt>
+<dd class="field-odd"><p><em>Iterable[Entrypoint]</em> – Entrypoint object with router module and the bare name of it.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.squire.discover.routes">
+<span class="sig-prename descclassname"><span class="pre">api.squire.discover.</span></span><span class="sig-name descname"><span class="pre">routes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">routers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">APIRouter</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.squire.discover.routes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scans routers directory to import all the routers available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>package</strong> – Directory name of the package.</p></li>
+<li><p><strong>routers</strong> – Directory name where the potential router modules are present.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields</dt>
+<dd class="field-even"><p><em>Iterable[APIRouter]</em> – API Router from scanned modules.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-api.squire.logger">
 <span id="squire-logger"></span><h1>Squire - Logger<a class="headerlink" href="#module-api.squire.logger" title="Permalink to this heading">¶</a></h1>
 <p>Looger configuration specific for Jarvis API.</p>
@@ -9519,6 +9584,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-api.routers.speech_synthesis">Routers - SpeechSynthesis</a></li>
 <li><a class="reference internal" href="#module-api.routers.stock_monitor">Routers - StockMonitor</a></li>
 <li><a class="reference internal" href="#module-api.routers.surveillance">Routers - Surveillance</a></li>
+<li><a class="reference internal" href="#module-api.squire.discover">Squire - Discover Routers</a></li>
 <li><a class="reference internal" href="#module-api.squire.logger">Squire - Logger</a></li>
 <li><a class="reference internal" href="#module-api.squire.scheduler">Squire - Scheduler</a></li>
 <li><a class="reference internal" href="#module-api.squire.stockmonitor_squire">Squire - StockMonitor</a></li>

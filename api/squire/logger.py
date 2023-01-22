@@ -16,12 +16,11 @@ import os
 import pathlib
 from logging.config import dictConfig
 
-from modules.logger import config, custom_logger
+from modules.logger import config
 
 api_config = config.APIConfig()
 config.multiprocessing_logger(filename=api_config.DEFAULT_LOG_FILENAME,
                               log_format=logging.Formatter(api_config.DEFAULT_LOG_FORMAT))
-custom_logger.logger.addFilter(filter=config.AddProcessName(process_name='fast_api'))  # Hard code process name
 
 
 # Creates log files
@@ -36,4 +35,3 @@ importlib.reload(module=logging)
 dictConfig(config=api_config.LOG_CONFIG)
 logging.getLogger("uvicorn.access").propagate = False  # Disables access logger in default logger to log independently
 logger = logging.getLogger('uvicorn.default')
-logger.addFilter(filter=config.AddProcessName(process_name='fast_api'))  # Hard code process name

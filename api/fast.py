@@ -1,7 +1,7 @@
 import os
 import time
 from datetime import datetime
-from multiprocessing import Process
+from multiprocessing import Process, current_process
 from threading import Thread
 from typing import Any, NoReturn
 
@@ -9,9 +9,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from _preexec import keywords_handler
-from api.routers import (basics, fileio, helper, investment, offline,
-                         speech_synthesis, stock_monitor, surveillance)
-from api.squire import stockmonitor_squire
+from api import routers
+from api.squire import discover, stockmonitor_squire
 from api.squire.logger import logger
 from api.triggers.stock_report import Investment
 from modules.models import models
@@ -20,20 +19,15 @@ from version import version_info
 # Initiate API
 app = FastAPI(
     title="Jarvis API",
-    description="Acts as a Gateway to communicate with **Jarvis**, and an entry point for cutting edge features.\n\n"
+    description="Acts as a gateway to communicate with **Jarvis**, and an entry point for the natural language UI.\n\n"
                 "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)",
     version='.'.join(str(c) for c in version_info)
 )
 
-# Includes all the routers
-app.include_router(router=basics.router)
-app.include_router(router=fileio.router)
-app.include_router(router=helper.router)
-app.include_router(router=investment.router)
-app.include_router(router=offline.router)
-app.include_router(router=speech_synthesis.router)
-app.include_router(router=stock_monitor.router)
-app.include_router(router=surveillance.router)
+# Include all the routers
+if current_process().name == "fast_api":  # Avoid looping when called by subprocesses
+    for route in discover.routes(package=__package__, routers=routers.__path__[0]):
+        app.include_router(router=route)
 
 
 def update_keywords() -> NoReturn:

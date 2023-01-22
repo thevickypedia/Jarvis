@@ -1,7 +1,4 @@
-import sys
 from typing import Iterable, NoReturn, Union
-
-from modules.logger.custom_logger import logger
 
 
 def word_match(phrase: str, match_list: Iterable[str], strict: bool = False) -> Union[str, NoReturn]:
@@ -21,7 +18,4 @@ def word_match(phrase: str, match_list: Iterable[str], strict: bool = False) -> 
     lookup = phrase.lower().split() if strict else phrase.lower()
     for word in match_list:
         if word in lookup:
-            caller = sys._getframe(1).f_code.co_name  # noqa
-            logger.debug(f'Matching word: {word}')
-            logger.debug(f'Called by {caller!r}')
             return word

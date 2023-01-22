@@ -189,6 +189,13 @@ Routers - Surveillance
    :members:
    :undoc-members:
 
+Squire - Discover Routers
+=========================
+
+.. automodule:: api.squire.discover
+   :members:
+   :undoc-members:
+
 Squire - Logger
 ===============
 
