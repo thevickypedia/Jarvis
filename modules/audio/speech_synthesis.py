@@ -65,7 +65,6 @@ def speech_synthesizer() -> NoReturn:
         - Stores the container ID in a .cid file, to later stop and remove the container.
     """
     config.multiprocessing_logger(filename=models.fileio.speech_synthesis_log)
-    logger.addFilter(filter=config.AddProcessName(process_name=speech_synthesizer.__name__))
     if check_existing():
         return
 

@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+7.0.5 (01/22/2023)
+------------------
+- Add a feature to auto discover API routers
+- Add process name filter at the source to reduce redundancy
+
 7.0.4 (01/21/2023)
 ------------------
 - Add feature to activate/deactivate the listener

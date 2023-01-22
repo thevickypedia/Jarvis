@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 from logging import Filter, Formatter, LogRecord
+from multiprocessing import current_process
 
 from pydantic import BaseModel
 
@@ -45,6 +46,7 @@ def multiprocessing_logger(filename: str, log_format: Formatter = None) -> str:
     # Remove existing filters from the new log handler
     for _filter in logger.filters:
         logger.removeFilter(_filter)
+    logger.addFilter(filter=AddProcessName(process_name=current_process().name))
     return log_handler.baseFilename
 
 

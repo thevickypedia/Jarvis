@@ -43,7 +43,6 @@ def fast_api() -> None:
     api_config = config.APIConfig()
     config.multiprocessing_logger(filename=api_config.DEFAULT_LOG_FILENAME,
                                   log_format=logging.Formatter(api_config.DEFAULT_LOG_FORMAT))
-    logger.addFilter(filter=config.AddProcessName(process_name=fast_api.__name__))
     url = f'http://{models.env.offline_host}:{models.env.offline_port}'
 
     if is_port_in_use(port=models.env.offline_port):

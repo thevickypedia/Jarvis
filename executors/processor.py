@@ -123,8 +123,9 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
     }
     if not models.env.plot_mic:
         process_dict.pop(plot_mic.__name__)
-    processes = {func_name: process_dict[func_name]} if func_name else process_dict
+    processes: Dict[str, Process] = {func_name: process_dict[func_name]} if func_name else process_dict
     for func, process in processes.items():
+        process.name = func
         process.start()
         logger.info(f"Started function: {func} with PID: {process.pid}")
     create_process_mapping(processes=processes, func_name=func_name)

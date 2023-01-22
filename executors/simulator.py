@@ -41,7 +41,6 @@ def initiate_simulator(simulation_data: Dict[str, List[str]]) -> NoReturn:
     """
     start = time.time()
     log_file = config.multiprocessing_logger(filename=os.path.join('logs', 'simulation_%d-%m-%Y_%H:%M_%p.log'))
-    logger.addFilter(filter=config.AddProcessName(process_name="simulator"))
     offline_compatible = compatibles.offline_compatible()
     successful, failed = 0, 0
     shared.called_by_offline = True
@@ -86,6 +85,7 @@ def run_simulation() -> NoReturn:
         speaker.speak(f"There are no metrics for me to run a simulation {models.env.title}!")
         return
     process = Process(target=initiate_simulator, args=(simulation_data,))
+    process.name = "simulator"
     process.start()
     speaker.speak(text=f"Initiated simulation {models.env.title}! It should take less than 5 minutes. "
                        "An email will be sent with the results.")

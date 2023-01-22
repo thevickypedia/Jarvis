@@ -77,7 +77,7 @@ def dependencies(filename: str) -> List[str]:
 setup(
     name='jarvis-ironman',
     version='.'.join(str(c) for c in version_info),
-    description="IronMan's Jarvis with python.",
+    description="Natural Language User Interface",
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
     author='Vignesh Sivanandha Rao',

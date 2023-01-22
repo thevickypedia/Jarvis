@@ -67,7 +67,6 @@ def plot_mic(channels: List[int] = None, device: Union[str, int] = None, window:
         downsample: Display every Nth sample (default: 10)
     """
     config.multiprocessing_logger(filename=os.path.join('logs', 'mic_plotter_%d-%m-%Y.log'))
-    logger.addFilter(filter=config.AddProcessName(process_name=plot_mic.__name__))
     logger.info("Feeding all arguments into dict.")
     if not channels:
         channels = [1]

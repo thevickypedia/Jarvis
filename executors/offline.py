@@ -39,7 +39,6 @@ db = database.Database(database=models.fileio.base_db)
 def background_tasks() -> NoReturn:
     """Initiates background tasks as per the set time."""
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
-    logger.addFilter(filter=config.AddProcessName(process_name=background_tasks.__name__))
     tasks: List[BackgroundTask] = list(validate_background_tasks())
 
     start_cron = time.time()
@@ -99,7 +98,6 @@ def automator() -> NoReturn:
         - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't repeat execution within a minute.
     """
     config.multiprocessing_logger(filename=os.path.join('logs', 'automation_%d-%m-%Y.log'))
-    logger.addFilter(filter=config.AddProcessName(process_name=automator.__name__))
     offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
     start_events = start_meetings = time.time()
     if models.settings.os == "Darwin":
