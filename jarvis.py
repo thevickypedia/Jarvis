@@ -14,6 +14,7 @@ from _preexec import keywords_handler
 from executors.commander import initiator
 from executors.controls import exit_process, starter, terminator
 from executors.internet import get_connection_info, ip_address, public_ip_info
+from executors.listener_controls import get_state as get_listener_state
 from executors.location import write_current_location
 from executors.processor import clear_db, start_processes, stop_processes
 from executors.system import hosted_device_info
@@ -108,7 +109,8 @@ class Activator:
     def executor(self) -> NoReturn:
         """Calls the listener for actionable phrase and runs the speaker node for response."""
         logger.debug(f"Detected {models.settings.bot} at {datetime.now()}")
-        playsound(sound=models.indicators.acknowledgement, block=False)
+        if get_listener_state():
+            playsound(sound=models.indicators.acknowledgement, block=False)
         audio_engine.close(stream=self.audio_stream)
         if phrase := listener.listen(sound=False):
             try:

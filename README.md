@@ -64,8 +64,6 @@
 
 [![Active Development](https://img.shields.io/badge/Development%20Level-Actively%20Developed-success.svg)](https://github.com/thevickypedia/Jarvis)
 [![Actively Maintained](https://img.shields.io/badge/Maintenance%20Level-Actively%20Maintained-success.svg)](https://github.com/thevickypedia/Jarvis)
-
-[![Maintained](https://img.shields.io/maintenance/yes/2023)](https://api.github.com/repos/thevickypedia/Jarvis)
 [![Maintainer](https://img.shields.io/badge/Maintained%20By-Vignesh%20Sivanandha%20Rao-blue.svg)](https://vigneshrao.com/)
 
 **Reach Out**

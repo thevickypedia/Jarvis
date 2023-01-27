@@ -1,6 +1,8 @@
 import os
+import shutil
 import warnings
 from multiprocessing import Process
+from threading import Thread
 from typing import Dict, List, NoReturn, Union
 
 import psutil
@@ -8,12 +10,13 @@ import yaml
 
 from api.server import fast_api
 from executors.connection import wifi_connector
+from executors.crontab import crontab_executor
 from executors.offline import automator, background_tasks, tunneling
 from executors.telegram import telegram_api
 from modules.audio.speech_synthesis import speech_synthesizer
 from modules.database import database
 from modules.logger.custom_logger import logger
-from modules.microphone.graph_mic import plot_mic
+from modules.microphone import graph_mic
 from modules.models import models
 from modules.retry import retry
 from modules.utils import shared, support, util
@@ -71,7 +74,7 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
     impact_lib = {doc.strip().split(':')[0].lstrip('- '): doc.strip().split(':')[1].strip().split(', ')
                   for doc in create_process_mapping.__doc__.split('Handles:')[1].splitlines() if doc.strip()}
     if not models.env.plot_mic:
-        impact_lib.pop('plot_mic')
+        impact_lib.pop(graph_mic.plot_mic.__name__)
     if not func_name and list(impact_lib.keys()) != list(processes.keys()):
         warnings.warn(message=f"{list(impact_lib.keys())} does not match {list(processes.keys())}")
     if func_name:  # Assumes a processes mapping file exists already, since flag passed during process specific restart
@@ -119,16 +122,19 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         background_tasks.__name__: Process(target=background_tasks),
         tunneling.__name__: Process(target=tunneling),
         wifi_connector.__name__: Process(target=wifi_connector),  # Run individually as socket needs timed wait
-        plot_mic.__name__: Process(target=plot_mic)
     }
-    if not models.env.plot_mic:
-        process_dict.pop(plot_mic.__name__)
+    if models.env.plot_mic and models.settings.os == "Linux":
+        # Function cannot be called directly using a child process when microphone is already being called for Linux
+        statement = shutil.which(cmd="python") + " " + graph_mic.__file__
+        process_dict[graph_mic.plot_mic.__name__] = Process(target=crontab_executor, args=(statement,))
+    elif models.env.plot_mic:
+        process_dict[graph_mic.plot_mic.__name__] = Process(target=graph_mic.plot_mic)
     processes: Dict[str, Process] = {func_name: process_dict[func_name]} if func_name else process_dict
     for func, process in processes.items():
         process.name = func
         process.start()
         logger.info(f"Started function: {func} with PID: {process.pid}")
-    create_process_mapping(processes=processes, func_name=func_name)
+    Thread(target=create_process_mapping, kwargs=dict(processes=processes, func_name=func_name)).start()
     return processes[func_name] if func_name else processes
 
 

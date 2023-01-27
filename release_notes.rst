@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+7.0.6 (01/27/2023)
+------------------
+- Add darkmode to realtime microphone amp spectrum display
+- Trigger realtime microphone usage from cmdline for Linux
+- Suppress acknowledgement sound when listener is disabled
+
 7.0.5 (01/22/2023)
 ------------------
 - Add a feature to auto discover API routers

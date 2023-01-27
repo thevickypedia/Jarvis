@@ -2,18 +2,22 @@
 
 import os
 import queue
+import sys
 from struct import Struct
-from typing import List, NoReturn, Union
+from typing import List, NoReturn, Tuple, Union, cast
 
 import matplotlib.pyplot
 import numpy
 import sounddevice
 from matplotlib.animation import FuncAnimation
+from matplotlib.axes._subplots import Subplot  # noqa
+from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
-from sounddevice import CallbackFlags
 
-from modules.logger import config
-from modules.logger.custom_logger import logger
+sys.path.insert(0, os.getcwd())
+
+from modules.logger import config  # noqa
+from modules.logger.custom_logger import logger  # noqa
 
 FEEDER = {}
 QUEUE = queue.Queue()
@@ -25,7 +29,7 @@ def list_devices() -> sounddevice.DeviceList:
 
 
 # noinspection PyUnusedLocal
-def audio_callback(indata: numpy.ndarray, frames: int, time: Struct, status: CallbackFlags) -> NoReturn:
+def audio_callback(indata: numpy.ndarray, frames: int, time: Struct, status: sounddevice.CallbackFlags) -> NoReturn:
     """This is called (from a separate thread) for each audio block."""
     if status:
         logger.info(status)
@@ -55,7 +59,8 @@ def update_plot(frame: int) -> List[Line2D]:
 
 
 def plot_mic(channels: List[int] = None, device: Union[str, int] = None, window: int = 200,
-             interval: int = 30, samplerate: float = None, downsample: int = 10) -> NoReturn:
+             interval: int = 30, samplerate: float = None, downsample: int = 10,
+             length: int = 100, darkmode: bool = True) -> NoReturn:
     """Loads all the arguments into a dict and kicks off the mapping.
 
     Args:
@@ -63,8 +68,10 @@ def plot_mic(channels: List[int] = None, device: Union[str, int] = None, window:
         device: Input device (numeric ID or substring)
         window: Visible time slot (default: 200 ms)
         interval: Minimum time between plot updates (default: 30 ms)
-        samplerate: Sampling rate of audio device.
+        samplerate: Sampling rate of audio device
         downsample: Display every Nth sample (default: 10)
+        length: How quick the graph should be moving on screen (lower is slower, 1000 is pretty quick)
+        darkmode: Sets graph background to almost black
     """
     config.multiprocessing_logger(filename=os.path.join('logs', 'mic_plotter_%d-%m-%Y.log'))
     logger.info("Feeding all arguments into dict.")
@@ -79,6 +86,8 @@ def plot_mic(channels: List[int] = None, device: Union[str, int] = None, window:
     FEEDER['interval'] = interval
     FEEDER['samplerate'] = samplerate
     FEEDER['downsample'] = downsample
+    FEEDER['length'] = length
+    FEEDER['darkmode'] = darkmode
     FEEDER['mapping'] = [c - 1 for c in FEEDER['channels']]  # Channel numbers start with 1
     logger.info(FEEDER)
     _kick_off()
@@ -92,10 +101,11 @@ def _kick_off() -> NoReturn:
             device_info = sounddevice.query_devices(FEEDER['device'], 'input')
             FEEDER['samplerate'] = device_info['default_samplerate']
 
-        length = int(FEEDER['window'] * FEEDER['samplerate'] / (1000 * FEEDER['downsample']))
+        length = int(FEEDER['window'] * FEEDER['samplerate'] / (FEEDER['length'] * FEEDER['downsample']))
         FEEDER['plotdata'] = numpy.zeros((length, len(FEEDER['channels'])))
 
-        fig, ax = matplotlib.pyplot.subplots()
+        # Add type hint when unpacking a tuple (lazy way to avoid variables)
+        fig, ax = cast(Tuple[Figure, Subplot], matplotlib.pyplot.subplots())
         FEEDER['lines'] = ax.plot(FEEDER['plotdata'])
         if len(FEEDER['channels']) > 1:
             ax.legend([f'channel {c}' for c in FEEDER['channels']],
@@ -105,13 +115,22 @@ def _kick_off() -> NoReturn:
         ax.yaxis.grid(True)
         ax.tick_params(bottom=False, top=False, labelbottom=False,
                        right=False, left=False, labelleft=False)
-        fig.tight_layout(pad=0)
+        # Labels are not set, but if it is to be set then set padding at least to 2
+        # ax.set_xlabel('Time')
+        # ax.set_ylabel('Frequency')
+        fig.tight_layout(pad=0)  # no padding
+        matplotlib.pyplot.legend(["Microphone Amplitude"])
+        fig.canvas.manager.set_window_title("Realtime Spectrum Display")
+        if FEEDER['darkmode']:
+            ax.set_facecolor('xkcd:almost black')  # https://xkcd.com/color/rgb/
+            # Takes RGB or RGBA values as arguments
+            # ax.set_facecolor((0.1, 0.1, 0.1))  # https://matplotlib.org/stable/api/colors_api.html
 
         stream = sounddevice.InputStream(
             device=FEEDER['device'], channels=max(FEEDER['channels']),
             samplerate=FEEDER['samplerate'], callback=audio_callback
         )
-        ani = FuncAnimation(fig, update_plot, interval=FEEDER['interval'], blit=True)  # noqa
+        ani = FuncAnimation(fig=fig, func=update_plot, interval=FEEDER['interval'], blit=True)  # noqa
         with stream:
             matplotlib.pyplot.show()
     except Exception as error:
