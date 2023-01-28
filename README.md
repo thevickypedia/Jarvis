@@ -122,7 +122,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **ROOT_PASSWORD** - System password to get the system vitals and run other `sudo` commands. Mandatory for `Linux`
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
-- **PLOT_MIC** - Boolean value whether to show microphone usage in realtime.
+- **PLOT_MIC** - Boolean value whether to show microphone usage in realtime. Defaults to `True`
 - **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']` (Defaults to `['alexa']` in legacy macOS)<br>
 :warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.
 

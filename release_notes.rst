@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+7.0.7 (01/27/2023)
+------------------
+- Optimize plotting realtime microphone amp spectrum
+
 7.0.6 (01/27/2023)
 ------------------
 - Add darkmode to realtime microphone amp spectrum display
