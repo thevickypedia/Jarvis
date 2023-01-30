@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+7.0.9 (01/30/2023)
+------------------
+- Add `pyaudio` to startup checks
+- Remove setup.py
+- Update hyperlinks in README.md
+
 7.0.8 (01/29/2023)
 ------------------
 - Make Jarvis pip installable

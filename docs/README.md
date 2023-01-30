@@ -71,6 +71,22 @@
 [![StackOverflow](https://img.shields.io/stackexchange/stackoverflow/r/13691532)](https://stackoverflow.com/users/13691532/vignesh-rao)
 [![Ask Me | Anything ](https://img.shields.io/badge/Ask%20me-Anything-1abc9c.svg)](https://vigneshrao.com/contact)
 
+## Kick off
+
+**Install**
+```shell
+python -m pip install jarvis-ironman
+```
+
+**Initiate**
+```python
+import jarvis
+
+
+if __name__ == '__main__':
+    jarvis.start()
+```
+
 ## Prerequisites
    - **MacOS** <br> _Tested on **macOS High Sierra, Mojave, Catalina, Big Sur, Monterey and Ventura***_
      - `System Preferences` → `Security & Privacy` → `Privacy`
@@ -95,22 +111,6 @@
    - **Linux** <br> _Tested on **Ubuntu 22.04 LTS**_
      - Store the host machine's password as the env var: `ROOT_PASSWORD`
      - Unlike macOS and Windows, `Ubuntu` does not have app specific permissions.
-
-## Kick off
-
-**Install**
-```shell
-python -m pip install jarvis-ironman
-```
-
-**Initiate**
-```python
-import jarvis
-
-
-if __name__ == '__main__':
-    jarvis.start()
-```
 
 ## Test peripherals
 **Camera**
@@ -184,7 +184,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
     <summary><strong><i>Custom settings for speech recognition</i></strong></summary>
 
     These are customized according to the author's voice pitch.
-    Please use [recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py) to figure out the suitable values on a trial and error basis.
+    Please use [recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/microphone/recognizer.py) to figure out the suitable values on a trial and error basis.
 
     > These settings are added (optionally), to avoid the hard coded `PHRASE_LIMIT`
     > <br>
@@ -207,9 +207,9 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 ---
 
 ### Peripherals
-- **CAMERA_INDEX** - Camera index that has to be used. Run [camera.py](https://github.com/thevickypedia/Jarvis/tree/master/modules/camera/camera.py) to get the index value of each camera.
-- **SPEAKER_INDEX** - Speaker index that has to be used. Run [peripherals.py](https://github.com/thevickypedia/Jarvis/tree/master/modules/peripherals.py) to get the index value of each speaker.
-- **MICROPHONE_INDEX** - Microphone index that has to be used. Run [peripherals.py](https://github.com/thevickypedia/Jarvis/tree/master/modules/peripherals.py) to get the index value of each microphone.
+- **CAMERA_INDEX** - Camera index that has to be used. Run [camera.py](https://github.com/thevickypedia/Jarvis/tree/master/jarvis/modules/camera/camera.py) to get the index value of each camera.
+- **SPEAKER_INDEX** - Speaker index that has to be used. Run [peripherals.py](https://github.com/thevickypedia/Jarvis/tree/master/jarvis/modules/peripherals.py) to get the index value of each speaker.
+- **MICROPHONE_INDEX** - Microphone index that has to be used. Run [peripherals.py](https://github.com/thevickypedia/Jarvis/tree/master/jarvis/modules/peripherals.py) to get the index value of each microphone.
 
 ### Features
 - **GIT_USER** - GitHub Username
@@ -242,7 +242,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **SYNC_MEETINGS** - Interval in seconds to generate ``meetings`` information using an `ics` URL.
 - **SYNC_EVENTS** - Interval in seconds to generate ``events`` information using `calendar` or `outlook` application.
 
-**[Wi-Fi Controls](https://github.com/thevickypedia/Jarvis/tree/master/modules/wifi)**
+**[Wi-Fi Controls](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/wifi/connector.py)**
 - **WIFI_SSID** - SSID of the wireless connection.
 - **WIFI_PASSWORD** - Password for the wireless connection.
 - **CONNECTION_RETRY** - Frequency in seconds to check for an active internet connection. Defaults to 10 seconds.
@@ -253,21 +253,21 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **VPN_DOMAIN** - Domain name for the hosted zone.
 - **VPN_RECORD_NAME** - Alias record name to access VPN server.
 
-**[Car Controls](https://github.com/thevickypedia/Jarvis/blob/master/modules/car)** - Applies only for JLR vehicles subscribed to `InControl` application.
+**[Car Controls](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/car)** - Applies only for JLR vehicles subscribed to `InControl` application.
 - **CAR_EMAIL** - Email address to log in to InControl API.
 - **CAR_PASS** - Password to authenticate InControl API.
 - **CAR_PIN** - InControl PIN.
 
-**[Garage Controls](https://github.com/thevickypedia/Jarvis/blob/master/modules/myq)** - Applies only for garages using [MyQ garage controller](https://www.myq.com/products/smart-garage-control).
+**[Garage Controls](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/myq/myq.py)** - Applies only for garages using [MyQ garage controller](https://www.myq.com/products/smart-garage-control).
 - **MYQ_USERNAME** - Email address to log in to MyQ API.
 - **MYQ_PASSWORD** - Password to authenticate MyQ API.
 
-**[Telegram Bot](https://github.com/thevickypedia/Jarvis/blob/master/executors/telegram.py) integration**
+**[Telegram Bot](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/telegram.py) integration**
 - **BOT_TOKEN** - Telegram BOT token.
 - **BOT_CHAT_IDS** - UserID/ChatID for a particular user.
 - **BOT_USERS** - Usernames that should have access to Jarvis.
 
-**[OS Agnostic Voice Model](https://github.com/thevickypedia/Jarvis/blob/master/modules/audio/speech_synthesis.py)**
+**[OS Agnostic Voice Model](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/audio/speech_synthesis.py)**
 - **SPEECH_SYNTHESIS_TIMEOUT** - Timeout to connect to the docker container that processes text to speech requests.
 - **SPEECH_SYNTHESIS_VOICE** - Voice for the speech synthesis model. Defaults to author's favorite.
 - **SPEECH_SYNTHESIS_QUALITY** - Quality of speech synthesis conversion. Defaults to `medium`. <br>
@@ -293,7 +293,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 
 ---
 
-**[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py)**
+**[Offline communicator](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/offline.py)**
 - **OFFLINE_PORT** - Port number to initiate offline communicator. Defaults to `4483`
 - **OFFLINE_PASS** - Secure phrase to authenticate offline requests. Defaults to `OfflineComm`
 - **WORKERS** - Number of uvicorn workers (processes) to spin up. Defaults to `1`
@@ -419,7 +419,7 @@ bedroom tv:
 </details>
 
 ### Automation Setup [Optional]
-Jarvis can execute [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/modules/offline/compatibles.py) tasks 
+Jarvis can execute [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py) tasks 
 at pre-defined times without any user interaction. Uses an `automation.yaml` file as source which should be stored 
 within the directory `fileio`
 
@@ -455,7 +455,7 @@ The YAML file should be a dictionary within a dictionary that looks like the bel
 </details>
 
 ### Simulation Setup [Optional]
-Jarvis can execute [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/modules/offline/compatibles.py) tasks 
+Jarvis can execute [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py) tasks 
 as a simulation to test the required functions and send an email with the results. Uses an `simulation.yaml` file as source which should be stored
 within the directory `fileio`
 

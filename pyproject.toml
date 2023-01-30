@@ -39,7 +39,7 @@ keywords = ["python", "home-automation", "natural-language-processing", "text-to
 requires-python = ">=3.8"
 
 [tool.setuptools]
-packages = ["jarvis", "jarvis._preexec", "jarvis.executors"]
+packages     = ["jarvis", "jarvis._preexec", "jarvis.executors"]
 script-files = ["jarvis/lib/install.sh"]
 
 [tool.setuptools.dynamic]
