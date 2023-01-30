@@ -96,22 +96,55 @@
      - Store the host machine's password as the env var: `ROOT_PASSWORD`
      - Unlike macOS and Windows, `Ubuntu` does not have app specific permissions.
 
-## Setup
+## Kick off
 
-> **Test Peripherals**:
->   - Camera: [camera.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/camera/camera.py)
->   - Text to Speech: [speak.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/speaker/speak.py)
->   - Speech to Text: [recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py)
+**Install**
+```shell
+python -m pip install jarvis-ironman
+```
 
-   - Download the latest version of Jarvis from [pypi](https://github.com/thevickypedia/Jarvis/archive/master.zip) or [github](https://github.com/thevickypedia/Jarvis/archive/refs/heads/master.zip)
-   - Navigate into the downloaded `jarvis` or `jarvis-master` directory.
-   - Run the following commands in a command-line/terminal:
-     1. `python3 -m venv venv` - Creates a virtual env named `venv`
-     2. `source venv/bin/activate` - Activates the virtual env `venv`
-     3. `which python` - Validate which python is being used. Should be the one within the virtual env `venv`
-     4. `chmod +x lib/install.sh` - Makes [installation file](https://github.com/thevickypedia/Jarvis/blob/master/lib/install.sh) as executable.
-     5. `bash lib/installs.sh` - Installs the required modules based on the operating system.
-     6. [`python jarvis.py`](https://git.io/JBnPz) - BOOM, you're all set, go ahead and interact with Jarvis.
+**Initiate**
+```python
+import jarvis
+
+
+if __name__ == '__main__':
+    jarvis.start()
+```
+
+## Test peripherals
+**Camera**
+```python
+from jarvis.modules.camera import camera
+
+
+if __name__ == '__main__':
+    cam_object = camera.Camera()
+    print(cam_object.get_index())  # Get index id of each camera
+    print(cam_object.list_cameras())  # List all connected cameras
+```
+
+**Text to Speech**
+```python
+from jarvis.modules.speaker import speak
+
+
+if __name__ == '__main__':
+    speak_object = speak.Speaker()
+    speak_object.run()
+    print(list(speak_object.get_all_voices()))
+```
+
+**Speech to Text**
+```python
+import asyncio
+
+from jarvis.modules.microphone import recognizer
+
+
+if __name__ == '__main__':
+    asyncio.run(recognizer.main())
+```
 
 ## ENV Variables
 Environment variables are loaded from a `.env` file and validated using `pydantic`
@@ -464,7 +497,7 @@ changelog reverse -f release_notes.rst -t 'Release Notes'
 
 **Requirement**
 ```shell
-pip install --no-cache --upgrade sphinx==5.1.1 pre-commit recommonmark
+pip install sphinx==5.1.1 pre-commit recommonmark
 ```
 
 **Usage**

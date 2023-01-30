@@ -1,0 +1,62 @@
+[project]
+name = "jarvis-ironman"
+dynamic = ["version", "dependencies"]
+description = "Natural Language User Interface"
+readme = "README.md"
+authors = [{ name = "Vignesh Sivanandha Rao", email = "svignesh1793@gmail.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Information Technology",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: POSIX :: Linux",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Home Automation",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "Topic :: System :: Hardware :: Universal Serial Bus (USB) :: Wireless Controller",
+    "Topic :: Multimedia :: Sound/Audio :: Conversion",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Hardware :: Hardware Drivers",
+    "Topic :: System :: Hardware :: Symmetric Multi-processing",
+    "Topic :: System :: Hardware :: Universal Serial Bus (USB) :: Human Interface Device (HID)",
+    "Framework :: FastAPI",
+    "Framework :: Flake8",
+    "Framework :: AsyncIO",
+    "Framework :: Sphinx",
+    "Framework :: aiohttp",
+    "Natural Language :: English"
+]
+keywords = ["python", "home-automation", "natural-language-processing", "text-to-speech",
+            "speech-recognition", "jarvis", "hotword-detection", "virtual-assistant"]
+requires-python = ">=3.8"
+
+[tool.setuptools]
+packages = ["jarvis", "jarvis._preexec", "jarvis.executors"]
+script-files = ["jarvis/lib/install.sh"]
+
+[tool.setuptools.dynamic]
+version      = {attr = "jarvis.version"}
+dependencies = {file = ["jarvis/lib/version_locked_requirements.txt", "jarvis/lib/version_upgrade_requirements.txt"]}
+
+[build-system]
+requires      = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.optional-dependencies]
+dev = ["pytest", "pre-commit"]
+
+[project.urls]
+Homepage        = "https://github.com/thevickypedia/Jarvis"
+Docs            = "https://thevickypedia.github.io/Jarvis"
+Demo            = "https://vigneshrao.com/Jarvis/Jarvis_Demo.mp4"
+Source          = "https://github.com/thevickypedia/Jarvis"
+"Bug Tracker"   = "https://github.com/thevickypedia/Jarvis/issues"
+"Release Notes" = "https://github.com/thevickypedia/Jarvis/blob/master/release_notes.rst"

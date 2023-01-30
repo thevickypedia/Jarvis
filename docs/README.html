@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Prerequisites &#8212; Jarvis  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -133,30 +133,53 @@
 </li>
 </ul>
 </section>
-<section id="setup">
-<h1>Setup<a class="headerlink" href="#setup" title="Permalink to this heading">¶</a></h1>
-<blockquote>
-<div><p><strong>Test Peripherals</strong>:</p>
-<ul class="simple">
-<li><p>Camera: <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/camera/camera.py">camera.py</a></p></li>
-<li><p>Text to Speech: <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/speaker/speak.py">speak.py</a></p></li>
-<li><p>Speech to Text: <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py">recognizer.py</a></p></li>
-</ul>
-</div></blockquote>
-<ul class="simple">
-<li><p>Download the latest version of Jarvis from <a class="reference external" href="https://github.com/thevickypedia/Jarvis/archive/master.zip">pypi</a> or <a class="reference external" href="https://github.com/thevickypedia/Jarvis/archive/refs/heads/master.zip">github</a></p></li>
-<li><p>Navigate into the downloaded <code class="docutils literal notranslate"><span class="pre">jarvis</span></code> or <code class="docutils literal notranslate"><span class="pre">jarvis-master</span></code> directory.</p></li>
-<li><p>Run the following commands in a command-line/terminal:</p>
-<ol class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">venv</span> <span class="pre">venv</span></code> - Creates a virtual env named <code class="docutils literal notranslate"><span class="pre">venv</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">venv/bin/activate</span></code> - Activates the virtual env <code class="docutils literal notranslate"><span class="pre">venv</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">which</span> <span class="pre">python</span></code> - Validate which python is being used. Should be the one within the virtual env <code class="docutils literal notranslate"><span class="pre">venv</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">chmod</span> <span class="pre">+x</span> <span class="pre">lib/install.sh</span></code> - Makes <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/lib/install.sh">installation file</a> as executable.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">lib/installs.sh</span></code> - Installs the required modules based on the operating system.</p></li>
-<li><p><a class="reference external" href="https://git.io/JBnPz"><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">jarvis.py</span></code></a> - BOOM, you’re all set, go ahead and interact with Jarvis.</p></li>
-</ol>
-</li>
-</ul>
+<section id="kick-off">
+<h1>Kick off<a class="headerlink" href="#kick-off" title="Permalink to this heading">¶</a></h1>
+<p><strong>Install</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>jarvis-ironman
+</pre></div>
+</div>
+<p><strong>Initiate</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">jarvis</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">jarvis</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="test-peripherals">
+<h1>Test peripherals<a class="headerlink" href="#test-peripherals" title="Permalink to this heading">¶</a></h1>
+<p><strong>Camera</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jarvis.modules.camera</span> <span class="kn">import</span> <span class="n">camera</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">cam_object</span> <span class="o">=</span> <span class="n">camera</span><span class="o">.</span><span class="n">Camera</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">cam_object</span><span class="o">.</span><span class="n">get_index</span><span class="p">())</span>  <span class="c1"># Get index id of each camera</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">cam_object</span><span class="o">.</span><span class="n">list_cameras</span><span class="p">())</span>  <span class="c1"># List all connected cameras</span>
+</pre></div>
+</div>
+<p><strong>Text to Speech</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jarvis.modules.speaker</span> <span class="kn">import</span> <span class="n">speak</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">speak_object</span> <span class="o">=</span> <span class="n">speak</span><span class="o">.</span><span class="n">Speaker</span><span class="p">()</span>
+    <span class="n">speak_object</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">speak_object</span><span class="o">.</span><span class="n">get_all_voices</span><span class="p">()))</span>
+</pre></div>
+</div>
+<p><strong>Speech to Text</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">jarvis.modules.microphone</span> <span class="kn">import</span> <span class="n">recognizer</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">recognizer</span><span class="o">.</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
 </section>
 <section id="env-variables">
 <h1>ENV Variables<a class="headerlink" href="#env-variables" title="Permalink to this heading">¶</a></h1>
@@ -299,16 +322,16 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <li><p><strong>SPEECH_SYNTHESIS_VOICE</strong> - Voice for the speech synthesis model. Defaults to author’s favorite.</p></li>
 <li><p><strong>SPEECH_SYNTHESIS_QUALITY</strong> - Quality of speech synthesis conversion. Defaults to <code class="docutils literal notranslate"><span class="pre">medium</span></code>. <br></p>
   <details>
-  <summary><strong><i>To enable independent speech-synthesis</i></strong></summary><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker run <span class="se">\</span>
-    -it <span class="se">\</span>
-    -p <span class="m">5002</span>:5002 <span class="se">\</span>
-    -e <span class="s2">&quot;HOME=</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
-    -v <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">:</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
-    -v /usr/share/ca-certificates:/usr/share/ca-certificates <span class="se">\</span>
-    -v /etc/ssl/certs:/etc/ssl/certs <span class="se">\</span>
-    -w <span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --user <span class="s2">&quot;</span><span class="k">$(</span>id -u<span class="k">)</span><span class="s2">:</span><span class="k">$(</span>id -g<span class="k">)</span><span class="s2">&quot;</span> <span class="se">\</span>
-    rhasspy/larynx
+  <summary><strong><i>To enable independent speech-synthesis</i></strong></summary><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-p<span class="w"> </span><span class="m">5002</span>:5002<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-e<span class="w"> </span><span class="s2">&quot;HOME=</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">:</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-v<span class="w"> </span>/usr/share/ca-certificates:/usr/share/ca-certificates<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-v<span class="w"> </span>/etc/ssl/certs:/etc/ssl/certs<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-w<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--user<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="s2">:</span><span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>rhasspy/larynx
 </pre></div>
 </div>
 <p>:bulb:   Speech Synthesis can run on a docker container for better voices but, response might be negligibly slower. If you don’t have docker installed or simply don’t want to use it, set the <code class="docutils literal notranslate"><span class="pre">SPEECH_SYNTHESIS_TIMEOUT</span></code> env var to 0. This is also done automatically if failed to launch a docker container upon startup.</p>
@@ -341,30 +364,30 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <li><p>Jarvis can run internal tasks (offline communicator compatible) at certain intervals using a <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code> file stored in <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
   <details>
   <summary><strong><i>Setup Instructions</i></strong></summary><p>This is the sample content of <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code></p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1_800</span><span class="w"></span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">just turn off all lights</span><span class="w">  </span><span class="c1"># Runs every 30 minutes - &#39;just&#39; flag retains the lights&#39; last setting (eg: brightness or color)</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10_800</span><span class="w"></span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">remind me to drink water</span><span class="w">  </span><span class="c1"># Runs every 3 hours ignoring the hours specified</span><span class="w"></span>
-<span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w"></span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">21</span><span class="w"></span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">22</span><span class="w"></span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">23</span><span class="w"></span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w"></span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"></span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1_800</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">just turn off all lights</span><span class="w">  </span><span class="c1"># Runs every 30 minutes - &#39;just&#39; flag retains the lights&#39; last setting (eg: brightness or color)</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10_800</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">remind me to drink water</span><span class="w">  </span><span class="c1"># Runs every 3 hours ignoring the hours specified</span>
+<span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">21</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">22</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">23</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
 </pre></div>
 </div>
   </details></li>
 <li><p><strong>CRONTAB</strong> - Runs external tasks using cron expressions. Needs to be stored as env var.</p>
   <details>
-  <summary><strong><i>Sample value</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="w"></span>
-<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1-5/2</span><span class="nv"> </span><span class="s">find</span><span class="nv"> </span><span class="s">/var/log</span><span class="nv"> </span><span class="s">-delete&quot;</span><span class="p p-Indicator">,</span><span class="w"></span>
-<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1</span><span class="nv"> </span><span class="s">tar</span><span class="nv"> </span><span class="s">-zcf</span><span class="nv"> </span><span class="s">/var/backups/home.tgz</span><span class="nv"> </span><span class="s">/home/&quot;</span><span class="w"></span>
-<span class="p p-Indicator">]</span><span class="w"></span>
+  <summary><strong><i>Sample value</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span>
+<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1-5/2</span><span class="nv"> </span><span class="s">find</span><span class="nv"> </span><span class="s">/var/log</span><span class="nv"> </span><span class="s">-delete&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1</span><span class="nv"> </span><span class="s">tar</span><span class="nv"> </span><span class="s">-zcf</span><span class="nv"> </span><span class="s">/var/backups/home.tgz</span><span class="nv"> </span><span class="s">/home/&quot;</span>
+<span class="p p-Indicator">]</span>
 </pre></div>
 </div>
   </details></li>
@@ -377,12 +400,12 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <summary><strong><i>Setup Instructions</i></strong></summary><blockquote>
 <div><p>Note: Jarvis currently supports sending emails only when the <code class="docutils literal notranslate"><span class="pre">contacts.yaml</span></code> file is present, however phone numbers can be used directly.</p>
 </div></blockquote>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">phone</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">Tony</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0123456789</span><span class="w"></span>
-<span class="w">  </span><span class="nt">Thor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1234567890</span><span class="w"></span>
-<span class="nt">email</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">Eddard</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ned@gmail.com</span><span class="w"></span>
-<span class="w">  </span><span class="nt">Aegon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">egg@yahoo.com</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">phone</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">Tony</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0123456789</span>
+<span class="w">  </span><span class="nt">Thor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1234567890</span>
+<span class="nt">email</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">Eddard</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ned@gmail.com</span>
+<span class="w">  </span><span class="nt">Aegon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">egg@yahoo.com</span>
 </pre></div>
 </div>
 </details></section>
@@ -416,27 +439,27 @@ Jarvis supports <code class="docutils literal notranslate"><span class="pre">Mag
 <li><p>TVs should be a nested dictionary of multiple parameters.</p></li>
 <li><p>The source file (<code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code>) should be as following:</p></li>
 </ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">bedroom</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span><span class="w"></span>
-<span class="nt">hallway</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span><span class="w"></span>
-<span class="nt">hallway basement</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span><span class="w"></span>
-<span class="nt">kitchen</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span><span class="w"></span>
-<span class="nt">living room</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span><span class="w"></span>
-<span class="nt">party mode</span><span class="p">:</span><span class="w">  </span><span class="c1"># Light hostnames that needs to be engaged for party mode, if not present individual lights can be enabled</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span><span class="w"></span>
-<span class="nt">living room tv</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;HOSTNAME&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">client_key</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;CLIENT_KEY&#39;</span><span class="w">  </span><span class="c1"># Generated automatically if unavailable</span><span class="w"></span>
-<span class="w">  </span><span class="nt">mac_address</span><span class="p">:</span><span class="w">  </span><span class="c1"># Mac addresses can either be a string or a list</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;WIRED_MAC_ADDRESS&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;WIRELESS_MAC_ADDRESS&#39;</span><span class="w"></span>
-<span class="nt">bedroom tv</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;HOSTNAME&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">mac_address</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;MAC_ADDRESS&#39;</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">bedroom</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
+<span class="nt">hallway</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
+<span class="nt">hallway basement</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
+<span class="nt">kitchen</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
+<span class="nt">living room</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
+<span class="nt">party mode</span><span class="p">:</span><span class="w">  </span><span class="c1"># Light hostnames that needs to be engaged for party mode, if not present individual lights can be enabled</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
+<span class="nt">living room tv</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;HOSTNAME&#39;</span>
+<span class="w">  </span><span class="nt">client_key</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;CLIENT_KEY&#39;</span><span class="w">  </span><span class="c1"># Generated automatically if unavailable</span>
+<span class="w">  </span><span class="nt">mac_address</span><span class="p">:</span><span class="w">  </span><span class="c1"># Mac addresses can either be a string or a list</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;WIRED_MAC_ADDRESS&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;WIRELESS_MAC_ADDRESS&#39;</span>
+<span class="nt">bedroom tv</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;HOSTNAME&#39;</span>
+<span class="w">  </span><span class="nt">mac_address</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;MAC_ADDRESS&#39;</span>
 </pre></div>
 </div>
 </details></section>
@@ -453,22 +476,22 @@ within the directory <code class="docutils literal notranslate"><span class="pre
 <div><p>Not having the key <code class="docutils literal notranslate"><span class="pre">day</span></code> will run the automation daily.
 Date format should match exactly as described below.</p>
 </div></blockquote>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">06:00 AM</span><span class="p p-Indicator">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">day</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weekday</span><span class="w">  </span><span class="c1"># Runs only between Monday and Friday</span><span class="w"></span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 50%</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">06:30 AM</span><span class="p p-Indicator">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">day</span><span class="p">:</span><span class="w">  </span><span class="c1"># Runs only on Monday, Wednesday and Friday</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Monday</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wednesday</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FRIDAY</span><span class="w"></span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 100%</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">08:00 AM</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="c1"># Runs only on Saturday and Sunday</span><span class="w"></span>
-<span class="w">  </span><span class="nt">day</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weekend</span><span class="w"></span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 100%</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">09:00 PM</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="c1"># Runs daily</span><span class="w"></span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 5%</span><span class="w"></span>
-<span class="l l-Scalar l-Scalar-Plain">12:00 AM</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="c1"># Even performs tasks that are not supported via voice commands</span><span class="w"></span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">restart all background processes</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">06:00 AM</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">day</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weekday</span><span class="w">  </span><span class="c1"># Runs only between Monday and Friday</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 50%</span>
+<span class="nt">06:30 AM</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">day</span><span class="p">:</span><span class="w">  </span><span class="c1"># Runs only on Monday, Wednesday and Friday</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Monday</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wednesday</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FRIDAY</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 100%</span>
+<span class="nt">08:00 AM</span><span class="p">:</span><span class="w">  </span><span class="c1"># Runs only on Saturday and Sunday</span>
+<span class="w">  </span><span class="nt">day</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weekend</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 100%</span>
+<span class="nt">09:00 PM</span><span class="p">:</span><span class="w">  </span><span class="c1"># Runs daily</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 5%</span>
+<span class="nt">12:00 AM</span><span class="p">:</span><span class="w">  </span><span class="c1"># Even performs tasks that are not supported via voice commands</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">restart all background processes</span>
 </pre></div>
 </div>
 </details></section>
@@ -479,9 +502,9 @@ as a simulation to test the required functions and send an email with the result
 within the directory <code class="docutils literal notranslate"><span class="pre">fileio</span></code></p>
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary><p>The YAML file should be a list of phrases within a dictionary that looks like the below.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">meeting_event</span><span class="p">:</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get me the events from my calendar</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">what meetings do I have today</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">meeting_event</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get me the events from my calendar</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">what meetings do I have today</span>
 </pre></div>
 </div>
 </details></section>
@@ -500,11 +523,11 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <section id="release-notes">
 <h1><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/release_notes.rst">Release Notes</a><a class="headerlink" href="#release-notes" title="Permalink to this heading">¶</a></h1>
 <p><strong>Requirement</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python -m pip install changelog-generator
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>changelog-generator
 </pre></div>
 </div>
 <p><strong>Usage</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>changelog reverse -f release_notes.rst -t <span class="s1">&#39;Release Notes&#39;</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>changelog<span class="w"> </span>reverse<span class="w"> </span>-f<span class="w"> </span>release_notes.rst<span class="w"> </span>-t<span class="w"> </span><span class="s1">&#39;Release Notes&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -512,11 +535,11 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <h1>Linting<a class="headerlink" href="#linting" title="Permalink to this heading">¶</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">PreCommit</span></code> will ensure linting, and the doc creation are run on every commit.</p>
 <p><strong>Requirement</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install --no-cache --upgrade <span class="nv">sphinx</span><span class="o">==</span><span class="m">5</span>.1.1 pre-commit recommonmark
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">sphinx</span><span class="o">==</span><span class="m">5</span>.1.1<span class="w"> </span>pre-commit<span class="w"> </span>recommonmark
 </pre></div>
 </div>
 <p><strong>Usage</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pre-commit run --all-files
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
 </pre></div>
 </div>
 </section>
@@ -547,7 +570,8 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Prerequisites</a></li>
-<li><a class="reference internal" href="#setup">Setup</a></li>
+<li><a class="reference internal" href="#kick-off">Kick off</a></li>
+<li><a class="reference internal" href="#test-peripherals">Test peripherals</a></li>
 <li><a class="reference internal" href="#env-variables">ENV Variables</a><ul>
 <li><a class="reference internal" href="#peripherals">Peripherals</a></li>
 <li><a class="reference internal" href="#features">Features</a></li>

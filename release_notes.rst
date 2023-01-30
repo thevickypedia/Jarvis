@@ -1,6 +1,17 @@
 Release Notes
 =============
 
+7.0.8 (01/29/2023)
+------------------
+- Make Jarvis pip installable
+- Onboard to pypi with pyproject.toml
+- Create an option to stop Jarvis via fastapi with an override flag
+- Disable tunneling by default and enable with a flag
+- Fix path for indicators and apple scripts
+- Fix auto discover api routers for pypi package
+- Remove git versioning and GitPython dependencies
+- Switch python-publish.yml workflow to build on release and support pyproject.toml
+
 7.0.7 (01/27/2023)
 ------------------
 - Optimize plotting realtime microphone amp spectrum
