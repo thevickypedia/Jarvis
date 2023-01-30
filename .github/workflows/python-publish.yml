@@ -5,8 +5,8 @@ name: pypi-publish
 # Controls when the workflow will run
 on:
   workflow_dispatch: {}
-  push:
-    branches: [ master ]
+  release:
+    types: [ published ]
 
 jobs:
   deploy:
@@ -22,11 +22,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install setuptools wheel twine
-    - name: Build and publish
+        pip install build twine
+    - name: Create packages
+      run: python -m build
+    - name: Run twine check
+      run: twine check dist/*
+    - name: Upload to pypi
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USER }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-      run: |
-        python setup.py sdist bdist_wheel
-        twine upload dist/*.whl
+        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+      run: twine upload dist/*.whl

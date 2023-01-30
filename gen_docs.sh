@@ -5,7 +5,7 @@ set -e
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
 checker=$(git diff --name-only "$(git merge-base $branch HEAD)")
-if [[ ! $checker =~ "version.py" ]]; then
+if [[ ! $checker =~ "__init__.py" ]]; then
   echo -e "\n********************************************************************ERROR********************************************************************"
   echo "Docs generation was ABORTED since module version was not updated!! Changelog generator requires the commit number and package version in sync."
   echo -e "*********************************************************************************************************************************************\n"

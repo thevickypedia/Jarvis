@@ -9,15 +9,10 @@ did.bin
 
 # WIP: Dockerfile and it's requirements file
 Dockerfile
-lib/docker_requirements.txt
+docker_requirements.txt
 
 # File IO operations
-fileio/*.yaml
-fileio/*.html
-fileio/*.db
-fileio/*.txt
-fileio/*.jpg
-fileio/*.cid
+fileio
 
 # Log files
 logs
@@ -48,13 +43,13 @@ SetVol.exe
 # audio converter for Telegram API (Windows)
 ffmpeg
 
-# temporary file that indicates that jarvis should restart
-pyicloud_error
-
 # future work
 temp_*.py
 
 # pypi package files
+dist
 jarvis_ironman.egg-info
+
+# Create package
 package.py
 package.zip

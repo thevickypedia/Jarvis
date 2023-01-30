@@ -1,0 +1,8 @@
+global-exclude .env
+global-exclude *.yaml
+global-exclude .DS_Store
+include jarvis/lib/*
+include jarvis/scripts/*
+include jarvis/indicators/*
+recursive-include jarvis/api *
+recursive-include jarvis/modules *
