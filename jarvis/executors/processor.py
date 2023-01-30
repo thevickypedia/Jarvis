@@ -77,7 +77,7 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
         impact_lib.pop(graph_mic.plot_mic.__name__)
     if not models.env.tunnel:
         impact_lib.pop(tunneling.__name__)
-    if not func_name and list(impact_lib.keys()) != list(processes.keys()):
+    if not func_name and sorted(impact_lib.keys()) != sorted(processes.keys()):
         warnings.warn(message=f"{list(impact_lib.keys())} does not match {list(processes.keys())}")
     if func_name:  # Assumes a processes mapping file exists already, since flag passed during process specific restart
         with open(models.fileio.processes) as file:

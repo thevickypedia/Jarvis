@@ -61,7 +61,8 @@
 <li class="toctree-l2"><a class="reference internal" href="README.html#simulation-setup-optional">Simulation Setup [Optional]</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="README.html#feature-s-implementation">Feature(s) Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#guide">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#faqs">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#coding-standards">Coding Standards</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#release-notes">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#linting">Linting</a></li>
@@ -2804,7 +2805,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.controls.delete_logs">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.controls.</span></span><span class="sig-name descname"><span class="pre">delete_logs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.controls.delete_logs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deletes log files that were updated before 48 hours.</p>
+<dd><p>Delete log files that were updated before the log retention period. Checks if file’s inode was changed.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -2814,25 +2815,49 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.controls.set_executable">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.controls.</span></span><span class="sig-name descname"><span class="pre">set_executable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.controls.set_executable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify file permissions for all the files within the fileio directory.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.controls.starter">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.controls.</span></span><span class="sig-name descname"><span class="pre">starter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.controls.starter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates crucial functions which needs to be called during start up.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">-</span> <span class="pre">volume_controller</span></span></dt>
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">put_listener_state</span></span></dt>
+<dd><p>To activate listener enabling voice conversations.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">volume</span></span></dt>
 <dd><p>To default the master volume 50%.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">-</span> <span class="pre">voice_default</span></span></dt>
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">voices</span></span></dt>
 <dd><p>To change the voice to default value.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">-</span> <span class="pre">clear_logs</span></span></dt>
-<dd><p>To purge log files older than 48 hours.</p>
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">delete_logs</span></span></dt>
+<dd><p>To purge log files older than the set log retention time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">delete_pycache</span></span></dt>
+<dd><p>To purge pycache directories.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">set_executable</span></span></dt>
+<dd><p>To allow access to all the files within <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
 </dd></dl>
 
 </dd></dl>
@@ -6256,6 +6281,11 @@ last_value: the last value assigned or None</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.log_retention">
+<span class="sig-name descname"><span class="pre">log_retention</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.log_retention" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.birthday">
 <span class="sig-name descname"><span class="pre">birthday</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.birthday" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -6542,7 +6572,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.speech_synthesis_port">
-<span class="sig-name descname"><span class="pre">speech_synthesis_port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.speech_synthesis_port" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">speech_synthesis_port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.speech_synthesis_port" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -8943,7 +8973,7 @@ last_value: the last value assigned or None</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.EmailTemplates._threat_audio">
-<span class="sig-name descname"><span class="pre">_threat_audio</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/backup/Jarvis/jarvis/modules/templates/email_threat_audio.html'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.EmailTemplates._threat_audio" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_threat_audio</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/modules/templates/email_threat_audio.html'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.EmailTemplates._threat_audio" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -8953,7 +8983,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.EmailTemplates._threat_no_audio">
-<span class="sig-name descname"><span class="pre">_threat_no_audio</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/backup/Jarvis/jarvis/modules/templates/email_threat_no_audio.html'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.EmailTemplates._threat_no_audio" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_threat_no_audio</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/modules/templates/email_threat_no_audio.html'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.EmailTemplates._threat_no_audio" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -8988,7 +9018,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.EmailTemplates.file">
-<span class="sig-name descname"><span class="pre">file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_io.TextIOWrapper</span> <span class="pre">name='/Users/vicky/Desktop/git/backup/Jarvis/jarvis/modules/templates/car_report.html'</span> <span class="pre">mode='r'</span> <span class="pre">encoding='UTF-8'&gt;</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.EmailTemplates.file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_io.TextIOWrapper</span> <span class="pre">name='/Users/vicky/Desktop/git/Jarvis/jarvis/modules/templates/car_report.html'</span> <span class="pre">mode='r'</span> <span class="pre">encoding='UTF-8'&gt;</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.EmailTemplates.file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -9012,7 +9042,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.OriginTemplates.file">
-<span class="sig-name descname"><span class="pre">file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_io.TextIOWrapper</span> <span class="pre">name='/Users/vicky/Desktop/git/backup/Jarvis/jarvis/modules/templates/surveillance.html'</span> <span class="pre">mode='r'</span> <span class="pre">encoding='UTF-8'&gt;</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.OriginTemplates.file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_io.TextIOWrapper</span> <span class="pre">name='/Users/vicky/Desktop/git/Jarvis/jarvis/modules/templates/surveillance.html'</span> <span class="pre">mode='r'</span> <span class="pre">encoding='UTF-8'&gt;</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.OriginTemplates.file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -9031,7 +9061,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.GenericTemplates.file">
-<span class="sig-name descname"><span class="pre">file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_io.TextIOWrapper</span> <span class="pre">name='/Users/vicky/Desktop/git/backup/Jarvis/jarvis/modules/templates/win_wifi_config.xml'</span> <span class="pre">mode='r'</span> <span class="pre">encoding='UTF-8'&gt;</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.GenericTemplates.file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_io.TextIOWrapper</span> <span class="pre">name='/Users/vicky/Desktop/git/Jarvis/jarvis/modules/templates/win_wifi_config.xml'</span> <span class="pre">mode='r'</span> <span class="pre">encoding='UTF-8'&gt;</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.GenericTemplates.file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

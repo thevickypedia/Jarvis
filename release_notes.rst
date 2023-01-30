@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+7.1.0 (01/30/2023)
+------------------
+- Add an env var for `log_retention` in days
+- Sort keys in processes dict to avoid false warnings
+- Update README.md
+
 7.0.9 (01/30/2023)
 ------------------
 - Add `pyaudio` to startup checks

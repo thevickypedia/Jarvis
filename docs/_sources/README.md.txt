@@ -99,6 +99,10 @@ if __name__ == '__main__':
 
      :warning: Known Issue with <a href=https://pypi.org/project/pyttsx3/>pyttsx3 module</a> on <a href=https://www.apple.com/macos/ventura/> macOS Ventura 13.0</a>: This version of macOS does not hold the attribute `VoiceAge`. <a href=https://github.com/nateshmbhat/pyttsx3/pull/247>Workaround has been raised as a PR</a><br><br>
 
+   - **Linux** <br> _Tested on **Ubuntu 22.04 LTS**_
+     - Store the host machine's password as the env var: `ROOT_PASSWORD`
+     - Unlike macOS and Windows, `Ubuntu` does not have app specific permissions.
+
    - **Windows** <br> _Tested on **Windows 10**_
      - `Settings` → `Privacy`
        - `Microphone` - **Required** to listen and respond.
@@ -107,10 +111,6 @@ if __name__ == '__main__':
      - Install [Anaconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html#windows-installers), [VisualStudio C++ BuildTools](https://visualstudio.microsoft.com/visual-cpp-build-tools/), and [Git](https://git-scm.com/download/win/)
      - Make sure C++ build tools are installed completely and restart
      - Add anaconda/miniconda scripts location to `PATH` in Environment Variables
-
-   - **Linux** <br> _Tested on **Ubuntu 22.04 LTS**_
-     - Store the host machine's password as the env var: `ROOT_PASSWORD`
-     - Unlike macOS and Windows, `Ubuntu` does not have app specific permissions.
 
 ## Test peripherals
 **Camera**
@@ -156,6 +156,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
 - **PLOT_MIC** - Boolean value whether to show microphone usage in realtime. Defaults to `True`
+- **LOG_RETENTION** - Number of days to store the logs. Defaults to `10`
 - **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']` (Defaults to `['alexa']` in legacy macOS)<br>
 :warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.
 
@@ -456,7 +457,7 @@ The YAML file should be a dictionary within a dictionary that looks like the bel
 
 ### Simulation Setup [Optional]
 Jarvis can execute [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py) tasks 
-as a simulation to test the required functions and send an email with the results. Uses an `simulation.yaml` file as source which should be stored
+as a simulation to test the required functions and send an email with the results. Uses a `simulation.yaml` file as source which should be stored
 within the directory `fileio`
 
 <details>
@@ -472,8 +473,11 @@ meeting_event:
 
 </details>
 
-## Feature(s) Implementation
-Please refer [wiki](https://github.com/thevickypedia/Jarvis/wiki) for API usage, access controls, env variables, features' overview and demo videos.
+## Guide
+Please refer to the [wiki](https://github.com/thevickypedia/Jarvis/wiki) page for API usage, access controls, env variables, features' overview and demo videos.
+
+## FAQs
+Please refer to the [FAQs](https://github.com/thevickypedia/Jarvis/wiki/FAQs) section of the wiki.
 
 ## Coding Standards
 Docstring format: [`Google`](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) <br>

@@ -126,6 +126,12 @@
 </ul>
 <p>:warning: Known Issue with <a href=https://pypi.org/project/pyttsx3/>pyttsx3 module</a> on <a href=https://www.apple.com/macos/ventura/> macOS Ventura 13.0</a>: This version of macOS does not hold the attribute <code class="docutils literal notranslate"><span class="pre">VoiceAge</span></code>. <a href=https://github.com/nateshmbhat/pyttsx3/pull/247>Workaround has been raised as a PR</a><br><br></p>
 </li>
+<li><p><strong>Linux</strong> <br> <em>Tested on <strong>Ubuntu 22.04 LTS</strong></em></p>
+<ul class="simple">
+<li><p>Store the host machine’s password as the env var: <code class="docutils literal notranslate"><span class="pre">ROOT_PASSWORD</span></code></p></li>
+<li><p>Unlike macOS and Windows, <code class="docutils literal notranslate"><span class="pre">Ubuntu</span></code> does not have app specific permissions.</p></li>
+</ul>
+</li>
 <li><p><strong>Windows</strong> <br> <em>Tested on <strong>Windows 10</strong></em></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Settings</span></code> → <code class="docutils literal notranslate"><span class="pre">Privacy</span></code></p>
@@ -138,12 +144,6 @@
 <li><p>Install <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/">Anaconda</a> or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html#windows-installers">Miniconda</a>, <a class="reference external" href="https://visualstudio.microsoft.com/visual-cpp-build-tools/">VisualStudio C++ BuildTools</a>, and <a class="reference external" href="https://git-scm.com/download/win/">Git</a></p></li>
 <li><p>Make sure C++ build tools are installed completely and restart</p></li>
 <li><p>Add anaconda/miniconda scripts location to <code class="docutils literal notranslate"><span class="pre">PATH</span></code> in Environment Variables</p></li>
-</ul>
-</li>
-<li><p><strong>Linux</strong> <br> <em>Tested on <strong>Ubuntu 22.04 LTS</strong></em></p>
-<ul class="simple">
-<li><p>Store the host machine’s password as the env var: <code class="docutils literal notranslate"><span class="pre">ROOT_PASSWORD</span></code></p></li>
-<li><p>Unlike macOS and Windows, <code class="docutils literal notranslate"><span class="pre">Ubuntu</span></code> does not have app specific permissions.</p></li>
 </ul>
 </li>
 </ul>
@@ -190,6 +190,7 @@
 <li><p><strong>NAME</strong> - Name which Jarvis should address the user by. Defaults to <code class="docutils literal notranslate"><span class="pre">Vignesh</span></code></p></li>
 <li><p><strong>TITLE</strong> - Title which Jarvis should address the user by. Defaults to <code class="docutils literal notranslate"><span class="pre">sir</span></code></p></li>
 <li><p><strong>PLOT_MIC</strong> - Boolean value whether to show microphone usage in realtime. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>LOG_RETENTION</strong> - Number of days to store the logs. Defaults to <code class="docutils literal notranslate"><span class="pre">10</span></code></p></li>
 <li><p><strong>WAKE_WORDS</strong> - List of wake words to initiate Jarvis’ listener. Defaults to <code class="docutils literal notranslate"><span class="pre">['jarvis']</span></code> (Defaults to <code class="docutils literal notranslate"><span class="pre">['alexa']</span></code> in legacy macOS)<br>
 :warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.</p></li>
 <li><p><strong>VOICE_NAME</strong> - Name of the voice supported by the OperatingSystem. Defaults to the author’s favorite.</p></li>
@@ -498,7 +499,7 @@ Date format should match exactly as described below.</p>
 <section id="simulation-setup-optional">
 <h2>Simulation Setup [Optional]<a class="headerlink" href="#simulation-setup-optional" title="Permalink to this heading">¶</a></h2>
 <p>Jarvis can execute <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py">offline compatible</a> tasks
-as a simulation to test the required functions and send an email with the results. Uses an <code class="docutils literal notranslate"><span class="pre">simulation.yaml</span></code> file as source which should be stored
+as a simulation to test the required functions and send an email with the results. Uses a <code class="docutils literal notranslate"><span class="pre">simulation.yaml</span></code> file as source which should be stored
 within the directory <code class="docutils literal notranslate"><span class="pre">fileio</span></code></p>
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary><p>The YAML file should be a list of phrases within a dictionary that looks like the below.</p>
@@ -509,9 +510,13 @@ within the directory <code class="docutils literal notranslate"><span class="pre
 </div>
 </details></section>
 </section>
-<section id="feature-s-implementation">
-<h1>Feature(s) Implementation<a class="headerlink" href="#feature-s-implementation" title="Permalink to this heading">¶</a></h1>
-<p>Please refer <a class="reference external" href="https://github.com/thevickypedia/Jarvis/wiki">wiki</a> for API usage, access controls, env variables, features’ overview and demo videos.</p>
+<section id="guide">
+<h1>Guide<a class="headerlink" href="#guide" title="Permalink to this heading">¶</a></h1>
+<p>Please refer to the <a class="reference external" href="https://github.com/thevickypedia/Jarvis/wiki">wiki</a> page for API usage, access controls, env variables, features’ overview and demo videos.</p>
+</section>
+<section id="faqs">
+<h1>FAQs<a class="headerlink" href="#faqs" title="Permalink to this heading">¶</a></h1>
+<p>Please refer to the <a class="reference external" href="https://github.com/thevickypedia/Jarvis/wiki/FAQs">FAQs</a> section of the wiki.</p>
 </section>
 <section id="coding-standards">
 <h1>Coding Standards<a class="headerlink" href="#coding-standards" title="Permalink to this heading">¶</a></h1>
@@ -582,7 +587,8 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <li><a class="reference internal" href="#simulation-setup-optional">Simulation Setup [Optional]</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#feature-s-implementation">Feature(s) Implementation</a></li>
+<li><a class="reference internal" href="#guide">Guide</a></li>
+<li><a class="reference internal" href="#faqs">FAQs</a></li>
 <li><a class="reference internal" href="#coding-standards">Coding Standards</a></li>
 <li><a class="reference internal" href="#release-notes">Release Notes</a></li>
 <li><a class="reference internal" href="#linting">Linting</a></li>

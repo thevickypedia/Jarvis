@@ -6,6 +6,7 @@ import stat
 import subprocess
 import sys
 import time
+from datetime import timedelta
 from threading import Thread
 from typing import NoReturn
 
@@ -272,12 +273,13 @@ def shutdown(proceed: bool = False) -> NoReturn:
 
 
 def delete_logs() -> NoReturn:
-    """Deletes log files that were updated before 48 hours."""
+    """Delete log files that were updated before the log retention period. Checks if file's inode was changed."""
     for __path, __directory, __file in os.walk('logs'):
         for file_ in __file:
-            if time.time() - os.stat(os.path.join(__path, file_)).st_ctime > 172_800:  # when file's inode was changed
+            inode_modified = os.stat(os.path.join(__path, file_)).st_ctime
+            if timedelta(seconds=(time.time() - inode_modified)).days > models.env.log_retention:
                 logger.debug(f"Deleting log file: {os.path.join(__path, file_)}")
-                os.remove(os.path.join(__path, file_))  # removes the file if it is older than 48 hours
+                os.remove(os.path.join(__path, file_))  # removes the file if it is older than log retention time
 
 
 def delete_pycache() -> NoReturn:
@@ -289,21 +291,29 @@ def delete_pycache() -> NoReturn:
                 shutil.rmtree(os.path.join(__path, '__pycache__'))
 
 
+def set_executable() -> NoReturn:
+    """Modify file permissions for all the files within the fileio directory."""
+    for file in os.listdir("fileio"):
+        f_path = os.path.join("fileio", file)
+        if not file.endswith('.cid'):
+            os.chmod(f_path, os.stat(f_path).st_mode | stat.S_IEXEC)
+    # [os.chmod(file, int('755', base=8) or 0o755) for file in os.listdir("fileio") if not file.endswith('.cid')]
+
+
 def starter() -> NoReturn:
     """Initiates crucial functions which needs to be called during start up.
 
     Methods:
-        - volume_controller: To default the master volume 50%.
-        - voice_default: To change the voice to default value.
-        - clear_logs: To purge log files older than 48 hours.
+        - put_listener_state: To activate listener enabling voice conversations.
+        - volume: To default the master volume 50%.
+        - voices: To change the voice to default value.
+        - delete_logs: To purge log files older than the set log retention time.
+        - delete_pycache: To purge pycache directories.
+        - set_executable: To allow access to all the files within ``fileio`` directory.
     """
     put_listener_state(state=True)
     volume(level=models.env.volume)
     voices.voice_default()
     delete_logs()
     delete_pycache()
-    for file in os.listdir("fileio"):
-        f_path = os.path.join("fileio", file)
-        if not file.endswith('.cid'):
-            os.chmod(f_path, os.stat(f_path).st_mode | stat.S_IEXEC)
-    # [os.chmod(file, int('755', base=8) or 0o755) for file in os.listdir("fileio") if not file.endswith('.cid')]
+    set_executable()
