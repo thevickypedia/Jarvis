@@ -167,6 +167,7 @@ class EnvConfig(BaseSettings):
 
     # Log config
     debug: bool = Field(default=False, env='DEBUG')
+    log_retention: Union[int, PositiveInt] = Field(default=10, gt=0, env='LOG_RETENTION')
 
     # User add-ons
     birthday: str = Field(default=None, env='BIRTHDAY')
@@ -254,7 +255,7 @@ class EnvConfig(BaseSettings):
     speech_synthesis_voice: str = Field(default='en-us_northern_english_male-glow_tts', env='SPEECH_SYNTHESIS_VOICE')
     speech_synthesis_quality: SSQuality = Field(default=SSQuality.Medium_Quality, env='SPEECH_SYNTHESIS_QUALITY')
     speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'), env='SPEECH_SYNTHESIS_HOST')
-    speech_synthesis_port: int = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
+    speech_synthesis_port: PositiveInt = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
 
     # Background tasks
     crontab: List[str] = Field(default=[], env='CRONTAB')  # User input is gathered from fileio/crontab.yaml
