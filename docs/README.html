@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Prerequisites &#8212; Jarvis  documentation</title>
+    <title>Kick off &#8212; Jarvis  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     <link rel="stylesheet" type="text/css" href="_static/static.css" />
@@ -34,7 +34,7 @@
           <a href="index.html" title="Welcome to Jarvis’s documentation!"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Jarvis  documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Prerequisites</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Kick off</a></li> 
       </ul>
     </div>  
 
@@ -93,6 +93,21 @@
 <p><strong>Reach Out</strong></p>
 <p><a class="reference external" href="https://stackoverflow.com/users/13691532/vignesh-rao"><img alt="StackOverflow" src="https://img.shields.io/stackexchange/stackoverflow/r/13691532" /></a>
 <a class="reference external" href="https://vigneshrao.com/contact"><img alt="Ask Me | Anything " src="https://img.shields.io/badge/Ask%20me-Anything-1abc9c.svg" /></a></p>
+<section id="kick-off">
+<h1>Kick off<a class="headerlink" href="#kick-off" title="Permalink to this heading">¶</a></h1>
+<p><strong>Install</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>jarvis-ironman
+</pre></div>
+</div>
+<p><strong>Initiate</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">jarvis</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">jarvis</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
 <section id="prerequisites">
 <h1>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h1>
 <ul>
@@ -132,21 +147,6 @@
 </ul>
 </li>
 </ul>
-</section>
-<section id="kick-off">
-<h1>Kick off<a class="headerlink" href="#kick-off" title="Permalink to this heading">¶</a></h1>
-<p><strong>Install</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>jarvis-ironman
-</pre></div>
-</div>
-<p><strong>Initiate</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">jarvis</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">jarvis</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</pre></div>
-</div>
 </section>
 <section id="test-peripherals">
 <h1>Test peripherals<a class="headerlink" href="#test-peripherals" title="Permalink to this heading">¶</a></h1>
@@ -216,7 +216,7 @@
 <li><p><strong>RECOGNIZER_SETTINGS</strong> - A JSON object that has with customized speech recognition settings.</p>
   <details>
   <summary><strong><i>Custom settings for speech recognition</i></strong></summary><p>These are customized according to the author’s voice pitch.
-Please use <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/microphone/recognizer.py">recognizer.py</a> to figure out the suitable values on a trial and error basis.</p>
+Please use <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/microphone/recognizer.py">recognizer.py</a> to figure out the suitable values on a trial and error basis.</p>
 <blockquote>
 <div><p>These settings are added (optionally), to avoid the hard coded <code class="docutils literal notranslate"><span class="pre">PHRASE_LIMIT</span></code>
 <br>
@@ -244,9 +244,9 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <section id="peripherals">
 <h2>Peripherals<a class="headerlink" href="#peripherals" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><strong>CAMERA_INDEX</strong> - Camera index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/modules/camera/camera.py">camera.py</a> to get the index value of each camera.</p></li>
-<li><p><strong>SPEAKER_INDEX</strong> - Speaker index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/modules/peripherals.py">peripherals.py</a> to get the index value of each speaker.</p></li>
-<li><p><strong>MICROPHONE_INDEX</strong> - Microphone index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/modules/peripherals.py">peripherals.py</a> to get the index value of each microphone.</p></li>
+<li><p><strong>CAMERA_INDEX</strong> - Camera index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/jarvis/modules/camera/camera.py">camera.py</a> to get the index value of each camera.</p></li>
+<li><p><strong>SPEAKER_INDEX</strong> - Speaker index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/jarvis/modules/peripherals.py">peripherals.py</a> to get the index value of each speaker.</p></li>
+<li><p><strong>MICROPHONE_INDEX</strong> - Microphone index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/jarvis/modules/peripherals.py">peripherals.py</a> to get the index value of each microphone.</p></li>
 </ul>
 </section>
 <section id="features">
@@ -286,7 +286,7 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <li><p><strong>SYNC_MEETINGS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">meetings</span></code> information using an <code class="docutils literal notranslate"><span class="pre">ics</span></code> URL.</p></li>
 <li><p><strong>SYNC_EVENTS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">events</span></code> information using <code class="docutils literal notranslate"><span class="pre">calendar</span></code> or <code class="docutils literal notranslate"><span class="pre">outlook</span></code> application.</p></li>
 </ul>
-<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/modules/wifi">Wi-Fi Controls</a></strong></p>
+<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/wifi/connector.py">Wi-Fi Controls</a></strong></p>
 <ul class="simple">
 <li><p><strong>WIFI_SSID</strong> - SSID of the wireless connection.</p></li>
 <li><p><strong>WIFI_PASSWORD</strong> - Password for the wireless connection.</p></li>
@@ -299,24 +299,24 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <li><p><strong>VPN_DOMAIN</strong> - Domain name for the hosted zone.</p></li>
 <li><p><strong>VPN_RECORD_NAME</strong> - Alias record name to access VPN server.</p></li>
 </ul>
-<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/car">Car Controls</a></strong> - Applies only for JLR vehicles subscribed to <code class="docutils literal notranslate"><span class="pre">InControl</span></code> application.</p>
+<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/car">Car Controls</a></strong> - Applies only for JLR vehicles subscribed to <code class="docutils literal notranslate"><span class="pre">InControl</span></code> application.</p>
 <ul class="simple">
 <li><p><strong>CAR_EMAIL</strong> - Email address to log in to InControl API.</p></li>
 <li><p><strong>CAR_PASS</strong> - Password to authenticate InControl API.</p></li>
 <li><p><strong>CAR_PIN</strong> - InControl PIN.</p></li>
 </ul>
-<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/myq">Garage Controls</a></strong> - Applies only for garages using <a class="reference external" href="https://www.myq.com/products/smart-garage-control">MyQ garage controller</a>.</p>
+<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/myq/myq.py">Garage Controls</a></strong> - Applies only for garages using <a class="reference external" href="https://www.myq.com/products/smart-garage-control">MyQ garage controller</a>.</p>
 <ul class="simple">
 <li><p><strong>MYQ_USERNAME</strong> - Email address to log in to MyQ API.</p></li>
 <li><p><strong>MYQ_PASSWORD</strong> - Password to authenticate MyQ API.</p></li>
 </ul>
-<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/executors/telegram.py">Telegram Bot</a> integration</strong></p>
+<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/telegram.py">Telegram Bot</a> integration</strong></p>
 <ul class="simple">
 <li><p><strong>BOT_TOKEN</strong> - Telegram BOT token.</p></li>
 <li><p><strong>BOT_CHAT_IDS</strong> - UserID/ChatID for a particular user.</p></li>
 <li><p><strong>BOT_USERS</strong> - Usernames that should have access to Jarvis.</p></li>
 </ul>
-<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/audio/speech_synthesis.py">OS Agnostic Voice Model</a></strong></p>
+<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/audio/speech_synthesis.py">OS Agnostic Voice Model</a></strong></p>
 <ul>
 <li><p><strong>SPEECH_SYNTHESIS_TIMEOUT</strong> - Timeout to connect to the docker container that processes text to speech requests.</p></li>
 <li><p><strong>SPEECH_SYNTHESIS_VOICE</strong> - Voice for the speech synthesis model. Defaults to author’s favorite.</p></li>
@@ -338,7 +338,7 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
   </details></li>
 </ul>
 <hr class="docutils" />
-<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/executors/offline.py">Offline communicator</a></strong></p>
+<p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/offline.py">Offline communicator</a></strong></p>
 <ul class="simple">
 <li><p><strong>OFFLINE_PORT</strong> - Port number to initiate offline communicator. Defaults to <code class="docutils literal notranslate"><span class="pre">4483</span></code></p></li>
 <li><p><strong>OFFLINE_PASS</strong> - Secure phrase to authenticate offline requests. Defaults to <code class="docutils literal notranslate"><span class="pre">OfflineComm</span></code></p></li>
@@ -465,7 +465,7 @@ Jarvis supports <code class="docutils literal notranslate"><span class="pre">Mag
 </details></section>
 <section id="automation-setup-optional">
 <h2>Automation Setup [Optional]<a class="headerlink" href="#automation-setup-optional" title="Permalink to this heading">¶</a></h2>
-<p>Jarvis can execute <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/offline/compatibles.py">offline compatible</a> tasks
+<p>Jarvis can execute <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py">offline compatible</a> tasks
 at pre-defined times without any user interaction. Uses an <code class="docutils literal notranslate"><span class="pre">automation.yaml</span></code> file as source which should be stored
 within the directory <code class="docutils literal notranslate"><span class="pre">fileio</span></code></p>
 <details>
@@ -497,7 +497,7 @@ Date format should match exactly as described below.</p>
 </details></section>
 <section id="simulation-setup-optional">
 <h2>Simulation Setup [Optional]<a class="headerlink" href="#simulation-setup-optional" title="Permalink to this heading">¶</a></h2>
-<p>Jarvis can execute <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/modules/offline/compatibles.py">offline compatible</a> tasks
+<p>Jarvis can execute <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py">offline compatible</a> tasks
 as a simulation to test the required functions and send an email with the results. Uses an <code class="docutils literal notranslate"><span class="pre">simulation.yaml</span></code> file as source which should be stored
 within the directory <code class="docutils literal notranslate"><span class="pre">fileio</span></code></p>
 <details>
@@ -569,8 +569,8 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Prerequisites</a></li>
-<li><a class="reference internal" href="#kick-off">Kick off</a></li>
+<li><a class="reference internal" href="#">Kick off</a></li>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li><a class="reference internal" href="#test-peripherals">Test peripherals</a></li>
 <li><a class="reference internal" href="#env-variables">ENV Variables</a><ul>
 <li><a class="reference internal" href="#peripherals">Peripherals</a></li>
@@ -631,7 +631,7 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
           <a href="index.html" title="Welcome to Jarvis’s documentation!"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Jarvis  documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Prerequisites</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Kick off</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

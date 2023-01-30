@@ -2,13 +2,14 @@ import os
 
 from pynotification import pynotifier
 
-version = "7.0.8"
+version = "7.0.9"
 
 try:
     import cv2  # noqa
     import face_recognition  # noqa
     import playsound  # noqa
     import pvporcupine  # noqa
+    import pyaudio  # noqa
 except ImportError as error:
     pynotifier(title="First time user?", dialog=True,
                message=f"Please run\n\n{os.path.join(os.path.dirname(__file__), 'lib', 'install.sh')}")

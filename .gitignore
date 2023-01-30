@@ -44,6 +44,7 @@ SetVol.exe
 ffmpeg
 
 # future work
+hidden
 temp_*.py
 
 # pypi package files
