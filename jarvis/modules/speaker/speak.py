@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module to learn and train speech controls.
+
+>>> Speak
+
+"""
+
 import logging
 from typing import Dict, Iterable, NoReturn
 

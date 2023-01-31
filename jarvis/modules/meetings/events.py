@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module to gather events from the chosen macOS application.
+
+>>> Events
+
+"""
+
 import os
 import re
 import sqlite3

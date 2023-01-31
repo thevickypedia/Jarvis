@@ -1,8 +1,16 @@
+# noinspection PyUnresolvedReferences
+"""Module to set up bearer authentication.
+
+>>> AuthBearer
+
+"""
+
 from requests.auth import AuthBase
 from requests.models import PreparedRequest
 
 
 class BearerAuth(AuthBase):
+    # This doc string has URL split into multiple lines
     """Instantiates ``BearerAuth`` object.
 
     >>> BearerAuth

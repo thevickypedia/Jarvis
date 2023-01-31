@@ -1,4 +1,11 @@
-"""**API Reference:** https://documenter.getpostman.com/view/6250319/RznBMzqo for Jaguar LandRover InControl API."""
+# noinspection PyUnresolvedReferences
+"""Module to handle connections on JLR vehicles.
+
+>>> Connector
+
+See Also:
+    **API Reference:** https://documenter.getpostman.com/view/6250319/RznBMzqo for Jaguar LandRover InControl API.
+"""
 
 import json
 import os

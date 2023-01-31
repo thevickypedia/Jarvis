@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Custom document file IO handler for Telegram API.
+
+>>> FileHandler
+
+"""
+
 import os
 
 from jarvis.modules.logger.custom_logger import logger

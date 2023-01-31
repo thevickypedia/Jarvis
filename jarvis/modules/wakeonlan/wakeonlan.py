@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module for powering on supported devices.
+
+>>> WakeOnLan
+
+"""
+
 import socket
 from typing import NoReturn
 

@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module to read all HTML templates and store as members of an object.
+
+>>> AudioHandler
+
+"""
+
 import os
 
 from jarvis.modules.models import models

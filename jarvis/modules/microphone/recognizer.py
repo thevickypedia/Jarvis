@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module to learn and train speech recognition settings.
+
+>>> Recognizer
+
+"""
+
 import asyncio
 import logging
 import platform

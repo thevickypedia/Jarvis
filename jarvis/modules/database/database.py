@@ -1,3 +1,9 @@
+"""Module for database controls.
+
+>>> Database
+
+"""
+
 import importlib
 import logging
 import os

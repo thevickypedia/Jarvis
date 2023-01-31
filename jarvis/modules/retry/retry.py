@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module that creates a wrapper that can be used to functions that should be retried upon exceptions.
+
+>>> Retry
+
+"""
+
 import functools
 import time
 import warnings

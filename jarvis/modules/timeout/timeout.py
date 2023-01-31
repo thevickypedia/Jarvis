@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module that can be used to set timeout for a function.
+
+>>> Timeout
+
+"""
+
 import multiprocessing
 import time
 from logging import Logger

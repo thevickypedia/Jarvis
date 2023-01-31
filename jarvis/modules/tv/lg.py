@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module for LG tv operations.
+
+>>> LG
+
+"""
+
 import socket
 import sys
 import time
