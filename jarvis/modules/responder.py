@@ -1,3 +1,11 @@
+# noinspection PyUnresolvedReferences
+"""Module to create a response object using a dictionary.
+
+>>> Responder
+
+"""
+
+
 class Response:
     """Class to format the response, so that it can be accessed as an object variable.
 

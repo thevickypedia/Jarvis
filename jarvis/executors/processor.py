@@ -11,7 +11,7 @@ import yaml
 from jarvis.api.server import fast_api
 from jarvis.executors.connection import wifi_connector
 from jarvis.executors.crontab import crontab_executor
-from jarvis.executors.offline import automator, background_tasks, tunneling
+from jarvis.executors.offline import background_tasks, tunneling
 from jarvis.executors.telegram import telegram_api
 from jarvis.modules.audio.speech_synthesis import speech_synthesizer
 from jarvis.modules.database import database
@@ -65,8 +65,7 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
         - speech_synthesizer: Speech Synthesis
         - telegram_api: Telegram Bot
         - fast_api: Offline communicator, Robinhood report gatherer, Jarvis UI, Stock monitor, Surveillance
-        - automator: Home automation, Alarms and Reminders, Timed sync for Meetings and Events
-        - background_tasks: Cron jobs, Custom background tasks
+        - background_tasks: Home automation, Alarms, Reminders, Meetings and Events sync, Cron jobs and Background tasks
         - tunneling: Reverse Proxy
         - wifi_connector: Wi-Fi Re-connector
         - plot_mic: Plot microphone usage in real time
@@ -110,8 +109,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         - speech_synthesizer: Initiates larynx docker image for speech synthesis.
         - telegram_api: Initiates message polling for Telegram bot to execute offline commands.
         - fast_api: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.
-        - automator: Initiates automator that executes timed tasks, store calendar and meetings information in database.
-        - background_tasks: Initiates internal background tasks and runs cron jobs.
+        - background_tasks: Initiates internal background tasks, cron jobs, alarms, reminders, events and meetings sync.
         - tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
         - wifi_connector: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.
         - plot_mic: Initiates plotting microphone usage using matplotlib.
@@ -120,7 +118,6 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         speech_synthesizer.__name__: Process(target=speech_synthesizer),
         telegram_api.__name__: Process(target=telegram_api),
         fast_api.__name__: Process(target=fast_api),
-        automator.__name__: Process(target=automator),
         background_tasks.__name__: Process(target=background_tasks),
         wifi_connector.__name__: Process(target=wifi_connector),  # Run individually as socket needs timed wait
     }

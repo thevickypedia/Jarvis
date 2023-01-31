@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module to control smart lights using MagicHomeAPI.
+
+>>> SmartLights
+
+"""
+
 import socket
 import struct
 import sys

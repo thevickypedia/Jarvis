@@ -1,4 +1,13 @@
-"""Source: https://python-sounddevice.readthedocs.io/en/0.3.14/examples.html#plot-microphone-signal-s-in-real-time."""
+# noinspection PyUnresolvedReferences
+# This doc string has URL split into multiple lines
+"""Module to plot realtime microphone spectrum using matplotlib.
+
+>>> GraphMic
+
+References:
+    `sound device readthedocs <https://python-sounddevice.readthedocs.io/en/0.3.14/examples.html#plot
+    -microphone-signal-s-in-real-time>`__
+"""
 
 import os
 import queue

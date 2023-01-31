@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module for custom logger configurations.
+
+>>> Config
+
+"""
+
 import os
 from datetime import datetime
 from logging import Filter, Formatter, LogRecord

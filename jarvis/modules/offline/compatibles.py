@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Modules to store offline compatible words and wrap as a list.
+
+>>> Compatibles
+
+"""
+
 from typing import List
 
 from jarvis.modules.conditions import conversation

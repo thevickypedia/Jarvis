@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Custom audio file IO handler for Telegram API.
+
+>>> AudioHandler
+
+"""
+
 import importlib
 import logging
 import os

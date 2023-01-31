@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""This is a space to test peripherals and get index numbers for each peripheral.
+
+>>> Exceptions
+
+"""
+
 import platform
 from enum import Enum
 from typing import Dict, Iterable, Union

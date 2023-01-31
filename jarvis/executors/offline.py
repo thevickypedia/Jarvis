@@ -37,28 +37,32 @@ db = database.Database(database=models.fileio.base_db)
 
 
 def background_tasks() -> NoReturn:
-    """Initiates background tasks as per the set time."""
+    """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
     tasks: List[BackgroundTask] = list(validate_background_tasks())
-
-    start_cron = time.time()
+    offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
+    if models.settings.os == "Darwin":
+        events.event_app_launcher()
+    start_events = start_meetings = start_cron = time.time()
     task_dict = {i: time.time() for i in range(len(tasks))}  # Creates a start time for each task
     dry_run = True
     while True:
+        # Trigger background tasks
         for i, task in enumerate(tasks):
             if task_dict[i] + task.seconds <= time.time() or dry_run:  # Checks a particular tasks' elapsed time
                 task_dict[i] = time.time()  # Updates that particular tasks' start time
                 if datetime.now().hour in task.ignore_hours:
                     logger.info(f"{task!r} skipped honoring ignore hours")
-                    continue
-                logger.info(f'Executing {task.task}')
-                try:
-                    offline_communicator(task.task)
-                except Exception as error:
-                    logger.error(error)
-                    logger.warning(f"Removing {task} from background tasks.")
-                    remove_corrupted(task=task)
+                else:
+                    logger.info(f'Executing {task.task}')
+                    try:
+                        offline_communicator(task.task)
+                    except Exception as error:
+                        logger.error(error)
+                        logger.warning(f"Removing {task} from background tasks.")
+                        remove_corrupted(task=task)
 
+        # Trigger cron jobs
         if start_cron + 60 <= time.time() or dry_run:  # Condition passes every minute
             start_cron = time.time()
             for cron in models.env.crontab:
@@ -72,38 +76,7 @@ def background_tasks() -> NoReturn:
                         cursor.execute("INSERT or REPLACE INTO children (crontab) VALUES (?);", (cron_process.pid,))
                         db.connection.commit()
 
-        dry_run = False
-        time.sleep(1)  # Reduces CPU utilization as constant fileIO operations spike CPU %
-        new_tasks: List[BackgroundTask] = list(validate_background_tasks(log=False))  # Re-check for tasks
-        if new_tasks != tasks:
-            logger.warning("New task list found! Re-starting background tasks.")
-            logger.debug(DeepDiff(tasks, new_tasks, ignore_order=True))
-            tasks = new_tasks
-            task_dict = {i: time.time() for i in range(len(tasks))}  # Re-create start time for each task
-
-
-def automator() -> NoReturn:
-    """Place for long-running background tasks.
-
-    See Also:
-        - The automation file should be a dictionary within a dictionary that looks like the below:
-
-            .. code-block:: yaml
-
-                6:00 AM:
-                  task: set my bedroom lights to 50%
-                9:00 PM:
-                  task: set my bedroom lights to 5%
-
-        - Jarvis creates/swaps a ``status`` flag upon execution, so that it doesn't repeat execution within a minute.
-    """
-    config.multiprocessing_logger(filename=os.path.join('logs', 'automation_%d-%m-%Y.log'))
-    offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
-    start_events = start_meetings = time.time()
-    if models.settings.os == "Darwin":
-        events.event_app_launcher()
-    dry_run = True
-    while True:
+        # Trigger automation
         if os.path.isfile(models.fileio.automation):
             if exec_task := auto_helper(offline_list=offline_list):
                 try:
@@ -112,6 +85,7 @@ def automator() -> NoReturn:
                     logger.error(error)
                     logger.error(traceback.format_exc())
 
+        # Sync events from the event app specified (calendar/outlook)
         if start_events + models.env.sync_events <= time.time() or dry_run:
             start_events = time.time()
             event_process = Process(target=events.events_writer)
@@ -123,6 +97,7 @@ def automator() -> NoReturn:
                 cursor.execute("INSERT or REPLACE INTO children (events) VALUES (?);", (event_process.pid,))
                 db.connection.commit()
 
+        # Sync meetings from the ICS url provided
         if start_meetings + models.env.sync_meetings <= time.time() or dry_run:
             if dry_run and models.env.ics_url:
                 try:
@@ -141,6 +116,7 @@ def automator() -> NoReturn:
                 cursor.execute("INSERT or REPLACE INTO children (meetings) VALUES (?);", (meeting_process.pid,))
                 db.connection.commit()
 
+        # Trigger alarms
         if alarm_state := support.lock_files(alarm_files=True):
             for each_alarm in alarm_state:
                 if each_alarm == datetime.now().strftime("%I_%M_%p.lock") or \
@@ -155,6 +131,8 @@ def automator() -> NoReturn:
                         (each_alarm == datetime.now().strftime("_%I_%M_%p_repeat.lock") or
                          each_alarm == datetime.now().strftime("_%A_%I_%M_%p_repeat.lock")):
                     os.rename(os.path.join("alarm", each_alarm), os.path.join("alarm", each_alarm.lstrip("_")))
+
+        # Trigger reminders
         if reminder_state := support.lock_files(reminder_files=True):
             for each_reminder in reminder_state:
                 remind_time, remind_msg = each_reminder.split('|')
@@ -163,10 +141,19 @@ def automator() -> NoReturn:
                     Thread(target=reminder_executor, args=[remind_msg]).start()
                     os.remove(os.path.join("reminder", each_reminder))
 
+        # Rewrite keywords
         keywords_handler.rewrite_keywords()
 
+        # Re-check for tasks
+        new_tasks: List[BackgroundTask] = list(validate_background_tasks(log=False))
+        if new_tasks != tasks:
+            logger.warning("New task list found! Re-starting background tasks.")
+            logger.debug(DeepDiff(tasks, new_tasks, ignore_order=True))
+            tasks = new_tasks
+            task_dict = {i: time.time() for i in range(len(tasks))}  # Re-create start time for each task
+
         dry_run = False
-        time.sleep(1)  # Reduces CPU utilization
+        time.sleep(0.5)  # Reduces CPU utilization as constant fileIO operations spike CPU %
 
 
 def get_tunnel() -> Union[HttpUrl, NoReturn]:

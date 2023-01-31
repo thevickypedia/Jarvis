@@ -1,3 +1,9 @@
+"""Module to get camera index information.
+
+>>> Camera
+
+"""
+
 import subprocess
 from typing import Dict, Iterable, List, Union
 

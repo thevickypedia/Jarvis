@@ -77,6 +77,10 @@
 </section>
 <section id="module-jarvis.modules.camera.camera">
 <span id="camera"></span><h1>Camera<a class="headerlink" href="#module-jarvis.modules.camera.camera" title="Permalink to this heading">¶</a></h1>
+<p>Module to get camera index information.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Camera</span>
+</pre></div>
+</div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.camera.camera.list_splitter">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.camera.camera.</span></span><span class="sig-name descname"><span class="pre">list_splitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.camera.camera.list_splitter" title="Permalink to this definition">¶</a></dt>
@@ -247,6 +251,10 @@
 </section>
 <section id="module-jarvis.modules.peripherals">
 <span id="audio-devices"></span><h1>Audio Devices<a class="headerlink" href="#module-jarvis.modules.peripherals" title="Permalink to this heading">¶</a></h1>
+<p>This is a space to test peripherals and get index numbers for each peripheral.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Exceptions</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.peripherals.ChannelType">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.peripherals.</span></span><span class="sig-name descname"><span class="pre">ChannelType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.peripherals.ChannelType" title="Permalink to this definition">¶</a></dt>
@@ -320,6 +328,10 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="module-jarvis.modules.speaker.speak">
 <span id="text-to-speech"></span><h1>Text To Speech<a class="headerlink" href="#module-jarvis.modules.speaker.speak" title="Permalink to this heading">¶</a></h1>
+<p>Module to learn and train speech controls.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Speak</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.speaker.speak.</span></span><span class="sig-name descname"><span class="pre">Speaker</span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker" title="Permalink to this definition">¶</a></dt>
@@ -406,6 +418,10 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="module-jarvis.modules.microphone.recognizer">
 <span id="speech-to-text"></span><h1>Speech To Text<a class="headerlink" href="#module-jarvis.modules.microphone.recognizer" title="Permalink to this heading">¶</a></h1>
+<p>Module to learn and train speech recognition settings.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Recognizer</span>
+</pre></div>
+</div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.microphone.recognizer.save_for_reference">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.microphone.recognizer.</span></span><span class="sig-name descname"><span class="pre">save_for_reference</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.microphone.recognizer.save_for_reference" title="Permalink to this definition">¶</a></dt>
@@ -421,7 +437,12 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="module-jarvis.modules.microphone.graph_mic">
 <span id="realtime-microphone-usage"></span><h1>Realtime Microphone Usage<a class="headerlink" href="#module-jarvis.modules.microphone.graph_mic" title="Permalink to this heading">¶</a></h1>
-<p>Source: <a class="reference external" href="https://python-sounddevice.readthedocs.io/en/0.3.14/examples.html#plot-microphone-signal-s-in-real-time">https://python-sounddevice.readthedocs.io/en/0.3.14/examples.html#plot-microphone-signal-s-in-real-time</a>.</p>
+<p>Module to plot realtime microphone spectrum using matplotlib.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">GraphMic</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://python-sounddevice.readthedocs.io/en/0.3.14/examples.html#plot-microphone-signal-s-in-real-time">sound device readthedocs</a></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.microphone.graph_mic.Settings">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.microphone.graph_mic.</span></span><span class="sig-name descname"><span class="pre">Settings</span></span><a class="headerlink" href="#jarvis.modules.microphone.graph_mic.Settings" title="Permalink to this definition">¶</a></dt>
@@ -3580,29 +3601,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.offline.background_tasks">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.offline.</span></span><span class="sig-name descname"><span class="pre">background_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.offline.background_tasks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates background tasks as per the set time.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.offline.automator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.offline.</span></span><span class="sig-name descname"><span class="pre">automator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.offline.automator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Place for long-running background tasks.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul>
-<li><p>The automation file should be a dictionary within a dictionary that looks like the below:</p>
-<blockquote>
-<div><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">6:00 AM</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 50%</span>
-<span class="nt">9:00 PM</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set my bedroom lights to 5%</span>
-</pre></div>
-</div>
-</div></blockquote>
-</li>
-<li><p>Jarvis creates/swaps a <code class="docutils literal notranslate"><span class="pre">status</span></code> flag upon execution, so that it doesn’t repeat execution within a minute.</p></li>
-</ul>
-</div>
+<dd><p>Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -3934,8 +3933,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <li><p>speech_synthesizer: Speech Synthesis</p></li>
 <li><p>telegram_api: Telegram Bot</p></li>
 <li><p>fast_api: Offline communicator, Robinhood report gatherer, Jarvis UI, Stock monitor, Surveillance</p></li>
-<li><p>automator: Home automation, Alarms and Reminders, Timed sync for Meetings and Events</p></li>
-<li><p>background_tasks: Cron jobs, Custom background tasks</p></li>
+<li><p>background_tasks: Home automation, Alarms, Reminders, Meetings and Events sync, Cron jobs and Background tasks</p></li>
 <li><p>tunneling: Reverse Proxy</p></li>
 <li><p>wifi_connector: Wi-Fi Re-connector</p></li>
 <li><p>plot_mic: Plot microphone usage in real time</p></li>
@@ -3965,8 +3963,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <li><p>speech_synthesizer: Initiates larynx docker image for speech synthesis.</p></li>
 <li><p>telegram_api: Initiates message polling for Telegram bot to execute offline commands.</p></li>
 <li><p>fast_api: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.</p></li>
-<li><p>automator: Initiates automator that executes timed tasks, store calendar and meetings information in database.</p></li>
-<li><p>background_tasks: Initiates internal background tasks and runs cron jobs.</p></li>
+<li><p>background_tasks: Initiates internal background tasks, cron jobs, alarms, reminders, events and meetings sync.</p></li>
 <li><p>tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.</p></li>
 <li><p>wifi_connector: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.</p></li>
 <li><p>plot_mic: Initiates plotting microphone usage using matplotlib.</p></li>
@@ -4624,6 +4621,10 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </section>
 <section id="module-jarvis.modules.auth_bearer">
 <span id="auth-bearer"></span><h1>Auth Bearer<a class="headerlink" href="#module-jarvis.modules.auth_bearer" title="Permalink to this heading">¶</a></h1>
+<p>Module to set up bearer authentication.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AuthBearer</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.auth_bearer.BearerAuth">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.auth_bearer.</span></span><span class="sig-name descname"><span class="pre">BearerAuth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.auth_bearer.BearerAuth" title="Permalink to this definition">¶</a></dt>
@@ -4644,7 +4645,14 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </section>
 <section id="id1">
 <h1>Car<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h1>
-<span class="target" id="module-jarvis.modules.car.connector"></span><p><strong>API Reference:</strong> <a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo">https://documenter.getpostman.com/view/6250319/RznBMzqo</a> for Jaguar LandRover InControl API.</p>
+<span class="target" id="module-jarvis.modules.car.connector"></span><p>Module to handle connections on JLR vehicles.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connector</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><strong>API Reference:</strong> <a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo">https://documenter.getpostman.com/view/6250319/RznBMzqo</a> for Jaguar LandRover InControl API.</p>
+</div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.car.connector._open">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.car.connector.</span></span><span class="sig-name descname"><span class="pre">_open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#jarvis.modules.car.connector._open" title="Permalink to this definition">¶</a></dt>
@@ -4844,7 +4852,14 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="module-jarvis.modules.car.controller"></span><p><strong>API Reference:</strong> <a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo">https://documenter.getpostman.com/view/6250319/RznBMzqo</a> for Jaguar LandRover InControl API.</p>
+<span class="target" id="module-jarvis.modules.car.controller"></span><p>Module to handle controls on JLR vehicles.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Controller</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><strong>API Reference:</strong> <a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo">https://documenter.getpostman.com/view/6250319/RznBMzqo</a> for Jaguar LandRover InControl API.</p>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.car.controller.Control">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.car.controller.</span></span><span class="sig-name descname"><span class="pre">Control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.modules.car.connector.Connect" title="jarvis.modules.car.connector.Connect"><span class="pre">Connect</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.car.controller.Control" title="Permalink to this definition">¶</a></dt>
@@ -5712,7 +5727,11 @@ Pass 155 for LO and 285 for HI.</p>
 </pre></div>
 </div>
 <hr class="docutils" />
-<span class="target" id="module-jarvis.modules.conditions.keywords"></span><dl class="py class">
+<span class="target" id="module-jarvis.modules.conditions.keywords"></span><p>Module to instantiate the Keywords object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Keywords</span>
+</pre></div>
+</div>
+<dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.conditions.keywords.Keywords">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.conditions.keywords.</span></span><span class="sig-name descname"><span class="pre">Keywords</span></span><a class="headerlink" href="#jarvis.modules.conditions.keywords.Keywords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to load the keywords as members of the object.</p>
@@ -5743,7 +5762,11 @@ Pass 155 for LO and 285 for HI.</p>
 </section>
 <section id="id3">
 <h1>Crontab<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h1>
-<span class="target" id="module-jarvis.modules.crontab.expression"></span><dl class="py class">
+<span class="target" id="module-jarvis.modules.crontab.expression"></span><p>Module to handle crontab expressions.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Expression</span>
+</pre></div>
+</div>
+<dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.crontab.expression.CronExpression">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.crontab.expression.</span></span><span class="sig-name descname"><span class="pre">CronExpression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epoch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(1970,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epoch_utc_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.crontab.expression.CronExpression" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates CronExpression object to validate a crontab entry.</p>
@@ -6833,6 +6856,10 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="module-jarvis.modules.database.database">
 <span id="database"></span><h1>Database<a class="headerlink" href="#module-jarvis.modules.database.database" title="Permalink to this heading">¶</a></h1>
+<p>Module for database controls.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Database</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.database.database.Database">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.database.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">FilePath</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.database.database.Database" title="Permalink to this definition">¶</a></dt>
@@ -7039,6 +7066,10 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="module-jarvis.modules.facenet.face">
 <span id="facenet"></span><h1>FaceNet<a class="headerlink" href="#module-jarvis.modules.facenet.face" title="Permalink to this heading">¶</a></h1>
+<p>Module for face recognition, face detection and image capture.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Face</span>
+</pre></div>
+</div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.facenet.face.verify_image">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.facenet.face.</span></span><span class="sig-name descname"><span class="pre">verify_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FilePath</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.facenet.face.verify_image" title="Permalink to this definition">¶</a></dt>
@@ -7167,7 +7198,11 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="id4">
 <h1>Lights<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h1>
-<span class="target" id="module-jarvis.modules.lights.smart_lights"></span><dl class="py function">
+<span class="target" id="module-jarvis.modules.lights.smart_lights"></span><p>Module to control smart lights using MagicHomeAPI.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SmartLights</span>
+</pre></div>
+</div>
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.lights.smart_lights.check_number_range">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.lights.smart_lights.</span></span><span class="sig-name descname"><span class="pre">check_number_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.modules.lights.smart_lights.check_number_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given number is in the allowed range.</p>
@@ -7476,6 +7511,10 @@ Whites can have a value of None.</p>
 </section>
 <section id="module-jarvis.modules.meetings.events">
 <span id="meetings"></span><h1>Meetings<a class="headerlink" href="#module-jarvis.modules.meetings.events" title="Permalink to this heading">¶</a></h1>
+<p>Module to gather events from the chosen macOS application.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Events</span>
+</pre></div>
+</div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.meetings.events.events_writer">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.events.</span></span><span class="sig-name descname"><span class="pre">events_writer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.events.events_writer" title="Permalink to this definition">¶</a></dt>
@@ -7519,7 +7558,11 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="module-jarvis.modules.meetings.icalendar"></span><dl class="py function">
+<span class="target" id="module-jarvis.modules.meetings.icalendar"></span><p>Module to get meetings information from an ICS url.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ICalendar</span>
+</pre></div>
+</div>
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.meetings.icalendar.meetings_writer">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">meetings_writer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.icalendar.meetings_writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets return value from <code class="docutils literal notranslate"><span class="pre">meetings()</span></code> and writes it to a file.</p>
@@ -7579,6 +7622,10 @@ Whites can have a value of None.</p>
 </section>
 <section id="module-jarvis.modules.myq.myq">
 <span id="myq"></span><h1>MyQ<a class="headerlink" href="#module-jarvis.modules.myq.myq" title="Permalink to this heading">¶</a></h1>
+<p>Module to control MyQ garage control devices.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MyQ</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.myq.myq.Operation">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.myq.myq.</span></span><span class="sig-name descname"><span class="pre">Operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.myq.myq.Operation" title="Permalink to this definition">¶</a></dt>
@@ -7683,7 +7730,11 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="id5">
 <h1>Offline<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h1>
-<span class="target" id="module-jarvis.modules.offline.compatibles"></span><dl class="py function">
+<span class="target" id="module-jarvis.modules.offline.compatibles"></span><p>Modules to store offline compatible words and wrap as a list.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Compatibles</span>
+</pre></div>
+</div>
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.offline.compatibles.offline_compatible">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.offline.compatibles.</span></span><span class="sig-name descname"><span class="pre">offline_compatible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.offline.compatibles.offline_compatible" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls <code class="docutils literal notranslate"><span class="pre">Keywords</span></code> and <code class="docutils literal notranslate"><span class="pre">Conversation</span></code> classes to get the variables that do not require user interaction.</p>
@@ -7700,6 +7751,10 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="module-jarvis.modules.responder">
 <span id="retry-handler"></span><h1>Retry Handler<a class="headerlink" href="#module-jarvis.modules.responder" title="Permalink to this heading">¶</a></h1>
+<p>Module to create a response object using a dictionary.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Responder</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.responder.Response">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.responder.</span></span><span class="sig-name descname"><span class="pre">Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.responder.Response" title="Permalink to this definition">¶</a></dt>
@@ -7746,7 +7801,11 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="id6">
 <h1>Retry Handler<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h1>
-<span class="target" id="module-jarvis.modules.retry.retry"></span><dl class="py function">
+<span class="target" id="module-jarvis.modules.retry.retry"></span><p>Module that creates a wrapper that can be used to functions that should be retried upon exceptions.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Retry</span>
+</pre></div>
+</div>
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.retry.retry.retry">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.retry.retry.</span></span><span class="sig-name descname"><span class="pre">retry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attempts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_exc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.retry.retry.retry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for any function that has to be retried upon failure.</p>
@@ -8404,7 +8463,11 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="id7">
 <h1>Telegram<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h1>
-<span class="target" id="module-jarvis.modules.telegram.bot"></span><dl class="py function">
+<span class="target" id="module-jarvis.modules.telegram.bot"></span><p>Module for TelegramAPI.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Bot</span>
+</pre></div>
+</div>
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.bot.greeting">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.bot.</span></span><span class="sig-name descname"><span class="pre">greeting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.telegram.bot.greeting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a random greeting message.</p>
@@ -8752,7 +8815,11 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="module-jarvis.modules.telegram.audio_handler"></span><dl class="py function">
+<span class="target" id="module-jarvis.modules.telegram.audio_handler"></span><p>Custom audio file IO handler for Telegram API.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AudioHandler</span>
+</pre></div>
+</div>
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.audio_handler.audio_converter_mac">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.audio_handler.</span></span><span class="sig-name descname"><span class="pre">audio_converter_mac</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="headerlink" href="#jarvis.modules.telegram.audio_handler.audio_converter_mac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Imports transcode from ftransc.</p>
@@ -8787,7 +8854,11 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="module-jarvis.modules.telegram.file_handler"></span><dl class="py function">
+<span class="target" id="module-jarvis.modules.telegram.file_handler"></span><p>Custom document file IO handler for Telegram API.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">FileHandler</span>
+</pre></div>
+</div>
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.file_handler._list_files">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.file_handler.</span></span><span class="sig-name descname"><span class="pre">_list_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.file_handler._list_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all YAML files from fileio and all log files from logs directory.</p>
@@ -8964,6 +9035,10 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="module-jarvis.modules.templates.templates">
 <span id="templates"></span><h1>Templates<a class="headerlink" href="#module-jarvis.modules.templates.templates" title="Permalink to this heading">¶</a></h1>
+<p>Module to read all HTML templates and store as members of an object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AudioHandler</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.EmailTemplates">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">EmailTemplates</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.EmailTemplates" title="Permalink to this definition">¶</a></dt>
@@ -9087,6 +9162,10 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="module-jarvis.modules.timeout.timeout">
 <span id="timeout"></span><h1>Timeout<a class="headerlink" href="#module-jarvis.modules.timeout.timeout" title="Permalink to this heading">¶</a></h1>
+<p>Module that can be used to set timeout for a function.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Timeout</span>
+</pre></div>
+</div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.timeout.timeout.timeout">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.timeout.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Logger</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jarvis.modules.responder.Response" title="jarvis.modules.responder.Response"><span class="pre">Response</span></a></span></span><a class="headerlink" href="#jarvis.modules.timeout.timeout.timeout" title="Permalink to this definition">¶</a></dt>
@@ -9113,6 +9192,10 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="module-jarvis.modules.tv.lg">
 <span id="tv-connector"></span><h1>TV Connector<a class="headerlink" href="#module-jarvis.modules.tv.lg" title="Permalink to this heading">¶</a></h1>
+<p>Module for LG tv operations.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LG</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.tv.lg.LGWebOS">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.tv.lg.</span></span><span class="sig-name descname"><span class="pre">LGWebOS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS" title="Permalink to this definition">¶</a></dt>
@@ -9331,7 +9414,11 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="module-jarvis.modules.tv.roku"></span><dl class="py class">
+<span class="target" id="module-jarvis.modules.tv.roku"></span><p>Module for Roku tv operations.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Roku</span>
+</pre></div>
+</div>
+<dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.tv.roku.RokuECP">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.tv.roku.</span></span><span class="sig-name descname"><span class="pre">RokuECP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.tv.roku.RokuECP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <code class="docutils literal notranslate"><span class="pre">RokuECP</span></code> TVs.</p>
@@ -9561,6 +9648,10 @@ last_value: the last value assigned or None</p>
 </section>
 <section id="module-jarvis.modules.wakeonlan.wakeonlan">
 <span id="wakeonlan"></span><h1>WakeOnLAN<a class="headerlink" href="#module-jarvis.modules.wakeonlan.wakeonlan" title="Permalink to this heading">¶</a></h1>
+<p>Module for powering on supported devices.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">WakeOnLan</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.wakeonlan.wakeonlan.WakeOnLan">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.wakeonlan.wakeonlan.</span></span><span class="sig-name descname"><span class="pre">WakeOnLan</span></span><a class="headerlink" href="#jarvis.modules.wakeonlan.wakeonlan.WakeOnLan" title="Permalink to this definition">¶</a></dt>

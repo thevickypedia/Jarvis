@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module to get meetings information from an ICS url.
+
+>>> ICalendar
+
+"""
+
 import sqlite3
 import time
 from datetime import datetime
@@ -63,7 +70,7 @@ def meetings_gatherer() -> str:
         return f"You don't have any meetings today {models.env.title}!"
     meeting_status, count = "", 0
     for index, event in enumerate(events):
-        if event.end.timestamp < int(time.time()):  # Skips if meeting ended earlier than current time
+        if event.end.timestamp() < int(time.time()):  # Skips if meeting ended earlier than current time
             continue
         count += 1
         begin_local = event.begin.strftime("%I:%M %p")

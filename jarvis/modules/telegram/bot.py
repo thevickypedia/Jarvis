@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module for TelegramAPI.
+
+>>> Bot
+
+"""
+
 import importlib
 import json
 import logging

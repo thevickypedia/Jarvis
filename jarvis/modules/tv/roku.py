@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module for Roku tv operations.
+
+>>> Roku
+
+"""
+
 import socket
 from threading import Thread
 from typing import Dict, Iterable, NoReturn, Union

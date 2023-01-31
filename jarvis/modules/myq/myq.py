@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module to control MyQ garage control devices.
+
+>>> MyQ
+
+"""
+
 from enum import Enum
 from logging.config import dictConfig
 from typing import Dict

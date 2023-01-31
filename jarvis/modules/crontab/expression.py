@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module to handle crontab expressions.
+
+>>> Expression
+
+"""
+
 import calendar
 import datetime
 from typing import Tuple, Union

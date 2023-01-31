@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+7.1.1 (01/30/2023)
+------------------
+- Group automator and background_tasks to a single process
+- Update top level docstrings for all modules
+
 7.1.0 (01/30/2023)
 ------------------
 - Add an env var for `log_retention` in days

@@ -1,3 +1,10 @@
+# noinspection PyUnresolvedReferences
+"""Module for face recognition, face detection and image capture.
+
+>>> Face
+
+"""
+
 import imghdr
 import os
 from typing import NoReturn, Union

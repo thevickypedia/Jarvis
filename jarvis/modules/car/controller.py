@@ -1,4 +1,11 @@
-"""**API Reference:** https://documenter.getpostman.com/view/6250319/RznBMzqo for Jaguar LandRover InControl API."""
+# noinspection PyUnresolvedReferences
+"""Module to handle controls on JLR vehicles.
+
+>>> Controller
+
+See Also:
+    **API Reference:** https://documenter.getpostman.com/view/6250319/RznBMzqo for Jaguar LandRover InControl API.
+"""
 
 from typing import Dict, List, NoReturn, Union
 
