@@ -40,8 +40,7 @@ def initiate_simulator(simulation_data: Dict[str, List[str]]) -> NoReturn:
         simulation_data: A key value pair of category and phrase list.
     """
     start = time.time()
-    log_file = os.path.join('logs', 'simulation_%d-%m-%Y_%H:%M_%p.log')
-    config.multiprocessing_logger(filename=log_file)
+    log_file = config.multiprocessing_logger(filename=os.path.join('logs', 'simulation_%d-%m-%Y_%H:%M_%p.log'))
     offline_compatible = compatibles.offline_compatible()
     successful, failed = 0, 0
     shared.called_by_offline = True

@@ -30,7 +30,7 @@ threat
 alarm
 reminder
 
-# sphinx docs builder within doc_generator
+# sphinx docs builder within docs_gen
 _build
 _static
 
@@ -46,6 +46,7 @@ ffmpeg
 # future work
 hidden
 temp_*.py
+temp_*.sh
 
 # pypi package files
 dist

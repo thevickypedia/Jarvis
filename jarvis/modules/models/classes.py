@@ -16,7 +16,7 @@ from typing import List, Optional, Union
 
 import psutil
 import pyttsx3
-from packaging.version import parse as parser
+from packaging.version import Version
 from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       FilePath, HttpUrl, PositiveFloat, PositiveInt, constr,
                       validator)
@@ -62,10 +62,13 @@ class Settings(BaseSettings):
             "To reach out: https://vigneshrao.com/contact\n"
             f"\n{''.join('*' for _ in range(80))}\n"
         )
-    legacy: bool = True if os == "Darwin" and parser(platform.mac_ver()[0]) < parser('10.14') else False
+    legacy: bool = True if os == "Darwin" and Version(platform.mac_ver()[0]) < Version('10.14') else False
 
 
 settings = Settings()
+# Changes to Windows_NT because of BaseSettings
+if settings.os.startswith('Windows'):
+    settings.os = "Windows"
 
 
 class Sensitivity(float or PositiveInt, Enum):

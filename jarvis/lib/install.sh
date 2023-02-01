@@ -29,7 +29,7 @@ os_independent_packages() {
 }
 
 download_from_ext_sources_windows() {
-    # Downloads FFmpeg for audio conversion when received voice commands from Telegram API
+    # Downloads ffmpeg for audio conversion when received voice commands from Telegram API
     curl -L https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-lgpl.zip --output ffmpeg.zip --silent && unzip ffmpeg.zip && rm -rf ffmpeg.zip && mv ffmpeg-master-latest-win64-lgpl ffmpeg
 
     # Downloads PyAudio's wheel file to install it on Windows
@@ -75,20 +75,18 @@ if [[ "$OSName" == "Darwin" ]]; then
     os_independent_packages
 
     # Mac specifics
-    python -m pip install PyAudio==0.2.13 playsound==1.3.0 ftransc==7.0.3 pyobjc-framework-CoreWLAN==8.2
+    python -m pip install PyAudio==0.2.13 playsound==1.3.0 ftransc==7.0.3 pyobjc-framework-CoreWLAN==9.0.1 cmake==3.25.0
 
-    # Checks current version and installs legacy pvporcupine version if macOS is older han 10.14
+    # Checks current version and installs legacy version of dependencies if macOS is older han 10.14
     base_ver="10.14"  # Versions older than Mojave (High Sierra and older versions)
     os_ver=$(sw_vers | grep ProductVersion | cut -d':' -f2 | tr -d ' ')
     if awk "BEGIN {exit !($base_ver > $os_ver)}"; then
-      python -m pip install opencv-python==4.4.0.44 pvporcupine==1.6.0
+      python -m pip install pvporcupine==1.6.0 dlib==19.21.0 opencv-python==4.4.0.44
     else
-      python -m pip install opencv-python==4.5.5.64 pvporcupine==1.9.5
+      python -m pip install pvporcupine==1.9.5 dlib==19.24.0 opencv-python==4.5.5.64
     fi
 
-    # Install face-recognition/detection dependencies as stand alone so users aren't blocked until then
-    python -m pip install cmake==3.18.2.post1
-    python -m pip install dlib==19.21.0
+    # Install as stand alone as face recognition depends on dlib
     python -m pip install face-recognition==1.3.0
 elif [[ "$OSName" == MSYS* ]]; then
     clear
@@ -122,37 +120,39 @@ elif [[ "$OSName" == MSYS* ]]; then
     os_independent_packages
 
     # Install Windows specifics
-    python -m pip install pywin32==304 playsound==1.2.2 pydub==0.25.1 pvporcupine==1.9.5
+    python -m pip install pywin32==305 playsound==1.2.2 pydub==0.25.1 pvporcupine==1.9.5
 
     # Install face-recognition/detection dependencies as stand alone so users aren't blocked until then
     python -m pip install opencv-python==4.5.5.64
-    python -m pip install cmake==3.18.2.post1
-    python -m pip install dlib==19.21.0
+    python -m pip install cmake==3.25.0
+    python -m pip install dlib==19.24.0
     python -m pip install face-recognition==1.3.0
 elif [[ "$OSName" == "Linux" ]]; then
-  dev_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-  sudo apt install -y "python$dev_ver-distutils"  # Install distutils for the current python version
-  sudo apt-get install -y git libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
-  sudo apt install -y build-essential ffmpeg espeak python3-pyaudio "python$dev_ver-dev"
+    dev_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+    sudo apt install -y "python$dev_ver-distutils"  # Install distutils for the current python version
+    sudo apt-get install -y git libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
+    sudo apt install -y build-essential ffmpeg espeak python3-pyaudio "python$dev_ver-dev"
 
-  sudo apt install -y libopencv-dev python3-opencv
+    sudo apt install -y libopencv-dev python3-opencv
 
-  sudo apt install -y python3-gi
-  sudo apt install -y pkg-config libcairo2-dev gcc python3-dev libgirepository1.0-dev
+    sudo apt install -y python3-gi
+    sudo apt install -y pkg-config libcairo2-dev gcc python3-dev libgirepository1.0-dev
 
-  sudo apt install -y gnome-screensaver brightnessctl v4l-utils
+    sudo apt install -y gnome-screensaver brightnessctl v4l-utils
 
-  os_independent_packages
+    os_independent_packages
 
-  python -m pip install pyaudio pvporcupine==1.9.5 PyAudio==0.2.12
+    python -m pip install pyaudio pvporcupine==1.9.5 PyAudio==0.2.12
 
-  python -m pip install cmake==3.18.2.post1
-  python -m pip install dlib==19.21.0
-  python -m pip install opencv-python==4.5.5.64
-  python -m pip install face-recognition==1.3.0
+    python -m pip install cmake==3.25.0 dlib==19.24.0 opencv-python==4.5.5.64
 
-  python -m pip install gobject PyGObject
-  python -m pip install playsound==1.3.0
+    # Install as stand alone as face recognition depends on dlib
+    python -m pip install face-recognition==1.3.0
+
+    python -m pip install gobject PyGObject
+
+    # Install as stand alone as playsound depends on gobject
+    python -m pip install playsound==1.3.0
 else
     clear
     echo "*****************************************************************************************************************"

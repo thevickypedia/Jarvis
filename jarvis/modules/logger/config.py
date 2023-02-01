@@ -9,7 +9,6 @@ import os
 from datetime import datetime
 from logging import Filter, Formatter, LogRecord
 from multiprocessing import current_process
-from typing import NoReturn
 
 from pydantic import BaseModel
 
@@ -39,12 +38,16 @@ class AddProcessName(Filter):
         return True
 
 
-def multiprocessing_logger(filename: str, log_format: Formatter = None) -> NoReturn:
+def multiprocessing_logger(filename: str, log_format: Formatter = None) -> str:
     """Remove existing handlers and adds a new handler when a subprocess kicks in.
 
     Args:
         filename: Filename where the subprocess should log.
         log_format: Custom log format dedicated for each process.
+
+    Returns:
+        str:
+        Actual log filename with datetime converted.
     """
     logger.propagate = False
     # Remove existing handlers
@@ -56,6 +59,7 @@ def multiprocessing_logger(filename: str, log_format: Formatter = None) -> NoRet
     for _filter in logger.filters:
         logger.removeFilter(_filter)
     logger.addFilter(filter=AddProcessName(process_name=current_process().name))
+    return log_handler.baseFilename
 
 
 class APIConfig(BaseModel):

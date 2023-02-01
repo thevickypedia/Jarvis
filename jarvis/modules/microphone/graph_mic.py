@@ -173,3 +173,8 @@ def _kick_off() -> NoReturn:
     ani = FuncAnimation(fig=fig, func=update_plot, interval=settings.interval, blit=True)  # noqa
     with stream:
         matplotlib.pyplot.show()
+
+
+# This is required for Linux, since plotting microphone is started using commandline
+if __name__ == '__main__':
+    plot_mic()
