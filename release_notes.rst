@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+7.1.2 (02/01/2023)
+------------------
+- Bug fixes for `Linux` and `Windows`
+- Upgrade dependencies in install.sh
+
 7.1.1 (01/30/2023)
 ------------------
 - Group automator and background_tasks to a single process

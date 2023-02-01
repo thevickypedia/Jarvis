@@ -23,6 +23,7 @@ def wifi_connector() -> NoReturn:
         return
 
     socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    logger.info("Initiating scan for wifi connectivity.")
     unknown_errors = temporary_errors = 0
     while True:
         try:

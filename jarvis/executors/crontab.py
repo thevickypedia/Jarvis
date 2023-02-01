@@ -13,8 +13,8 @@ def crontab_executor(statement: str) -> NoReturn:
     Args:
         statement: Cron statement to be executed.
     """
-    config.multiprocessing_logger(filename=LOG_FILE)
-    with open(LOG_FILE, 'a') as file:
+    log_file = config.multiprocessing_logger(filename=LOG_FILE)
+    with open(log_file, 'a') as file:
         file.write('\n')
         try:
             subprocess.call(statement, shell=True, stdout=file, stderr=file)
