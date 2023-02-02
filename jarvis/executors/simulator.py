@@ -8,6 +8,7 @@ import yaml
 from gmailconnector.send_email import SendEmail
 
 from jarvis.executors.offline import offline_communicator
+from jarvis.executors.word_match import word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger import config
 from jarvis.modules.logger.custom_logger import logger
@@ -47,7 +48,7 @@ def initiate_simulator(simulation_data: Dict[str, List[str]]) -> NoReturn:
     for category, task_list in simulation_data.items():
         logger.info(f"Requesting category: {category}")
         for task in task_list:
-            if task not in offline_compatible:
+            if not word_match(phrase=task, match_list=offline_compatible):
                 logger.warning(f"{task!r} is not an offline compatible request.")
                 continue
             logger.info(f"Request: {task}")
@@ -87,5 +88,5 @@ def run_simulation() -> NoReturn:
     process = Process(target=initiate_simulator, args=(simulation_data,))
     process.name = "simulator"
     process.start()
-    speaker.speak(text=f"Initiated simulation {models.env.title}! It should take less than 5 minutes. "
-                       "An email will be sent with the results.")
+    speaker.speak(text=f"Initiated simulation {models.env.title}! "
+                       "I will send you an email with the results once it is complete.")

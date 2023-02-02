@@ -8,10 +8,11 @@
 import math
 import os
 import socket
+import string
 import sys
 import time
-from datetime import datetime, timezone
-from typing import Iterable, List, NoReturn, Union
+from datetime import datetime, timedelta, timezone
+from typing import Iterable, List, NoReturn, Tuple, Union
 
 import dateutil.tz
 import inflect
@@ -20,6 +21,7 @@ import yaml
 from holidays import country_holidays
 
 from jarvis.executors.internet import ip_address
+from jarvis.executors.word_match import word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -27,6 +29,7 @@ from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared
 
+days_in_week = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 db = database.Database(database=models.fileio.base_db)
 
 
@@ -215,6 +218,90 @@ def utc_to_local(utc_dt: datetime) -> datetime:
     utc_dt = utc_dt.replace(tzinfo=timezone.utc)  # Tell datetime object that the tz is UTC
     local_tz = dateutil.tz.gettz(datetime.now().astimezone().tzname())  # Get local timezone
     return utc_dt.astimezone(local_tz)  # Convert the UTC timestamp to local
+
+
+def build_lookup() -> List[str]:
+    """Build an array and get the number of days ahead and before of a certain day to lookup.
+
+    Returns:
+        List[str]:
+        Returns a list of days ahead and before of the lookup date.
+    """
+    day_str = datetime.today().strftime("%A")
+    floating_days = [""] * 8
+    for idx, day in enumerate(days_in_week):
+        if day == day_str:
+            floating_days[0] = day_str
+            floating_days[7] = day_str
+            for i, j in zip(range(idx + 1, len(days_in_week)), range(1, len(days_in_week))):
+                floating_days[j] = days_in_week[i]
+            for i in range(idx):
+                floating_days[7 - (idx - i)] = days_in_week[i]
+    return floating_days
+
+
+def detect_lookup_date(phrase: str) -> Tuple[datetime, str]:
+    """Converts general human phrases into datetime objects.
+
+    Args:
+        phrase: Takes input string as an argument.
+
+    Returns:
+        Tuple[datetime, str]:
+        Returns a tuple of the datetime object, the detected/supported humanized date.
+    """
+    if "before" in phrase and "yesterday" in phrase:
+        datetime_obj = datetime.today() - timedelta(days=2)
+        addon = "day before yesterday"
+    elif "yesterday" in phrase:
+        datetime_obj = datetime.today() - timedelta(days=1)
+        addon = "yesterday"
+    elif "after" in phrase and "tomorrow" in phrase:
+        datetime_obj = datetime.today() + timedelta(days=2)
+        addon = "day after tomorrow"
+    elif "tomorrow" in phrase:
+        datetime_obj = datetime.today() + timedelta(days=1)
+        addon = "tomorrow"
+    else:
+        datetime_obj, addon = humanized_day_to_datetime(phrase=phrase)
+    return datetime_obj, addon
+
+
+def humanized_day_to_datetime(phrase: str) -> Union[Tuple[datetime, str], NoReturn]:
+    """Converts human date from general conversations into a datetime object.
+
+    Args:
+        phrase: Takes input string as an argument.
+
+    See Also:
+        - | Supports terms like ``day before yesterday``, ``yesterday``, ``tomorrow``, ``day after tomorrow``,
+          | ``last friday``, ``this wednesday``, ``next monday``
+
+    Returns:
+        Tuple[datetime, str]:
+        Returns a tuple of the datetime object, the detected/supported humanized date.
+    """
+    floating_days = build_lookup()
+    lookup_day = get_capitalized(phrase=phrase)
+    if not lookup_day or lookup_day not in days_in_week:  # basically, if lookup day is in lower case
+        if matched := word_match(phrase=phrase, match_list=days_in_week):
+            lookup_day = string.capwords(matched)
+    if not lookup_day or lookup_day not in days_in_week:
+        logger.error(f"Received incorrect lookup day: {lookup_day}")
+        return
+    if "last" in phrase.lower():
+        td = timedelta(days=-(7 - floating_days.index(lookup_day)))
+        addon = f"last {lookup_day}"
+    elif "next" in phrase.lower():
+        td = timedelta(days=(7 + floating_days.index(lookup_day)))
+        addon = f"next {lookup_day}"
+    elif "this" in phrase.lower():
+        td = timedelta(days=floating_days.index(lookup_day))
+        addon = f"this {lookup_day}"
+    else:
+        logger.error(f"Supports only 'last', 'next' and 'this' but received {phrase}")
+        return
+    return datetime.today() + td, addon
 
 
 def check_stop() -> List[str]:

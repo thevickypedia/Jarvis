@@ -17,5 +17,9 @@ def word_match(phrase: str, match_list: Iterable[str], strict: bool = False) -> 
         return
     lookup = phrase.lower().split() if strict else phrase.lower()
     for word in match_list:
-        if word in lookup:
-            return word
+        if strict:
+            if word in lookup:
+                return word
+        else:
+            if word.lower() in lookup:
+                return word

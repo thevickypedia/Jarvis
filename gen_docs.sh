@@ -13,7 +13,7 @@ if [[ "$bumped" == 0 ]]; then
   echo "Docs generation was ABORTED since module version was not bumped!! Changelog generator requires the commit number and package version in sync."
   echo -e "*********************************************************************************************************************************************\n"
   echo "Current pkg version: $current_pkg_version"
-  echo "Latest version pypi: $latest_pypi_version"
+  echo "Latest pypi version: $latest_pypi_version"
   exit 255
 fi
 

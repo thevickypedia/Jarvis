@@ -15,15 +15,17 @@ from multiprocessing.pool import ThreadPool
 from typing import NoReturn
 
 import requests
+from arrow import Arrow
 from ics import Calendar
 
+from jarvis.executors.word_match import word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.retry import retry
-from jarvis.modules.utils import shared
+from jarvis.modules.utils import shared, support
 
 db = database.Database(database=models.fileio.base_db)
 
@@ -45,8 +47,12 @@ def meetings_writer() -> NoReturn:
     return
 
 
-def meetings_gatherer() -> str:
+def meetings_gatherer(custom_date: Arrow = None, addon: str = "today") -> str:
     """Gets ICS data and converts into a statement.
+
+    Args:
+        custom_date: Takes custom date as an arrow object.
+        addon: When the custom date is.
 
     Returns:
         str:
@@ -64,13 +70,18 @@ def meetings_gatherer() -> str:
     if not response.ok:
         logger.error(response.status_code)
         return "I wasn't able to read your calendar schedule sir! Please check the shared URL."
-    calendar = Calendar(response.text)
-    events = list(calendar.timeline.today())
+    if custom_date:
+        events = list(Calendar(response.text).timeline.on(day=custom_date))
+    else:
+        events = list(Calendar(response.text).timeline.today())
     if not events:
-        return f"You don't have any meetings today {models.env.title}!"
+        if "last" in addon or "yesterday" in addon:
+            return f"You did not have any meetings {addon} {models.env.title}!"
+        return f"You don't have any meetings {addon} {models.env.title}!"
     meeting_status, count = "", 0
     for index, event in enumerate(events):
-        if event.end.timestamp() < int(time.time()):  # Skips if meeting ended earlier than current time
+        # Skips if meeting ended earlier than current time
+        if event.end.timestamp() < int(time.time()) and "last" not in addon and "yesterday" not in addon:
             continue
         count += 1
         begin_local = event.begin.strftime("%I:%M %p")
@@ -82,16 +93,44 @@ def meetings_gatherer() -> str:
             meeting_status += ', ' if index + 1 < len(events) else '.'
     if count:
         plural = "meeting" if count == 1 else "meetings"
-        meeting_status = f"You have {count} {plural} today {models.env.title}! {meeting_status}"
+        meeting_status = f"You have {count} {plural} {addon} {models.env.title}! {meeting_status}"
     else:
         plural = "meeting" if len(events) == 1 else "meetings"
         meeting_status = f"You have no more meetings for rest of the day {models.env.title}! " \
-                         f"However, you had {len(events)} {plural} earlier today. {meeting_status}"
+                         f"However, you had {len(events)} {plural} earlier {addon}. {meeting_status}"
+    if "last" in addon or "yesterday" in addon:
+        meeting_status = meeting_status.replace("You have", "You had")
     return meeting_status
 
 
-def meetings() -> None:
-    """Controller for meetings."""
+def custom_meetings(phrase: str) -> bool:
+    """Handles meeting request for a custom date.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+
+    Returns:
+        bool:
+        A true flag if the custom meetings request matches the supported format.
+    """
+    if tuple_res := support.detect_lookup_date(phrase):
+        datetime_obj, addon = tuple_res
+        arrow_obj = Arrow(year=datetime_obj.year, month=datetime_obj.month, day=datetime_obj.day)
+        meeting_status = meetings_gatherer(custom_date=arrow_obj, addon=addon)
+        speaker.speak(meeting_status)
+        return True
+
+
+def meetings(phrase: str) -> None:
+    """Controller for meetings.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+    """
+    phrase = phrase.lower()
+    if word_match(phrase=phrase, match_list=("tomorrow", "yesterday", "last", "this", "next")) and \
+            custom_meetings(phrase=phrase):
+        return
     with db.connection:
         cursor = db.connection.cursor()
         meeting_status = cursor.execute("SELECT info, date FROM ics").fetchone()

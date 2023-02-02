@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+7.1.3 (02/01/2023)
+------------------
+- Add a feature to get past and future meetings
+- Suppress image preview when called by offline
+- Fix condition match in simulation
+- Add a function to find datetime in conversations and convert to datetime objects
+
 7.1.2 (02/01/2023)
 ------------------
 - Bug fixes for `Linux` and `Windows`

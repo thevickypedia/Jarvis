@@ -68,7 +68,7 @@ def speech_synthesizer(text: str,
         logger.error(error)
         logger.info("Disabling speech synthesis")
         # Purposely exclude timeout since, larynx takes more time during first iteration to download the required voice
-        if not any((isinstance(error, TimeoutError), isinstance(error, requests.exceptions.Timeout))):
+        if not any((isinstance(error, TimeoutError), isinstance(error, requests.Timeout))):
             models.env.speech_synthesis_timeout = 0
 
 

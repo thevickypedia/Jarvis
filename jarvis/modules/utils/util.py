@@ -210,6 +210,7 @@ def extract_time(input_: str) -> List[str]:
         list:
         Extracted time from the string.
     """
+    input_ = input_.lower()
     return re.findall(r'(\d+:\d+\s?(?:a.m.|p.m.:?))', input_) or \
         re.findall(r'(\d+\s?(?:a.m.|p.m.:?))', input_) or \
         re.findall(r'(\d+:\d+\s?(?:am|pm:?))', input_) or \
