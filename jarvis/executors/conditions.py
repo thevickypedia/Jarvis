@@ -103,7 +103,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
     # ORDER OF THE ABOVE SHOULD BE RETAINED
 
     elif word_match(phrase=phrase, match_list=keywords.meetings):
-        meetings()
+        meetings(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.current_date) and \
             not word_match(phrase=phrase, match_list=keywords.avoid):

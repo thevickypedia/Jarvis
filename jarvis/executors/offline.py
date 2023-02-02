@@ -174,8 +174,7 @@ def get_tunnel() -> Union[HttpUrl, NoReturn]:
                 if hosted := tunnel.get('config', {}).get('addr'):
                     if int(hosted.split(':')[-1]) == models.env.offline_port:
                         return tunnel.get('public_url')
-    except (requests.exceptions.RequestException, requests.exceptions.Timeout, ConnectionError, TimeoutError,
-            requests.exceptions.JSONDecodeError) as error:
+    except EgressErrors + requests.JSONDecodeError as error:
         logger.error(error)
 
 

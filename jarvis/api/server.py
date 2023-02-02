@@ -54,7 +54,7 @@ def fast_api() -> None:
             if res.ok:
                 logger.info(f'{url!r} is accessible.')
                 return
-            raise requests.exceptions.ConnectionError
+            raise requests.ConnectionError
         except EgressErrors:
             logger.error('Unable to connect to existing uvicorn server.')
 

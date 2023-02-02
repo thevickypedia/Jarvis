@@ -382,6 +382,7 @@ def photo() -> str:
         str:
         Filename.
     """
+    # Ret value will be used only by offline communicator
     filename = os.path.join(models.fileio.root, f"{datetime.now().strftime('%B_%d_%Y_%I_%M_%p')}.jpg")
     try:
         facenet = face.FaceNet()
@@ -390,17 +391,15 @@ def photo() -> str:
         return f"I'm sorry {models.env.title}! I wasn't able to take a picture."
     facenet.capture_image(filename=filename)
     if os.path.isfile(filename):
-        if models.settings.os != "Windows":
-            subprocess.call(["open", filename])
-        else:
-            os.system(f'start {filename}')
+        if not shared.called_by_offline:  # don't show preview on screen if requested via offline
+            if models.settings.os != "Windows":
+                subprocess.call(["open", filename])
+            else:
+                os.system(f'start {filename}')
         speaker.speak(text=f"A photo has been captured {models.env.title}!")
-    else:
-        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to take a picture.")
-    # Ret value will be used only by offline communicator
-    if os.path.isfile(filename):
         return filename
     else:
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to take a picture.")
         return f"I'm sorry {models.env.title}! I wasn't able to take a picture."
 
 

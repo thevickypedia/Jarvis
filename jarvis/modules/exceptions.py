@@ -12,7 +12,7 @@ from typing import ByteString, Iterable, NoReturn
 import requests
 from fastapi import HTTPException
 
-EgressErrors = (ConnectionError, TimeoutError, requests.exceptions.RequestException, requests.exceptions.Timeout)
+EgressErrors = (ConnectionError, TimeoutError, requests.RequestException, requests.Timeout)
 
 ALSA_ERROR_HANDLER = ctypes.CFUNCTYPE(None,
                                       ctypes.c_char_p,
