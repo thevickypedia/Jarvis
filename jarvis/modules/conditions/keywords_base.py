@@ -54,7 +54,7 @@ def keyword_mapping() -> Dict[str, List[str]]:
         ngrok=["ngrok", "public url"],
         jokes=["joke", "jokes", "make me laugh"],
         notes=["notes", "note"],
-        github=["git", "github", "clone", "GitHub", "update yourself", "update your self"],
+        github=["git", "github", "clone", "GitHub"],
         send_notification=["message", "text", "sms", "mail"],
         television=["tv", "television"],
         volume=["volume", "mute"],

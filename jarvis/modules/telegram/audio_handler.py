@@ -46,7 +46,7 @@ def audio_converter_win(input_filename: Union[FilePath, str], output_audio_forma
     if not os.path.exists(path=ffmpeg_path):
         logger.warning("ffmpeg codec is missing!")
         return
-    os.environ['PATH'] += ffmpeg_path
+    os.environ['PATH'] += f";{ffmpeg_path}"
     from pydub import AudioSegment  # noqa
     if input_filename.endswith(".ogg"):
         audio = AudioSegment.from_ogg(input_filename)

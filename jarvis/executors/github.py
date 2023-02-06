@@ -40,9 +40,8 @@ def github(phrase: str) -> None:
         licensed += 1 if response[i]['license'] else 0
         repos.append({response[i]['name'].replace('_', ' ').replace('-', ' '): response[i]['clone_url']})
     if 'how many' in phrase:
-        speaker.speak(
-            text=f'You have {total} repositories {models.env.title}, out of which {forked} are forked, {private} are '
-                 f'private, {licensed} are licensed, and {archived} archived.')
+        speaker.speak(text=f'You have {total} repositories {models.env.title}, out of which {forked} are forked, '
+                           f'{private} are private, {licensed} are licensed, and {archived} archived.')
     elif not shared.called_by_offline:
         [result.append(clone_url) if clone_url not in result and re.search(rf'\b{word}\b', repo.lower()) else None
          for word in phrase.lower().split() for item in repos for repo, clone_url in item.items()]
