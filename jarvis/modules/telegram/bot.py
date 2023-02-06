@@ -412,10 +412,12 @@ class TelegramBot:
             logger.error(payload)
         # Catches both unconverted source ogg and unconverted audio to text
         title = USER_TITLE.get(payload['from']['username'], models.env.title)
-        filename = tts_stt.text_to_audio(text=f"I'm sorry {title}! I was unable to process your voice command. "
-                                              "Please try again!")
-        self.send_audio(filename=filename, chat_id=payload['from']['id'])
-        os.remove(filename)
+        if filename := tts_stt.text_to_audio(text=f"I'm sorry {title}! I was unable to process your voice command. "
+                                                  "Please try again!"):
+            self.send_audio(filename=filename, chat_id=payload['from']['id'])
+            os.remove(filename)
+        else:
+            self.reply_to(payload=payload, response="Failed to convert audio. Please try text input.")
 
     def process_document(self, payload: dict) -> None:
         """Processes the payload received after checking for authentication.

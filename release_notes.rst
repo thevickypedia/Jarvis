@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+7.1.4 (02/05/2023)
+------------------
+- Fix `ffmpeg` PATH in env var for Windows
+- Fix connection retry module for Windows
+- Remove recursion limit setter for Telegram API
+- Respond with text in telegram for errors in audio conversion
+
 7.1.3 (02/01/2023)
 ------------------
 - Add a feature to get past and future meetings

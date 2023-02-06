@@ -2587,7 +2587,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>Logs up to 10 consecutive errors from socket module or a total of 5 unknown errors before restarting process.</p></li>
+<li><p>Logs up to 5 unknown errors before restarting process.</p></li>
 </ul>
 </div>
 </dd></dl>
@@ -4150,7 +4150,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="simple">
 <dt>Handles:</dt><dd><ul class="simple">
 <li><p>BotInUse: Restarts polling to take control over.</p></li>
-<li><p>ConnectionError: Initiates after 10, 20 or 30 seconds. Depends on retry count. Shuts off after 3 attempts.</p></li>
+<li><p>ConnectionError: Initiates after 10, 20 or 30 seconds. Depends on retry count. Restarts after 3 attempts.</p></li>
 </ul>
 </dd>
 </dl>
