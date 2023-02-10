@@ -8,8 +8,8 @@ from multiprocessing import Process
 from threading import Thread
 from typing import NoReturn, Union
 
+import gmailconnector
 import jinja2
-from gmailconnector.send_email import SendEmail
 
 from jarvis.executors import communicator
 from jarvis.executors.word_match import word_match
@@ -180,7 +180,8 @@ def threat_notify(converted: str, face_detected: Union[str, None]) -> NoReturn:
     if face_detected:
         kwargs["attachment"] = face_detected
 
-    response_ = SendEmail(gmail_user=models.env.gmail_user, gmail_pass=models.env.gmail_pass).send_email(**kwargs)
+    response_ = gmailconnector.SendEmail(gmail_user=models.env.gmail_user,
+                                         gmail_pass=models.env.gmail_pass).send_email(**kwargs)
     if response_.ok:
         logger.info('Email has been sent!')
     else:

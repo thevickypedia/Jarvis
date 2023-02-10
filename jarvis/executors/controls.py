@@ -14,7 +14,7 @@ import docker
 import psutil
 
 from jarvis.executors.display_functions import decrease_brightness
-from jarvis.executors.listener_controls import put_state as put_listener_state
+from jarvis.executors.listener_controls import put_listener_state
 from jarvis.executors.volume import volume
 from jarvis.executors.word_match import word_match
 from jarvis.modules.audio import listener, speaker, voices
@@ -314,6 +314,10 @@ def starter() -> NoReturn:
     put_listener_state(state=True)
     volume(level=models.env.volume)
     voices.voice_default()
-    delete_logs()
-    delete_pycache()
-    set_executable()
+    try:
+        delete_logs()
+        delete_pycache()
+        set_executable()
+    except Exception as error:  # can be ignored and troubleshooted later
+        logger.critical("ATTENTION:: Failed at some startup steps.")
+        logger.critical(error)

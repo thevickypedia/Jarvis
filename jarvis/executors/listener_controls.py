@@ -15,10 +15,10 @@ def listener_control(phrase: str) -> NoReturn:
         phrase: Takes the phrase spoken as an argument.
     """
     phrase = phrase.lower()
-    state = get_state()
+    state = get_listener_state()
     if "deactivate" in phrase or "disable" in phrase:
         if state:
-            put_state(state=False)
+            put_listener_state(state=False)
             speaker.speak(text=f"Listener has been deactivated {models.env.title}!")
         else:
             speaker.speak(text=f"Listener was never activated {models.env.title}!")
@@ -26,7 +26,7 @@ def listener_control(phrase: str) -> NoReturn:
         if state:
             speaker.speak(text=f"Listener is already active {models.env.title}!")
         else:
-            put_state(state=True)
+            put_listener_state(state=True)
             speaker.speak(text=f"Listener has been activated {models.env.title}!")
     else:
         if state:
@@ -35,7 +35,7 @@ def listener_control(phrase: str) -> NoReturn:
             speaker.speak(text=f"Listener is currently inactive {models.env.title}!")
 
 
-def get_state() -> bool:
+def get_listener_state() -> bool:
     """Gets the current state of listener.
 
     Returns:
@@ -51,13 +51,13 @@ def get_state() -> bool:
         logger.debug("Listener is currently disabled")
 
 
-def put_state(state: bool) -> NoReturn:
+def put_listener_state(state: bool) -> NoReturn:
     """Updates the state of the listener.
 
     Args:
         state: Takes the boolean value to be inserted.
     """
-    logger.info(f"Current listener status: {get_state()!r}")
+    logger.info(f"Current listener status: {get_listener_state()!r}")
     logger.info(f"Updating listener status to {state}")
     with db.connection:
         cursor = db.connection.cursor()

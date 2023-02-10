@@ -2,10 +2,8 @@ import string
 import sys
 from typing import Union
 
+import gmailconnector
 import jinja2
-from gmailconnector.read_email import ReadEmail
-from gmailconnector.send_email import SendEmail
-from gmailconnector.send_sms import Messenger
 from pydantic import EmailStr
 
 from jarvis.executors.word_match import word_match
@@ -25,7 +23,7 @@ def read_gmail() -> None:
         return
 
     sys.stdout.write("\rFetching unread emails..")
-    reader = ReadEmail(gmail_user=models.env.gmail_user, gmail_pass=models.env.gmail_pass)
+    reader = gmailconnector.ReadEmail(gmail_user=models.env.gmail_user, gmail_pass=models.env.gmail_pass)
     response = reader.instantiate()
     if response.ok:
         if shared.called_by_offline:
@@ -38,10 +36,9 @@ def read_gmail() -> None:
             return
         if not word_match(phrase=confirmation, match_list=keywords.keywords.ok):
             return
-        unread_emails = reader.read_email(response.body)
-        for mail in list(unread_emails):
-            speaker.speak(text=f"You have an email from, {mail.get('sender').strip()}, with subject, "
-                               f"{mail.get('subject').strip()}, {mail.get('datetime').strip()}", run=True)
+        for mail in reader.read_mail(messages=response.body, humanize_datetime=True):
+            speaker.speak(text=f"You have an email from, {mail.sender}, with subject, "
+                               f"{mail.subject}, {mail.date_time}", run=True)
     elif response.status == 204:
         speaker.speak(text=f"You don't have any emails to catch up {models.env.title}!")
     else:
@@ -71,7 +68,7 @@ def send_sms(user: str, password: str, number: Union[str, int], body: str, subje
         return False
     if not subject:
         subject = "Message from Jarvis" if number == models.env.phone_number else f"Message from {models.env.name}"
-    sms_object = Messenger(gmail_user=user, gmail_pass=password)
+    sms_object = gmailconnector.SendSMS(gmail_user=user, gmail_pass=password)
     response = sms_object.send_sms(phone=number or models.env.phone_number, subject=subject, message=body)
     if response.ok:
         logger.info('SMS notification has been sent.')
@@ -105,8 +102,8 @@ def send_email(body: str, recipient: Union[EmailStr, str], subject: str = None, 
     body = string.capwords(body)
     rendered = jinja2.Template(source=templates.email.notification).render(SENDER=title or models.env.name,
                                                                            MESSAGE=body)
-    email_object = SendEmail(gmail_user=gmail_user or models.env.gmail_user,
-                             gmail_pass=gmail_pass or models.env.gmail_pass)
+    email_object = gmailconnector.SendEmail(gmail_user=gmail_user or models.env.gmail_user,
+                                            gmail_pass=gmail_pass or models.env.gmail_pass)
     mail_stat = email_object.send_email(recipient=recipient, sender=sender or 'Jarvis Communicator',
                                         subject=subject or f'Message from {models.env.name}', html_body=rendered)
     if mail_stat.ok:
