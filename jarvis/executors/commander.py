@@ -7,6 +7,7 @@ from typing import Tuple, Union
 
 from jarvis.executors.conditions import conditions
 from jarvis.executors.controls import sleep_control
+from jarvis.executors.listener_controls import get_listener_state
 from jarvis.executors.offline import offline_communicator
 from jarvis.executors.others import time_travel
 from jarvis.executors.word_match import word_match
@@ -105,6 +106,8 @@ def renew() -> None:
         - This function runs only for a minute.
         - split_phrase(converted) is a condition so that, loop breaks when if sleep in ``conditions()`` returns True.
     """
+    if not get_listener_state():
+        return
     for i in range(3):
         if i:
             converted = listener.listen(sound=False) or ""
@@ -127,8 +130,12 @@ def initiator(phrase: str = None, should_return: bool = False) -> None:
     if not phrase and should_return:
         return
     support.flush_screen()
+    inactive_msg = f"My listeners are currently inactive {models.env.title}!"
     if 'good' in phrase.lower() and word_match(phrase=phrase, match_list=('morning', 'night', 'afternoon', 'after noon',
                                                                           'evening', 'goodnight')):
+        if not get_listener_state():
+            speaker.speak(text=inactive_msg)
+            return
         shared.called['time_travel'] = True
         if (event := support.celebrate()) and 'night' not in phrase.lower():
             speaker.speak(text=f'Happy {event}!')
@@ -137,15 +144,23 @@ def initiator(phrase: str = None, should_return: bool = False) -> None:
         time_travel()
         shared.called['time_travel'] = False
     elif 'you there' in phrase.lower() or word_match(phrase=phrase, match_list=models.env.wake_words):
+        if not get_listener_state():
+            speaker.speak(text=inactive_msg)
+            return
         speaker.speak(text=random.choice(conversation.wake_up1))
         initialize()
     elif word_match(phrase=phrase, match_list=['look alive', 'wake up', 'wakeup', 'show time',
                                                'showtime']):
+        if not get_listener_state():
+            speaker.speak(text=inactive_msg)
+            return
         speaker.speak(text=random.choice(conversation.wake_up2))
         initialize()
     else:
         if phrase:
             split_phrase(phrase=phrase, should_return=should_return)
-        else:
+        elif get_listener_state():
             speaker.speak(text=random.choice(conversation.wake_up3))
             initialize()
+        else:
+            speaker.speak(text=inactive_msg)

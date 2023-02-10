@@ -4,7 +4,8 @@
 set -e
 
 # shellcheck disable=SC2207
-tuple=($(python -c "from jarvis import version, executors; print(version, executors.others.pypi_versions('jarvis-ironman')[-1])"))
+tuple=($(python -c "from jarvis import version, executors; print(version); print(executors.others.pypi_versions('jarvis-ironman')[-1])"))
+#read -r current_pkg_version latest_pypi_version <<< "$tuple";
 current_pkg_version="${tuple[0]}"
 latest_pypi_version="${tuple[1]}"
 bumped=$(python -c "from packaging.version import Version; print(1) if Version('$current_pkg_version') > Version('$latest_pypi_version') else print(0)")

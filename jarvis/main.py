@@ -15,7 +15,7 @@ from jarvis.executors.commander import initiator
 from jarvis.executors.controls import exit_process, starter, terminator
 from jarvis.executors.internet import (get_connection_info, ip_address,
                                        public_ip_info)
-from jarvis.executors.listener_controls import get_state as get_listener_state
+from jarvis.executors.listener_controls import get_listener_state
 from jarvis.executors.location import write_current_location
 from jarvis.executors.processor import (clear_db, start_processes,
                                         stop_processes)

@@ -8,10 +8,10 @@ from collections import defaultdict
 from datetime import datetime
 from typing import Dict, NoReturn, Union
 
+import gmailconnector
 import jinja2
 import matplotlib.dates
 import matplotlib.pyplot as plt
-from gmailconnector.send_email import SendEmail
 from webull import webull
 
 sys.path.insert(0, os.getcwd())
@@ -184,8 +184,9 @@ class StockMonitor:
             return
         subject = f"Stock Price Alert - {datetime.now().strftime('%c')}"
         prices = self.get_prices()
+        mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user,
+                                            gmail_pass=models.env.open_gmail_pass)
         for k, v in self.email_grouped.items():
-            mail_obj = SendEmail(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
             datastore = {'text_gathered': [], 'removals': [], 'attachments': []}  # unique datastore for each user
             for trigger in v:
                 ticker = trigger[0]

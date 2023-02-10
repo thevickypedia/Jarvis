@@ -9,9 +9,9 @@ from multiprocessing.pool import ThreadPool
 from threading import Thread
 from typing import Dict, List, Tuple, Union
 
+import gmailconnector
 import jinja2
 import yaml
-from gmailconnector.send_email import SendEmail
 from playsound import playsound
 
 from jarvis.executors.communicator import send_email
@@ -342,10 +342,10 @@ def report(status_data: Dict[str, Union[str, Union[Dict[str, str]]]],
                                alerts=overall_status['alerts'] or [{'ALL_OK': report_time}],
                                status=overall_status['status'] or {'NOTHING_TO_REPORT': report_time},
                                subscriptions=overall_status['subscriptions'] or [{'NO_SUBSCRIPTIONS': ['N/A', 'N/A']}])
-    mail_obj = SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
     car_name = f"{attributes.get('vehicleBrand', 'Car')} " \
                f"{attributes.get('vehicleType', '')} " \
                f"{attributes.get('modelYear', '')}"
+    mail_obj = gmailconnector.SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
     response = mail_obj.send_email(subject=f"{car_name} Report - {datetime.now().strftime('%c')}",
                                    sender="Jarvis", html_body=rendered)
     if response.ok:

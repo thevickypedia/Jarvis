@@ -7,10 +7,10 @@ from http import HTTPStatus
 from multiprocessing import Process, Queue
 from threading import Thread
 
+import gmailconnector
 import jinja2
 from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, StreamingResponse
-from gmailconnector.send_email import SendEmail
 
 from jarvis.api.modals.authenticator import SURVEILLANCE_PROTECTOR
 from jarvis.api.modals.models import CameraIndexModal
@@ -63,7 +63,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
             logger.error(error)
             raise APIResponse(status_code=HTTPStatus.NOT_ACCEPTABLE.real, detail=str(error))
 
-        mail_obj = SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+        mail_obj = gmailconnector.SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
         auth_stat = mail_obj.authenticate
         if not auth_stat.ok:
             logger.error(auth_stat.json())

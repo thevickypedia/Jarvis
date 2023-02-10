@@ -19,8 +19,8 @@ from jarvis.executors.guard import guard_disable, guard_enable
 from jarvis.executors.internet import ip_info, speed_test
 from jarvis.executors.ios_functions import locate
 from jarvis.executors.lights import lights
-from jarvis.executors.listener_controls import get_state as get_listener_state
-from jarvis.executors.listener_controls import listener_control
+from jarvis.executors.listener_controls import (get_listener_state,
+                                                listener_control)
 from jarvis.executors.location import (directions, distance, locate_places,
                                        location)
 from jarvis.executors.myq_controller import garage

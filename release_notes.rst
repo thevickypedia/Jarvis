@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+7.1.5 (02/10/2023)
+------------------
+- Use latest version of `gmail-connector` & `vpn-server`
+- Avoid responding to wake words when listener is deactivated
+- Rename listener state functions and update references
+
 7.1.4 (02/05/2023)
 ------------------
 - Fix `ffmpeg` PATH in env var for Windows

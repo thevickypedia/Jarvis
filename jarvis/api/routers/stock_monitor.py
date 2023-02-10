@@ -3,11 +3,11 @@ from http import HTTPStatus
 from threading import Thread
 from typing import Optional
 
+import gmailconnector
 import jinja2
 import jwt
 import pandas
 from fastapi import APIRouter, Header, Request
-from gmailconnector.send_email import SendEmail
 from gmailconnector.validator import validate_email
 from pydantic import EmailStr
 from webull import webull
@@ -37,7 +37,7 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 6
         - 200: If email delivery was successful.
         - 503: If failed to send an email.
     """
-    mail_obj = SendEmail(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
+    mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
     logger.info("Setting stock monitor token")
     stock_monitor_helper.otp_sent[email_address] = util.keygen_uuid(length=16)
     rendered = jinja2.Template(templates.email.stock_monitor_otp).render(
