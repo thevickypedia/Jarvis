@@ -6,8 +6,9 @@
 """
 
 import ctypes
+from collections.abc import Generator
 from contextlib import contextmanager
-from typing import ByteString, Iterable, NoReturn
+from typing import ByteString, NoReturn
 
 import requests
 from fastapi import HTTPException
@@ -31,7 +32,7 @@ c_error_handler = ALSA_ERROR_HANDLER(py_error_handler)
 
 
 @contextmanager
-def no_alsa_err() -> Iterable:
+def no_alsa_err() -> Generator:
     """Wrapper to suppress ALSA error messages when ``PyAudio`` module is called.
 
     Notes:

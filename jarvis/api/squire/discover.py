@@ -1,8 +1,9 @@
 import os
 import pathlib
 import warnings
+from collections.abc import Generator
 from importlib import import_module
-from typing import Iterable, List
+from typing import List
 
 from fastapi import APIRouter
 
@@ -27,7 +28,7 @@ class Entrypoint:
         self.stem = stem
 
 
-def get_entrypoints(routers: str) -> Iterable[Entrypoint]:
+def get_entrypoints(routers: str) -> Generator[Entrypoint]:
     """Get all the routers as a module that can be imported.
 
     Args:
@@ -40,7 +41,7 @@ def get_entrypoints(routers: str) -> Iterable[Entrypoint]:
         This is a crude way of scanning modules for routers.
 
     Yields:
-        Iterable[Entrypoint]:
+        Entrypoint:
         Entrypoint object with router module and the bare name of it.
     """
     package = pathlib.Path(os.path.dirname(routers)).stem
@@ -57,17 +58,17 @@ def get_entrypoints(routers: str) -> Iterable[Entrypoint]:
             yield Entrypoint(module='.'.join((base_package,) + breaker[breaker.index(package):]), stem=stem)
 
 
-def routes(routers: str) -> Iterable[APIRouter]:
+def routes(routers: str) -> Generator[APIRouter]:
     """Scans routers directory to import all the routers available.
 
     Args:
         routers: Directory name where the potential router modules are present.
 
     Yields:
-        Iterable[APIRouter]:
+        APIRouter:
         API Router from scanned modules.
     """
-    entrypoints: List[Entrypoint] = sorted(list(get_entrypoints(routers=routers)),
+    entrypoints: List[Entrypoint] = sorted(get_entrypoints(routers=routers),
                                            key=lambda ent: ent.stem)  # sort by name of the route
     for entrypoint in entrypoints:
         try:

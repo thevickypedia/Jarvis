@@ -8,7 +8,8 @@
 import socket
 import sys
 import time
-from typing import Dict, Iterable, List, NoReturn
+from collections.abc import Generator
+from typing import Dict, List, NoReturn
 
 from playsound import playsound
 from pywebostv.connection import WebOSClient
@@ -152,12 +153,12 @@ class LGWebOS:
         self.system.notify("Jarvis::Forward")
         self.media.fast_forward()
 
-    def get_apps(self) -> Iterable[str]:
+    def get_apps(self) -> Generator[str]:
         """Checks the applications installed on the TV.
 
-        Returns:
-            list:
-            List of available apps on the TV.
+        Yields:
+            str:
+            Yields available apps on the TV.
         """
         for app in self.app.list_apps():
             yield app["title"]
@@ -179,12 +180,12 @@ class LGWebOS:
         """
         self.app.close(self.launch_app(app_name))
 
-    def get_sources(self) -> Iterable[str]:
+    def get_sources(self) -> Generator[str]:
         """Checks for the input sources on the TV.
 
-        Returns:
-            list:
-            List of ``InputSource`` instances.
+        Yields:
+            str:
+            Yields ``InputSource`` instance.
         """
         for source in self.source_control.list_sources():
             yield source['label']

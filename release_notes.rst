@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+7.1.6 (02/11/2023)
+------------------
+- Add a feature to spin up `vpn-server` in any region
+- Fix type hints to point to Generator instead of Iterable
+
 7.1.5 (02/10/2023)
 ------------------
 - Use latest version of `gmail-connector` & `vpn-server`

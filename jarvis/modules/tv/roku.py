@@ -6,8 +6,9 @@
 """
 
 import socket
+from collections.abc import Generator
 from threading import Thread
-from typing import Dict, Iterable, NoReturn, Union
+from typing import Dict, NoReturn, Union
 from xml.etree import ElementTree
 
 import requests
@@ -133,12 +134,12 @@ class RokuECP:
         """Sends a keypress to rewind content on TV."""
         self.make_call(path='/keypress/Rev', method='POST')
 
-    def get_sources(self) -> Iterable[str]:
+    def get_sources(self) -> Generator[str]:
         """Returns a list of predetermined sources.
 
-        Returns:
-            list:
-            Preset sources.
+        Yields:
+            str:
+            Yields preset source's name.
         """
         for app in self.get_apps(raw=True):
             if app['id'].startswith('tvinput'):
@@ -208,15 +209,15 @@ class RokuECP:
         else:
             logger.error(f'{app_name} not found in tv')
 
-    def get_apps(self, raw: bool = False) -> Union[Iterable[Dict[str, str]], Iterable[str]]:
+    def get_apps(self, raw: bool = False) -> Union[Generator[Dict[str, str]], Generator[str]]:
         """Get list of applications installed on the TV.
 
         Args:
             raw: Takes a boolean flag if the entire dictionary has to be returned.
 
-        Returns:
-            list:
-            List of app names.
+        Yields:
+            Union[Dict[str, str], str]:
+            Yields of app name or information dict if requested as raw.
         """
         response = self.make_call(path='/query/apps', method='GET')
         xml_parsed = ElementTree.fromstring(response.content)

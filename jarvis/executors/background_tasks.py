@@ -1,6 +1,7 @@
 import os
 import warnings
-from typing import Iterable, NoReturn, Union
+from collections.abc import Generator
+from typing import NoReturn, Union
 
 import yaml
 from pydantic.error_wrappers import ValidationError
@@ -54,15 +55,15 @@ def remove_corrupted(task: Union[BackgroundTask, dict]) -> NoReturn:
         yaml.dump(data=existing_data, stream=write_file)
 
 
-def validate_background_tasks(log: bool = True) -> Iterable[BackgroundTask]:
+def validate_background_tasks(log: bool = True) -> Generator[BackgroundTask]:
     """Validates each background task if it is offline compatible.
 
     Args:
         log: Takes a boolean flag to suppress info level logging.
 
     Yields:
-        Iterable:
-        BackgroundTask object(s).
+        BackgroundTask:
+        BackgroundTask object.
     """
     if os.path.isfile(models.fileio.background_tasks):
         task_info = []
