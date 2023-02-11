@@ -6,7 +6,8 @@
 """
 
 import logging
-from typing import Dict, Iterable, NoReturn
+from collections.abc import Generator
+from typing import Dict, NoReturn
 
 import pyttsx3
 
@@ -39,14 +40,14 @@ class Speaker:
         self.voices = self.engine.getProperty("voices")  # gets the list of voices available
 
     # noinspection PyTypeChecker
-    def get_all_voices(self) -> Iterable[Dict]:
+    def get_all_voices(self) -> Generator[Dict]:
         """Yields all the available voices, converting attributes into dict."""
         logger.info('Getting all voice attributes.')
         for index, voice in enumerate(self.voices):
             yield {'index': index, 'id': voice.id, 'name': voice.name, 'gender': voice.gender}
 
     # noinspection PyTypeChecker
-    def get_english_voices(self) -> Iterable[Dict]:
+    def get_english_voices(self) -> Generator[Dict]:
         """Yields all the available voices for english language, converting attributes into dict."""
         logger.info('Getting voice attributes for english language.')
         for index, voice in enumerate(self.voices):
@@ -54,7 +55,7 @@ class Speaker:
                 yield {'index': index, 'id': voice.id, 'name': voice.name, 'gender': voice.gender}
 
     # noinspection PyTypeChecker
-    def get_voice_by_language(self, lang_code: str) -> Iterable[Dict]:
+    def get_voice_by_language(self, lang_code: str) -> Generator[Dict]:
         """Yields all the available voices for the given language, converting attributes into dict."""
         logger.info(f'Getting voice for the language code: {lang_code!r}')
         for index, voice in enumerate(self.voices):
@@ -68,14 +69,14 @@ class Speaker:
             if voice['index'] == index:
                 return voice
 
-    def get_voice_by_name(self, name: str) -> Iterable[Dict]:
+    def get_voice_by_name(self, name: str) -> Generator[Dict]:
         """Yields all the available voices matching the given name, converting attributes into dict."""
         logger.info(f'Getting voices for the name: {name}')
         for voice in self.get_all_voices():
             if name.lower() in voice['name'].lower():
                 yield voice
 
-    def get_voice_by_gender(self, gender: str) -> Iterable[Dict]:
+    def get_voice_by_gender(self, gender: str) -> Generator[Dict]:
         """Yields all the available voices matching the given gender, converting attributes into dict."""
         gender = "VoiceGenderMale" if gender.lower() == 'male' else "VoiceGenderFemale"
         logger.info(f'Getting voices for the gender: {gender}')

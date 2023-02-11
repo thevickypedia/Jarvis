@@ -6,8 +6,9 @@
 """
 
 import platform
+from collections.abc import Generator
 from enum import Enum
-from typing import Dict, Iterable, Union
+from typing import Dict, Union
 
 import pyaudio
 
@@ -36,14 +37,14 @@ class ChannelType(str, Enum):
 channel_type = ChannelType
 
 
-def get_audio_devices(channels: str) -> Iterable[Dict[str, Union[str, int, float]]]:
+def get_audio_devices(channels: str) -> Generator[Dict[str, Union[str, int, float]]]:
     """Iterates over all devices and yields the device that has input channels.
 
     Args:
         channels: Takes an argument to determine whether to yield input or output channels.
 
     Yields:
-        Iterable:
+        dict:
         Yields a dictionary with all the input devices available.
     """
     for index in range(_device_range):

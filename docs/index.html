@@ -131,7 +131,7 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.camera.camera.Camera._get_camera_info_linux">
-<span class="sig-name descname"><span class="pre">_get_camera_info_linux</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.camera.camera.Camera._get_camera_info_linux" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_get_camera_info_linux</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.camera.camera.Camera._get_camera_info_linux" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get camera information for Linux.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -141,65 +141,65 @@
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Yields<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>List[str]</em> – Returns the information of all connected cameras as a list of string.</p>
+<dd class="field-odd"><p><em>str</em> – Returns the information of all connected cameras as a list of string.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.camera.camera.Camera._list_cameras_linux">
-<span class="sig-name descname"><span class="pre">_list_cameras_linux</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.camera.camera.Camera._list_cameras_linux" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_list_cameras_linux</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.camera.camera.Camera._list_cameras_linux" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields the camera name for Linux.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Yields<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Names of the connected cameras.</p>
+<dd class="field-odd"><p><em>str</em> – Names of the connected cameras.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.camera.camera.Camera._get_camera_info_windows">
-<span class="sig-name descname"><span class="pre">_get_camera_info_windows</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.camera.camera.Camera._get_camera_info_windows" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_get_camera_info_windows</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.camera.camera.Camera._get_camera_info_windows" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get camera information for WindowsOS.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Yields<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>List[Dict[str, str]]</em> – Returns the information of all connected cameras as a list of dictionary.</p>
+<dd class="field-odd"><p><em>Dict[str, str]</em> – Returns the information of all connected cameras as a list of dictionary.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.camera.camera.Camera._list_cameras_windows">
-<span class="sig-name descname"><span class="pre">_list_cameras_windows</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.camera.camera.Camera._list_cameras_windows" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_list_cameras_windows</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.camera.camera.Camera._list_cameras_windows" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields the camera name for WindowsOS.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Yields<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Names of the connected cameras.</p>
+<dd class="field-odd"><p><em>str</em> – Names of the connected cameras.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.camera.camera.Camera._get_camera_info_darwin">
-<span class="sig-name descname"><span class="pre">_get_camera_info_darwin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.camera.camera.Camera._get_camera_info_darwin" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_get_camera_info_darwin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.camera.camera.Camera._get_camera_info_darwin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get camera information for macOS.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Returns the raw XML output as a dictionary.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dict[str, Dict]</p>
+<dd class="field-even"><p>Dict[str, str]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.camera.camera.Camera._list_cameras_darwin">
-<span class="sig-name descname"><span class="pre">_list_cameras_darwin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.camera.camera.Camera._list_cameras_darwin" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_list_cameras_darwin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.camera.camera.Camera._list_cameras_darwin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields the camera name for macOS.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Yields<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>List[str]</em> – Names of the connected cameras.</p>
+<dd class="field-odd"><p><em>str</em> – Names of the connected cameras.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -313,14 +313,14 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.peripherals.get_audio_devices">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.peripherals.</span></span><span class="sig-name descname"><span class="pre">get_audio_devices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.peripherals.get_audio_devices" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.peripherals.</span></span><span class="sig-name descname"><span class="pre">get_audio_devices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.peripherals.get_audio_devices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterates over all devices and yields the device that has input channels.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>channels</strong> – Takes an argument to determine whether to yield input or output channels.</p>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Iterable</em> – Yields a dictionary with all the input devices available.</p>
+<dd class="field-even"><p><em>dict</em> – Yields a dictionary with all the input devices available.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -342,19 +342,19 @@ last_value: the last value assigned or None</p>
 <p>Instantiates the speaker engine and loads the voices available in the hosting machine.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_all_voices">
-<span class="sig-name descname"><span class="pre">get_all_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_all_voices" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_all_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_all_voices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices, converting attributes into dict.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_english_voices">
-<span class="sig-name descname"><span class="pre">get_english_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_english_voices" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_english_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_english_voices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices for english language, converting attributes into dict.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_voice_by_language">
-<span class="sig-name descname"><span class="pre">get_voice_by_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lang_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_language" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_voice_by_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lang_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_language" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices for the given language, converting attributes into dict.</p>
 </dd></dl>
 
@@ -366,13 +366,13 @@ last_value: the last value assigned or None</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_voice_by_name">
-<span class="sig-name descname"><span class="pre">get_voice_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_name" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_voice_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices matching the given name, converting attributes into dict.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_voice_by_gender">
-<span class="sig-name descname"><span class="pre">get_voice_by_gender</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_gender" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_voice_by_gender</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_gender" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices matching the given gender, converting attributes into dict.</p>
 </dd></dl>
 
@@ -1571,7 +1571,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.squire.discover.get_entrypoints">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.discover.</span></span><span class="sig-name descname"><span class="pre">get_entrypoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">routers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.api.squire.discover.Entrypoint" title="jarvis.api.squire.discover.Entrypoint"><span class="pre">Entrypoint</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.squire.discover.get_entrypoints" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.discover.</span></span><span class="sig-name descname"><span class="pre">get_entrypoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">routers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.api.squire.discover.Entrypoint" title="jarvis.api.squire.discover.Entrypoint"><span class="pre">Entrypoint</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.squire.discover.get_entrypoints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all the routers as a module that can be imported.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1588,21 +1588,21 @@ last_value: the last value assigned or None</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Yields<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Iterable[Entrypoint]</em> – Entrypoint object with router module and the bare name of it.</p>
+<dd class="field-odd"><p><em>Entrypoint</em> – Entrypoint object with router module and the bare name of it.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.squire.discover.routes">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.discover.</span></span><span class="sig-name descname"><span class="pre">routes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">routers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">APIRouter</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.squire.discover.routes" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.discover.</span></span><span class="sig-name descname"><span class="pre">routes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">routers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">APIRouter</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.squire.discover.routes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scans routers directory to import all the routers available.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>routers</strong> – Directory name where the potential router modules are present.</p>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Iterable[APIRouter]</em> – API Router from scanned modules.</p>
+<dd class="field-even"><p><em>APIRouter</em> – API Router from scanned modules.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2189,14 +2189,14 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.background_tasks.validate_background_tasks">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.background_tasks.</span></span><span class="sig-name descname"><span class="pre">validate_background_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.BackgroundTask" title="jarvis.modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.background_tasks.validate_background_tasks" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.background_tasks.</span></span><span class="sig-name descname"><span class="pre">validate_background_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.BackgroundTask" title="jarvis.modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.background_tasks.validate_background_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates each background task if it is offline compatible.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>log</strong> – Takes a boolean flag to suppress info level logging.</p>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Iterable</em> – BackgroundTask object(s).</p>
+<dd class="field-even"><p><em>BackgroundTask</em> – BackgroundTask object.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4337,6 +4337,37 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <section id="module-jarvis.executors.vpn_server">
 <span id="vpn-server"></span><h1>VPN Server<a class="headerlink" href="#module-jarvis.executors.vpn_server" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.vpn_server.regional_phrase">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.vpn_server.</span></span><span class="sig-name descname"><span class="pre">regional_phrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.vpn_server.regional_phrase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts alphabetical numbers into actual numbers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>str</em> – Yields the word.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.vpn_server.extract_custom_region">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.vpn_server.</span></span><span class="sig-name descname"><span class="pre">extract_custom_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.vpn_server.extract_custom_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to find region name in the phrase.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Region name if a match is found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.vpn_server.vpn_server">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.vpn_server.</span></span><span class="sig-name descname"><span class="pre">vpn_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.vpn_server.vpn_server" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enables or disables VPN server.</p>
@@ -4349,11 +4380,14 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.vpn_server.vpn_server_switch">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.vpn_server.</span></span><span class="sig-name descname"><span class="pre">vpn_server_switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.vpn_server.vpn_server_switch" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.vpn_server.</span></span><span class="sig-name descname"><span class="pre">vpn_server_switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_region</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.vpn_server.vpn_server_switch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Automator to <code class="docutils literal notranslate"><span class="pre">create</span></code> or <code class="docutils literal notranslate"><span class="pre">destroy</span></code> a VPN server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>operation</strong> – Takes <code class="docutils literal notranslate"><span class="pre">enabled</span></code> or <code class="docutils literal notranslate"><span class="pre">disabled</span></code> as an argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operation</strong> – Takes <code class="docutils literal notranslate"><span class="pre">enabled</span></code> or <code class="docutils literal notranslate"><span class="pre">disabled</span></code> as argument.</p></li>
+<li><p><strong>custom_region</strong> – Takes a custom AWS region as argument.</p></li>
+</ul>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -4384,7 +4418,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <span id="word-match"></span><h1>Word Match<a class="headerlink" href="#module-jarvis.executors.word_match" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.word_match.word_match">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.word_match.</span></span><span class="sig-name descname"><span class="pre">word_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.word_match.word_match" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.word_match.</span></span><span class="sig-name descname"><span class="pre">word_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.word_match.word_match" title="Permalink to this definition">¶</a></dt>
 <dd><p>Matches phrase to word list given.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -6929,7 +6963,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.exceptions.no_alsa_err">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">no_alsa_err</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span></span></span><a class="headerlink" href="#jarvis.modules.exceptions.no_alsa_err" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">no_alsa_err</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span></span></span><a class="headerlink" href="#jarvis.modules.exceptions.no_alsa_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper to suppress ALSA error messages when <code class="docutils literal notranslate"><span class="pre">PyAudio</span></code> module is called.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
@@ -9400,14 +9434,11 @@ last_value: the last value assigned or None</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.tv.lg.LGWebOS.get_apps">
-<span class="sig-name descname"><span class="pre">get_apps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS.get_apps" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_apps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS.get_apps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the applications installed on the TV.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of available apps on the TV.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list</p>
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>str</em> – Yields available apps on the TV.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -9436,14 +9467,11 @@ last_value: the last value assigned or None</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.tv.lg.LGWebOS.get_sources">
-<span class="sig-name descname"><span class="pre">get_sources</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS.get_sources" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_sources</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS.get_sources" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for the input sources on the TV.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of <code class="docutils literal notranslate"><span class="pre">InputSource</span></code> instances.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list</p>
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>str</em> – Yields <code class="docutils literal notranslate"><span class="pre">InputSource</span></code> instance.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -9643,14 +9671,11 @@ last_value: the last value assigned or None</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.tv.roku.RokuECP.get_sources">
-<span class="sig-name descname"><span class="pre">get_sources</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.tv.roku.RokuECP.get_sources" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_sources</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.tv.roku.RokuECP.get_sources" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of predetermined sources.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Preset sources.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list</p>
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>str</em> – Yields preset source’s name.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -9722,17 +9747,14 @@ last_value: the last value assigned or None</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.tv.roku.RokuECP.get_apps">
-<span class="sig-name descname"><span class="pre">get_apps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.tv.roku.RokuECP.get_apps" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_apps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.tv.roku.RokuECP.get_apps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get list of applications installed on the TV.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>raw</strong> – Takes a boolean flag if the entire dictionary has to be returned.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of app names.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Union[Dict[str, str], str]</em> – Yields of app name or information dict if requested as raw.</p>
 </dd>
 </dl>
 </dd></dl>

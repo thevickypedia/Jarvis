@@ -5,7 +5,8 @@
 """
 
 import subprocess
-from typing import Dict, Iterable, List, Union
+from collections.abc import Generator
+from typing import Dict, List, Union
 
 from jarvis.modules.exceptions import CameraError
 from jarvis.modules.models.classes import settings
@@ -79,14 +80,14 @@ class Camera:
             raise CameraError(error)
         self.output = self.output.decode(encoding='UTF-8').splitlines()
 
-    def _get_camera_info_linux(self) -> Iterable[str]:
+    def _get_camera_info_linux(self) -> Generator[str]:
         """Get camera information for Linux.
 
         Warnings:
             - Results will be yielded in raw terminal output format.
 
         Yields:
-            List[str]:
+            str:
             Returns the information of all connected cameras as a list of string.
         """
         for cam in self.output:
@@ -94,10 +95,11 @@ class Camera:
                 result = subprocess.check_output(f"v4l2-ctl --device={cam.strip()} --all", shell=True)
                 yield result.decode(encoding='UTF-8')
 
-    def _list_cameras_linux(self) -> Iterable[str]:
+    def _list_cameras_linux(self) -> Generator[str]:
         """Yields the camera name for Linux.
 
         Yields:
+            str:
             Names of the connected cameras.
         """
         for cam in self.output:
@@ -108,11 +110,11 @@ class Camera:
                 except subprocess.CalledProcessError:
                     continue
 
-    def _get_camera_info_windows(self) -> Iterable[Dict[str, str]]:
+    def _get_camera_info_windows(self) -> Generator[Dict[str, str]]:
         """Get camera information for WindowsOS.
 
         Yields:
-            List[Dict[str, str]]:
+            Dict[str, str]:
             Returns the information of all connected cameras as a list of dictionary.
         """
         output = list(filter(None, self.output))  # Filter null values in the list
@@ -125,20 +127,21 @@ class Camera:
                 values[sub_list.split('=')[0]] = sub_list.split('=')[1]
             yield values
 
-    def _list_cameras_windows(self) -> Iterable[str]:
+    def _list_cameras_windows(self) -> Generator[str]:
         """Yields the camera name for WindowsOS.
 
         Yields:
+            str:
             Names of the connected cameras.
         """
         for camera in self._get_camera_info_windows():
             yield camera.get('Name')
 
-    def _get_camera_info_darwin(self) -> Iterable[Dict[str, str]]:
+    def _get_camera_info_darwin(self) -> Generator[Dict[str, str]]:
         """Get camera information for macOS.
 
         Returns:
-            Dict[str, Dict]:
+            Dict[str, str]:
             Returns the raw XML output as a dictionary.
         """
         output = list(filter(None, self.output))
@@ -155,11 +158,11 @@ class Camera:
                     values[sub_list.split(':')[0]] = sub_list.split(':')[1]
             yield values
 
-    def _list_cameras_darwin(self) -> Iterable[str]:
+    def _list_cameras_darwin(self) -> Generator[str]:
         """Yields the camera name for macOS.
 
         Yields:
-            List[str]:
+            str:
             Names of the connected cameras.
         """
         for camera in self._get_camera_info_darwin():
