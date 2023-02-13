@@ -1,7 +1,7 @@
 from typing import List, NoReturn, Tuple, Union
 
 
-def word_match(phrase: str, match_list: Union[List[str], Tuple[str]], strict: bool = False) -> Union[str, NoReturn]:
+def word_match(phrase: str, match_list: Union['List', 'Tuple'], strict: bool = False) -> Union[str, NoReturn]:
     """Matches phrase to word list given.
 
     Args:

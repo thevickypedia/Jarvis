@@ -9,6 +9,7 @@ import pvporcupine
 import pyaudio
 import yaml
 from playsound import playsound
+from pywifi import ControlConnection, ControlPeripheral
 
 from jarvis._preexec import keywords_handler  # noqa
 from jarvis.executors.commander import initiator
@@ -26,7 +27,6 @@ from jarvis.modules.logger.custom_logger import custom_handler, logger
 from jarvis.modules.models import models
 from jarvis.modules.peripherals import audio_engine
 from jarvis.modules.utils import shared, support
-from jarvis.modules.wifi.connector import ControlConnection, ControlPeripheral
 
 
 def restart_checker() -> NoReturn:
@@ -194,8 +194,10 @@ def start() -> NoReturn:
     if ip_address() and public_ip_info():
         sys.stdout.write(f"\rINTERNET::Connected to {get_connection_info() or 'the internet'}.")
     else:
-        ControlPeripheral().enable()
-        if not ControlConnection().wifi_connector():
+        ControlPeripheral(logger=logger).enable()
+        if models.env.wifi_ssid and models.env.wifi_password and not \
+                ControlConnection(wifi_ssid=models.env.wifi_ssid, wifi_password=models.env.wifi_password,
+                                  logger=logger).wifi_connector():
             sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
             speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! "
                                "Please check your connection.", run=True)

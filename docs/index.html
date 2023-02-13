@@ -2895,6 +2895,13 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd class="field-odd"><p><strong>statement</strong> – Cron statement to be executed.</p>
 </dd>
 </dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>Executions done by crontab executor are not stopped when Jarvis is stopped.</p></li>
+<li><p>On the bright side, almost all executions made by Jarvis are short-lived.</p></li>
+</ul>
+</div>
 </dd></dl>
 
 </section>
@@ -2927,36 +2934,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.display_functions.increase_brightness">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.display_functions.</span></span><span class="sig-name descname"><span class="pre">increase_brightness</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.display_functions.increase_brightness" title="Permalink to this definition">¶</a></dt>
-<dd><p>Increases the brightness to maximum in macOS.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.display_functions.decrease_brightness">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.display_functions.</span></span><span class="sig-name descname"><span class="pre">decrease_brightness</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.display_functions.decrease_brightness" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decreases the brightness to bare minimum in macOS.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.display_functions.set_brightness">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.display_functions.</span></span><span class="sig-name descname"><span class="pre">set_brightness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.display_functions.set_brightness" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set brightness to a custom level.</p>
-<ul>
-<li><div class="line-block">
-<div class="line">Since Jarvis uses in-built apple script (for macOS), the only way to achieve this is to set the brightness to</div>
-<div class="line">absolute minimum/maximum and increase/decrease the required % from there.</div>
-</div>
-</li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>level</strong> – Percentage of brightness to be set.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4418,7 +4395,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <span id="word-match"></span><h1>Word Match<a class="headerlink" href="#module-jarvis.executors.word_match" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.word_match.word_match">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.word_match.</span></span><span class="sig-name descname"><span class="pre">word_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.word_match.word_match" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.word_match.</span></span><span class="sig-name descname"><span class="pre">word_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.word_match.word_match" title="Permalink to this definition">¶</a></dt>
 <dd><p>Matches phrase to word list given.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -8249,6 +8226,20 @@ last_value: the last value assigned or None</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.utils.support.connected_to_network">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">connected_to_network</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.utils.support.connected_to_network" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to check internet connection status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if connection is active, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-jarvis.modules.utils.util">
 <span id="utilities"></span><h1>Utilities<a class="headerlink" href="#module-jarvis.modules.utils.util" title="Permalink to this heading">¶</a></h1>
@@ -9826,122 +9817,6 @@ mac address given as a parameter.</p>
 </dd></dl>
 
 </section>
-<section id="module-jarvis.modules.wifi.connector">
-<span id="wi-fi-connector"></span><h1>Wi-Fi Connector<a class="headerlink" href="#module-jarvis.modules.wifi.connector" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.process_err">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.wifi.connector.</span></span><span class="sig-name descname"><span class="pre">process_err</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">CalledProcessError</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">SubprocessError</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.process_err" title="Permalink to this definition">¶</a></dt>
-<dd><p>Logs errors along with return code and output based on type of error.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>error</strong> – Takes any one of multiple subprocess errors as argument.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Decoded version of the error message or an empty string.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlConnection">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.wifi.connector.</span></span><span class="sig-name descname"><span class="pre">ControlConnection</span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlConnection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper for Wi-Fi connection.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ControlConnection</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlConnection.darwin_connector">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">darwin_connector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlConnection.darwin_connector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connects to Wi-Fi using SSID and password in env vars for macOS.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlConnection.linux_connector">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">linux_connector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlConnection.linux_connector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connects to Wi-Fi using SSID and password in env vars for Linux.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlConnection.win_connector">
-<span class="sig-name descname"><span class="pre">win_connector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlConnection.win_connector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connects to Wi-Fi using SSID and password in env vars for Windows.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlConnection.win_create_new_connection">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">win_create_new_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlConnection.win_create_new_connection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Establish a new connection using a xml config for Windows.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlConnection.wifi_connector">
-<span class="sig-name descname"><span class="pre">wifi_connector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlConnection.wifi_connector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connects to the Wi-Fi SSID stored in env vars (OS-agnostic).</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlPeripheral">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.wifi.connector.</span></span><span class="sig-name descname"><span class="pre">ControlPeripheral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlPeripheral" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates ControlPeripheral to toggle Wi-Fi on or off.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ControlPeripheral</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlPeripheral.darwin_enable">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">darwin_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlPeripheral.darwin_enable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enables Wi-Fi on macOS.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlPeripheral.darwin_disable">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">darwin_disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlPeripheral.darwin_disable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Disables Wi-Fi on macOS.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlPeripheral.linux_enable">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">linux_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlPeripheral.linux_enable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enables Wi-Fi on Linux.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlPeripheral.linux_disable">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">linux_disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlPeripheral.linux_disable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Disables Wi-Fi on Linux.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlPeripheral.win_enable">
-<span class="sig-name descname"><span class="pre">win_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlPeripheral.win_enable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enables Wi-Fi on Windows.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlPeripheral.win_disable">
-<span class="sig-name descname"><span class="pre">win_disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlPeripheral.win_disable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Disables Wi-Fi on Windows.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlPeripheral.enable">
-<span class="sig-name descname"><span class="pre">enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlPeripheral.enable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enable Wi-Fi (OS-agnostic).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.wifi.connector.ControlPeripheral.disable">
-<span class="sig-name descname"><span class="pre">disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.wifi.connector.ControlPeripheral.disable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Disable Wi-Fi (OS-agnostic).</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
 <ul class="simple">
@@ -10063,7 +9938,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis.modules.timeout.timeout">Timeout</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.tv.lg">TV Connector</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.wakeonlan.wakeonlan">WakeOnLAN</a></li>
-<li><a class="reference internal" href="#module-jarvis.modules.wifi.connector">Wi-Fi Connector</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 

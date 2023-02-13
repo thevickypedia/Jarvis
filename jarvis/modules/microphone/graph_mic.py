@@ -18,6 +18,7 @@ from typing import List, NoReturn, Optional, Tuple, Union, cast
 import matplotlib.pyplot
 import numpy
 import sounddevice
+import yaml
 from matplotlib.animation import FuncAnimation
 from matplotlib.axes._subplots import Subplot  # noqa
 from matplotlib.figure import Figure
@@ -25,10 +26,13 @@ from matplotlib.lines import Line2D
 
 sys.path.insert(0, os.getcwd())
 
+from jarvis.modules.database import database  # noqa
 from jarvis.modules.logger import config  # noqa
 from jarvis.modules.logger.custom_logger import logger  # noqa
+from jarvis.modules.models import models  # noqa
 
 QUEUE = queue.Queue()
+db = database.Database(database=models.fileio.base_db)
 
 
 class Settings:
@@ -110,6 +114,25 @@ def plot_mic(channels: List[int] = None, device: Union[str, int] = None, window:
         dark_mode: Sets graph background to almost black
     """
     config.multiprocessing_logger(filename=os.path.join('logs', 'mic_plotter_%d-%m-%Y.log'))
+    if models.settings.os == "Linux":  # Since called by subprocess on Linux
+        subprocess_id = os.getpid()
+        logger.info(f"Writing process ID [{subprocess_id}] into [plot_mic] children table.")
+        with db.connection:
+            cursor = db.connection.cursor()
+            cursor.execute("UPDATE children SET plot_mic=null")
+            cursor.execute("INSERT or REPLACE INTO children (plot_mic) VALUES (?);", (os.getpid(),))
+            db.connection.commit()
+        if os.path.isfile(models.fileio.processes):
+            with open(models.fileio.processes) as file:
+                dump = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+            if dump.get(plot_mic.__name__):
+                dump[plot_mic.__name__] = subprocess_id
+                with open(models.fileio.processes) as file:
+                    yaml.dump(data=dump, stream=file)
+            else:
+                logger.critical(f"ATTENTION::Missing {plot_mic.__name__!r}'s process ID in {models.fileio.processes!r}")
+        else:
+            logger.critical(f"ATTENTION::Missing {models.fileio.processes!r}")
     logger.info("Feeding all arguments into dict.")
     if not channels:
         channels = [1]

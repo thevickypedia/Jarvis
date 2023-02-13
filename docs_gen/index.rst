@@ -860,13 +860,6 @@ WakeOnLAN
    :members:
    :undoc-members:
 
-Wi-Fi Connector
-===============
-
-.. automodule:: jarvis.modules.wifi.connector
-   :members:
-   :undoc-members:
-
 Indices and tables
 ==================
 

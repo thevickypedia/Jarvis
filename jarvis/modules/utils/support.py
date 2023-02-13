@@ -12,6 +12,7 @@ import string
 import sys
 import time
 from datetime import datetime, timedelta, timezone
+from http.client import HTTPSConnection
 from typing import Iterable, List, NoReturn, Tuple, Union
 
 import dateutil.tz
@@ -472,3 +473,24 @@ def stop_process(pid: int) -> NoReturn:
             proc.kill()
     except psutil.NoSuchProcess as error:
         logger.error(error)
+
+
+def connected_to_network() -> bool:
+    """Function to check internet connection status.
+
+    Returns:
+        bool:
+        True if connection is active, False otherwise.
+    """
+    socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        if models.settings.os == "Windows":
+            connection = HTTPSConnection("8.8.8.8", timeout=5)  # Recreate a new connection everytime
+            connection.request("HEAD", "/")
+        else:
+            socket_.connect(("8.8.8.8", 80))
+        return True
+    except OSError as error:
+        logger.error(f"OSError [{error.errno}]: {error.strerror}")
+    except Exception as error:
+        logger.fatal(error)

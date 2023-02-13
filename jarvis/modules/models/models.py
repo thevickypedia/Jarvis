@@ -34,7 +34,7 @@ TABLES = {
     "ics": ("info", "date"),
     "stopper": ("flag", "caller"),
     "restart": ("flag", "caller"),
-    "children": ("meetings", "events", "crontab", "party", "guard", "surveillance"),
+    "children": ("meetings", "events", "crontab", "party", "guard", "surveillance", "plot_mic"),
     "vpn": ("state",),
     "party": ("pid",),
     "guard": ("state",),
