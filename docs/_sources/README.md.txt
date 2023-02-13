@@ -243,7 +243,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **SYNC_MEETINGS** - Interval in seconds to generate ``meetings`` information using an `ics` URL.
 - **SYNC_EVENTS** - Interval in seconds to generate ``events`` information using `calendar` or `outlook` application.
 
-**[Wi-Fi Controls](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/wifi/connector.py)**
+**[Wi-Fi Controls](https://github.com/thevickypedia/pywifi-controls)**
 - **WIFI_SSID** - SSID of the wireless connection.
 - **WIFI_PASSWORD** - Password for the wireless connection.
 - **CONNECTION_RETRY** - Frequency in seconds to check for an active internet connection. Defaults to 10 seconds.

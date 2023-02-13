@@ -1,5 +1,4 @@
-# pypi modules created by the author Vignesh Rao
+# pypi modules created by the author: Vignesh Rao
 gmail-connector
 vpn-server
-pynotification
-volume-control
+pycontrols

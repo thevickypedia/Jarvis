@@ -12,8 +12,8 @@ from typing import NoReturn
 
 import docker
 import psutil
+import pybrightness
 
-from jarvis.executors.display_functions import decrease_brightness
 from jarvis.executors.listener_controls import put_listener_state
 from jarvis.executors.volume import volume
 from jarvis.executors.word_match import word_match
@@ -97,7 +97,7 @@ def exit_process() -> NoReturn:
 
 def sleep_control() -> bool:
     """Locks the screen and reduces brightness to bare minimum."""
-    Thread(target=decrease_brightness).start()
+    Thread(target=pybrightness.decrease).start()
     # os.system("""osascript -e 'tell app "System Events" to sleep'""")  # requires restarting Jarvis manually
     # subprocess.call('rundll32.exe user32.dll, LockWorkStation')
     if models.settings.os == "Darwin":

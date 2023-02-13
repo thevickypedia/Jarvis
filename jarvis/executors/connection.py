@@ -4,11 +4,12 @@ import time
 from http.client import HTTPSConnection
 from typing import NoReturn
 
+from pywifi import ControlConnection, ControlPeripheral
+
 from jarvis.executors.controls import restart_control
 from jarvis.modules.logger import config
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.wifi.connector import ControlConnection, ControlPeripheral
 
 
 def wifi_connector() -> NoReturn:
@@ -37,9 +38,10 @@ def wifi_connector() -> NoReturn:
                 logger.info(f"Connection established with IP: {socket_.getsockname()[0]}. Resetting temp errors.")
         except OSError as error:
             logger.error(f"OSError [{error.errno}]: {error.strerror}")
-            ControlPeripheral().enable()  # Make sure Wi-Fi is enabled
+            ControlPeripheral(logger=logger).enable()  # Make sure Wi-Fi is enabled
             time.sleep(5)  # When Wi-Fi is toggled, it takes a couple of seconds to actually turn on
-            ControlConnection().wifi_connector()  # Try to connect to Wi-Fi using given SSID
+            ControlConnection(wifi_ssid=models.env.wifi_ssid, wifi_password=models.env.wifi_password,
+                              logger=logger).wifi_connector()  # Try to connect to Wi-Fi using given SSID
         except Exception as error:
             logger.fatal(error)
             unknown_errors += 1

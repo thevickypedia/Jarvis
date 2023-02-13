@@ -12,6 +12,10 @@ def crontab_executor(statement: str) -> NoReturn:
 
     Args:
         statement: Cron statement to be executed.
+
+    Warnings:
+        - Executions done by crontab executor are not stopped when Jarvis is stopped.
+        - On the bright side, almost all executions made by Jarvis are short-lived.
     """
     log_file = config.multiprocessing_logger(filename=LOG_FILE)
     with open(log_file, 'a') as file:

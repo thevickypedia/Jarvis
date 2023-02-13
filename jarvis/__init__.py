@@ -2,9 +2,9 @@ import os
 
 from pynotification import pynotifier
 
-version = "7.1.6"
+version = "7.1.7"
 
-install_script = {os.path.join(os.path.dirname(__file__), 'lib', 'install.sh')}
+install_script = os.path.join(os.path.dirname(__file__), 'lib', 'install.sh')
 
 try:
     import cv2  # noqa

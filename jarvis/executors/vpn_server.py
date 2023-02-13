@@ -3,7 +3,7 @@ from collections.abc import Generator
 from multiprocessing import Process
 from threading import Thread
 
-import vpn
+from botocore.exceptions import ClientError, EndpointConnectionError
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
@@ -13,6 +13,14 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import support, util
 
 db = database.Database(database=models.fileio.base_db)
+
+try:
+    import vpn
+
+    VPN_PRE_CHECK = True
+except (EndpointConnectionError, ClientError) as error:
+    VPN_PRE_CHECK = False
+    logger.error(error)
 
 
 def regional_phrase(phrase: str) -> Generator[str]:
@@ -55,6 +63,12 @@ def vpn_server(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
+    if not VPN_PRE_CHECK:
+        speaker.speak("VPN server requires an active A.W.S configuration. Please check the logs for more information.")
+        logger.error("Please refer to the following URLs to configure AWS CLI, to use VPN features.")
+        logger.error("AWS CLI: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html")
+        logger.error("AWS configure: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html")
+        return
     with db.connection:
         cursor = db.connection.cursor()
         state = cursor.execute("SELECT state FROM vpn").fetchone()

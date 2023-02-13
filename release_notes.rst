@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+7.1.7 (02/12/2023)
+------------------
+- Use `pycontrols` to deal with brightness and Wi-Fi
+- Remove connector.py and use pywifi-controls module
+- Stop graph plot in Linux hung due to subprocess
+- Handle potential errors when importing vpn-server
+
 7.1.6 (02/11/2023)
 ------------------
 - Add a feature to spin up `vpn-server` in any region
