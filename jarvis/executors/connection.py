@@ -29,21 +29,21 @@ def wifi_connector() -> NoReturn:
     unknown_errors = 0
     while True:
         try:
-            if models.settings.os == "Windows":
+            if models.settings.os == models.supported_platforms.windows:
                 connection = HTTPSConnection("8.8.8.8", timeout=5)  # Recreate a new connection everytime
                 connection.request("HEAD", "/")
             else:
                 socket_.connect(("8.8.8.8", 80))
             if unknown_errors:
-                logger.info(f"Connection established with IP: {socket_.getsockname()[0]}. Resetting temp errors.")
+                logger.info("Connection established with IP: %s. Resetting temp errors." % socket_.getsockname()[0])
         except OSError as error:
-            logger.error(f"OSError [{error.errno}]: {error.strerror}")
+            logger.error("OSError [%d]: %s" % (error.errno, error.strerror))
             ControlPeripheral(logger=logger).enable()  # Make sure Wi-Fi is enabled
             time.sleep(5)  # When Wi-Fi is toggled, it takes a couple of seconds to actually turn on
             ControlConnection(wifi_ssid=models.env.wifi_ssid, wifi_password=models.env.wifi_password,
                               logger=logger).wifi_connector()  # Try to connect to Wi-Fi using given SSID
         except Exception as error:
-            logger.fatal(error)
+            logger.critical(error)
             unknown_errors += 1
 
         if unknown_errors > 5:

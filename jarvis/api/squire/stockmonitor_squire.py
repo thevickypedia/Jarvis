@@ -14,6 +14,7 @@ from webull import webull
 from jarvis.api.modals.settings import stock_monitor
 from jarvis.api.squire.logger import logger
 from jarvis.modules.database import database
+from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.models import models
 
 stock_db = database.Database(database=models.fileio.stock_db)
@@ -25,8 +26,11 @@ def ticker_gatherer(character: str) -> NoReturn:
     Args:
         character: ASCII character (alphabet) with which the stock ticker name starts.
     """
-    url = f'https://www.eoddata.com/stocklist/NASDAQ/{character}.htm'
-    response = requests.get(url=url)
+    try:
+        response = requests.get(url=f'https://www.eoddata.com/stocklist/NASDAQ/{character}.htm')
+    except EgressErrors as error:
+        logger.error(error)
+        return
     scrapped = BeautifulSoup(response.text, "html.parser")
     d1 = scrapped.find_all('tr', {'class': 'ro'})
     d2 = scrapped.find_all('tr', {'class': 're'})
@@ -58,7 +62,7 @@ def thread_worker(function_to_call: Callable, iterable: Union[List, Iterable], w
     for future in as_completed(futures):
         if future.exception():
             thread_except += 1
-            logger.error(f'Thread processing for {iterator} received an exception: {future.exception()}')
+            logger.error("Thread processing for %s received an exception: %s" % (iterator, future.exception()))
     if thread_except > (len(iterable) * 10 / 100):  # Use backup file if more than 10% of the requests fail
         with open(models.fileio.stock_list_backup) as file:
             stock_monitor.stock_list = yaml.load(stream=file, Loader=yaml.FullLoader)
@@ -75,8 +79,8 @@ def nasdaq() -> NoReturn:
             except yaml.YAMLError as error:
                 logger.error(error)
             if len(stock_monitor.stock_list) > 5_000:
-                logger.info(f"{models.fileio.stock_list_backup} generated on "
-                            f"{datetime.fromtimestamp(modified).strftime('%c')} looks re-usable.")
+                logger.info("%s generated on %s looks re-usable." %
+                            (models.fileio.stock_list_backup, datetime.fromtimestamp(modified).strftime('%c')))
                 return
     logger.info("Gathering stock list from webull.")
     try:
@@ -88,7 +92,7 @@ def nasdaq() -> NoReturn:
     else:
         logger.info("Gathering stock list from eoddata.")
         thread_worker(function_to_call=ticker_gatherer, iterable=string.ascii_uppercase)
-    logger.info(f"Total tickers gathered: {len(stock_monitor.stock_list)}")
+    logger.info("Total tickers gathered: %d" % len(stock_monitor.stock_list))
     # Writes to a backup file
     with open(models.fileio.stock_list_backup, 'w') as file:
         yaml.dump(stream=file, data=stock_monitor.stock_list)
@@ -97,9 +101,8 @@ def nasdaq() -> NoReturn:
 def cleanup_stock_userdata() -> NoReturn:
     """Delete duplicates tuples within the database."""
     data = get_stock_userdata()
-    dupes = [x for n, x in enumerate(data) if x in data[:n]]
-    if dupes:
-        logger.info(f"{len(dupes)} duplicate entries found.")
+    if dupes := [x for n, x in enumerate(data) if x in data[:n]]:
+        logger.info("%d duplicate entries found." % len(dupes))
         cleaned = list(set(data))
         with stock_db.connection:
             cursor = stock_db.connection.cursor()

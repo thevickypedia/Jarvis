@@ -107,36 +107,36 @@ def get_connection_info(target: str = "SSID") -> Union[str, None]:
         Wi-Fi or Ethernet SSID or Name.
     """
     try:
-        if models.settings.os == "Darwin":
+        if models.settings.os == models.supported_platforms.macOS:
             process = subprocess.Popen(
                 ["/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport", "-I"],
                 stdout=subprocess.PIPE
             )
-        elif models.settings.os == "Windows":
+        elif models.settings.os == models.supported_platforms.windows:
             process = subprocess.check_output("netsh wlan show interfaces", shell=True)
         else:
             process = subprocess.check_output("nmcli -t -f name connection show --active | head -n 1", shell=True)
     except (subprocess.CalledProcessError, subprocess.CalledProcessError, FileNotFoundError) as error:
         if isinstance(error, subprocess.CalledProcessError):
             result = error.output.decode(encoding='UTF-8').strip()
-            logger.error(f"[{error.returncode}]: {result}")
+            logger.error("[%d]: %s" % (error.returncode, result))
         else:
             logger.error(error)
         return
-    if models.settings.os == "Darwin":
+    if models.settings.os == models.supported_platforms.macOS:
         out, err = process.communicate()
         if error := process.returncode:
-            logger.error(f"Failed to fetch {target} with exit code: {error}\n{err}")
+            logger.error("Failed to fetch %s with exit code: %s\n%s" % (target, error, err))
             return
         # noinspection PyTypeChecker
         return dict(map(str.strip, info.split(": ")) for info in out.decode("utf-8").splitlines()[:-1] if
                     len(info.split()) == 2).get(target)
-    elif models.settings.os == "Windows":
+    elif models.settings.os == models.supported_platforms.windows:
         if result := [i.decode().strip() for i in process.splitlines() if
                       i.decode().strip().startswith(target)]:
             return result[0].split(':')[-1].strip()
         else:
-            logger.error(f"Failed to fetch {target}")
+            logger.error("Failed to fetch %s" % target)
     else:
         if process:
             return process.decode(encoding='UTF-8').strip()

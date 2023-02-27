@@ -40,7 +40,7 @@ def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = N
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
                            f"I will wake you up at {hour}:{minute} {am_pm}.")
     elif 'timer' in phrase and timer:
-        logger.info(f"Timer set at {hour}:{minute} {am_pm}")
+        logger.info("Timer set at {hour}:{minute} {am_pm}".format(hour=hour, minute=minute, am_pm=am_pm))
         response = [f"{random.choice(conversation.acknowledgement)}! I have set a timer for {timer}.",
                     f"{timer}! Counting down.."]
         speaker.speak(text=random.choice(response))
@@ -153,7 +153,7 @@ def kill_alarm(phrase: str) -> None:
 def alarm_executor() -> NoReturn:
     """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
     volume(level=100)
-    if models.settings.os != "Windows":
+    if models.settings.os != models.supported_platforms.windows:
         subprocess.call(["open", models.indicators.alarm])
     else:
         os.system(f'start wmplayer {models.indicators.alarm}')

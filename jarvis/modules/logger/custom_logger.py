@@ -89,7 +89,7 @@ class TestLogger:
         called_func = sys._getframe(1).f_code.co_name.replace("<module>", __name__)
         parent_func = sys._getframe(2).f_code.co_name.replace("<module>", __name__) if not called_func == '__main__' \
             else None
-        self.logger.info(f'I was called by {called_func} which was called by {parent_func}')
+        self.logger.info("I was called by %s which was called by %s" % (called_func, parent_func))
         self.logger.info("I'm a special function as I use custom timezone, overriding logging.formatTime() method.")
 
     # noinspection PyUnusedLocal

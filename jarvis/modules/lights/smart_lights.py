@@ -88,7 +88,7 @@ class MagicHomeApi:
         except socket.error as error:
             self.sock.close()
             error_msg = f"\rSocket error on {device_ip}: {error}"
-            logger.error(f'{error_msg} while performing "{self.operation}"')
+            logger.error("%s while performing '%s'" % (error_msg, self.operation))
             raise socket.error(
                 error
             )
@@ -222,5 +222,5 @@ class MagicHomeApi:
         except socket.error as error:
             error_msg = f"\rSocket error on {self.device_ip}: {error}"
             sys.stdout.write(error_msg)
-            logger.error(f'{error_msg} while performing "{self.operation}"')
+            logger.error("%s while performing '%s'" % (error_msg, self.operation))
         self.sock.close()

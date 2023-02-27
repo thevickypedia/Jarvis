@@ -1,4 +1,3 @@
-import ctypes
 import os
 import random
 import shutil
@@ -13,6 +12,7 @@ from typing import NoReturn
 import docker
 import psutil
 import pybrightness
+import pywslocker
 
 from jarvis.executors.listener_controls import put_listener_state
 from jarvis.executors.volume import volume
@@ -26,7 +26,6 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 
 db = database.Database(database=models.fileio.base_db)
-ram = support.size_converter(byte_size=models.settings.ram).replace('.0', '')
 
 
 def restart(ask: bool = True) -> NoReturn:
@@ -53,9 +52,9 @@ def restart(ask: bool = True) -> NoReturn:
         converted = 'yes'
     if word_match(phrase=converted, match_list=keywords.keywords.ok):
         stop_terminals()
-        if models.settings.os == "Darwin":
+        if models.settings.os == models.supported_platforms.macOS:
             subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
-        elif models.settings.os == "Windows":
+        elif models.settings.os == models.supported_platforms.windows:
             os.system("shutdown /r /t 1")
         else:
             os.system(f"echo {models.env.root_password} | sudo -S reboot")
@@ -73,7 +72,7 @@ def exit_process() -> NoReturn:
             split_val = file.replace('.lock', '').split('|')
             reminders.update({split_val[0]: split_val[-1]})
     if reminders:
-        logger.info(f'JARVIS::Deleting Reminders - {reminders}')
+        logger.info("JARVIS::Deleting Reminders - %s" % reminders)
         if len(reminders) == 1:
             speaker.speak(text=f'You have a pending reminder {models.env.title}!')
         else:
@@ -90,7 +89,7 @@ def exit_process() -> NoReturn:
     try:
         speaker.speak(text=support.exit_message(), run=True)
     except RuntimeError as error:
-        logger.critical(f"ATTENTION::Received a RuntimeError while self terminating.\n{error}")
+        logger.critical("ATTENTION::Received a RuntimeError while self terminating.\n%s" % error)
     sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
                      f"\nTotal runtime: {support.time_converter(second=time.time() - shared.start_time)}")
 
@@ -98,41 +97,10 @@ def exit_process() -> NoReturn:
 def sleep_control() -> bool:
     """Locks the screen and reduces brightness to bare minimum."""
     Thread(target=pybrightness.decrease).start()
-    # os.system("""osascript -e 'tell app "System Events" to sleep'""")  # requires restarting Jarvis manually
-    # subprocess.call('rundll32.exe user32.dll, LockWorkStation')
-    if models.settings.os == "Darwin":
-        os.system(
-            """osascript -e 'tell application "System Events" to keystroke "q" using {control down, command down}'"""
-        )
-    elif models.settings.os == "Windows":
-        ctypes.windll.user32.LockWorkStation()
-    else:
-        os.system("gnome-screensaver-command --lock")
+    pywslocker.lock()
     if not (shared.called['report'] or shared.called['time_travel']):
         speaker.speak(text=random.choice(conversation.acknowledgement))
     return True
-
-
-def check_memory_leak() -> NoReturn:
-    """Check memory utilization."""
-    for func, process in shared.processes.items():
-        if not process.is_alive():
-            logger.warning(f"{func}[{process.pid}] is not running anymore.")
-            return func
-        try:
-            proc = psutil.Process(pid=process.pid)
-            percent_raw = int(proc.as_dict().get('memory_percent', 1))
-            if percent_raw > 20:
-                percent = support.size_converter(byte_size=percent_raw).replace(' B', ' %')
-                ram_used = support.size_converter(byte_size=proc.memory_info().rss)
-                logger.info(f"{process.pid}: {ram_used}/{ram} :: {percent}")
-                with db.connection:
-                    cursor = db.connection.cursor()
-                    cursor.execute("INSERT or REPLACE INTO restart (flag, caller) VALUES (?,?);", (True, func))
-                    cursor.connection.commit()
-        except psutil.NoSuchProcess:
-            logger.warning(f"{func}[{process.pid}] is not running anymore.")
-            return func
 
 
 def sentry() -> bool:
@@ -151,13 +119,13 @@ def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
         quiet: Take a boolean flag to restart without warning.
     """
     if phrase and ('pc' in phrase.lower() or 'computer' in phrase.lower() or 'machine' in phrase.lower()):
-        logger.info(f'JARVIS::Restart for {shared.hosted_device.get("device")} has been requested.')
+        logger.info("JARVIS::Restart for %s has been requested." % shared.hosted_device.get('device'))
         restart()
     else:
         caller = sys._getframe(1).f_code.co_name  # noqa
-        logger.info(f'Called by {caller!r}')
+        logger.info("Called by '%s'" % caller)
         if quiet:  # restarted by child processes due internal errors
-            logger.info(f"Restarting {caller!r}")
+            logger.info("Restarting '%s'" % caller)
         elif shared.called_by_offline:  # restarted via automator to restart all background processes
             logger.info("Restarting all background processes!")
             caller = "OFFLINE"
@@ -193,7 +161,7 @@ def delete_docker_container() -> NoReturn:
     with open(models.fileio.speech_synthesis_id) as file:
         container_id = file.read()
     with open(models.fileio.speech_synthesis_log, "a") as log_file:
-        if models.settings.os == "Linux":
+        if models.settings.os == models.supported_platforms.linux:
             log_file.write(f"Stopping running container {container_id!r}\n")
             try:
                 subprocess.Popen([f'echo {models.env.root_password} | sudo -S docker stop {container_id}'],
@@ -261,9 +229,9 @@ def shutdown(proceed: bool = False) -> NoReturn:
         converted = 'yes'
     if converted and word_match(phrase=converted, match_list=keywords.keywords.ok):
         stop_terminals()
-        if models.settings.os == "Darwin":
+        if models.settings.os == models.supported_platforms.macOS:
             subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
-        elif models.settings.os == "Windows":
+        elif models.settings.os == models.supported_platforms.windows:
             os.system("shutdown /s /t 1")
         else:
             os.system(f"echo {models.env.root_password} | sudo -S shutdown -P now")
@@ -278,7 +246,7 @@ def delete_logs() -> NoReturn:
         for file_ in __file:
             inode_modified = os.stat(os.path.join(__path, file_)).st_ctime
             if timedelta(seconds=(time.time() - inode_modified)).days > models.env.log_retention:
-                logger.debug(f"Deleting log file: {os.path.join(__path, file_)}")
+                logger.debug("Deleting log file: %s" % os.path.join(__path, file_))
                 os.remove(os.path.join(__path, file_))  # removes the file if it is older than log retention time
 
 
@@ -287,7 +255,7 @@ def delete_pycache() -> NoReturn:
     for __path, __directory, __file in os.walk(os.getcwd()):
         if '__pycache__' in __directory:
             if os.path.exists(os.path.join(__path, '__pycache__')):
-                logger.debug(f"Deleting pycache: {os.path.join(__path, '__pycache__')}")
+                logger.debug("Deleting pycache: %s" % os.path.join(__path, '__pycache__'))
                 shutil.rmtree(os.path.join(__path, '__pycache__'))
 
 

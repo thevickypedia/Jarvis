@@ -81,8 +81,8 @@ class LGWebOS:
 
         if self._reconnect:
             self._reconnect = False
-            logger.critical(f'ATTENTION::Client key has been generated. Store it in {models.fileio.smart_devices!r} '
-                            'to re-use.')
+            logger.critical("ATTENTION::Client key has been generated. Store it in '%s' to re-use." %
+                            models.fileio.smart_devices)
             logger.critical(str(store))
 
         self.system = SystemControl(self.client)

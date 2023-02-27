@@ -8,7 +8,10 @@ repos:
         additional_dependencies:
           - flake8-docstrings
           - flake8-sfs
-        args: [--max-line-length=120, --extend-ignore=SFS3 D107 SFS301 D100 D104 D401 D412]
+        # SFS101: String literal formatting using percent operator.
+        # SFS201: String literal formatting using .format method.
+        # SFS301: String literal formatting using f-string.
+        args: [--max-line-length=120, --extend-ignore=SFS3 D107 D100 D104 D401 D412 SFS101 SFS201]
 
   -
     repo: https://github.com/pre-commit/mirrors-isort

@@ -52,10 +52,10 @@ def location_services(device: AppleDevice) -> Union[None, dict]:
         if raw_location := device.location():
             return get_location_from_coordinates(coordinates=(raw_location["latitude"], raw_location["longitude"]))
         else:
-            logger.error(f"Unable to retrieve location for the device: {device!r}")
+            logger.error("Unable to retrieve location for the device: '%s'" % device)
             return
     except PyiCloudAPIResponseException as error:
-        logger.error(f"Unable to retrieve location for the device: {device!r}")
+        logger.error("Unable to retrieve location for the device: '%s'" % device)
         logger.error(error)
         return
 

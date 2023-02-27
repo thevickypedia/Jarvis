@@ -8,6 +8,7 @@ from requests.auth import HTTPBasicAuth
 from jarvis.executors.word_match import word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
+from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
@@ -26,8 +27,7 @@ def github(phrase: str) -> None:
     auth = HTTPBasicAuth(models.env.git_user, models.env.git_pass)
     try:
         response = requests.get('https://api.github.com/user/repos?type=all&per_page=100', auth=auth).json()
-    except (requests.RequestException, requests.Timeout, ConnectionError, TimeoutError, requests.JSONDecodeError) \
-            as error:
+    except EgressErrors as error:
         logger.error(error)
         speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to connect to the GitHub API.")
         return

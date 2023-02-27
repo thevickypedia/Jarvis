@@ -34,7 +34,7 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str, clien
                     for _ in range(3):  # REDUNDANT-Roku: Launch home thrice to ensure device wakes up from sleep
                         shared.tv[nickname].startup()
         except TVError as error:
-            logger.error(f"Failed to connect to the TV. {error}")
+            logger.error("Failed to connect to the TV. %s" % error)
             speaker.speak(text=f"I was unable to connect to the {nickname} {models.env.title}! "
                                f"It appears to be a connection issue. You might want to try again later.")
             return
@@ -90,7 +90,7 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str, clien
         elif 'open' in phrase_lower or 'launch' in phrase_lower:
             cleaned = ' '.join([w for w in phrase.split() if w not in ['launch', 'open', 'tv', 'on', 'my', 'the']])
             app_name = util.get_closest_match(text=cleaned, match_list=list(shared.tv[nickname].get_apps()))
-            logger.info(f'{phrase} -> {app_name}')
+            logger.info("%s -> %s" % (phrase, app_name))
             shared.tv[nickname].launch_app(app_name=app_name)
             speaker.speak(text=f"I've launched {app_name} on your {nickname} {models.env.title}!")
         elif "what's" in phrase_lower or 'currently' in phrase_lower:
@@ -99,7 +99,7 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str, clien
             cleaned = ' '.join([word for word in phrase.split() if word not in ('set', 'the', 'source', 'on', 'my',
                                                                                 'of', 'to', 'tv')])
             source = util.get_closest_match(text=cleaned, match_list=list(shared.tv[nickname].get_sources()))
-            logger.info(f'{phrase} -> {source}')
+            logger.info("%s -> %s" % (phrase, source))
             shared.tv[nickname].set_source(val=source)
             speaker.speak(text=f"I've changed the source to {source}.")
         else:

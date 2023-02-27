@@ -7,8 +7,10 @@
 
 import getpass
 import os
+import pathlib
 import platform
 import socket
+import sys
 from collections import ChainMap
 from datetime import datetime
 from enum import Enum
@@ -27,7 +29,18 @@ from jarvis.modules.peripherals import channel_type, get_audio_devices
 
 audio_driver = pyttsx3.init()
 if not os.environ.get('AWS_DEFAULT_REGION'):
-    os.environ['AWS_DEFAULT_REGION'] = 'us-west-2'  # Required when import vpn-server module
+    os.environ['AWS_DEFAULT_REGION'] = 'us-west-2'  # Required when vpn-server is imported
+
+
+class SupportedPlatforms(str, Enum):
+    """Supported operating systems."""
+
+    windows: str = "Windows"
+    macOS: str = "Darwin"
+    linux: str = "Linux"
+
+
+supported_platforms = SupportedPlatforms
 
 
 class Settings(BaseSettings):
@@ -48,13 +61,14 @@ class Settings(BaseSettings):
     limited: bool = True if physical_cores < 4 else False
     wake_words: Optional[List[str]]
     bot: str = "jarvis"
+    invoker: str = pathlib.PurePath(sys.argv[0]).stem
 
     if runenv.endswith('sh'):
         ide = False
     else:
         ide = True
     os: str = platform.system()
-    if os not in ["Windows", "Darwin", "Linux"]:
+    if os not in [supported_platforms.macOS, supported_platforms.linux, supported_platforms.windows]:
         raise UnsupportedOS(
             f"\n{''.join('*' for _ in range(80))}\n\n"
             "Unsupported Operating System. Currently Jarvis can run only on Mac and Windows OS.\n\n"
@@ -62,7 +76,7 @@ class Settings(BaseSettings):
             "To reach out: https://vigneshrao.com/contact\n"
             f"\n{''.join('*' for _ in range(80))}\n"
         )
-    legacy: bool = True if os == "Darwin" and Version(platform.mac_ver()[0]) < Version('10.14') else False
+    legacy = True if os == supported_platforms.macOS and Version(platform.mac_ver()[0]) < Version('10.14') else False
 
 
 settings = Settings()

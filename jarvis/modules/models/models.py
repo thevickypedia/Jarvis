@@ -22,7 +22,8 @@ from jarvis.modules.database import database
 from jarvis.modules.exceptions import (CameraError, EgressErrors,
                                        InvalidEnvVars, MissingEnvVars)
 from jarvis.modules.models.classes import (Indicators, RecognizerSettings,
-                                           audio_driver, env, fileio, settings)
+                                           audio_driver, env, fileio, settings,
+                                           supported_platforms)
 from jarvis.modules.utils import util
 
 # Shared across other modules
@@ -45,11 +46,11 @@ KEEP_TABLES = ("vpn", "party")  # TABLES to keep from `fileio.base_db`
 
 def _set_default_voice_name():
     """Set default voice name based on the Operating System."""
-    if settings.os == "Darwin":
+    if settings.os == supported_platforms.macOS:
         env.voice_name = "Daniel"
-    elif settings.os == "Windows":
+    elif settings.os == supported_platforms.windows:
         env.voice_name = "David"
-    elif settings.os == "Linux":
+    elif settings.os == supported_platforms.linux:
         env.voice_name = "english-us"
 
 
@@ -92,7 +93,7 @@ def _global_validations() -> NoReturn:
     """Validations that should happen for all processes including parent and child."""
     main = True if current_process().name == "MainProcess" else False
     # Validate root password present for linux systems
-    if settings.os == "Linux":
+    if settings.os == supported_platforms.linux:
         if not env.root_password:
             raise MissingEnvVars(
                 "Linux requires the host machine's password to be set as the env var: "

@@ -22,14 +22,14 @@ from jarvis.modules.utils import shared, support, util
 
 def system_info() -> NoReturn:
     """Tells the system configuration."""
-    total, used, free = shutil.disk_usage("/")
-    total = support.size_converter(byte_size=total)
-    used = support.size_converter(byte_size=used)
-    free = support.size_converter(byte_size=free)
+    disk_usage = shutil.disk_usage("/")
+    total = support.size_converter(byte_size=disk_usage.total)
+    used = support.size_converter(byte_size=disk_usage.used)
+    free = support.size_converter(byte_size=disk_usage.free)
     ram = support.size_converter(byte_size=models.settings.ram).replace('.0', '')
     ram_used = support.size_converter(byte_size=psutil.virtual_memory().percent).replace(' B', ' %')
     system = None
-    if models.settings.os == "Linux":
+    if models.settings.os == models.supported_platforms.linux:
         mapping = get_distributor_info_linux()
         if mapping.get('distributor_id') and mapping.get('release'):
             system = f"{mapping['distributor_id']} {mapping['release']}"
@@ -49,7 +49,7 @@ def system_vitals() -> None:
         - If confirmed, invokes `restart <https://thevickypedia.github.io/Jarvis/#jarvis.restart>`__ function.
     """
     output = ""
-    if models.settings.os == "Darwin":
+    if models.settings.os == models.supported_platforms.macOS:
         if not models.env.root_password:
             speaker.speak(text=f"You haven't provided a root password for me to read system vitals {models.env.title}! "
                                "Add the root password as an environment variable for me to read.")
@@ -117,7 +117,7 @@ def system_vitals() -> None:
                           run=True)
             response = listener.listen()
             if word_match(phrase=response.lower(), match_list=keywords.keywords.ok):
-                logger.info(f'JARVIS::Restarting {shared.hosted_device.get("device")}')
+                logger.info("JARVIS::Restarting %s" % shared.hosted_device.get('device'))
                 restart(ask=False)
 
 
@@ -135,7 +135,7 @@ def get_distributor_info_linux() -> Dict[str, str]:
     except (subprocess.SubprocessError, subprocess.CalledProcessError) as error:
         if isinstance(error, subprocess.CalledProcessError):
             result = error.output.decode(encoding='UTF-8').strip()
-            logger.error(f"[{error.returncode}]: {result}")
+            logger.error("[%d]: %s" % (error.returncode, result))
         else:
             logger.error(error)
         return {}
@@ -148,10 +148,10 @@ def hosted_device_info() -> Dict[str, str]:
         dict:
         A dictionary of key-value pairs with device type, operating system, os version.
     """
-    if models.settings.os == "Darwin":
+    if models.settings.os == models.supported_platforms.macOS:
         system_kernel = subprocess.check_output("sysctl hw.model", shell=True).decode('utf-8').splitlines()
         device = util.extract_str(system_kernel[0].split(':')[1])
-    elif models.settings.os == "Windows":
+    elif models.settings.os == models.supported_platforms.windows:
         device = subprocess.getoutput("WMIC CSPRODUCT GET VENDOR").replace('Vendor', '').strip()
     else:
         device = subprocess.check_output("cat /sys/devices/virtual/dmi/id/product_name",

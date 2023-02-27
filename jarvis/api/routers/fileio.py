@@ -47,11 +47,11 @@ async def get_file(filename: str):
         if path := [__path for __path, __directory, __file in os.walk("logs") if filename in __file]:
             target_file = os.path.join(path[0], filename)
         else:
-            logger.critical(f"ATTENTION::{filename!r} wasn't found.")
+            logger.critical("ATTENTION::'%s' wasn't found." % filename)
             raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.__dict__['phrase'])
     else:
         target_file = os.path.join(models.fileio.root, filename)
-    logger.info(f"Requested file: {filename!r} for download.")
+    logger.info("Requested file: '%s' for download." % filename)
     return FileResponse(status_code=HTTPStatus.OK.real, path=target_file, media_type="text/yaml", filename=filename)
 
 
@@ -68,7 +68,7 @@ async def put_file(file: UploadFile):
         raise APIResponse(status_code=HTTPStatus.NOT_ACCEPTABLE.real,
                           detail=f"{file.filename!r} is not allowed for an update.\n"
                                  f"Upload-able files:{allowed_files['fileio']}")
-    logger.info(f"Requested file: {file.filename!r} for upload.")
+    logger.info("Requested file: '%s' for upload." % file.filename)
     content = await file.read()
     with open(os.path.join(models.fileio.root, file.filename), "wb") as f_stream:
         f_stream.write(content)

@@ -71,14 +71,14 @@ def test_camera() -> NoReturn:
     if surveillance.camera_index is None \
             or surveillance.camera_index == "" \
             or not str(surveillance.camera_index).isdigit():  # Initial value is string while calls will be integer
-        logger.info(f"Camera index received: {surveillance.camera_index}")
-        logger.info(f"Available cameras: {available_cameras}")
+        logger.info("Camera index received: %s" % surveillance.camera_index)
+        logger.info("Available cameras: %s" % available_cameras)
         raise CameraError(f"Available cameras:\n{camera_object.get_index()}")
 
     surveillance.camera_index = int(surveillance.camera_index)
 
     if surveillance.camera_index >= len(available_cameras):
-        logger.info(f"Available cameras: {available_cameras}")
+        logger.info("Available cameras: %s" % available_cameras)
         raise CameraError(f"Camera index [{surveillance.camera_index}] is out of range.\n\n"
                           f"Available cameras:\n{camera_object.get_index()}")
     camera = cv2.VideoCapture(surveillance.camera_index)
@@ -92,7 +92,7 @@ def test_camera() -> NoReturn:
     surveillance.frame = frame.shape
     if camera.isOpened():
         camera.release()
-    logger.info(f"{available_cameras[surveillance.camera_index]} is ready to use.")
+    logger.info("%s is ready to use." % available_cameras[surveillance.camera_index])
     surveillance.available_cameras = available_cameras
 
 
@@ -105,12 +105,12 @@ def gen_frames(manager: Queue, index: int, available_cameras: List[str]) -> NoRe
         available_cameras: List of available cameras.
     """
     camera = cv2.VideoCapture(index)
-    logger.info(f"Capturing frames from {available_cameras[index]}")
+    logger.info("Capturing frames from %s" % available_cameras[index])
     while True:
         success, frame = camera.read()
         if not success:
-            logger.error(f"Failed to capture frames from [{index}]: {available_cameras[index]}")
-            logger.info(f"Releasing camera: {available_cameras[index]}")
+            logger.error("Failed to capture frames from [%d]: %s" % (index, available_cameras[index]))
+            logger.info("Releasing camera: %s" % available_cameras[index])
             camera.release()
             break
         frame = cv2.flip(src=frame, flipCode=1)  # mirrors the frame

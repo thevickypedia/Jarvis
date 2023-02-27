@@ -93,11 +93,11 @@ def security_runner() -> NoReturn:
             guard_disable()
             break
         elif converted:
-            logger.info(f'Conversation::{converted}')
+            logger.info("Conversation::%s" % converted)
         try:
             recognized = face_object.face_recognition(location=os.path.realpath("train"), retry_count=1)
             if recognized:
-                logger.warning(f"Located {recognized!r} when guardian mode was enabled.")
+                logger.warning("Located '%s' when guardian mode was enabled." % recognized)
                 continue
             if not face_object.face_detection(filename=face_detected, mirror=True):
                 face_detected = None
@@ -185,4 +185,4 @@ def threat_notify(converted: str, face_detected: Union[str, None]) -> NoReturn:
     if response_.ok:
         logger.info('Email has been sent!')
     else:
-        logger.error(f"Email dispatch failed with response: {response_.body}\n")
+        logger.error("Email dispatch failed with response: %s\n" % response_.body)

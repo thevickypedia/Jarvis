@@ -57,21 +57,21 @@ class Speaker:
     # noinspection PyTypeChecker
     def get_voice_by_language(self, lang_code: str) -> Generator[Dict]:
         """Yields all the available voices for the given language, converting attributes into dict."""
-        logger.info(f'Getting voice for the language code: {lang_code!r}')
+        logger.info("Getting voice for the language code: '%s'" % lang_code)
         for index, voice in enumerate(self.voices):
             if lang_code in voice.languages:
                 yield {'index': index, 'id': voice.id, 'name': voice.name, 'gender': voice.gender}
 
     def get_voice_by_index(self, index: int) -> Dict:
         """Yields all the available voices for the given index, converting attributes into dict."""
-        logger.info(f'Getting voice for the index: {index}')
+        logger.info("Getting voice for the index: '%s'" % index)
         for voice in self.get_all_voices():
             if voice['index'] == index:
                 return voice
 
     def get_voice_by_name(self, name: str) -> Generator[Dict]:
         """Yields all the available voices matching the given name, converting attributes into dict."""
-        logger.info(f'Getting voices for the name: {name}')
+        logger.info("Getting voices for the name: %s" % name)
         for voice in self.get_all_voices():
             if name.lower() in voice['name'].lower():
                 yield voice
@@ -79,7 +79,7 @@ class Speaker:
     def get_voice_by_gender(self, gender: str) -> Generator[Dict]:
         """Yields all the available voices matching the given gender, converting attributes into dict."""
         gender = "VoiceGenderMale" if gender.lower() == 'male' else "VoiceGenderFemale"
-        logger.info(f'Getting voices for the gender: {gender}')
+        logger.info("Getting voices for the gender: %s" % gender)
         for voice in self.get_all_voices():
             if gender == voice['gender']:
                 yield voice
@@ -92,7 +92,7 @@ class Speaker:
             voice_index: Index of the voice that has to be used.
             rate: Rate at which the voice should speak.
         """
-        logger.debug(f'Setting voice index to {voice_index} and speech rate to {rate!r}')
+        logger.debug("Setting voice index to %d and speech rate to '%d'" % (voice_index, rate))
         self.engine.setProperty("voice", self.voices[voice_index].id)
         self.engine.setProperty("rate", rate)
 
@@ -100,14 +100,14 @@ class Speaker:
         """Speaks the voice name in all available voices."""
         for voice in self.get_all_voices():
             self.set_voice(voice_index=voice['index'])
-            logger.info(f"Speaker voice [{voice['index']}]: {voice['name']!r}")
+            logger.info("Speaker voice [%s]: '%s'" % (voice['index'], voice['name']))
             self.run(text=f"Hello, I am {voice['name']}. This is my voice.")
 
     def speak_english_voices(self) -> NoReturn:
         """Speaks the voice name in all available english voices."""
         for voice in self.get_english_voices():
             self.set_voice(voice_index=voice['index'])
-            logger.info(f"Speaker voice [{voice['index']}]: {voice['name']!r}")
+            logger.info("Speaker voice [%s]: '%s'" % (voice['index'], voice['name']))
             self.run(text=f"Hello, I am {voice['name']}. This is my voice.")
 
     def run(self, text: str = None) -> NoReturn:

@@ -37,11 +37,11 @@ def speech_synthesizer(text: str,
         bool:
         A boolean flag to indicate whether speech synthesis has worked.
     """
-    logger.info(f"Request for speech synthesis: {text}")
+    logger.info("Request for speech synthesis: %s" % text)
     if time_in_str := re.findall(r'(\d+:\d+\s?(?:AM|PM|am|pm:?))', text):
         for t_12 in time_in_str:
             t_24 = datetime.strftime(datetime.strptime(t_12, "%I:%M %p"), "%H:%M")
-            logger.info(f"Converted {t_12} -> {t_24}")
+            logger.info("Converted %s -> %s" % (t_12, t_24))
             text = text.replace(t_12, t_24)
     if 'IP' in text.split():
         ip_new = '-'.join([i for i in text.split(' ')[-1]]).replace('-.-', ', ')  # 192.168.1.1 -> 1-9-2, 1-6-8, 1, 1
@@ -59,8 +59,9 @@ def speech_synthesizer(text: str,
             with open(file=models.fileio.speech_synthesis_wav, mode="wb") as file:
                 file.write(response.content)
             return True
-        logger.error(f"{response.status_code}::"
-                     f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/tts")
+        logger.error("{code}::http://{host}:{port}/api/tts".format(code=response.status_code,
+                                                                   host=models.env.speech_synthesis_host,
+                                                                   port=models.env.speech_synthesis_port))
         return False
     except UnicodeError as error:
         logger.error(error)
@@ -89,7 +90,7 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
         if shared.called_by_offline:
             shared.offline_caller = caller
             return
-        logger.info(f'Response: {text}')
+        logger.info("Response: %s" % text)
         sys.stdout.write(f"\r{text}")
         if models.env.speech_synthesis_timeout and \
                 speech_synthesizer(text=text) and \
@@ -99,7 +100,7 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
         else:
             models.audio_driver.say(text=text)
     if run and not shared.called_by_offline:
-        logger.debug(f'Speaker called by: {caller!r}')
+        logger.debug("Speaker called by: '%s'" % caller)
         models.audio_driver.runAndWait()
 
 

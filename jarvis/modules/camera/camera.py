@@ -9,7 +9,7 @@ from collections.abc import Generator
 from typing import Dict, List, Union
 
 from jarvis.modules.exceptions import CameraError
-from jarvis.modules.models.classes import settings
+from jarvis.modules.models import models
 
 Windows = """wmic path CIM_LogicalDevice where "Description like 'USB Video%'" get /value"""
 Darwin = "system_profiler SPCameraDataType"
@@ -61,11 +61,11 @@ class Camera:
             CameraError:
             If unable to connect to the camera.
         """
-        if settings.os == "Darwin":
+        if models.settings.os == models.supported_platforms.macOS:
             cmd = Darwin
-        elif settings.os == "Windows":
+        elif models.settings.os == models.supported_platforms.windows:
             cmd = Windows
-        elif settings.os == "Linux":
+        elif models.settings.os == models.supported_platforms.linux:
             cmd = Linux
         else:
             cmd = ""
@@ -175,9 +175,9 @@ class Camera:
             List[Dict[str]]:
             List of dictionaries.
         """
-        if settings.os == "Darwin":
+        if models.settings.os == models.supported_platforms.macOS:
             return list(self._get_camera_info_darwin())
-        elif settings.os == "Windows":
+        elif models.settings.os == models.supported_platforms.windows:
             return list(self._get_camera_info_windows())
         else:
             return list(self._get_camera_info_linux())
@@ -189,9 +189,9 @@ class Camera:
             List[str]:
             List of camera names.
         """
-        if settings.os == "Darwin":
+        if models.settings.os == models.supported_platforms.macOS:
             return list(self._list_cameras_darwin())
-        elif settings.os == "Windows":
+        elif models.supported_platforms.macOS == models.supported_platforms.windows:
             return list(self._list_cameras_windows())
         else:
             return list(self._list_cameras_linux())

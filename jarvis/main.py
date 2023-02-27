@@ -32,14 +32,14 @@ from jarvis.modules.utils import shared, support
 def restart_checker() -> NoReturn:
     """Operations performed during internal/external request to restart."""
     if flag := support.check_restart():
-        logger.info(f"Restart condition is set to {flag[0]} by {flag[1]}")
+        logger.info("Restart condition is set to %s by %s" % (flag[0], flag[1]))
         if flag[1] == "OFFLINE":
             stop_processes()
             logger.propagate = False
             for _handler in logger.handlers:
                 logger.removeHandler(hdlr=_handler)
             handler = custom_handler()
-            logger.info(f"Switching to {handler.baseFilename}")
+            logger.info("Switching to %s" % handler.baseFilename)
             logger.addHandler(hdlr=handler)
             starter()
             shared.processes = start_processes()
@@ -73,7 +73,7 @@ class Activator:
         """
         label = ', '.join([f'{string.capwords(wake)!r}: {sens}' for wake, sens in
                            zip(models.env.wake_words, models.env.sensitivity)])
-        logger.info(f"Initiating hot-word detector with sensitivity: {label}")
+        logger.info("Initiating hot-word detector with sensitivity: %s" % label)
         keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words]
 
         arguments = {
@@ -110,7 +110,7 @@ class Activator:
 
     def executor(self) -> NoReturn:
         """Calls the listener for actionable phrase and runs the speaker node for response."""
-        logger.debug(f"Detected {models.settings.bot} at {datetime.now()}")
+        logger.debug("Detected %s at %s" % (models.settings.bot, datetime.now()))
         if get_listener_state():
             playsound(sound=models.indicators.acknowledgement, block=False)
         audio_engine.close(stream=self.audio_stream)
@@ -118,7 +118,7 @@ class Activator:
             try:
                 initiator(phrase=phrase, should_return=True)
             except Exception as error:
-                logger.fatal(error)
+                logger.critical(error)
                 logger.error(traceback.format_exc())
                 speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an unknown error. "
                                    "Please check the logs for more information.")
@@ -150,7 +150,7 @@ class Activator:
                 keywords_handler.rewrite_keywords()
                 restart_checker()
                 if flag := support.check_stop():
-                    logger.info(f"Stopper condition is set to {flag[0]} by {flag[1]}")
+                    logger.info("Stopper condition is set to %s by %s" % (flag[0], flag[1]))
                     self.stop()
                     terminator()
         except StopSignal:
@@ -170,7 +170,7 @@ class Activator:
         """
         # right approach for consistency but speech_synthesizer runs in a container that will be stopped at the end
         # if models.settings.limited:
-        #     if models.settings.os != "Darwin":  # Check this condition only for limited mode
+        #     if models.settings.os != models.supported_platforms.macOS:  # Check this condition only for limited mode
         #         stop_processes(func_name="speech_synthesizer")
         # else:
         #     stop_processes()
@@ -189,7 +189,7 @@ class Activator:
 
 def start() -> NoReturn:
     """Starts main process to activate Jarvis after checking internet connection and initiating background processes."""
-    logger.info(f"Current Process ID: {models.settings.pid}")
+    logger.info("Current Process ID: %d" % models.settings.pid)
     starter()
     if ip_address() and public_ip_info():
         sys.stdout.write(f"\rINTERNET::Connected to {get_connection_info() or 'the internet'}.")
@@ -208,7 +208,7 @@ def start() -> NoReturn:
         # as passing the flag will look for the file's presence
         with open(models.fileio.processes, 'w') as file:
             yaml.dump(stream=file, data={"jarvis": [models.settings.pid, ["Main Process"]]})
-        if models.settings.os != "Darwin":
+        if models.settings.os != models.supported_platforms.macOS:
             shared.processes = start_processes(func_name="speech_synthesizer")
     else:
         shared.processes = start_processes()
