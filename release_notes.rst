@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+7.1.8 (02/26/2023)
+------------------
+- Remove `f-string` from logging
+- Use pywslocker to lock workstation
+- Create an enum object for supported operating systems
+- Fix unwanted details in docs
+- Add more exception handlers around egress connections
+
 7.1.7 (02/12/2023)
 ------------------
 - Use `pycontrols` to deal with brightness and Wi-Fi

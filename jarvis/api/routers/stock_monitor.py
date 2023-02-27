@@ -50,8 +50,8 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 6
     if mail_stat.ok:
         logger.debug(mail_stat.body)
         if models.env.debug:  # Why do all the conversions if it's not going to be logged anyway
-            logger.debug(f"Token will be reset in "
-                         f"{support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word='minute')}.")
+            logger.debug("Token will be reset in %s." %
+                         support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word='minute'))
         Thread(target=timeout_otp.reset_stock_monitor, args=(email_address, reset_timeout)).start()
         raise APIResponse(status_code=HTTPStatus.OK.real,
                           detail="Please enter the OTP sent via email to verify email address:")
@@ -98,12 +98,12 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
         - This API endpoint is simply the backend for stock price monitoring.
         - This function validates the user information and stores it to a database.
     """
-    logger.debug(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
-                 f"{request.headers.get('user-agent')}")
+    logger.debug("Connection received from %s via %s using %s" %
+                 (request.client.host, request.headers.get('host'), request.headers.get('user-agent')))
 
     input_data.request = input_data.request.upper()
     if input_data.request not in ("GET", "PUT", "DELETE"):
-        logger.warning(f'{input_data.request!r} is not in the allowed request list.')
+        logger.warning("'%s' is not in the allowed request list." % input_data.request)
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=HTTPStatus.UNPROCESSABLE_ENTITY.__dict__['phrase'])
 
@@ -113,7 +113,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
     if email_otp:
         recd_dict[input_data.email] = email_otp
     if recd_dict.get(input_data.email, 'DO_NOT') == sent_dict.get(input_data.email, 'MATCH'):
-        logger.debug(f"{input_data.email} has been verified.")
+        logger.debug("%s has been verified." % input_data.email)
     else:
         result = validate_email(email_address=input_data.email, smtp_check=False)
         logger.debug(result.body)
@@ -123,11 +123,11 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
         await send_otp_stock_monitor(email_address=input_data.email)
 
     if input_data.request == "GET":
-        logger.info(f"{input_data.email!r} requested their data.")
+        logger.info("'%s' requested their data." % input_data.email)
         # Token is not required for GET method
         # if input_data.token:
         #     decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
-        #     logger.warning(f"Unwanted information received: {decoded!r}")
+        #     logger.warning("Unwanted information received: '%s'" % decoded)
         if data := stockmonitor_squire.get_stock_userdata(email=input_data.email):  # Filter data from DB by email
             data_dict = [dict(zip(stock_monitor.user_info, each_entry)) for each_entry in data]
             logger.info(data_dict)
@@ -173,7 +173,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
                           detail="Allowed correction values are only up to 20%\n\nFor anything greater, "
                                  "it is better to increase/decrease the Max/Min values.")
 
-    if decoded['Ticker'] not in stock_monitor.stock_list:
+    if stock_monitor.stock_list and decoded['Ticker'] not in stock_monitor.stock_list:
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f"{decoded['Ticker']!r} not a part of NASDAQ stock list [OR] Jarvis currently doesn't "
                                  f"support tracking prices for {decoded['Ticker']!r}")
@@ -184,7 +184,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
 
     # Deletes an entry that's present already when requested
     if input_data.request == "DELETE":
-        logger.info(f"{input_data.email!r} requested to delete {new_entry!r}")
+        logger.info("'%s' requested to delete '%s'" % (input_data.email, new_entry))
         if new_entry not in stockmonitor_squire.get_stock_userdata(email=input_data.email):  # Checks if entry exists
             raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail="Entry is not present in the database.")
         stockmonitor_squire.delete_stock_userdata(data=new_entry)
@@ -194,7 +194,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
     if new_entry in stockmonitor_squire.get_stock_userdata():
         raise APIResponse(status_code=HTTPStatus.CONFLICT.real, detail="Duplicate request!\nEntry exists in database.")
 
-    logger.info(f"{input_data.email!r} requested to add {new_entry!r}")
+    logger.info("'%s' requested to add '%s'" % (input_data.email, new_entry))
     try:
         price_check = webull().get_quote(decoded['Ticker'])
         current_price = price_check.get('close') or price_check.get('open')

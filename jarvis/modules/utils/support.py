@@ -57,13 +57,13 @@ def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
     try:
         _hostname, _alias_list, _ipaddr_list = socket.gethostbyname_ex(hostname)
     except socket.error as error:
-        logger.error(f"{error} on {hostname}")
+        logger.error("%s [%d] on %s" % (error.strerror, error.errno, hostname))
         return []
     logger.debug({"Hostname": _hostname, "Alias": _alias_list, "Interfaces": _ipaddr_list})
     if not _ipaddr_list:
-        logger.critical(f"ATTENTION::No interfaces found for {hostname}")
+        logger.critical("ATTENTION::No interfaces found for %s" % hostname)
     elif len(_ipaddr_list) > 1:
-        logger.warning(f"Host {hostname} has multiple interfaces. {_ipaddr_list}") if localhost else None
+        logger.warning("Host %s has multiple interfaces. %s", (hostname, _ipaddr_list)) if localhost else None
         return _ipaddr_list
     else:
         if localhost:
@@ -71,8 +71,8 @@ def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
             if _ipaddr_list[0].split('.')[0] == ip_addr.split('.')[0]:
                 return _ipaddr_list
             else:
-                logger.error(f"NetworkID of the InterfaceIP [{ip_addr}] of host {hostname!r} does not match the "
-                             f"network id of the DeviceIP [{', '.join(_ipaddr_list)}].")
+                logger.error("NetworkID of the InterfaceIP [%s] of host '%s' does not match the network id of the "
+                             "DeviceIP [%s]." % (ip_addr, hostname, ', '.join(_ipaddr_list)))
                 return []
         else:
             return _ipaddr_list
@@ -288,7 +288,7 @@ def humanized_day_to_datetime(phrase: str) -> Union[Tuple[datetime, str], NoRetu
         if matched := word_match(phrase=phrase, match_list=days_in_week):
             lookup_day = string.capwords(matched)
     if not lookup_day or lookup_day not in days_in_week:
-        logger.error(f"Received incorrect lookup day: {lookup_day}")
+        logger.error("Received incorrect lookup day: %s" % lookup_day)
         return
     if "last" in phrase.lower():
         td = timedelta(days=-(7 - floating_days.index(lookup_day)))
@@ -300,7 +300,7 @@ def humanized_day_to_datetime(phrase: str) -> Union[Tuple[datetime, str], NoRetu
         td = timedelta(days=floating_days.index(lookup_day))
         addon = f"this {lookup_day}"
     else:
-        logger.error(f"Supports only 'last', 'next' and 'this' but received {phrase}")
+        logger.error("Supports only 'last', 'next' and 'this' but received %s" % phrase)
         return
     return datetime.today() + td, addon
 
@@ -356,13 +356,13 @@ def exit_message() -> str:
 
 def no_env_vars() -> NoReturn:
     """Says a message about permissions when env vars are missing."""
-    logger.error(f"Called by: {sys._getframe(1).f_code.co_name}")  # noqa
+    logger.error("Called by: %s" % sys._getframe(1).f_code.co_name)  # noqa
     speaker.speak(text=f"I'm sorry {models.env.title}! I lack the permissions!")
 
 
 def unsupported_features() -> NoReturn:
     """Says a message about unsupported features."""
-    logger.error(f"Called by: {sys._getframe(1).f_code.co_name}")  # noqa
+    logger.error("Called by: %s" % sys._getframe(1).f_code.co_name)  # noqa
     speaker.speak(text=f"I'm sorry {models.env.title}! This feature is yet to be implemented on "
                        f"{shared.hosted_device['os_name']}!")
 
@@ -455,7 +455,7 @@ def remove_file(filepath: str, delay: int = 0) -> NoReturn:
         delay: Delay in seconds after which the requested file is to be deleted.
     """
     time.sleep(delay)
-    os.remove(filepath) if os.path.isfile(filepath) else logger.error(f"{filepath} not found.")
+    os.remove(filepath) if os.path.isfile(filepath) else logger.error("%s not found." % filepath)
 
 
 def stop_process(pid: int) -> NoReturn:
@@ -484,13 +484,13 @@ def connected_to_network() -> bool:
     """
     socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
-        if models.settings.os == "Windows":
+        if models.settings.os == models.supported_platforms.windows:
             connection = HTTPSConnection("8.8.8.8", timeout=5)  # Recreate a new connection everytime
             connection.request("HEAD", "/")
         else:
             socket_.connect(("8.8.8.8", 80))
         return True
     except OSError as error:
-        logger.error(f"OSError [{error.errno}]: {error.strerror}")
+        logger.error("OSError [%d]: %s" % (error.errno, error.strerror))
     except Exception as error:
-        logger.fatal(error)
+        logger.critical(error)

@@ -34,10 +34,10 @@ def weather(phrase: str = None) -> None:
                                                                'Wednesday', 'Thursday', 'Friday', 'Saturday'))
         phrase = phrase.lower()
     if place:
-        logger.info(f'Identified place: {place}')
+        logger.info("Identified place: %s" % place)
         desired_location = geo_locator.geocode(place)
         if not desired_location:
-            logger.error(f"Failed to get coordinates for the place: {place!r}")
+            logger.error("Failed to get coordinates for the place: '%s'" % place)
             speaker.speak(text=f"I'm sorry {models.env.title}! "
                                f"I wasn't able to get the weather information at {place}!")
             return

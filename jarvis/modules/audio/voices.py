@@ -20,15 +20,14 @@ from jarvis.modules.models import models
 
 def voice_default() -> Engine:
     """Sets voice module to default."""
-    if models.settings.bot not in models.settings.wake_words:
-        return models.audio_driver
-    for voice in models.voices:
-        if voice.name == models.env.voice_name or models.env.voice_name in voice.name:
-            if current_process().name == 'MainProcess':
-                logger.debug(voice.__dict__)
-            models.audio_driver.setProperty("voice", voice.id)
-            models.audio_driver.setProperty("rate", models.env.voice_rate)
-            break
+    if models.settings.invoker != "sphinx-build":
+        for voice in models.voices:
+            if voice.name == models.env.voice_name or models.env.voice_name in voice.name:
+                if current_process().name == 'MainProcess':
+                    logger.debug(voice.__dict__)
+                models.audio_driver.setProperty("voice", voice.id)
+                models.audio_driver.setProperty("rate", models.env.voice_rate)
+                break
     return models.audio_driver
 
 

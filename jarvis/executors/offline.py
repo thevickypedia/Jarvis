@@ -41,7 +41,7 @@ def background_tasks() -> NoReturn:
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
     tasks: List[BackgroundTask] = list(validate_background_tasks())
     offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
-    if models.settings.os == "Darwin":
+    if models.settings.os == models.supported_platforms.macOS:
         events.event_app_launcher()
     start_events = start_meetings = start_cron = time.time()
     task_dict = {i: time.time() for i in range(len(tasks))}  # Creates a start time for each task
@@ -52,14 +52,14 @@ def background_tasks() -> NoReturn:
             if task_dict[i] + task.seconds <= time.time() or dry_run:  # Checks a particular tasks' elapsed time
                 task_dict[i] = time.time()  # Updates that particular tasks' start time
                 if datetime.now().hour in task.ignore_hours:
-                    logger.info(f"{task!r} skipped honoring ignore hours")
+                    logger.info("'%s' skipped honoring ignore hours" % task)
                 else:
-                    logger.info(f'Executing {task.task}')
+                    logger.info("Executing %s" % task.task)
                     try:
                         offline_communicator(task.task)
                     except Exception as error:
                         logger.error(error)
-                        logger.warning(f"Removing {task} from background tasks.")
+                        logger.warning("Removing %s from background tasks." % task)
                         remove_corrupted(task=task)
 
         # Trigger cron jobs
@@ -68,7 +68,7 @@ def background_tasks() -> NoReturn:
             for cron in models.env.crontab:
                 job = expression.CronExpression(line=cron)
                 if job.check_trigger():
-                    logger.info(f"Executing cron job: {job.comment}")
+                    logger.info("Executing cron job: %s" % job.comment)
                     cron_process = Process(target=crontab_executor, args=(job.comment,))
                     cron_process.start()
                     with db.connection:
@@ -89,7 +89,7 @@ def background_tasks() -> NoReturn:
         if start_events + models.env.sync_events <= time.time() or dry_run:
             start_events = time.time()
             event_process = Process(target=events.events_writer)
-            logger.info(f"Getting events from {models.env.event_app}.") if dry_run else None
+            logger.info("Getting events from %s." % models.env.event_app) if dry_run else None
             event_process.start()
             with db.connection:
                 cursor = db.connection.cursor()
@@ -187,7 +187,7 @@ def tunneling() -> NoReturn:
     """
     # processName filter is not added since process runs on a single function that is covered by funcName
     config.multiprocessing_logger(filename=os.path.join('logs', 'tunnel_%d-%m-%Y.log'))
-    if models.settings.os != "Darwin":
+    if models.settings.os != models.supported_platforms.macOS:
         return
 
     if get_tunnel():
@@ -195,16 +195,16 @@ def tunneling() -> NoReturn:
         return
 
     if os.path.exists(f"{models.env.home}/JarvisHelper/venv/bin/activate"):
-        logger.info('Initiating ngrok connection for offline communicator.')
+        logger.info("Initiating ngrok connection for offline communicator.")
         initiate = f'cd {models.env.home}/JarvisHelper && ' \
                    f'source venv/bin/activate && export HOST={models.env.offline_host} ' \
                    f'export PORT={models.env.offline_port} && python forever_ngrok.py'
         os.system(f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null""")
     else:
-        logger.info(f'JarvisHelper is not available to trigger an ngrok tunneling through {models.env.offline_port}')
-        endpoint = rf'http:\\{models.env.offline_host}:{models.env.offline_port}'
+        logger.info("JarvisHelper is not available to trigger an ngrok tunneling through %d" % models.env.offline_port)
+        endpoint = rf'http://{models.env.offline_host}:{models.env.offline_port}'
         logger.info('However offline communicator can still be accessed via '
-                    f'{endpoint}\\offline-communicator for API calls and {endpoint}\\docs for docs.')
+                    '%s/offline-communicator for API calls and %s/docs for docs.' % (endpoint, endpoint))
 
 
 def on_demand_offline_automation(task: str) -> Union[str, None]:
@@ -252,5 +252,5 @@ def offline_communicator(command: str) -> Union[AnyStr, HttpUrl]:
         shared.text_spoken = None
         return response
     else:
-        logger.error(f"Offline request failed: {shared.text_spoken}")
+        logger.error("Offline request failed: %s" % shared.text_spoken)
         return f"I was unable to process the request: {command}"

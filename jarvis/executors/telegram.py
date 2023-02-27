@@ -40,7 +40,7 @@ def telegram_api() -> NoReturn:
             logger.critical("ATTENTION::Couldn't recover from connection error. Restarting current process.")
             restart_control(quiet=True)
         else:
-            logger.info(f"Restarting in {FAILED_CONNECTIONS['count'] * 10} seconds.")
+            logger.info("Restarting in %d seconds." % FAILED_CONNECTIONS['count'] * 10)
             time.sleep(FAILED_CONNECTIONS['count'] * 10)
             telegram_api()
     except RecursionError as error:

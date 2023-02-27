@@ -57,8 +57,8 @@ def put_listener_state(state: bool) -> NoReturn:
     Args:
         state: Takes the boolean value to be inserted.
     """
-    logger.info(f"Current listener status: {get_listener_state()!r}")
-    logger.info(f"Updating listener status to {state}")
+    logger.info("Current listener status: '%s'" % get_listener_state())
+    logger.info("Updating listener status to %s" % state)
     with db.connection:
         cursor = db.connection.cursor()
         cursor.execute("DELETE FROM listener")

@@ -13,7 +13,7 @@ from xml.etree import ElementTree
 
 import requests
 
-from jarvis.modules.exceptions import TVError
+from jarvis.modules.exceptions import EgressErrors, TVError
 from jarvis.modules.logger.custom_logger import logger
 
 
@@ -38,7 +38,7 @@ class RokuECP:
         self.BASE_URL = f'http://{ip_address}:{self.PORT}'
         try:
             response = requests.get(url=self.BASE_URL)
-        except requests.RequestException as error:
+        except EgressErrors as error:
             logger.error(error)
             raise TVError
         else:
@@ -49,9 +49,9 @@ class RokuECP:
                     logger.error(error)
                     raise TVError
                 else:
-                    logger.info(f"Connected to {resolved[0].split('.')[0]!r}")
+                    logger.info("Connected to '%s'" % resolved[0].split('.')[0])
             else:
-                logger.error(f"{response.status_code} - {response.text}")
+                logger.error("%d - %s" % (response.status_code, response.text))
                 raise TVError
 
     def make_call(self, path, method) -> requests.Response:
@@ -205,9 +205,9 @@ class RokuECP:
         if app_id:
             response = self.make_call(path=f'/launch/{app_id}', method='POST')
             if not response.ok:
-                logger.error(f'{response.status_code}: {response.text}')
+                logger.error("%d: %s" % (response.status_code, response.text))
         else:
-            logger.error(f'{app_name} not found in tv')
+            logger.error("%s not found in tv" % app_name)
 
     def get_apps(self, raw: bool = False) -> Union[Generator[Dict[str, str]], Generator[str]]:
         """Get list of applications installed on the TV.

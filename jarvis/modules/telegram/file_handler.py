@@ -55,7 +55,7 @@ def get_file(filename: str) -> Response:
         if path := [__path for __path, __directory, __file in os.walk("logs") if filename in __file]:
             target_file = os.path.join(path[0], filename)
         else:
-            logger.critical(f"ATTENTION::{filename!r} wasn't found.")
+            logger.critical("ATTENTION::'%s' wasn't found." % filename)
             return Response(dictionary={
                 "ok": False,
                 "msg": f"{filename!r} was not found. "
@@ -63,7 +63,7 @@ def get_file(filename: str) -> Response:
             })
     else:
         target_file = os.path.join(models.fileio.root, filename)
-    logger.info(f"Requested file: {filename!r} for download.")
+    logger.info("Requested file: '%s' for download." % filename)
     return Response(dictionary={'ok': True, 'msg': target_file})
 
 
@@ -81,7 +81,7 @@ def put_file(filename: str, file_content: bytes) -> str:
     allowed_files = _list_files()
     if filename not in allowed_files["fileio"]:
         return f"{filename!r} is not allowed for an update."
-    logger.info(f"Requested file: {filename!r} for upload.")
+    logger.info("Requested file: '%s' for upload." % filename)
     with open(os.path.join(models.fileio.root, filename), "wb") as f_stream:
         f_stream.write(file_content)
     return f"{filename!r} was uploaded to {os.path.basename(models.fileio.root)}."

@@ -28,7 +28,7 @@ db = database.Database(database=models.fileio.base_db)
 def delete_db() -> NoReturn:
     """Delete base db if exists. Called upon restart or shut down."""
     if os.path.isfile(models.fileio.base_db):
-        logger.info(f"Removing {models.fileio.base_db}")
+        logger.info("Removing %s" % models.fileio.base_db)
         os.remove(models.fileio.base_db)
     if os.path.isfile(models.fileio.base_db):
         raise FileExistsError(
@@ -46,8 +46,8 @@ def clear_db() -> NoReturn:
                 continue
             # Use f-string or %s as table names cannot be parametrized
             data = cursor.execute(f'SELECT * FROM {table}').fetchall()
-            logger.info(f"Deleting data from {table}: "
-                        f"{util.matrix_to_flat_list([list(filter(None, d)) for d in data if any(d)])}")
+            logger.info("Deleting data from %s: %s" % (table, util.matrix_to_flat_list([list(filter(None, d))
+                                                                                        for d in data if any(d)])))
             cursor.execute(f"DELETE FROM {table}")
 
 
@@ -85,7 +85,7 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
     else:
         dump = {k: [v.pid, impact_lib[k]] for k, v in processes.items()}
         dump["jarvis"] = [models.settings.pid, ["Main Process"]]
-    logger.debug(f"Processes data: {dump}")
+    logger.debug("Processes data: %s" % dump)
     # Remove temporary processes that doesn't need to be stored in mapping file
     if dump.get("tunneling"):
         del dump["tunneling"]
@@ -121,7 +121,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         background_tasks.__name__: Process(target=background_tasks),
         wifi_connector.__name__: Process(target=wifi_connector),  # Run individually as socket needs timed wait
     }
-    if models.env.plot_mic and models.settings.os == "Linux":
+    if models.env.plot_mic and models.settings.os == models.supported_platforms.linux:
         # Function cannot be called directly using a child process when microphone is already being called for Linux
         statement = shutil.which(cmd="python") + " " + graph_mic.__file__
         process_dict[graph_mic.plot_mic.__name__] = Process(target=crontab_executor, args=(statement,))
@@ -133,7 +133,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
     for func, process in processes.items():
         process.name = func
         process.start()
-        logger.info(f"Started function: {func} with PID: {process.pid}")
+        logger.info("Started function: {func} with PID: {pid}".format(func=func, pid=process.pid))
     Thread(target=create_process_mapping, kwargs=dict(processes=processes, func_name=func_name)).start()
     return processes[func_name] if func_name else processes
 
@@ -154,9 +154,9 @@ def stop_child_processes() -> NoReturn:
                 proc = psutil.Process(pid=pid)
             except psutil.NoSuchProcess:
                 # Occurs commonly since child processes run only for a short time and `INSERT OR REPLACE` leaves dupes
-                logger.debug(f"Process [{category}] PID not found {pid}")
+                logger.debug("Process [%s] PID not found %d" % (category, pid))
                 continue
-            logger.info(f"Stopping process [{category}] with PID: {pid}")
+            logger.info("Stopping process [%s] with PID: %d" % (category, pid))
             support.stop_process(pid=proc.pid)
 
 
@@ -166,5 +166,5 @@ def stop_processes(func_name: str = None) -> NoReturn:
     for func, process in shared.processes.items():
         if func_name and func_name != func:
             continue
-        logger.info(f"Stopping process [{func}] with PID: {process.pid}")
+        logger.info("Stopping process [%s] with PID: %d" % (func, process.pid))
         support.stop_process(pid=process.pid)

@@ -422,7 +422,7 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
             if not (position := control.get_position().get('position')):
                 logger.error("Unable to get position of the vehicle.")
                 return
-            logger.info(f"latitude: {position['latitude']}, longitude: {position['longitude']}")
+            logger.info("latitude: %f, longitude: %f" % (position['latitude'], position['longitude']))
             data = get_location_from_coordinates(coordinates=(position['latitude'], position['longitude']))
             number = data.get('streetNumber', data.get('house_number', ''))
             street = data.get('street', data.get('road'))
@@ -447,7 +447,7 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
             subscriptions = subscriptions.get()
             return report(status_data=status, subscription_data=subscriptions, attributes=attributes)
         if response and response.get("failureDescription"):
-            logger.fatal(response)
+            logger.critical(response)
             return
         try:
             car_name = attributes.get(timeout=3).get("vehicleBrand", "car")
@@ -460,4 +460,5 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
             return vehicle(operation="SECURE_EXIST", retry=False)
         logger.error(error.__dict__)
         if hasattr(error, "url") and hasattr(error, "code"):
-            logger.error(f"Failed to connect to {error.url} with error code: {error.code} while performing {operation}")
+            logger.error("Failed to connect to %s with error code: %d while performing %s" %
+                         (error.url, error.code, operation))

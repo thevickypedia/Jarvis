@@ -27,14 +27,14 @@ def tv_status(tv_ip_list: list, attempt: int = 0) -> str:
         Returns the reachable IP address from the list.
     """
     for ip in tv_ip_list:
-        if models.settings.os != "Windows":
-            if tv_stat := os.system(f"ping -c 1 -t 2 {ip} >/dev/null 2>&1"):
-                logger.error(f"Connection timed out on {ip}. Ping result: {tv_stat}") if not attempt else None
+        if models.settings.os == models.supported_platforms.windows:
+            if tv_stat := os.system(f"ping -c 1 -t 2 {ip} > NUL"):
+                logger.error("Connection timed out on %s. Ping result: %s" % (ip, tv_stat)) if not attempt else None
             else:
                 return ip
         else:
-            if tv_stat := os.system(f"ping -c 1 -t 2 {ip} > NUL"):
-                logger.error(f"Connection timed out on {ip}. Ping result: {tv_stat}") if not attempt else None
+            if tv_stat := os.system(f"ping -c 1 -t 2 {ip} >/dev/null 2>&1"):
+                logger.error("Connection timed out on %s. Ping result: %s" % (ip, tv_stat)) if not attempt else None
             else:
                 return ip
 
@@ -58,7 +58,7 @@ def television(phrase: str) -> None:
         return
 
     if not os.path.isfile(models.fileio.smart_devices):
-        logger.warning(f"{models.fileio.smart_devices} not found.")
+        logger.warning("%s not found." % models.fileio.smart_devices)
         support.no_env_vars()
         return
 
@@ -73,7 +73,7 @@ def television(phrase: str) -> None:
         return
 
     if not any(smart_devices):
-        logger.warning(f"{models.fileio.smart_devices!r} is empty for TV.")
+        logger.warning("%s is empty for TV." % models.fileio.smart_devices)
         support.no_env_vars()
         return
 
@@ -94,9 +94,9 @@ def television(phrase: str) -> None:
         return
 
     if 'lg' in tv_name.lower() or 'roku' in tv_name.lower():
-        logger.debug(f"{tv_name!r} is supported.")
+        logger.debug("'%s' is supported." % tv_name)
     else:
-        logger.error("tv's name is not supported.")
+        logger.error("tv's name [%s] is not supported." % tv_name)
         speaker.speak(text=f"I'm sorry {models.env.title}! Your {target_tv}'s name is neither LG or Roku."
                            "So, I will not be able to control the television.")
         return
@@ -120,7 +120,7 @@ def television(phrase: str) -> None:
                                "I guess your TV is powered off already.")
             return
     elif not (tv_ip := tv_status(tv_ip_list=tv_ip_list)):
-        logger.info(f"Trying to power on the device using the mac addresses: {tv_mac}")
+        logger.info("Trying to power on the device using the mac addresses: %s" % tv_mac)
         power_controller = wakeonlan.WakeOnLan()
         for _ in range(3):  # REDUNDANT-Roku: Send magic packets thrice to ensure device wakes up from sleep
             with ThreadPoolExecutor(max_workers=len(tv_mac)) as executor:
@@ -143,7 +143,7 @@ def television(phrase: str) -> None:
     # Instantiate dictionary if not present
     if not shared.tv.get(target_tv):
         shared.tv[target_tv] = None
-    logger.debug(f"TV database: {shared.tv}")
+    logger.debug("TV database: %s" % shared.tv)
     if 'lg' in tv_name.lower():
         tv_controller(phrase=phrase, tv_ip=tv_ip, identifier='LG', client_key=tv_client_key, nickname=target_tv)
     else:

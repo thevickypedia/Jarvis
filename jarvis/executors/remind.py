@@ -5,7 +5,7 @@ import re
 from datetime import datetime, timedelta
 from typing import NoReturn
 
-from pynotification import pynotifier
+import pynotification
 
 from jarvis.executors import communicator
 from jarvis.modules.audio import listener, speaker
@@ -30,7 +30,8 @@ def create_reminder(hour, minute, am_pm, message, to_about, timer: str = None) -
         os.mkdir('reminder')
     pathlib.Path(os.path.join("reminder", f"{hour}_{minute}_{am_pm}|{message.replace(' ', '_')}.lock")).touch()
     if timer:
-        logger.info(f"Reminder created for {message!r} at {hour}:{minute} {am_pm}")
+        logger.info("Reminder created for '{message}' at {hour}:{minute} {am_pm}".format(message=message, hour=hour,
+                                                                                         minute=minute, am_pm=am_pm))
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
                            f"I will remind you {to_about} {message}, after {timer}.")
     else:
@@ -111,4 +112,4 @@ def reminder_executor(message: str) -> NoReturn:
     title = "REMINDER from Jarvis"
     communicator.send_sms(user=models.env.gmail_user, password=models.env.gmail_pass, number=models.env.phone_number,
                           body=message, subject=title)
-    pynotifier(title=title, message=message, debug=True, logger=logger)
+    pynotification.pynotifier(title=title, message=message, debug=True, logger=logger)

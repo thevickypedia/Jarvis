@@ -88,7 +88,7 @@ class ThreadExecutor:
         for future in as_completed(futures):
             if future.exception():
                 thread_except += 1
-                logger.error(f'Thread processing for {iterator!r} received an exception: {future.exception()}')
+                logger.error("Thread processing for '%s' received an exception: %s" % (iterator, future.exception()))
         return thread_except
 
     def avail_check(self, function_to_call: Callable) -> NoReturn:
@@ -114,7 +114,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         return
 
     if not os.path.isfile(models.fileio.smart_devices):
-        logger.warning(f"{models.fileio.smart_devices} not found.")
+        logger.warning("%s not found." % models.fileio.smart_devices)
         support.no_env_vars()
         return
 
@@ -130,7 +130,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         return
 
     if not any(smart_devices):
-        logger.warning(f"{models.fileio.smart_devices!r} is empty for lights.")
+        logger.warning("'%s' is empty for lights." % models.fileio.smart_devices)
         support.no_env_vars()
         return
 
@@ -150,19 +150,19 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     #         host_names.append(smart_devices.get(light_location_section))
     #         light_location.append(light_location_section.replace('_', ' ').replace('-', ''))
     #     light_location = " and ".join(light_location)
-    #     logger.info(f"Lights location: {light_location}")
+    #     logger.info("Lights location: %s" % light_location)
 
     else:
         # Get the closest matching name provided in smart_devices.yaml compared to what's requested by the user
         light_location = util.get_closest_match(text=phrase, match_list=list(smart_devices.keys()))
-        logger.info(f"Lights location: {light_location}")
+        logger.info("Lights location: %s" % light_location)
         host_names = [smart_devices.get(light_location)]
         light_location = light_location.replace('_', ' ').replace('-', '')
 
     host_names = util.matrix_to_flat_list(input_=host_names)
     host_names = list(filter(None, host_names))  # remove None values
     if light_location and not host_names:
-        logger.warning(f"No hostname values found for {light_location} in {models.fileio.smart_devices}")
+        logger.warning("No hostname values found for %s in %s" % (light_location, models.fileio.smart_devices))
         speaker.speak(text=f"I'm sorry {models.env.title}! You haven't mentioned the host names of {light_location!r} "
                            "lights.")
         return

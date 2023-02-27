@@ -93,8 +93,9 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
             - The UUID is deleted from the object as soon as the argument is checked for the first time.
             - Page refresh is useless because the value in memory is cleared as soon as it is authed once.
         """
-        logger.debug(f"Connection received from {request.client.host} via {request.headers.get('host')} using "
-                     f"{request.headers.get('user-agent')}")
+        logger.debug("Connection received from %s via %s using %s" %
+                     (request.client.host, request.headers.get('host'), request.headers.get('user-agent')))
+
         if not token:
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
                               detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])

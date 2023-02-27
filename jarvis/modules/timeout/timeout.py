@@ -31,18 +31,18 @@ def timeout(seconds: Union[int, float], function: Callable,
     process = multiprocessing.Process(target=function, args=args or [], kwargs=kwargs or {})
     _start = time.time()
     if logger:
-        logger.info(f"Starting {function.__name__} at {time.strftime('%H:%M:%S', time.localtime(_start))} with "
-                    f"timeout: {seconds}")
+        logger.info("Starting %s at %s with timeout: %s" %
+                    (function.__name__, time.strftime('%H:%M:%S', time.localtime(_start)), seconds))
     process.start()
     process.join(timeout=seconds)
     exec_time = round(float(time.time() - _start), 2)
-    logger.info(f"Joined process {process.pid} after {exec_time} seconds.") if logger else None
+    logger.info("Joined process %d after %d seconds." % (process.pid, exec_time)) if logger else None
     if process.is_alive():
-        logger.warning(f"Process {process.pid} is still alive. Terminating.") if logger else None
+        logger.warning("Process %d is still alive. Terminating." % process.pid) if logger else None
         process.terminate()
         process.join(timeout=1e-01)
         try:
-            logger.info(f"Closing process: {process.pid}") if logger else None
+            logger.info("Closing process: %d" % process.pid) if logger else None
             process.close()  # Close immediately instead of waiting to be garbage collected
         except ValueError as error:
             # Expected when join timeout is insufficient. The resources will be released eventually but not immediately.

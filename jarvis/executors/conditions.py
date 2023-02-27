@@ -73,7 +73,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
         listener_control(phrase)
 
     elif not get_listener_state() and not shared.called_by_offline:  # Allow conditions during offline communication
-        logger.info(f"Ignoring {phrase!r} since listener is deactivated.")
+        logger.info("Ignoring '%s' since listener is deactivated." % phrase)
         return False
 
     elif "*" in phrase:
@@ -306,7 +306,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
         return False
 
     else:
-        logger.info(f'Received unrecognized lookup parameter: {phrase}')
+        logger.info("Received unrecognized lookup parameter: %s" % phrase)
         Thread(target=support.unrecognized_dumper, args=[{'CONDITIONS': phrase}]).start()
         if not alpha(text=phrase):
             google_maps(query=phrase)

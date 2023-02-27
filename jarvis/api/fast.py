@@ -61,7 +61,8 @@ def run_robinhood() -> NoReturn:
     """Runs in a dedicated process during startup, if the file was modified earlier than the past hour."""
     if os.path.isfile(models.fileio.robinhood):
         modified = int(os.stat(models.fileio.robinhood).st_mtime)
-        logger.info(f"{models.fileio.robinhood} was generated on {datetime.fromtimestamp(modified).strftime('%c')}.")
+        logger.info("%s was generated on %s." % (models.fileio.robinhood,
+                                                 datetime.fromtimestamp(modified).strftime('%c')))
         if int(time.time()) - modified < 3_600:  # generates new file only if the file is older than an hour
             return
     logger.info('Initiated robinhood gatherer.')
@@ -73,7 +74,7 @@ async def start_robinhood() -> Any:
     """Initiates robinhood gatherer in a process and adds a cron schedule if not present already."""
     await enable_cors()
     stockmonitor_squire.nasdaq()
-    logger.info(f'Hosting at http://{models.env.offline_host}:{models.env.offline_port}')
+    logger.info("Hosting at http://{host}:{port}".format(host=models.env.offline_host, port=models.env.offline_port))
     if all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_pass]):
         Process(target=run_robinhood).start()
     Thread(target=update_keywords).start()

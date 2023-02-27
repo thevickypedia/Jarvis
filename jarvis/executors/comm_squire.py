@@ -35,7 +35,7 @@ def extract_contacts(name: str, key: str) -> Union[int, EmailStr, None]:
             logger.error(error)
             return
     if contacts.get(key):
-        logger.info(f"Looking for {name!r} in contacts file.")
+        logger.info("Looking for '%s' in contacts file." % name)
         identifier = util.get_closest_match(text=name, match_list=list(contacts[key].keys()))
         return contacts[key][identifier]
 
@@ -64,7 +64,7 @@ def send_notification(phrase: str) -> None:
             body, to = body.strip(), to.strip()
             break
     else:
-        logger.error(f"Invalid message or destination: {(body, to,)}")
+        logger.error("Invalid message or destination: %s -> %s" % (body, to))
         speaker.speak(text="Messenger format should be::send some message using SMS or email to some number or name.")
         return
 
@@ -96,7 +96,7 @@ def send_notification(phrase: str) -> None:
     if to[0].isdigit():
         method = "SMS"
 
-    logger.info(f'{body!r} -> {to!r} via {method!r}')
+    logger.info("'{body}' -> '{to}' via '{method}'".format(body=body, to=to, method=method))
 
     if "mail" in method.lower():
         initiate_email(body=body, to=to)
@@ -124,7 +124,7 @@ def initiate_sms(body: str, to: Union[str, int]) -> None:
         return
 
     if number and shared.called_by_offline:  # Number is present and called by offline
-        logger.info(f'{body!r} -> {number!r}')
+        logger.info("'{body}' -> '{number}'".format(body=body, number=number))
         sms_response = send_sms(user=models.env.gmail_user, password=models.env.gmail_pass, number=number, body=body)
         if sms_response is True:
             speaker.speak(text=f"Message has been sent {models.env.title}!")
@@ -150,7 +150,7 @@ def initiate_sms(body: str, to: Union[str, int]) -> None:
     speaker.speak(text=f'{body} to {number}. Do you want me to proceed?', run=True)
     if converted := listener.listen():
         if word_match(phrase=converted, match_list=keywords.keywords.ok):
-            logger.info(f'{body!r} -> {number!r}')
+            logger.info("{body} -> {number}".format(body=body, number=number))
             sms_response = send_sms(user=models.env.gmail_user, password=models.env.gmail_pass, number=number,
                                     body=body)
             if sms_response is True:
@@ -174,12 +174,12 @@ def initiate_email(body: str, to: str) -> None:
     """
     to = extract_contacts(name=to, key='email')
     if not to:
-        logger.error(f'Contact file missing or {to!r} not found in contact file.')
+        logger.error("Contact file missing or '%s' not found in contact file." % to)
         support.no_env_vars()
         return
 
     if body and shared.called_by_offline:  # Body is present and called by offline
-        logger.info(f'{body!r} -> {to!r}')
+        logger.info("'%s' -> '%s'" % (body, to))
         mail_response = send_email(body=body, recipient=to)
         if mail_response is True:
             speaker.speak(text=f"Email has been sent {models.env.title}!")
@@ -201,7 +201,7 @@ def initiate_email(body: str, to: str) -> None:
     speaker.speak(text=f'{body} to {to}. Do you want me to proceed?', run=True)
     if converted := listener.listen():
         if word_match(phrase=converted, match_list=keywords.keywords.ok):
-            logger.info(f'{body!r} -> {to!r}')
+            logger.info("'%s' -> '%s'" % (body, to))
             mail_response = send_email(body=body, recipient=to)
             if mail_response is True:
                 speaker.speak(text=f"Email has been sent {models.env.title}!")

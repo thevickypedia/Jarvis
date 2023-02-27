@@ -53,7 +53,7 @@ def extract_custom_region(phrase: str) -> str:
     phrase = " ".join(regional_phrase(phrase=phrase))
     for region in vpn.settings.available_regions:
         if region.replace('-', ' ') in phrase:
-            logger.info(f"Custom region chosen: {region}")
+            logger.info("Custom region chosen: %s" % region)
             return region
 
 

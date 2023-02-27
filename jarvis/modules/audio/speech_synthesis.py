@@ -41,13 +41,13 @@ def check_existing() -> bool:
         A boolean flag whether a valid connection is present.
     """
     if is_port_in_use(port=models.env.speech_synthesis_port):
-        logger.info(f'{models.env.speech_synthesis_port} is currently in use.')
+        logger.info("%d is currently in use." % models.env.speech_synthesis_port)
         try:
             res = requests.get(url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}",
                                timeout=1)
             if res.ok:
-                logger.info(f'http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port} '
-                            'is accessible.')
+                logger.info('http://{host}:{port} is accessible.'.format(host=models.env.speech_synthesis_host,
+                                                                         port=models.env.speech_synthesis_port))
                 return True
             return False
         except EgressErrors as error:
@@ -77,7 +77,8 @@ def speech_synthesizer() -> NoReturn:
             os.remove(os.path.join(models.fileio.root, file))
 
     try:
-        if models.settings.os == "Linux":  # linux requires docker to run as admin and linux is better with commandline
+        # linux requires docker to run as admin and linux is better with commandline
+        if models.settings.os == models.supported_platforms.linux:
             cmd = DOCKER_CMD.format(PORT=models.env.speech_synthesis_port, PASSWORD=models.env.root_password,
                                     HOME=models.env.home, CWD=os.getcwd(), UID=os.getuid(), GID=os.getgid(),
                                     DOCKER_CID=models.fileio.speech_synthesis_id)

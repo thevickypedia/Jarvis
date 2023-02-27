@@ -70,7 +70,7 @@ def apps(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if models.settings.os == "Linux":
+    if models.settings.os == models.supported_platforms.linux:
         support.unsupported_features()
         return
 
@@ -88,7 +88,7 @@ def apps(phrase: str) -> None:
             speaker.speak(text="I didn't quite get that. Try again.")
             return
 
-    if models.settings.os == "Windows":
+    if models.settings.os == models.supported_platforms.windows:
         status = os.system(f'start {keyword}')
         if status == 0:
             speaker.speak(text=f'I have opened {keyword}')
@@ -133,7 +133,7 @@ def music(phrase: str = None) -> NoReturn:
         if phrase and 'speaker' in phrase:
             google_home(device=phrase, file=chosen)
         else:
-            if models.settings.os == "Windows":
+            if models.settings.os == models.supported_platforms.windows:
                 os.system(f'start wmplayer "{chosen}"')
             else:
                 subprocess.call(["open", chosen])
@@ -392,7 +392,7 @@ def photo() -> str:
     facenet.capture_image(filename=filename)
     if os.path.isfile(filename):
         if not shared.called_by_offline:  # don't show preview on screen if requested via offline
-            if models.settings.os != "Windows":
+            if models.settings.os != models.supported_platforms.windows:
                 subprocess.call(["open", filename])
             else:
                 os.system(f'start {filename}')

@@ -17,7 +17,7 @@ class EmailTemplates:
 
     """
 
-    if models.settings.bot != 'sphinx-build':
+    if models.settings.invoker != 'sphinx-build':
         _threat_audio = os.path.join(os.path.dirname(__file__), 'email_threat_audio.html')
         with open(_threat_audio) as file:
             threat_audio = file.read()
@@ -49,7 +49,7 @@ class OriginTemplates:
 
     """
 
-    if models.settings.bot != 'sphinx-build':
+    if models.settings.invoker != 'sphinx-build':
         with open(os.path.join(os.path.dirname(__file__), 'robinhood.html')) as file:
             robinhood = file.read()
 
@@ -64,7 +64,7 @@ class GenericTemplates:
 
     """
 
-    if models.settings.bot != 'sphinx-build':
+    if models.settings.invoker != 'sphinx-build':
         with open(os.path.join(os.path.dirname(__file__), 'win_wifi_config.xml')) as file:
             win_wifi_xml = file.read()
 
