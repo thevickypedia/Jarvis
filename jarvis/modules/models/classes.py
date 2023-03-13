@@ -173,6 +173,9 @@ class EnvConfig(BaseSettings):
     root_user: str = Field(default=getpass.getuser(), env='USER')
     root_password: str = Field(default=None, env='ROOT_PASSWORD')
 
+    # Mute during meetings
+    mute_for_meeting: bool = Field(default=False, env='MUTE_FOR_MEETING')
+
     # Built-in speaker config
     voice_name: str = Field(default=None, env='VOICE_NAME')
     voice_rate: Union[PositiveInt, PositiveFloat] = Field(default=audio_driver.getProperty("rate"), env='VOICE_RATE')

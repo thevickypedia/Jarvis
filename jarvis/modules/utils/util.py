@@ -309,7 +309,7 @@ def remove_duplicates(input_: List[Any]) -> List[Any]:
         Returns a cleaned up list.
     """
     # return list(set(input_))
-    return [i.strip() for n, i in enumerate(input_) if i not in input_[n + 1:]]
+    return [i for n, i in enumerate(input_) if i not in input_[n + 1:]]
 
 
 def block_print() -> NoReturn:

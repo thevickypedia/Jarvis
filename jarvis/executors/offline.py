@@ -2,8 +2,8 @@ import os
 import time
 import traceback
 from datetime import datetime
-from multiprocessing import Process
-from threading import Thread
+from multiprocessing import Process, Queue
+from threading import Thread, Timer
 from typing import AnyStr, List, NoReturn, Union
 
 import requests
@@ -17,6 +17,7 @@ from jarvis.executors.background_tasks import (remove_corrupted,
                                                validate_background_tasks)
 from jarvis.executors.conditions import conditions
 from jarvis.executors.crontab import crontab_executor
+from jarvis.executors.listener_controls import put_listener_state
 from jarvis.executors.others import photo
 from jarvis.executors.remind import reminder_executor
 from jarvis.executors.word_match import word_match
@@ -31,16 +32,19 @@ from jarvis.modules.meetings import events, icalendar
 from jarvis.modules.models import models
 from jarvis.modules.models.classes import BackgroundTask
 from jarvis.modules.offline import compatibles
-from jarvis.modules.utils import shared, support
+from jarvis.modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
+smart_listener = Queue()
 
 
 def background_tasks() -> NoReturn:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
+    # todo: move background tasks to cron internal with cron format and a string with an offline task
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
     tasks: List[BackgroundTask] = list(validate_background_tasks())
     offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
+    meeting_muter = []
     if models.settings.os == models.supported_platforms.macOS:
         events.event_app_launcher()
     start_events = start_meetings = start_cron = time.time()
@@ -107,7 +111,7 @@ def background_tasks() -> NoReturn:
                     logger.error(error)
                     models.env.sync_meetings = 99_999_999  # NEVER RUNs, as env vars are loaded only during start up
             start_meetings = time.time()
-            meeting_process = Process(target=icalendar.meetings_writer)
+            meeting_process = Process(target=icalendar.meetings_writer, args=(smart_listener,))
             logger.info("Getting meetings from ICS.") if dry_run else None
             meeting_process.start()
             with db.connection:
@@ -115,6 +119,23 @@ def background_tasks() -> NoReturn:
                 cursor.execute("UPDATE children SET meetings=null")
                 cursor.execute("INSERT or REPLACE INTO children (meetings) VALUES (?);", (meeting_process.pid,))
                 db.connection.commit()
+
+        # Mute during meetings
+        if models.env.mute_for_meeting and models.env.ics_url:
+            while not smart_listener.empty():
+                mutes = smart_listener.get(timeout=2)
+                logger.debug(mutes)
+                meeting_muter.append(mutes)
+            if meeting_times := util.remove_duplicates(input_=meeting_muter):
+                for each_muter in meeting_times:
+                    for meeting_name, timing_info in each_muter.items():
+                        meeting_time = timing_info[0]
+                        duration = timing_info[1]
+                        if meeting_time == datetime.now().strftime("%I:%M %p"):
+                            logger.info("Disabling listener for the meeting '%s'. Will be enabled after %s",
+                                        meeting_name, support.time_converter(second=duration))
+                            put_listener_state(state=False)
+                            Timer(function=put_listener_state, interval=duration, kwargs=dict(state=True)).start()
 
         # Trigger alarms
         if alarm_state := support.lock_files(alarm_files=True):
@@ -174,7 +195,7 @@ def get_tunnel() -> Union[HttpUrl, NoReturn]:
                 if hosted := tunnel.get('config', {}).get('addr'):
                     if int(hosted.split(':')[-1]) == models.env.offline_port:
                         return tunnel.get('public_url')
-    except EgressErrors + requests.JSONDecodeError as error:
+    except EgressErrors + (requests.JSONDecodeError,) as error:
         logger.error(error)
 
 

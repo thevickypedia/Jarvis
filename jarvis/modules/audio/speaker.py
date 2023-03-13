@@ -126,7 +126,13 @@ def frequently_used(function_name: str) -> NoReturn:
             data[function_name] = 1
     else:
         data = {function_name: 1}
+    try:
+        data = {k: v for k, v in sorted(data.items(), key=lambda x: x[1], reverse=True)}
+    except Exception as error:  # Commonly raises key error or type error but don't care, log it and remove the file
+        logger.error(error)
+        logger.warning(data)
+        os.remove(models.fileio.frequent)
+        return
     with open(models.fileio.frequent, 'w') as file:
-        yaml.dump(data={k: v for k, v in sorted(data.items(), key=lambda x: x[1], reverse=True)},
-                  stream=file, sort_keys=False)
+        yaml.dump(data=data, stream=file, sort_keys=False)
         file.flush()  # Write everything in buffer to file right away
