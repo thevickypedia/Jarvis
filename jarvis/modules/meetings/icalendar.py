@@ -8,7 +8,7 @@
 import sqlite3
 import time
 from datetime import datetime
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 from multiprocessing.context import \
     TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
@@ -31,12 +31,15 @@ db = database.Database(database=models.fileio.base_db)
 
 
 @retry.retry(attempts=3, interval=2, exclude_exc=sqlite3.OperationalError)
-def meetings_writer() -> NoReturn:
+def meetings_writer(queue: Queue = None) -> NoReturn:
     """Gets return value from ``meetings()`` and writes it to a file.
 
     This function runs in a dedicated process every hour to avoid wait time when meetings information is requested.
+
+    Args:
+        queue: Multiprocessing queue in case mute for meetings is enabled.
     """
-    info = meetings_gatherer()
+    info = meetings_gatherer(queue=queue)
     with db.connection:
         cursor = db.connection.cursor()
         cursor.execute("DELETE FROM ics")
@@ -47,12 +50,13 @@ def meetings_writer() -> NoReturn:
     return
 
 
-def meetings_gatherer(custom_date: Arrow = None, addon: str = "today") -> str:
+def meetings_gatherer(custom_date: Arrow = None, addon: str = "today", queue: Queue = None) -> str:
     """Gets ICS data and converts into a statement.
 
     Args:
         custom_date: Takes custom date as an arrow object.
         addon: When the custom date is.
+        queue: Multiprocessing queue to put events' time during which the listener will be deactivated.
 
     Returns:
         str:
@@ -84,12 +88,21 @@ def meetings_gatherer(custom_date: Arrow = None, addon: str = "today") -> str:
         if event.end.timestamp() < int(time.time()) and "last" not in addon and "yesterday" not in addon:
             continue
         count += 1
+        # todo:
+        #  pick a new library to parse ics as the current one doesn't support timezones in latest stable version
+        #  convert timezone by checking if timezones are in event.extra (ignore converting current timezone)
+        #  consider daylight as meeting might be setup in PST but happening in PDT where the above condition won't pass
         begin_local = event.begin.strftime("%I:%M %p")
+        event_duration = support.time_converter(second=event.duration.total_seconds())
+        if queue and models.env.mute_for_meeting and not event.all_day:
+            logger.debug("Adding entry to mute during meetings: %s: %s" % (begin_local, event_duration))
+            queue.put({event.name: [begin_local, event.duration.total_seconds()]})
         if len(events) == 1:
             meeting_status += f"You have an all day meeting {models.env.title}! {event.name}. " if event.all_day else \
-                f"You have a meeting at {begin_local} {models.env.title}! {event.name}. "
+                f"You have a meeting at {begin_local} for {event_duration} {models.env.title}! {event.name}. "
         else:
-            meeting_status += f"{event.name} - all day" if event.all_day else f"{event.name} at {begin_local}"
+            meeting_status += f"{event.name} - all day" if event.all_day else \
+                f"{event.name} at {begin_local} for {event_duration}"
             meeting_status += ', ' if index + 1 < len(events) else '.'
     if count:
         plural = "meeting" if count == 1 else "meetings"

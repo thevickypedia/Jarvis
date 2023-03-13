@@ -680,15 +680,20 @@ last_value: the last value assigned or None</p>
 <section id="module-jarvis.api.fast">
 <span id="api-application"></span><h1>API - Application<a class="headerlink" href="#module-jarvis.api.fast" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.fast.update_keywords">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.fast.</span></span><span class="sig-name descname"><span class="pre">update_keywords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.fast.update_keywords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets initiated in a thread to update keywords upon file modification.</p>
+<dt class="sig sig-object py" id="jarvis.api.fast.enable_cors">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.fast.</span></span><span class="sig-name descname"><span class="pre">enable_cors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.fast.enable_cors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allow CORS: Cross-Origin Resource Sharing to allow restricted resources on the API.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.fast.enable_cors">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.fast.</span></span><span class="sig-name descname"><span class="pre">enable_cors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.fast.enable_cors" title="Permalink to this definition">¶</a></dt>
-<dd><p>Allow CORS: Cross-Origin Resource Sharing to allow restricted resources on the API.</p>
+<dt class="sig sig-object py" id="jarvis.api.fast.update_keywords">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.fast.</span></span><span class="sig-name descname"><span class="pre">update_keywords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.fast.update_keywords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets initiated in a thread to update keywords upon file modification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buffer</strong> – Interval in seconds before each update.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -6279,6 +6284,11 @@ last_value: the last value assigned or None</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.mute_for_meeting">
+<span class="sig-name descname"><span class="pre">mute_for_meeting</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.mute_for_meeting" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.voice_name">
 <span class="sig-name descname"><span class="pre">voice_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.voice_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -7575,20 +7585,26 @@ Whites can have a value of None.</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.meetings.icalendar.meetings_writer">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">meetings_writer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.icalendar.meetings_writer" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">meetings_writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.icalendar.meetings_writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets return value from <code class="docutils literal notranslate"><span class="pre">meetings()</span></code> and writes it to a file.</p>
 <p>This function runs in a dedicated process every hour to avoid wait time when meetings information is requested.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>queue</strong> – Multiprocessing queue in case mute for meetings is enabled.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.meetings.icalendar.meetings_gatherer">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">meetings_gatherer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">custom_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Arrow</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'today'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.icalendar.meetings_gatherer" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">meetings_gatherer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">custom_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Arrow</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'today'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Queue</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.icalendar.meetings_gatherer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets ICS data and converts into a statement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>custom_date</strong> – Takes custom date as an arrow object.</p></li>
 <li><p><strong>addon</strong> – When the custom date is.</p></li>
+<li><p><strong>queue</strong> – Multiprocessing queue to put events’ time during which the listener will be deactivated.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

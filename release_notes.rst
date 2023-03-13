@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+7.1.9 (03/13/2023)
+------------------
+- Bug fixes on start up errors
+- Upgrade dependent versions
+- Add a feature to mute during meetings
+- Add todos for near future iterations
+
 7.1.8 (02/26/2023)
 ------------------
 - Remove `f-string` from logging

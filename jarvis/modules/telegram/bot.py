@@ -490,6 +490,7 @@ class TelegramBot:
                 return
             _, _, filename = payload['text'].partition(' file ')
             if filename:
+                # todo: telegram is not able to render giant message because of too many log files (group them)
                 response = file_handler.get_file(filename=filename.strip())
                 if response.ok:
                     self.send_document(filename=response.info, chat_id=payload['from']['id'])

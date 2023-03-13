@@ -24,21 +24,8 @@ app = FastAPI(
     version=version
 )
 
-# Include all the routers
-if current_process().name == "fast_api":  # Avoid looping when called by subprocesses
-    for route in discover.routes(routers=routers.__path__[0]):
-        app.include_router(router=route)
 
-
-def update_keywords() -> NoReturn:
-    """Gets initiated in a thread to update keywords upon file modification."""
-    logger.info("Initiated background task to update keywords upon file modification.")
-    while True:
-        keywords_handler.rewrite_keywords()
-        time.sleep(1)
-
-
-async def enable_cors() -> NoReturn:
+def enable_cors() -> NoReturn:
     """Allow CORS: Cross-Origin Resource Sharing to allow restricted resources on the API."""
     logger.info('Setting CORS policy.')
     origins = [
@@ -57,6 +44,25 @@ async def enable_cors() -> NoReturn:
     )
 
 
+# Include all the routers
+if current_process().name == "fast_api":  # Avoid looping when called by subprocesses
+    enable_cors()
+    for route in discover.routes(routers=routers.__path__[0]):
+        app.include_router(router=route)
+
+
+def update_keywords(buffer: int = 10) -> NoReturn:
+    """Gets initiated in a thread to update keywords upon file modification.
+
+    Args:
+        buffer: Interval in seconds before each update.
+    """
+    logger.info("Initiated background task to update keywords upon file modification.")
+    while True:
+        keywords_handler.rewrite_keywords()
+        time.sleep(buffer)
+
+
 def run_robinhood() -> NoReturn:
     """Runs in a dedicated process during startup, if the file was modified earlier than the past hour."""
     if os.path.isfile(models.fileio.robinhood):
@@ -72,7 +78,6 @@ def run_robinhood() -> NoReturn:
 @app.on_event(event_type='startup')
 async def start_robinhood() -> Any:
     """Initiates robinhood gatherer in a process and adds a cron schedule if not present already."""
-    await enable_cors()
     stockmonitor_squire.nasdaq()
     logger.info("Hosting at http://{host}:{port}".format(host=models.env.offline_host, port=models.env.offline_port))
     if all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_pass]):

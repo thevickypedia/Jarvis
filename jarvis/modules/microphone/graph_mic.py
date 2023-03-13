@@ -20,7 +20,7 @@ import numpy
 import sounddevice
 import yaml
 from matplotlib.animation import FuncAnimation
-from matplotlib.axes._subplots import Subplot  # noqa
+from matplotlib.axes import Subplot
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 
@@ -194,7 +194,7 @@ def _kick_off() -> NoReturn:
         device=settings.device, channels=max(settings.channels),
         samplerate=settings.samplerate, callback=audio_callback
     )
-    ani = FuncAnimation(fig=fig, func=update_plot, interval=settings.interval, blit=True)  # noqa
+    ani = FuncAnimation(fig=fig, func=update_plot, interval=settings.interval, blit=True, cache_frame_data=False)  # noqa
     with stream:
         matplotlib.pyplot.show()
 

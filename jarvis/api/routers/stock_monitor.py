@@ -1,3 +1,4 @@
+import string
 from datetime import datetime
 from http import HTTPStatus
 from threading import Thread
@@ -6,7 +7,6 @@ from typing import Optional
 import gmailconnector
 import jinja2
 import jwt
-import pandas
 from fastapi import APIRouter, Header, Request
 from gmailconnector.validator import validate_email
 from pydantic import EmailStr
@@ -118,8 +118,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
         result = validate_email(email_address=input_data.email, smtp_check=False)
         logger.debug(result.body)
         if result.ok is False:
-            raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
-                              detail=f"{input_data.email.split('@')[-1]!r} doesn't resolve to a valid mail server!")
+            raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real, detail=result.body)
         await send_otp_stock_monitor(email_address=input_data.email)
 
     if input_data.request == "GET":
@@ -128,15 +127,23 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
         # if input_data.token:
         #     decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
         #     logger.warning("Unwanted information received: '%s'" % decoded)
-        if data := stockmonitor_squire.get_stock_userdata(email=input_data.email):  # Filter data from DB by email
-            data_dict = [dict(zip(stock_monitor.user_info, each_entry)) for each_entry in data]
-            logger.info(data_dict)
+        if db_entry := stockmonitor_squire.get_stock_userdata(email=input_data.email):  # Filter data from DB by email
+            logger.info(db_entry)
             if input_data.plaintext:
-                raise APIResponse(status_code=HTTPStatus.OK.real, detail=data_dict)
-            # Customized UI with HTML and CSS can consume this dataframe into a table, comment it otherwise
-            pandas.set_option('display.max_columns', None)
-            data_frame = pandas.DataFrame(data=data_dict)
-            raise APIResponse(status_code=HTTPStatus.OK.real, detail=data_frame.to_html())
+                raise APIResponse(status_code=HTTPStatus.OK.real,
+                                  detail=[dict(zip(stock_monitor.user_info, each_entry)) for each_entry in db_entry])
+            # Format as an HTML table to serve in https://vigneshrao.com/stock-monitor
+            # This is a mess, yet required because JavaScript is not good at handling dataframes
+            html_data = """<table border="1" class="dataframe" id="dataframe"><tbody><tr><td><b>Selector</b></td>"""
+            html_data += "<td><b>" + "</b></td><td><b>".join((string.capwords(p)
+                                                              for p in stock_monitor.user_info)) + "</b></td></tr>"
+            rows = ""
+            for ind, each_entry in enumerate(db_entry):
+                row = f'<tr><td align="center"><input value="{ind}" id="radio_{ind}" type="radio"></td><td>'
+                row += "</td><td>".join(str(i) for i in each_entry) + "</td>"
+                rows += row
+            html_data += rows + "</tr></tbody></table>"
+            raise APIResponse(status_code=HTTPStatus.OK.real, detail=html_data)
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f"No entry found in database for {input_data.email!r}")
 
