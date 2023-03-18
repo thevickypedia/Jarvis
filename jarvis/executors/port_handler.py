@@ -46,20 +46,20 @@ def kill_port_pid(port: int, protocol: str = 'tcp') -> Union[bool, None]:
         for each in active_sessions:
             each_split = each.split()
             if each_split[0].strip() == 'Python':
-                logger.info("Application hosted on %s is listening to port: %d" % (each_split[-2], port))
+                logger.info("Application hosted on %s is listening to port: %d", each_split[-2], port)
                 pid = int(each_split[1])
                 if pid == models.settings.pid:
                     called_function = sys._getframe(1).f_code.co_name  # noqa
                     called_file = sys._getframe(1).f_code.co_filename.replace(f'{os.getcwd()}/', '')  # noqa
-                    logger.warning("%s from %s tried to kill the running process." % (called_function, called_file))
+                    logger.warning("%s from %s tried to kill the running process.", called_function, called_file)
                     warnings.warn(
                         f'OPERATION DENIED: {called_function} from {called_file} tried to kill the running process.'
                     )
                     return
                 os.kill(pid, signal.SIGTERM)
-                logger.info("Killed PID: %d" % pid)
+                logger.info("Killed PID: %d", pid)
                 return True
-        logger.info("No active process running on %d" % port)
+        logger.info("No active process running on %d", port)
         return False
     except (subprocess.SubprocessError, subprocess.CalledProcessError) as error:
         if isinstance(error, subprocess.CalledProcessError):

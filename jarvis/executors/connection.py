@@ -35,9 +35,9 @@ def wifi_connector() -> NoReturn:
             else:
                 socket_.connect(("8.8.8.8", 80))
             if unknown_errors:
-                logger.info("Connection established with IP: %s. Resetting temp errors." % socket_.getsockname()[0])
+                logger.info("Connection established with IP: %s. Resetting temp errors.", socket_.getsockname()[0])
         except OSError as error:
-            logger.error("OSError [%d]: %s" % (error.errno, error.strerror))
+            logger.error("OSError [%d]: %s", error.errno, error.strerror)
             ControlPeripheral(logger=logger).enable()  # Make sure Wi-Fi is enabled
             time.sleep(5)  # When Wi-Fi is toggled, it takes a couple of seconds to actually turn on
             ControlConnection(wifi_ssid=models.env.wifi_ssid, wifi_password=models.env.wifi_password,

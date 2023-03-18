@@ -41,7 +41,7 @@ def check_existing() -> bool:
         A boolean flag whether a valid connection is present.
     """
     if is_port_in_use(port=models.env.speech_synthesis_port):
-        logger.info("%d is currently in use." % models.env.speech_synthesis_port)
+        logger.info("%d is currently in use.", models.env.speech_synthesis_port)
         try:
             res = requests.get(url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}",
                                timeout=1)

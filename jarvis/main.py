@@ -32,14 +32,14 @@ from jarvis.modules.utils import shared, support
 def restart_checker() -> NoReturn:
     """Operations performed during internal/external request to restart."""
     if flag := support.check_restart():
-        logger.info("Restart condition is set to %s by %s" % (flag[0], flag[1]))
+        logger.info("Restart condition is set to %s by %s", flag[0], flag[1])
         if flag[1] == "OFFLINE":
             stop_processes()
             logger.propagate = False
             for _handler in logger.handlers:
                 logger.removeHandler(hdlr=_handler)
             handler = custom_handler()
-            logger.info("Switching to %s" % handler.baseFilename)
+            logger.info("Switching to %s", handler.baseFilename)
             logger.addHandler(hdlr=handler)
             starter()
             shared.processes = start_processes()
@@ -73,7 +73,7 @@ class Activator:
         """
         label = ', '.join([f'{string.capwords(wake)!r}: {sens}' for wake, sens in
                            zip(models.env.wake_words, models.env.sensitivity)])
-        logger.info("Initiating hot-word detector with sensitivity: %s" % label)
+        logger.info("Initiating hot-word detector with sensitivity: %s", label)
         keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words]
 
         arguments = {
@@ -110,7 +110,7 @@ class Activator:
 
     def executor(self) -> NoReturn:
         """Calls the listener for actionable phrase and runs the speaker node for response."""
-        logger.debug("Detected %s at %s" % (models.settings.bot, datetime.now()))
+        logger.debug("Detected %s at %s", models.settings.bot, datetime.now())
         if get_listener_state():
             playsound(sound=models.indicators.acknowledgement, block=False)
         audio_engine.close(stream=self.audio_stream)
@@ -150,7 +150,7 @@ class Activator:
                 keywords_handler.rewrite_keywords()
                 restart_checker()
                 if flag := support.check_stop():
-                    logger.info("Stopper condition is set to %s by %s" % (flag[0], flag[1]))
+                    logger.info("Stopper condition is set to %s by %s", flag[0], flag[1])
                     self.stop()
                     terminator()
         except StopSignal:
@@ -189,7 +189,7 @@ class Activator:
 
 def start() -> NoReturn:
     """Starts main process to activate Jarvis after checking internet connection and initiating background processes."""
-    logger.info("Current Process ID: %d" % models.settings.pid)
+    logger.info("Current Process ID: %d", models.settings.pid)
     starter()
     if ip_address() and public_ip_info():
         sys.stdout.write(f"\rINTERNET::Connected to {get_connection_info() or 'the internet'}.")

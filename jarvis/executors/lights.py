@@ -114,7 +114,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         return
 
     if not os.path.isfile(models.fileio.smart_devices):
-        logger.warning("%s not found." % models.fileio.smart_devices)
+        logger.warning("%s not found.", models.fileio.smart_devices)
         support.no_env_vars()
         return
 
@@ -130,7 +130,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         return
 
     if not any(smart_devices):
-        logger.warning("'%s' is empty for lights." % models.fileio.smart_devices)
+        logger.warning("'%s' is empty for lights.", models.fileio.smart_devices)
         support.no_env_vars()
         return
 
@@ -150,12 +150,12 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     #         host_names.append(smart_devices.get(light_location_section))
     #         light_location.append(light_location_section.replace('_', ' ').replace('-', ''))
     #     light_location = " and ".join(light_location)
-    #     logger.info("Lights location: %s" % light_location)
+    #     logger.info("Lights location: %s", light_location)
 
     else:
         # Get the closest matching name provided in smart_devices.yaml compared to what's requested by the user
         light_location = util.get_closest_match(text=phrase, match_list=list(smart_devices.keys()))
-        logger.info("Lights location: %s" % light_location)
+        logger.info("Lights location: %s", light_location)
         host_names = [smart_devices.get(light_location)]
         light_location = light_location.replace('_', ' ').replace('-', '')
 

@@ -119,14 +119,14 @@ def get_connection_info(target: str = "SSID") -> Union[str, None]:
     except (subprocess.CalledProcessError, subprocess.CalledProcessError, FileNotFoundError) as error:
         if isinstance(error, subprocess.CalledProcessError):
             result = error.output.decode(encoding='UTF-8').strip()
-            logger.error("[%d]: %s" % (error.returncode, result))
+            logger.error("[%d]: %s", error.returncode, result)
         else:
             logger.error(error)
         return
     if models.settings.os == models.supported_platforms.macOS:
         out, err = process.communicate()
         if error := process.returncode:
-            logger.error("Failed to fetch %s with exit code: %s\n%s" % (target, error, err))
+            logger.error("Failed to fetch %s with exit code [%s]: %s" % (target, error, err))
             return
         # noinspection PyTypeChecker
         return dict(map(str.strip, info.split(": ")) for info in out.decode("utf-8").splitlines()[:-1] if
@@ -136,7 +136,7 @@ def get_connection_info(target: str = "SSID") -> Union[str, None]:
                       i.decode().strip().startswith(target)]:
             return result[0].split(':')[-1].strip()
         else:
-            logger.error("Failed to fetch %s" % target)
+            logger.error("Failed to fetch %s", target)
     else:
         if process:
             return process.decode(encoding='UTF-8').strip()

@@ -33,7 +33,7 @@ def generate_graph(logger: logging.Logger, ticker: str, bars: int = 300) -> Unio
     References:
         https://stackoverflow.com/a/49729752
     """
-    logger.info("Generating price chart for '%s'" % ticker)
+    logger.info("Generating price chart for '%s'", ticker)
     dataframe = webull().get_bars(stock=ticker, interval='m60', count=bars, extendTrading=1)  # ~ 1 month
     refined = dataframe[['close']]
     if len(refined) == 0:
@@ -226,9 +226,9 @@ class StockMonitor:
             response = mail_obj.send_email(subject=subject, recipient=k, html_body=template, sender="Jarvis",
                                            attachment=datastore['attachments'])
             if response.ok:  # Remove entry if notification was successful
-                self.logger.info("Email has been sent to '%s'" % k)
+                self.logger.info("Email has been sent to '%s'", k)
                 for entry in datastore['removals']:
-                    self.logger.info("Removing '%s' from database." % entry)
+                    self.logger.info("Removing '%s' from database.", entry)
                     stockmonitor_squire.delete_stock_userdata(data=entry)
             else:
                 self.logger.error(response.json())

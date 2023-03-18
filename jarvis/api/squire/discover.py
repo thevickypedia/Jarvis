@@ -78,7 +78,7 @@ def routes(routers: str) -> Generator[APIRouter]:
             warnings.warn(error.__str__())
             continue
         if hasattr(route, 'router'):
-            logger.info("Loading router: %s" % entrypoint.module)
+            logger.info("Loading router: %s", entrypoint.module)
             yield getattr(route, 'router')
         else:
             warnings.warn(f'{route.__name__} is missing the router attribute.')

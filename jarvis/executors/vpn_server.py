@@ -3,7 +3,8 @@ from collections.abc import Generator
 from multiprocessing import Process
 from threading import Thread
 
-from botocore.exceptions import ClientError, EndpointConnectionError
+from botocore.exceptions import (BotoCoreError, ClientError,
+                                 EndpointConnectionError, SSLError)
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
@@ -18,7 +19,7 @@ try:
     import vpn
 
     VPN_PRE_CHECK = True
-except (EndpointConnectionError, ClientError) as error:
+except (EndpointConnectionError, ClientError, SSLError, BotoCoreError) as error:
     VPN_PRE_CHECK = False
     logger.error(error)
 
@@ -53,7 +54,7 @@ def extract_custom_region(phrase: str) -> str:
     phrase = " ".join(regional_phrase(phrase=phrase))
     for region in vpn.settings.available_regions:
         if region.replace('-', ' ') in phrase:
-            logger.info("Custom region chosen: %s" % region)
+            logger.info("Custom region chosen: %s", region)
             return region
 
 

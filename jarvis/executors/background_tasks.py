@@ -49,7 +49,7 @@ def remove_corrupted(task: Union[BackgroundTask, dict]) -> NoReturn:
         existing_data = yaml.load(stream=read_file, Loader=yaml.FullLoader)
     for task_ in existing_data:
         if (isinstance(task, dict) and task_ == task) or (isinstance(task, BackgroundTask) and task_ == task.__dict__):
-            logger.info("Removing corrupted task: %s" % task_)
+            logger.info("Removing corrupted task: %s", task_)
             existing_data.remove(task_)
     with open(models.fileio.background_tasks, 'w') as write_file:
         yaml.dump(data=existing_data, stream=write_file)
@@ -80,7 +80,7 @@ def validate_background_tasks(log: bool = True) -> Generator[BackgroundTask]:
                              (''.join(['*' for _ in range(120)]), file.read(), ''.join(['*' for _ in range(120)])))
                 os.rename(src=models.fileio.background_tasks, dst=models.fileio.tmp_background_tasks)
         if task_info:
-            logger.info("Background tasks: %d" % len(task_info)) if log else None
+            logger.info("Background tasks: %d", len(task_info)) if log else None
         else:
             return
         for t in task_info:
@@ -92,9 +92,9 @@ def validate_background_tasks(log: bool = True) -> Generator[BackgroundTask]:
                 continue
             if word_match(phrase=task.task, match_list=compatibles.offline_compatible()):
                 if log:
-                    logger.info("'%s' will be executed every %s" % (task.task,
-                                                                    support.time_converter(second=task.seconds)))
+                    logger.info("'%s' will be executed every %s",
+                                task.task, support.time_converter(second=task.seconds))
                 yield task
             else:
-                logger.error("'%s' is not a part of offline communication compatible request." % task.task)
+                logger.error("'%s' is not a part of offline communication compatible request.", task.task)
                 remove_corrupted(task=task)

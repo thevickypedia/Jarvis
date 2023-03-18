@@ -236,6 +236,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 
 **Calendar/Meeting integrations**
 - **ICS_URL** - Shared calendar URL to get meetings information from. Should end with `.ics`
+- **MUTE_FOR_MEETING** - Boolean value to disable the listener during meetings. Defaults to `False`
 - **EVENT_APP** - To read events from `outlook` or `calendar` application in `macOS`. Defaults to `calendar` <br>
 :bulb: &nbsp; When `calender` is used, the name of the _calendar_ within the `Calendar.app` should be **Jarvis** <br>
 

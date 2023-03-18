@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+7.2.0 (03/18/2023)
+------------------
+- Make imports to not rely on internet connection
+- Reformat logging
+- Update README.md and todos
+
 7.1.9 (03/13/2023)
 ------------------
 - Bug fixes on start up errors

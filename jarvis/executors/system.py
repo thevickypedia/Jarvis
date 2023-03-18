@@ -117,7 +117,7 @@ def system_vitals() -> None:
                           run=True)
             response = listener.listen()
             if word_match(phrase=response.lower(), match_list=keywords.keywords.ok):
-                logger.info("JARVIS::Restarting %s" % shared.hosted_device.get('device'))
+                logger.info("JARVIS::Restarting %s", shared.hosted_device.get('device'))
                 restart(ask=False)
 
 

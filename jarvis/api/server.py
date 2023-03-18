@@ -47,12 +47,12 @@ def fast_api() -> None:
     url = f'http://{models.env.offline_host}:{models.env.offline_port}'
 
     if is_port_in_use(port=models.env.offline_port):
-        logger.info("%d is currently in use." % models.env.offline_port)
+        logger.info("%d is currently in use.", models.env.offline_port)
 
         try:
             res = requests.get(url=url, timeout=1)
             if res.ok:
-                logger.info("'%s' is accessible." % url)
+                logger.info("'%s' is accessible.", url)
                 return
             raise requests.ConnectionError
         except EgressErrors:
@@ -75,7 +75,7 @@ def fast_api() -> None:
     }
 
     logger.debug(argument_dict)
-    logger.info("Starting FastAPI on Uvicorn server with %d workers." % models.env.workers)
+    logger.info("Starting FastAPI on Uvicorn server with %d workers.", models.env.workers)
 
     server_conf = uvicorn.Config(**argument_dict)
     APIServer(config=server_conf).run_in_parallel()

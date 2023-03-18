@@ -41,7 +41,7 @@ async def speech_synthesis_voices():
             logger.error(error)
             raise APIResponse(status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real, detail=str(error))
         available_voices = [value.get('id').replace('/', '_') for key, value in json_response.items()]
-        logger.info("Available voices: %d" % len(available_voices))
+        logger.info("Available voices: %d", len(available_voices))
         logger.debug(available_voices)
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=available_voices)
     else:
@@ -90,11 +90,11 @@ async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: b
         else:
             return
     if os.path.isfile(path=models.fileio.speech_synthesis_wav):
-        logger.debug("Speech synthesis file generated for '%s'" % text)
+        logger.debug("Speech synthesis file generated for '%s'", text)
         Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': models.fileio.speech_synthesis_wav},
                daemon=True).start()
         return FileResponse(path=models.fileio.speech_synthesis_wav, media_type='application/octet-stream',
                             filename="synthesized.wav", status_code=HTTPStatus.OK.real)
-    logger.error("File Not Found: %s" % models.fileio.speech_synthesis_wav)
+    logger.error("File Not Found: %s", models.fileio.speech_synthesis_wav)
     if raise_for_status:
         raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.__dict__['phrase'])

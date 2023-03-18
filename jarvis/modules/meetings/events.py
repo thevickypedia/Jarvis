@@ -80,7 +80,7 @@ def events_gatherer() -> str:
         err_msg = err.decode("UTF-8")
         err_code = err_msg.split()[-1].strip()
         if err_code == "(-1728)":  # If 'Jarvis' is unavailable in calendar/outlook application
-            logger.warning("'Jarvis' is unavailable in %s." % models.env.event_app)
+            logger.warning("'Jarvis' is unavailable in %s.", models.env.event_app)
             return f"Jarvis is unavailable in your {models.env.event_app} {models.env.title}!"
         elif err_code == "(-1712)":  # If an event takes 2+ minutes, the Apple Event Manager reports a time-out error.
             failure = f"{models.env.event_app}/event took an unusually long time to respond/complete.\nInclude, " \
@@ -132,14 +132,14 @@ def events() -> None:
     if event_status and event_status[1] == datetime.now().strftime('%Y_%m_%d'):
         speaker.speak(text=event_status[0])
     elif event_status:
-        logger.warning("Date in event status (%s) does not match the current date "
-                       "(%s)" % (event_status[1], datetime.now().strftime('%Y_%m_%d')))
-        logger.info("Starting adhoc process to update %s table." % models.env.event_app)
+        logger.warning("Date in event status (%s) does not match the current date (%s)",
+                       event_status[1], datetime.now().strftime('%Y_%m_%d'))
+        logger.info("Starting adhoc process to update %s table.", models.env.event_app)
         Process(target=events_writer).start()
         speaker.speak(text=f"Events table is outdated {models.env.title}. Please try again in a minute or two.")
     else:
         if shared.called_by_offline:
-            logger.info("Starting adhoc process to get events from %s." % models.env.event_app)
+            logger.info("Starting adhoc process to get events from %s.", models.env.event_app)
             Process(target=events_writer).start()
             speaker.speak(text=f"Events table is empty {models.env.title}. Please try again in a minute or two.")
             return

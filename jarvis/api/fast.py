@@ -67,8 +67,7 @@ def run_robinhood() -> NoReturn:
     """Runs in a dedicated process during startup, if the file was modified earlier than the past hour."""
     if os.path.isfile(models.fileio.robinhood):
         modified = int(os.stat(models.fileio.robinhood).st_mtime)
-        logger.info("%s was generated on %s." % (models.fileio.robinhood,
-                                                 datetime.fromtimestamp(modified).strftime('%c')))
+        logger.info("%s was generated on %s.", models.fileio.robinhood, datetime.fromtimestamp(modified).strftime('%c'))
         if int(time.time()) - modified < 3_600:  # generates new file only if the file is older than an hour
             return
     logger.info('Initiated robinhood gatherer.')

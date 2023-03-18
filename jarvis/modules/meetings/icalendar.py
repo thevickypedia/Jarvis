@@ -89,13 +89,13 @@ def meetings_gatherer(custom_date: Arrow = None, addon: str = "today", queue: Qu
             continue
         count += 1
         # todo:
-        #  pick a new library to parse ics as the current one doesn't support timezones in latest stable version
+        #  pick a new library to parse ics as the current one doesn't support timezones in the latest stable version
         #  convert timezone by checking if timezones are in event.extra (ignore converting current timezone)
         #  consider daylight as meeting might be setup in PST but happening in PDT where the above condition won't pass
         begin_local = event.begin.strftime("%I:%M %p")
         event_duration = support.time_converter(second=event.duration.total_seconds())
         if queue and models.env.mute_for_meeting and not event.all_day:
-            logger.debug("Adding entry to mute during meetings: %s: %s" % (begin_local, event_duration))
+            logger.debug("Adding entry to mute during meetings: %s: %s", begin_local, event_duration)
             queue.put({event.name: [begin_local, event.duration.total_seconds()]})
         if len(events) == 1:
             meeting_status += f"You have an all day meeting {models.env.title}! {event.name}. " if event.all_day else \
