@@ -422,7 +422,7 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
             if not (position := control.get_position().get('position')):
                 logger.error("Unable to get position of the vehicle.")
                 return
-            logger.info("latitude: %f, longitude: %f" % (position['latitude'], position['longitude']))
+            logger.info("latitude: %f, longitude: %f", position['latitude'], position['longitude'])
             data = get_location_from_coordinates(coordinates=(position['latitude'], position['longitude']))
             number = data.get('streetNumber', data.get('house_number', ''))
             street = data.get('street', data.get('road'))

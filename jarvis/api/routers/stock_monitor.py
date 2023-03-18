@@ -103,7 +103,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
 
     input_data.request = input_data.request.upper()
     if input_data.request not in ("GET", "PUT", "DELETE"):
-        logger.warning("'%s' is not in the allowed request list." % input_data.request)
+        logger.warning("'%s' is not in the allowed request list.", input_data.request)
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=HTTPStatus.UNPROCESSABLE_ENTITY.__dict__['phrase'])
 
@@ -113,7 +113,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
     if email_otp:
         recd_dict[input_data.email] = email_otp
     if recd_dict.get(input_data.email, 'DO_NOT') == sent_dict.get(input_data.email, 'MATCH'):
-        logger.debug("%s has been verified." % input_data.email)
+        logger.debug("%s has been verified.", input_data.email)
     else:
         result = validate_email(email_address=input_data.email, smtp_check=False)
         logger.debug(result.body)
@@ -122,11 +122,11 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
         await send_otp_stock_monitor(email_address=input_data.email)
 
     if input_data.request == "GET":
-        logger.info("'%s' requested their data." % input_data.email)
+        logger.info("'%s' requested their data.", input_data.email)
         # Token is not required for GET method
         # if input_data.token:
         #     decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
-        #     logger.warning("Unwanted information received: '%s'" % decoded)
+        #     logger.warning("Unwanted information received: '%s'", decoded)
         if db_entry := stockmonitor_squire.get_stock_userdata(email=input_data.email):  # Filter data from DB by email
             logger.info(db_entry)
             if input_data.plaintext:
@@ -191,7 +191,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
 
     # Deletes an entry that's present already when requested
     if input_data.request == "DELETE":
-        logger.info("'%s' requested to delete '%s'" % (input_data.email, new_entry))
+        logger.info("'%s' requested to delete '%s'", input_data.email, new_entry)
         if new_entry not in stockmonitor_squire.get_stock_userdata(email=input_data.email):  # Checks if entry exists
             raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail="Entry is not present in the database.")
         stockmonitor_squire.delete_stock_userdata(data=new_entry)
@@ -201,7 +201,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
     if new_entry in stockmonitor_squire.get_stock_userdata():
         raise APIResponse(status_code=HTTPStatus.CONFLICT.real, detail="Duplicate request!\nEntry exists in database.")
 
-    logger.info("'%s' requested to add '%s'" % (input_data.email, new_entry))
+    logger.info("'%s' requested to add '%s'", input_data.email, new_entry)
     try:
         price_check = webull().get_quote(decoded['Ticker'])
         current_price = price_check.get('close') or price_check.get('open')

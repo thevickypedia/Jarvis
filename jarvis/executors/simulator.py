@@ -46,12 +46,12 @@ def initiate_simulator(simulation_data: Dict[str, List[str]]) -> NoReturn:
     successful, failed = 0, 0
     shared.called_by_offline = True
     for category, task_list in simulation_data.items():
-        logger.info("Requesting category: %s" % category)
+        logger.info("Requesting category: %s", category)
         for task in task_list:
             if not word_match(phrase=task, match_list=offline_compatible):
-                logger.warning("'%s' is not an offline compatible request." % task)
+                logger.warning("'%s' is not an offline compatible request.", task)
                 continue
-            logger.info("Request: %s" % task)
+            logger.info("Request: %s", task)
             try:
                 response = offline_communicator(command=task)
             except Exception as error:
@@ -62,7 +62,7 @@ def initiate_simulator(simulation_data: Dict[str, List[str]]) -> NoReturn:
                     failed += 1
                 else:
                     successful += 1
-                    logger.info("Response: %s" % response)
+                    logger.info("Response: %s", response)
     shared.called_by_offline = False
     with open(log_file) as file:
         errors = len(file.read().split('ERROR')) - 1

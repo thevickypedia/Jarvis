@@ -49,9 +49,9 @@ class RokuECP:
                     logger.error(error)
                     raise TVError
                 else:
-                    logger.info("Connected to '%s'" % resolved[0].split('.')[0])
+                    logger.info("Connected to '%s'", resolved[0].split('.')[0])
             else:
-                logger.error("%d - %s" % (response.status_code, response.text))
+                logger.error("%d - %s", response.status_code, response.text)
                 raise TVError
 
     def make_call(self, path, method) -> requests.Response:
@@ -205,9 +205,9 @@ class RokuECP:
         if app_id:
             response = self.make_call(path=f'/launch/{app_id}', method='POST')
             if not response.ok:
-                logger.error("%d: %s" % (response.status_code, response.text))
+                logger.error("%d: %s", response.status_code, response.text)
         else:
-            logger.error("%s not found in tv" % app_name)
+            logger.error("%s not found in tv", app_name)
 
     def get_apps(self, raw: bool = False) -> Union[Generator[Dict[str, str]], Generator[str]]:
         """Get list of applications installed on the TV.

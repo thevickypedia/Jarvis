@@ -116,7 +116,7 @@ def plot_mic(channels: List[int] = None, device: Union[str, int] = None, window:
     config.multiprocessing_logger(filename=os.path.join('logs', 'mic_plotter_%d-%m-%Y.log'))
     if models.settings.os == models.supported_platforms.linux:  # Since called by subprocess on Linux
         subprocess_id = os.getpid()
-        logger.info("Writing process ID [%d] into [plot_mic] children table." % subprocess_id)
+        logger.info("Writing process ID [%d] into [plot_mic] children table.", subprocess_id)
         with db.connection:
             cursor = db.connection.cursor()
             cursor.execute("UPDATE children SET plot_mic=null")
@@ -133,7 +133,7 @@ def plot_mic(channels: List[int] = None, device: Union[str, int] = None, window:
                 logger.critical("ATTENTION::Missing %s's process ID in '%s'" %
                                 (plot_mic.__name__, models.fileio.processes))
         else:
-            logger.critical("ATTENTION::Missing '%s'" % models.fileio.processes)
+            logger.critical("ATTENTION::Missing '%s'", models.fileio.processes)
     logger.info("Feeding all arguments into dict.")
     if not channels:
         channels = [1]

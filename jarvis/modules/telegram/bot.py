@@ -61,7 +61,7 @@ def get_title_by_name(name: str) -> str:
         str:
         ``mam`` if predicted to be female, ``sir`` if gender is predicted to be male or unpredicted.
     """
-    logger.info("Identifying gender for %s" % name)
+    logger.info("Identifying gender for %s", name)
     try:
         response = requests.get(url=f"https://api.genderize.io/?name={name}")
     except EgressErrors as error:
@@ -70,7 +70,7 @@ def get_title_by_name(name: str) -> str:
     if not response.ok:
         return 'sir'
     if response.json().get('gender', 'Unidentified').lower() == 'female':
-        logger.info("%s has been identified as female." % name)
+        logger.info("%s has been identified as female.", name)
         return 'mam'
     return 'sir'
 
@@ -338,10 +338,10 @@ class TelegramBot:
             return True
         request_time = time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(payload['date']))
         logger.warning("Request timed out when %s requested %s" % (payload['from']['username'], payload.get('text')))
-        logger.warning("Request time: %s" % request_time)
+        logger.warning("Request time: %s", request_time)
         if "override" in payload.get('text', '').lower() and not \
                 word_match(phrase=payload.get('text', ''), match_list=keywords.keywords.kill):
-            logger.info("%s requested a timeout override." % payload['from']['username'])
+            logger.info("%s requested a timeout override.", payload['from']['username'])
             return True
         else:
             self.reply_to(payload=payload,
@@ -361,7 +361,7 @@ class TelegramBot:
         if not word_match(phrase=payload.get('text', ''), match_list=keywords.keywords.kill):
             return True
         if "override" in payload.get('text', '').lower():
-            logger.info("%s requested a STOP override." % payload['from']['username'])
+            logger.info("%s requested a STOP override.", payload['from']['username'])
             self.reply_to(payload=payload, response=f"Shutting down now {models.env.title}!\n{support.exit_message()}")
             with db.connection:
                 cursor = db.connection.cursor()
@@ -490,7 +490,6 @@ class TelegramBot:
                 return
             _, _, filename = payload['text'].partition(' file ')
             if filename:
-                # todo: telegram is not able to render giant message because of too many log files (group them)
                 response = file_handler.get_file(filename=filename.strip())
                 if response.ok:
                     self.send_document(filename=response.info, chat_id=payload['from']['id'])
@@ -525,7 +524,7 @@ class TelegramBot:
                 not word_match(phrase=command, match_list=multiexec):
             for each in command.split(' and '):
                 if not word_match(phrase=each, match_list=compatibles.offline_compatible()):
-                    logger.warning("'%s' is not a part of offline communicator compatible request." % each)
+                    logger.warning("'%s' is not a part of offline communicator compatible request.", each)
                     self.send_message(chat_id=payload['from']['id'],
                                       response=f"{each!r} is not a part of offline communicator compatible request.")
                 else:
@@ -533,17 +532,17 @@ class TelegramBot:
             return
 
         if not word_match(phrase=command, match_list=compatibles.offline_compatible()):
-            logger.warning("'%s' is not a part of offline communicator compatible request." % command)
+            logger.warning("'%s' is not a part of offline communicator compatible request.", command)
             self.send_message(chat_id=payload['from']['id'],
                               response=f"{command!r} is not a part of offline communicator compatible request.")
             return
         if ' after ' in command_lower:
             if delay_info := timed_delay(phrase=command):
-                logger.info("Request: %s" % delay_info[0])
+                logger.info("Request: %s", delay_info[0])
                 self.process_response(payload=payload,
                                       response="I will execute it after "
                                                f"{support.time_converter(second=delay_info[1])} {models.env.title}!")
-                logger.info("Response: Task will be executed after %d seconds" % delay_info[1])
+                logger.info("Response: Task will be executed after %d seconds", delay_info[1])
                 return
         self.executor(command=command, payload=payload)
 
@@ -555,7 +554,7 @@ class TelegramBot:
             payload: Payload received, to extract information from.
             respond: Boolean flag to restrict the response after executing a command.
         """
-        logger.info("Request: %s" % command)
+        logger.info("Request: %s", command)
         try:
             response = offline_communicator(command=command).replace(models.env.title,
                                                                      USER_TITLE.get(payload['from']['username']))
@@ -563,7 +562,7 @@ class TelegramBot:
             logger.error(error)
             logger.error(traceback.format_exc())
             response = f"Jarvis failed to process the request.\n\n`{error}`"
-        logger.info("Response: %s" % response)
+        logger.info("Response: %s", response)
         self.process_response(payload=payload, response=response) if respond else None
 
     def process_response(self, response: str, payload: dict) -> NoReturn:

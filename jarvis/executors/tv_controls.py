@@ -34,7 +34,7 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str, clien
                     for _ in range(3):  # REDUNDANT-Roku: Launch home thrice to ensure device wakes up from sleep
                         shared.tv[nickname].startup()
         except TVError as error:
-            logger.error("Failed to connect to the TV. %s" % error)
+            logger.error("Failed to connect to the TV. %s", error)
             speaker.speak(text=f"I was unable to connect to the {nickname} {models.env.title}! "
                                f"It appears to be a connection issue. You might want to try again later.")
             return

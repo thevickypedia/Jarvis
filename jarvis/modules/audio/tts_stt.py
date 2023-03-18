@@ -32,7 +32,7 @@ def generate_audio_file(filename: Union[FilePath, str], text: str) -> NoReturn:
         filename: Filename to be generated.
         text: Text that has to be converted into audio.
     """
-    logger.info("Generating audio into %s from the text: %s" % (filename, text))
+    logger.info("Generating audio into %s from the text: %s", filename, text)
     audio_driver.save_to_file(filename=filename, text=text)
     audio_driver.runAndWait()
 
@@ -54,7 +54,7 @@ def text_to_audio(text: str, filename: Union[FilePath, str] = None) -> Union[Fil
         else:
             filename = f"{int(time.time())}.wav"
     dynamic_timeout = len(text.split())
-    logger.info("Timeout for text to speech conversion: %ds" % dynamic_timeout)
+    logger.info("Timeout for text to speech conversion: %ds", dynamic_timeout)
     process = ThreadPool(processes=1).apply_async(func=generate_audio_file, kwds={'filename': filename, 'text': text})
     try:
         process.get(timeout=dynamic_timeout)
@@ -62,7 +62,7 @@ def text_to_audio(text: str, filename: Union[FilePath, str] = None) -> Union[Fil
         logger.error(error)
         return
     if os.path.isfile(filename) and os.stat(filename).st_size:
-        logger.info("Generated %s" % filename)
+        logger.info("Generated %s", filename)
         data, samplerate = soundfile.read(file=filename)
         soundfile.write(file=filename, data=data, samplerate=samplerate)
         return filename

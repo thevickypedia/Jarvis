@@ -40,7 +40,6 @@ smart_listener = Queue()
 
 def background_tasks() -> NoReturn:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
-    # todo: move background tasks to cron internal with cron format and a string with an offline task
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
     tasks: List[BackgroundTask] = list(validate_background_tasks())
     offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
@@ -56,14 +55,14 @@ def background_tasks() -> NoReturn:
             if task_dict[i] + task.seconds <= time.time() or dry_run:  # Checks a particular tasks' elapsed time
                 task_dict[i] = time.time()  # Updates that particular tasks' start time
                 if datetime.now().hour in task.ignore_hours:
-                    logger.info("'%s' skipped honoring ignore hours" % task)
+                    logger.debug("'%s' skipped honoring ignore hours", task)
                 else:
-                    logger.info("Executing %s" % task.task)
+                    logger.debug("Executing %s", task.task)
                     try:
                         offline_communicator(task.task)
                     except Exception as error:
                         logger.error(error)
-                        logger.warning("Removing %s from background tasks." % task)
+                        logger.warning("Removing %s from background tasks.", task)
                         remove_corrupted(task=task)
 
         # Trigger cron jobs
@@ -72,7 +71,7 @@ def background_tasks() -> NoReturn:
             for cron in models.env.crontab:
                 job = expression.CronExpression(line=cron)
                 if job.check_trigger():
-                    logger.info("Executing cron job: %s" % job.comment)
+                    logger.debug("Executing cron job: %s", job.comment)
                     cron_process = Process(target=crontab_executor, args=(job.comment,))
                     cron_process.start()
                     with db.connection:
@@ -93,7 +92,7 @@ def background_tasks() -> NoReturn:
         if start_events + models.env.sync_events <= time.time() or dry_run:
             start_events = time.time()
             event_process = Process(target=events.events_writer)
-            logger.info("Getting events from %s." % models.env.event_app) if dry_run else None
+            logger.info("Getting events from %s.", models.env.event_app) if dry_run else None
             event_process.start()
             with db.connection:
                 cursor = db.connection.cursor()
@@ -134,6 +133,7 @@ def background_tasks() -> NoReturn:
                         if meeting_time == datetime.now().strftime("%I:%M %p"):
                             logger.info("Disabling listener for the meeting '%s'. Will be enabled after %s",
                                         meeting_name, support.time_converter(second=duration))
+                            meeting_times.remove(each_muter)
                             put_listener_state(state=False)
                             Timer(function=put_listener_state, interval=duration, kwargs=dict(state=True)).start()
 
@@ -222,7 +222,7 @@ def tunneling() -> NoReturn:
                    f'export PORT={models.env.offline_port} && python forever_ngrok.py'
         os.system(f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null""")
     else:
-        logger.info("JarvisHelper is not available to trigger an ngrok tunneling through %d" % models.env.offline_port)
+        logger.info("JarvisHelper is not available to trigger an ngrok tunneling through %d", models.env.offline_port)
         endpoint = rf'http://{models.env.offline_host}:{models.env.offline_port}'
         logger.info('However offline communicator can still be accessed via '
                     '%s/offline-communicator for API calls and %s/docs for docs.' % (endpoint, endpoint))
@@ -273,5 +273,5 @@ def offline_communicator(command: str) -> Union[AnyStr, HttpUrl]:
         shared.text_spoken = None
         return response
     else:
-        logger.error("Offline request failed: %s" % shared.text_spoken)
+        logger.error("Offline request failed: %s", shared.text_spoken)
         return f"I was unable to process the request: {command}"

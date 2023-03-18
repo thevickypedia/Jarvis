@@ -72,7 +72,7 @@ def exit_process() -> NoReturn:
             split_val = file.replace('.lock', '').split('|')
             reminders.update({split_val[0]: split_val[-1]})
     if reminders:
-        logger.info("JARVIS::Deleting Reminders - %s" % reminders)
+        logger.info("JARVIS::Deleting Reminders - %s", reminders)
         if len(reminders) == 1:
             speaker.speak(text=f'You have a pending reminder {models.env.title}!')
         else:
@@ -89,7 +89,7 @@ def exit_process() -> NoReturn:
     try:
         speaker.speak(text=support.exit_message(), run=True)
     except RuntimeError as error:
-        logger.critical("ATTENTION::Received a RuntimeError while self terminating.\n%s" % error)
+        logger.critical("ATTENTION::Received a RuntimeError while self terminating.\n%s", error)
     sys.stdout.write(f"\rMemory consumed: {support.size_converter(0)}"
                      f"\nTotal runtime: {support.time_converter(second=time.time() - shared.start_time)}")
 
@@ -119,13 +119,13 @@ def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
         quiet: Take a boolean flag to restart without warning.
     """
     if phrase and ('pc' in phrase.lower() or 'computer' in phrase.lower() or 'machine' in phrase.lower()):
-        logger.info("JARVIS::Restart for %s has been requested." % shared.hosted_device.get('device'))
+        logger.info("JARVIS::Restart for %s has been requested.", shared.hosted_device.get('device'))
         restart()
     else:
         caller = sys._getframe(1).f_code.co_name  # noqa
-        logger.info("Called by '%s'" % caller)
+        logger.info("Called by '%s'", caller)
         if quiet:  # restarted by child processes due internal errors
-            logger.info("Restarting '%s'" % caller)
+            logger.info("Restarting '%s'", caller)
         elif shared.called_by_offline:  # restarted via automator to restart all background processes
             logger.info("Restarting all background processes!")
             caller = "OFFLINE"
@@ -246,7 +246,7 @@ def delete_logs() -> NoReturn:
         for file_ in __file:
             inode_modified = os.stat(os.path.join(__path, file_)).st_ctime
             if timedelta(seconds=(time.time() - inode_modified)).days > models.env.log_retention:
-                logger.debug("Deleting log file: %s" % os.path.join(__path, file_))
+                logger.debug("Deleting log file: %s", os.path.join(__path, file_))
                 os.remove(os.path.join(__path, file_))  # removes the file if it is older than log retention time
 
 
@@ -255,7 +255,7 @@ def delete_pycache() -> NoReturn:
     for __path, __directory, __file in os.walk(os.getcwd()):
         if '__pycache__' in __directory:
             if os.path.exists(os.path.join(__path, '__pycache__')):
-                logger.debug("Deleting pycache: %s" % os.path.join(__path, '__pycache__'))
+                logger.debug("Deleting pycache: %s", os.path.join(__path, '__pycache__'))
                 shutil.rmtree(os.path.join(__path, '__pycache__'))
 
 

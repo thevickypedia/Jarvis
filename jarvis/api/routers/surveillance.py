@@ -208,12 +208,12 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
                 except asyncio.TimeoutError:
                     data = None
                 if data:
-                    logger.info("Client [%d] sent %s" % (client_id, data))
+                    logger.info("Client [%d] sent %s", client_id, data)
                     if data == "Healthy":
                         surveillance.session_manager[client_id] = time.time()
                         timestamp = surveillance.session_manager[client_id] + models.env.surveillance_session_timeout
-                        logger.info("Surveillance session will expire at %s"
-                                    % datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S'))
+                        logger.info("Surveillance session will expire at %s",
+                                    datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S'))
                     if data == "IMG_ERROR":
                         logger.info("Sending error image frame to client.")
                         bytes_, tmp_file = surveillance_squire.generate_error_frame(
@@ -226,7 +226,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
                         raise WebSocketDisconnect  # Raise error to release camera after a failed read
                 if surveillance.session_manager.get(client_id, time.time()) + \
                         models.env.surveillance_session_timeout <= time.time():
-                    logger.info("Sending session timeout to client: %d" % client_id)
+                    logger.info("Sending session timeout to client: %d", client_id)
                     bytes_, tmp_file = surveillance_squire.generate_error_frame(
                         dimension=surveillance.frame,
                         text="SESSION EXPIRED! Re-authenticate to continue live stream.")
@@ -235,7 +235,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
                     raise WebSocketDisconnect  # Raise error to release camera after a failed read
         except WebSocketDisconnect:
             ws_manager.disconnect(websocket)
-            logger.info("Client [%d] disconnected." % client_id)
+            logger.info("Client [%d] disconnected.", client_id)
             if ws_manager.active_connections:
                 if process := surveillance.processes.get(int(client_id)):
                     support.stop_process(pid=process.pid)

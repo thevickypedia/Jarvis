@@ -93,13 +93,13 @@ def write_current_location() -> NoReturn:
         if address and data.get("reserved") and data.get("latitude") and data.get("longitude") and \
                 address.get("city", address.get("hamlet")) and address.get("country") and \
                 address.get("state", address.get("county")):
-            logger.info("%s is reserved." % models.fileio.location)
+            logger.info("%s is reserved.", models.fileio.location)
             logger.warning("Automatic location detection has been disabled!")
             return
     current_lat, current_lon = get_coordinates_from_ip()
     location_info = get_location_from_coordinates(coordinates=(current_lat, current_lon))
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
-    logger.info("Writing location info in %s" % models.fileio.location)
+    logger.info("Writing location info in %s", models.fileio.location)
     with open(models.fileio.location, 'w') as location_writer:
         yaml.dump(data={"timezone": current_tz, "latitude": current_lat, "longitude": current_lon,
                         "address": location_info},

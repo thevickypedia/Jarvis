@@ -66,9 +66,9 @@ async def garage_controller(phrase: str) -> str:
 
         # Create a new dictionary with names as keys and MyQ object as values to get the object by name during execution
         devices: Dict[str, MyQGaragedoor] = {obj_.device_json.get('name'): obj_ for id_, obj_ in myq.covers.items()}
-        logger.debug("Available covers: %s" % devices)
+        logger.debug("Available covers: %s", devices)
         device: str = util.get_closest_match(text=phrase, match_list=list(devices.keys()))
-        logger.debug("Chosen cover: '%s'" % device)
+        logger.debug("Chosen cover: '%s'", device)
 
         if not devices[device].online:
             raise CoverNotOnline(device=device, msg=f"{device!r} not online.")
@@ -87,7 +87,7 @@ async def garage_controller(phrase: str) -> str:
             elif status['state']['door_state'] == operation.CLOSING:
                 return f"Your {device} is currently closing {models.env.title}! " \
                        "You may want to retry after a minute or two!"
-            logger.info("Opening %s." % device)
+            logger.info("Opening %s.", device)
             if devices[device].open_allowed:
                 open_result = await devices[device].open()
                 logger.debug(open_result)
@@ -102,7 +102,7 @@ async def garage_controller(phrase: str) -> str:
             elif status['state']['door_state'] == operation.OPENING:
                 return f"Your {device} is currently opening {models.env.title}! " \
                        "You may want to try to after a minute or two!"
-            logger.info("Closing %s." % device)
+            logger.info("Closing %s.", device)
             if devices[device].close_allowed:
                 close_result = await devices[device].close()
                 logger.debug(close_result)
@@ -110,6 +110,6 @@ async def garage_controller(phrase: str) -> str:
             else:
                 return f"Unattended close is disabled on your {device} {models.env.title}!"
         else:
-            logger.info("%s: %s" % (device, status['state']['door_state']))
+            logger.info("%s: %s", device, status['state']['door_state'])
             return f"Your {device} is currently {status['state']['door_state']} {models.env.title}! " \
                    f"What do you want me to do to your {device}?"

@@ -37,7 +37,7 @@ def _open(url: str, headers: dict = None, data: dict = None) -> Dict:
     response = urllib.request.build_opener().open(request)
 
     if not 200 <= response.code <= 300:
-        logger.debug("Response: %d" % response.code)
+        logger.debug("Response: %d", response.code)
         raise urllib.error.HTTPError(code=response.code, msg='HTTPError', url=url,
                                      hdrs=response.headers, fp=response.fp)
 
@@ -130,9 +130,9 @@ class Connect:
     def _register_device_and_log_in(self) -> NoReturn:
         """Registers device and log in the user."""
         self._register_device(headers=self.head)
-        logger.debug("Device ID: %s registered." % self.device_id)
+        logger.debug("Device ID: %s registered.", self.device_id)
         self._login_user(headers=self.head)
-        logger.debug("User ID: %s logged in." % self.user_id)
+        logger.debug("User ID: %s logged in.", self.user_id)
 
     def _register_auth(self, auth: dict) -> NoReturn:
         """Assigns authentication header values to class variables.

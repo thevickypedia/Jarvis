@@ -62,7 +62,7 @@ def thread_worker(function_to_call: Callable, iterable: Union[List, Iterable], w
     for future in as_completed(futures):
         if future.exception():
             thread_except += 1
-            logger.error("Thread processing for %s received an exception: %s" % (iterator, future.exception()))
+            logger.error("Thread processing for %s received an exception: %s", iterator, future.exception())
     if thread_except > (len(iterable) * 10 / 100):  # Use backup file if more than 10% of the requests fail
         with open(models.fileio.stock_list_backup) as file:
             stock_monitor.stock_list = yaml.load(stream=file, Loader=yaml.FullLoader)
@@ -92,7 +92,7 @@ def nasdaq() -> NoReturn:
     else:
         logger.info("Gathering stock list from eoddata.")
         thread_worker(function_to_call=ticker_gatherer, iterable=string.ascii_uppercase)
-    logger.info("Total tickers gathered: %d" % len(stock_monitor.stock_list))
+    logger.info("Total tickers gathered: %d", len(stock_monitor.stock_list))
     # Writes to a backup file
     with open(models.fileio.stock_list_backup, 'w') as file:
         yaml.dump(stream=file, data=stock_monitor.stock_list)
@@ -102,7 +102,7 @@ def cleanup_stock_userdata() -> NoReturn:
     """Delete duplicates tuples within the database."""
     data = get_stock_userdata()
     if dupes := [x for n, x in enumerate(data) if x in data[:n]]:
-        logger.info("%d duplicate entries found." % len(dupes))
+        logger.info("%d duplicate entries found.", len(dupes))
         cleaned = list(set(data))
         with stock_db.connection:
             cursor = stock_db.connection.cursor()

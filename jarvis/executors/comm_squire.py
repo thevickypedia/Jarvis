@@ -35,7 +35,7 @@ def extract_contacts(name: str, key: str) -> Union[int, EmailStr, None]:
             logger.error(error)
             return
     if contacts.get(key):
-        logger.info("Looking for '%s' in contacts file." % name)
+        logger.info("Looking for '%s' in contacts file.", name)
         identifier = util.get_closest_match(text=name, match_list=list(contacts[key].keys()))
         return contacts[key][identifier]
 
@@ -64,7 +64,7 @@ def send_notification(phrase: str) -> None:
             body, to = body.strip(), to.strip()
             break
     else:
-        logger.error("Invalid message or destination: %s -> %s" % (body, to))
+        logger.error("Invalid message or destination: %s -> %s", body, to)
         speaker.speak(text="Messenger format should be::send some message using SMS or email to some number or name.")
         return
 
@@ -174,12 +174,12 @@ def initiate_email(body: str, to: str) -> None:
     """
     to = extract_contacts(name=to, key='email')
     if not to:
-        logger.error("Contact file missing or '%s' not found in contact file." % to)
+        logger.error("Contact file missing or '%s' not found in contact file.", to)
         support.no_env_vars()
         return
 
     if body and shared.called_by_offline:  # Body is present and called by offline
-        logger.info("'%s' -> '%s'" % (body, to))
+        logger.info("'%s' -> '%s'", body, to)
         mail_response = send_email(body=body, recipient=to)
         if mail_response is True:
             speaker.speak(text=f"Email has been sent {models.env.title}!")
@@ -201,7 +201,7 @@ def initiate_email(body: str, to: str) -> None:
     speaker.speak(text=f'{body} to {to}. Do you want me to proceed?', run=True)
     if converted := listener.listen():
         if word_match(phrase=converted, match_list=keywords.keywords.ok):
-            logger.info("'%s' -> '%s'" % (body, to))
+            logger.info("'%s' -> '%s'", body, to)
             mail_response = send_email(body=body, recipient=to)
             if mail_response is True:
                 speaker.speak(text=f"Email has been sent {models.env.title}!")

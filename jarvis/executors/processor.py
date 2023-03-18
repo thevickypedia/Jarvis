@@ -28,7 +28,7 @@ db = database.Database(database=models.fileio.base_db)
 def delete_db() -> NoReturn:
     """Delete base db if exists. Called upon restart or shut down."""
     if os.path.isfile(models.fileio.base_db):
-        logger.info("Removing %s" % models.fileio.base_db)
+        logger.info("Removing %s", models.fileio.base_db)
         os.remove(models.fileio.base_db)
     if os.path.isfile(models.fileio.base_db):
         raise FileExistsError(
@@ -46,8 +46,8 @@ def clear_db() -> NoReturn:
                 continue
             # Use f-string or %s as table names cannot be parametrized
             data = cursor.execute(f'SELECT * FROM {table}').fetchall()
-            logger.info("Deleting data from %s: %s" % (table, util.matrix_to_flat_list([list(filter(None, d))
-                                                                                        for d in data if any(d)])))
+            logger.info("Deleting data from %s: %s", table, util.matrix_to_flat_list([list(filter(None, d))
+                                                                                      for d in data if any(d)]))
             cursor.execute(f"DELETE FROM {table}")
 
 
@@ -76,6 +76,8 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
         impact_lib.pop(graph_mic.plot_mic.__name__)
     if not models.env.tunnel:
         impact_lib.pop(tunneling.__name__)
+    if not all((models.env.wifi_ssid, models.env.wifi_password)):
+        impact_lib.pop(wifi_connector.__name__)
     if not func_name and sorted(impact_lib.keys()) != sorted(processes.keys()):
         warnings.warn(message=f"{list(impact_lib.keys())} does not match {list(processes.keys())}")
     if func_name:  # Assumes a processes mapping file exists already, since flag passed during process specific restart
@@ -85,7 +87,7 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
     else:
         dump = {k: [v.pid, impact_lib[k]] for k, v in processes.items()}
         dump["jarvis"] = [models.settings.pid, ["Main Process"]]
-    logger.debug("Processes data: %s" % dump)
+    logger.debug("Processes data: %s", dump)
     # Remove temporary processes that doesn't need to be stored in mapping file
     if dump.get("tunneling"):
         del dump["tunneling"]
@@ -118,8 +120,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         speech_synthesizer.__name__: Process(target=speech_synthesizer),
         telegram_api.__name__: Process(target=telegram_api),
         fast_api.__name__: Process(target=fast_api),
-        background_tasks.__name__: Process(target=background_tasks),
-        wifi_connector.__name__: Process(target=wifi_connector),  # Run individually as socket needs timed wait
+        background_tasks.__name__: Process(target=background_tasks)
     }
     if models.env.plot_mic and models.settings.os == models.supported_platforms.linux:
         # Function cannot be called directly using a child process when microphone is already being called for Linux
@@ -129,6 +130,8 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         process_dict[graph_mic.plot_mic.__name__] = Process(target=graph_mic.plot_mic)
     if models.env.tunnel:
         process_dict[tunneling.__name__] = Process(target=tunneling)
+    if all((models.env.wifi_ssid, models.env.wifi_password)):
+        process_dict[wifi_connector.__name__] = Process(target=wifi_connector)
     processes: Dict[str, Process] = {func_name: process_dict[func_name]} if func_name else process_dict
     for func, process in processes.items():
         process.name = func

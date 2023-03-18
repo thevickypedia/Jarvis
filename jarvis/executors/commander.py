@@ -58,9 +58,9 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
         phrase: Takes the phrase spoken as an argument.
         delay: Sleeps for the number of seconds.
     """
-    logger.info("'%s' will be executed after %s" % (phrase, support.time_converter(second=delay)))
+    logger.info("'%s' will be executed after %s", phrase, support.time_converter(second=delay))
     time.sleep(delay)
-    logger.info("Executing '%s'" % phrase)
+    logger.info("Executing '%s'", phrase)
     try:
         offline_communicator(command=phrase)
     except Exception as error:
