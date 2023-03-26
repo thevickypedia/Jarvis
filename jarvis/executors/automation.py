@@ -7,7 +7,7 @@ from typing import NoReturn, Union
 import yaml
 from deepdiff import DeepDiff
 
-from jarvis.executors.word_match import word_match
+from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
@@ -81,7 +81,7 @@ def auto_helper(offline_list: list) -> Union[str, None]:
 
     for automation_time, automation_info in automation_data.items():
         if not (exec_task := automation_info.get("task")) or \
-                not word_match(phrase=exec_task, match_list=offline_list):
+                not word_match.word_match(phrase=exec_task, match_list=offline_list):
             logger.error("Following entry doesn't have a task or the task is not a part of offline compatible.")
             logger.error("%s - %s", automation_time, automation_info)
             automation_data.pop(automation_time)

@@ -5,9 +5,7 @@ from threading import Thread
 
 import yaml
 
-from jarvis.executors.internet import vpn_checker
-from jarvis.executors.tv_controls import tv_controller
-from jarvis.executors.word_match import word_match
+from jarvis.executors import internet, tv_controls, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
@@ -49,12 +47,12 @@ def television(phrase: str) -> None:
                    'decrease', 'reduce', 'mute', 'stop', 'content', 'stop', 'pause', 'resume', 'play',
                    'rewind', 'forward', 'set', 'volume', 'volume', 'app', 'application', 'open',
                    'launch', "what's", 'currently', 'change', 'source']
-    if not word_match(phrase=phrase, match_list=match_words):
+    if not word_match.word_match(phrase=phrase, match_list=match_words):
         speaker.speak(text=f"I didn't quite get that {models.env.title}! What do you want me to do to your tv?")
         Thread(target=support.unrecognized_dumper, args=[{'TV': phrase}]).start()
         return
 
-    if not vpn_checker():
+    if not internet.vpn_checker():
         return
 
     if not os.path.isfile(models.fileio.smart_devices):
@@ -80,7 +78,7 @@ def television(phrase: str) -> None:
     tvs = list(smart_devices.keys())
     if len(tvs) == 1:
         target_tv = tvs[0]
-    elif not (target_tv := word_match(phrase=phrase, match_list=tvs)):
+    elif not (target_tv := word_match.word_match(phrase=phrase, match_list=tvs)):
         speaker.speak(text=f"You have {len(tvs)} TVs added {models.env.title}! "
                            "Please specify which TV I should access.")
         return
@@ -145,6 +143,7 @@ def television(phrase: str) -> None:
         shared.tv[target_tv] = None
     logger.debug("TV database: %s", shared.tv)
     if 'lg' in tv_name.lower():
-        tv_controller(phrase=phrase, tv_ip=tv_ip, identifier='LG', client_key=tv_client_key, nickname=target_tv)
+        tv_controls.tv_controller(phrase=phrase, tv_ip=tv_ip, identifier='LG',
+                                  client_key=tv_client_key, nickname=target_tv)
     else:
-        tv_controller(phrase=phrase, tv_ip=tv_ip, identifier='ROKU', nickname=target_tv)
+        tv_controls.tv_controller(phrase=phrase, tv_ip=tv_ip, identifier='ROKU', nickname=target_tv)

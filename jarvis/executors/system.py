@@ -10,8 +10,7 @@ from typing import Dict, NoReturn
 import packaging.version
 import psutil
 
-from jarvis.executors.controls import restart
-from jarvis.executors.word_match import word_match
+from jarvis.executors import controls, word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.logger.custom_logger import logger
@@ -116,9 +115,9 @@ def system_vitals() -> None:
                                f"like me to restart it for you {models.env.title}?",
                           run=True)
             response = listener.listen()
-            if word_match(phrase=response.lower(), match_list=keywords.keywords.ok):
+            if word_match.word_match(phrase=response.lower(), match_list=keywords.keywords.ok):
                 logger.info("JARVIS::Restarting %s", shared.hosted_device.get('device'))
-                restart(ask=False)
+                controls.restart(ask=False)
 
 
 def get_distributor_info_linux() -> Dict[str, str]:

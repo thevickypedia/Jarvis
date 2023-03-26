@@ -1,12 +1,9 @@
-import json
 import math
 import os
 import re
 import ssl
 import sys
 import time
-import urllib.error
-import urllib.request
 import webbrowser
 from typing import Dict, NoReturn, Tuple, Union
 
@@ -18,6 +15,7 @@ from geopy.geocoders import Nominatim, options
 from speedtest import ConfigRetrievalError, Speedtest
 from timezonefinder import TimezoneFinder
 
+from jarvis.executors import files, internet
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
@@ -28,20 +26,6 @@ options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
 geo_locator = Nominatim(scheme="http", user_agent="test/1", timeout=3)
 
 
-def public_ip_info() -> Dict:
-    """Get public IP information.
-
-    Returns:
-        dict:
-        Public IP information.
-    """
-    try:
-        return json.load(urllib.request.urlopen(url='https://ipinfo.io/json')) or \
-            json.loads(urllib.request.urlopen(url='http://ip.jsontest.com').read())
-    except (urllib.error.HTTPError, urllib.error.URLError) as error:
-        logger.error(error)
-
-
 def get_coordinates_from_ip() -> Union[Tuple[float, float], Tuple[float, ...]]:
     """Uses public IP to retrieve latitude and longitude. If fails, uses ``Speedtest`` module.
 
@@ -49,20 +33,20 @@ def get_coordinates_from_ip() -> Union[Tuple[float, float], Tuple[float, ...]]:
         tuple:
         Returns latitude and longitude as a tuple.
     """
-    if (info := public_ip_info()) and info.get('lcc'):
+    if (info := internet.public_ip_info()) and info.get('lcc'):
         return tuple(map(float, info.get('loc').split(',')))
     try:
-        st = Speedtest()
+        if results := Speedtest().results:
+            return float(results.client["lat"]), float(results.client["lon"])
     except ConfigRetrievalError as error:
         logger.error(error)
         sys.stdout.write("\rFailed to get location based on IP. Hand modify it at "
                          f"'{os.path.abspath(models.fileio.location)}'")
         time.sleep(5)
-        return 37.230881, -93.3710393  # Default to SGF latitude and longitude
-    return float(st.results.client["lat"]), float(st.results.client["lon"])
+    return 37.230881, -93.3710393  # Default to SGF latitude and longitude
 
 
-def get_location_from_coordinates(coordinates: tuple) -> Dict:
+def get_location_from_coordinates(coordinates: tuple) -> Dict[str, str]:
     """Uses the latitude and longitude information to get the address information.
 
     Args:
@@ -82,20 +66,14 @@ def get_location_from_coordinates(coordinates: tuple) -> Dict:
 
 def write_current_location() -> NoReturn:
     """Extracts location information from public IP address and writes it to a yaml file."""
-    if os.path.isfile(models.fileio.location):
-        try:
-            with open(models.fileio.location) as file:
-                data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-        except yaml.YAMLError as error:
-            data = {}
-            logger.error(error)
-        address = data.get("address")
-        if address and data.get("reserved") and data.get("latitude") and data.get("longitude") and \
-                address.get("city", address.get("hamlet")) and address.get("country") and \
-                address.get("state", address.get("county")):
-            logger.info("%s is reserved.", models.fileio.location)
-            logger.warning("Automatic location detection has been disabled!")
-            return
+    data = files.get_location()
+    address = data.get("address")
+    if address and data.get("reserved") and data.get("latitude") and data.get("longitude") and \
+            address.get("city", address.get("hamlet")) and address.get("country") and \
+            address.get("state", address.get("county")):
+        logger.info("%s is reserved.", models.fileio.location)
+        logger.warning("Automatic location detection has been disabled!")
+        return
     current_lat, current_lon = get_coordinates_from_ip()
     location_info = get_location_from_coordinates(coordinates=(current_lat, current_lon))
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
@@ -108,14 +86,7 @@ def write_current_location() -> NoReturn:
 
 def location() -> NoReturn:
     """Gets the user's current location."""
-    try:
-        with open(models.fileio.location) as file:
-            current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
-    except yaml.YAMLError as error:
-        logger.error(error)
-        speaker.speak(text=f"I'm sorry {models.env.title}! "
-                           "I wasn't able to get the location details. Please check the logs.")
-        return
+    current_location = files.get_location()
     speaker.speak(text=f"I'm at {current_location.get('address', {}).get('road', '')} - "
                        f"{current_location.get('address', {}).get('city', '')} "
                        f"{current_location.get('address', {}).get('state', '')} - "
@@ -184,14 +155,7 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         start = desired_start.latitude, desired_start.longitude
         start_check = None
     else:
-        try:
-            with open(models.fileio.location) as file:
-                current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
-        except yaml.YAMLError as error:
-            logger.error(error)
-            speaker.speak(text="I neither received an origin location nor was able to get my location "
-                               f"{models.env.title}!")
-            return
+        current_location = files.get_location()
         start = (current_location["latitude"], current_location["longitude"])
         start_check = "My Location"
     sys.stdout.write("::TO::") if origin else sys.stdout.write("\r::TO::")
@@ -255,11 +219,7 @@ def locate_places(phrase: str = None) -> None:
             before_keyword, keyword, after_keyword = converted.partition(keyword)
             place = after_keyword.replace(" in", "").strip()
 
-    try:
-        with open(models.fileio.location) as file:
-            current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
-    except yaml.YAMLError as error:
-        logger.error(error)
+    if not (current_location := files.get_location()):
         current_location = {"address": {"country": "United States"}}
     try:
         destination_location = geo_locator.geocode(place)
@@ -327,13 +287,8 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
     address = located.raw["address"]
     end_country = address["country"] if "country" in address else None
     end = f"{located.latitude},{located.longitude}"
-
-    try:
-        with open(models.fileio.location) as file:
-            current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
-    except yaml.YAMLError as error:
-        logger.error(error)
-        speaker.speak(text=f"I wasn't able to get your current location to calculate the distance {models.env.title}!")
+    current_location = files.get_location()
+    if not all((current_location.get('address'), current_location.get('latitude'), current_location.get('longitude'))):
         return
     start_country = current_location["address"]["country"]
     start = current_location["latitude"], current_location["longitude"]

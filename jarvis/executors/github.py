@@ -5,7 +5,7 @@ import sys
 import requests
 from requests.auth import HTTPBasicAuth
 
-from jarvis.executors.word_match import word_match
+from jarvis.executors import word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.exceptions import EgressErrors
@@ -70,7 +70,7 @@ def github_controller(target: list) -> None:
         speaker.speak(text=f"I found {len(target)} results. On your screen {models.env.title}! "
                            "Which one shall I clone?", run=True)
         if not (converted := listener.listen()):
-            if word_match(phrase=converted, match_list=keywords.keywords.exit_):
+            if word_match.word_match(phrase=converted, match_list=keywords.keywords.exit_):
                 return
             if 'first' in converted.lower():
                 item = 1

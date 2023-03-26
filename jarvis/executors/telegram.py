@@ -4,7 +4,7 @@ import os
 import time
 from typing import NoReturn
 
-from jarvis.executors.controls import restart_control
+from jarvis.executors import controls
 from jarvis.modules.exceptions import BotInUse, EgressErrors
 from jarvis.modules.logger import config
 from jarvis.modules.logger.custom_logger import logger
@@ -38,11 +38,11 @@ def telegram_api() -> NoReturn:
         FAILED_CONNECTIONS['count'] += 1
         if FAILED_CONNECTIONS['count'] > 3:
             logger.critical("ATTENTION::Couldn't recover from connection error. Restarting current process.")
-            restart_control(quiet=True)
+            controls.restart_control(quiet=True)
         else:
             logger.info("Restarting in %d seconds.", FAILED_CONNECTIONS['count'] * 10)
             time.sleep(FAILED_CONNECTIONS['count'] * 10)
             telegram_api()
     except RecursionError as error:
         logger.error(error)
-        restart_control(quiet=True)
+        controls.restart_control(quiet=True)

@@ -6,8 +6,9 @@ import time
 from datetime import datetime, timedelta
 from typing import NoReturn
 
-from jarvis.executors.volume import volume
-from jarvis.executors.word_match import word_match
+import pyvolume
+
+from jarvis.executors import word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation
 from jarvis.modules.logger.custom_logger import logger
@@ -31,11 +32,11 @@ def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = N
     if not os.path.isdir('alarm'):
         os.mkdir('alarm')
     if repeat:
-        pathlib.Path(f'alarm/{hour}_{minute}_{am_pm}_repeat.lock').touch()
+        pathlib.Path(os.path.join('alarm', f'{hour}_{minute}_{am_pm}_repeat.lock')).touch()
     elif day:
-        pathlib.Path(f'alarm/{day}_{hour}_{minute}_{am_pm}_repeat.lock').touch()
+        pathlib.Path(os.path.join('alarm', f'{day}_{hour}_{minute}_{am_pm}_repeat.lock')).touch()
     else:
-        pathlib.Path(f'alarm/{hour}_{minute}_{am_pm}.lock').touch()
+        pathlib.Path(os.path.join('alarm', f'{hour}_{minute}_{am_pm}.lock')).touch()
     if 'wake' in phrase:
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
                            f"I will wake you up at {hour}:{minute} {am_pm}.")
@@ -91,11 +92,11 @@ def set_alarm(phrase: str) -> None:
         hour, minute = f"{hour:02}", f"{minute:02}"
         am_pm = "AM" if "A" in extracted_time.split()[-1].upper() else "PM"
         if int(hour) <= 12 and int(minute) <= 59:
-            if day := word_match(phrase=phrase, match_list=['sunday', 'monday', 'tuesday', 'wednesday',
-                                                            'thursday', 'friday', 'saturday']):
+            if day := word_match.word_match(phrase=phrase, match_list=['sunday', 'monday', 'tuesday', 'wednesday',
+                                                                       'thursday', 'friday', 'saturday']):
                 day = day[0].upper() + day[1:].lower()
                 create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm, day=day)
-            elif word_match(phrase=phrase, match_list=['everyday', 'every day', 'daily']):
+            elif word_match.word_match(phrase=phrase, match_list=['everyday', 'every day', 'daily']):
                 create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm, repeat=True)
             else:
                 create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm)
@@ -150,12 +151,12 @@ def kill_alarm(phrase: str) -> None:
             speaker.speak(text=f"I wasn't able to find your {word} at {hour}:{minute} {am_pm}. Try again.")
 
 
-def alarm_executor() -> NoReturn:
+def executor() -> NoReturn:
     """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
-    volume(level=100)
+    pyvolume.pyvolume(level=100, debug=models.env.debug, logger=logger)
     if models.settings.os != models.supported_platforms.windows:
         subprocess.call(["open", models.indicators.alarm])
     else:
         os.system(f'start wmplayer {models.indicators.alarm}')
     time.sleep(200)
-    volume(level=models.env.volume)
+    pyvolume.pyvolume(level=models.env.volume, debug=models.env.debug, logger=logger)

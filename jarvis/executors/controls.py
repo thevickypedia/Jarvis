@@ -14,9 +14,7 @@ import psutil
 import pybrightness
 import pywslocker
 
-from jarvis.executors.listener_controls import put_listener_state
-from jarvis.executors.volume import volume
-from jarvis.executors.word_match import word_match
+from jarvis.executors import listener_controls, volume, word_match
 from jarvis.modules.audio import listener, speaker, voices
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.database import database
@@ -50,7 +48,7 @@ def restart(ask: bool = True) -> NoReturn:
         converted = listener.listen()
     else:
         converted = 'yes'
-    if word_match(phrase=converted, match_list=keywords.keywords.ok):
+    if word_match.word_match(phrase=converted, match_list=keywords.keywords.ok):
         stop_terminals()
         if models.settings.os == models.supported_platforms.macOS:
             subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
@@ -145,7 +143,7 @@ def stop_terminals(apps: tuple = ("iterm", "terminal")) -> NoReturn:
         apps: Default apps that have to be shutdown when ``deep`` argument is not set.
     """
     for proc in psutil.process_iter():
-        if word_match(phrase=proc.name(), match_list=apps):
+        if word_match.word_match(phrase=proc.name(), match_list=apps):
             support.stop_process(pid=proc.pid)
 
 
@@ -227,7 +225,7 @@ def shutdown(proceed: bool = False) -> NoReturn:
         converted = listener.listen()
     else:
         converted = 'yes'
-    if converted and word_match(phrase=converted, match_list=keywords.keywords.ok):
+    if converted and word_match.word_match(phrase=converted, match_list=keywords.keywords.ok):
         stop_terminals()
         if models.settings.os == models.supported_platforms.macOS:
             subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
@@ -279,8 +277,8 @@ def starter() -> NoReturn:
         - delete_pycache: To purge pycache directories.
         - set_executable: To allow access to all the files within ``fileio`` directory.
     """
-    put_listener_state(state=True)
-    volume(level=models.env.volume)
+    listener_controls.put_listener_state(state=True)
+    volume.volume(level=models.env.volume)
     voices.voice_default()
     try:
         delete_logs()

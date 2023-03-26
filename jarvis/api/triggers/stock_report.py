@@ -216,11 +216,11 @@ class Investment:
 
 
 if __name__ == '__main__':
-    from jarvis.executors.crontab import LOG_FILE
+    from jarvis.executors import crontab
     from jarvis.modules.logger import config
     from jarvis.modules.logger.custom_logger import logger as main_logger
 
-    config.multiprocessing_logger(filename=LOG_FILE)
+    config.multiprocessing_logger(filename=crontab.LOG_FILE)
     for log_filter in main_logger.filters:
         main_logger.removeFilter(filter=log_filter)
     Investment(logger=main_logger).report_gatherer()

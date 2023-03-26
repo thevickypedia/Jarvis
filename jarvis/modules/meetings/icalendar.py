@@ -18,7 +18,7 @@ import requests
 from arrow import Arrow
 from ics import Calendar
 
-from jarvis.executors.word_match import word_match
+from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import EgressErrors
@@ -141,7 +141,7 @@ def meetings(phrase: str) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     phrase = phrase.lower()
-    if word_match(phrase=phrase, match_list=("tomorrow", "yesterday", "last", "this", "next")) and \
+    if word_match.word_match(phrase=phrase, match_list=("tomorrow", "yesterday", "last", "this", "next")) and \
             custom_meetings(phrase=phrase):
         return
     with db.connection:

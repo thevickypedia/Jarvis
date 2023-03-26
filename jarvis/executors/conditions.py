@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from jarvis.executors import controls
 from jarvis.executors.alarm import kill_alarm, set_alarm
 from jarvis.executors.automation import automation_handler
-from jarvis.executors.background_tasks import background_task_handler
+from jarvis.executors.background_task import background_task_handler
 from jarvis.executors.car import car
 from jarvis.executors.comm_squire import send_notification
 from jarvis.executors.communicator import read_gmail
@@ -149,16 +149,6 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
     elif word_match(phrase=phrase, match_list=keywords.todo):
         todo(phrase)
 
-    elif word_match(phrase=phrase, match_list=keywords.distance) and \
-            not word_match(phrase=phrase, match_list=keywords.avoid):
-        distance(phrase)
-
-    elif word_match(phrase=phrase, match_list=keywords.locate_places):
-        locate_places(phrase)
-
-    elif word_match(phrase=phrase, match_list=keywords.directions):
-        directions(phrase)
-
     elif word_match(phrase=phrase, match_list=keywords.kill_alarm):
         kill_alarm(phrase)
 
@@ -173,6 +163,16 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
 
     elif word_match(phrase=phrase, match_list=keywords.reminder):
         reminder(phrase)
+
+    elif word_match(phrase=phrase, match_list=keywords.distance) and \
+            not word_match(phrase=phrase, match_list=keywords.avoid):
+        distance(phrase)
+
+    elif word_match(phrase=phrase, match_list=keywords.locate_places):
+        locate_places(phrase)
+
+    elif word_match(phrase=phrase, match_list=keywords.directions):
+        directions(phrase)
 
     elif word_match(phrase=phrase, match_list=keywords.notes):
         notes()

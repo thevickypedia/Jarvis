@@ -11,8 +11,7 @@ from typing import NoReturn, Union
 import gmailconnector
 import jinja2
 
-from jarvis.executors import communicator
-from jarvis.executors.word_match import word_match
+from jarvis.executors import communicator, word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -89,7 +88,8 @@ def security_runner() -> NoReturn:
         sys.stdout.write("\rSECURITY MODE")
         converted = listener.listen(sound=False)
         face_detected = datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p.jpg')
-        if not get_state(log=False) or word_match(phrase=converted, match_list=keywords.keywords.guard_disable):
+        if not get_state(log=False) or word_match.word_match(phrase=converted,
+                                                             match_list=keywords.keywords.guard_disable):
             guard_disable()
             break
         elif converted:

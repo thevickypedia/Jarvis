@@ -1,3 +1,4 @@
+import collections
 import os
 import warnings
 from collections.abc import Generator
@@ -6,7 +7,7 @@ from typing import NoReturn, Union
 import yaml
 from pydantic.error_wrappers import ValidationError
 
-from jarvis.executors.word_match import word_match
+from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
@@ -39,6 +40,15 @@ def background_task_handler(phrase: str) -> NoReturn:
             speaker.speak(text=f"I couldn't not find the source file to disable background tasks {models.env.title}!")
 
 
+def _compare_tasks(dict1: dict, dict2: dict):
+    if 'ignore_hours' in dict1 and dict1['ignore_hours'] == [] and 'ignore_hours' not in dict2:
+        dict1.pop('ignore_hours')
+    if 'ignore_hours' in dict2 and dict2['ignore_hours'] == [] and 'ignore_hours' not in dict1:
+        dict2.pop('ignore_hours')
+    if collections.OrderedDict(sorted(dict1.items())) == collections.OrderedDict(sorted(dict2.items())):
+        return True
+
+
 def remove_corrupted(task: Union[BackgroundTask, dict]) -> NoReturn:
     """Removes a corrupted task from the background tasks feed file.
 
@@ -48,14 +58,15 @@ def remove_corrupted(task: Union[BackgroundTask, dict]) -> NoReturn:
     with open(models.fileio.background_tasks) as read_file:
         existing_data = yaml.load(stream=read_file, Loader=yaml.FullLoader)
     for task_ in existing_data:
-        if (isinstance(task, dict) and task_ == task) or (isinstance(task, BackgroundTask) and task_ == task.__dict__):
+        if (isinstance(task, dict) and _compare_tasks(task_, task)) or \
+                (isinstance(task, BackgroundTask) and _compare_tasks(task_, task.__dict__)):
             logger.info("Removing corrupted task: %s", task_)
             existing_data.remove(task_)
     with open(models.fileio.background_tasks, 'w') as write_file:
         yaml.dump(data=existing_data, stream=write_file)
 
 
-def validate_background_tasks(log: bool = True) -> Generator[BackgroundTask]:
+def validate_tasks(log: bool = True) -> Generator[BackgroundTask]:
     """Validates each background task if it is offline compatible.
 
     Args:
@@ -90,7 +101,7 @@ def validate_background_tasks(log: bool = True) -> Generator[BackgroundTask]:
                 logger.error(error)
                 remove_corrupted(t)
                 continue
-            if word_match(phrase=task.task, match_list=compatibles.offline_compatible()):
+            if word_match.word_match(phrase=task.task, match_list=compatibles.offline_compatible()):
                 if log:
                     logger.info("'%s' will be executed every %s",
                                 task.task, support.time_converter(second=task.seconds))

@@ -12,15 +12,8 @@ from playsound import playsound
 from pywifi import ControlConnection, ControlPeripheral
 
 from jarvis._preexec import keywords_handler  # noqa
-from jarvis.executors.commander import initiator
-from jarvis.executors.controls import exit_process, starter, terminator
-from jarvis.executors.internet import (get_connection_info, ip_address,
-                                       public_ip_info)
-from jarvis.executors.listener_controls import get_listener_state
-from jarvis.executors.location import write_current_location
-from jarvis.executors.processor import (clear_db, start_processes,
-                                        stop_processes)
-from jarvis.executors.system import hosted_device_info
+from jarvis.executors import (commander, controls, internet, listener_controls,
+                              location, processor, system)
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.exceptions import StopSignal
 from jarvis.modules.logger.custom_logger import custom_handler, logger
@@ -34,18 +27,18 @@ def restart_checker() -> NoReturn:
     if flag := support.check_restart():
         logger.info("Restart condition is set to %s by %s", flag[0], flag[1])
         if flag[1] == "OFFLINE":
-            stop_processes()
+            processor.stop_processes()
             logger.propagate = False
             for _handler in logger.handlers:
                 logger.removeHandler(hdlr=_handler)
             handler = custom_handler()
             logger.info("Switching to %s", handler.baseFilename)
             logger.addHandler(hdlr=handler)
-            starter()
-            shared.processes = start_processes()
+            controls.starter()
+            shared.processes = processor.start_processes()
         else:
-            stop_processes(func_name=flag[1])
-            shared.processes[flag[1]] = start_processes(func_name=flag[1])
+            processor.stop_processes(func_name=flag[1])
+            shared.processes[flag[1]] = processor.start_processes(func_name=flag[1])
 
 
 class Activator:
@@ -111,12 +104,12 @@ class Activator:
     def executor(self) -> NoReturn:
         """Calls the listener for actionable phrase and runs the speaker node for response."""
         logger.debug("Detected %s at %s", models.settings.bot, datetime.now())
-        if get_listener_state():
+        if listener_controls.get_listener_state():
             playsound(sound=models.indicators.acknowledgement, block=False)
         audio_engine.close(stream=self.audio_stream)
         if phrase := listener.listen(sound=False):
             try:
-                initiator(phrase=phrase, should_return=True)
+                commander.initiator(phrase=phrase, should_return=True)
             except Exception as error:
                 logger.critical(error)
                 logger.error(traceback.format_exc())
@@ -152,12 +145,12 @@ class Activator:
                 if flag := support.check_stop():
                     logger.info("Stopper condition is set to %s by %s", flag[0], flag[1])
                     self.stop()
-                    terminator()
+                    controls.terminator()
         except StopSignal:
-            exit_process()
+            controls.exit_process()
             self.audio_stream = None
             self.stop()
-            terminator()
+            controls.terminator()
 
     def stop(self) -> NoReturn:
         """Invoked when the run loop is exited or manual interrupt.
@@ -168,15 +161,9 @@ class Activator:
             - Closes audio stream.
             - Releases port audio resources.
         """
-        # right approach for consistency but speech_synthesizer runs in a container that will be stopped at the end
-        # if models.settings.limited:
-        #     if models.settings.os != models.supported_platforms.macOS:  # Check this condition only for limited mode
-        #         stop_processes(func_name="speech_synthesizer")
-        # else:
-        #     stop_processes()
         if not models.settings.limited:
-            stop_processes()
-        clear_db()
+            processor.stop_processes()
+        processor.clear_db()
         logger.info("Releasing resources acquired by Porcupine.")
         self.detector.delete()
         if self.audio_stream and self.audio_stream.is_active():
@@ -190,9 +177,9 @@ class Activator:
 def start() -> NoReturn:
     """Starts main process to activate Jarvis after checking internet connection and initiating background processes."""
     logger.info("Current Process ID: %d", models.settings.pid)
-    starter()
-    if ip_address() and public_ip_info():
-        sys.stdout.write(f"\rINTERNET::Connected to {get_connection_info() or 'the internet'}.")
+    controls.starter()
+    if internet.ip_address() and internet.public_ip_info():
+        sys.stdout.write(f"\rINTERNET::Connected to {internet.get_connection_info() or 'the internet'}.")
     else:
         ControlPeripheral(logger=logger).enable()
         if models.env.wifi_ssid and models.env.wifi_password and not \
@@ -202,15 +189,15 @@ def start() -> NoReturn:
             speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! "
                                "Please check your connection.", run=True)
     sys.stdout.write(f"\rCurrent Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
-    shared.hosted_device = hosted_device_info()
+    shared.hosted_device = system.hosted_device_info()
     if models.settings.limited:
         # Write processes mapping file before calling start_processes with func_name flag,
         # as passing the flag will look for the file's presence
         with open(models.fileio.processes, 'w') as file:
             yaml.dump(stream=file, data={"jarvis": [models.settings.pid, ["Main Process"]]})
         if models.settings.os != models.supported_platforms.macOS:
-            shared.processes = start_processes(func_name="speech_synthesizer")
+            shared.processes = processor.start_processes(func_name="speech_synthesizer")
     else:
-        shared.processes = start_processes()
-    write_current_location()
+        shared.processes = processor.start_processes()
+    location.write_current_location()
     Activator().start()

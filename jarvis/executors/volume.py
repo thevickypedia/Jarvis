@@ -56,7 +56,7 @@ def volume(phrase: str = None, level: int = None) -> NoReturn:
         level = models.env.volume
     phrase = phrase or ""
     caller = sys._getframe(1).f_code.co_name  # noqa
-    if 'master' in phrase or 'main' in phrase or caller in ('alarm_executor', 'starter'):
+    if 'master' in phrase or 'main' in phrase or caller in ('executor', 'starter'):
         main_volume(level=level)
         speaker_volume(level=level)
     else:

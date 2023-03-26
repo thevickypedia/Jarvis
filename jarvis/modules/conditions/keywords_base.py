@@ -12,7 +12,7 @@ def keyword_mapping() -> Dict[str, List[str]]:
     """Returns a dictionary of base keywords mapping.
 
     Returns:
-        Dict:
+        dict:
         Dictionary of keywords and in a mapping dictionary.
     """
     return dict(

@@ -19,9 +19,7 @@ import requests
 from pydantic import FilePath
 
 from jarvis._preexec import keywords_handler  # noqa
-from jarvis.executors.commander import timed_delay
-from jarvis.executors.offline import offline_communicator
-from jarvis.executors.word_match import word_match
+from jarvis.executors import commander, offline, word_match
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -340,7 +338,7 @@ class TelegramBot:
         logger.warning("Request timed out when %s requested %s" % (payload['from']['username'], payload.get('text')))
         logger.warning("Request time: %s", request_time)
         if "override" in payload.get('text', '').lower() and not \
-                word_match(phrase=payload.get('text', ''), match_list=keywords.keywords.kill):
+                word_match.word_match(phrase=payload.get('text', ''), match_list=keywords.keywords.kill):
             logger.info("%s requested a timeout override.", payload['from']['username'])
             return True
         else:
@@ -358,7 +356,7 @@ class TelegramBot:
             bool:
             Boolean flag to indicate whether to proceed.
         """
-        if not word_match(phrase=payload.get('text', ''), match_list=keywords.keywords.kill):
+        if not word_match.word_match(phrase=payload.get('text', ''), match_list=keywords.keywords.kill):
             return True
         if "override" in payload.get('text', '').lower():
             logger.info("%s requested a STOP override.", payload['from']['username'])
@@ -461,9 +459,9 @@ class TelegramBot:
         if not self.verify_stop(payload=payload):
             return
         payload['text'] = payload.get('text', '').replace('override', '').replace('OVERRIDE', '')
-        if word_match(phrase=payload.get('text').lower(), match_list=["hey", "hi", "hola", "what's up",
-                                                                      "ssup", "whats up", "hello", "howdy",
-                                                                      "hey", "chao", "hiya", "aloha"], strict=True):
+        if word_match.word_match(phrase=payload.get('text').lower(),
+                                 match_list=["hey", "hi", "hola", "what's up", "ssup", "whats up", "hello",
+                                             "howdy", "hey", "chao", "hiya", "aloha"], strict=True):
             self.reply_to(payload=payload,
                           response=f"{greeting()} {payload['from']['first_name']}!\n"
                                    f"Good {util.part_of_day()}! How can I be of service today?")
@@ -520,10 +518,10 @@ class TelegramBot:
         # Keywords for which the ' and ' split should not happen.
         multiexec = keywords.keywords.send_notification + keywords.keywords.reminder + keywords.keywords.distance
 
-        if ' and ' in command and not word_match(phrase=command, match_list=keywords.keywords.avoid) and \
-                not word_match(phrase=command, match_list=multiexec):
+        if ' and ' in command and not word_match.word_match(phrase=command, match_list=keywords.keywords.avoid) and \
+                not word_match.word_match(phrase=command, match_list=multiexec):
             for each in command.split(' and '):
-                if not word_match(phrase=each, match_list=compatibles.offline_compatible()):
+                if not word_match.word_match(phrase=each, match_list=compatibles.offline_compatible()):
                     logger.warning("'%s' is not a part of offline communicator compatible request.", each)
                     self.send_message(chat_id=payload['from']['id'],
                                       response=f"{each!r} is not a part of offline communicator compatible request.")
@@ -531,13 +529,13 @@ class TelegramBot:
                     self.executor(command=each, payload=payload)
             return
 
-        if not word_match(phrase=command, match_list=compatibles.offline_compatible()):
+        if not word_match.word_match(phrase=command, match_list=compatibles.offline_compatible()):
             logger.warning("'%s' is not a part of offline communicator compatible request.", command)
             self.send_message(chat_id=payload['from']['id'],
                               response=f"{command!r} is not a part of offline communicator compatible request.")
             return
         if ' after ' in command_lower:
-            if delay_info := timed_delay(phrase=command):
+            if delay_info := commander.timed_delay(phrase=command):
                 logger.info("Request: %s", delay_info[0])
                 self.process_response(payload=payload,
                                       response="I will execute it after "
@@ -556,8 +554,9 @@ class TelegramBot:
         """
         logger.info("Request: %s", command)
         try:
-            response = offline_communicator(command=command).replace(models.env.title,
-                                                                     USER_TITLE.get(payload['from']['username']))
+            response = offline.offline_communicator(command=command).replace(
+                models.env.title, USER_TITLE.get(payload['from']['username'])
+            )
         except Exception as error:
             logger.error(error)
             logger.error(traceback.format_exc())

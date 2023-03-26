@@ -262,10 +262,10 @@ Automation
    :members:
    :undoc-members:
 
-Background Tasks
-================
+Background Task
+===============
 
-.. automodule:: jarvis.executors.background_tasks
+.. automodule:: jarvis.executors.background_task
    :members:
    :undoc-members:
 
@@ -343,6 +343,13 @@ Face
 ====
 
 .. automodule:: jarvis.executors.face
+   :members:
+   :undoc-members:
+
+Files
+=====
+
+.. automodule:: jarvis.executors.files
    :members:
    :undoc-members:
 

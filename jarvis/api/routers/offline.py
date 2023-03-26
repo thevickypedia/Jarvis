@@ -14,9 +14,7 @@ from jarvis.api.modals.models import (OfflineCommunicatorModal,
                                       SpeechSynthesisModal)
 from jarvis.api.routers import speech_synthesis
 from jarvis.api.squire.logger import logger
-from jarvis.executors.commander import timed_delay
-from jarvis.executors.offline import offline_communicator
-from jarvis.executors.word_match import word_match
+from jarvis.executors import commander, offline, word_match
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -80,7 +78,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         logger.info("Test message received.")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail="Test message received.")
 
-    if word_match(phrase=command, match_list=keywords.keywords.kill) and 'override' in command.lower():
+    if word_match.word_match(phrase=command, match_list=keywords.keywords.kill) and 'override' in command.lower():
         logger.info("STOP override has been requested.")
         Thread(target=kill_power).start()
         raise APIResponse(status_code=HTTPStatus.OK.real,
@@ -89,17 +87,17 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
     # Keywords for which the ' and ' split should not happen.
     multiexec = keywords.keywords.send_notification + keywords.keywords.reminder + keywords.keywords.distance
 
-    if ' and ' in command and not word_match(phrase=command, match_list=keywords.keywords.avoid) and \
-            not word_match(phrase=command, match_list=multiexec):
+    if ' and ' in command and not word_match.word_match(phrase=command, match_list=keywords.keywords.avoid) and \
+            not word_match.word_match(phrase=command, match_list=multiexec):
         and_response = ""
         for each in command.split(' and '):
-            if not word_match(phrase=each, match_list=compatibles.offline_compatible()):
+            if not word_match.word_match(phrase=each, match_list=compatibles.offline_compatible()):
                 logger.warning("'%s' is not a part of offline compatible request.", each)
                 and_response += f'{each!r} is not a part of off-line communicator compatible request.\n\n' \
                                 'Please try an instruction that does not require an user interaction.'
             else:
                 try:
-                    and_response += f"{offline_communicator(command=each)}\n"
+                    and_response += f"{offline.offline_communicator(command=each)}\n"
                 except Exception as error:
                     logger.error(error)
                     logger.error(traceback.format_exc())
@@ -107,19 +105,19 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         logger.info("Response: %s", and_response.strip())
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=and_response.strip())
 
-    if not word_match(phrase=command, match_list=compatibles.offline_compatible()):
+    if not word_match.word_match(phrase=command, match_list=compatibles.offline_compatible()):
         logger.warning("'%s' is not a part of offline compatible request.", command)
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f'"{command}" is not a part of off-line communicator compatible request.\n\n'
                                  'Please try an instruction that does not require an user interaction.')
     if ' after ' in command.lower():
-        if delay_info := timed_delay(phrase=command):
+        if delay_info := commander.timed_delay(phrase=command):
             logger.info("%s will be executed after %s", delay_info[0], support.time_converter(second=delay_info[1]))
             raise APIResponse(status_code=HTTPStatus.OK.real,
                               detail=f'I will execute it after {support.time_converter(second=delay_info[1])} '
                                      f'{models.env.title}!')
     try:
-        response = offline_communicator(command=command)
+        response = offline.offline_communicator(command=command)
     except Exception as error:
         logger.error(error)
         logger.error(traceback.format_exc())

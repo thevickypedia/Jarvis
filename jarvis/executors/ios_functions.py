@@ -7,8 +7,7 @@ from pyicloud.exceptions import (PyiCloudAPIResponseException,
                                  PyiCloudFailedLoginException)
 from pyicloud.services.findmyiphone import AppleDevice
 
-from jarvis.executors.location import get_location_from_coordinates
-from jarvis.executors.word_match import word_match
+from jarvis.executors import location, word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.exceptions import EgressErrors
@@ -50,7 +49,9 @@ def location_services(device: AppleDevice) -> Union[None, dict]:
     """
     try:
         if raw_location := device.location():
-            return get_location_from_coordinates(coordinates=(raw_location["latitude"], raw_location["longitude"]))
+            return location.get_location_from_coordinates(
+                coordinates=(raw_location["latitude"], raw_location["longitude"])
+            )
         else:
             logger.error("Unable to retrieve location for the device: '%s'", device)
             return
@@ -67,7 +68,7 @@ def locate_device(target_device: AppleDevice) -> NoReturn:
         target_device: Takes the target device as an argument.
     """
     try:
-        location = location_services(device=target_device)
+        device_location = location_services(device=target_device)
     except EgressErrors as error:
         logger.error(error)
         speaker.speak(text="I was unable to connect to the internet. Please check your connection settings and retry.",
@@ -78,12 +79,12 @@ def locate_device(target_device: AppleDevice) -> NoReturn:
         speaker.speak(text=f"I wasn't able to locate your {lookup} {models.env.title}! It is probably offline.")
     else:
         if shared.called_by_offline:
-            post_code = location.get("postcode", "").split("-")[0]
+            post_code = device_location.get("postcode", "").split("-")[0]
         else:
-            post_code = '"'.join(list(location.get("postcode", "").split("-")[0]))
-        iphone_location = f"Your {lookup} is near {location.get('road')}, " \
-                          f"{location.get('city', location.get('residential'))} " \
-                          f"{location.get('state')}. Zipcode: {post_code}, {location.get('country')}"
+            post_code = '"'.join(list(device_location.get("postcode", "").split("-")[0]))
+        iphone_location = f"Your {lookup} is near {device_location.get('road')}, " \
+                          f"{device_location.get('city', device_location.get('residential'))} " \
+                          f"{device_location.get('state')}. Zipcode: {post_code}, {device_location.get('country')}"
         stat = target_device.status()
         bat_percent = f"Battery: {round(stat['batteryLevel'] * 100)} %, " if stat["batteryLevel"] else ""
         device_model = stat["deviceDisplayName"]
@@ -128,14 +129,14 @@ def locate(phrase: str) -> None:
     speaker.speak(text="Would you like to get the location details?", run=True)
     if not (phrase_location := listener.listen()):
         return
-    elif word_match(phrase=phrase_location, match_list=keywords.keywords.ok):
+    elif word_match.word_match(phrase=phrase_location, match_list=keywords.keywords.ok):
         return
 
     locate_device(target_device=target_device)
     if models.env.icloud_recovery:
         speaker.speak(text="I can also enable lost mode. Would you like to do it?", run=True)
         phrase_lost = listener.listen()
-        if word_match(phrase=phrase_lost, match_list=keywords.keywords.ok):
+        if word_match.word_match(phrase=phrase_lost, match_list=keywords.keywords.ok):
             target_device.lost_device(number=models.env.icloud_recovery, text="Return my phone immediately.")
             speaker.speak(text="I've enabled lost mode on your phone.")
         else:

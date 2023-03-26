@@ -10,7 +10,7 @@ from typing import Dict, Union
 import psutil
 from speedtest import ConfigRetrievalError, Speedtest
 
-from jarvis.executors.location import get_location_from_coordinates
+from jarvis.executors import location
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
@@ -59,7 +59,7 @@ def vpn_checker() -> Union[bool, str]:
         return False
 
 
-def public_ip_info() -> Dict:
+def public_ip_info() -> Dict[str, str]:
     """Get public IP information.
 
     Returns:
@@ -154,7 +154,7 @@ def speed_test() -> None:
         logger.error(error)
         speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to connect to the speed test server.")
         return
-    client_location = get_location_from_coordinates(coordinates=st.lat_lon)
+    client_location = location.get_location_from_coordinates(coordinates=st.lat_lon)
     city = client_location.get("city") or client_location.get("residential") or \
         client_location.get("hamlet") or client_location.get("county")
     state = client_location.get("state")

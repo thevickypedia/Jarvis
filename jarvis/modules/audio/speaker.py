@@ -12,9 +12,9 @@ from threading import Thread
 from typing import NoReturn, Union
 
 import requests
-import yaml
 from playsound import playsound
 
+from jarvis.executors import files
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
@@ -113,19 +113,7 @@ def frequently_used(function_name: str) -> NoReturn:
     See Also:
         - This function does not have purpose, but to analyze and re-order the conditions' module at a later time.
     """
-    if os.path.isfile(models.fileio.frequent):
-        try:
-            with open(models.fileio.frequent) as file:
-                data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-        except yaml.YAMLError as error:
-            data = {}
-            logger.error(error)
-        if data.get(function_name):
-            data[function_name] += 1
-        else:
-            data[function_name] = 1
-    else:
-        data = {function_name: 1}
+    data = files.get_frequent(func=function_name)
     try:
         data = {k: v for k, v in sorted(data.items(), key=lambda x: x[1], reverse=True)}
     except Exception as error:  # Commonly raises key error or type error but don't care, log it and remove the file
@@ -133,6 +121,4 @@ def frequently_used(function_name: str) -> NoReturn:
         logger.warning(data)
         os.remove(models.fileio.frequent)
         return
-    with open(models.fileio.frequent, 'w') as file:
-        yaml.dump(data=data, stream=file, sort_keys=False)
-        file.flush()  # Write everything in buffer to file right away
+    files.put_frequent(data=data)

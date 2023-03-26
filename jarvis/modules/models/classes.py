@@ -50,11 +50,14 @@ class Settings(BaseSettings):
 
     Raises:
         UnsupportedOS:
-        If the hosted device is neither macOS nor Windows.
+        If the hosted device is other than Linux, macOS or Windows.
     """
 
+    if sys.stdin.isatty():
+        interactive = True
+    else:
+        interactive = False
     pid: PositiveInt = os.getpid()
-    runenv: str = psutil.Process(pid).parent().name()
     ram: Union[PositiveInt, PositiveFloat] = psutil.virtual_memory().total
     physical_cores: PositiveInt = psutil.cpu_count(logical=False)
     logical_cores: PositiveInt = psutil.cpu_count(logical=True)
@@ -63,17 +66,11 @@ class Settings(BaseSettings):
     bot: str = "jarvis"
     invoker: str = pathlib.PurePath(sys.argv[0]).stem
 
-    if runenv.endswith('sh'):
-        ide = False
-    else:
-        ide = True
     os: str = platform.system()
-    if os not in [supported_platforms.macOS, supported_platforms.linux, supported_platforms.windows]:
+    if os not in (supported_platforms.macOS, supported_platforms.linux, supported_platforms.windows):
         raise UnsupportedOS(
             f"\n{''.join('*' for _ in range(80))}\n\n"
-            "Unsupported Operating System. Currently Jarvis can run only on Mac and Windows OS.\n\n"
-            "To raise an issue: https://github.com/thevickypedia/Jarvis/issues/new\n"
-            "To reach out: https://vigneshrao.com/contact\n"
+            "Currently Jarvis can run only on Linux, Mac and Windows OS.\n\n"
             f"\n{''.join('*' for _ in range(80))}\n"
         )
     legacy = True if os == supported_platforms.macOS and Version(platform.mac_ver()[0]) < Version('10.14') else False

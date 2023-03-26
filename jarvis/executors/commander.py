@@ -5,12 +5,8 @@ from multiprocessing import Process
 from threading import Thread
 from typing import Tuple, Union
 
-from jarvis.executors.conditions import conditions
-from jarvis.executors.controls import sleep_control
-from jarvis.executors.listener_controls import get_listener_state
-from jarvis.executors.offline import offline_communicator
-from jarvis.executors.others import time_travel
-from jarvis.executors.word_match import word_match
+from jarvis.executors import (conditions, controls, listener_controls, offline,
+                              others, word_match)
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.logger.custom_logger import logger
@@ -41,13 +37,13 @@ def split_phrase(phrase: str, should_return: bool = False) -> bool:
     # Keywords for which the ' and ' split should not happen.
     multiexec = keywords.keywords.send_notification + keywords.keywords.reminder + keywords.keywords.distance
 
-    if ' and ' in phrase and not word_match(phrase=phrase, match_list=keywords.keywords.avoid) and \
-            not word_match(phrase=phrase, match_list=multiexec):
+    if ' and ' in phrase and not word_match.word_match(phrase=phrase, match_list=keywords.keywords.avoid) and \
+            not word_match.word_match(phrase=phrase, match_list=multiexec):
         for each in phrase.split(' and '):
-            exit_check = conditions(phrase=each.strip(), should_return=should_return)
+            exit_check = conditions.conditions(phrase=each.strip(), should_return=should_return)
             speaker.speak(run=True)
     else:
-        exit_check = conditions(phrase=phrase.strip(), should_return=should_return)
+        exit_check = conditions.conditions(phrase=phrase.strip(), should_return=should_return)
     return exit_check
 
 
@@ -62,7 +58,7 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
     time.sleep(delay)
     logger.info("Executing '%s'", phrase)
     try:
-        offline_communicator(command=phrase)
+        offline.offline_communicator(command=phrase)
     except Exception as error:
         logger.error(error)
         logger.error(traceback.format_exc())
@@ -78,9 +74,9 @@ def timed_delay(phrase: str) -> Tuple[str, Union[int, float]]:
         bool:
         Returns a boolean flag whether the time delay should be applied.
     """
-    if word_match(phrase=phrase, match_list=compatibles.offline_compatible()) and \
-            not word_match(phrase=phrase, match_list=keywords.keywords.set_alarm) and \
-            not word_match(phrase=phrase, match_list=keywords.keywords.reminder):
+    if word_match.word_match(phrase=phrase, match_list=compatibles.offline_compatible()) and \
+            not word_match.word_match(phrase=phrase, match_list=keywords.keywords.set_alarm) and \
+            not word_match.word_match(phrase=phrase, match_list=keywords.keywords.reminder):
         split_ = phrase.split('after')
         if task := split_[0].strip():
             delay = util.delay_calculator(phrase=split_[1].strip())
@@ -106,14 +102,14 @@ def renew() -> None:
         - This function runs only for a minute.
         - split_phrase(converted) is a condition so that, loop breaks when if sleep in ``conditions()`` returns True.
     """
-    if not get_listener_state():
+    if not listener_controls.get_listener_state():
         return
     for i in range(3):
         if i:
             converted = listener.listen(sound=False) or ""
         else:
             converted = listener.listen() or ""
-        if word_match(phrase=converted, match_list=models.env.wake_words):
+        if word_match.word_match(phrase=converted, match_list=models.env.wake_words):
             continue
         if split_phrase(phrase=converted):  # should_return flag is not passed which will default to False
             break  # split_phrase() returns a boolean flag from conditions. conditions return True only for sleep
@@ -131,27 +127,28 @@ def initiator(phrase: str = None, should_return: bool = False) -> None:
         return
     support.flush_screen()
     inactive_msg = f"My listeners are currently inactive {models.env.title}!"
-    if 'good' in phrase.lower() and word_match(phrase=phrase, match_list=('morning', 'night', 'afternoon', 'after noon',
-                                                                          'evening', 'goodnight')):
-        if not get_listener_state():
+    if 'good' in phrase.lower() and word_match.word_match(
+            phrase=phrase, match_list=('morning', 'night', 'afternoon', 'after noon', 'evening', 'goodnight')
+    ):
+        if not listener_controls.get_listener_state():
             speaker.speak(text=inactive_msg)
             return
         shared.called['time_travel'] = True
         if (event := support.celebrate()) and 'night' not in phrase.lower():
             speaker.speak(text=f'Happy {event}!')
         if 'night' in phrase.split() or 'goodnight' in phrase.split():
-            Thread(target=sleep_control).start()
-        time_travel()
+            Thread(target=controls.sleep_control).start()
+        others.time_travel()
         shared.called['time_travel'] = False
-    elif 'you there' in phrase.lower() or word_match(phrase=phrase, match_list=models.env.wake_words):
-        if not get_listener_state():
+    elif 'you there' in phrase.lower() or word_match.word_match(phrase=phrase, match_list=models.env.wake_words):
+        if not listener_controls.get_listener_state():
             speaker.speak(text=inactive_msg)
             return
         speaker.speak(text=random.choice(conversation.wake_up1))
         initialize()
-    elif word_match(phrase=phrase, match_list=['look alive', 'wake up', 'wakeup', 'show time',
-                                               'showtime']):
-        if not get_listener_state():
+    elif word_match.word_match(phrase=phrase, match_list=['look alive', 'wake up', 'wakeup',
+                                                          'show time', 'showtime']):
+        if not listener_controls.get_listener_state():
             speaker.speak(text=inactive_msg)
             return
         speaker.speak(text=random.choice(conversation.wake_up2))
@@ -159,7 +156,7 @@ def initiator(phrase: str = None, should_return: bool = False) -> None:
     else:
         if phrase:
             split_phrase(phrase=phrase, should_return=should_return)
-        elif get_listener_state():
+        elif listener_controls.get_listener_state():
             speaker.speak(text=random.choice(conversation.wake_up3))
             initialize()
         else:

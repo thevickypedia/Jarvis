@@ -5,7 +5,7 @@ import os.path
 import requests
 import uvicorn
 
-from jarvis.executors.port_handler import is_port_in_use, kill_port_pid
+from jarvis.executors import port_handler
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import config
 from jarvis.modules.logger.custom_logger import logger
@@ -46,7 +46,7 @@ def fast_api() -> None:
                                   log_format=logging.Formatter(api_config.DEFAULT_LOG_FORMAT))
     url = f'http://{models.env.offline_host}:{models.env.offline_port}'
 
-    if is_port_in_use(port=models.env.offline_port):
+    if port_handler.is_port_in_use(port=models.env.offline_port):
         logger.info("%d is currently in use.", models.env.offline_port)
 
         try:
@@ -58,7 +58,7 @@ def fast_api() -> None:
         except EgressErrors:
             logger.error('Unable to connect to existing uvicorn server.')
 
-        if not kill_port_pid(port=models.env.offline_port):  # This might terminate Jarvis
+        if not port_handler.kill_port_pid(port=models.env.offline_port):  # This might terminate Jarvis
             logger.critical('ATTENTION::Failed to kill existing PID. Attempting to re-create session.')
 
     # Uvicorn config supports the module as a value for the arg 'app' which can be from relative imports

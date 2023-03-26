@@ -8,9 +8,7 @@ from typing import Callable, List, NoReturn, Union
 
 import yaml
 
-from jarvis.executors import lights_squire
-from jarvis.executors.internet import vpn_checker
-from jarvis.executors.word_match import word_match
+from jarvis.executors import internet, lights_squire, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import conversation
 from jarvis.modules.lights import preset_values, smart_lights
@@ -110,7 +108,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if not vpn_checker():
+    if not internet.vpn_checker():
         return
 
     if not os.path.isfile(models.fileio.smart_devices):
@@ -215,7 +213,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         else:
             speaker.speak(text=f'Sure {models.env.title}! Setting {len(host_ip)} {plural} to warm!')
         executor.avail_check(function_to_call=warm)
-    elif color := word_match(phrase=phrase, match_list=list(preset_values.PRESET_VALUES.keys())):
+    elif color := word_match.word_match(phrase=phrase, match_list=list(preset_values.PRESET_VALUES.keys())):
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
                            f"I've changed {len(host_ip)} {plural} to {color}!")
         for light_ip in host_ip:

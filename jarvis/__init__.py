@@ -2,7 +2,7 @@ import os
 
 import pynotification
 
-version = "7.2.0"
+version = "7.2.1"
 
 install_script = os.path.join(os.path.dirname(__file__), 'lib', 'install.sh')
 
