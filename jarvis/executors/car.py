@@ -11,12 +11,9 @@ from typing import Dict, List, Tuple, Union
 
 import gmailconnector
 import jinja2
-import yaml
 from playsound import playsound
 
-from jarvis.executors.communicator import send_email
-from jarvis.executors.location import get_location_from_coordinates
-from jarvis.executors.word_match import word_match
+from jarvis.executors import communicator, files, location, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.car import connector, controller
 from jarvis.modules.logger.custom_logger import logger
@@ -26,11 +23,8 @@ from jarvis.modules.templates import templates
 from jarvis.modules.utils import shared, support, util
 
 
-def get_current_temp(location: dict) -> Tuple[Union[int, str], int]:
+def current_set_temperature(latitude: float, longitude: float) -> Tuple[Union[int, str], int]:
     """Get the current temperature at a given location.
-
-    Args:
-        location: Takes the location information as a dictionary.
 
     Returns:
         tuple:
@@ -38,8 +32,8 @@ def get_current_temp(location: dict) -> Tuple[Union[int, str], int]:
     """
     try:
         current_temp = int(temperature.k2f(arg=json.loads(urllib.request.urlopen(
-            url=f"https://api.openweathermap.org/data/2.5/onecall?lat={location['latitude']}&"
-                f"lon={location['longitude']}&exclude=minutely,hourly&appid={models.env.weather_api}"
+            url=f"https://api.openweathermap.org/data/2.5/onecall?lat={latitude}&"
+                f"lon={longitude}&exclude=minutely,hourly&appid={models.env.weather_api}"
         ).read())['current']['temp']))
     except (urllib.error.HTTPError, urllib.error.URLError) as error:
         logger.error(error)
@@ -83,18 +77,18 @@ class Operations:
             target_temp = 57
         else:
             if vehicle_position := vehicle(operation="LOCATE_INTERNAL"):
-                current_temp, target_temp = get_current_temp(location=vehicle_position)
+                current_temp, target_temp = current_set_temperature(latitude=vehicle_position['latitude'],
+                                                                    longitude=vehicle_position['longitude'])
                 extras += f"Your car is in {vehicle_position['city']} {vehicle_position['state']}, where the " \
                           f"current temperature is {current_temp}, so "
             else:
-                try:
-                    with open(models.fileio.location) as file:
-                        position = yaml.load(stream=file, Loader=yaml.FullLoader)
-                        current_temp, target_temp = get_current_temp(location=position)
-                        extras += f"The current temperature in " \
-                                  f"{position.get('address', {}).get('city', 'unknown city')} is {current_temp}, so "
-                except yaml.YAMLError as error:
-                    logger.error(error)
+                host_location = files.get_location()
+                if host_location['latitude'] and host_location['longitude']:
+                    current_temp, target_temp = current_set_temperature(latitude=host_location['latitude'],
+                                                                        longitude=host_location['longitude'])
+                    extras += f"The current temperature in " \
+                              f"{host_location.get('address', {}).get('city', 'unknown city')} is {current_temp}, so "
+                else:
                     target_temp = 69
         extras += f"I've configured the climate setting to {target_temp}\N{DEGREE SIGN}F"
         opr = "START-LOCK" if 'lock' in phrase else "START"
@@ -164,10 +158,10 @@ class Operations:
         """
         if car_name := self.object(operation="UNLOCK"):
             if dt_string and shared.called_by_offline:
-                send_email(body=f"Your {car_name} was successfully unlocked via offline communicator!",
-                           recipient=models.env.recipient, subject=f"Car unlock alert: {dt_string}",
-                           title="Vehicle Protection",
-                           gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+                communicator.send_email(body=f"Your {car_name} was successfully unlocked via offline communicator!",
+                                        recipient=models.env.recipient, subject=f"Car unlock alert: {dt_string}",
+                                        title="Vehicle Protection",
+                                        gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
             return f"Your {car_name} has been unlocked {models.env.title}!"
         else:
             return self.disconnect
@@ -191,8 +185,8 @@ class Operations:
             str:
             Response after retrieving the location of the vehicle.
         """
-        if location := self.object(operation="LOCATE"):
-            return location
+        if _location := self.object(operation="LOCATE"):
+            return _location
         else:
             return self.disconnect
 
@@ -234,7 +228,7 @@ def car(phrase: str) -> None:
                     'honk': ['honk', 'blink', 'horn'],
                     'locate': ['locate', 'where']}
 
-    if word_match(phrase=phrase, match_list=util.matrix_to_flat_list(list(allowed_dict.values()))):
+    if word_match.word_match(phrase=phrase, match_list=util.matrix_to_flat_list(list(allowed_dict.values()))):
         if not shared.called_by_offline:
             playsound(sound=models.indicators.exhaust, block=False)
     else:
@@ -244,27 +238,27 @@ def car(phrase: str) -> None:
 
     response = "Unsupported operation for car controls."
     caller = Operations()
-    if word_match(phrase=phrase, match_list=allowed_dict['on']):
+    if word_match.word_match(phrase=phrase, match_list=allowed_dict['on']):
         response = caller.turn_on(phrase=phrase)
-    elif word_match(phrase=phrase, match_list=allowed_dict['off']):
+    elif word_match.word_match(phrase=phrase, match_list=allowed_dict['off']):
         response = caller.turn_off()
-    elif word_match(phrase=phrase, match_list=allowed_dict['report']):
+    elif word_match.word_match(phrase=phrase, match_list=allowed_dict['report']):
         response = caller.report()
-    elif word_match(phrase=phrase, match_list=allowed_dict['guard']):
+    elif word_match.word_match(phrase=phrase, match_list=allowed_dict['guard']):
         response = caller.enable_guard(phrase=phrase)
-    elif word_match(phrase=phrase, match_list=allowed_dict['unlock']):
+    elif word_match.word_match(phrase=phrase, match_list=allowed_dict['unlock']):
         dt_string = datetime.now().strftime("%B %d, %Y - %I:%M %p")
         if shared.called_by_offline:
-            send_email(body="Your vehicle has been requested to unlock via offline communicator!",
-                       recipient=models.env.recipient, subject=f"Car unlock alert: {dt_string}",
-                       title="Vehicle Protection",
-                       gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+            communicator.send_email(body="Your vehicle has been requested to unlock via offline communicator!",
+                                    recipient=models.env.recipient, subject=f"Car unlock alert: {dt_string}",
+                                    title="Vehicle Protection",
+                                    gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
         response = caller.unlock(dt_string=dt_string)
-    elif word_match(phrase=phrase, match_list=allowed_dict['lock']):
+    elif word_match.word_match(phrase=phrase, match_list=allowed_dict['lock']):
         response = caller.lock()
-    elif word_match(phrase=phrase, match_list=allowed_dict['honk']):
+    elif word_match.word_match(phrase=phrase, match_list=allowed_dict['honk']):
         response = caller.honk()
-    elif word_match(phrase=phrase, match_list=allowed_dict['locate']):
+    elif word_match.word_match(phrase=phrase, match_list=allowed_dict['locate']):
         response = caller.locate()
     speaker.speak(text=response)
 
@@ -423,7 +417,7 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
                 logger.error("Unable to get position of the vehicle.")
                 return
             logger.info("latitude: %f, longitude: %f", position['latitude'], position['longitude'])
-            data = get_location_from_coordinates(coordinates=(position['latitude'], position['longitude']))
+            data = location.get_location_from_coordinates(coordinates=(position['latitude'], position['longitude']))
             number = data.get('streetNumber', data.get('house_number', ''))
             street = data.get('street', data.get('road'))
             state = data.get('region', data.get('state', data.get('county')))

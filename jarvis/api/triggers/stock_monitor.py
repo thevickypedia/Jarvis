@@ -102,7 +102,7 @@ class StockMonitor:
             self.ticker_grouped[k].append(tuple(v))
             self.email_grouped[v[0]].append((k,) + tuple(v[1:]))
 
-    def get_prices(self) -> Dict:
+    def get_prices(self) -> Dict[str, Dict[str, Union[float, str]]]:
         """Get the price of each stock ticker along with the exchange code.
 
         Returns:
@@ -236,11 +236,11 @@ class StockMonitor:
 
 
 if __name__ == '__main__':
-    from jarvis.executors.crontab import LOG_FILE
+    from jarvis.executors import crontab
     from jarvis.modules.logger import config
     from jarvis.modules.logger.custom_logger import logger as main_logger
 
-    config.multiprocessing_logger(filename=LOG_FILE)
+    config.multiprocessing_logger(filename=crontab.LOG_FILE)
     for log_filter in main_logger.filters:
         main_logger.removeFilter(filter=log_filter)
     StockMonitor(logger=main_logger).send_notification()

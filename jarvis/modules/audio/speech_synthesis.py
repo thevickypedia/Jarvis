@@ -13,7 +13,7 @@ from typing import NoReturn
 import docker
 import requests
 
-from jarvis.executors.port_handler import is_port_in_use, kill_port_pid
+from jarvis.executors import port_handler
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import config
 from jarvis.modules.logger.custom_logger import logger
@@ -40,7 +40,7 @@ def check_existing() -> bool:
         bool:
         A boolean flag whether a valid connection is present.
     """
-    if is_port_in_use(port=models.env.speech_synthesis_port):
+    if port_handler.is_port_in_use(port=models.env.speech_synthesis_port):
         logger.info("%d is currently in use.", models.env.speech_synthesis_port)
         try:
             res = requests.get(url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}",
@@ -52,7 +52,7 @@ def check_existing() -> bool:
             return False
         except EgressErrors as error:
             logger.error(error)
-            if not kill_port_pid(port=models.env.speech_synthesis_port):
+            if not port_handler.kill_port_pid(port=models.env.speech_synthesis_port):
                 logger.critical('ATTENTION::Failed to kill existing PID. Attempting to re-create session.')
 
 

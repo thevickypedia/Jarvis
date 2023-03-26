@@ -6,7 +6,7 @@ import gmailconnector
 import jinja2
 from pydantic import EmailStr
 
-from jarvis.executors.word_match import word_match
+from jarvis.executors import word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.logger.custom_logger import logger
@@ -34,7 +34,7 @@ def read_gmail() -> None:
                       run=True)
         if not (confirmation := listener.listen()):
             return
-        if not word_match(phrase=confirmation, match_list=keywords.keywords.ok):
+        if not word_match.word_match(phrase=confirmation, match_list=keywords.keywords.ok):
             return
         for mail in reader.read_mail(messages=response.body, humanize_datetime=True):
             speaker.speak(text=f"You have an email from, {mail.sender}, with subject, "
@@ -100,12 +100,14 @@ def send_email(body: str, recipient: Union[EmailStr, str], subject: str = None, 
         - Error response from gmail-connector.
     """
     body = string.capwords(body)
+    if not subject:
+        subject = "Message from Jarvis" if recipient == models.env.recipient else f"Message from {models.env.name}"
     rendered = jinja2.Template(source=templates.email.notification).render(SENDER=title or models.env.name,
                                                                            MESSAGE=body)
     email_object = gmailconnector.SendEmail(gmail_user=gmail_user or models.env.gmail_user,
                                             gmail_pass=gmail_pass or models.env.gmail_pass)
     mail_stat = email_object.send_email(recipient=recipient, sender=sender or 'Jarvis Communicator',
-                                        subject=subject or f'Message from {models.env.name}', html_body=rendered)
+                                        subject=subject, html_body=rendered)
     if mail_stat.ok:
         logger.info('Email notification has been sent')
         return True

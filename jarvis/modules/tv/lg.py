@@ -9,7 +9,7 @@ import socket
 import sys
 import time
 from collections.abc import Generator
-from typing import Dict, List, NoReturn
+from typing import List, NoReturn
 
 from playsound import playsound
 from pywebostv.connection import WebOSClient
@@ -104,12 +104,12 @@ class LGWebOS:
             self.media.volume_down()
         self.system.notify(f"Jarvis::Decreased Volume: {self.media.get_volume()['volume']}%")
 
-    def get_volume(self) -> Dict:
+    def get_volume(self) -> int:
         """Get volume status.
 
         Returns:
-            dict:
-            A dictionary with key value pairs of scenario, volume and mute status.
+            int:
+            Volume level.
         """
         self.system.notify(f"Jarvis::Current Volume: {self.media.get_volume()['volume']}%")
         return self.media.get_volume()['volume']

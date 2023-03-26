@@ -1,12 +1,9 @@
-import os
 import re
 from typing import Union
 
-import yaml
 from pydantic import EmailStr
 
-from jarvis.executors.communicator import send_email, send_sms
-from jarvis.executors.word_match import word_match
+from jarvis.executors import communicator, files, word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.logger.custom_logger import logger
@@ -14,7 +11,7 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support, util
 
 
-def extract_contacts(name: str, key: str) -> Union[int, EmailStr, None]:
+def extract_contacts(name: str, key: str) -> Union[int, EmailStr, str, None]:
     """Extract contact destination for ``phone`` or ``email`` from the ``contacts.yaml`` file, if present.
 
     Args:
@@ -26,14 +23,7 @@ def extract_contacts(name: str, key: str) -> Union[int, EmailStr, None]:
         - EmailStr: If email address is requested.
         - int: If phone number is requested.
     """
-    if not os.path.isfile(models.fileio.contacts):
-        return
-    with open(models.fileio.contacts) as file:
-        try:
-            contacts = yaml.load(stream=file, Loader=yaml.FullLoader)
-        except yaml.YAMLError as error:
-            logger.error(error)
-            return
+    contacts = files.get_contacts()
     if contacts.get(key):
         logger.info("Looking for '%s' in contacts file.", name)
         identifier = util.get_closest_match(text=name, match_list=list(contacts[key].keys()))
@@ -125,7 +115,8 @@ def initiate_sms(body: str, to: Union[str, int]) -> None:
 
     if number and shared.called_by_offline:  # Number is present and called by offline
         logger.info("'{body}' -> '{number}'".format(body=body, number=number))
-        sms_response = send_sms(user=models.env.gmail_user, password=models.env.gmail_pass, number=number, body=body)
+        sms_response = communicator.send_sms(user=models.env.gmail_user, password=models.env.gmail_pass,
+                                             number=number, body=body)
         if sms_response is True:
             speaker.speak(text=f"Message has been sent {models.env.title}!")
         else:
@@ -149,10 +140,10 @@ def initiate_sms(body: str, to: Union[str, int]) -> None:
             return
     speaker.speak(text=f'{body} to {number}. Do you want me to proceed?', run=True)
     if converted := listener.listen():
-        if word_match(phrase=converted, match_list=keywords.keywords.ok):
+        if word_match.word_match(phrase=converted, match_list=keywords.keywords.ok):
             logger.info("{body} -> {number}".format(body=body, number=number))
-            sms_response = send_sms(user=models.env.gmail_user, password=models.env.gmail_pass, number=number,
-                                    body=body)
+            sms_response = communicator.send_sms(user=models.env.gmail_user, password=models.env.gmail_pass,
+                                                 number=number, body=body)
             if sms_response is True:
                 speaker.speak(text=f"Message has been sent {models.env.title}!")
             else:
@@ -180,7 +171,7 @@ def initiate_email(body: str, to: str) -> None:
 
     if body and shared.called_by_offline:  # Body is present and called by offline
         logger.info("'%s' -> '%s'", body, to)
-        mail_response = send_email(body=body, recipient=to)
+        mail_response = communicator.send_email(body=body, recipient=to)
         if mail_response is True:
             speaker.speak(text=f"Email has been sent {models.env.title}!")
         else:
@@ -200,9 +191,9 @@ def initiate_email(body: str, to: str) -> None:
 
     speaker.speak(text=f'{body} to {to}. Do you want me to proceed?', run=True)
     if converted := listener.listen():
-        if word_match(phrase=converted, match_list=keywords.keywords.ok):
+        if word_match.word_match(phrase=converted, match_list=keywords.keywords.ok):
             logger.info("'%s' -> '%s'", body, to)
-            mail_response = send_email(body=body, recipient=to)
+            mail_response = communicator.send_email(body=body, recipient=to)
             if mail_response is True:
                 speaker.speak(text=f"Email has been sent {models.env.title}!")
             else:

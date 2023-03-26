@@ -1,7 +1,7 @@
 import json
 from typing import NoReturn
 
-from jarvis.executors.word_match import word_match
+from jarvis.executors import word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -27,7 +27,7 @@ def todo(phrase: str) -> None:
     if "add" in phrase.lower():
         add_todo()
         return
-    if word_match(phrase=phrase, match_list=["remove", "delete"]):
+    if word_match.word_match(phrase=phrase, match_list=["remove", "delete"]):
         if "items" in phrase.lower():
             delete_todo_items()
         else:
@@ -91,7 +91,7 @@ def add_todo() -> None:
     speaker.speak(text=f"I've added the item: {item} to the category: {category}. "
                        "Do you want to add anything else to your to-do list?", run=True)
     category_continue = listener.listen()
-    if word_match(phrase=category_continue.lower(), match_list=keywords.keywords.ok):
+    if word_match.word_match(phrase=category_continue.lower(), match_list=keywords.keywords.ok):
         add_todo()
     else:
         speaker.speak(text='Alright')

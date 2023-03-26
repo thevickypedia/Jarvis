@@ -22,8 +22,7 @@ import psutil
 import yaml
 from holidays import country_holidays
 
-from jarvis.executors.internet import ip_address
-from jarvis.executors.word_match import word_match
+from jarvis.executors import internet, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -69,7 +68,7 @@ def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
         return _ipaddr_list
     else:
         if localhost:
-            ip_addr = ip_address()
+            ip_addr = internet.ip_address()
             if _ipaddr_list[0].split('.')[0] == ip_addr.split('.')[0]:
                 return _ipaddr_list
             else:
@@ -287,7 +286,7 @@ def humanized_day_to_datetime(phrase: str) -> Union[Tuple[datetime, str], NoRetu
     floating_days = build_lookup()
     lookup_day = get_capitalized(phrase=phrase)
     if not lookup_day or lookup_day not in days_in_week:  # basically, if lookup day is in lower case
-        if matched := word_match(phrase=phrase, match_list=days_in_week):
+        if matched := word_match.word_match(phrase=phrase, match_list=days_in_week):
             lookup_day = string.capwords(matched)
     if not lookup_day or lookup_day not in days_in_week:
         logger.error("Received incorrect lookup day: %s", lookup_day)
@@ -371,12 +370,10 @@ def unsupported_features() -> NoReturn:
 
 def flush_screen() -> NoReturn:
     """Flushes the screen output."""
-    if models.settings.ide:
-        sys.stdout.flush()
-        sys.stdout.write("\r")
-    else:
-        sys.stdout.flush()
+    if models.settings.interactive:
         sys.stdout.write(f"\r{' '.join(['' for _ in range(os.get_terminal_size().columns)])}")
+    else:
+        sys.stdout.write("\r")
 
 
 def number_to_words(input_: Union[int, str], capitalize: bool = False) -> str:

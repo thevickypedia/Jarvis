@@ -4,7 +4,7 @@ import inflect
 import pytz
 from timezonefinder import TimezoneFinder
 
-from jarvis.executors.location import geo_locator
+from jarvis.executors import location
 from jarvis.modules.audio import speaker
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
@@ -18,9 +18,9 @@ def current_time(converted: str = None) -> None:
     """
     place = support.get_capitalized(phrase=converted) if converted else None
     if place and len(place) > 3:
-        place_tz = geo_locator.geocode(place)
+        place_tz = location.geo_locator.geocode(place)
         coordinates = place_tz.latitude, place_tz.longitude
-        located = geo_locator.reverse(coordinates, language='en')
+        located = location.geo_locator.reverse(coordinates, language='en')
         address = located.raw.get('address', {})
         city, state = address.get('city'), address.get('state')
         time_location = f'{city} {state}'.replace('None', '') if city or state else place

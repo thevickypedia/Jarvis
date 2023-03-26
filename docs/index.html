@@ -342,37 +342,37 @@ last_value: the last value assigned or None</p>
 <p>Instantiates the speaker engine and loads the voices available in the hosting machine.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_all_voices">
-<span class="sig-name descname"><span class="pre">get_all_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_all_voices" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_all_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_all_voices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices, converting attributes into dict.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_english_voices">
-<span class="sig-name descname"><span class="pre">get_english_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_english_voices" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_english_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_english_voices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices for english language, converting attributes into dict.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_voice_by_language">
-<span class="sig-name descname"><span class="pre">get_voice_by_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lang_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_language" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_voice_by_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lang_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_language" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices for the given language, converting attributes into dict.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_voice_by_index">
-<span class="sig-name descname"><span class="pre">get_voice_by_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_index" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_voice_by_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices for the given index, converting attributes into dict.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_voice_by_name">
-<span class="sig-name descname"><span class="pre">get_voice_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_name" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_voice_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices matching the given name, converting attributes into dict.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_voice_by_gender">
-<span class="sig-name descname"><span class="pre">get_voice_by_gender</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_gender" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_voice_by_gender</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_gender" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices matching the given gender, converting attributes into dict.</p>
 </dd></dl>
 
@@ -1359,7 +1359,7 @@ last_value: the last value assigned or None</p>
 <span id="routers-stockmonitor"></span><h1>Routers - StockMonitor<a class="headerlink" href="#module-jarvis.api.routers.stock_monitor" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.stock_monitor.send_otp_stock_monitor">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stock_monitor.</span></span><span class="sig-name descname"><span class="pre">send_otp_stock_monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EmailStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">60</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stock_monitor.send_otp_stock_monitor" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stock_monitor.</span></span><span class="sig-name descname"><span class="pre">send_otp_stock_monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EmailStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stock_monitor.send_otp_stock_monitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send one time password via email.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1929,7 +1929,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.api.triggers.stock_monitor.StockMonitor.get_prices">
-<span class="sig-name descname"><span class="pre">get_prices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#jarvis.api.triggers.stock_monitor.StockMonitor.get_prices" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_prices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.triggers.stock_monitor.StockMonitor.get_prices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the price of each stock ticker along with the exchange code.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -2120,8 +2120,8 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.alarm.alarm_executor">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.alarm.</span></span><span class="sig-name descname"><span class="pre">alarm_executor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.alarm.alarm_executor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.executors.alarm.executor">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.alarm.</span></span><span class="sig-name descname"><span class="pre">executor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.alarm.executor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs the <code class="docutils literal notranslate"><span class="pre">alarm.mp3</span></code> file at max volume and reverts the volume after 3 minutes.</p>
 </dd></dl>
 
@@ -2168,11 +2168,11 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 </section>
-<section id="module-jarvis.executors.background_tasks">
-<span id="background-tasks"></span><h1>Background Tasks<a class="headerlink" href="#module-jarvis.executors.background_tasks" title="Permalink to this heading">¶</a></h1>
+<section id="module-jarvis.executors.background_task">
+<span id="background-task"></span><h1>Background Task<a class="headerlink" href="#module-jarvis.executors.background_task" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.background_tasks.background_task_handler">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.background_tasks.</span></span><span class="sig-name descname"><span class="pre">background_task_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.background_tasks.background_task_handler" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.executors.background_task.background_task_handler">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.background_task.</span></span><span class="sig-name descname"><span class="pre">background_task_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.background_task.background_task_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handles background tasks file resets by renaming it to tmp if requested to disable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2182,8 +2182,13 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.background_tasks.remove_corrupted">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.background_tasks.</span></span><span class="sig-name descname"><span class="pre">remove_corrupted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.BackgroundTask" title="jarvis.modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.background_tasks.remove_corrupted" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.executors.background_task._compare_tasks">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.background_task.</span></span><span class="sig-name descname"><span class="pre">_compare_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.background_task._compare_tasks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.background_task.remove_corrupted">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.background_task.</span></span><span class="sig-name descname"><span class="pre">remove_corrupted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.BackgroundTask" title="jarvis.modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.background_task.remove_corrupted" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes a corrupted task from the background tasks feed file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2193,8 +2198,8 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.background_tasks.validate_background_tasks">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.background_tasks.</span></span><span class="sig-name descname"><span class="pre">validate_background_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.BackgroundTask" title="jarvis.modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.background_tasks.validate_background_tasks" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.executors.background_task.validate_tasks">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.background_task.</span></span><span class="sig-name descname"><span class="pre">validate_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.BackgroundTask" title="jarvis.modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.background_task.validate_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates each background task if it is offline compatible.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2210,18 +2215,15 @@ last_value: the last value assigned or None</p>
 <section id="module-jarvis.executors.car">
 <span id="car"></span><h1>Car<a class="headerlink" href="#module-jarvis.executors.car" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.car.get_current_temp">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.car.</span></span><span class="sig-name descname"><span class="pre">get_current_temp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.car.get_current_temp" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.executors.car.current_set_temperature">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.car.</span></span><span class="sig-name descname"><span class="pre">current_set_temperature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.car.current_set_temperature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the current temperature at a given location.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>location</strong> – Takes the location information as a dictionary.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of current temperature and target temperature.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A tuple of current temperature and target temperature.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2514,7 +2516,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <span id="communicator-squire"></span><h1>Communicator Squire<a class="headerlink" href="#module-jarvis.executors.comm_squire" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.comm_squire.extract_contacts">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.comm_squire.</span></span><span class="sig-name descname"><span class="pre">extract_contacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">EmailStr</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.comm_squire.extract_contacts" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.comm_squire.</span></span><span class="sig-name descname"><span class="pre">extract_contacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">EmailStr</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.comm_squire.extract_contacts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract contact destination for <code class="docutils literal notranslate"><span class="pre">phone</span></code> or <code class="docutils literal notranslate"><span class="pre">email</span></code> from the <code class="docutils literal notranslate"><span class="pre">contacts.yaml</span></code> file, if present.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2953,6 +2955,44 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
+<section id="module-jarvis.executors.files">
+<span id="files"></span><h1>Files<a class="headerlink" href="#module-jarvis.executors.files" title="Permalink to this heading">¶</a></h1>
+<p>Wrapper for frequently used mapping files.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.get_contacts">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">get_contacts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DefaultDict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files.get_contacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the contact file and returns the data.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.get_frequent">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">get_frequent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files.get_frequent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Support getting frequently used keywords’ mapping file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>func</strong> – Takes function name as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.put_frequent">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_frequent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.files.put_frequent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Support writing frequently used keywords’ mapping file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Takes the mapping dictionary as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.get_location">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">get_location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DefaultDict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files.get_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the location file and returns the location data.</p>
+</dd></dl>
+
+</section>
 <section id="module-jarvis.executors.myq_controller">
 <span id="garage-door"></span><h1>Garage Door<a class="headerlink" href="#module-jarvis.executors.myq_controller" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
@@ -3139,7 +3179,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.internet.public_ip_info">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.internet.</span></span><span class="sig-name descname"><span class="pre">public_ip_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#jarvis.executors.internet.public_ip_info" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.internet.</span></span><span class="sig-name descname"><span class="pre">public_ip_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.internet.public_ip_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get public IP information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -3459,20 +3499,6 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <section id="module-jarvis.executors.location">
 <span id="location"></span><h1>Location<a class="headerlink" href="#module-jarvis.executors.location" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.location.public_ip_info">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.location.</span></span><span class="sig-name descname"><span class="pre">public_ip_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#jarvis.executors.location.public_ip_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get public IP information.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Public IP information.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.location.get_coordinates_from_ip">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.location.</span></span><span class="sig-name descname"><span class="pre">get_coordinates_from_ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.location.get_coordinates_from_ip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses public IP to retrieve latitude and longitude. If fails, uses <code class="docutils literal notranslate"><span class="pre">Speedtest</span></code> module.</p>
@@ -3488,7 +3514,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.location.get_location_from_coordinates">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.location.</span></span><span class="sig-name descname"><span class="pre">get_location_from_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#jarvis.executors.location.get_location_from_coordinates" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.location.</span></span><span class="sig-name descname"><span class="pre">get_location_from_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.location.get_location_from_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses the latitude and longitude information to get the address information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3964,7 +3990,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <span id="remind"></span><h1>Remind<a class="headerlink" href="#module-jarvis.executors.remind" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.remind.create_reminder">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.remind.</span></span><span class="sig-name descname"><span class="pre">create_reminder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">am_pm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_about</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.remind.create_reminder" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.remind.</span></span><span class="sig-name descname"><span class="pre">create_reminder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">am_pm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_about</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.remind.create_reminder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates the lock file necessary to set a reminder.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3975,9 +4001,16 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <li><p><strong>message</strong> – Message to be reminded for.</p></li>
 <li><p><strong>to_about</strong> – remind to or remind about as said in phrase.</p></li>
 <li><p><strong>timer</strong> – Number of minutes/hours to reminder.</p></li>
+<li><p><strong>name</strong> – Custom contact to remind.</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.remind.find_name">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.remind.</span></span><span class="sig-name descname"><span class="pre">find_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.remind.find_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Looks for names in contact file if there is any matching the phrase.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -3992,12 +4025,15 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.remind.reminder_executor">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.remind.</span></span><span class="sig-name descname"><span class="pre">reminder_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.remind.reminder_executor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.executors.remind.executor">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.remind.</span></span><span class="sig-name descname"><span class="pre">executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contact</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.remind.executor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Notifies user about the reminder and displays a notification on the device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> – Takes the reminder message as an argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> – Takes the reminder message as an argument.</p></li>
+<li><p><strong>contact</strong> – Name of the person to send the reminder to.</p></li>
+</ul>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -5764,7 +5800,7 @@ Pass 155 for LO and 285 for HI.</p>
 <dd class="field-odd"><p>Dictionary of keywords and in a mapping dictionary.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dict</p>
+<dd class="field-even"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5949,7 +5985,7 @@ Pass 155 for LO and 285 for HI.</p>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference internal" href="#jarvis.modules.exceptions.UnsupportedOS" title="jarvis.modules.exceptions.UnsupportedOS"><strong>UnsupportedOS</strong></a> – </p></li>
-<li><p><strong>If the hosted device is neither macOS nor Windows.</strong> – </p></li>
+<li><p><strong>If the hosted device is other than Linux</strong><strong>, </strong><strong>macOS</strong><strong> or </strong><strong>Windows.</strong> – </p></li>
 </ul>
 </dd>
 </dl>
@@ -5958,11 +5994,6 @@ Pass 155 for LO and 285 for HI.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.Settings.pid">
 <span class="sig-name descname"><span class="pre">pid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PositiveInt</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Settings.pid" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.Settings.runenv">
-<span class="sig-name descname"><span class="pre">runenv</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Settings.runenv" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -9299,14 +9330,14 @@ last_value: the last value assigned or None</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.tv.lg.LGWebOS.get_volume">
-<span class="sig-name descname"><span class="pre">get_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS.get_volume" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS.get_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get volume status.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A dictionary with key value pairs of scenario, volume and mute status.</p>
+<dd class="field-odd"><p>Volume level.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict</p>
+<dd class="field-even"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -9806,7 +9837,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#executors">———-Executors———-</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.alarm">Alarm</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.automation">Automation</a></li>
-<li><a class="reference internal" href="#module-jarvis.executors.background_tasks">Background Tasks</a></li>
+<li><a class="reference internal" href="#module-jarvis.executors.background_task">Background Task</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.car">Car</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.communicator">Communicator</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.comm_squire">Communicator Squire</a></li>
@@ -9818,6 +9849,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis.executors.date_time">DateTime</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.display_functions">DisplayFunctions</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.face">Face</a></li>
+<li><a class="reference internal" href="#module-jarvis.executors.files">Files</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.myq_controller">Garage Door</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.github">GitHub</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.guard">Guard</a></li>

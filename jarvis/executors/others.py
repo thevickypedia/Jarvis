@@ -21,13 +21,8 @@ from pychromecast.error import ChromecastConnectionError
 from randfacts import get_fact
 
 from jarvis import version as module_version
-from jarvis.executors.communicator import read_gmail
-from jarvis.executors.date_time import current_date, current_time
-from jarvis.executors.internet import vpn_checker
-from jarvis.executors.robinhood import robinhood
-from jarvis.executors.todo_list import get_todo
-from jarvis.executors.weather import weather
-from jarvis.executors.word_match import word_match
+from jarvis.executors import (communicator, date_time, internet, robinhood,
+                              todo_list, weather, word_match)
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -168,7 +163,7 @@ def google_home(device: str = None, file: str = None) -> None:
         device: Name of the Google home device on which the music has to be played.
         file: Scanned audio file to be played.
     """
-    if not (network_id := vpn_checker()):
+    if not (network_id := internet.vpn_checker()):
         return
 
     if not shared.called_by_offline:
@@ -255,7 +250,7 @@ def meaning(phrase: str) -> None:
     if not keyword or keyword == 'word':
         speaker.speak(text="Please tell a keyword.", run=True)
         response = listener.listen()
-        if not response or word_match(phrase=response, match_list=keywords.keywords.exit_):
+        if not response or word_match.word_match(phrase=response, match_list=keywords.keywords.exit_):
             return
         meaning(phrase=response)
     else:
@@ -272,7 +267,7 @@ def meaning(phrase: str) -> None:
                 return
             speaker.speak(text=f'Do you wanna know how {keyword} is spelled?', run=True)
             response = listener.listen()
-            if word_match(phrase=response, match_list=keywords.keywords.ok):
+            if word_match.word_match(phrase=response, match_list=keywords.keywords.ok):
                 for letter in list(keyword.lower()):
                     speaker.speak(text=letter)
                 speaker.speak(run=True)
@@ -323,12 +318,12 @@ def report() -> NoReturn:
     """Initiates a list of functions, that I tend to check first thing in the morning."""
     sys.stdout.write("\rStarting today's report")
     shared.called['report'] = True
-    current_date()
-    current_time()
-    weather()
-    get_todo()
-    read_gmail()
-    robinhood()
+    date_time.current_date()
+    date_time.current_time()
+    weather.weather()
+    todo_list.get_todo()
+    communicator.read_gmail()
+    robinhood.robinhood()
     news()
     shared.called['report'] = False
 
@@ -341,9 +336,9 @@ def time_travel() -> None:
         if event := support.celebrate():
             speaker.speak(text=f'Happy {event}!')
         return
-    current_date()
-    current_time()
-    weather()
+    date_time.current_date()
+    date_time.current_time()
+    weather.weather()
     speaker.speak(run=True)
     with db.connection:
         cursor = db.connection.cursor()
@@ -357,11 +352,11 @@ def time_travel() -> None:
         event_status = cursor.execute(f"SELECT info, date FROM {models.env.event_app}").fetchone()
     if event_status and event_status[0].startswith('You'):
         speaker.speak(text=event_status[0])
-    get_todo()
-    read_gmail()
+    todo_list.get_todo()
+    communicator.read_gmail()
     speaker.speak(text='Would you like to hear the latest news?', run=True)
     phrase = listener.listen()
-    if phrase and word_match(phrase=phrase.lower(), match_list=keywords.keywords.ok):
+    if phrase and word_match.word_match(phrase=phrase.lower(), match_list=keywords.keywords.ok):
         news()
 
 

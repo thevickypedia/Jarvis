@@ -24,7 +24,7 @@ from jarvis.modules.utils import support, util
 router = APIRouter()
 
 
-async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 60):
+async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 300):
     """Send one time password via email.
 
     Args:
@@ -50,8 +50,8 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 6
     if mail_stat.ok:
         logger.debug(mail_stat.body)
         if models.env.debug:  # Why do all the conversions if it's not going to be logged anyway
-            logger.debug("Token will be reset in %s." %
-                         support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word='minute'))
+            logger.info("Token will be reset in %s." %
+                        support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word='minute'))
         Thread(target=timeout_otp.reset_stock_monitor, args=(email_address, reset_timeout)).start()
         raise APIResponse(status_code=HTTPStatus.OK.real,
                           detail="Please enter the OTP sent via email to verify email address:")
@@ -113,7 +113,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
     if email_otp:
         recd_dict[input_data.email] = email_otp
     if recd_dict.get(input_data.email, 'DO_NOT') == sent_dict.get(input_data.email, 'MATCH'):
-        logger.debug("%s has been verified.", input_data.email)
+        logger.info("%s has been verified.", input_data.email)
     else:
         result = validate_email(email_address=input_data.email, smtp_check=False)
         logger.debug(result.body)

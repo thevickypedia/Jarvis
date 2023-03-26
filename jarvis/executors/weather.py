@@ -4,10 +4,8 @@ import urllib.request
 from datetime import datetime
 
 import inflect
-import yaml
 
-from jarvis.executors.location import geo_locator
-from jarvis.executors.word_match import word_match
+from jarvis.executors import files, location, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
@@ -35,28 +33,21 @@ def weather(phrase: str = None) -> None:
         phrase = phrase.lower()
     if place:
         logger.info("Identified place: %s", place)
-        desired_location = geo_locator.geocode(place)
+        desired_location = location.geo_locator.geocode(place)
         if not desired_location:
             logger.error("Failed to get coordinates for the place: '%s'", place)
             speaker.speak(text=f"I'm sorry {models.env.title}! "
                                f"I wasn't able to get the weather information at {place}!")
             return
         coordinates = desired_location.latitude, desired_location.longitude
-        located = geo_locator.reverse(coordinates, language='en')
+        located = location.geo_locator.reverse(coordinates, language='en')
         address = located.raw['address']
         city = address.get('city') or address.get('town') or address.get('hamlet') or 'Unknown'
         state = address.get('state', 'Unknown')
         lat = located.latitude
         lon = located.longitude
     else:
-        try:
-            with open(models.fileio.location) as file:
-                current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
-        except yaml.YAMLError as error:
-            logger.error(error)
-            speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to read your location.")
-            return
-
+        current_location = files.get_location()
         address = current_location.get('address', {})
         city = address.get('city') or address.get('town') or address.get('hamlet') or 'Unknown'
         state = address.get('state', 'Unknown')
@@ -73,8 +64,8 @@ def weather(phrase: str = None) -> None:
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
 
-    if phrase and word_match(phrase=phrase,
-                             match_list=['tomorrow', 'day after', 'next week', 'tonight', 'afternoon', 'evening']):
+    if phrase and word_match.word_match(phrase=phrase, match_list=['tomorrow', 'day after', 'next week',
+                                                                   'tonight', 'afternoon', 'evening']):
         # when the weather info was requested
         if 'tonight' in phrase:
             key = 0

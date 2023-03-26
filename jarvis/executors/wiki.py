@@ -1,6 +1,6 @@
 from wikipedia import DisambiguationError, PageError, WikipediaPage
 
-from jarvis.executors.word_match import word_match
+from jarvis.executors import word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.logger.custom_logger import logger
@@ -49,5 +49,5 @@ def wikipedia_(phrase: str) -> None:
         return
     speaker.speak(text=f"{formatted}. Do you want me to continue {models.env.title}?", run=True)
     if response := listener.listen():
-        if word_match(phrase=response, match_list=keywords.keywords.ok):
+        if word_match.word_match(phrase=response, match_list=keywords.keywords.ok):
             speaker.speak(text=". ".join(result.split(". ")[3:]))

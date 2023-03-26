@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+7.2.1 (03/26/2023)
+------------------
+- Add a feature to set reminders to a contact person
+- Create a whole new template for emails
+- Fix IDE detection during startup
+- Create a dedicated wrapper to load mapping files
+- Move location services low on priority
+- Update type hints, import statements and docstrings
+
 7.2.0 (03/18/2023)
 ------------------
 - Make imports to not rely on internet connection

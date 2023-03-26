@@ -11,16 +11,9 @@ from deepdiff import DeepDiff
 from pydantic import HttpUrl
 
 from jarvis._preexec import keywords_handler  # noqa
-from jarvis.executors.alarm import alarm_executor
-from jarvis.executors.automation import auto_helper
-from jarvis.executors.background_tasks import (remove_corrupted,
-                                               validate_background_tasks)
-from jarvis.executors.conditions import conditions
-from jarvis.executors.crontab import crontab_executor
-from jarvis.executors.listener_controls import put_listener_state
-from jarvis.executors.others import photo
-from jarvis.executors.remind import reminder_executor
-from jarvis.executors.word_match import word_match
+from jarvis.executors import (alarm, automation, background_task, conditions,
+                              crontab, listener_controls, others, remind,
+                              word_match)
 from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.conditions import keywords
 from jarvis.modules.crontab import expression
@@ -41,7 +34,7 @@ smart_listener = Queue()
 def background_tasks() -> NoReturn:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
-    tasks: List[BackgroundTask] = list(validate_background_tasks())
+    tasks: List[BackgroundTask] = list(background_task.validate_tasks())
     offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
     meeting_muter = []
     if models.settings.os == models.supported_platforms.macOS:
@@ -59,11 +52,12 @@ def background_tasks() -> NoReturn:
                 else:
                     logger.debug("Executing %s", task.task)
                     try:
-                        offline_communicator(task.task)
+                        response = offline_communicator(task.task) or "No response for background task"
+                        logger.debug("Response %s", response)
                     except Exception as error:
                         logger.error(error)
                         logger.warning("Removing %s from background tasks.", task)
-                        remove_corrupted(task=task)
+                        background_task.remove_corrupted(task=task)
 
         # Trigger cron jobs
         if start_cron + 60 <= time.time() or dry_run:  # Condition passes every minute
@@ -72,7 +66,7 @@ def background_tasks() -> NoReturn:
                 job = expression.CronExpression(line=cron)
                 if job.check_trigger():
                     logger.debug("Executing cron job: %s", job.comment)
-                    cron_process = Process(target=crontab_executor, args=(job.comment,))
+                    cron_process = Process(target=crontab.crontab_executor, args=(job.comment,))
                     cron_process.start()
                     with db.connection:
                         cursor = db.connection.cursor()
@@ -81,9 +75,11 @@ def background_tasks() -> NoReturn:
 
         # Trigger automation
         if os.path.isfile(models.fileio.automation):
-            if exec_task := auto_helper(offline_list=offline_list):
+            if exec_task := automation.auto_helper(offline_list=offline_list):
+                logger.debug("Executing %s", exec_task)
                 try:
-                    offline_communicator(command=exec_task)
+                    response = offline_communicator(command=exec_task) or "No response for automated task"
+                    logger.info("Response %s", response)
                 except Exception as error:
                     logger.error(error)
                     logger.error(traceback.format_exc())
@@ -134,8 +130,9 @@ def background_tasks() -> NoReturn:
                             logger.info("Disabling listener for the meeting '%s'. Will be enabled after %s",
                                         meeting_name, support.time_converter(second=duration))
                             meeting_times.remove(each_muter)
-                            put_listener_state(state=False)
-                            Timer(function=put_listener_state, interval=duration, kwargs=dict(state=True)).start()
+                            listener_controls.put_listener_state(state=False)
+                            Timer(function=listener_controls.put_listener_state, interval=duration,
+                                  kwargs=dict(state=True)).start()
 
         # Trigger alarms
         if alarm_state := support.lock_files(alarm_files=True):
@@ -143,7 +140,7 @@ def background_tasks() -> NoReturn:
                 if each_alarm == datetime.now().strftime("%I_%M_%p.lock") or \
                         each_alarm == datetime.now().strftime("%I_%M_%p_repeat.lock") or \
                         each_alarm == datetime.now().strftime("%A_%I_%M_%p_repeat.lock"):
-                    Process(target=alarm_executor).start()
+                    Process(target=alarm.executor).start()
                     if each_alarm.endswith("_repeat.lock"):
                         os.rename(os.path.join("alarm", each_alarm), os.path.join("alarm", f"_{each_alarm}"))
                     else:
@@ -154,19 +151,29 @@ def background_tasks() -> NoReturn:
                     os.rename(os.path.join("alarm", each_alarm), os.path.join("alarm", each_alarm.lstrip("_")))
 
         # Trigger reminders
-        if reminder_state := support.lock_files(reminder_files=True):
-            for each_reminder in reminder_state:
-                remind_time, remind_msg = each_reminder.split('|')
-                remind_msg = remind_msg.rstrip('.lock').replace('_', ' ')
+        if reminder_files := support.lock_files(reminder_files=True):
+            for reminder_file in reminder_files:
+                each_reminder = reminder_file.split('|')
+                if len(each_reminder) == 3:
+                    remind_time, remind_msg, name = each_reminder
+                else:
+                    remind_time, remind_msg = each_reminder
+                    name = None
+                if name:
+                    name = name.replace('.lock', '').replace('_', ' ')
+                else:
+                    remind_msg = remind_msg.replace('.lock', '')
+                remind_msg = remind_msg.replace('_', ' ')
                 if remind_time == datetime.now().strftime("%I_%M_%p"):
-                    Thread(target=reminder_executor, args=[remind_msg]).start()
-                    os.remove(os.path.join("reminder", each_reminder))
+                    logger.info("Executing reminder: %s", each_reminder)
+                    Thread(target=remind.executor, kwargs={'message': remind_msg, 'contact': name}).start()
+                    os.remove(os.path.join("reminder", reminder_file))
 
         # Rewrite keywords
         keywords_handler.rewrite_keywords()
 
         # Re-check for tasks
-        new_tasks: List[BackgroundTask] = list(validate_background_tasks(log=False))
+        new_tasks: List[BackgroundTask] = list(background_task.validate_tasks(log=False))
         if new_tasks != tasks:
             logger.warning("New task list found! Re-starting background tasks.")
             logger.debug(DeepDiff(tasks, new_tasks, ignore_order=True))
@@ -259,15 +266,15 @@ def offline_communicator(command: str) -> Union[AnyStr, HttpUrl]:
     """
     shared.called_by_offline = True
     # Specific for offline communication and not needed for live conversations
-    if word_match(phrase=command, match_list=keywords.keywords.ngrok):
+    if word_match.word_match(phrase=command, match_list=keywords.keywords.ngrok):
         if public_url := get_tunnel():
             return public_url
         else:
             raise LookupError("Failed to retrieve the public URL")
-    if word_match(phrase=command, match_list=keywords.keywords.photo):
-        return photo()
+    if word_match.word_match(phrase=command, match_list=keywords.keywords.photo):
+        return others.photo()
     # Call condition instead of split_phrase as the 'and' and 'also' filter will overwrite the first response
-    conditions(phrase=command, should_return=True)
+    conditions.conditions(phrase=command, should_return=True)
     shared.called_by_offline = False
     if response := shared.text_spoken:
         shared.text_spoken = None

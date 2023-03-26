@@ -5,10 +5,9 @@ import webbrowser
 import inflect
 import requests
 import wolframalpha
-import yaml
 from geopy.distance import geodesic
 
-from jarvis.executors.word_match import word_match
+from jarvis.executors import files, word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.exceptions import EgressErrors
@@ -92,13 +91,9 @@ def google_maps(query: str) -> bool:
     else:
         return False
 
-    try:
-        with open(models.fileio.location) as file:
-            current_location = yaml.load(stream=file, Loader=yaml.FullLoader)
-    except yaml.YAMLError as error:
-        logger.error(error)
+    current_location = files.get_location()
+    if not all((current_location.get('latitude'), current_location.get('longitude'))):
         return False
-
     results = len(required)
     speaker.speak(text=f"I found {results} results {models.env.title}!") if results != 1 else None
     start = current_location['latitude'], current_location['longitude']
@@ -132,7 +127,7 @@ def google_maps(query: str) -> bool:
         if converted := listener.listen():
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 break
-            elif word_match(phrase=converted.lower(), match_list=keywords.keywords.ok):
+            elif word_match.word_match(phrase=converted.lower(), match_list=keywords.keywords.ok):
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                 webbrowser.open(url=maps_url)
                 speaker.speak(text=f"Directions on your screen {models.env.title}!")

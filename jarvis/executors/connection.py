@@ -6,7 +6,7 @@ from typing import NoReturn
 
 from pywifi import ControlConnection, ControlPeripheral
 
-from jarvis.executors.controls import restart_control
+from jarvis.executors import controls
 from jarvis.modules.logger import config
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
@@ -47,7 +47,7 @@ def wifi_connector() -> NoReturn:
             unknown_errors += 1
 
         if unknown_errors > 5:
-            restart_control(quiet=True)
+            controls.restart_control(quiet=True)
             return
 
         time.sleep(models.env.connection_retry)

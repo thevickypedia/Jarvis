@@ -11,7 +11,7 @@ from multiprocessing import current_process
 
 from pyttsx3.engine import Engine
 
-from jarvis.executors.word_match import word_match
+from jarvis.executors import word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.logger.custom_logger import logger
@@ -62,6 +62,6 @@ def voice_changer(phrase: str = None) -> None:
             voice_default()
             speaker.speak(text=f"Reverting the changes to default voice module {models.env.title}!")
             return
-        elif word_match(phrase=keyword.lower(), match_list=keywords.keywords.ok):
+        elif word_match.word_match(phrase=keyword.lower(), match_list=keywords.keywords.ok):
             speaker.speak(text=random.choice(conversation.acknowledgement))
             return
