@@ -161,7 +161,7 @@ class Operations:
                 communicator.send_email(body=f"Your {car_name} was successfully unlocked via offline communicator!",
                                         recipient=models.env.recipient, subject=f"Car unlock alert: {dt_string}",
                                         title="Vehicle Protection",
-                                        gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+                                        gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
             return f"Your {car_name} has been unlocked {models.env.title}!"
         else:
             return self.disconnect
@@ -252,7 +252,7 @@ def car(phrase: str) -> None:
             communicator.send_email(body="Your vehicle has been requested to unlock via offline communicator!",
                                     recipient=models.env.recipient, subject=f"Car unlock alert: {dt_string}",
                                     title="Vehicle Protection",
-                                    gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+                                    gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
         response = caller.unlock(dt_string=dt_string)
     elif word_match.word_match(phrase=phrase, match_list=allowed_dict['lock']):
         response = caller.lock()
@@ -339,7 +339,7 @@ def report(status_data: Dict[str, Union[str, Union[Dict[str, str]]]],
     car_name = f"{attributes.get('vehicleBrand', 'Car')} " \
                f"{attributes.get('vehicleType', '')} " \
                f"{attributes.get('modelYear', '')}"
-    mail_obj = gmailconnector.SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+    mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
     response = mail_obj.send_email(subject=f"{car_name} Report - {datetime.now().strftime('%c')}",
                                    sender="Jarvis", html_body=rendered)
     if response.ok:

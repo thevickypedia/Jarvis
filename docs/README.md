@@ -224,8 +224,8 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 **[Email/SMS notifications](https://github.com/thevickypedia/gmail-connector)**
 - **GMAIL_USER** - Gmail account username to send and read emails.
 - **GMAIL_PASS** - Gmail account password to send and read emails.
-- **ALT_GMAIL_USER** - Alternate gmail account username to send an SMS. (`GMAIL_USER` can be re-used)
-- **ALT_GMAIL_PASS** - Alternate gmail account password to send an SMS. (`GMAIL_PASS` can be re-used)
+- **OPEN_GMAIL_USER** - Alternate gmail account username to send an SMS. (Defaults to `GMAIL_USER`)
+- **OPEN_GMAIL_PASS** - Alternate gmail account password to send an SMS. (Defaults to `GMAIL_PASS`)
 - **RECIPIENT** - Email address to which the emails from jarvis have to be received.
 
 **iOS integrations**
@@ -266,8 +266,8 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 
 **[Telegram Bot](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/telegram.py) integration**
 - **BOT_TOKEN** - Telegram BOT token.
-- **BOT_CHAT_IDS** - UserID/ChatID for a particular user.
-- **BOT_USERS** - Usernames that should have access to Jarvis.
+- **BOT_CHAT_IDS** - List of userID/chatID to authorize.
+- **BOT_USERS** - List of usernames to authorize.
 
 **[OS Agnostic Voice Model](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/audio/speech_synthesis.py)**
 - **SPEECH_SYNTHESIS_TIMEOUT** - Timeout to connect to the docker container that processes text to speech requests.
@@ -324,19 +324,12 @@ There are two options to run background tasks on Jarvis.
     ```yaml
     - seconds: 1_800
       task: just turn off all lights  # Runs every 30 minutes - 'just' flag retains the lights' last setting (eg: brightness or color)
+      ignore_hours:  # Ignore the schedule at 5 AM and 10 PM
+        - 5
+        - 22
     - seconds: 10_800
       task: remind me to drink water  # Runs every 3 hours ignoring the hours specified
-      ignore_hours:
-       - 21
-       - 22
-       - 23
-       - 0
-       - 1
-       - 2
-       - 3
-       - 4
-       - 5
-       - 6
+      ignore_hours: "21-6"  # Ignore the schedule between 9 PM and 6 AM
     ```
     </details>
 

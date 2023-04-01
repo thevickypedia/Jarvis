@@ -11,6 +11,7 @@ import logging
 import os
 import random
 import string
+import sys
 import time
 import traceback
 from typing import NoReturn, Union
@@ -168,6 +169,9 @@ class TelegramBot:
         """
         response = self.session.post(url=url, data=payload, files=files, timeout=(5, 60))
         if not response.ok:
+            logger.debug(payload)
+            logger.debug(files)
+            logger.warning("Called by: '%s'", sys._getframe(1).f_code.co_name)  # noqa
             logger.error(response.json())
         return response
 
@@ -222,7 +226,7 @@ class TelegramBot:
         return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendPhoto', files=files,
                                   payload={'chat_id': chat_id, 'title': os.path.split(filename)[-1]})
 
-    def reply_to(self, payload: dict, response: str, parse_mode: str = 'markdown') -> requests.Response:
+    def reply_to(self, payload: dict, response: str, parse_mode: Union[str, None] = 'markdown') -> requests.Response:
         """Generates a payload to reply to a message received.
 
         Args:
@@ -370,7 +374,7 @@ class TelegramBot:
                           response="Jarvis cannot be stopped via offline communication without a 'override' flag.")
 
     def process_voice(self, payload: dict) -> None:
-        """Processes the payload received after checking for authentication.
+        """Processes the audio file in payload received after checking for authentication.
 
         Args:
             payload: Payload received, to extract information from.
@@ -422,7 +426,7 @@ class TelegramBot:
             self.reply_to(payload=payload, response="Failed to convert audio. Please try text input.")
 
     def process_document(self, payload: dict) -> None:
-        """Processes the payload received after checking for authentication.
+        """Processes the document in payload received after checking for authentication.
 
         Args:
             payload: Payload received, to extract information from.
@@ -434,14 +438,14 @@ class TelegramBot:
         if bytes_obj := self._get_file(payload=payload['document']):
             filename = payload['document']['file_name']
             response = file_handler.put_file(filename=filename, file_content=bytes_obj)
-            self.process_response(response=response, payload=payload)
+            self.send_message(chat_id=payload['from']['id'], response=response, parse_mode=None)
         else:
             title = USER_TITLE.get(payload['from']['username'], models.env.title)
             self.reply_to(payload=payload, response=f"I'm sorry {title}! I was unable to process your document. "
-                                                    "Please try again!")
+                                                    "Please try again!", parse_mode=None)
 
     def process_text(self, payload: dict) -> None:
-        """Processes the payload received after checking for authentication.
+        """Processes the text in payload received after checking for authentication.
 
         Args:
             payload: Payload received, to extract information from.
@@ -492,7 +496,7 @@ class TelegramBot:
                 if response.ok:
                     self.send_document(filename=response.info, chat_id=payload['from']['id'])
                 else:
-                    self.reply_to(payload=payload, response=response.info)
+                    self.reply_to(payload=payload, response=response.info, parse_mode=None)
             else:
                 self.reply_to(payload=payload, response="No filename was received. "
                                                         "Please include only the filename after the keyword 'file'.")

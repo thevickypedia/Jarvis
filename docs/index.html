@@ -2182,9 +2182,24 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.background_task._compare_tasks">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.background_task.</span></span><span class="sig-name descname"><span class="pre">_compare_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.background_task._compare_tasks" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="jarvis.executors.background_task.compare_tasks">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.background_task.</span></span><span class="sig-name descname"><span class="pre">compare_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.executors.background_task.compare_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compares tasks currently in background tasks yaml file and the tasks already loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict1</strong> – Takes either the task in yaml file or loaded task as an argument.</p></li>
+<li><p><strong>dict2</strong> – Takes either the task in yaml file or loaded task as an argument.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A boolean flag to if both the dictionaries are similar.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.background_task.remove_corrupted">
@@ -6257,7 +6272,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.BackgroundTask.ignore_hours">
-<span class="sig-name descname"><span class="pre">ignore_hours</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.BackgroundTask.ignore_hours" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">ignore_hours</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.BackgroundTask.ignore_hours" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -6412,16 +6427,6 @@ last_value: the last value assigned or None</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.gmail_pass">
 <span class="sig-name descname"><span class="pre">gmail_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.gmail_pass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.alt_gmail_user">
-<span class="sig-name descname"><span class="pre">alt_gmail_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.alt_gmail_user" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.alt_gmail_pass">
-<span class="sig-name descname"><span class="pre">alt_gmail_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.alt_gmail_pass" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -8784,7 +8789,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.bot.TelegramBot.reply_to">
-<span class="sig-name descname"><span class="pre">reply_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#jarvis.modules.telegram.bot.TelegramBot.reply_to" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">reply_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#jarvis.modules.telegram.bot.TelegramBot.reply_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a payload to reply to a message received.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -8902,7 +8907,7 @@ last_value: the last value assigned or None</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.bot.TelegramBot.process_voice">
 <span class="sig-name descname"><span class="pre">process_voice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.telegram.bot.TelegramBot.process_voice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Processes the payload received after checking for authentication.</p>
+<dd><p>Processes the audio file in payload received after checking for authentication.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>payload</strong> – Payload received, to extract information from.</p>
@@ -8913,7 +8918,7 @@ last_value: the last value assigned or None</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.bot.TelegramBot.process_document">
 <span class="sig-name descname"><span class="pre">process_document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.telegram.bot.TelegramBot.process_document" title="Permalink to this definition">¶</a></dt>
-<dd><p>Processes the payload received after checking for authentication.</p>
+<dd><p>Processes the document in payload received after checking for authentication.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>payload</strong> – Payload received, to extract information from.</p>
@@ -8924,7 +8929,7 @@ last_value: the last value assigned or None</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.bot.TelegramBot.process_text">
 <span class="sig-name descname"><span class="pre">process_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.telegram.bot.TelegramBot.process_text" title="Permalink to this definition">¶</a></dt>
-<dd><p>Processes the payload received after checking for authentication.</p>
+<dd><p>Processes the text in payload received after checking for authentication.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>payload</strong> – Payload received, to extract information from.</p>

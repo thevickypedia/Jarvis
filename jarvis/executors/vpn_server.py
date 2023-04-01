@@ -118,7 +118,7 @@ def vpn_server_switch(operation: str, custom_region: str = None) -> None:
     kwargs = dict(vpn_username=models.env.vpn_username or models.env.root_user,
                   vpn_password=models.env.vpn_password or models.env.root_password,
                   domain=models.env.vpn_domain, record_name=models.env.vpn_record_name,
-                  gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass,
+                  gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass,
                   recipient=models.env.recipient or models.env.gmail_user,
                   phone=models.env.phone_number, logger=logger)
     if custom_region:

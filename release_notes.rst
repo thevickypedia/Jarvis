@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+7.2.2 (04/01/2023)
+------------------
+- Skip `parse_mode` for file handling in `TelegramBot`
+- Support integer and string for ignore hours in background tasks
+- Remove redundant env-var
+- Upgrade version_locked_requirements.txt
+- Update README.md
+
 7.2.1 (03/26/2023)
 ------------------
 - Add a feature to set reminders to a contact person

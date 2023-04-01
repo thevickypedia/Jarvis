@@ -39,6 +39,9 @@ RECOGNIZER.pause_threshold = 2
 RECOGNIZER.phrase_threshold = 0.1
 RECOGNIZER.non_speaking_duration = 2
 
+assert RECOGNIZER.pause_threshold >= RECOGNIZER.non_speaking_duration > 0, \
+    "'pause_threshold' cannot be lower than 'non_speaking_duration' or 0"
+
 changed = dict(energy_threshold=RECOGNIZER.energy_threshold,
                dynamic_energy_threshold=RECOGNIZER.dynamic_energy_threshold,
                pause_threshold=RECOGNIZER.pause_threshold,

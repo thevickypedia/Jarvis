@@ -41,7 +41,8 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
             - Also stores the token in the Robinhood object which is verified in the /investment endpoint.
             - The token is nullified in the object as soon as it is verified, making it single use.
         """
-        mail_obj = gmailconnector.SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+        mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user,
+                                            gmail_pass=models.env.open_gmail_pass)
         auth_stat = mail_obj.authenticate
         if not auth_stat.ok:
             raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)

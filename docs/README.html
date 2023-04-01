@@ -265,8 +265,8 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <ul class="simple">
 <li><p><strong>GMAIL_USER</strong> - Gmail account username to send and read emails.</p></li>
 <li><p><strong>GMAIL_PASS</strong> - Gmail account password to send and read emails.</p></li>
-<li><p><strong>ALT_GMAIL_USER</strong> - Alternate gmail account username to send an SMS. (<code class="docutils literal notranslate"><span class="pre">GMAIL_USER</span></code> can be re-used)</p></li>
-<li><p><strong>ALT_GMAIL_PASS</strong> - Alternate gmail account password to send an SMS. (<code class="docutils literal notranslate"><span class="pre">GMAIL_PASS</span></code> can be re-used)</p></li>
+<li><p><strong>OPEN_GMAIL_USER</strong> - Alternate gmail account username to send an SMS. (Defaults to <code class="docutils literal notranslate"><span class="pre">GMAIL_USER</span></code>)</p></li>
+<li><p><strong>OPEN_GMAIL_PASS</strong> - Alternate gmail account password to send an SMS. (Defaults to <code class="docutils literal notranslate"><span class="pre">GMAIL_PASS</span></code>)</p></li>
 <li><p><strong>RECIPIENT</strong> - Email address to which the emails from jarvis have to be received.</p></li>
 </ul>
 <p><strong>iOS integrations</strong></p>
@@ -315,8 +315,8 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/telegram.py">Telegram Bot</a> integration</strong></p>
 <ul class="simple">
 <li><p><strong>BOT_TOKEN</strong> - Telegram BOT token.</p></li>
-<li><p><strong>BOT_CHAT_IDS</strong> - UserID/ChatID for a particular user.</p></li>
-<li><p><strong>BOT_USERS</strong> - Usernames that should have access to Jarvis.</p></li>
+<li><p><strong>BOT_CHAT_IDS</strong> - List of userID/chatID to authorize.</p></li>
+<li><p><strong>BOT_USERS</strong> - List of usernames to authorize.</p></li>
 </ul>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/audio/speech_synthesis.py">OS Agnostic Voice Model</a></strong></p>
 <ul>
@@ -368,19 +368,12 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
   <summary><strong><i>Setup Instructions</i></strong></summary><p>This is the sample content of <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1_800</span>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">just turn off all lights</span><span class="w">  </span><span class="c1"># Runs every 30 minutes - &#39;just&#39; flag retains the lights&#39; last setting (eg: brightness or color)</span>
+<span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w">  </span><span class="c1"># Ignore the schedule at 5 AM and 10 PM</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">22</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10_800</span>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">remind me to drink water</span><span class="w">  </span><span class="c1"># Runs every 3 hours ignoring the hours specified</span>
-<span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">21</span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">22</span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">23</span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
-<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;21-6&quot;</span><span class="w">  </span><span class="c1"># Ignore the schedule between 9 PM and 6 AM</span>
 </pre></div>
 </div>
   </details></li>

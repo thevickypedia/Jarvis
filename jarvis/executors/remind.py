@@ -134,11 +134,11 @@ def executor(message: str, contact: str = None) -> NoReturn:
             communicator.send_sms(user=models.env.gmail_user, password=models.env.gmail_pass,
                                   number=phone, body=message, subject=title)
         if email := contacts.get('email', {}).get(contact):
-            communicator.send_email(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass,
+            communicator.send_email(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass,
                                     recipient=email, subject=title, body=message)
         return
     communicator.send_sms(user=models.env.gmail_user, password=models.env.gmail_pass, number=models.env.phone_number,
                           body=message, subject=title)
-    communicator.send_email(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass,
+    communicator.send_email(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass,
                             recipient=models.env.recipient, subject=title, body=message)
     pynotification.pynotifier(title=title, message=message, debug=True, logger=logger)
