@@ -63,7 +63,8 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
             logger.error(error)
             raise APIResponse(status_code=HTTPStatus.NOT_ACCEPTABLE.real, detail=str(error))
 
-        mail_obj = gmailconnector.SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+        mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user,
+                                            gmail_pass=models.env.open_gmail_pass)
         auth_stat = mail_obj.authenticate
         if not auth_stat.ok:
             logger.error(auth_stat.json())

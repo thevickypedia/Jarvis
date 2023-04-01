@@ -128,10 +128,10 @@ elif [[ "$OSName" == MSYS* ]]; then
     python -m pip install dlib==19.24.0
     python -m pip install face-recognition==1.3.0
 elif [[ "$OSName" == "Linux" ]]; then
-    dev_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-    sudo apt install -y "python$dev_ver-distutils"  # Install distutils for the current python version
+    dot_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+    sudo apt install -y "python$dot_ver-distutils"  # Install distutils for the current python version
     sudo apt-get install -y git libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
-    sudo apt install -y build-essential ffmpeg espeak python3-pyaudio "python$dev_ver-dev"
+    sudo apt install -y build-essential ffmpeg espeak python3-pyaudio "python$dot_ver-dev"
 
     sudo apt install -y libopencv-dev python3-opencv
 

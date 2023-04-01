@@ -134,7 +134,7 @@ class BackgroundTask(BaseModel):
 
     seconds: int
     task: constr(strip_whitespace=True)
-    ignore_hours: Optional[List[int]] = []
+    ignore_hours: Union[Optional[List[int]], Optional[str], Optional[int]] = []
 
     @validator('task', allow_reuse=True)
     def check_empty_string(cls, v, values, **kwargs):  # noqa
@@ -148,11 +148,37 @@ class BackgroundTask(BaseModel):
         """Validate each entry in ignore hours list."""
         if not v:
             return []
+        if isinstance(v, int):
+            if v < 0 or v > 24:
+                raise ValueError
+            v = [v]
+        elif isinstance(v, str):
+            form_list = v.split('-')
+            if len(form_list) == 1:
+                if form_list[0].isdigit():
+                    v = [int(form_list[0])]
+                else:
+                    raise ValueError('string format can either be start-end (7-10) or just the hour by itself (7)')
+            elif len(form_list) == 2:
+                assert form_list[0].isdigit()
+                assert form_list[1].isdigit()
+                start = int(form_list[0])
+                end = int(form_list[1])
+                if end < 24:
+                    end += 1
+                if start < end:
+                    v = [i for i in range(start, end)]
+                else:
+                    v = [i for i in range(start, 24)] + [i for i in range(0, end)]
+                if int(form_list[1]) == 24:
+                    v.append(0)
+            else:
+                raise ValueError
         for hour in v:
             try:
                 datetime.strptime(str(hour), '%H')
             except ValueError:
-                raise ValueError('ignore hours should be a list of integers in 24H format')
+                raise ValueError('ignore hours should be 24H format')
         return v
 
 
@@ -203,8 +229,6 @@ class EnvConfig(BaseSettings):
     # Communication config
     gmail_user: EmailStr = Field(default=None, env='GMAIL_USER')
     gmail_pass: str = Field(default=None, env='GMAIL_PASS')
-    alt_gmail_user: EmailStr = Field(default=None, env='ALT_GMAIL_USER')
-    alt_gmail_pass: str = Field(default=None, env='ALT_GMAIL_PASS')
     open_gmail_user: EmailStr = Field(default=None, env='OPEN_GMAIL_USER')
     open_gmail_pass: str = Field(default=None, env='OPEN_GMAIL_PASS')
     recipient: EmailStr = Field(default=None, env='RECIPIENT')

@@ -65,7 +65,7 @@ def initiate_simulator(simulation_data: Dict[str, List[str]]) -> NoReturn:
     shared.called_by_offline = False
     with open(log_file) as file:
         errors = len(file.read().split('ERROR')) - 1
-    mail_obj = gmailconnector.SendEmail(gmail_user=models.env.alt_gmail_user, gmail_pass=models.env.alt_gmail_pass)
+    mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
     mail_res = mail_obj.send_email(subject=f"Simulation results - {datetime.now().strftime('%c')}",
                                    attachment=log_file, recipient=models.env.recipient, sender="Jarvis Simulator",
                                    body=f"Total simulations attempted: {sum(len(i) for i in simulation_data.values())}"

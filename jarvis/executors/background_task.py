@@ -40,7 +40,17 @@ def background_task_handler(phrase: str) -> NoReturn:
             speaker.speak(text=f"I couldn't not find the source file to disable background tasks {models.env.title}!")
 
 
-def _compare_tasks(dict1: dict, dict2: dict):
+def compare_tasks(dict1: dict, dict2: dict) -> bool:
+    """Compares tasks currently in background tasks yaml file and the tasks already loaded.
+
+    Args:
+        dict1: Takes either the task in yaml file or loaded task as an argument.
+        dict2: Takes either the task in yaml file or loaded task as an argument.
+
+    Returns:
+        bool:
+        A boolean flag to if both the dictionaries are similar.
+    """
     if 'ignore_hours' in dict1 and dict1['ignore_hours'] == [] and 'ignore_hours' not in dict2:
         dict1.pop('ignore_hours')
     if 'ignore_hours' in dict2 and dict2['ignore_hours'] == [] and 'ignore_hours' not in dict1:
@@ -58,8 +68,8 @@ def remove_corrupted(task: Union[BackgroundTask, dict]) -> NoReturn:
     with open(models.fileio.background_tasks) as read_file:
         existing_data = yaml.load(stream=read_file, Loader=yaml.FullLoader)
     for task_ in existing_data:
-        if (isinstance(task, dict) and _compare_tasks(task_, task)) or \
-                (isinstance(task, BackgroundTask) and _compare_tasks(task_, task.__dict__)):
+        if (isinstance(task, dict) and compare_tasks(task_, task)) or \
+                (isinstance(task, BackgroundTask) and compare_tasks(task_, task.__dict__)):
             logger.info("Removing corrupted task: %s", task_)
             existing_data.remove(task_)
     with open(models.fileio.background_tasks, 'w') as write_file:
