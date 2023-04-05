@@ -33,7 +33,10 @@ def system_info() -> NoReturn:
         if mapping.get('distributor_id') and mapping.get('release'):
             system = f"{mapping['distributor_id']} {mapping['release']}"
     if not system:
-        system = f"{shared.hosted_device['os_name']} {shared.hosted_device['os_version']}"
+        if not shared.hosted_device.get('os_version'):
+            logger.warning("hosted_device information was not loaded during startup. Reloading now.")
+            shared.hosted_device = hosted_device_info()
+        system = f"{shared.hosted_device.get('os_name', models.settings.os)} {shared.hosted_device['os_version']}"
     speaker.speak(text=f"You're running {system}, with {models.settings.physical_cores} "
                        f"physical cores and {models.settings.logical_cores} logical cores. Your physical drive "
                        f"capacity is {total}. You have used up {used} of space. Your free space is {free}. Your "
@@ -58,7 +61,7 @@ def system_vitals() -> None:
         cpu_temp, gpu_temp, fan_speed, output = None, None, None, ""
 
         # Tested on 10.13, 10.14, 11.6 and 12.3 versions
-        if not shared.hosted_device or not shared.hosted_device.get('os_version'):
+        if not shared.hosted_device.get('os_version'):
             logger.warning("hosted_device information was not loaded during startup. Reloading now.")
             shared.hosted_device = hosted_device_info()
         if packaging.version.parse(shared.hosted_device.get('os_version')) > packaging.version.parse('10.14'):

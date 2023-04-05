@@ -14,21 +14,21 @@ import time
 from datetime import datetime, timedelta, timezone
 from http.client import HTTPSConnection
 from multiprocessing import current_process
-from typing import Iterable, List, NoReturn, Tuple, Union
+from typing import Dict, Iterable, List, NoReturn, Tuple, Union
 
 import dateutil.tz
 import inflect
 import psutil
+import pytz
 import yaml
 from holidays import country_holidays
 
-from jarvis.executors import internet, word_match
+from jarvis.executors import files, internet, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import shared
 
 days_in_week = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 db = database.Database(database=models.fileio.base_db)
@@ -79,6 +79,16 @@ def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
             return _ipaddr_list
 
 
+def country_timezone() -> Dict[str, str]:
+    """Returns a mapping of timezone and the country where the timezone belongs."""
+    timezone_country = {}
+    for countrycode in pytz.country_timezones:
+        timezones = pytz.country_timezones[countrycode]
+        for timezone_ in timezones:
+            timezone_country[timezone_] = countrycode
+    return timezone_country
+
+
 def celebrate() -> str:
     """Function to look if the current date is a holiday or a birthday.
 
@@ -86,13 +96,15 @@ def celebrate() -> str:
         str:
         A string of the event observed today.
     """
-    day = datetime.today().date()
-    us_holidays = country_holidays("US").get(day)  # checks if the current date is a US holiday
-    in_holidays = country_holidays("IND", prov="TN", state="TN").get(day)  # checks if Indian (esp TN) holiday
-    if in_holidays:
-        return in_holidays
-    elif us_holidays and "Observed" not in us_holidays:
-        return us_holidays
+    location = files.get_location()
+    countrycode = location.get('address', {}).get('country_code')  # get country code from location.yaml
+    if not countrycode:
+        if idna_timezone := location.get('timezone'):  # get timezone from location.yaml
+            countrycode = country_timezone().get(idna_timezone)  # get country code using timezone map
+    if not countrycode:
+        countrycode = "US"  # default to US
+    if current_holiday := country_holidays(countrycode.upper()).get(datetime.today().date()):
+        return current_holiday
     elif models.env.birthday == datetime.now().strftime("%d-%B"):
         return "Birthday"
 
@@ -364,8 +376,7 @@ def no_env_vars() -> NoReturn:
 def unsupported_features() -> NoReturn:
     """Says a message about unsupported features."""
     logger.error("Called by: %s", sys._getframe(1).f_code.co_name)  # noqa
-    speaker.speak(text=f"I'm sorry {models.env.title}! This feature is yet to be implemented on "
-                       f"{shared.hosted_device['os_name']}!")
+    speaker.speak(text=f"I'm sorry {models.env.title}! This feature is yet to be implemented on {models.settings.os}!")
 
 
 def flush_screen() -> NoReturn:

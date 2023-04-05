@@ -12,7 +12,7 @@ from jarvis.modules.models import models
 
 def get_contacts() -> Union[Dict[str, Dict[str, str]], DefaultDict[str, Dict[str, str]]]:
     """Reads the contact file and returns the data."""
-    if models.fileio.contacts:
+    if os.path.isfile(models.fileio.contacts):
         with open(models.fileio.contacts) as file:
             try:
                 if contacts := yaml.load(stream=file, Loader=yaml.FullLoader):
@@ -55,7 +55,7 @@ def put_frequent(data: Dict[str, int]) -> NoReturn:
         file.flush()  # Write everything in buffer to file right away
 
 
-def get_location() -> Union[Dict[str, Dict[str, str]], DefaultDict[str, Dict[str, str]]]:
+def get_location() -> Dict:
     """Reads the location file and returns the location data."""
     if os.path.isfile(models.fileio.location):
         try:

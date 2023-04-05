@@ -85,7 +85,11 @@ def meetings_gatherer(custom_date: Arrow = None, addon: str = "today", queue: Qu
     meeting_status, count = "", 0
     for index, event in enumerate(events):
         # Skips if meeting ended earlier than current time
-        if event.end.timestamp() < int(time.time()) and "last" not in addon and "yesterday" not in addon:
+        try:
+            end_timestamp = event.end.timestamp()
+        except TypeError:
+            end_timestamp = event.end.timestamp
+        if end_timestamp < int(time.time()) and "last" not in addon and "yesterday" not in addon:
             continue
         count += 1
         # todo:

@@ -1,8 +1,34 @@
+# noinspection PyUnresolvedReferences
+"""Module for keyword classification algorithm.
+
+>>> KeywordClassifier
+
+"""
+
 from typing import List, NoReturn, Tuple, Union
 
 
-def word_match(phrase: str, match_list: Union['List', 'Tuple'], strict: bool = False) -> Union[str, NoReturn]:
-    """Matches phrase to word list given.
+def reverse_lookup(lookup: str,
+                   match_list: Union[List[str], Tuple[str]]) -> Union[str, NoReturn]:
+    """Returns the word in phrase that matches the one in given list."""
+    reverse = sum([w.lower().split() for w in match_list], [])  # extract multi worded conditions in match list
+    for word in lookup.split():  # loop through words in the phrase
+        if word in reverse:  # check at least one word in phrase matches the multi worded condition
+            return word
+
+
+def forward_lookup(lookup: Union[str, List[str], Tuple[str]],
+                   match_list: Union[List[str], Tuple[str]]) -> Union[str, NoReturn]:
+    """Returns the word in list that matches with the phrase given as string or list."""
+    for word in match_list:
+        if word.lower() in lookup:
+            return word
+
+
+def word_match(phrase: str,
+               match_list: Union[List[str], Tuple[str]],
+               strict: bool = False) -> Union[str, NoReturn]:
+    """Keyword classifier.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
@@ -13,13 +39,12 @@ def word_match(phrase: str, match_list: Union['List', 'Tuple'], strict: bool = F
         str:
         Returns the word that was matched.
     """
-    if not phrase:
+    if not all((phrase, match_list)):
         return
-    lookup = phrase.lower().split() if strict else phrase.lower()
-    for word in match_list:
-        if strict:
-            if word in lookup:
-                return word
-        else:
-            if word.lower() in lookup:
-                return word
+    if strict:  # simply check at least one string in the match list is present in phrase
+        lookup = phrase.lower().split()
+        return forward_lookup(lookup, match_list)
+    else:
+        lookup = phrase.lower()
+        if (fl := forward_lookup(lookup, match_list)) and reverse_lookup(lookup, match_list):
+            return fl

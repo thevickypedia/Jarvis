@@ -68,7 +68,8 @@ def events_gatherer() -> str:
         - On failure, returns a message saying Jarvis was unable to read calendar/outlook.
     """
     if models.settings.os != models.supported_platforms.macOS:
-        return f"Reading events from {models.env.event_app} is currently possible only on macOS."
+        return f"Reading events from {models.env.event_app} is currently possible only on macOS but the host machine " \
+               f"is currently running {models.settings.os}."
     failure = None
     process = subprocess.Popen(["/usr/bin/osascript", models.fileio.event_script] + [str(arg) for arg in [1, 3]],
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)

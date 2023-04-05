@@ -51,8 +51,9 @@ def current_date() -> None:
         dt_string = f'{dt_string} {date_}'
     else:
         dt_string = f'{dt_string} {date_}, {year}'
-    speaker.speak(text=f"It's {dt_string}")
+    text = f"It's {dt_string}."
     if event and event == 'Birthday':
-        speaker.speak(text=f"It's also your {event} {models.env.title}!")
+        text += f" It's also your {event} {models.env.title}!"
     elif event:
-        speaker.speak(text=f"It's also {event} {models.env.title}!")
+        text += f" It's also {event} {models.env.title}!"
+    speaker.speak(text=text)
