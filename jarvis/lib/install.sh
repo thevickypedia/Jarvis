@@ -144,7 +144,9 @@ elif [[ "$OSName" == "Linux" ]]; then
 
     python -m pip install pyaudio pvporcupine==1.9.5 PyAudio==0.2.12
 
-    python -m pip install cmake==3.25.0 dlib==19.24.0 opencv-python==4.5.5.64
+    # CMake must be installed to build dlib
+    python -m pip install cmake==3.25.0
+    python -m pip install dlib==19.24.0 opencv-python==4.5.5.64
 
     # Install as stand alone as face recognition depends on dlib
     python -m pip install face-recognition==1.3.0

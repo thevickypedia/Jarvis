@@ -1,7 +1,6 @@
-# third party pypi modules tested on multiple OS and version locked
+# third party pypi modules tested and version locked
 SpeechRecognition==3.8.1  # Do not upgrade, no functional improvements in the latest version
 wave==0.0.2
-pyttsx3==2.90
 wikipedia==1.4.0
 newsapi-python==0.2.7
 pyrh==2.0  # Do not upgrade, as the new version doesn't have the option for QR
@@ -14,7 +13,7 @@ axju-jokes==1.0.3
 inflect==6.0.2
 pywebostv==0.8.9
 speedtest-cli==2.1.3
-holidays==0.21.13
+holidays==0.22
 randfacts==0.20.1
 wolframalpha==5.0.0
 fastapi==0.95.0
@@ -30,18 +29,18 @@ PyChromecast==2.3.0  # Do not upgrade, as googlehomepush module relies on this v
 psutil==5.9.4
 pytest==7.2.2
 bs4==0.0.1
-Pillow==9.4.0
+Pillow==9.5.0
 packaging==23.0
 numpy==1.24.2
 SoundFile==0.12.1
 deepdiff==6.3.0
 pymyq==3.1.6
 docker==6.0.1
-websockets==10.4
+websockets==11.0
 PyJWT==2.6.0
 webull==0.6.1
 matplotlib==3.7.1
-pandas==1.5.3
+pandas==2.0.0
 lxml==4.9.2
 aiohttp==3.8.4
 python-dateutil==2.8.2

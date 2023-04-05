@@ -69,6 +69,7 @@ def set_alarm(phrase: str) -> None:
     if models.settings.limited:
         speaker.speak(text="Alarm features are currently unavailable, as you're running on restricted mode.")
         return
+    phrase = phrase.lower()
     if 'minute' in phrase:
         if minutes := util.extract_nos(input_=phrase, method=int):
             hour, minute, am_pm = (datetime.now() + timedelta(minutes=minutes)).strftime("%I %M %p").split()
@@ -79,7 +80,13 @@ def set_alarm(phrase: str) -> None:
             hour, minute, am_pm = (datetime.now() + timedelta(hours=hours)).strftime("%I %M %p").split()
             create_alarm(hour=hour, minute=minute, am_pm=am_pm, phrase=phrase, timer=f"{hours} hours")
             return
-    if extracted_time := util.extract_time(input_=phrase):
+    if extracted_time := util.extract_time(input_=phrase) or word_match.word_match(
+            phrase=phrase, match_list=('noon', 'midnight', 'mid night')
+    ):
+        if 'noon' in phrase:
+            extracted_time = ["12:00 PM"]
+        elif 'night' in phrase:
+            extracted_time = ["12:00 AM"]
         extracted_time = extracted_time[0]
         alarm_time = extracted_time.split()[0]
         if ":" in extracted_time:
@@ -102,7 +109,7 @@ def set_alarm(phrase: str) -> None:
                 create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm)
         else:
             speaker.speak(text=f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
-                               f"I don't think a time like that exists on Earth.")
+                               "I don't think a time like that exists on Earth.")
     else:
         speaker.speak(text=f"Please tell me a time {models.env.title}!")
         if shared.called_by_offline:
@@ -127,8 +134,11 @@ def kill_alarm(phrase: str) -> None:
         speaker.speak(text=f"You have no {word}s set {models.env.title}!")
     elif len(alarm_state) == 1:
         hour, minute, am_pm = alarm_state[0][:2], alarm_state[0][3:5], alarm_state[0][6:8]
-        os.remove(f"alarm/{alarm_state[0]}")
+        os.remove(os.path.join("alarm", alarm_state[0]))
         speaker.speak(text=f"Your {word} at {hour}:{minute} {am_pm} has been silenced {models.env.title}!")
+    elif "all" in phrase.split():
+        [os.remove(os.path.join("alarm", alarm_file)) for alarm_file in alarm_state]
+        speaker.speak(text=f"I have silenced {len(alarm_state)} of your alarms {models.env.title}!")
     else:
         speaker.speak(text=f"Your {word}s are at {', and '.join(alarm_state).replace('.lock', '')}. "
                            f"Please let me know which {word} you want to remove.", run=True)
@@ -144,8 +154,8 @@ def kill_alarm(phrase: str) -> None:
             minute = 0
         hour, minute = f"{hour:02}", f"{minute:02}"
         am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
-        if os.path.exists(f'alarm/{hour}_{minute}_{am_pm}.lock'):
-            os.remove(f"alarm/{hour}_{minute}_{am_pm}.lock")
+        if f"{hour}_{minute}_{am_pm}.lock" in alarm_state:
+            os.remove(os.path.join("alarm", f"{hour}_{minute}_{am_pm}.lock"))
             speaker.speak(text=f"Your {word} at {hour}:{minute} {am_pm} has been silenced {models.env.title}!")
         else:
             speaker.speak(text=f"I wasn't able to find your {word} at {hour}:{minute} {am_pm}. Try again.")

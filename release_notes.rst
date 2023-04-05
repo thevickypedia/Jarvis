@@ -1,6 +1,17 @@
 Release Notes
 =============
 
+7.2.3 (04/05/2023)
+------------------
+- Improve keyword classification with reverse lookup
+- Create shortcuts for alarm with noon and midnight
+- Unhook version dependencies with changelog-generator
+- Add plural form of keywords in keywords_base.py
+- Replace pyttsx3 with a custom extension pkg
+- Upgrade certain version locked modules
+- Update title in README.md and pyproject.toml
+- Release version 2.0
+
 7.2.2 (04/01/2023)
 ------------------
 - Skip `parse_mode` for file handling in `TelegramBot`

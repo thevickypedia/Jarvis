@@ -64,6 +64,9 @@ def apps(phrase: str) -> None:
 
     Args:
         phrase: Takes the phrase spoken as an argument.
+
+    Warnings:
+        macOS ventura does not display built-in applications for the ls command.
     """
     if models.settings.os == models.supported_platforms.linux:
         support.unsupported_features()
@@ -421,12 +424,11 @@ def pypi_versions(package_name: str) -> List[str]:
 
 def version() -> NoReturn:
     """Speaks the version information along with the current version on GitHub."""
-    versions = pypi_versions(package_name="jarvis-ironman")
     text = f"I'm currently running on version {module_version}"
-    if versions:
+    if versions := pypi_versions(package_name="jarvis-ironman"):
         pkg_version = versions[-1]
         if module_version == pkg_version:
             text += ", I'm up to date."
         else:
-            text += f", but the latest version is {pkg_version}"
+            text += f", but the latest released version is {pkg_version}"
     speaker.speak(text=text)

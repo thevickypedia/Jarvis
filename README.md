@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://vigneshrao.com/Jarvis/logo.png" width="371px" height="350px">
 </p>
-<h2 align="center">Natural Language User Interface</h2>
+<h2 align="center">Fully Functional Voice Based Natural Language UI</h2>
 
 [![ForTheBadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 [![ForTheBadge built-with-swag](http://ForTheBadge.com/images/badges/built-with-swag.svg)](https://github.com/thevickypedia/Jarvis)
@@ -96,8 +96,6 @@ if __name__ == '__main__':
        - `Camera` - **[Optional]** Required only during face recognition/detection.
        - `Automation` - **Required** to control `System Events` and other apps like Outlook and Calendar.
        - `Files and Folders` **[OR]** `Full Disk Access` - **Required** for all `FileIO` operations.
-
-     :warning: Known Issue with <a href=https://pypi.org/project/pyttsx3/>pyttsx3 module</a> on <a href=https://www.apple.com/macos/ventura/> macOS Ventura 13.0</a>: This version of macOS does not hold the attribute `VoiceAge`. <a href=https://github.com/nateshmbhat/pyttsx3/pull/247>Workaround has been raised as a PR</a><br><br>
 
    - **Linux** <br> _Tested on **Ubuntu 22.04 LTS**_
      - Store the host machine's password as the env var: `ROOT_PASSWORD`
