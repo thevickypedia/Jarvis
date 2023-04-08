@@ -82,7 +82,7 @@ def exit_process() -> NoReturn:
         alarms = alarms.replace('.lock', '').replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')
         speaker.speak(text=f"You have a pending alarm at {alarms} {models.env.title}!")
     if reminders or alarms:
-        speaker.speak(text="This will not be executed while I'm asleep!")
+        speaker.speak(text="This will not be executed while I'm deactivated!")
     speaker.speak(text=f"Shutting down now {models.env.title}!")
     try:
         speaker.speak(text=support.exit_message(), run=True)

@@ -18,13 +18,14 @@ class EmailTemplates:
     """
 
     if models.settings.invoker != 'sphinx-build':
-        _threat_audio = os.path.join(os.path.dirname(__file__), 'email_threat_audio.html')
-        with open(_threat_audio) as file:
+        with open(os.path.join(os.path.dirname(__file__), 'email_threat_audio.html')) as file:
             threat_audio = file.read()
 
-        _threat_no_audio = os.path.join(os.path.dirname(__file__), 'email_threat_no_audio.html')
-        with open(_threat_no_audio) as file:
-            threat_no_audio = file.read()
+        with open(os.path.join(os.path.dirname(__file__), 'email_threat_image.html')) as file:
+            threat_image = file.read()
+
+        with open(os.path.join(os.path.dirname(__file__), 'email_threat_image_audio.html')) as file:
+            threat_image_audio = file.read()
 
         with open(os.path.join(os.path.dirname(__file__), 'email_stock_alert.html')) as file:
             stock_alert = file.read()

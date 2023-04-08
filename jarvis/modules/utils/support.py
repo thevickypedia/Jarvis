@@ -380,7 +380,11 @@ def unsupported_features() -> NoReturn:
 
 
 def flush_screen() -> NoReturn:
-    """Flushes the screen output."""
+    """Flushes the screen output.
+
+    See Also:
+        Writes new set of empty strings for the size of the terminal if ran using one.
+    """
     if models.settings.interactive:
         sys.stdout.write(f"\r{' '.join(['' for _ in range(os.get_terminal_size().columns)])}")
     else:

@@ -43,7 +43,7 @@ if [[ "$OSName" == "Darwin" ]]; then
     which xcodebuild > tmp_xcode && xcode_check=$(cat tmp_xcode) && rm tmp_xcode
     if  [[ "$xcode_check" == "/usr/bin/xcodebuild" ]] || [[ $HOST == "/*" ]] ; then
         xcode_version=$(pkgutil --pkg-info=com.apple.pkg.CLTools_Executables | grep version)
-        echo "Found xcode version $xcode_version, skipping installation"
+        echo "xcode $xcode_version"
     else
         echo "Installing xcode"
         xcode-select --install
@@ -53,7 +53,7 @@ if [[ "$OSName" == "Darwin" ]]; then
     brew_check=$(which brew)
     if [[ "$brew_check" == "/usr/local/bin/brew" ]] || [[ "$brew_check" == "/usr/bin/brew" ]]; then
         brew -v > tmp_brew && brew_version=$(head -n 1 tmp_brew) && rm tmp_brew
-        echo "Found $brew_version, skipping installation"
+        echo "$brew_version"
     else
         echo "Installing Homebrew"
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -62,7 +62,8 @@ if [[ "$OSName" == "Darwin" ]]; then
     # Looks for git and installs only if git is not found in /usr/bin or /usr/local/bin (if installed using brew)
     git_check=$(which git)
     if [[ "$git_check" == "/usr/bin/git" || "$git_check" == "/usr/local/bin/git" ]]; then
-        echo "Found $(git -v), skipping installation"
+        git_version="$(git -v)"
+        echo "$git_version"
     else
       echo "Installing Git CLI"
       brew install git

@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+7.2.4 (04/08/2023)
+------------------
+- Fix guardian mode - issue #29
+- Fix opencv version inconsistency in face detection
+- Support keyword updates in offline communicator
+- Setup author mode to run author specifics
+- Add pynotification to start up exception handlers
+- Change lists to tuples wherever possible
+
 7.2.3 (04/05/2023)
 ------------------
 - Improve keyword classification with reverse lookup
