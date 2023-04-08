@@ -51,13 +51,13 @@ def watcher(rh, result: list) -> str:
     total_buy = round(math.fsum(shares_total))
     total_diff = round(net_worth - total_buy)
 
-    output = f"You have purchased {n} stocks and currently own {n_} shares {models.env.title}. " \
-             f"Your total investment is ${net_worth} now, and it was ${total_buy} when you purchased. "
+    output = f"You have purchased {n:,} stocks and currently own {n_:,} shares {models.env.title}. " \
+             f"Your total investment is ${net_worth:,} now, and it was ${total_buy:,} when you purchased. "
 
     if total_diff < 0:
-        output += f"Currently we are on an overall loss of ${total_diff} {models.env.title}."
+        output += f"Currently we are on an overall loss of ${total_diff:,} {models.env.title}."
     else:
-        output += f"Currently we are on an overall profit of ${total_diff} {models.env.title}."
+        output += f"Currently we are on an overall profit of ${total_diff:,} {models.env.title}."
 
     return output
 

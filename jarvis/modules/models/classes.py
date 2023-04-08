@@ -218,7 +218,9 @@ class EnvConfig(BaseSettings):
     name: str = Field(default='Vignesh', env='NAME')
     website: HttpUrl = Field(default='https://vigneshrao.com', env='WEBSITE')
     plot_mic: bool = Field(default=True, env='PLOT_MIC')
-    tunnel: bool = Field(default=False, env='TUNNEL')
+
+    # Author specific
+    author_mode: bool = Field(default=False, env='AUTHOR_MODE')
 
     # Third party api config
     weather_api: str = Field(default=None, env='WEATHER_API')
@@ -299,7 +301,7 @@ class EnvConfig(BaseSettings):
     speech_synthesis_port: PositiveInt = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
 
     # Background tasks
-    crontab: List[str] = Field(default=[], env='CRONTAB')  # User input is gathered from fileio/crontab.yaml
+    crontab: List[str] = Field(default=[], env='CRONTAB')
 
     # WiFi config
     wifi_ssid: str = Field(default=None, env='WIFI_SSID')

@@ -74,7 +74,7 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
                   for doc in create_process_mapping.__doc__.split('Handles:')[1].splitlines() if doc.strip()}
     if not models.env.plot_mic:
         impact_lib.pop(graph_mic.plot_mic.__name__)
-    if not models.env.tunnel:
+    if not models.env.author_mode:
         impact_lib.pop(tunneling.__name__)
     if not all((models.env.wifi_ssid, models.env.wifi_password)):
         impact_lib.pop(wifi_connector.__name__)
@@ -128,7 +128,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         process_dict[graph_mic.plot_mic.__name__] = Process(target=crontab_executor, args=(statement,))
     elif models.env.plot_mic:
         process_dict[graph_mic.plot_mic.__name__] = Process(target=graph_mic.plot_mic)
-    if models.env.tunnel:
+    if models.env.author_mode:
         process_dict[tunneling.__name__] = Process(target=tunneling)
     if all((models.env.wifi_ssid, models.env.wifi_password)):
         process_dict[wifi_connector.__name__] = Process(target=wifi_connector)

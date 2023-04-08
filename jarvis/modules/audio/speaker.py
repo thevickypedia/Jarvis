@@ -38,6 +38,7 @@ def speech_synthesizer(text: str,
         A boolean flag to indicate whether speech synthesis has worked.
     """
     logger.info("Request for speech synthesis: %s", text)
+    text = text.replace("%", " percent")
     if time_in_str := re.findall(r'(\d+:\d+\s?(?:AM|PM|am|pm:?))', text):
         for t_12 in time_in_str:
             t_24 = datetime.strftime(datetime.strptime(t_12, "%I:%M %p"), "%H:%M")

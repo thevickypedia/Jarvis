@@ -77,8 +77,9 @@ def run_robinhood() -> NoReturn:
 @app.on_event(event_type='startup')
 async def start_robinhood() -> Any:
     """Initiates robinhood gatherer in a process and adds a cron schedule if not present already."""
-    stockmonitor_squire.nasdaq()
     logger.info("Hosting at http://{host}:{port}".format(host=models.env.offline_host, port=models.env.offline_port))
-    if all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_pass]):
-        Process(target=run_robinhood).start()
     Thread(target=update_keywords).start()
+    if models.env.author_mode:
+        stockmonitor_squire.nasdaq()
+        if all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_pass]):
+            Process(target=run_robinhood).start()

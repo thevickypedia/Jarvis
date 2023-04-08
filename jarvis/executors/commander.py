@@ -146,8 +146,8 @@ def initiator(phrase: str = None, should_return: bool = False) -> None:
             return
         speaker.speak(text=random.choice(conversation.wake_up1))
         initialize()
-    elif word_match.word_match(phrase=phrase, match_list=['look alive', 'wake up', 'wakeup',
-                                                          'show time', 'showtime']):
+    elif word_match.word_match(phrase=phrase, match_list=('look alive', 'wake up', 'wakeup',
+                                                          'show time', 'showtime')):
         if not listener_controls.get_listener_state():
             speaker.speak(text=inactive_msg)
             return

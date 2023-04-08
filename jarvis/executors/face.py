@@ -45,7 +45,7 @@ def detected_face() -> NoReturn:
 def faces(phrase: str) -> None:
     """Initiates face recognition script and looks for images stored in named directories within ``train`` directory."""
     support.flush_screen()
-    if word_match.word_match(phrase=phrase, match_list=["detect", "detection", "faces", "look"]):
+    if word_match.word_match(phrase=phrase, match_list=("detect", "detection", "faces", "look")):
         if FaceNet().face_detection(retry_count=5):
             detected_face()
     else:

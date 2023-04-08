@@ -129,7 +129,7 @@ def locate(phrase: str) -> None:
     speaker.speak(text="Would you like to get the location details?", run=True)
     if not (phrase_location := listener.listen()):
         return
-    elif word_match.word_match(phrase=phrase_location, match_list=keywords.keywords.ok):
+    elif not word_match.word_match(phrase=phrase_location, match_list=keywords.keywords.ok):
         return
 
     locate_device(target_device=target_device)

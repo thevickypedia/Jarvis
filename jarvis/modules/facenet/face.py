@@ -9,8 +9,9 @@ import imghdr
 import os
 from typing import NoReturn, Union
 
-import cv2
 import face_recognition
+from cv2 import cv2
+from cv2 import data as cv2_data
 from PIL import Image, UnidentifiedImageError
 from pydantic import FilePath
 
@@ -104,6 +105,9 @@ class FaceNet:
         self.load_dataset(location=location)
         for _ in range(retry_count):
             ret, img = self.validation_video.read()  # reads video from web cam
+            if not ret:
+                logger.warning("Unable to read from camera index: %d", models.env.camera_index)
+                continue
             identifier = face_recognition.face_locations(img, model=self.MODEL)  # gets image from the video read above
             encoded_ = face_recognition.face_encodings(img, identifier)  # creates an encoding for the image
             for face_encoding, face_location in zip(encoded_, identifier):
@@ -129,12 +133,14 @@ class FaceNet:
             bool:
             A boolean value if not a face was detected.
         """
-        cv2_data = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-        if not os.path.isfile(cv2_data):
+        cv2_cascades = cv2_data.haarcascades + "haarcascade_frontalface_default.xml"
+        if not os.path.isfile(cv2_cascades):
             return False
-        cascade = cv2.CascadeClassifier(cv2_data)
+        cascade = cv2.CascadeClassifier(cv2_cascades)
         for _ in range(retry_count + 1):
-            ignore, image = self.validation_video.read()  # reads video from web cam
+            ret, image = self.validation_video.read()  # reads video from web cam
+            if not ret:
+                continue
             try:
                 img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # convert the captured image to grayscale
             except cv2.error as error:
@@ -164,6 +170,8 @@ class FaceNet:
         Args:
             filename: Name of the file to be saved.
         """
-        ignore, image = self.validation_video.read()
+        ret, image = self.validation_video.read()
+        if not ret:
+            return
         cv2.imwrite(filename=filename, img=image)
         self.validation_video.release()

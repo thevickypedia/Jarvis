@@ -223,7 +223,7 @@ def car(phrase: str) -> None:
     allowed_dict = {'on': ['start', 'set', 'turn on'],
                     'off': ['stop', 'turn off'],
                     'report': ['report'],
-                    'guard': ['secur', 'guard'],  # Intentional typo that covers both 'security' and 'secure' in phrase
+                    'guard': ['security', 'guardian', 'secure', 'guard'],
                     'lock': ['lock'], 'unlock': ['unlock'],
                     'honk': ['honk', 'blink', 'horn'],
                     'locate': ['locate', 'where']}

@@ -64,8 +64,8 @@ def weather(phrase: str = None) -> None:
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
 
-    if phrase and word_match.word_match(phrase=phrase, match_list=['tomorrow', 'day after', 'next week',
-                                                                   'tonight', 'afternoon', 'evening']):
+    if phrase and word_match.word_match(phrase=phrase, match_list=('tomorrow', 'day after', 'next week',
+                                                                   'tonight', 'afternoon', 'evening')):
         # when the weather info was requested
         if 'tonight' in phrase:
             key = 0
@@ -132,7 +132,7 @@ def weather(phrase: str = None) -> None:
             return
         output = f"The weather in {weather_location} {tell} would be {temp_f}\N{DEGREE SIGN}F, with a high of " \
                  f"{high}, and a low of {low}. "
-        if temp_feel_f != temp_f:
+        if temp_feel_f != temp_f and condition not in ("clear sky", "broken clouds", "fog"):
             output += f"But due to {condition} it will fee like it is {temp_feel_f}\N{DEGREE SIGN}F. "
         output += f"Sunrise at {sunrise}. Sunset at {sunset}. "
         if alerts and start_alert and end_alert:

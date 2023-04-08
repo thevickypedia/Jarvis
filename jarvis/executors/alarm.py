@@ -99,11 +99,11 @@ def set_alarm(phrase: str) -> None:
         hour, minute = f"{hour:02}", f"{minute:02}"
         am_pm = "AM" if "A" in extracted_time.split()[-1].upper() else "PM"
         if int(hour) <= 12 and int(minute) <= 59:
-            if day := word_match.word_match(phrase=phrase, match_list=['sunday', 'monday', 'tuesday', 'wednesday',
-                                                                       'thursday', 'friday', 'saturday']):
+            if day := word_match.word_match(phrase=phrase, match_list=('sunday', 'monday', 'tuesday', 'wednesday',
+                                                                       'thursday', 'friday', 'saturday')):
                 day = day[0].upper() + day[1:].lower()
                 create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm, day=day)
-            elif word_match.word_match(phrase=phrase, match_list=['everyday', 'every day', 'daily']):
+            elif word_match.word_match(phrase=phrase, match_list=('everyday', 'every day', 'daily')):
                 create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm, repeat=True)
             else:
                 create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm)

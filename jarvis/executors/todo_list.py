@@ -27,7 +27,7 @@ def todo(phrase: str) -> None:
     if "add" in phrase.lower():
         add_todo()
         return
-    if word_match.word_match(phrase=phrase, match_list=["remove", "delete"]):
+    if word_match.word_match(phrase=phrase, match_list=("remove", "delete")):
         if "items" in phrase.lower():
             delete_todo_items()
         else:

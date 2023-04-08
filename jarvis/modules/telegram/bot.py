@@ -464,8 +464,8 @@ class TelegramBot:
             return
         payload['text'] = payload.get('text', '').replace('override', '').replace('OVERRIDE', '')
         if word_match.word_match(phrase=payload.get('text').lower(),
-                                 match_list=["hey", "hi", "hola", "what's up", "ssup", "whats up", "hello",
-                                             "howdy", "hey", "chao", "hiya", "aloha"], strict=True):
+                                 match_list=("hey", "hi", "hola", "what's up", "ssup", "whats up", "hello",
+                                             "howdy", "hey", "chao", "hiya", "aloha"), strict=True):
             self.reply_to(payload=payload,
                           response=f"{greeting()} {payload['from']['first_name']}!\n"
                                    f"Good {util.part_of_day()}! How can I be of service today?")
