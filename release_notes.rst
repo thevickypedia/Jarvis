@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+7.2.5 (04/09/2023)
+------------------
+- Disable security mode trigger via offline on Linux
+
 7.2.4 (04/08/2023)
 ------------------
 - Fix guardian mode - issue #29

@@ -62,7 +62,7 @@ if [[ "$OSName" == "Darwin" ]]; then
     # Looks for git and installs only if git is not found in /usr/bin or /usr/local/bin (if installed using brew)
     git_check=$(which git)
     if [[ "$git_check" == "/usr/bin/git" || "$git_check" == "/usr/local/bin/git" ]]; then
-        git_version="$(git -v)"
+        git_version="$(git --version)"
         echo "$git_version"
     else
       echo "Installing Git CLI"
