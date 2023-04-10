@@ -180,7 +180,7 @@ def guard_enable() -> NoReturn:
     speaker.speak(text=f"Enabled security mode {models.env.title}! I will look out for potential threats and keep you "
                        f"posted. Have a nice {util.part_of_day()}, and enjoy yourself {models.env.title}!")
     if shared.called_by_offline:
-        if models.settings.os == "Linux":
+        if models.settings.os == models.supported_platforms.linux:
             pname = (current_process().name or "offline communicator").replace('_', ' ')
             speaker.speak(text=f"Security mode cannot be enabled via {pname}, as the host "
                                "machine is running on Linux OS")
